@@ -41,6 +41,11 @@
     ],
     "macOS": {
       "entitlements": "Entitlements.plist"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "both"
+      }
     }
   },
   "plugins": {
