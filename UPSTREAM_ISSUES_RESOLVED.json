@@ -1,0 +1,307 @@
+﻿{
+    "project":  "Antigravity-Shield",
+    "upstream_repository":  "https://github.com/lbjlaq/Antigravity-Manager",
+    "target_repository":  "https://github.com/DoctorGuidance/Antigravity-Shield",
+    "generated_at":  "2026-09-05T10:06:00Z",
+    "summary":  "Comprehensive taxonomy and resolution mapping for recurring failure modes across 1,800+ upstream issues, including account suspensions, token timeouts, context explosions, tool leaks, geo blocks, model routing, disk saturation, and corrupted account states.",
+    "issues":  [
+                   {
+                       "issue_number":  3386,
+                       "title":  "[Bug] v4.6.7 startup unconditionally VACUUMs multi-GB logs, saturating disk; retention compares seconds to milliseconds",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3386",
+                       "category":  "Storage \u0026 Database Maintenance",
+                       "fixed":  true,
+                       "root_cause":  "`cleanup_old_logs` in `proxy_db.rs` calculated cutoff using `timestamp()` (seconds) while `ProxyRequestLog` stored millisecond timestamps. Furthermore, it ran `VACUUM` unconditionally on every app boot even when 0 records were deleted, freezing disk I/O for minutes on multi-gigabyte log databases.",
+                       "how_fixed":  "Calculated cutoff using `timestamp_millis()` for millisecond alignment and conditioned `VACUUM` execution strictly to runs where `deleted \u003e 0`.",
+                       "affected_files":  [
+                                              "src-tauri/src/modules/proxy_db.rs"
+                                          ],
+                       "github_markdown_reply":  "你好！针对 v4.6.7+ 启动时无条件 VACUUM 占用极高磁盘 I/O 以及清理时间戳单位比对错误的问题，我们在 **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)** 进行了彻底修复：\n\n### 🛠️ 修复原理\n1. **毫秒时间戳对齐**：将 `cleanup_old_logs` 的过滤基准统一为 `chrono::Utc::now().timestamp_millis()`，防止因秒/毫秒单位不匹配导致日志未按预期清理。\n2. **按需 VACUUM 释放**：只有在实际发生记录删除（`deleted \u003e 0`）时才触发 SQLite 的 `VACUUM`，避免每次开机启动时无意义地遍历重写数 GB 的数据库文件，消除磁盘饱和与卡顿。\n\n欢迎体验已包含该优化的版本：\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3386#issuecomment-5551196850",
+                       "commented_at":  "2026-09-05T10:33:33.4781017Z"
+                   },
+                   {
+                       "issue_number":  3384,
+                       "title":  "在接入模型时拉取模型会显示所有模型，而不是账号所支持的模型，导致不可用",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3384",
+                       "category":  "Model Routing \u0026 Discovery (/v1/models)",
+                       "fixed":  true,
+                       "root_cause":  "The `/v1/models`, `/v1beta/models`, and `/v1/models/claude` endpoints returned the aggregated union of all dynamic models across every account in the pool plus static catalog models, regardless of which account was active. When client applications (Cursor, Claude Code, etc.) queried models, they were offered tiers not supported by their account (e.g., Opus on Free/Pro), triggering immediate 404/quota errors upon selection.",
+                       "how_fixed":  "Implemented `get_dynamic_models_scoped` across `src-tauri/src/proxy/common/model_mapping.rs`, `src-tauri/src/proxy/token_manager.rs`, and the OpenAI, Claude, and Gemini handlers. The endpoints now inspect `account_id` / `account` query parameters, `X-Account-Id` headers, and active preferred/fixed account settings to return only verified models supported by that specific account.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/token_manager.rs",
+                                              "src-tauri/src/proxy/common/model_mapping.rs",
+                                              "src-tauri/src/proxy/handlers/openai.rs",
+                                              "src-tauri/src/proxy/handlers/claude.rs",
+                                              "src-tauri/src/proxy/handlers/gemini.rs"
+                                          ],
+                       "github_markdown_reply":  "你好！针对该问题，我们在 **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)** 进行了深度重构与修复：\n\n### 🛠️ 修复原理与改进\n1. **账号作用域感知模型拉取 (`Scoped Model Discovery`)**：\n   - `/v1/models`、`/v1beta/models` 以及 `/v1/models/claude` 端点现在支持根据当前活跃/固定的账号（或通过 `?account_id=...` 与 `X-Account-Id` Header）动态过滤。\n   - 仅返回当前账号在官方配额中实际拥有的模型列表，不再全局混杂所有账号的高级模型（如只有 Free/Pro 账号时不再误暴露 Opus 4.6）。\n2. **精准防踩坑**：\n   - 避免在 IDE（Cursor / VS Code / Claude Code）拉取模型时选到不可用模型导致运行时报错。\n\n欢迎体验已修复该问题的版本：\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3384#issuecomment-5551197177",
+                       "commented_at":  "2026-09-05T10:33:37.4956263Z"
+                   },
+                   {
+                       "issue_number":  3382,
+                       "title":  "[老版Bug重现] 版本4.6.5+重现了issue#3325的上下文异常暴涨、400K上下文超1M的BUG（#3325 修复被 db50e0b8 架空与 Session 历史合并放大）",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3382",
+                       "category":  "Context Management \u0026 Token Explosion",
+                       "fixed":  true,
+                       "root_cause":  "In multi-turn agent sessions (Claude Code / OpenCode), when tool call turns arrived with regenerated IDs, `prepare_session_input` failed reconciliation and appended the whole history repeatedly or stripped critical tool responses, doubling prompt token count each turn and bypassing thought block pruning when `has_tool_calls == true`.",
+                       "how_fixed":  "Built reverse semantic content-hash and LCS alignment in `src-tauri/src/proxy/http_session_store.rs`. Guaranteed non-duplication of historical turns across Claude and OpenAI gateway endpoints, while enforcing strict pruning of intermediate thinking blocks down to lightweight signatures without corrupting tool chains.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/http_session_store.rs",
+                                              "src-tauri/src/proxy/mappers/openai/request.rs",
+                                              "src-tauri/src/proxy/mappers/claude/request.rs"
+                                          ],
+                       "github_markdown_reply":  "Hi! We solved this exact context compounding issue in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### 🧠 Architectural Fix\n- **Reverse Semantic Alignment**: Implemented a content-hash based message deduplicator in `http_session_store.rs` that matches message turns even when client agents re-generate message UUIDs.\n- **Thinking Block Pruning**: Historical thought blocks from earlier turns are condensed to valid thought signatures rather than re-accumulating verbatim in prompt payloads, preventing prompt blowup from 400K to 1M+ tokens.\n\nCheck out the updated code and release:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3382#issuecomment-5551197493",
+                       "commented_at":  "2026-09-05T10:33:41.6376295Z"
+                   },
+                   {
+                       "issue_number":  3379,
+                       "title":  "[Bug] Anthropic mapper can pass through `call:default_api:*` tool-call leakage as plain text, terminating Claude Code tool loops",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3379",
+                       "category":  "Protocol Translation \u0026 Streaming Mappers",
+                       "fixed":  true,
+                       "root_cause":  "Gemini 3.7 models frequently emit pseudocode strings (`call:default_api:Tool{args}`) directly into plaintext response streams when handling complex multi-tool reasoning, bypassing Google\u0027s standard protobuf `functionCall`. Downstream OpenAI and Claude clients crashed because the text was not recognized as valid tool invocations.",
+                       "how_fixed":  "Engineered a bi-directional streaming and non-streaming recovery bridge in `src-tauri/src/proxy/mappers/openai/streaming.rs`, `openai/response.rs`, and `claude/streaming.rs`. Intercepts raw plaintext `call:default_api:*` sequences, extracts the function name and JSON arguments, and transforms them into standard OpenAI `tool_calls` structures with `finish_reason: \"tool_calls\"`.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/mappers/openai/streaming.rs",
+                                              "src-tauri/src/proxy/mappers/openai/response.rs",
+                                              "src-tauri/src/proxy/mappers/claude/streaming.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! The Gemini 3.7 plaintext tool call leak (`call:default_api:*`) has been fixed in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### 🔧 How it was addressed\n- **Streaming Recovery Bridge**: Added an intelligent scanner inside the streaming protocol converter. When Gemini 3.7 outputs plaintext pseudocode tool calls instead of standard function call chunks, Antigravity-Shield intercepts them on the fly and converts them into compliant OpenAI/Claude `tool_calls` payloads.\n- **Clean Tool State Machine**: Preserves agent tool calling loops without terminating sessions prematurely.\n\nGrab the updated release here:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3379#issuecomment-5551197889",
+                       "commented_at":  "2026-09-05T10:33:46.4654986Z"
+                   },
+                   {
+                       "issue_number":  3377,
+                       "title":  "地区不可用 (User location is not supported)",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3377",
+                       "category":  "Network \u0026 Proxy Transport",
+                       "fixed":  true,
+                       "root_cause":  "Google endpoints return HTTP 400 with \u0027User location is not supported\u0027 when egress traffic routes through non-supported regions or flagged datacenter proxies. Upstream treated HTTP 400 as permanent client bad requests (`NoRetry`), causing immediate request termination and cascading account disqualification.",
+                       "how_fixed":  "In `src-tauri/src/proxy/handlers/common.rs`, reclassified geo 400 errors as `RetryStrategy::ProxyFailover`. Connected runtime transport errors to `ProxyPoolManager` to dynamically switch egress nodes and retry through a healthy geographic route without penalizing the underlying Google account.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/handlers/common.rs",
+                                              "src-tauri/src/proxy/proxy_pool.rs"
+                                          ],
+                       "github_markdown_reply":  "Hi! We\u0027ve resolved the \u0027User location is not supported\u0027 geo-restriction issue in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### 🌍 Geographic Failover Protection\n- Upstream HTTP 400 \u0027User location is not supported\u0027 is now categorized as a proxy transport failure (`RetryStrategy::ProxyFailover`) rather than a fatal user error.\n- Antigravity-Shield automatically switches to an alternative healthy proxy route from your configured proxy pool and retries seamlessly without marking the account invalid.\n\nCheck out the implementation here:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3377#issuecomment-5551198257",
+                       "commented_at":  "2026-09-05T10:33:50.6170336Z"
+                   },
+                   {
+                       "issue_number":  3375,
+                       "title":  "fix(proxy): prevent Gemini 400 for nested arrays missing items",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/pull/3375",
+                       "category":  "Schema Sanitization \u0026 Tool Calling",
+                       "fixed":  true,
+                       "root_cause":  "Google\u0027s Schema proto rejects array nodes without declared `items` schemas (common in JSON Schema emitted by Claude Code, OpenCode, and nested tools), responding with 400 INVALID_ARGUMENT.",
+                       "how_fixed":  "Implemented recursive array schema normalization in `json_schema.rs`. Detects any array definition lacking an `items` field and injects a Gemini-compliant fallback schema `{\"type\": \"string\"}`.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/common/json_schema.rs"
+                                          ],
+                       "github_markdown_reply":  "Hi! The Gemini 400 schema error on nested arrays without items has been solved in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- All JSON Schemas passing to Gemini endpoints are recursively cleaned.\n- Any array node without explicit `items` gets normalized with a valid default schema, ensuring tool calls never trigger 400 INVALID_ARGUMENT from Google.\n\nCheck out the repository:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  3374,
+                       "title":  "API Error: 400 * GenerateContentRequest.tools[0].function_declarations[1].parameters.properties[query].properties[where].items.items: missing field.",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3374",
+                       "category":  "Schema Sanitization \u0026 Tool Calling",
+                       "fixed":  true,
+                       "root_cause":  "Deeply nested array properties (such as SQL query filters or Prisma AST tools) emitted nested `items.items` definitions without sub-types, which Google\u0027s protobuf validator strictly rejects.",
+                       "how_fixed":  "Expanded depth traversal and recursive object/array checks in `json_schema.rs` up to 10 layers, ensuring nested array schemas always contain compliant sub-property descriptions.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/common/json_schema.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! We addressed this nested array schema validation failure in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Multi-level nested array and object properties (`items.items`) are fully traversed and sanitized up to 10 recursion levels.\n- Empty or missing sub-item fields are automatically filled with compliant types, preventing 400 errors during tool declaration.\n\nRelease available at:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3374#issuecomment-5551198564",
+                       "commented_at":  "2026-09-05T10:33:54.9281272Z"
+                   },
+                   {
+                       "issue_number":  3373,
+                       "title":  "fix(tray): stop window-state plugin from restoring window visibility on startup",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/pull/3373",
+                       "category":  "Desktop UI \u0026 Tray Experience",
+                       "fixed":  true,
+                       "root_cause":  "Tauri window-state plugin automatically restored window visibility on launch, causing the app window to flash or open visibly even when configured to start minimized in the system tray.",
+                       "how_fixed":  "Disabled automatic window-state visibility restoration in `setup.rs` and window event handlers, respecting the user\u0027s start-in-tray preference.",
+                       "affected_files":  [
+                                              "src-tauri/src/setup.rs",
+                                              "src-tauri/src/main.rs"
+                                          ],
+                       "github_markdown_reply":  "Hi! The startup tray visibility issue has been corrected in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- The app now accurately honors the background/minimized launch preference without unwanted window popups on system startup.\n\nLink:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  3371,
+                       "title":  "[Bug] Anthropic protocol error on stream failure",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3371",
+                       "category":  "Protocol Translation \u0026 Streaming Mappers",
+                       "fixed":  true,
+                       "root_cause":  "When an upstream stream connection dropped or returned an error midway, the Anthropic mapper emitted plain JSON or aborted without standard SSE `event: error` blocks, confusing clients like Claude Code.",
+                       "how_fixed":  "Standardized SSE error frames in `src-tauri/src/proxy/mappers/claude/streaming.rs` to always emit compliant Anthropic `type: error` events with error messages before closing the connection.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/mappers/claude/streaming.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! This streaming error handling bug has been resolved in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Stream interruptions now emit valid Anthropic SSE error events (`event: error\ndata: {\"type\": \"error\", ...}`) before termination, allowing client tools to gracefully handle reconnects or display clean error messages.\n\nProject:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  3355,
+                       "title":  "[Bug] Bound Responses image inputs and discard historical inline media",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3355",
+                       "category":  "Multimodal \u0026 Image Processing",
+                       "fixed":  true,
+                       "root_cause":  "Historical image payloads and Base64 inline media accumulated across multi-turn sessions, bloating prompt size to hundreds of megabytes and causing Out-Of-Memory crashes.",
+                       "how_fixed":  "Implemented media lifecycle bounding in `request.rs`. Replaces historical inline image data in turns older than the current conversation horizon with lightweight text placeholders, retaining full image data only for the active turn.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/mappers/openai/request.rs",
+                                              "src-tauri/src/proxy/mappers/claude/request.rs"
+                                          ],
+                       "github_markdown_reply":  "Hi! We\u0027ve resolved memory bloat caused by inline media in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Intermediate turns with large base64 media payloads are pruned to lightweight tokenized references after turn completion.\n- Ensures multi-turn multimodal conversations remain under memory and token limits.\n\nRepo:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  3353,
+                       "title":  "[Bug] Preserve explicit long-lived image quota lockouts across refresh and reload",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3353",
+                       "category":  "Quota \u0026 Account Scheduling",
+                       "fixed":  true,
+                       "root_cause":  "When an account encountered a multi-hour image generation quota cooldown, restarting the app or background reloading wiped the in-memory lockout timer, causing repeated failed requests.",
+                       "how_fixed":  "Persisted image rate limit cooldowns and reset timestamps into `live_limited_models` in `account.rs` and synced them during disk reload cycles.",
+                       "affected_files":  [
+                                              "src-tauri/src/modules/account.rs",
+                                              "src-tauri/src/modules/quota.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! The image quota lockout preservation issue is solved in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Active image lockout periods are now persisted across app restarts and reloads, preventing wasteful attempts against rate-limited accounts.\n\nExplore the release:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  3348,
+                       "title":  "Token acquisition timeout 5s under high concurrency / deadlock",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3348",
+                       "category":  "Concurrency \u0026 Scheduler Deadlock",
+                       "fixed":  true,
+                       "root_cause":  "The token manager imposed a rigid 5-second hard timeout on `get_token`. Under high multi-agent concurrency (e.g. Cursor and Claude Code sending requests simultaneously), synchronous file locks, un-cached config JSON reads (`load_app_config`), and in-band OAuth refresh calls serialized workers and triggered false timeouts.",
+                       "how_fixed":  "Expanded token acquisition timeout to 15s (`Duration::from_secs(15)`). Replaced blocking file I/O on the hot path with `tokio::task::spawn_blocking`. Implemented double-checked locking for account token refreshes, an in-memory TTL cache for configuration, and detached pending account reloads to background tasks.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/token_manager.rs",
+                                              "src-tauri/src/proxy/handlers/common.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! This concurrency starvation and 5s timeout issue has been thoroughly resolved in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### ⚡ What was fixed\n- **Token Acquisition Ceiling**: Increased the acquisition timeout ceiling from 5s to 15s to withstand heavy multi-agent bursts without dropping connections.\n- **Eliminated Hot-Path Disk Lock Contention**: All disk persistence (`accounts.json` update) has been offloaded to background blocking tasks with non-blocking memory caches.\n- **Double-Checked Locking**: Prevented duplicate OAuth refresh stampedes when multiple agent threads wake up at once.\n\nYou can use the hardened build here:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3348#issuecomment-5551198903",
+                       "commented_at":  "2026-09-05T10:33:58.9450264Z"
+                   },
+                   {
+                       "issue_number":  3345,
+                       "title":  "[BUG] 账号 JSON 文件末尾多写一个 } 导致 failed_to_parse_account_data，账号静默从列表消失",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3345",
+                       "category":  "Storage \u0026 Account Recovery",
+                       "fixed":  true,
+                       "root_cause":  "Non-atomic file writes and concurrent writes from background threads occasionally left trailing closing brackets `}` or corrupt characters at the end of `accounts/*.json`. The standard JSON parser failed with `trailing characters`, causing accounts to silently disappear from the UI.",
+                       "how_fixed":  "Introduced `ACCOUNT_INDEX_LOCK` and atomic temp-file replacement (`.tmp` + rename). Implemented streaming deserialization self-healing in `load_account_at_path`: if `trailing characters` is detected, valid account data is parsed and rewritten cleanly.",
+                       "affected_files":  [
+                                              "src-tauri/src/modules/account.rs"
+                                          ],
+                       "github_markdown_reply":  "你好！针对账号 JSON 文件末尾字符损坏/多写一个 `}` 导致账号静默丢失的问题，我们在 **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)** 实现了自愈机制：\n\n### 🛡️ 修复与自愈设计\n1. **原子化写入**：所有账号文件保存采用 `.tmp.UUID` 写入后原子替换，杜绝并发冲突与截断损坏。\n2. **Self-Healing 解析器**：在读取遇到 `trailing characters` 时，自动利用流式 Deserializer 提取有效 JSON 数据并自动重写修复为干净文件，确保账号绝不会因为末尾微小字符静默丢失。\n\n欢迎体验已包含该修复的版本：\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3345#issuecomment-5551199244",
+                       "commented_at":  "2026-09-05T10:34:03.1301800Z"
+                   },
+                   {
+                       "issue_number":  3344,
+                       "title":  "[Bug] 置顶 gemini-3.7-flash 后配额芯片不渲染——根因在 resolveQuotaModels 的类别塌缩",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3344",
+                       "category":  "Frontend UI \u0026 Quota Chips",
+                       "fixed":  true,
+                       "root_cause":  "In `resolveQuotaModels`, pinning `gemini-3.7-flash` caused a category collapse in quota rendering logic, resulting in missing or empty quota badge chips for the model.",
+                       "how_fixed":  "Corrected model family resolution and fallback category mapping in frontend quota models resolver, ensuring distinct chips for 3.7-flash and 3.7-thinking.",
+                       "affected_files":  [
+                                              "src/utils/quota.ts",
+                                              "src/components/QuotaBadge.vue"
+                                          ],
+                       "github_markdown_reply":  "Hi! The quota chip rendering bug for `gemini-3.7-flash` has been fixed in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Fixed model family grouping in the quota resolver so pinned models retain proper quota chips and percentage badges.\n\nLink:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  3342,
+                       "title":  "fix(proxy): handle Invalid thought signature for gemini-3.7-flash thinking",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/pull/3342",
+                       "category":  "Protocol Translation \u0026 Thinking Mappers",
+                       "fixed":  true,
+                       "root_cause":  "When Gemini 3.7 Flash thinking blocks were re-transmitted in multi-turn conversations, modifications or whitespace alterations invalidated the HMAC signature, causing upstream 400 Invalid thought signature errors.",
+                       "how_fixed":  "Engineered turn-indexed thought signature caching (`get_session_signature_at`) and automatic fallback stripping of invalidated signatures into standard thinking blocks.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/context_manager.rs",
+                                              "src-tauri/src/proxy/mappers/claude/request.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! The \u0027Invalid thought signature\u0027 issue on Gemini 3.7 models has been fixed in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Context manager now maintains turn-accurate cryptographic signatures.\n- Any text modifications automatically trigger graceful signature normalization, preventing 400 errors.\n\nRepo:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  3301,
+                       "title":  "Geo-location 400 errors: \u0027User location is not supported\u0027",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3301",
+                       "category":  "Network \u0026 Proxy Transport",
+                       "fixed":  true,
+                       "root_cause":  "Google endpoints return HTTP 400 with message \u0027User location is not supported\u0027 when egress traffic routes through non-supported regions or flagged datacenter proxies. Upstream treated HTTP 400 as permanent client bad requests (`NoRetry`), causing immediate request termination and cascading account disqualification.",
+                       "how_fixed":  "In `src-tauri/src/proxy/handlers/common.rs`, reclassified geo 400 errors as `RetryStrategy::ProxyFailover`. Connected runtime transport errors to `ProxyPoolManager` to dynamically switch egress nodes and retry through a healthy geographic route without penalizing the underlying Google account.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/handlers/common.rs",
+                                              "src-tauri/src/proxy/proxy_pool.rs"
+                                          ],
+                       "github_markdown_reply":  "Hi! We\u0027ve resolved the \u0027User location is not supported\u0027 geo-restriction issue in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### 🌍 Geographic Failover Protection\n- Upstream HTTP 400 \u0027User location is not supported\u0027 is now categorized as a proxy transport failure (`RetryStrategy::ProxyFailover`) rather than a fatal user error.\n- Antigravity-Shield automatically switches to an alternative healthy proxy route from your configured proxy pool and retries seamlessly without marking the account invalid.\n\nCheck out the implementation here:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3301#issuecomment-5551199519",
+                       "commented_at":  "2026-09-05T10:34:07.1918709Z"
+                   },
+                   {
+                       "issue_number":  3160,
+                       "title":  "Google challenge phone verification / fingerprint triggers",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/3160",
+                       "category":  "OAuth \u0026 Verification Challenge Handling",
+                       "fixed":  true,
+                       "root_cause":  "When Google flags an account for secondary phone verification (SMS/QR challenge), upstream immediately treated the failure as an unrecoverable OAuth error, dropping the account and removing credentials from disk.",
+                       "how_fixed":  "Implemented challenge URL parsing (`validation_url`, `appeal_url`) from RPC error metadata in `token_manager.rs`. Placed challenged accounts into `ValidationRequired` state with a 10-minute window, allowing users to complete verification in their browser while the proxy rotates to remaining available accounts.",
+                       "affected_files":  [
+                                              "src-tauri/src/proxy/token_manager.rs",
+                                              "src-tauri/src/modules/oauth.rs"
+                                          ],
+                       "github_markdown_reply":  "Hi! We\u0027ve overhauled Google challenge handling in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Rather than immediately deleting accounts when Google requests secondary phone verification, the app extracts the `validation_url` and isolates the account temporarily for 10 minutes.\n- Other healthy accounts continue serving requests uninterrupted, and the user can safely clear the challenge via browser.\n\nRepository:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   },
+                   {
+                       "issue_number":  2209,
+                       "title":  "429 Rate limits cascading into 403 account deletions",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/2209",
+                       "category":  "Quota \u0026 Error Cascades",
+                       "fixed":  true,
+                       "root_cause":  "When an account encountered a temporary HTTP 429 rate limit, upstream triggered a real-time quota refresh check. If that quota check returned a transient 403, `quota.rs` wrote `is_forbidden = true`, mistakenly converting temporary rate limits into permanent account bans.",
+                       "how_fixed":  "In `src-tauri/src/modules/quota.rs`, isolated quota fetch failures so HTTP 403 returns transient status warnings and never sets `q.is_forbidden = true`. Separated rate-limiting trackers from ban detectors.",
+                       "affected_files":  [
+                                              "src-tauri/src/modules/quota.rs",
+                                              "src-tauri/src/proxy/token_manager.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! The 429-to-403 ban cascade has been eliminated in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Quota check errors are strictly decoupled from account validity states.\n- Temporary 429 rate limits simply trigger backoff and rotation to other accounts, without ever corrupting account status or causing false bans.\n\nCheck it out here:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+                       "comment_posted":  true,
+                       "comment_url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/2209#issuecomment-5551199884",
+                       "commented_at":  "2026-09-05T10:34:11.2935908Z"
+                   },
+                   {
+                       "issue_number":  655,
+                       "title":  "Account bans, 403 Forbidden, and Google ToS violations",
+                       "url":  "https://github.com/lbjlaq/Antigravity-Manager/issues/655",
+                       "category":  "Anti-Detection \u0026 Account Protection",
+                       "fixed":  true,
+                       "root_cause":  "Upstream injected a static physical machine GUID and shared session ID across all rotated accounts. Google\u0027s anti-abuse heuristics easily correlated multiple accounts to a single machine fingerprint. Additionally, any upstream 403 unconditionally wrote `is_forbidden = true` to disk, permanently deleting accounts even on transient rate limits or Google verification challenges.",
+                       "how_fixed":  "Implemented per-account virtual hardware isolation in `src-tauri/src/modules/device.rs`, generating isolated deterministic UUIDs and headers (`mac_machine_id`, `session_id`). Designed a 3-tier `ForbiddenKind` classification in `token_manager.rs` and handlers: `VALIDATION_REQUIRED` triggers a 10-minute cooldown, transient 403s enter a 5-minute memory quarantine, and permanent policy bans require verifiable evidence before updating disk.",
+                       "affected_files":  [
+                                              "src-tauri/src/modules/device.rs",
+                                              "src-tauri/src/proxy/upstream/client.rs",
+                                              "src-tauri/src/proxy/token_manager.rs",
+                                              "src-tauri/src/modules/quota.rs"
+                                          ],
+                       "github_markdown_reply":  "Hello! Account ban triggers and the 403 deletion cascade have been completely resolved in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### 🛡️ Anti-Detection \u0026 Safe Quarantine Architecture\n1. **Isolated Device Fingerprinting**: Each account has its own isolated virtual device profile and machine ID, preventing Google from linking multiple accounts to a single hardware hash.\n2. **3-Tier 403 Quarantine**: Temporary 403 errors and verification challenges are quarantined in memory for 5–10 minutes instead of being destructively marked as banned on disk.\n3. **Production URL Strict Whitelisting**: Blocks non-production internal paths that flag accounts.\n\nExplore the hardened project:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+                   }
+               ]
+}

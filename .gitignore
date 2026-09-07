@@ -1,0 +1,60 @@
+# Logs
+logs
+.logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist-ssr
+*.local
+.vite
+dist
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Build output
+src-tauri/target/
+src-tauri/gen/
+src-tauri/.env
+
+# Environment
+.env
+.env.*
+environment/
+
+# Python virtual environments and test files
+.venv*/
+venv/
+# *.py
+__pycache__/
+*.pyc
+
+# Reference projects (for development only)
+
+# Temporary quota probing scripts & dumps (one-off debugging artifacts)
+scripts/_*.json
+scripts/dump_quota_raw.py
+scripts/dump_full.py
+scripts/probe_weekly.py
+scripts/probe_quota_summary.py
+pnpm-lock.yaml
+.agents/
+*.zip
+*.exe
+*.dll
+Downloads/
+dist_release/
+prebuilt_bindings.rs

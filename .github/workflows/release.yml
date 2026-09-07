@@ -1,0 +1,403 @@
+name: Release (Windows, macOS & Linux)
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag to build (e.g. v5.0.0)'
+        required: false
+        default: 'v5.0.0'
+        type: string
+  push:
+    tags:
+      - 'v*'
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: "aarch64-apple-darwin,x86_64-apple-darwin"
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Disable updater artifacts without signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            if (!process.env.TAURI_SIGNING_PRIVATE_KEY || process.env.TAURI_SIGNING_PRIVATE_KEY.trim() === '') {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              console.log('Updater signing key configured.');
+            }
+          }
+          "
+
+      - name: Build aarch64 (Apple Silicon)
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri build -- --target aarch64-apple-darwin 2>&1 | tee tauri-build-aarch64.log
+
+      - name: Build x86_64 (Intel)
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri build -- --target x86_64-apple-darwin 2>&1 | tee tauri-build-x86_64.log
+
+      - name: Build Universal (.app)
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri build -- --target universal-apple-darwin --bundles app 2>&1 | tee tauri-build-universal.log
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs-macos
+          path: tauri-build-*.log
+
+      - name: Rename macOS assets for architecture
+        run: |
+          rename_arch() {
+            local target_dir="$1"
+            local arch="$2"
+            if [ -d "$target_dir" ]; then
+              cd "$target_dir"
+              for f in *.app.tar.gz; do
+                if [ -f "$f" ] && [[ "$f" != *"_${arch}.app.tar.gz" ]]; then
+                  base="${f%.app.tar.gz}"
+                  mv "$f" "${base}_${arch}.app.tar.gz"
+                  [ -f "${f}.sig" ] && mv "${f}.sig" "${base}_${arch}.app.tar.gz.sig"
+                  echo "Renamed $f to ${base}_${arch}.app.tar.gz"
+                fi
+              done
+              cd - > /dev/null
+            fi
+          }
+
+          rename_arch "src-tauri/target/aarch64-apple-darwin/release/bundle/macos" "aarch64"
+          rename_arch "src-tauri/target/x86_64-apple-darwin/release/bundle/macos" "x64"
+          rename_arch "src-tauri/target/universal-apple-darwin/release/bundle/macos" "universal"
+
+      - name: Upload updater json
+        uses: actions/upload-artifact@v4
+        with:
+          name: updater-json-macos
+          path: src-tauri/target/**/release/bundle/updater/*.json
+          if-no-files-found: ignore
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-macos
+          path: |
+            src-tauri/target/**/release/bundle/dmg/*.dmg
+            src-tauri/target/**/release/bundle/dmg/*.sig
+            src-tauri/target/**/release/bundle/macos/*.app.tar.gz
+            src-tauri/target/**/release/bundle/macos/*.app.tar.gz.sig
+          if-no-files-found: warn
+
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Disable updater artifacts without signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            if (!process.env.TAURI_SIGNING_PRIVATE_KEY || process.env.TAURI_SIGNING_PRIVATE_KEY.trim() === '') {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              console.log('Updater signing key configured.');
+            }
+          }
+          "
+
+      - name: Build Windows NSIS installer
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri build -- --bundles nsis 2>&1 | tee tauri-build-windows.log
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-windows
+          path: tauri-build-windows.log
+
+      - name: Upload updater json
+        uses: actions/upload-artifact@v4
+        with:
+          name: updater-json-windows
+          path: src-tauri/target/release/bundle/updater/*.json
+          if-no-files-found: ignore
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-windows
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/nsis/*.sig
+          if-no-files-found: warn
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config libsoup-3.0-dev javascriptcoregtk-4.1 libjavascriptcoregtk-4.1-dev libnm-dev xdg-utils
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Disable updater artifacts without signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            if (!process.env.TAURI_SIGNING_PRIVATE_KEY || process.env.TAURI_SIGNING_PRIVATE_KEY.trim() === '') {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              console.log('Updater signing key configured.');
+            }
+          }
+          "
+
+      - name: Build Linux appimage and deb
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri build -- --bundles appimage,deb 2>&1 | tee tauri-build-linux.log
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-linux
+          path: tauri-build-linux.log
+
+      - name: Upload updater json
+        uses: actions/upload-artifact@v4
+        with:
+          name: updater-json-linux
+          path: src-tauri/target/release/bundle/updater/*.json
+          if-no-files-found: ignore
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-linux
+          path: |
+            src-tauri/target/release/bundle/appimage/*.AppImage
+            src-tauri/target/release/bundle/appimage/*.sig
+            src-tauri/target/release/bundle/deb/*.deb
+          if-no-files-found: warn
+
+  publish-release:
+    needs: [build-macos, build-windows, build-linux]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts
+          pattern: "{release-assets-*,updater-json-*}"
+          merge-multiple: true
+
+      - name: Extract Release Notes
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          echo "Extracting release notes for version $TARGET_VER"
+          awk -v ver="$TARGET_VER" '
+            BEGIN { capture=0 }
+            $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*" ver { capture=1; next }
+            capture && $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*v" { capture=0; exit }
+            capture { print }
+          ' CHANGELOG.md | sed 's/^[[:space:]]\{8\}//' > release_notes.md
+          if [ ! -s release_notes.md ]; then
+            echo "# Antigravity Shield $TARGET_VER" > release_notes.md
+            echo "" >> release_notes.md
+            echo "Official release for Antigravity Shield $TARGET_VER. Download the appropriate package for your OS below." >> release_notes.md
+          fi
+
+      - name: Build updater.json from signatures
+        env:
+          VERSION: ${{ github.event.inputs.release_tag || github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          DOWNLOAD_BASE="https://github.com/${REPO}/releases/download/${VERSION}"
+          VER="${VERSION#v}"
+
+          read_sig() {
+            local pattern="$1"
+            local sig_file
+            sig_file=$(find all-artifacts -name "$pattern" -type f 2>/dev/null | head -1)
+            if [ -n "$sig_file" ] && [ -f "$sig_file" ]; then
+              cat "$sig_file"
+            else
+              echo ""
+            fi
+          }
+
+          MACOS_AARCH64_SIG=$(read_sig "*_aarch64.app.tar.gz.sig")
+          MACOS_X64_SIG=$(read_sig "*_x64.app.tar.gz.sig")
+          WINDOWS_NSIS_SIG=$(read_sig "*_x64-setup.exe.sig")
+          LINUX_AMD64_SIG=$(read_sig "*_amd64.AppImage.sig")
+
+          WIN_EXE=$(find all-artifacts -name "*_x64-setup.exe" -type f -exec basename {} \; 2>/dev/null | head -1)
+          LINUX_APPIMAGE=$(find all-artifacts -name "*_amd64.AppImage" -type f -exec basename {} \; 2>/dev/null | head -1)
+          MAC_AARCH64=$(find all-artifacts -name "*_aarch64.app.tar.gz" -type f -exec basename {} \; 2>/dev/null | head -1)
+          MAC_X64=$(find all-artifacts -name "*_x64.app.tar.gz" -type f -exec basename {} \; 2>/dev/null | head -1)
+
+          jq -n \
+            --arg version "$VER" \
+            --arg notes "Antigravity Shield $VERSION release" \
+            --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg dl "$DOWNLOAD_BASE" \
+            --arg mac_a64_sig "$MACOS_AARCH64_SIG" \
+            --arg mac_x64_sig "$MACOS_X64_SIG" \
+            --arg win_nsis_sig "$WINDOWS_NSIS_SIG" \
+            --arg linux_amd64_sig "$LINUX_AMD64_SIG" \
+            --arg win_exe "${WIN_EXE:-Antigravity.Shield_${VER}_x64-setup.exe}" \
+            --arg linux_img "${LINUX_APPIMAGE:-Antigravity.Shield_${VER}_amd64.AppImage}" \
+            --arg mac_a64 "${MAC_AARCH64:-Antigravity.Shield_aarch64.app.tar.gz}" \
+            --arg mac_x64 "${MAC_X64:-Antigravity.Shield_x64.app.tar.gz}" \
+            '{
+              version: $version,
+              notes: $notes,
+              pub_date: $pub_date,
+              platforms: {
+                "darwin-aarch64": {
+                  url: "\($dl)/\($mac_a64)",
+                  signature: $mac_a64_sig
+                },
+                "darwin-x86_64": {
+                  url: "\($dl)/\($mac_x64)",
+                  signature: $mac_x64_sig
+                },
+                "windows-x86_64": {
+                  url: "\($dl)/\($win_exe)",
+                  signature: $win_nsis_sig
+                },
+                "linux-x86_64": {
+                  url: "\($dl)/\($linux_img)",
+                  signature: $linux_amd64_sig
+                }
+              }
+            }' > updater.json
+
+          echo "Generated updater.json:"
+          cat updater.json
+
+      - name: Collect release files
+        run: |
+          mkdir -p release-files
+          find all-artifacts -type f \( \
+            -name "*.dmg" -o \
+            -name "*.deb" -o \
+            -name "*.AppImage" -o \
+            -name "*.exe" -o \
+            -name "*.app.tar.gz" -o \
+            -name "*.sig" \
+          \) -print0 | while IFS= read -r -d '' file; do
+            cp "$file" release-files/
+          done
+          find release-files -maxdepth 1 -type f -print
+
+      - name: Create or Update GitHub Release
+        uses: ncipollo/release-action@v1
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        with:
+          allowUpdates: true
+          tag: ${{ github.event.inputs.release_tag || github.ref_name }}
+          name: "Antigravity Shield ${{ github.event.inputs.release_tag || github.ref_name }}"
+          bodyFile: "release_notes.md"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "release-files/*,updater.json"
+          artifactErrorsFailBuild: false
+          replacesArtifacts: true
+          makeLatest: legacy
