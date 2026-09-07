@@ -7,15 +7,28 @@ on:
         required: false
         default: 'v5.0.0'
         type: string
+      build_windows:
+        description: 'Build Windows Installer (.exe)'
+        required: false
+        default: true
+        type: boolean
+      build_linux:
+        description: 'Build Linux Packages (AppImage, deb)'
+        required: false
+        default: false
+        type: boolean
+      build_macos:
+        description: 'Build macOS DMG'
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
       - 'v*'
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build-macos:
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.build_macos == true)
     runs-on: macos-latest
     permissions:
       contents: write
@@ -27,6 +40,11 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: "aarch64-apple-darwin,x86_64-apple-darwin"
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
 
       - name: Node.js setup
         uses: actions/setup-node@v4
@@ -127,6 +145,7 @@ jobs:
           if-no-files-found: warn
 
   build-windows:
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.build_windows == true)
     runs-on: windows-latest
     permissions:
       contents: write
@@ -136,6 +155,11 @@ jobs:
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
 
       - name: Node.js setup
         uses: actions/setup-node@v4
@@ -197,6 +221,7 @@ jobs:
           if-no-files-found: warn
 
   build-linux:
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.build_linux == true)
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -211,6 +236,11 @@ jobs:
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
 
       - name: Node.js setup
         uses: actions/setup-node@v4
@@ -274,6 +304,7 @@ jobs:
 
   publish-release:
     needs: [build-macos, build-windows, build-linux]
+    if: always() && !cancelled() && !contains(needs.*.result, 'failure')
     runs-on: ubuntu-latest
     permissions:
       contents: write
