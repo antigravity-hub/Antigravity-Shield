@@ -1,7 +1,7 @@
 {
   "version": "5.0.0",
-  "name": "antigravity-guideshield",
-  "description": "Antigravity GuideShield - Hardened AI Account Manager & Proxy Gateway",
+  "name": "antigravity-shield",
+  "description": "Antigravity Shield - Hardened AI Account Manager & Proxy Gateway",
   "type": "module",
   "private": true,
   "scripts": {

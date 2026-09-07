@@ -1,4 +1,4 @@
-# Antigravity-GuideShield 🛡️
+# Antigravity-Shield 🛡️
 > The Hardened, Anti-Ban AI Account Manager & Protocol Gateway (v5.0.0)
 
 <div align="center">
@@ -35,15 +35,15 @@
 
 ---
 
-## 🛡️ Why Antigravity-GuideShield? (The Anti-403 Solution)
+## 🛡️ Why Antigravity-Shield? (The Anti-403 Solution)
 
 While the original upstream project (`lbjlaq/Antigravity-Manager`) provided a basic proxy framework, over **1,800+ community issues** accumulated due to critical architectural vulnerabilities when running high-concurrency AI coding agents (**Claude Code CLI, Cursor, OpenCode, OpenClaw**).
 
-**Antigravity-GuideShield** is an independently maintained, deeply hardened distribution that systematically resolves these root causes across the proxy, account rotation, and network layers.
+**Antigravity-Shield** is an independently maintained, deeply hardened distribution that systematically resolves these root causes across the proxy, account rotation, and network layers.
 
-### 📊 Upstream vs. Antigravity-GuideShield Comparison
+### 📊 Upstream vs. Antigravity-Shield Comparison
 
-| Failure Mode & Vulnerability | Upstream `Antigravity-Manager` | 🛡️ `Antigravity-GuideShield` Hardened | Upstream Issues Solved |
+| Failure Mode & Vulnerability | Upstream `Antigravity-Manager` | 🛡️ `Antigravity-Shield` Hardened | Upstream Issues Solved |
 | :--- | :--- | :--- | :--- |
 | **Google Account Bans & 403 Forbidden** | ❌ **High Risk:** Completion & quota calls hit internal sandbox/daily endpoints (`daily-cloudcode-pa.sandbox.googleapis.com`), triggering Google SOC intrusion detection. | ✅ **100% Production Whitelist:** Completely sanitized all staging URLs. Enforces official production endpoint `cloudcode-pa.googleapis.com` exclusively. | [#655](https://github.com/lbjlaq/Antigravity-Manager/issues/655), [#1822](https://github.com/lbjlaq/Antigravity-Manager/issues/1822), [#2228](https://github.com/lbjlaq/Antigravity-Manager/issues/2228), [#2261](https://github.com/lbjlaq/Antigravity-Manager/issues/2261) |
 | **Hardware Fingerprinting & Multi-Accounting** | ❌ **Shared Fingerprint:** Every account transmitted the host's raw physical `machine_uid`. Google easily linked and banned all rotating accounts. | ✅ **Per-Account Virtual `DeviceProfile`:** Generates deterministic, isolated RFC 4122 UUIDs (`x-machine-id`, `x-vscode-sessionid`) per account. Raw host ID is never leaked. | [#655](https://github.com/lbjlaq/Antigravity-Manager/issues/655), [#1430](https://github.com/lbjlaq/Antigravity-Manager/issues/1430), [#3160](https://github.com/lbjlaq/Antigravity-Manager/issues/3160) |
@@ -85,7 +85,7 @@ While the original upstream project (`lbjlaq/Antigravity-Manager`) provided a ba
 ## 🔌 Quick Integration
 
 ### 1. Claude Code CLI
-Start the API proxy in Antigravity-GuideShield (default port: `8045`), then run in your terminal:
+Start the API proxy in Antigravity-Shield (default port: `8045`), then run in your terminal:
 
 ```bash
 export ANTHROPIC_API_KEY="sk-antigravity"
@@ -127,7 +127,7 @@ print(response.choices[0].message.content)
 
 ```mermaid
 graph TD
-    Client([Client: Claude Code / Cursor / Cherry Studio]) -->|OpenAI / Anthropic Protocol| Gateway[Antigravity-GuideShield Axum Gateway]
+    Client([Client: Claude Code / Cursor / Cherry Studio]) -->|OpenAI / Anthropic Protocol| Gateway[Antigravity-Shield Axum Gateway]
     Gateway --> SecurityMiddleware[Security: Auth / Rate Limiting / Jitter]
     SecurityMiddleware --> ModelRouter[Model Router: Dynamic ID Mapping]
     ModelRouter --> Dispatcher[Account Dispatcher: Smart Health & Weight Rotation]
@@ -162,12 +162,12 @@ docker run -d --name antigravity-shield \
 ## ⚖️ License & Attribution
 
 * **License:** Distributed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)**. Strictly for personal, non-commercial use.
-* **Upstream Attribution:** Antigravity-GuideShield is a hardened community continuation based on the open-source project [lbjlaq/Antigravity-Manager](https://github.com/lbjlaq/Antigravity-Manager) created by [lbjlaq](https://github.com/lbjlaq) and its contributors. All upstream copyrights, git history, and contributor credits are respectfully preserved.
+* **Upstream Attribution:** Antigravity-Shield is a hardened community continuation based on the open-source project [lbjlaq/Antigravity-Manager](https://github.com/lbjlaq/Antigravity-Manager) created by [lbjlaq](https://github.com/lbjlaq) and its contributors. All upstream copyrights, git history, and contributor credits are respectfully preserved.
 * **Privacy Guarantee:** All OAuth tokens and account credentials remain 100% locally encrypted on your machine in a local SQLite database. No credentials or telemetry are ever sent to third-party tracking servers.
 
 ---
 
 <div align="center">
   <p>Maintained with ❤️ for account safety and reliable developer tooling.</p>
-  <p>Copyright © 2024-2026 Antigravity-GuideShield Contributors.</p>
+  <p>Copyright © 2024-2026 Antigravity-Shield Contributors.</p>
 </div>

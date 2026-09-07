@@ -4,11 +4,11 @@ use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 const GITHUB_API_URL: &str =
-    "https://api.github.com/repos/DoctorGuidance/Antigravity-GuideShield/releases/latest";
+    "https://api.github.com/repos/DoctorGuidance/Antigravity-Shield/releases/latest";
 const GITHUB_RAW_URL: &str =
-    "https://raw.githubusercontent.com/DoctorGuidance/Antigravity-GuideShield/main/package.json";
+    "https://raw.githubusercontent.com/DoctorGuidance/Antigravity-Shield/main/package.json";
 const JSDELIVR_URL: &str =
-    "https://cdn.jsdelivr.net/gh/DoctorGuidance/Antigravity-GuideShield@main/package.json";
+    "https://cdn.jsdelivr.net/gh/DoctorGuidance/Antigravity-Shield@main/package.json";
 const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 const DEFAULT_CHECK_INTERVAL_HOURS: u64 = 1;
 

@@ -1,4 +1,4 @@
-# Antigravity-GuideShield 🛡️
+# Antigravity-Shield 🛡️
 > 专业级 AI 账号管理与高防协议代理系统 (v5.0.0)
 <div align="center">
   <img src="public/icon.png" alt="Antigravity Shield Logo" width="120" height="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
@@ -32,12 +32,12 @@
 ---
 
 > [!IMPORTANT]
-> **🛡️ Antigravity-GuideShield 深度加固说明 (对比原版解决 1800+ Issues 痛点):**
+> **🛡️ Antigravity-Shield 深度加固说明 (对比原版解决 1800+ Issues 痛点):**
 > 本项目是针对原版 `lbjlaq/Antigravity-Manager` 在高并发 Agent 场景（Claude Code CLI、Cursor、OpenCode）下积累的 **1800+ 社区 Issues** 进行深度重构与安全加固的独立发行版。
 > 
-> ### 📊 原版 vs. Antigravity-GuideShield 核心技术对比
+> ### 📊 原版 vs. Antigravity-Shield 核心技术对比
 > 
-> | 故障类型与安全隐患 | 原版 `Antigravity-Manager` | 🛡️ `Antigravity-GuideShield` 加固版 | 彻底解决的原版 Issue |
+> | 故障类型与安全隐患 | 原版 `Antigravity-Manager` | 🛡️ `Antigravity-Shield` 加固版 | 彻底解决的原版 Issue |
 > | :--- | :--- | :--- | :--- |
 > | **Google 账号被封与 403 Forbidden** | ❌ **高风险：** 流量默认请求 Google 内部 Sandbox 节点 (`daily-cloudcode-pa.sandbox.googleapis.com`)，触发 SOC 入侵拦截。 | ✅ **100% 生产白名单：** 彻底剔除所有 Staging/Daily 域名，请求 100% 严格走官方生产端点 (`cloudcode-pa.googleapis.com`)。 | [#655](https://github.com/lbjlaq/Antigravity-Manager/issues/655), [#1822](https://github.com/lbjlaq/Antigravity-Manager/issues/1822), [#2228](https://github.com/lbjlaq/Antigravity-Manager/issues/2228), [#2261](https://github.com/lbjlaq/Antigravity-Manager/issues/2261) |
 > | **硬件指纹串号与批量封停** | ❌ **指纹泄露：** 所有轮换账号向谷歌发送宿主机相同的物理 `machine_uid`，极易被识别为多开群控。 | ✅ **单账号虚拟 DeviceProfile：** 采用加盐哈希为每个账号生成确定性、独立的 UUIDv4 (`x-machine-id`, `x-vscode-sessionid`)，绝不泄露物理 ID。 | [#655](https://github.com/lbjlaq/Antigravity-Manager/issues/655), [#1430](https://github.com/lbjlaq/Antigravity-Manager/issues/1430), [#3160](https://github.com/lbjlaq/Antigravity-Manager/issues/3160) |
@@ -54,7 +54,7 @@
 > - [TEST_INFRA.md](./TEST_INFRA.md) — 4 层 E2E 自动化测试架构规范 (64 组测试用例)
 > - [English Whitepaper & Guide](./README_EN.md) — 英文原版文档与架构说明
 
-**Antigravity-GuideShield** 是一个专为开发者和 AI 爱好者设计的全功能桌面应用。它将多账号管理、协议转换和智能请求调度完美结合，为您提供一个稳定、极速且成本低廉的 **本地 AI 中转站**。
+**Antigravity-Shield** 是一个专为开发者和 AI 爱好者设计的全功能桌面应用。它将多账号管理、协议转换和智能请求调度完美结合，为您提供一个稳定、极速且成本低廉的 **本地 AI 中转站**。
 
 通过本应用，您可以将常见的 Web 端 Session (Google/Anthropic) 转化为标准化的 API 接口，消除不同厂商间的协议鸿沟。
 
