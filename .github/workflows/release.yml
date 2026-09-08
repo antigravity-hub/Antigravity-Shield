@@ -397,12 +397,18 @@ jobs:
             $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*" ver { capture=1; next }
             capture && $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*v" { capture=0; exit }
             capture { print }
-          ' CHANGELOG.md | sed 's/^[[:space:]]\{8\}//' > release_notes.md
-          if [ ! -s release_notes.md ]; then
-            echo "# Antigravity Shield $TARGET_VER" > release_notes.md
-            echo "" >> release_notes.md
+          ' CHANGELOG.md | sed 's/^[[:space:]]\{8\}//' > raw_notes.md
+
+          echo "# Antigravity Shield $TARGET_VER" > release_notes.md
+          echo "" >> release_notes.md
+          if [ -s raw_notes.md ]; then
+            cat raw_notes.md >> release_notes.md
+            rm -f raw_notes.md
+          else
             echo "Official release for Antigravity Shield $TARGET_VER. Download the appropriate package for your OS below." >> release_notes.md
           fi
+          echo "Generated release_notes.md:"
+          cat release_notes.md
 
       - name: Build updater.json from signatures
         env:

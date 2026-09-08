@@ -3,6 +3,30 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **版本演进**:
+    *   **v5.0.3 (2026-09-08)**:
+        -   **[Major Feature] Native In-App Auto-Updater & Live Download Progress (Settings)**:
+            -   **Integrated In-App Updater Engine**: Fully integrated `@tauri-apps/plugin-updater` directly into Settings, enabling one-click checks for newer versions, live status indicators, and background downloading.
+            -   **Real-Time Download Progress Bar**: Added a visual percentage progress bar reflecting real-time download and installation chunks directly within Settings and modal banners.
+            -   **One-Click Restart & Apply**: Added a prominent "Restart & Install" button triggering immediate app restart via Tauri's native relaunch API once the update is downloaded.
+            -   **Dynamic Manual Download Links**: Eliminated all static/hardcoded links; download URLs now dynamically resolve directly to official GitHub Release assets (`doctorguidance/antigravity-shield/releases/latest`).
+            -   **Unified Notification Actions**: Added manual download fallback action buttons to `UpdateNotification.tsx` across both available update and network error states.
+            -   **Complete Localization**: Added full English (`en.json`) and Chinese (`zh.json`) translation strings for all updater states, progress bars, and restart buttons.
+        -   **[Release & CI Fix] Strict Version Tag & Asset Synchronization (Resolving v5.0.1 Naming Mismatch)**:
+            -   **Release Artifact Alignment**: Resolved the issue where release `v5.0.1` generated binaries labeled `5.0.0`. The release pipeline now dynamically synchronizes the release tag into `package.json`, `tauri.conf.json`, and `Cargo.toml`.
+            -   **Correct Windows Setup Asset**: Generated Windows NSIS installer is now accurately tagged and named (e.g. `Antigravity.Shield_5.0.3_x64-setup.exe`).
+            -   **Accurate updater.json Manifest**: Formatted updater metadata and cryptographic signatures to reference exact matching version filenames.
+        -   **[CI/CD Optimization] High-Efficiency Pipeline & 90%+ Resource Savings**:
+            -   **Focused Windows Production Runner**: Streamlined release builds exclusively for Windows NSIS installers, safely commenting out heavy macOS (ARM64/Intel/Universal) and Linux jobs to prevent high quota consumption (macOS 10x multiplier).
+            -   **Node.js 22 Runtime Upgrade**: Upgraded CI runner environment from Node.js 20 to Node.js 22, eliminating all deprecation warnings.
+            -   **Disabled Inactive GitHub Pages**: Deactivated the unconfigured `deploy-pages.yml` workflow, eliminating automated exit code failures on `main`.
+            -   **Streamlined Daily CI & CodeQL**: Moved CodeQL analysis to a weekly Sunday background schedule and lightweighted daily CI checks, cutting commit build times to under 2 minutes.
+        -   **[Installer] Custom Directory & Multi-Drive Path Selection (Inherited from v5.0.1)**:
+            -   Configured NSIS `installMode: "both"` to grant users complete freedom to select custom installation drives/folders (e.g. `D:\...`) without administrator permission blocks or setup aborts.
+    *   **v5.0.1 (2026-09-07)**:
+        -   **[Installer Fix] NSIS Custom Directory & Permission Abort Resolution**:
+            -   Fixed installation failure when users selected non-default directories or lacked root administrator privileges by switching NSIS installer mode to `installMode: "both"`.
+        -   **[CI & Maintenance] Dependency Caching & Repository Synchronization**:
+            -   Introduced Rust dependency caching for Windows runners and synchronized release metadata and endpoints to `DoctorGuidance/Antigravity-Shield`.
     *   **v5.0.0 (2026-09-07)**:
         -   **[Release] Antigravity Shield v5.0.0 - Hardened Enterprise AI Account Manager & Gateway**:
             -   **Full Antigravity Shield Enterprise Rebranding**: Complete UI/UX, localized strings, Settings, about information, and package metadata overhaul from legacy Antigravity Tools to DoctorGuidance / Antigravity Shield.
