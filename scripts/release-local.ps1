@@ -112,7 +112,7 @@ if (-not $SkipBuild) {
         }
         $tauriConf | ConvertTo-Json -Depth 20 | Set-Content "src-tauri/tauri.conf.json" -Encoding UTF8
 
-        npm run tauri build -- --bundles nsis
+        npx tauri build --bundles nsis
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Tauri build failed with exit code $LASTEXITCODE"
             exit 1
