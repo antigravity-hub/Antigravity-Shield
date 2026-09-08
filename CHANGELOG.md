@@ -3,6 +3,16 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **版本演进**:
+    *   **v5.0.4 (2026-09-08)**:
+        -   **[Branding & Identity] Align Rust Package & Binary Name as Antigravity Shield**:
+            -   **Unified Project Identity**: Changed core Rust package and binary name from legacy `antigravity-tools` to `antigravity-shield` (`antigravity_shield_lib`), ensuring compiled executables directly reflect project branding (`antigravity-shield.exe`).
+            -   **Synchronized Container Runtime**: Updated Dockerfile entrypoint and binary paths to `/app/antigravity-shield`.
+        -   **[Automation] Dynamic Model Quota Discovery & Zero Hardcoding**:
+            -   **Live Server Display Names**: Completely eradicated static hardcoded labels (`Gemini 3 Flash`, `G3 Flash`, etc.). Quota display names now dynamically resolve from Google's live server endpoint (`cloudcode-pa.googleapis.com`).
+            -   **Adaptive Short Labels**: Added `getModelShortDisplayName` to smartly format model identifiers for compact dashboard and account rows (e.g. `G3.1 Flash`, `G3.1 Pro`).
+        -   **[Assets & UX] Official App Switcher Logos & Reassuring NSIS Upgrade**:
+            -   **Official Target App Icons**: Integrated official high-resolution branding logos for Antigravity IDE, Agentic, and CLI into app switcher controls.
+            -   **Clear NSIS Upgrade Screen**: Modernized installer dialog text to clearly emphasize that upgrading preserves all user data, accounts, and configuration.
     *   **v5.0.3 (2026-09-08)**:
         -   **[Major Feature] Native In-App Auto-Updater & Live Download Progress (Settings)**:
             -   **Integrated In-App Updater Engine**: Fully integrated `@tauri-apps/plugin-updater` directly into Settings, enabling one-click checks for newer versions, live status indicators, and background downloading.
