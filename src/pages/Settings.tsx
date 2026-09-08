@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Save, Github, User, ExternalLink, RefreshCw, Heart, Coffee, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Send } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Save, Github, User, ExternalLink, RefreshCw, Heart, Coffee, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Send, Sparkles, Loader2, RotateCcw } from 'lucide-react';
 import { request as invoke } from '../utils/request';
 import { open } from '@tauri-apps/plugin-dialog';
 import { useConfigStore } from '../stores/useConfigStore';
@@ -14,6 +14,7 @@ import { useDebugConsole } from '../stores/useDebugConsole';
 import { useTranslation } from 'react-i18next';
 import { isTauri } from '../utils/env';
 import { relaunch } from '@tauri-apps/plugin-process';
+import { check as tauriCheck } from '@tauri-apps/plugin-updater';
 
 import DebugConsole from '../components/debug/DebugConsole';
 import ProxyPoolSettings from '../components/settings/ProxyPoolSettings';
@@ -102,6 +103,10 @@ function Settings() {
         downloadUrl: string;
         source?: string;
     } | null>(null);
+    const [isAutoUpdating, setIsAutoUpdating] = useState(false);
+    const [updateProgress, setUpdateProgress] = useState(0);
+    const [isUpdateReady, setIsUpdateReady] = useState(false);
+    const autoUpdateRef = useRef<any>(null);
 
     // Homebrew Cask state
     const [isBrewInstalled, setIsBrewInstalled] = useState(false);
@@ -309,6 +314,10 @@ function Settings() {
     const handleCheckUpdate = async () => {
         setIsCheckingUpdate(true);
         setUpdateInfo(null);
+        setIsAutoUpdating(false);
+        setIsUpdateReady(false);
+        setUpdateProgress(0);
+        autoUpdateRef.current = null;
         try {
             const result = await invoke<{
                 has_update: boolean;
@@ -336,6 +345,76 @@ function Settings() {
             showToast(`${t('settings.about.update_check_failed')}: ${error}`, 'error');
         } finally {
             setIsCheckingUpdate(false);
+        }
+    };
+
+    const handleStartAutoUpdate = async () => {
+        if (!isTauri()) {
+            if (updateInfo?.downloadUrl) {
+                window.open(updateInfo.downloadUrl, '_blank');
+            }
+            return;
+        }
+
+        try {
+            setIsAutoUpdating(true);
+            setUpdateProgress(0);
+
+            // Fetch update object from Tauri native updater
+            const update = await tauriCheck();
+            if (!update) {
+                // If native updater fails to find bundle, redirect to manual download
+                if (updateInfo?.downloadUrl) {
+                    try {
+                        const { openUrl } = await import('@tauri-apps/plugin-opener');
+                        await openUrl(updateInfo.downloadUrl);
+                    } catch {
+                        window.open(updateInfo.downloadUrl, '_blank');
+                    }
+                }
+                showToast(t('update_notification.toast.not_ready', 'Update package not ready. Opening release page...'), 'info');
+                setIsAutoUpdating(false);
+                return;
+            }
+
+            autoUpdateRef.current = update;
+            let downloaded = 0;
+            let contentLength = 0;
+
+            await update.downloadAndInstall((event: any) => {
+                switch (event.event) {
+                    case 'Started':
+                        contentLength = event.data.contentLength || 0;
+                        break;
+                    case 'Progress':
+                        downloaded += event.data.chunkLength;
+                        if (contentLength > 0) {
+                            setUpdateProgress(Math.round((downloaded / contentLength) * 100));
+                        }
+                        break;
+                    case 'Finished':
+                        break;
+                }
+            });
+
+            setIsAutoUpdating(false);
+            setIsUpdateReady(true);
+            setUpdateProgress(100);
+            showToast(t('update_notification.ready', 'Update Ready!'), 'success');
+        } catch (error) {
+            const errorMsg = error instanceof Error ? error.message : String(error);
+            console.error('Settings auto-update failed:', errorMsg);
+            setIsAutoUpdating(false);
+            showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
+        }
+    };
+
+    const handleRestartUpdate = async () => {
+        try {
+            await relaunch();
+        } catch (error) {
+            console.error('Restart failed:', error);
+            showToast(t('settings.about.brew_restart_failed'), 'error');
         }
     };
 
@@ -1507,41 +1586,95 @@ function Settings() {
                                         {isCheckingUpdate ? t('settings.about.checking_update') : t('settings.about.check_update')}
                                     </button>
 
-                                    {/* Update Status */}
+                                     {/* Update Status */}
                                     {updateInfo && !isCheckingUpdate && (
-                                        <div className="text-center">
+                                        <div className="text-center w-full max-w-md">
                                             {updateInfo.hasUpdate ? (
-                                                <div className="flex flex-col items-center gap-2">
+                                                <div className="flex flex-col items-center gap-3">
                                                     <div className="text-sm text-orange-600 dark:text-orange-400 font-medium">
                                                         {t('settings.about.new_version_available', { version: updateInfo.latestVersion })}
                                                     </div>
-                                                    <div className="flex items-center gap-2">
-                                                        {isBrewInstalled && (
+
+                                                    {/* Download Progress Bar */}
+                                                    {isAutoUpdating && (
+                                                        <div className="w-full max-w-xs space-y-1.5">
+                                                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                                <div
+                                                                    className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-300"
+                                                                    style={{ width: `${updateProgress}%` }}
+                                                                />
+                                                            </div>
+                                                            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                                                <span>{t('settings.about.downloading_progress', { progress: updateProgress })}</span>
+                                                                <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Update Ready - Restart button */}
+                                                    {isUpdateReady && (
+                                                        <button
+                                                            onClick={handleRestartUpdate}
+                                                            className="px-5 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-sm font-medium rounded-lg transition-all flex items-center gap-2 shadow-md hover:shadow-lg active:scale-95"
+                                                        >
+                                                            <RotateCcw className="w-4 h-4" />
+                                                            <span>{t('settings.about.restart_to_apply', 'Restart to Apply')}</span>
+                                                        </button>
+                                                    )}
+
+                                                    {/* Action buttons (when not already finished/ready) */}
+                                                    {!isUpdateReady && (
+                                                        <div className="flex flex-wrap items-center justify-center gap-2">
+                                                            {/* In-App Auto Update Button */}
                                                             <button
-                                                                onClick={() => setIsBrewConfirmOpen(true)}
-                                                                disabled={isBrewUpgrading}
-                                                                className="px-4 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white text-sm rounded-lg transition-colors flex items-center gap-1.5 disabled:cursor-not-allowed"
+                                                                onClick={handleStartAutoUpdate}
+                                                                disabled={isAutoUpdating}
+                                                                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-all flex items-center gap-2 shadow-sm hover:shadow-md active:scale-95 disabled:cursor-not-allowed"
                                                             >
-                                                                {isBrewUpgrading ? (
+                                                                {isAutoUpdating ? (
                                                                     <>
-                                                                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                                                                        {t('settings.about.brew_upgrading')}
+                                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                                        <span>{updateProgress}%</span>
                                                                     </>
                                                                 ) : (
-                                                                    t('settings.about.brew_upgrade')
+                                                                    <>
+                                                                        <Sparkles className="w-4 h-4" />
+                                                                        <span>{t('settings.about.auto_update', 'Update Now')}</span>
+                                                                    </>
                                                                 )}
                                                             </button>
-                                                        )}
-                                                        <a
-                                                            href={updateInfo.downloadUrl}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm rounded-lg transition-colors flex items-center gap-1.5"
-                                                        >
-                                                            {t('settings.about.download_update')}
-                                                            <ExternalLink className="w-3.5 h-3.5" />
-                                                        </a>
-                                                    </div>
+
+                                                            {/* Homebrew Upgrade option if installed via brew */}
+                                                            {isBrewInstalled && (
+                                                                <button
+                                                                    onClick={() => setIsBrewConfirmOpen(true)}
+                                                                    disabled={isBrewUpgrading || isAutoUpdating}
+                                                                    className="px-3.5 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white text-sm rounded-lg transition-colors flex items-center gap-1.5 disabled:cursor-not-allowed"
+                                                                >
+                                                                    {isBrewUpgrading ? (
+                                                                        <>
+                                                                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                                                            {t('settings.about.brew_upgrading')}
+                                                                        </>
+                                                                    ) : (
+                                                                        t('settings.about.brew_upgrade')
+                                                                    )}
+                                                                </button>
+                                                            )}
+
+                                                            {/* Dynamic Manual Download Link (100% Dynamic) */}
+                                                            <a
+                                                                href={updateInfo.downloadUrl}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-lg transition-colors flex items-center gap-1.5 border border-gray-200 dark:border-gray-700"
+                                                                title={updateInfo.downloadUrl}
+                                                            >
+                                                                {t('settings.about.download_manual', 'Manual Download / Release')}
+                                                                <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
+                                                            </a>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             ) : (
                                                 <div className="text-sm text-green-600 dark:text-green-400 font-medium">

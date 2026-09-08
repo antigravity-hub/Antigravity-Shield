@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { X, Sparkles, Loader2, CheckCircle, RotateCcw } from 'lucide-react';
+import { X, Sparkles, Loader2, CheckCircle, RotateCcw, ExternalLink } from 'lucide-react';
 import { request as invoke } from '../utils/request';
 import { useTranslation } from 'react-i18next';
 import { check as tauriCheck } from '@tauri-apps/plugin-updater';
@@ -230,37 +230,62 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
 
           {/* Action buttons when update is available */}
           {updateState === 'available' && (
-            <div className="flex gap-2">
-              <button
-                onClick={handleStartDownload}
-                className="
-                  flex-1 group/btn
-                  relative overflow-hidden
-                  bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500
-                  text-white font-medium
-                  py-2.5 px-4 rounded-xl
-                  shadow-lg shadow-blue-500/25
-                  transition-all duration-300
-                  flex items-center justify-center gap-2
-                  active:scale-[0.98]
-                "
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>{t('update_notification.btn_update', 'Update Now')}</span>
-                <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-20 pointer-events-none" />
-              </button>
-              <button
-                onClick={handleClose}
-                className="
-                  px-3 py-2.5 rounded-xl
-                  text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
-                  hover:bg-black/5 dark:hover:bg-white/10
-                  transition-all duration-200
-                  text-sm font-medium
-                "
-              >
-                {t('update_notification.btn_later', 'Later')}
-              </button>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={handleStartDownload}
+                  className="
+                    flex-1 group/btn
+                    relative overflow-hidden
+                    bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500
+                    text-white font-medium
+                    py-2.5 px-4 rounded-xl
+                    shadow-lg shadow-blue-500/25
+                    transition-all duration-300
+                    flex items-center justify-center gap-2
+                    active:scale-[0.98]
+                  "
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>{t('update_notification.btn_update', 'Update Now')}</span>
+                  <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-20 pointer-events-none" />
+                </button>
+                <button
+                  onClick={handleClose}
+                  className="
+                    px-3 py-2.5 rounded-xl
+                    text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
+                    hover:bg-black/5 dark:hover:bg-white/10
+                    transition-all duration-200
+                    text-sm font-medium
+                  "
+                >
+                  {t('update_notification.btn_later', 'Later')}
+                </button>
+              </div>
+
+              {updateInfo?.download_url && (
+                <button
+                  onClick={async () => {
+                    try {
+                      const { openUrl } = await import('@tauri-apps/plugin-opener');
+                      await openUrl(updateInfo.download_url);
+                    } catch (e) {
+                      window.open(updateInfo.download_url, '_blank');
+                    }
+                  }}
+                  className="
+                    w-full py-1.5 px-3 rounded-xl
+                    text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
+                    hover:bg-black/5 dark:hover:bg-white/10
+                    transition-all duration-200
+                    text-xs font-medium flex items-center justify-center gap-1.5
+                  "
+                >
+                  <span>{t('settings.about.download_manual', 'Manual Download / Release')}</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           )}
 
@@ -359,41 +384,66 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
             </div>
           )}
 
-          {/* Error state — retry button */}
+          {/* Error state — retry button and manual download option */}
           {updateState === 'error' && (
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  setUpdateState('checking');
-                  setDownloadProgress(0);
-                  checkUpdates();
-                }}
-                className="
-                  flex-1
-                  bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500
-                  text-white font-medium
-                  py-2.5 px-4 rounded-xl
-                  shadow-lg shadow-blue-500/25
-                  transition-all duration-300
-                  flex items-center justify-center gap-2
-                  active:scale-[0.98]
-                "
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>{t('common.retry')}</span>
-              </button>
-              <button
-                onClick={handleClose}
-                className="
-                  px-3 py-2.5 rounded-xl
-                  text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
-                  hover:bg-black/5 dark:hover:bg-white/10
-                  transition-all duration-200
-                  text-sm font-medium
-                "
-              >
-                {t('update_notification.btn_later')}
-              </button>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setUpdateState('checking');
+                    setDownloadProgress(0);
+                    checkUpdates();
+                  }}
+                  className="
+                    flex-1
+                    bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500
+                    text-white font-medium
+                    py-2 px-3 rounded-xl
+                    shadow-lg shadow-blue-500/25
+                    transition-all duration-300
+                    flex items-center justify-center gap-2
+                    active:scale-[0.98] text-sm
+                  "
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>{t('common.retry')}</span>
+                </button>
+                <button
+                  onClick={handleClose}
+                  className="
+                    px-3 py-2 rounded-xl
+                    text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
+                    hover:bg-black/5 dark:hover:bg-white/10
+                    transition-all duration-200
+                    text-sm font-medium
+                  "
+                >
+                  {t('update_notification.btn_later')}
+                </button>
+              </div>
+
+              {updateInfo?.download_url && (
+                <button
+                  onClick={async () => {
+                    try {
+                      const { openUrl } = await import('@tauri-apps/plugin-opener');
+                      await openUrl(updateInfo.download_url);
+                    } catch (e) {
+                      window.open(updateInfo.download_url, '_blank');
+                    }
+                  }}
+                  className="
+                    w-full py-2 px-3 rounded-xl
+                    bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700
+                    text-gray-700 dark:text-gray-300
+                    transition-all duration-200
+                    text-xs font-medium flex items-center justify-center gap-1.5
+                  "
+                >
+                  <span>{t('settings.about.download_manual', 'Manual Download / Release')}</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           )}
         </div>

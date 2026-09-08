@@ -55,6 +55,28 @@ jobs:
       - name: Install frontend dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Sync version from release tag
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ] && [ "$TARGET_VER" != "refs/heads/main" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+          fi
+
       - name: Disable updater artifacts without signing key
         shell: bash
         env:
@@ -170,6 +192,28 @@ jobs:
       - name: Install frontend dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Sync version from release tag
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ] && [ "$TARGET_VER" != "refs/heads/main" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+          fi
+
       - name: Disable updater artifacts without signing key
         shell: bash
         env:
@@ -250,6 +294,28 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm install --legacy-peer-deps
+
+      - name: Sync version from release tag
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ] && [ "$TARGET_VER" != "refs/heads/main" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+          fi
 
       - name: Disable updater artifacts without signing key
         shell: bash
