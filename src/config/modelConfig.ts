@@ -371,6 +371,7 @@ export {
     categorizeModel,
     getModelProtectionKey,
     getModelDisplayName,
+    getModelShortDisplayName,
     findQuotaModel,
     findImageQuotaModel,
     ensurePinnedImageSelector,

@@ -34,6 +34,7 @@ const DEFAULT_MODEL_LABELS: Record<string, string> = {
     'gemini-2.5-pro': 'Gemini 2.5 Pro',
     'gemini-3-flash-agent': 'Gemini 3.5 Flash (High)',
     'gemini-3.5-flash': 'Gemini 3.5 Flash',
+    'gemini-3.1-flash': 'Gemini 3.1 Flash',
     'gemini-3-flash': 'Gemini 3 Flash',
     'gemini-2.5-flash': 'Gemini 2.5 Flash',
     'gemini-3.1-flash-image': 'Gemini 3.1 Flash Image',
@@ -70,12 +71,29 @@ export function getModelDisplayName(
     fallback?: string,
 ): string {
     if (model) {
-        if (model.display_name) return model.display_name;
+        if (model.display_name && model.display_name.trim()) return model.display_name.trim();
         if (model.name) {
             return DEFAULT_MODEL_LABELS[model.name] || autoFormatModelName(model.name);
         }
     }
     return fallback ?? '';
+}
+
+/**
+ * 获取紧凑短名称（如 G3.1 Flash, G3.1 Pro, G3 Image, Claude 4.6），适合紧凑卡片/表格展示。
+ */
+export function getModelShortDisplayName(
+    model: ModelDisplayNameInput | null | undefined,
+    fallback?: string,
+): string {
+    const full = getModelDisplayName(model, fallback);
+    if (!full) return fallback ?? '';
+    return full
+        .replace(/Gemini\s+/i, 'G')
+        .replace(/\s*\(Thinking\)/i, '')
+        .replace(/\s*\(High\)/i, '')
+        .replace(/\s*\(Low\)/i, '')
+        .trim();
 }
 
 /**
@@ -88,7 +106,7 @@ export function findQuotaModel<T extends { name: string }>(
     if (!models || models.length === 0) return undefined;
     const preferred: Partial<Record<ModelCategory, string[]>> = {
         'gemini-pro': ['gemini-3.8-pro-high', 'gemini-3.8-pro', 'gemini-pro-agent', 'gemini-3.1-pro-high', 'gemini-3.1-pro', 'gemini-3.1-pro-low', 'gemini-2.5-pro'],
-        'gemini-flash': ['gemini-3.8-flash', 'gemini-3-flash-agent', 'gemini-3-flash', 'gemini-3.5-flash'],
+        'gemini-flash': ['gemini-3.8-flash', 'gemini-3.1-flash', 'gemini-3-flash-agent', 'gemini-3-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'],
         'claude': ['claude-sonnet-4-6', 'claude-opus-4-6-thinking'],
     };
     const names = preferred[category];

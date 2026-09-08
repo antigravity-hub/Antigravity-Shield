@@ -4,7 +4,7 @@ import { getQuotaColor, formatTimeRemaining, getTimeRemainingColor } from '../..
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
 import { formatCompactDuration, getLiveLimitForModel, getLiveLimitState } from '../../utils/liveLimit';
-import { getModelProtectionKey, findQuotaModel, findImageQuotaModel } from '../../config/modelConfig';
+import { getModelProtectionKey, findQuotaModel, findImageQuotaModel, getModelDisplayName, getModelShortDisplayName } from '../../config/modelConfig';
 
 interface AccountRowProps {
     account: Account;
@@ -182,9 +182,9 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 />
                             )}
                             <div className="relative z-10 w-full flex items-center text-[10px] font-mono leading-none">
-                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title="Gemini 3.1 Pro">
-                                    {(account.protected_models?.includes('gemini-3-pro-high') || account.protected_models?.includes('gemini-3.1-pro-high')) && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
-                                    <span className="truncate">G3.1 Pro</span>
+                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={geminiProModel ? getModelDisplayName(geminiProModel) : "Gemini Pro"}>
+                                    {(account.protected_models?.includes('gemini-3-pro-high') || account.protected_models?.includes('gemini-3.1-pro-high') || account.protected_models?.includes('gemini-pro')) && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
+                                    <span className="truncate">{getModelShortDisplayName(geminiProModel, "G-Pro")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {geminiProModel?.reset_time ? (
@@ -214,9 +214,9 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 />
                             )}
                             <div className="relative z-10 w-full flex items-center text-[10px] font-mono leading-none">
-                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title="Gemini 3 Flash">
-                                    {account.protected_models?.includes('gemini-3-flash') && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
-                                    <span className="truncate">G3 Flash</span>
+                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={geminiFlashModel ? getModelDisplayName(geminiFlashModel) : "Gemini Flash"}>
+                                    {(account.protected_models?.includes('gemini-3-flash') || account.protected_models?.includes('gemini-flash')) && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
+                                    <span className="truncate">{getModelShortDisplayName(geminiFlashModel, "G-Flash")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {geminiFlashModel?.reset_time ? (
@@ -249,7 +249,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={imageLimitTitle}>
                                     {isImageLiveLimited && <Clock className={cn("w-2.5 h-2.5 shrink-0 z-10", liveImageState.isActive ? "text-rose-500" : "text-amber-500")} />}
                                     {(imageProtectionKey && account.protected_models?.includes(imageProtectionKey)) && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
-                                    <span className="truncate">G3 Image</span>
+                                    <span className="truncate">{getModelShortDisplayName(geminiImageModel, "G-Image")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {geminiImageModel?.reset_time ? (
@@ -280,9 +280,9 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 />
                             )}
                             <div className="relative z-10 w-full flex items-center text-[10px] font-mono leading-none">
-                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title="Claude Series">
+                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={claudeModel ? getModelDisplayName(claudeModel) : "Claude Series"}>
                                     {account.protected_models?.includes('claude') && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
-                                    <span className="truncate">Claude</span>
+                                    <span className="truncate">{getModelShortDisplayName(claudeModel, "Claude")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {claudeModel?.reset_time ? (
