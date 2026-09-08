@@ -3,6 +3,13 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **版本演进**:
+    *   **v5.0.5 (2026-09-08)**:
+        -   **[Installer & UI Fix] NSIS Radio Text Layout & Complete Language String Set**:
+            -   **Single-Line Radio Labels**: Shortened NSIS upgrade option label to fit cleanly within standard single-line height controls, eliminating text overlap and visual truncation.
+            -   **Comprehensive Language Constants**: Populated all 27 standard NSIS language strings (including `unableToUninstall`, `appRunning`, and `deleteAppData`), completely preventing empty alert dialogs.
+        -   **[CI/CD & Workflows] Node 24 Migration & Clean Release Titles**:
+            -   **Node.js 24 Execution**: Upgraded all CI and release pipeline jobs to Node.js 24 runtime.
+            -   **Clean Release Naming**: Formatted release titles to clean `vX.Y.Z` tags without duplicate prefixes.
     *   **v5.0.4 (2026-09-08)**:
         -   **[Branding & Identity] Align Rust Package & Binary Name as Antigravity Shield**:
             -   **Unified Project Identity**: Changed core Rust package and binary name from legacy `antigravity-tools` to `antigravity-shield` (`antigravity_shield_lib`), ensuring compiled executables directly reflect project branding (`antigravity-shield.exe`).
