@@ -40,7 +40,7 @@ jobs:
       - name: Node.js setup
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: "npm"
 
       - name: Install frontend dependencies
@@ -224,7 +224,7 @@ jobs:
         with:
           allowUpdates: true
           tag: ${{ github.event.inputs.release_tag || github.ref_name }}
-          name: "Antigravity Shield ${{ github.event.inputs.release_tag || github.ref_name }}"
+          name: "${{ github.event.inputs.release_tag || github.ref_name }}"
           bodyFile: "release_notes.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "release-files/*,updater.json"
