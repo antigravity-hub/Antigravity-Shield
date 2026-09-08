@@ -45,6 +45,7 @@
     "windows": {
       "nsis": {
         "installMode": "both",
+        "template": "nsis/installer.nsi",
         "customLanguageFiles": {
           "English": "nsis/English.nsh"
         }

@@ -5,6 +5,7 @@
 *   **Version History**:
     *   **v5.0.5 (2026-09-08)**:
         -   **[Installer & UI Fix] NSIS Radio Text Layout & Complete Language String Set**:
+            -   **Resilient Upgrade Logic**: Added disk existence checks for `uninstall.exe` and automatic running-process termination via custom template; if previous uninstaller files are missing or deleted, setup smoothly falls back to direct installation rather than trapping users in an abort dialog.
             -   **Single-Line Radio Labels**: Shortened NSIS upgrade option label to fit cleanly within standard single-line height controls, eliminating text overlap and visual truncation.
             -   **Comprehensive Language Constants**: Populated all 27 standard NSIS language strings (including `unableToUninstall`, `appRunning`, and `deleteAppData`), completely preventing empty alert dialogs.
         -   **[CI/CD & Workflows] Node 24 Migration & Clean Release Titles**:
