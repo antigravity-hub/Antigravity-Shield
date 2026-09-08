@@ -1,8 +1,8 @@
 [package]
-name = "antigravity-tools"
+name = "antigravity-shield"
 version = "5.0.3"
 description = "Antigravity Shield - Hardened AI Account Manager & Proxy Gateway"
-authors = ["you"]
+authors = ["DoctorGuidance"]
 license = "CC-BY-NC-SA-4.0"
 edition = "2021"
 
@@ -12,7 +12,7 @@ edition = "2021"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "antigravity_tools_lib"
+name = "antigravity_shield_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

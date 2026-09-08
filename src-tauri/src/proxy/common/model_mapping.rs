@@ -115,7 +115,7 @@ static CLAUDE_TO_GEMINI: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|
 ///
 /// # 示例
 /// ```ignore
-/// use antigravity_tools_lib::proxy::common::model_mapping::map_claude_model_to_gemini;
+/// use antigravity_shield_lib::proxy::common::model_mapping::map_claude_model_to_gemini;
 /// // 精确匹配
 /// assert_eq!(map_claude_model_to_gemini("claude-opus-4"), "claude-opus-4-5-thinking");
 ///

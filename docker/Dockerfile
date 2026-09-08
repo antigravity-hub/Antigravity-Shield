@@ -83,8 +83,8 @@ WORKDIR /app/src-tauri
 RUN --mount=type=cache,target=/root/.cargo/registry \
     --mount=type=cache,target=/root/.cargo/git \
     --mount=type=cache,target=/app/src-tauri/target \
-    cargo build --release --bin antigravity-tools && \
-    cp target/release/antigravity-tools /tmp/antigravity-tools
+    cargo build --release --bin antigravity-shield && \
+    cp target/release/antigravity-shield /tmp/antigravity-shield
 
 # --- Final Runtime Stage ---
 FROM debian:bookworm-slim
@@ -112,7 +112,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy binary from builder
-COPY --from=backend-builder /tmp/antigravity-tools /app/antigravity-tools
+COPY --from=backend-builder /tmp/antigravity-shield /app/antigravity-shield
 
 # Copy frontend dist from builder
 COPY --from=frontend-builder /app/dist /app/dist
@@ -126,4 +126,4 @@ ENV PORT=8045
 EXPOSE 8045
 
 # Run the application in headless mode
-ENTRYPOINT ["/app/antigravity-tools", "--headless"]
+ENTRYPOINT ["/app/antigravity-shield", "--headless"]
