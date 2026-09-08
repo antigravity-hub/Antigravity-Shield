@@ -1,27 +1,138 @@
-name: Create GitHub Release (Assets uploaded locally)
-
-# Builds are done LOCALLY via scripts/release-local.ps1
-# This workflow only creates the GitHub Release entry with notes from CHANGELOG.md
-# Assets (.exe, updater.json, .sig) are uploaded by the local release script.
+name: Release (Windows NSIS)
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release tag (e.g. v5.0.3)'
-        required: true
+        description: 'Release Tag to build (e.g. v5.0.3)'
+        required: false
         default: 'v5.0.3'
         type: string
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  create-release:
-    name: Create GitHub Release
+  build-windows:
+    name: Build Windows (.exe)
+    runs-on: windows-2025
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline
+
+      - name: Sync version from release tag & optimize build speed
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ] && [ "$TARGET_VER" != "refs/heads/main" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+          fi
+          # Speed up frontend build: bypass full tsc typecheck during release build (CI already checks tsc)
+          node -e "
+            const fs = require('fs');
+            const p = 'src-tauri/tauri.conf.json';
+            if (fs.existsSync(p)) {
+              const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+              if (c.build) c.build.beforeBuildCommand = 'npx vite build';
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Optimized beforeBuildCommand to npx vite build');
+            }
+          "
+
+      - name: Disable updater artifacts without signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            if (!process.env.TAURI_SIGNING_PRIVATE_KEY || process.env.TAURI_SIGNING_PRIVATE_KEY.trim() === '') {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              console.log('Updater signing key configured.');
+            }
+          }
+          "
+
+      - name: Build Windows NSIS installer
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npx tauri build --bundles nsis 2>&1 | tee tauri-build-windows.log
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-windows
+          path: tauri-build-windows.log
+
+      - name: Upload updater json
+        uses: actions/upload-artifact@v4
+        with:
+          name: updater-json-windows
+          path: src-tauri/target/release/bundle/updater/*.json
+          if-no-files-found: ignore
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-windows
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/nsis/*.sig
+          if-no-files-found: warn
+
+  publish-release:
+    name: Publish Release to GitHub
+    needs: [build-windows]
+    if: always() && !cancelled() && !contains(needs.*.result, 'failure')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -29,38 +140,94 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Extract Release Notes from CHANGELOG.md
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts
+          pattern: "{release-assets-*,updater-json-*}"
+          merge-multiple: true
+
+      - name: Extract Release Notes
         run: |
           TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
-          echo "Extracting release notes for $TARGET_VER"
-
+          echo "Extracting release notes for version $TARGET_VER"
           awk -v ver="$TARGET_VER" '
             BEGIN { capture=0 }
             $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*" ver { capture=1; next }
             capture && $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*v" { capture=0; exit }
             capture { print }
-          ' CHANGELOG.md | sed 's/^[[:space:]]\{8\}//' > raw_notes.md
-
-          echo "# Antigravity Shield $TARGET_VER" > release_notes.md
-          echo "" >> release_notes.md
-          if [ -s raw_notes.md ]; then
-            cat raw_notes.md >> release_notes.md
-            rm -f raw_notes.md
-          else
-            echo "Official release for Antigravity Shield $TARGET_VER." >> release_notes.md
-            echo "Download the Windows installer below." >> release_notes.md
+          ' CHANGELOG.md | sed 's/^[[:space:]]\{8\}//' > release_notes.md
+          if [ ! -s release_notes.md ]; then
+            echo "# Antigravity Shield $TARGET_VER" > release_notes.md
+            echo "" >> release_notes.md
+            echo "Official release for Antigravity Shield $TARGET_VER. Download the Windows installer below." >> release_notes.md
           fi
 
-          echo "--- Generated Release Notes ---"
-          cat release_notes.md
-
-      - name: Create Draft GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.event.inputs.release_tag || github.ref_name }}
-          name: Antigravity Shield ${{ github.event.inputs.release_tag || github.ref_name }}
-          body_path: release_notes.md
-          draft: true
-          prerelease: false
+      - name: Build updater.json from signatures
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ github.event.inputs.release_tag || github.ref_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          DOWNLOAD_BASE="https://github.com/${REPO}/releases/download/${VERSION}"
+          VER="${VERSION#v}"
+
+          read_sig() {
+            local pattern="$1"
+            local sig_file
+            sig_file=$(find all-artifacts -name "$pattern" -type f 2>/dev/null | head -1)
+            if [ -n "$sig_file" ] && [ -f "$sig_file" ]; then
+              cat "$sig_file"
+            else
+              echo ""
+            fi
+          }
+
+          WINDOWS_NSIS_SIG=$(read_sig "*_x64-setup.exe.sig")
+          WIN_EXE=$(find all-artifacts -name "*_x64-setup.exe" -type f -exec basename {} \; 2>/dev/null | head -1)
+
+          jq -n \
+            --arg version "$VER" \
+            --arg notes "Antigravity Shield $VERSION release" \
+            --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg dl "$DOWNLOAD_BASE" \
+            --arg win_nsis_sig "$WINDOWS_NSIS_SIG" \
+            --arg win_exe "${WIN_EXE:-Antigravity.Shield_${VER}_x64-setup.exe}" \
+            '{
+              version: $version,
+              notes: $notes,
+              pub_date: $pub_date,
+              platforms: {
+                "windows-x86_64": {
+                  url: "\($dl)/\($win_exe)",
+                  signature: $win_nsis_sig
+                }
+              }
+            }' > updater.json
+
+          echo "Generated updater.json:"
+          cat updater.json
+
+      - name: Collect release files
+        run: |
+          mkdir -p release-files
+          find all-artifacts -type f \( \
+            -name "*.exe" -o \
+            -name "*.sig" \
+          \) -print0 | while IFS= read -r -d '' file; do
+            cp "$file" release-files/
+          done
+          find release-files -maxdepth 1 -type f -print
+
+      - name: Create or Update GitHub Release
+        uses: ncipollo/release-action@v1
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        with:
+          allowUpdates: true
+          tag: ${{ github.event.inputs.release_tag || github.ref_name }}
+          name: "Antigravity Shield ${{ github.event.inputs.release_tag || github.ref_name }}"
+          bodyFile: "release_notes.md"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "release-files/*,updater.json"
+          artifactErrorsFailBuild: false
+          replacesArtifacts: true
+          makeLatest: legacy
