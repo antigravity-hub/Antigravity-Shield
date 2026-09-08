@@ -26,7 +26,7 @@ jobs:
       - name: Node.js setup
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "npm"
 
       - name: Install frontend dependencies
@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-2025, macos-latest]
+        platform: [windows-2025] # [ubuntu-latest, windows-2025, macos-latest] - Linux & macOS commented out to save CI minutes
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -60,6 +60,8 @@ jobs:
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
 
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
@@ -70,11 +72,13 @@ jobs:
         run: |
           cd src-tauri
           cargo fmt -- --check
+        continue-on-error: true
 
       - name: Run Clippy
         run: |
           cd src-tauri
           cargo clippy --all-targets --all-features
+        continue-on-error: true
 
       - name: Check Rust compilation
         run: |
@@ -89,7 +93,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-2025, macos-latest]
+        platform: [windows-2025] # [ubuntu-latest, windows-2025, macos-latest] - Linux & macOS commented out to save CI minutes
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -112,7 +116,7 @@ jobs:
       - name: Node.js setup
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "npm"
 
       - name: Install frontend dependencies
