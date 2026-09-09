@@ -64,9 +64,9 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
+        uses: swatinem/rust-cache@v2
         with:
-          workspaces: "src-tauri"
+          workspaces: src-tauri -> target
 
       - name: Check Rust formatting
         run: |
@@ -83,7 +83,7 @@ jobs:
       - name: Check Rust compilation
         run: |
           cd src-tauri
-          cargo check
+          cargo check --locked
 
   # Tauri 构建测试（已注释：برای صرفه‌جویی در سهمیه و کاهش زمان CI به زیر ۲ دقیقه.
   # بررسی TypeScript و cargo check در جاب‌های بالا برای اطمینان از سلامت کامل کد کافی هستند.
