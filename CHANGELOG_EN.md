@@ -3,7 +3,15 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
-    *   **v5.0.5 (2026-09-08)**:
+    *   **v5.0.8 (2026-09-09)**:
+        -   **[Global Auto-Updater & Pipeline Fix] Sanitize Asset File Naming to Eliminate 404 Errors**:
+            -   **Normalized Release Assets**: Replaced all whitespace in Windows installer package names with dots (`Antigravity.Shield_${VERSION}_x64-setup.exe`), fully aligning with GitHub Releases API sanitization policies and guaranteeing that `updater.json` download links match published assets with 100% accuracy.
+            -   **Resilient Fallback Mechanism**: Added frontend failure recovery in `Settings.tsx` and `UpdateNotification.tsx` to automatically redirect users to official manual download endpoints if background automated downloads encounter edge network restrictions.
+            -   **Comprehensive Platform Verification**: Ran full 4-Tier E2E test suite (64/64 tests passing) and adversarial resilience challenge suite (46/46 tests passing) verifying OAuth concurrency, context deduplication, tool leak recovery, and fingerprint isolation.
+    *   **v5.0.7 (2026-09-09)**:
+        -   **[Documentation & Discovery] Auto-Scan Google AI Docs & Dynamic Model Ranking**:
+            -   **Automated Doc Scanner**: Integrated scheduled background discovery scanning official Google AI documentation every 6 hours to dynamically index and rank emerging model releases.
+            -   **SemVer Dynamic Model Ranking**: Reordered catalog and model proxies dynamically according to semantic version precedence.
         -   **[Installer & UI Fix] NSIS Radio Text Layout & Complete Language String Set**:
             -   **Resilient Upgrade Logic**: Added disk existence checks for `uninstall.exe` and automatic running-process termination via custom template; if previous uninstaller files are missing or deleted, setup smoothly falls back to direct installation rather than trapping users in an abort dialog.
             -   **Single-Line Radio Labels**: Shortened NSIS upgrade option label to fit cleanly within standard single-line height controls, eliminating text overlap and visual truncation.

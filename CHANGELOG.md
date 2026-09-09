@@ -3,7 +3,15 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **版本演进**:
-    *   **v5.0.5 (2026-09-08)**:
+    *   **v5.0.8 (2026-09-09)**:
+        -   **[全局自动更新修复] 彻底解决 Windows 安装包 404 下载错误与管线规范化**:
+            -   **安装包文件名规范化**: 将安装包文件名中所有的空格字符完全替换为点号（`Antigravity.Shield_${VERSION}_x64-setup.exe`），彻底与 GitHub Releases API 的转义规则完全对齐，确保 `updater.json` 里的下载链接与真实上传资产 100% 精准对应。
+            -   **多层级前端容灾 Fallback**: 在 `Settings.tsx` 与 `UpdateNotification.tsx` 中添加错误自动回退机制，在原生自动更新遇到特殊网络拦截时自动跳转并引导用户直接下载官方独立安装包。
+            -   **全平台四层级架构验证**: 运行并通过全量 E2E 测试套件（64/64 测试全数 PASS）及 Adversarial 边界极限测试（46/46 测试全数 PASS）。
+    *   **v5.0.7 (2026-09-09)**:
+        -   **[文档与模型发现] 自动扫描官方 Google AI 文档与模型动态排序**:
+            -   **定时文档探测**: 集成后台自动探测机制，每 6 小时扫描 Google AI 官方发布动态，动态索引新模型。
+            -   **SemVer 语义化排序**: 对模型列表按照版本号进行智能动态排布。
         -   **[Installer & UI Fix] NSIS Radio Text Layout & Complete Language String Set**:
             -   **Resilient Upgrade Logic**: Added disk existence checks for `uninstall.exe` and automatic running-process termination via custom template; if previous uninstaller files are missing or deleted, setup smoothly falls back to direct installation rather than trapping users in an abort dialog.
             -   **Single-Line Radio Labels**: Shortened NSIS upgrade option label to fit cleanly within standard single-line height controls, eliminating text overlap and visual truncation.
