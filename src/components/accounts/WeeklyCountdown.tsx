@@ -105,8 +105,8 @@ export function WeeklyCountdown({
     const { t } = useTranslation();
     const info = useMemo(() => getAccountWeeklyReset(account), [account]);
 
-    // 7-day stepper array: 7 down to 1
-    const weekDays = [7, 6, 5, 4, 3, 2, 1];
+    // 7-day stepper array: 1 to 7 (Left to Right, empties from the right)
+    const weekDays = [1, 2, 3, 4, 5, 6, 7];
 
     if (info.isReady) {
         return (
@@ -150,12 +150,12 @@ export function WeeklyCountdown({
                     </span>
                 </div>
 
-                {/* 7-day Stepper (7 6 5 4 3 2 1) */}
-                <div className="flex items-center justify-between gap-1 w-full pt-0.5">
+                {/* 7-day Stepper (1 2 3 4 5 6 7) - strictly LTR, empties from right */}
+                <div dir="ltr" className="flex items-center justify-between gap-1 w-full pt-0.5">
                     {weekDays.map((dayNum) => {
                         const isCurrentDay = dayNum === info.daysRemaining;
+                        const isRemainingDay = dayNum < info.daysRemaining;
                         const isPassedDay = dayNum > info.daysRemaining;
-                        const isUpcomingDay = dayNum < info.daysRemaining;
 
                         return (
                             <div
@@ -163,8 +163,8 @@ export function WeeklyCountdown({
                                 className={cn(
                                     "flex-1 h-6 rounded-md text-[10px] font-mono font-bold flex items-center justify-center transition-all relative select-none",
                                     isCurrentDay && "bg-gradient-to-t from-cyan-600 to-emerald-400 text-white shadow-[0_0_10px_rgba(6,182,212,0.65)] ring-1 ring-cyan-300 scale-105 z-10",
-                                    isPassedDay && "bg-slate-200/60 dark:bg-slate-700/40 text-slate-400 dark:text-slate-500 line-through opacity-50",
-                                    isUpcomingDay && "bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300"
+                                    isRemainingDay && "bg-cyan-500/10 dark:bg-cyan-950/30 border border-cyan-500/35 dark:border-cyan-400/35 text-cyan-600 dark:text-cyan-400",
+                                    isPassedDay && "bg-slate-100/70 dark:bg-slate-800/40 border border-dashed border-slate-200/80 dark:border-slate-700/60 text-slate-300 dark:text-slate-600 opacity-40 line-through"
                                 )}
                             >
                                 {dayNum}
@@ -198,12 +198,12 @@ export function WeeklyCountdown({
                 </span>
             </div>
 
-            {/* 7-day Stepper (7 6 5 4 3 2 1) */}
-            <div className="flex items-center gap-0.5">
+            {/* 7-day Stepper (1 2 3 4 5 6 7) - strictly LTR, empties from right */}
+            <div dir="ltr" className="flex items-center gap-0.5">
                 {weekDays.map((dayNum) => {
                     const isCurrentDay = dayNum === info.daysRemaining;
+                    const isRemainingDay = dayNum < info.daysRemaining;
                     const isPassedDay = dayNum > info.daysRemaining;
-                    const isUpcomingDay = dayNum < info.daysRemaining;
 
                     return (
                         <div
@@ -211,8 +211,8 @@ export function WeeklyCountdown({
                             className={cn(
                                 "w-4 h-4 rounded text-[9px] font-mono font-bold flex items-center justify-center transition-all relative",
                                 isCurrentDay && "bg-gradient-to-t from-cyan-600 to-emerald-400 text-white shadow-[0_0_8px_rgba(6,182,212,0.6)] ring-1 ring-cyan-300 scale-110 z-10",
-                                isPassedDay && "bg-slate-200/50 dark:bg-slate-700/40 text-slate-400 dark:text-slate-500 line-through opacity-50",
-                                isUpcomingDay && "border border-slate-200/80 dark:border-slate-700/70 text-slate-600 dark:text-slate-300 bg-white/60 dark:bg-slate-800/40"
+                                isRemainingDay && "bg-cyan-500/10 dark:bg-cyan-950/30 border border-cyan-500/35 dark:border-cyan-400/35 text-cyan-600 dark:text-cyan-400",
+                                isPassedDay && "bg-slate-100/70 dark:bg-slate-800/40 border border-dashed border-slate-200/80 dark:border-slate-700/60 text-slate-300 dark:text-slate-600 opacity-40 line-through"
                             )}
                         >
                             {dayNum}

@@ -152,12 +152,12 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
         if (quotaWindow !== 'weekly') return [];
         return (account.quota?.quota_groups || []).flatMap(group => {
             return group.buckets
-                .filter(b => b.window.toLowerCase().includes('week') || b.bucket_id.toLowerCase().includes('week'))
+                .filter(b => (b.window || '').toLowerCase().includes('week') || (b.bucket_id || '').toLowerCase().includes('week'))
                 .map(b => {
                     const shortGroupName = group.display_name
                         .replace(/ models?$/i, '')
                         .replace(/Claude and GPT/i, 'Claude/GPT');
-                    const weeklySuffix = t('accounts.quota_window_weekly_short', 'Semanal');
+                    const weeklySuffix = t('accounts.quota_window_weekly_short', 'Weekly');
                     return {
                         id: `${group.display_name}-${b.bucket_id}`,
                         label: b.display_name ? `${shortGroupName} (${b.display_name})` : `${shortGroupName} (${weeklySuffix})`,
@@ -167,7 +167,70 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     };
                 });
         });
+    }, [quotaWindow, account.quota?.quota_groups, t]);
+
+    // 解析 5H 配额项 (当处于 5h 视图时)
+    const fiveHourItems = useMemo(() => {
+        if (quotaWindow !== '5h') return [];
+        return (account.quota?.quota_groups || []).flatMap(group => {
+            return group.buckets
+                .filter(b => {
+                    const win = (b.window || '').toLowerCase();
+                    const id = (b.bucket_id || '').toLowerCase();
+                    return win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour');
+                })
+                .map(b => {
+                    const shortGroupName = group.display_name
+                        .replace(/ models?$/i, '')
+                        .replace(/Claude and GPT/i, 'Claude/GPT');
+                    return {
+                        id: `${group.display_name}-${b.bucket_id}`,
+                        label: b.display_name ? `${shortGroupName} (${b.display_name})` : `${shortGroupName} (5H)`,
+                        percentage: Math.round((b.remaining_fraction || 0) * 100),
+                        resetTime: b.reset_time,
+                        Icon: shortGroupName.toLowerCase().includes('claude') ? Sparkles : Bot,
+                    };
+                });
+        });
     }, [quotaWindow, account.quota?.quota_groups]);
+
+    // 5H 倒计时计算
+    const fiveHourResetInfo = useMemo(() => {
+        if (quotaWindow !== '5h') return null;
+        let resetTime: string | null = null;
+        let minDiff = Infinity;
+        const now = Date.now();
+
+        for (const group of account.quota?.quota_groups || []) {
+            for (const b of group.buckets || []) {
+                const win = (b.window || '').toLowerCase();
+                const id = (b.bucket_id || '').toLowerCase();
+                if ((win.includes('5h') || id.includes('5h') || win.includes('hour')) && b.reset_time) {
+                    const diff = new Date(b.reset_time).getTime() - now;
+                    if (diff > 0 && diff < minDiff) {
+                        minDiff = diff;
+                        resetTime = b.reset_time;
+                    }
+                }
+            }
+        }
+        if (!resetTime && account.quota?.models) {
+            for (const m of account.quota.models) {
+                if (m.reset_time) {
+                    const diff = new Date(m.reset_time).getTime() - now;
+                    if (diff > 0 && diff < minDiff) {
+                        minDiff = diff;
+                        resetTime = m.reset_time;
+                    }
+                }
+            }
+        }
+        if (!resetTime || minDiff <= 0) return { isReady: true, hours: 0, minutes: 0, resetTime: null };
+        const totalMinutes = Math.ceil(minDiff / (1000 * 60));
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return { isReady: false, hours, minutes, resetTime };
+    }, [quotaWindow, account.quota]);
 
     const isModelProtected = (key?: string) => {
         if (!key) return false;
@@ -309,7 +372,17 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 gap-2 content-start">
-                        {quotaWindow === 'weekly' && weeklyItems.length > 0 ? (
+                        {quotaWindow === '5h' && fiveHourItems.length > 0 ? (
+                            fiveHourItems.map((item) => (
+                                <QuotaItem
+                                    key={item.id}
+                                    label={item.label}
+                                    percentage={item.percentage}
+                                    resetTime={item.resetTime}
+                                    Icon={item.Icon}
+                                />
+                            ))
+                        ) : quotaWindow === 'weekly' && weeklyItems.length > 0 ? (
                             weeklyItems.map((item) => (
                                 <QuotaItem
                                     key={item.id}
@@ -336,9 +409,31 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                 )}
             </div>
 
-            {/* 周重置倒计时 (Grid Card) */}
+            {/* 配额重置倒计时: 5H 模式展示 5小时滚动重置，Weekly 模式展示周阶梯 */}
             <div className="px-2 pb-2">
-                <WeeklyCountdown account={account} layout="card" />
+                {quotaWindow === '5h' ? (
+                    <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 text-xs">
+                        <div className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-cyan-500" />
+                            <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                                {fiveHourResetInfo?.isReady ? '0h 0m' : `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`}
+                            </span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                                {t('accounts.quota_5h', '5-Hour Rolling')}
+                            </span>
+                        </div>
+                        <span className={cn(
+                            "text-[10px] font-bold px-1.5 py-0.5 rounded font-mono",
+                            fiveHourResetInfo?.isReady
+                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                        )}>
+                            {fiveHourResetInfo?.isReady ? t('common.ready', 'Ready') : t('accounts.rolling_5h', '5H Rolling')}
+                        </span>
+                    </div>
+                ) : (
+                    <WeeklyCountdown account={account} layout="card" />
+                )}
             </div>
 
             {/* Footer: Actions Only */}

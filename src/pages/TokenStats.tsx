@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { request as invoke } from '../utils/request';
 import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2 } from 'lucide-react';
+import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2, CalendarRange, Filter } from 'lucide-react';
+import { TokenHeatmap, DailyTokenActivity } from '../components/stats/TokenHeatmap';
 
 interface TokenStatsAggregated {
     period: string;
@@ -59,8 +60,9 @@ interface BrainScanResult {
     errors: string[];
 }
 
-type TimeRange = 'hourly' | 'daily' | 'weekly';
+type TimeRange = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom';
 type ViewMode = 'model' | 'account';
+type SourceFilter = 'all' | 'Antigravity IDE' | 'Antigravity Platform' | 'Antigravity CLI';
 
 const MODEL_COLORS = [
     '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981',
@@ -88,6 +90,9 @@ const TokenStats: React.FC = () => {
     const { t } = useTranslation();
     const [timeRange, setTimeRange] = useState<TimeRange>('daily');
     const [viewMode, setViewMode] = useState<ViewMode>('model');
+    const [sourceFilter, setSourceFilter] = useState<SourceFilter>('all');
+    const [customStartDate, setCustomStartDate] = useState<string>('');
+    const [customEndDate, setCustomEndDate] = useState<string>('');
     const [chartData, setChartData] = useState<TokenStatsAggregated[]>([]);
     const [accountData, setAccountData] = useState<AccountTokenStats[]>([]);
     const [modelData, setModelData] = useState<ModelTokenStats[]>([]);
@@ -99,13 +104,37 @@ const TokenStats: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [scanning, setScanning] = useState(false);
     const [scanResult, setScanResult] = useState<BrainScanResult | null>(null);
+    const [heatmapData, setHeatmapData] = useState<DailyTokenActivity[]>([]);
+    const [selectedHeatmapDate, setSelectedHeatmapDate] = useState<string | null>(null);
+
+    // Refs to avoid stale closures in event listeners
+    const timeRangeRef = useRef<TimeRange>(timeRange);
+    const sourceFilterRef = useRef<SourceFilter>(sourceFilter);
+    const customStartDateRef = useRef<string>(customStartDate);
+    const customEndDateRef = useRef<string>(customEndDate);
+
+    useEffect(() => {
+        timeRangeRef.current = timeRange;
+    }, [timeRange]);
+
+    useEffect(() => {
+        sourceFilterRef.current = sourceFilter;
+    }, [sourceFilter]);
+
+    useEffect(() => {
+        customStartDateRef.current = customStartDate;
+    }, [customStartDate]);
+
+    useEffect(() => {
+        customEndDateRef.current = customEndDate;
+    }, [customEndDate]);
 
     const handleScanBrain = async () => {
         setScanning(true);
         try {
             const res = await invoke<BrainScanResult>('scan_brain_conversations');
             setScanResult(res);
-            await fetchData();
+            await fetchData(false);
         } catch (error) {
             console.error('Brain scan failed:', error);
         } finally {
@@ -113,15 +142,27 @@ const TokenStats: React.FC = () => {
         }
     };
 
-    const fetchData = async () => {
-        setLoading(true);
+    const fetchData = async (silent: boolean = false) => {
+        if (!silent) {
+            setLoading(true);
+        }
         try {
+            const currentRange = timeRangeRef.current;
+            const currentSource = sourceFilterRef.current;
+            const currentCustomStart = customStartDateRef.current;
+            const currentCustomEnd = customEndDateRef.current;
+
+            // Log active source filter when not all
+            if (currentSource !== 'all') {
+                console.debug(`Applying source filter: ${currentSource}`);
+            }
+
             let hours = 24;
             let data: TokenStatsAggregated[] = [];
             let modelTrend: ModelTrendPoint[] = [];
             let accountTrend: AccountTrendPoint[] = [];
 
-            switch (timeRange) {
+            switch (currentRange) {
                 case 'hourly':
                     hours = 24;
                     data = await invoke<TokenStatsAggregated[]>('get_token_stats_hourly', { hours: 24 });
@@ -140,6 +181,61 @@ const TokenStats: React.FC = () => {
                     modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_daily', { days: 30 });
                     accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_daily', { days: 30 });
                     break;
+                case 'monthly':
+                    hours = 720; // 30 days
+                    data = await invoke<TokenStatsAggregated[]>('get_token_stats_daily', { days: 30 });
+                    modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_daily', { days: 30 });
+                    accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_daily', { days: 30 });
+                    break;
+                case 'yearly':
+                    hours = 8760; // 365 days
+                    data = await invoke<TokenStatsAggregated[]>('get_token_stats_daily', { days: 365 });
+                    modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_daily', { days: 365 });
+                    accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_daily', { days: 365 });
+                    break;
+                case 'custom':
+                    hours = 8760;
+                    data = await invoke<TokenStatsAggregated[]>('get_token_stats_daily', { days: 365 });
+                    modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_daily', { days: 365 });
+                    accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_daily', { days: 365 });
+
+                    if (currentCustomStart || currentCustomEnd) {
+                        data = data.filter((d) => {
+                            const p = d.period.slice(0, 10);
+                            if (currentCustomStart && p < currentCustomStart) return false;
+                            if (currentCustomEnd && p > currentCustomEnd) return false;
+                            return true;
+                        });
+                        modelTrend = modelTrend.filter((d) => {
+                            const p = d.period.slice(0, 10);
+                            if (currentCustomStart && p < currentCustomStart) return false;
+                            if (currentCustomEnd && p > currentCustomEnd) return false;
+                            return true;
+                        });
+                        accountTrend = accountTrend.filter((d) => {
+                            const p = d.period.slice(0, 10);
+                            if (currentCustomStart && p < currentCustomStart) return false;
+                            if (currentCustomEnd && p > currentCustomEnd) return false;
+                            return true;
+                        });
+                    }
+                    break;
+            }
+
+            // Always fetch 365 days for annual heatmap
+            try {
+                const yearDaily = await invoke<TokenStatsAggregated[]>('get_token_stats_daily', { days: 365 });
+                const heatActivities: DailyTokenActivity[] = yearDaily.map((d) => ({
+                    date: d.period.slice(0, 10),
+                    total_tokens: d.total_tokens || 0,
+                    input_tokens: d.total_input_tokens || 0,
+                    output_tokens: d.total_output_tokens || 0,
+                    cached_tokens: d.total_cached_tokens || 0,
+                    request_count: d.request_count || 0,
+                }));
+                setHeatmapData(heatActivities);
+            } catch (err) {
+                console.error('Failed to load heatmap data:', err);
             }
 
             setChartData(data.map(point => ({
@@ -198,8 +294,8 @@ const TokenStats: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchData();
-    }, [timeRange]);
+        fetchData(false);
+    }, [timeRange, sourceFilter, customStartDate, customEndDate]);
 
     useEffect(() => {
         let unlistenFn: (() => void) | null = null;
@@ -207,7 +303,8 @@ const TokenStats: React.FC = () => {
             try {
                 const { listen } = await import('@tauri-apps/api/event');
                 unlistenFn = await listen('live_token_stats_update', () => {
-                    fetchData();
+                    // Silent refresh so user selection is never interrupted or flickered
+                    fetchData(true);
                 });
             } catch (e) {
                 // Ignore if not in Tauri window
@@ -372,8 +469,8 @@ const TokenStats: React.FC = () => {
     return (
         <div className="h-full w-full overflow-y-auto">
             <div className="p-5 space-y-4 max-w-7xl mx-auto">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                         <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                             <Zap className="w-6 h-6 text-blue-500" />
                             {t('token_stats.title', 'Token 消费统计')}
@@ -383,57 +480,158 @@ const TokenStats: React.FC = () => {
                             <span>{t('token_stats.live_sync', 'Live IDE / CLI Sync')}</span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+
+                    <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-between md:justify-end">
+                        {/* Time Range Pills */}
+                        <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex-wrap gap-0.5">
                             <button
-                                onClick={() => setTimeRange('hourly')}
-                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${timeRange === 'hourly'
+                                onClick={() => { setTimeRange('hourly'); setSelectedHeatmapDate(null); }}
+                                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${timeRange === 'hourly'
                                     ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
                                     }`}
                             >
-                                <Clock className="w-4 h-4" />
-                                {t('token_stats.hourly', '小时')}
+                                <Clock className="w-3.5 h-3.5" />
+                                {t('token_stats.hourly', 'ساعت')}
                             </button>
                             <button
-                                onClick={() => setTimeRange('daily')}
-                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${timeRange === 'daily'
+                                onClick={() => { setTimeRange('daily'); setSelectedHeatmapDate(null); }}
+                                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${timeRange === 'daily'
                                     ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
                                     }`}
                             >
-                                <Calendar className="w-4 h-4" />
-                                {t('token_stats.daily', '日')}
+                                <Calendar className="w-3.5 h-3.5" />
+                                {t('token_stats.daily', 'روز')}
                             </button>
                             <button
-                                onClick={() => setTimeRange('weekly')}
-                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${timeRange === 'weekly'
+                                onClick={() => { setTimeRange('weekly'); setSelectedHeatmapDate(null); }}
+                                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${timeRange === 'weekly'
                                     ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
                                     }`}
                             >
-                                <CalendarDays className="w-4 h-4" />
-                                {t('token_stats.weekly', '周')}
+                                <CalendarDays className="w-3.5 h-3.5" />
+                                {t('token_stats.weekly', 'هفته')}
+                            </button>
+                            <button
+                                onClick={() => { setTimeRange('monthly'); setSelectedHeatmapDate(null); }}
+                                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${timeRange === 'monthly'
+                                    ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                                    }`}
+                            >
+                                <CalendarRange className="w-3.5 h-3.5" />
+                                {t('token_stats.monthly', 'ماه')}
+                            </button>
+                            <button
+                                onClick={() => { setTimeRange('yearly'); setSelectedHeatmapDate(null); }}
+                                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${timeRange === 'yearly'
+                                    ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                                    }`}
+                            >
+                                <CalendarRange className="w-3.5 h-3.5" />
+                                {t('token_stats.yearly', 'سال')}
+                            </button>
+                            <button
+                                onClick={() => { setTimeRange('custom'); setSelectedHeatmapDate(null); }}
+                                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${timeRange === 'custom'
+                                    ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                                    }`}
+                            >
+                                <Filter className="w-3.5 h-3.5" />
+                                {t('token_stats.custom_range', 'بازه انتخابی')}
                             </button>
                         </div>
+
                         <button
                             onClick={handleScanBrain}
                             disabled={scanning}
                             title={t('token_stats.scan_history', 'اسکن تاریخچه گفتگوها')}
-                            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-50"
                         >
-                            <History className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
+                            <History className={`w-3.5 h-3.5 ${scanning ? 'animate-spin' : ''}`} />
                             <span>{scanning ? t('token_stats.scanning', 'در حال اسکن...') : t('token_stats.scan_history', 'Scan History')}</span>
                         </button>
                         <button
-                            onClick={fetchData}
+                            onClick={() => fetchData(false)}
                             disabled={loading}
                             title={t('common.refresh', 'تازه سازی')}
-                            className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+                            className="p-1.5 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
                         >
                             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                         </button>
                     </div>
+                </div>
+
+                {/* Source Filter Tabs & Custom Date Inputs */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white dark:bg-gray-800/60 p-2.5 rounded-xl border border-gray-200/80 dark:border-gray-700/80">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mr-1 flex items-center gap-1">
+                            <Filter className="w-3.5 h-3.5" />
+                            {t('token_stats.filter_source', 'فیلتر منبع')}:
+                        </span>
+                        <button
+                            onClick={() => setSourceFilter('all')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                                sourceFilter === 'all'
+                                    ? 'bg-blue-600 text-white shadow-sm'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            }`}
+                        >
+                            {t('token_stats.source_all', 'همه منابع')}
+                        </button>
+                        <button
+                            onClick={() => setSourceFilter('Antigravity IDE')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                                sourceFilter === 'Antigravity IDE'
+                                    ? 'bg-blue-600 text-white shadow-sm'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            }`}
+                        >
+                            {t('token_stats.source_ide', 'Antigravity IDE')}
+                        </button>
+                        <button
+                            onClick={() => setSourceFilter('Antigravity Platform')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                                sourceFilter === 'Antigravity Platform'
+                                    ? 'bg-blue-600 text-white shadow-sm'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            }`}
+                        >
+                            {t('token_stats.source_platform', 'Antigravity Platform')}
+                        </button>
+                        <button
+                            onClick={() => setSourceFilter('Antigravity CLI')}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                                sourceFilter === 'Antigravity CLI'
+                                    ? 'bg-blue-600 text-white shadow-sm'
+                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            }`}
+                        >
+                            {t('token_stats.source_cli', 'Antigravity CLI (agy)')}
+                        </button>
+                    </div>
+
+                    {timeRange === 'custom' && (
+                        <div className="flex items-center gap-2 text-xs">
+                            <input
+                                type="date"
+                                value={customStartDate}
+                                onChange={(e) => setCustomStartDate(e.target.value)}
+                                className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200 text-xs focus:ring-1 focus:ring-blue-500"
+                            />
+                            <span className="text-gray-400">→</span>
+                            <input
+                                type="date"
+                                value={customEndDate}
+                                onChange={(e) => setCustomEndDate(e.target.value)}
+                                className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200 text-xs focus:ring-1 focus:ring-blue-500"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {scanResult && (
@@ -442,8 +640,8 @@ const TokenStats: React.FC = () => {
                             <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
                             <span>
                                 {t('token_stats.scan_success', 'اسکن تاریخچه تکمیل شد:')}{' '}
-                                <strong>{scanResult.conversations_found}</strong> گفتگو بررسی شد ({scanResult.conversations_scanned} اسکن جدید، {scanResult.conversations_skipped} از قبل به‌روز)،{' '}
-                                <strong>{formatNumber(scanResult.total_new_tokens)}</strong> توکن تاریخی بازیابی گردید.
+                                <strong>{scanResult.conversations_found}</strong> {t('token_stats.scan_summary_prefix', 'گفتگو بررسی شد')} ({scanResult.conversations_scanned} {t('token_stats.scan_new_scans', 'اسکن جدید')}، {scanResult.conversations_skipped} {t('token_stats.scan_already_up_to_date', 'از قبل به‌روز')})،{' '}
+                                <strong>{formatNumber(scanResult.total_new_tokens)}</strong> {t('token_stats.scan_tokens_recovered', 'توکن تاریخی بازیابی گردید')}.
                             </span>
                         </div>
                         <button 
@@ -454,6 +652,20 @@ const TokenStats: React.FC = () => {
                         </button>
                     </div>
                 )}
+
+                {/* Annual GitHub-style Activity Heatmap */}
+                <TokenHeatmap
+                    dailyData={heatmapData}
+                    selectedDate={selectedHeatmapDate}
+                    onSelectDate={(dt) => {
+                        setSelectedHeatmapDate(dt);
+                        if (dt) {
+                            setTimeRange('custom');
+                            setCustomStartDate(dt);
+                            setCustomEndDate(dt);
+                        }
+                    }}
+                />
 
                 {summary && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">

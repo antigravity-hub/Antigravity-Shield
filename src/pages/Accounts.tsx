@@ -9,6 +9,7 @@ import {
   RefreshCw,
   Search,
   Sparkles,
+  Square,
   ToggleLeft,
   ToggleRight,
   Trash2,
@@ -50,7 +51,6 @@ function Accounts() {
     deleteAccount,
     deleteAccounts,
     switchAccount,
-    loading,
     refreshQuota,
     toggleProxyStatus,
     reorderAccounts,
@@ -354,7 +354,7 @@ function Accounts() {
   );
 
   const handleSwitch = async (accountId: string, targetIde?: string) => {
-    if (loading || switchingAccountId) return;
+    if (switchingAccountId) return;
 
     setSwitchingAccountId(accountId);
     console.log("[Accounts] handleSwitch called for:", accountId, "targetIde:", targetIde);
@@ -486,64 +486,67 @@ function Accounts() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isRefreshConfirmOpen, setIsRefreshConfirmOpen] = useState(false);
+  const cancelRefreshRef = useRef(false);
 
   const handleRefreshClick = () => {
     setIsRefreshConfirmOpen(true);
   };
 
+  const handleStopRefresh = () => {
+    cancelRefreshRef.current = true;
+    showToast(t("accounts.refresh_stopping", "Stopping refresh..."), "info");
+  };
+
   const executeRefresh = async () => {
     setIsRefreshConfirmOpen(false);
     setIsRefreshing(true);
+    cancelRefreshRef.current = false;
     try {
       const isBatch = selectedIds.size > 0;
       let successCount = 0;
       let failedCount = 0;
       const details: string[] = [];
 
-      if (isBatch) {
-        // 批量刷新选中
-        const ids = Array.from(selectedIds);
-        setRefreshingIds(new Set(ids));
+      const targetAccounts = isBatch
+        ? accounts.filter((a) => selectedIds.has(a.id))
+        : accounts;
 
-        const results = await Promise.allSettled(
-          ids.map((id) => refreshQuota(id)),
-        );
+      setRefreshingIds(new Set(targetAccounts.map((a) => a.id)));
 
-        results.forEach((result, index) => {
-          const id = ids[index];
-          const email = accounts.find((a) => a.id === id)?.email || id;
-          if (result.status === "fulfilled") {
-            successCount++;
-          } else {
-            failedCount++;
-            details.push(`${email}: ${result.reason}`);
-          }
-        });
-      } else {
-        // 刷新所有
-        setRefreshingIds(new Set(accounts.map((a) => a.id)));
-        const stats = await useAccountStore.getState().refreshAllQuotas();
-        if (stats) {
-          successCount = stats.success;
-          failedCount = stats.failed;
-          details.push(...stats.details);
+      for (let i = 0; i < targetAccounts.length; i++) {
+        if (cancelRefreshRef.current) {
+          showToast(t("accounts.refresh_stopped", "Refresh stopped"), "warning");
+          break;
         }
+        const acc = targetAccounts[i];
+        try {
+          await refreshQuota(acc.id);
+          successCount++;
+        } catch (err) {
+          failedCount++;
+          details.push(`${acc.email}: ${err}`);
+        }
+        setRefreshingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(acc.id);
+          return next;
+        });
       }
 
-      if (failedCount === 0) {
-        showToast(
-          t("accounts.refresh_selected", { count: successCount }),
-          "success",
-        );
-      } else {
-        showToast(
-          `${t("common.success")}: ${successCount}, ${t("common.error")}: ${failedCount}`,
-          "warning",
-        );
-        // You might want to show details in a different way, but for toast, keep it simple or use a "view details" action if supported.
-        // For now, simpler toast is better than a huge alert.
-        if (details.length > 0) {
-          console.warn("Refresh failures:", details);
+      if (!cancelRefreshRef.current) {
+        if (failedCount === 0) {
+          showToast(
+            t("accounts.refresh_selected", { count: successCount }),
+            "success",
+          );
+        } else {
+          showToast(
+            `${t("common.success")}: ${successCount}, ${t("common.error")}: ${failedCount}`,
+            "warning",
+          );
+          if (details.length > 0) {
+            console.warn("Refresh failures:", details);
+          }
         }
       }
     } catch (error) {
@@ -1017,27 +1020,35 @@ function Accounts() {
             </>
           )}
 
-          <button
-            className={`px-2.5 py-2 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1.5 shadow-sm ${isRefreshing ? "opacity-70 cursor-not-allowed" : ""}`}
-            onClick={handleRefreshClick}
-            disabled={isRefreshing}
-            title={
-              selectedIds.size > 0
-                ? t("accounts.refresh_selected", { count: selectedIds.size })
-                : t("accounts.refresh_all")
-            }
-          >
-            <RefreshCw
-              className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`}
-            />
-            <span className="hidden xl:inline">
-              {isRefreshing
-                ? t("common.loading")
-                : selectedIds.size > 0
+          {isRefreshing ? (
+            <button
+              className="px-2.5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 shadow-sm animate-pulse"
+              onClick={handleStopRefresh}
+              title={t("accounts.stop_refresh", "Stop Refresh")}
+            >
+              <Square className="w-3.5 h-3.5 fill-current" />
+              <span className="hidden xl:inline">
+                {t("accounts.stop_refresh", "Stop Refresh")}
+              </span>
+            </button>
+          ) : (
+            <button
+              className="px-2.5 py-2 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1.5 shadow-sm"
+              onClick={handleRefreshClick}
+              title={
+                selectedIds.size > 0
+                  ? t("accounts.refresh_selected", { count: selectedIds.size })
+                  : t("accounts.refresh_all")
+              }
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">
+                {selectedIds.size > 0
                   ? t("accounts.refresh_selected", { count: selectedIds.size })
                   : t("accounts.refresh_all")}
-            </span>
-          </button>
+              </span>
+            </button>
+          )}
 
           <button
             className={`px-2.5 py-2 bg-orange-500 text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-1.5 shadow-sm ${isWarmuping ? "opacity-70 cursor-not-allowed" : ""}`}

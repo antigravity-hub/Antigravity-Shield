@@ -323,6 +323,31 @@ function AccountRowContent({
         });
     }, [quotaWindow, account.quota?.quota_groups]);
 
+    // 解析 5H 配额项 (当处于 5h 视图时)
+    const fiveHourItems = useMemo(() => {
+        if (quotaWindow !== '5h') return [];
+        return (account.quota?.quota_groups || []).flatMap(group => {
+            return group.buckets
+                .filter(b => {
+                    const win = (b.window || '').toLowerCase();
+                    const id = (b.bucket_id || '').toLowerCase();
+                    return win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour');
+                })
+                .map(b => {
+                    const shortGroupName = group.display_name
+                        .replace(/ models?$/i, '')
+                        .replace(/Claude and GPT/i, 'Claude/GPT');
+                    return {
+                        id: `${group.display_name}-${b.bucket_id}`,
+                        label: b.display_name ? `${shortGroupName} (${b.display_name})` : `${shortGroupName} (5H)`,
+                        percentage: Math.round((b.remaining_fraction || 0) * 100),
+                        resetTime: b.reset_time,
+                        Icon: shortGroupName.toLowerCase().includes('claude') ? Sparkles : Bot,
+                    };
+                });
+        });
+    }, [quotaWindow, account.quota?.quota_groups]);
+
     // 获取要显示的模型列表
     const pinnedModels = ensurePinnedImageSelector(
         config?.pinned_quota_models?.models || Object.keys(MODEL_CONFIG),
@@ -545,11 +570,23 @@ function AccountRowContent({
                 ) : (
                     <div className={cn(
                         "grid gap-x-2 gap-y-1 py-0",
-                        (quotaWindow === 'weekly' && weeklyItems.length > 0)
-                            ? (weeklyItems.length === 1 ? "grid-cols-1" : "grid-cols-2")
-                            : (displayModels.length === 1 ? "grid-cols-1" : "grid-cols-2")
+                        (quotaWindow === '5h' && fiveHourItems.length > 0)
+                            ? (fiveHourItems.length === 1 ? "grid-cols-1" : "grid-cols-2")
+                            : (quotaWindow === 'weekly' && weeklyItems.length > 0)
+                                ? (weeklyItems.length === 1 ? "grid-cols-1" : "grid-cols-2")
+                                : (displayModels.length === 1 ? "grid-cols-1" : "grid-cols-2")
                     )}>
-                        {quotaWindow === 'weekly' && weeklyItems.length > 0 ? (
+                        {quotaWindow === '5h' && fiveHourItems.length > 0 ? (
+                            fiveHourItems.map((item) => (
+                                <QuotaItem
+                                    key={item.id}
+                                    label={item.label}
+                                    percentage={item.percentage}
+                                    resetTime={item.resetTime}
+                                    Icon={item.Icon}
+                                />
+                            ))
+                        ) : quotaWindow === 'weekly' && weeklyItems.length > 0 ? (
                             weeklyItems.map((item) => (
                                 <QuotaItem
                                     key={item.id}
@@ -580,9 +617,59 @@ function AccountRowContent({
                 )}
             </td>
 
-            {/* 周重置倒计时列 */}
+            {/* 重置倒计时列: 5H 模式展示 5小时滚动倒计时，Weekly 模式展示周阶梯 */}
             <td className="px-2 py-1 align-middle whitespace-nowrap">
-                <WeeklyCountdown account={account} layout="table" />
+                {quotaWindow === '5h' ? (() => {
+                    let resetTime: string | null = null;
+                    let minDiff = Infinity;
+                    const now = Date.now();
+                    for (const group of account.quota?.quota_groups || []) {
+                        for (const b of group.buckets || []) {
+                            const win = (b.window || '').toLowerCase();
+                            const id = (b.bucket_id || '').toLowerCase();
+                            if ((win.includes('5h') || id.includes('5h') || win.includes('hour')) && b.reset_time) {
+                                const diff = new Date(b.reset_time).getTime() - now;
+                                if (diff > 0 && diff < minDiff) {
+                                    minDiff = diff;
+                                    resetTime = b.reset_time;
+                                }
+                            }
+                        }
+                    }
+                    if (!resetTime && account.quota?.models) {
+                        for (const m of account.quota.models) {
+                            if (m.reset_time) {
+                                const diff = new Date(m.reset_time).getTime() - now;
+                                if (diff > 0 && diff < minDiff) {
+                                    minDiff = diff;
+                                    resetTime = m.reset_time;
+                                }
+                            }
+                        }
+                    }
+                    const isReady = !resetTime || minDiff <= 0;
+                    const totalMinutes = isReady ? 0 : Math.ceil(minDiff / (1000 * 60));
+                    const hours = Math.floor(totalMinutes / 60);
+                    const minutes = totalMinutes % 60;
+                    return (
+                        <div className="flex items-center gap-1.5" title={resetTime ? `5H Reset: ${new Date(resetTime).toLocaleString()}` : '5H Quota Ready'}>
+                            <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
+                            <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
+                                {isReady ? '0h 0m' : `${hours}h ${minutes}m`}
+                            </span>
+                            <span className={cn(
+                                "text-[9px] font-bold px-1 py-0.2 rounded font-mono",
+                                isReady
+                                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                    : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                            )}>
+                                5H
+                            </span>
+                        </div>
+                    );
+                })() : (
+                    <WeeklyCountdown account={account} layout="table" />
+                )}
             </td>
 
             {/* 最后使用时间列 */}
@@ -729,7 +816,7 @@ function AccountTable({
                                 {quotaWindow === 'weekly' ? t('accounts.table.weekly_quota', '周配额') : t('accounts.table.quota')}
                             </th>
                             <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[170px] whitespace-nowrap">
-                                {t('accounts.table.weekly_countdown', 'Weekly Reset')}
+                                {quotaWindow === '5h' ? t('accounts.table.five_hour_countdown', '5H Reset') : t('accounts.table.weekly_countdown', 'Weekly Reset')}
                             </th>
                             <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[90px] whitespace-nowrap">{t('accounts.table.last_used')}</th>
                             <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[220px] bg-gray-50 dark:bg-base-200 z-20 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center">{t('accounts.table.actions')}</th>
