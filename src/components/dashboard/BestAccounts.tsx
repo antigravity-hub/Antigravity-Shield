@@ -1,14 +1,14 @@
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Account, QuotaGroup } from '../../types/account';
 import { findQuotaModel } from '../../config/modelConfig';
+import { useTranslation } from 'react-i18next';
 
 interface BestAccountsProps {
     accounts: Account[];
     currentAccountId?: string;
     onSwitch?: (accountId: string) => void;
 }
-
-import { useTranslation } from 'react-i18next';
 
 /** 从 quota_groups 中提取 5h 或 Weekly 桶百分比 (0-100) */
 function getBucketPercentage(
@@ -43,39 +43,11 @@ function getBucketPercentage(
     return null;
 }
 
-/** 
- * 计算模型综合有效配额
- * 自动识别：双桶 (取 min 短板) / 免费账号仅周桶 (取周) / 仅 5h 桶 (取 5h)
- */
-function calculateEffectiveQuota(
-    fiveHourFromModel: number | null,
-    weeklyFromGroup: number | null,
-    fiveHourFromGroup: number | null
-): number {
-    const fiveHour = fiveHourFromGroup !== null ? fiveHourFromGroup : fiveHourFromModel;
-    const weekly = weeklyFromGroup;
-
-    // 情况 1: 双桶都存在 (Pro/Ultra 账号) -> 木桶短板 min(5h, weekly)
-    if (fiveHour !== null && weekly !== null) {
-        return Math.min(fiveHour, weekly);
-    }
-
-    // 情况 2: 仅有周额度 (免费账号 / Free Tier) -> 直接以周额度为准
-    if (weekly !== null) {
-        return weekly;
-    }
-
-    // 情况 3: 仅有 5h 额度 (单桶回退) -> 以 5h 额度为准
-    if (fiveHour !== null) {
-        return fiveHour;
-    }
-
-    return 0;
-}
-
 function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProps) {
     const { t } = useTranslation();
-    // 1. 获取按综合有效配额排序的列表 (排除当前账号及已禁用账号)
+    const navigate = useNavigate();
+
+    // 1. 获取按 5h 优先 + 周配额 Tie-breaker 排序的列表 (排除当前账号及已禁用账号)
     const geminiSorted = accounts
         .filter(a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled)
         .map(a => {
@@ -84,24 +56,43 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             const weeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', 'weekly');
             const fiveHourGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', '5h');
 
-            const effectivePro = calculateEffectiveQuota(pro5hModel, weeklyGroup, fiveHourGroup);
-            const effectiveFlash = calculateEffectiveQuota(flash5hModel, weeklyGroup, fiveHourGroup);
+            // 5h 基础分：Pro 权重 70%，Flash 权重 30%；或以 group 5h 为准；无 5h 则以周配额回退
+            let fiveHourScore = 0;
+            if (pro5hModel !== null && flash5hModel !== null) {
+                fiveHourScore = Math.round(pro5hModel * 0.7 + flash5hModel * 0.3);
+            } else if (fiveHourGroup !== null) {
+                fiveHourScore = fiveHourGroup;
+            } else if (pro5hModel !== null) {
+                fiveHourScore = pro5hModel;
+            } else if (flash5hModel !== null) {
+                fiveHourScore = flash5hModel;
+            } else if (weeklyGroup !== null) {
+                fiveHourScore = weeklyGroup;
+            }
 
-            // 综合评分：Pro 权重更高 (70%)，Flash 权重 30%
-            let score = Math.round(effectivePro * 0.7 + effectiveFlash * 0.3);
+            const weeklyScore = weeklyGroup ?? 0;
 
             // 若周额度见底 (<= 5%)，直接淘汰
             if (weeklyGroup !== null && weeklyGroup <= 5) {
-                score = 0;
+                fiveHourScore = 0;
             }
 
             return {
                 ...a,
-                quotaVal: score,
+                fiveHourScore,
+                weeklyScore,
+                quotaVal: fiveHourScore,
             };
         })
         .filter(a => a.quotaVal > 0)
-        .sort((a, b) => b.quotaVal - a.quotaVal);
+        .sort((a, b) => {
+            // 第一主序：5小时可用额度（当下立即可用）
+            if (b.fiveHourScore !== a.fiveHourScore) {
+                return b.fiveHourScore - a.fiveHourScore;
+            }
+            // 第二次序 (Tie-breaker)：周额度剩余更多者优先
+            return b.weeklyScore - a.weeklyScore;
+        });
 
     const claudeSorted = accounts
         .filter(a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled)
@@ -110,20 +101,30 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             const weeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', 'weekly');
             const fiveHourGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', '5h');
 
-            let score = calculateEffectiveQuota(claude5hModel, weeklyGroup, fiveHourGroup);
+            let fiveHourScore = fiveHourGroup ?? claude5hModel ?? weeklyGroup ?? 0;
+            const weeklyScore = weeklyGroup ?? 0;
 
             // 若周额度见底 (<= 5%)，直接淘汰
             if (weeklyGroup !== null && weeklyGroup <= 5) {
-                score = 0;
+                fiveHourScore = 0;
             }
 
             return {
                 ...a,
-                quotaVal: score,
+                fiveHourScore,
+                weeklyScore,
+                quotaVal: fiveHourScore,
             };
         })
         .filter(a => a.quotaVal > 0)
-        .sort((a, b) => b.quotaVal - a.quotaVal);
+        .sort((a, b) => {
+            // 第一主序：5小时可用额度
+            if (b.fiveHourScore !== a.fiveHourScore) {
+                return b.fiveHourScore - a.fiveHourScore;
+            }
+            // 第二次序：周额度
+            return b.weeklyScore - a.weeklyScore;
+        });
 
     let bestGemini = geminiSorted[0];
     let bestClaude = claudeSorted[0];
@@ -133,12 +134,12 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
         const nextGemini = geminiSorted[1];
         const nextClaude = claudeSorted[1];
 
-        // 方案A: 保持 Gemini 最优，换 Claude 次优
-        // 方案B: 换 Gemini 次优，保持 Claude 最优
-        // 比较标准：两者配额之和最大化 (或者优先保住 100% 的那个)
+        // 综合度量：5h 占主导地位 (x1000)，周配额辅助平衡
+        const calcScore = (acc?: { fiveHourScore: number; weeklyScore: number }) =>
+            acc ? acc.fiveHourScore * 1000 + acc.weeklyScore : 0;
 
-        const scoreA = bestGemini.quotaVal + (nextClaude?.quotaVal || 0);
-        const scoreB = (nextGemini?.quotaVal || 0) + bestClaude.quotaVal;
+        const scoreA = calcScore(bestGemini) + calcScore(nextClaude);
+        const scoreB = calcScore(nextGemini) + calcScore(bestClaude);
 
         if (nextClaude && (!nextGemini || scoreA >= scoreB)) {
             // 选方案A：换 Claude
@@ -147,12 +148,18 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             // 选方案B：换 Gemini
             bestGemini = nextGemini;
         }
-        // 如果都没有次优解（例如只有一个账号），则保持原样
     }
 
-    // 构造最终用于显示的视图模型 (兼容原有渲染逻辑)
-    const bestGeminiRender = bestGemini ? { ...bestGemini, geminiQuota: bestGemini.quotaVal } : undefined;
-    const bestClaudeRender = bestClaude ? { ...bestClaude, claudeQuota: bestClaude.quotaVal } : undefined;
+    // 构造最终用于显示的视图模型
+    const bestGeminiRender = bestGemini ? {
+        ...bestGemini,
+        geminiQuota: bestGemini.quotaVal,
+    } : undefined;
+
+    const bestClaudeRender = bestClaude ? {
+        ...bestClaude,
+        claudeQuota: bestClaude.quotaVal,
+    } : undefined;
 
     return (
         <div className="bg-white dark:bg-base-100 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-base-200 h-full flex flex-col">
@@ -164,30 +171,86 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             <div className="space-y-2 flex-1">
                 {/* Gemini 最佳 */}
                 {bestGeminiRender && (
-                    <div className="flex items-center justify-between p-2.5 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-900/30">
-                        <div className="flex-1 min-w-0">
-                            <div className="text-[10px] text-green-600 dark:text-green-400 font-medium mb-0.5">{t('dashboard.for_gemini')}</div>
-                            <div className="font-medium text-sm text-gray-900 dark:text-base-content truncate">
-                                {bestGeminiRender.email}
+                    <div className="flex items-center justify-between p-2.5 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-900/30 transition-all hover:shadow-sm">
+                        <div className="flex-1 min-w-0 pr-2">
+                            <div className="text-[10px] text-green-600 dark:text-green-400 font-medium mb-0.5">
+                                {t('dashboard.for_gemini')}
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <span className="font-medium text-sm text-gray-900 dark:text-base-content truncate" title={bestGeminiRender.email}>
+                                    {bestGeminiRender.email}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate('/accounts', { state: { email: bestGeminiRender.email } });
+                                    }}
+                                    title={t('dashboard.view_in_accounts', 'View in Accounts')}
+                                    className="p-1 rounded-md text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-100/50 dark:hover:bg-green-900/40 transition-colors cursor-pointer shrink-0"
+                                >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                </button>
                             </div>
                         </div>
-                        <div className="ml-2 px-2 py-0.5 bg-green-500 text-white text-xs font-semibold rounded-full">
-                            {bestGeminiRender.geminiQuota}%
+                        <div className="flex items-center gap-1.5 shrink-0">
+                            {bestGeminiRender.weeklyScore > 0 && (
+                                <span
+                                    className="px-1.5 py-0.5 bg-green-100 dark:bg-green-800/40 text-green-700 dark:text-green-300 text-[10px] font-semibold rounded"
+                                    title={`${t('dashboard.quota_weekly', 'Weekly')}: ${bestGeminiRender.weeklyScore}%`}
+                                >
+                                    W: {bestGeminiRender.weeklyScore}%
+                                </span>
+                            )}
+                            <div
+                                className="px-2 py-0.5 bg-green-500 text-white text-xs font-semibold rounded-full shadow-sm"
+                                title={`${t('dashboard.quota_5h', '5h Quota')}: ${bestGeminiRender.geminiQuota}%`}
+                            >
+                                {bestGeminiRender.geminiQuota}%
+                            </div>
                         </div>
                     </div>
                 )}
 
                 {/* Claude 最佳 */}
                 {bestClaudeRender && (
-                    <div className="flex items-center justify-between p-2.5 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-100 dark:border-cyan-900/30">
-                        <div className="flex-1 min-w-0">
-                            <div className="text-[10px] text-cyan-600 dark:text-cyan-400 font-medium mb-0.5">{t('dashboard.for_claude')}</div>
-                            <div className="font-medium text-sm text-gray-900 dark:text-base-content truncate">
-                                {bestClaudeRender.email}
+                    <div className="flex items-center justify-between p-2.5 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-100 dark:border-cyan-900/30 transition-all hover:shadow-sm">
+                        <div className="flex-1 min-w-0 pr-2">
+                            <div className="text-[10px] text-cyan-600 dark:text-cyan-400 font-medium mb-0.5">
+                                {t('dashboard.for_claude')}
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <span className="font-medium text-sm text-gray-900 dark:text-base-content truncate" title={bestClaudeRender.email}>
+                                    {bestClaudeRender.email}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        navigate('/accounts', { state: { email: bestClaudeRender.email } });
+                                    }}
+                                    title={t('dashboard.view_in_accounts', 'View in Accounts')}
+                                    className="p-1 rounded-md text-gray-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-cyan-100/50 dark:hover:bg-cyan-900/40 transition-colors cursor-pointer shrink-0"
+                                >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                </button>
                             </div>
                         </div>
-                        <div className="ml-2 px-2 py-0.5 bg-cyan-500 text-white text-xs font-semibold rounded-full">
-                            {bestClaudeRender.claudeQuota}%
+                        <div className="flex items-center gap-1.5 shrink-0">
+                            {bestClaudeRender.weeklyScore > 0 && (
+                                <span
+                                    className="px-1.5 py-0.5 bg-cyan-100 dark:bg-cyan-800/40 text-cyan-700 dark:text-cyan-300 text-[10px] font-semibold rounded"
+                                    title={`${t('dashboard.quota_weekly', 'Weekly')}: ${bestClaudeRender.weeklyScore}%`}
+                                >
+                                    W: {bestClaudeRender.weeklyScore}%
+                                </span>
+                            )}
+                            <div
+                                className="px-2 py-0.5 bg-cyan-500 text-white text-xs font-semibold rounded-full shadow-sm"
+                                title={`${t('dashboard.quota_5h', '5h Quota')}: ${bestClaudeRender.claudeQuota}%`}
+                            >
+                                {bestClaudeRender.claudeQuota}%
+                            </div>
                         </div>
                     </div>
                 )}
@@ -202,9 +265,9 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             {(bestGeminiRender || bestClaudeRender) && onSwitch && (
                 <div className="mt-auto pt-3">
                     <button
-                        className="w-full px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors"
+                        className="w-full px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
                         onClick={() => {
-                            // 优先切换到配额更高的账号
+                            // 优先切换到 5h 配额更高的账号
                             let targetId = bestGeminiRender?.id;
                             if (bestClaudeRender && (!bestGeminiRender || bestClaudeRender.claudeQuota > bestGeminiRender.geminiQuota)) {
                                 targetId = bestClaudeRender.id;
@@ -221,7 +284,6 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             )}
         </div>
     );
-
 }
 
 export default BestAccounts;

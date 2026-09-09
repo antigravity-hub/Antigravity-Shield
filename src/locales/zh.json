@@ -109,6 +109,9 @@
     "export_data": "导出账号数据",
     "for_gemini": "用于 Gemini",
     "for_claude": "用于 Claude",
+    "view_in_accounts": "在账号列表中查看",
+    "quota_5h": "5小时配额",
+    "quota_weekly": "周配额",
     "toast": {
       "switch_success": "切换成功!",
       "switch_error": "切换账号失败",

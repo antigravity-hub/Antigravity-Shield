@@ -32,6 +32,7 @@ import { cn } from "../utils/cn";
 import { isTauri } from "../utils/env";
 import { request as invoke } from "../utils/request";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 type FilterType = "all" | "pro" | "ultra" | "free";
 type ViewMode = "list" | "grid";
@@ -40,6 +41,7 @@ export type QuotaWindow = "5h" | "weekly";
 
 function Accounts() {
   const { t } = useTranslation();
+  const location = useLocation();
   const {
     accounts,
     currentAccount,
@@ -59,6 +61,17 @@ function Accounts() {
   const { config, showAllQuotas, toggleShowAllQuotas } = useConfigStore();
 
   const [searchQuery, setSearchQuery] = useState('');
+
+  // 监听来自 BestAccounts 等组件跳转传来的特定账号 email
+  useEffect(() => {
+    const targetEmail = (location.state as { email?: string } | null)?.email;
+    if (targetEmail) {
+      setSearchQuery(targetEmail);
+      setIsSearchExpanded(true);
+      setFilter('all');
+      setCurrentPage(1);
+    }
+  }, [location.state]);
   const [filter, setFilter] = useState<FilterType>('all');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);

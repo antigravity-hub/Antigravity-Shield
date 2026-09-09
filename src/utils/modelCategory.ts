@@ -132,6 +132,15 @@ function extractModelScore(name: string): number {
         tierBonus = 0.02;
     }
 
+    // 优先选择标准主力模型，降低 thinking 衍生后缀的优先级，避免在卡片/列表中被 thinking 过滤器误杀
+    if (!n.includes('thinking')) {
+        tierBonus += 0.01;
+    }
+    // Claude 家族中优先以 sonnet 作为默认代表模型
+    if (n.includes('sonnet')) {
+        tierBonus += 0.02;
+    }
+
     return baseVersion + tierBonus;
 }
 

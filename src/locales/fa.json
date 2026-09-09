@@ -112,6 +112,9 @@
     "export_data": "خروجی داده‌ها",
     "for_gemini": "برای Gemini",
     "for_claude": "برای Claude",
+    "view_in_accounts": "مشاهده در حساب‌ها",
+    "quota_5h": "سهمیه ۵ ساعته",
+    "quota_weekly": "هفتگی",
     "toast": {
       "switch_success": "تغییر حساب با موفقیت انجام شد!",
       "switch_error": "تغییر حساب ناموفق بود",

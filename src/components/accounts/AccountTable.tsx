@@ -360,8 +360,13 @@ function AccountRowContent({
                 };
             }).filter((item): item is { id: string; label: string; protectedKey: string; data: ModelQuota | undefined } => item !== null)
     ).filter(m => {
-            // 过滤特定的 Claude/Gemini 思考变体 (在列表页隐藏)
-            const isHiddenThinking = m.id.includes('thinking');
+            // 过滤特定的思考变体：在已有非 thinking 主力模型时隐藏冗余的 thinking 项，避免误杀唯一模型
+            const isHiddenThinking = m.id.includes('thinking') && (
+                showAllQuotas || (account.quota?.models || []).some(other =>
+                    !other.name.toLowerCase().includes('thinking') &&
+                    getModelProtectionKey(other.name) === m.protectedKey
+                )
+            );
 
             if (isHiddenThinking) return false;
 

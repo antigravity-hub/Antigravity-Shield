@@ -112,6 +112,9 @@
     "export_data": "Export Data",
     "for_gemini": "For Gemini",
     "for_claude": "For Claude",
+    "view_in_accounts": "View in Accounts",
+    "quota_5h": "5h Quota",
+    "quota_weekly": "Weekly",
     "toast": {
       "switch_success": "Switch successful!",
       "switch_error": "Switch account failed",
