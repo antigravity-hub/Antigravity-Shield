@@ -24,24 +24,520 @@ fn get_oauth_flow_state() -> &'static Mutex<Option<OAuthFlowState>> {
 }
 
 fn oauth_success_html() -> &'static str {
-    "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n\
-    <html>\
-    <body style='font-family: sans-serif; text-align: center; padding: 50px;'>\
-    <h1 style='color: green;'>✅ Authorization Successful!</h1>\
-    <p>You can close this window and return to the application.</p>\
-    <script>setTimeout(function() { window.close(); }, 2000);</script>\
-    </body>\
-    </html>"
+    concat!(
+        "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n",
+        r#"<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization Successful • Antigravity Shield</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root {
+            --bg-color: #090D16;
+            --card-bg: rgba(17, 24, 39, 0.82);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #3B82F6;
+            --primary-glow: rgba(59, 130, 246, 0.28);
+            --success: #10B981;
+            --success-glow: rgba(16, 185, 129, 0.35);
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(59, 130, 246, 0.16), transparent 50%),
+                radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.12), transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.12), transparent 45%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            padding: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 80%);
+            pointer-events: none;
+        }
+        .container {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.65),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 0 40px -10px var(--primary-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #38BDF8, #10B981, transparent);
+            opacity: 0.9;
+        }
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 32px var(--success-glow);
+        }
+        .icon-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            animation: pulseRing 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        .checkmark-svg {
+            width: 44px;
+            height: 44px;
+        }
+        .checkmark-circle {
+            stroke: #10B981;
+            stroke-width: 2.5;
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .checkmark-check {
+            stroke: #34D399;
+            stroke-width: 3.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #34D399;
+            margin-bottom: 16px;
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #10B981;
+            box-shadow: 0 0 8px #10B981;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #3B82F6, #10B981);
+            transform-origin: left;
+            animation: shrinkProgress 3.5s linear forwards;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            color: #FFFFFF;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+        .btn:hover {
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s;
+        }
+        .btn:hover svg {
+            transform: translateX(3px);
+        }
+        .footer-note {
+            font-size: 12px;
+            color: #64748B;
+            margin-top: 18px;
+            transition: color 0.3s ease;
+        }
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.15; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        @keyframes shrinkProgress {
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="icon-wrapper">
+                <svg class="checkmark-svg" viewBox="0 0 52 52" fill="none">
+                    <circle class="checkmark-circle" cx="26" cy="26" r="23" />
+                    <path class="checkmark-check" d="M14.5 27.5L22 35L37.5 19" />
+                </svg>
+            </div>
+            
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span>Authorized & Synchronized</span>
+            </div>
+
+            <h1>Authorization Successful</h1>
+            <p>
+                Credentials captured securely. Antigravity Shield is finalizing your account connection.
+            </p>
+
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+
+            <button class="btn" onclick="returnToApp()" id="actionBtn">
+                <span>Return to Antigravity Shield</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                </svg>
+            </button>
+
+            <div class="footer-note" id="footerNote">
+                Window will close automatically...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function returnToApp() {
+            if (window.opener) {
+                try {
+                    window.opener.postMessage({ type: 'oauth-success', message: 'login success' }, '*');
+                } catch (e) {}
+            }
+            window.close();
+            setTimeout(() => {
+                const note = document.getElementById('footerNote');
+                if (note) {
+                    note.innerText = 'You can safely close this browser tab and switch to Antigravity Shield.';
+                    note.style.color = '#94A3B8';
+                }
+            }, 300);
+        }
+
+        setTimeout(() => {
+            returnToApp();
+        }, 3500);
+    </script>
+</body>
+</html>"#
+    )
 }
 
 fn oauth_fail_html() -> &'static str {
-    "HTTP/1.1 400 Bad Request\r\nContent-Type: text/html; charset=utf-8\r\n\r\n\
-    <html>\
-    <body style='font-family: sans-serif; text-align: center; padding: 50px;'>\
-    <h1 style='color: red;'>❌ Authorization Failed</h1>\
-    <p>Failed to obtain Authorization Code. Please return to the app and try again.</p>\
-    </body>\
-    </html>"
+    concat!(
+        "HTTP/1.1 400 Bad Request\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n",
+        r#"<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization Failed • Antigravity Shield</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root {
+            --bg-color: #090D16;
+            --card-bg: rgba(17, 24, 39, 0.82);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --error: #EF4444;
+            --error-glow: rgba(239, 68, 68, 0.35);
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(239, 68, 68, 0.16), transparent 50%),
+                radial-gradient(circle at 85% 80%, rgba(245, 158, 11, 0.1), transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(185, 28, 28, 0.12), transparent 45%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            padding: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.65),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 0 40px -10px var(--error-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #F87171, #EF4444, transparent);
+            opacity: 0.9;
+        }
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 32px var(--error-glow);
+        }
+        .cross-svg {
+            width: 44px;
+            height: 44px;
+        }
+        .cross-circle {
+            stroke: #EF4444;
+            stroke-width: 2.5;
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .cross-line {
+            stroke: #F87171;
+            stroke-width: 3.2;
+            stroke-linecap: round;
+            stroke-dasharray: 28;
+            stroke-dashoffset: 28;
+            animation: stroke 0.35s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+        }
+        .cross-line-2 {
+            animation-delay: 0.65s;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #F87171;
+            margin-bottom: 16px;
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #EF4444;
+            box-shadow: 0 0 8px #EF4444;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #FFFFFF;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="icon-wrapper">
+                <svg class="cross-svg" viewBox="0 0 52 52" fill="none">
+                    <circle class="cross-circle" cx="26" cy="26" r="23" />
+                    <path class="cross-line" d="M18 18L34 34" />
+                    <path class="cross-line cross-line-2" d="M34 18L18 34" />
+                </svg>
+            </div>
+            
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span>Authorization Interrupted</span>
+            </div>
+
+            <h1>Authorization Failed</h1>
+            <p>
+                Failed to obtain authorization code or security state mismatched. Please return to the app and try again.
+            </p>
+
+            <button class="btn" onclick="window.close();">
+                <span>Close and Return to App</span>
+            </button>
+        </div>
+    </div>
+</body>
+</html>"#
+    )
 }
 
 async fn ensure_oauth_flow_prepared(
@@ -241,9 +737,16 @@ async fn ensure_oauth_flow_prepared(
                 let _ = stream.write_all(response_html.as_bytes()).await;
                 let _ = stream.flush().await;
 
-                if let Some(h) = app_handle {
-                    use tauri::Emitter;
+                if let Some(ref h) = app_handle {
+                    use tauri::{Emitter, Manager};
                     let _ = h.emit("oauth-callback-received", ());
+                    if let Some(window) = h.get_webview_window("main") {
+                        let _ = window.unminimize();
+                        let _ = window.show();
+                        let _ = window.set_focus();
+                        #[cfg(target_os = "macos")]
+                        let _ = h.set_activation_policy(tauri::ActivationPolicy::Regular);
+                    }
                 }
                 let _ = tx.send(result).await;
             }
@@ -335,9 +838,16 @@ async fn ensure_oauth_flow_prepared(
                 let _ = stream.write_all(response_html.as_bytes()).await;
                 let _ = stream.flush().await;
 
-                if let Some(h) = app_handle {
-                    use tauri::Emitter;
+                if let Some(ref h) = app_handle {
+                    use tauri::{Emitter, Manager};
                     let _ = h.emit("oauth-callback-received", ());
+                    if let Some(window) = h.get_webview_window("main") {
+                        let _ = window.unminimize();
+                        let _ = window.show();
+                        let _ = window.set_focus();
+                        #[cfg(target_os = "macos")]
+                        let _ = h.set_activation_policy(tauri::ActivationPolicy::Regular);
+                    }
                 }
                 let _ = tx.send(result).await;
             }

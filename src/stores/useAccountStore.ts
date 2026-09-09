@@ -5,6 +5,7 @@ import * as accountService from '../services/accountService';
 interface AccountState {
     accounts: Account[];
     currentAccount: Account | null;
+    currentTargetIde: string | null;
     loading: boolean;
     error: string | null;
 
@@ -36,6 +37,7 @@ interface AccountState {
 export const useAccountStore = create<AccountState>((set, get) => ({
     accounts: [],
     currentAccount: null,
+    currentTargetIde: localStorage.getItem('antigravity_current_target_ide') || 'platform',
     loading: false,
     error: null,
 
@@ -55,7 +57,12 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         set({ loading: true, error: null });
         try {
             const account = await accountService.getCurrentAccount();
-            set({ currentAccount: account, loading: false });
+            const stored = localStorage.getItem('antigravity_current_target_ide');
+            set({
+                currentAccount: account,
+                currentTargetIde: stored || get().currentTargetIde || 'platform',
+                loading: false
+            });
         } catch (error) {
             set({ error: String(error), loading: false });
         }
@@ -107,8 +114,10 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         set({ loading: true, error: null });
         try {
             await accountService.switchAccount(accountId, targetIde);
+            const resolvedTarget = targetIde || 'platform';
+            localStorage.setItem('antigravity_current_target_ide', resolvedTarget);
             await get().fetchCurrentAccount();
-            set({ loading: false });
+            set({ loading: false, currentTargetIde: resolvedTarget });
         } catch (error) {
             set({ error: String(error), loading: false });
             throw error;

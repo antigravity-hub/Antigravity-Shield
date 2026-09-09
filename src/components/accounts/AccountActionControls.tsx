@@ -16,8 +16,9 @@ import {
 } from 'lucide-react';
 import { Account } from '../../types/account';
 import { cn } from '../../utils/cn';
+import { useAccountStore } from '../../stores/useAccountStore';
 import {
-    AntigravityClassicIcon,
+    AntigravityPlatformIcon,
     AntigravityIdeIcon,
     AntigravityCliIcon
 } from '../common/TargetAppIcons';
@@ -58,6 +59,7 @@ export function AccountActionControls({
     layout = 'table',
 }: AccountActionControlsProps) {
     const { t } = useTranslation();
+    const { currentTargetIde } = useAccountStore();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
     const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
@@ -112,34 +114,31 @@ export function AccountActionControls({
                     ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/40 shadow-emerald-500/10"
                     : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
             )}>
-                {/* Active Indicator Badge when Current */}
-                {isCurrent && (
-                    <span 
-                        className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 select-none mr-0.5 tracking-tight"
-                        title={t('accounts.current_active', 'Active Account')}
-                    >
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
-                        {t('common.active', 'Active')}
-                    </span>
-                )}
-
-                {/* Switch Target 1: Antigravity Classic */}
+                {/* Switch Target 1: Antigravity Platform */}
                 <button
                     type="button"
                     className={cn(
                         "p-1.5 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"
+                            : isCurrent && (!currentTargetIde || currentTargetIde === 'platform' || currentTargetIde === 'classic')
+                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                                : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"
                     )}
                     onClick={() => onSwitch()}
                     disabled={isSwitching || isDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : t('accounts.switch_to_classic', 'Switch to Antigravity (Classic)')}
+                    title={isDisabled ? t('accounts.disabled_tooltip') : t('accounts.switch_to_platform', 'Switch to Antigravity Platform')}
                 >
+                    {isCurrent && (!currentTargetIde || currentTargetIde === 'platform' || currentTargetIde === 'classic') && (
+                        <span className="absolute -top-1 -right-0.5 flex h-2 w-2 z-10 pointer-events-none">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-1 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                        </span>
+                    )}
                     {isSwitching ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
                     ) : (
-                        <AntigravityClassicIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
+                        <AntigravityPlatformIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
                     )}
                 </button>
 
@@ -150,12 +149,20 @@ export function AccountActionControls({
                         "p-1.5 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400"
+                            : isCurrent && currentTargetIde === 'ide'
+                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                                : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400"
                     )}
                     onClick={() => onSwitch('ide')}
                     disabled={isSwitching || isDisabled}
                     title={isDisabled ? t('accounts.disabled_tooltip') : t('accounts.switch_to_ide', 'Switch to Antigravity IDE')}
                 >
+                    {isCurrent && currentTargetIde === 'ide' && (
+                        <span className="absolute -top-1 -right-0.5 flex h-2 w-2 z-10 pointer-events-none">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-1 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                        </span>
+                    )}
                     <AntigravityIdeIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
                 </button>
 
@@ -166,12 +173,20 @@ export function AccountActionControls({
                         "p-1.5 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
-                            : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
+                            : isCurrent && currentTargetIde === 'agy'
+                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                                : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
                     )}
                     onClick={() => onSwitch('agy')}
                     disabled={isSwitching || isDisabled}
                     title={isDisabled ? t('accounts.disabled_tooltip') : t('accounts.switch_to_agy', 'Switch to Antigravity CLI (agy)')}
                 >
+                    {isCurrent && currentTargetIde === 'agy' && (
+                        <span className="absolute -top-1 -right-0.5 flex h-2 w-2 z-10 pointer-events-none">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-1 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                        </span>
+                    )}
                     <AntigravityCliIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
                 </button>
             </div>

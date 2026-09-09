@@ -8,21 +8,23 @@ interface IconProps {
 }
 
 /**
- * 🪐 Antigravity Agentic / Classic Icon
- * Uses official Antigravity Agentic logo from assets.
+ * 🪐 Antigravity Platform Icon (formerly Classic / Agentic)
+ * Uses official Antigravity Platform logo from assets.
  */
-export function AntigravityClassicIcon({ className = "w-4 h-4", size }: IconProps) {
+export function AntigravityPlatformIcon({ className = "w-4 h-4", size }: IconProps) {
     const sizeStyle = size ? { width: size, height: size } : undefined;
     return (
         <img
             src={agenticLogo}
-            alt="Antigravity Agentic"
+            alt="Antigravity Platform"
             className={className}
             style={{ objectFit: 'contain', ...sizeStyle }}
             draggable={false}
         />
     );
 }
+
+export const AntigravityClassicIcon = AntigravityPlatformIcon;
 
 /**
  * 💻 Antigravity IDE Icon

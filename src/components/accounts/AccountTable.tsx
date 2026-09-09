@@ -39,7 +39,9 @@ import {
 import type { Account, ModelQuota } from '../../types/account';
 import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '../../stores/useConfigStore';
+import { useAccountStore } from '../../stores/useAccountStore';
 import { QuotaItem } from './QuotaItem';
+import { WeeklyCountdown } from './WeeklyCountdown';
 import { MODEL_CONFIG, sortModels, getModelProtectionKey, resolveQuotaModels, ensurePinnedImageSelector } from '../../config/modelConfig';
 import { categorizeModel } from '../../utils/modelCategory';
 import { cn } from '../../utils/cn';
@@ -267,7 +269,14 @@ function AccountRowContent({
 }: AccountRowContentProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
+    const { currentTargetIde } = useAccountStore();
     const validationBlockedLabel = getValidationBlockedStatusLabel(account.validation_blocked_reason, t);
+
+    const getActiveBadgeLabel = (target?: string | null) => {
+        if (target === 'ide') return 'IDE Active';
+        if (target === 'agy') return 'CLI Active';
+        return 'Platform Active';
+    };
 
     // 自定义标签编辑状态
     const [isEditingLabel, setIsEditingLabel] = useState(false);
@@ -389,8 +398,15 @@ function AccountRowContent({
 
                     <div className="flex items-center gap-1.5 shrink-0">
                         {isCurrent && (
-                            <span className="px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-[10px] font-bold shadow-sm border border-blue-200/50 dark:border-blue-800/50">
-                                {t('accounts.current').toUpperCase()}
+                            <span 
+                                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold shadow-xs border border-emerald-500/30 dark:border-emerald-500/40 select-none tracking-wide"
+                                title={`Active in Antigravity ${getActiveBadgeLabel(currentTargetIde).replace(' Active', '')}`}
+                            >
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                                </span>
+                                {getActiveBadgeLabel(currentTargetIde)}
                             </span>
                         )}
                         {isDisabled && (
@@ -559,6 +575,11 @@ function AccountRowContent({
                 )}
             </td>
 
+            {/* 周重置倒计时列 */}
+            <td className="px-2 py-1 align-middle whitespace-nowrap">
+                <WeeklyCountdown account={account} layout="table" />
+            </td>
+
             {/* 最后使用时间列 */}
             <td className="px-2 py-1 align-middle">
                 <div className="flex flex-col">
@@ -701,6 +722,9 @@ function AccountTable({
                             <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[300px] whitespace-nowrap">{t('accounts.table.email')}</th>
                             <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[340px] whitespace-nowrap">
                                 {quotaWindow === 'weekly' ? t('accounts.table.weekly_quota', '周配额') : t('accounts.table.quota')}
+                            </th>
+                            <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[170px] whitespace-nowrap">
+                                {t('accounts.table.weekly_countdown', 'Weekly Reset')}
                             </th>
                             <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[90px] whitespace-nowrap">{t('accounts.table.last_used')}</th>
                             <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[220px] bg-gray-50 dark:bg-base-200 z-20 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center">{t('accounts.table.actions')}</th>

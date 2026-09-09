@@ -196,7 +196,8 @@
     "last_used": "آخرین استفاده",
     "reset_time": "زمان بازنشانی",
     "switch_to": "تغییر به این حساب",
-    "switch_to_classic": "تغییر به Antigravity (Classic)",
+    "switch_to_classic": "تغییر به Antigravity Platform",
+    "switch_to_platform": "تغییر به Antigravity Platform",
     "switch_to_ide": "تغییر به Antigravity IDE",
     "actions": "عملیات",
     "device_fingerprint": "اثر انگشت دستگاه",
@@ -305,7 +306,14 @@
       "batch_warmup_title": "Batch Manual Warmup",
       "batch_warmup_msg": "Are you sure you want to trigger warmup for the selected {{count}} accounts immediately?"
     },
-    "switch_to_agy": "تغییر به Antigravity CLI (agy)"
+    "switch_to_agy": "تغییر به Antigravity CLI (agy)",
+    "table": {
+      "email": "ایمیل",
+      "quota": "سهمیه مدل‌ها",
+      "weekly_countdown": "زمان مانده هفتگی",
+      "last_used": "آخرین استفاده",
+      "actions": "عملیات"
+    }
   },
   "settings": {
     "save": "Save Settings",

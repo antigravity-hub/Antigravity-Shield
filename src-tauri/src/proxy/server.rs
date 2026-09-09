@@ -3276,53 +3276,274 @@ async fn handle_oauth_callback(
             Ok(Html(format!(
                 r#"
                 <!DOCTYPE html>
-                <html>
+                <html lang="en">
                 <head>
-                    <title>Authorization Successful</title>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Authorization Successful • Antigravity Shield</title>
                     <style>
-                        body {{ font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #f9fafb; padding: 20px; box-sizing: border-box; }}
-                        .card {{ background: white; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1); text-align: center; max-width: 500px; width: 100%; }}
-                        .icon {{ font-size: 3rem; margin-bottom: 1rem; }}
-                        h1 {{ color: #059669; margin: 0 0 1rem 0; font-size: 1.5rem; }}
-                        p {{ color: #4b5563; line-height: 1.5; margin-bottom: 1.5rem; }}
-                        .fallback-box {{ background-color: #f3f4f6; padding: 1.25rem; border-radius: 1rem; border: 1px dashed #d1d5db; text-align: left; margin-top: 1.5rem; }}
-                        .fallback-title {{ font-weight: 600; font-size: 0.875rem; color: #1f2937; margin-bottom: 0.5rem; display: block; }}
-                        .fallback-text {{ font-size: 0.75rem; color: #6b7280; margin-bottom: 1rem; display: block; }}
-                        .copy-btn {{ width: 100%; padding: 0.75rem; background-color: #3b82f6; color: white; border: none; border-radius: 0.75rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s; }}
-                        .copy-btn:hover {{ background-color: #2563eb; }}
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                        :root {{
+                            --bg-color: #090D16;
+                            --card-bg: rgba(17, 24, 39, 0.82);
+                            --card-border: rgba(255, 255, 255, 0.08);
+                            --primary: #3B82F6;
+                            --primary-glow: rgba(59, 130, 246, 0.28);
+                            --success: #10B981;
+                            --success-glow: rgba(16, 185, 129, 0.35);
+                            --text-main: #F8FAFC;
+                            --text-muted: #94A3B8;
+                        }}
+                        * {{
+                            box-sizing: border-box;
+                            margin: 0;
+                            padding: 0;
+                        }}
+                        body {{
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                            background-color: var(--bg-color);
+                            background-image: 
+                                radial-gradient(circle at 50% 15%, rgba(59, 130, 246, 0.16), transparent 50%),
+                                radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.12), transparent 45%),
+                                radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.12), transparent 45%);
+                            min-height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: var(--text-main);
+                            padding: 24px;
+                            overflow: hidden;
+                            position: relative;
+                        }}
+                        body::before {{
+                            content: '';
+                            position: absolute;
+                            inset: 0;
+                            background-size: 32px 32px;
+                            background-image: 
+                                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+                            mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 80%);
+                            -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 80%);
+                            pointer-events: none;
+                        }}
+                        .container {{
+                            width: 100%;
+                            max-width: 480px;
+                            position: relative;
+                            z-index: 1;
+                            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                        }}
+                        .card {{
+                            background: var(--card-bg);
+                            border: 1px solid var(--card-border);
+                            backdrop-filter: blur(24px);
+                            -webkit-backdrop-filter: blur(24px);
+                            border-radius: 24px;
+                            padding: 38px 32px;
+                            text-align: center;
+                            box-shadow: 
+                                0 25px 50px -12px rgba(0, 0, 0, 0.65),
+                                0 0 0 1px rgba(255, 255, 255, 0.05),
+                                0 0 40px -10px var(--primary-glow);
+                            position: relative;
+                            overflow: hidden;
+                        }}
+                        .card::before {{
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            height: 2px;
+                            background: linear-gradient(90deg, transparent, #38BDF8, #10B981, transparent);
+                            opacity: 0.9;
+                        }}
+                        .icon-wrapper {{
+                            width: 80px;
+                            height: 80px;
+                            margin: 0 auto 20px;
+                            border-radius: 50%;
+                            background: rgba(16, 185, 129, 0.1);
+                            border: 1px solid rgba(16, 185, 129, 0.25);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            position: relative;
+                            box-shadow: 0 0 32px var(--success-glow);
+                        }}
+                        .icon-wrapper::after {{
+                            content: '';
+                            position: absolute;
+                            inset: -6px;
+                            border-radius: 50%;
+                            border: 1px solid rgba(16, 185, 129, 0.2);
+                            animation: pulseRing 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+                        }}
+                        .checkmark-svg {{
+                            width: 44px;
+                            height: 44px;
+                        }}
+                        .checkmark-circle {{
+                            stroke: #10B981;
+                            stroke-width: 2.5;
+                            stroke-dasharray: 166;
+                            stroke-dashoffset: 166;
+                            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+                        }}
+                        .checkmark-check {{
+                            stroke: #34D399;
+                            stroke-width: 3.2;
+                            stroke-linecap: round;
+                            stroke-linejoin: round;
+                            stroke-dasharray: 48;
+                            stroke-dashoffset: 48;
+                            animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+                        }}
+                        .badge {{
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            background: rgba(16, 185, 129, 0.12);
+                            border: 1px solid rgba(16, 185, 129, 0.25);
+                            padding: 6px 14px;
+                            border-radius: 9999px;
+                            font-size: 13px;
+                            font-weight: 500;
+                            color: #34D399;
+                            margin-bottom: 14px;
+                        }}
+                        .badge-dot {{
+                            width: 6px;
+                            height: 6px;
+                            border-radius: 50%;
+                            background-color: #10B981;
+                            box-shadow: 0 0 8px #10B981;
+                        }}
+                        h1 {{
+                            font-size: 22px;
+                            font-weight: 700;
+                            letter-spacing: -0.02em;
+                            color: #FFFFFF;
+                            margin-bottom: 8px;
+                        }}
+                        p {{
+                            font-size: 14px;
+                            line-height: 1.55;
+                            color: var(--text-muted);
+                            margin-bottom: 20px;
+                        }}
+                        .fallback-box {{
+                            background-color: rgba(255, 255, 255, 0.03);
+                            padding: 16px;
+                            border-radius: 14px;
+                            border: 1px dashed rgba(255, 255, 255, 0.12);
+                            text-align: left;
+                            margin-top: 18px;
+                        }}
+                        .fallback-title {{
+                            font-weight: 600;
+                            font-size: 13px;
+                            color: #F1F5F9;
+                            margin-bottom: 4px;
+                            display: block;
+                        }}
+                        .fallback-text {{
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            margin-bottom: 12px;
+                            display: block;
+                            line-height: 1.4;
+                        }}
+                        .copy-btn {{
+                            width: 100%;
+                            padding: 10px 16px;
+                            background: rgba(255, 255, 255, 0.08);
+                            color: #FFFFFF;
+                            font-family: inherit;
+                            font-size: 13px;
+                            font-weight: 600;
+                            border: 1px solid rgba(255, 255, 255, 0.12);
+                            border-radius: 10px;
+                            cursor: pointer;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                        }}
+                        .copy-btn:hover {{
+                            background: rgba(255, 255, 255, 0.14);
+                            transform: translateY(-1px);
+                        }}
+                        .copy-btn:active {{
+                            transform: translateY(0);
+                        }}
+                        @keyframes stroke {{
+                            100% {{ stroke-dashoffset: 0; }}
+                        }}
+                        @keyframes slideUp {{
+                            from {{ opacity: 0; transform: translateY(24px) scale(0.98); }}
+                            to {{ opacity: 1; transform: translateY(0) scale(1); }}
+                        }}
+                        @keyframes pulseRing {{
+                            0% {{ transform: scale(0.95); opacity: 0.8; }}
+                            50% {{ transform: scale(1.15); opacity: 0.15; }}
+                            100% {{ transform: scale(0.95); opacity: 0.8; }}
+                        }}
+                        @media (prefers-reduced-motion: reduce) {{
+                            *, *::before, *::after {{
+                                animation-duration: 0.01ms !important;
+                                animation-iteration-count: 1 !important;
+                                transition-duration: 0.01ms !important;
+                            }}
+                        }}
                     </style>
                 </head>
                 <body>
-                    <div class="card">
-                        <div class="icon">✅</div>
-                        <h1>Authorization Successful</h1>
-                        <p>You can close this window now. The application should refresh automatically.</p>
-                        
-                        <div class="fallback-box">
-                            <span class="fallback-title">💡 Did it not refresh?</span>
-                            <span class="fallback-text">If the application is running in a container or remote environment, you may need to manually copy the link below:</span>
-                            <button onclick="copyUrl()" class="copy-btn" id="copyBtn">Copy Completion Link</button>
+                    <div class="container">
+                        <div class="card">
+                            <div class="icon-wrapper">
+                                <svg class="checkmark-svg" viewBox="0 0 52 52" fill="none">
+                                    <circle class="checkmark-circle" cx="26" cy="26" r="23" />
+                                    <path class="checkmark-check" d="M14.5 27.5L22 35L37.5 19" />
+                                </svg>
+                            </div>
+                            
+                            <div class="badge">
+                                <span class="badge-dot"></span>
+                                <span>Authorized & Saved</span>
+                            </div>
+
+                            <h1>Authorization Successful</h1>
+                            <p>You can close this window now. The application should refresh automatically.</p>
+                            
+                            <div class="fallback-box">
+                                <span class="fallback-title">Did it not refresh?</span>
+                                <span class="fallback-text">If the application is running in a remote or containerized environment, you can copy the link below:</span>
+                                <button onclick="copyUrl()" class="copy-btn" id="copyBtn">Copy Completion Link</button>
+                            </div>
                         </div>
                     </div>
                     <script>
-                        // 1. Notify opener if exists
                         if (window.opener) {{
-                            window.opener.postMessage({{
-                                type: 'oauth-success',
-                                message: 'login success'
-                            }}, '*');
+                            try {{
+                                window.opener.postMessage({{
+                                    type: 'oauth-success',
+                                    message: 'login success'
+                                }}, '*');
+                            }} catch (e) {{}}
                         }}
 
-                        // 2. Copy URL functionality
                         function copyUrl() {{
                             navigator.clipboard.writeText(window.location.href).then(() => {{
                                 const btn = document.getElementById('copyBtn');
                                 const originalText = btn.innerText;
-                                btn.innerText = '✅ Link Copied!';
-                                btn.style.backgroundColor = '#059669';
+                                btn.innerText = 'Link Copied!';
+                                btn.style.backgroundColor = '#10B981';
                                 setTimeout(() => {{
                                     btn.innerText = originalText;
-                                    btn.style.backgroundColor = '#3b82f6';
+                                    btn.style.backgroundColor = '';
                                 }}, 2000);
                             }});
                         }}
