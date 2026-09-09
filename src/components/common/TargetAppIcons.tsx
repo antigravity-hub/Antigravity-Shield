@@ -1,4 +1,4 @@
-import agenticLogo from '../../assets/icons/antigravity-agentic.png';
+import platformLogo from '../../assets/icons/antigravity-agentic.png';
 import ideLogo from '../../assets/icons/antigravity-ide.png';
 import cliLogo from '../../assets/icons/antigravity-cli.png';
 
@@ -15,7 +15,7 @@ export function AntigravityPlatformIcon({ className = "w-4 h-4", size }: IconPro
     const sizeStyle = size ? { width: size, height: size } : undefined;
     return (
         <img
-            src={agenticLogo}
+            src={platformLogo}
             alt="Antigravity Platform"
             className={className}
             style={{ objectFit: 'contain', ...sizeStyle }}
