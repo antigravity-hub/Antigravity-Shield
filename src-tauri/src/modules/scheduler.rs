@@ -64,11 +64,96 @@ fn parse_reset_time_ts(s: &str) -> Option<i64> {
     None
 }
 
+/// Google AI Docs URL to scan for latest models
+const GOOGLE_AI_MODELS_DOC_URL: &str = "https://ai.google.dev/gemini-api/docs/models";
+
+/// Path to store the scraped latest models catalog
+fn get_models_catalog_path() -> Result<PathBuf, String> {
+    let data_dir = account::get_data_dir()?;
+    Ok(data_dir.join("latest_models_catalog.json"))
+}
+
+/// Scrapes https://ai.google.dev/gemini-api/docs/models to automatically discover latest Gemini models
+pub async fn sync_latest_models_from_google_ai() {
+    logger::log_info("[ModelSync] Scanning https://ai.google.dev/gemini-api/docs/models for latest models...");
+    
+    let client = reqwest::Client::builder()
+        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
+        .timeout(Duration::from_secs(15))
+        .build();
+
+    let client = match client {
+        Ok(c) => c,
+        Err(e) => {
+            logger::log_warn(&format!("[ModelSync] Failed to build HTTP client: {}", e));
+            return;
+        }
+    };
+
+    match client.get(GOOGLE_AI_MODELS_DOC_URL).send().await {
+        Ok(resp) => {
+            if resp.status().is_success() {
+                if let Ok(html) = resp.text().await {
+                    let mut found_models = std::collections::BTreeSet::new();
+                    // Regex match all gemini-X.Y-xxx or gemini-X-xxx identifiers
+                    let re = regex::Regex::new(r"gemini-[0-9]+(?:\.[0-9]+)?-[a-z0-9-]+").unwrap();
+                    for cap in re.find_iter(&html) {
+                        let m = cap.as_str().to_lowercase();
+                        // Filter out documentation anchor links / html fragments
+                        if !m.ends_with("-models") && !m.ends_with("-stable") && !m.ends_with("-preview") {
+                            found_models.insert(m);
+                        }
+                    }
+
+                    if !found_models.is_empty() {
+                        let models_list: Vec<String> = found_models.into_iter().collect();
+                        logger::log_info(&format!(
+                            "[ModelSync] Successfully discovered {} Gemini models from Google AI docs: {:?}",
+                            models_list.len(),
+                            models_list
+                        ));
+
+                        if let Ok(path) = get_models_catalog_path() {
+                            let catalog_obj = serde_json::json!({
+                                "last_scanned": Utc::now().timestamp(),
+                                "url": GOOGLE_AI_MODELS_DOC_URL,
+                                "models": models_list
+                            });
+                            if let Ok(json_str) = serde_json::to_string_pretty(&catalog_obj) {
+                                let _ = std::fs::write(path, json_str);
+                            }
+                        }
+                    }
+                }
+            } else {
+                logger::log_warn(&format!("[ModelSync] HTTP {} fetching Google AI docs", resp.status()));
+            }
+        }
+        Err(e) => {
+            logger::log_warn(&format!("[ModelSync] Error fetching Google AI docs: {}", e));
+        }
+    }
+}
+
 /// Start smart weekly scheduler
 pub fn start_scheduler(
     app_handle: Option<tauri::AppHandle>,
     proxy_state: crate::commands::proxy::ProxyServiceState,
 ) {
+    // 1. Spawn Google AI 6-hour model scraper loop
+    tauri::async_runtime::spawn(async move {
+        // Initial scan on startup (delayed by 10s to not block initial GUI launch)
+        time::sleep(Duration::from_secs(10)).await;
+        sync_latest_models_from_google_ai().await;
+
+        // Recurring scan every 6 hours (6 * 3600 = 21600 seconds)
+        loop {
+            time::sleep(Duration::from_secs(6 * 3600)).await;
+            sync_latest_models_from_google_ai().await;
+        }
+    });
+
+    // 2. Spawn Weekly Reset Warmup Scheduler
     tauri::async_runtime::spawn(async move {
         logger::log_info("[Scheduler] Weekly Reset Warmup Scheduler started. Monitoring 7-day quota windows...");
 

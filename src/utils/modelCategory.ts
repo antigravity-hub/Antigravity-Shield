@@ -98,44 +98,59 @@ export function getModelShortDisplayName(
 }
 
 /**
- * 按优先级查找配额模型：先精确匹配首选名，再按类别 fallback。
+ * 提取模型版本号（如 gemini-3.7-flash -> 3.7, gemini-3-flash -> 3.0, gemini-pro-agent -> 3.1 等）
+ */
+function extractModelScore(name: string): number {
+    const n = name.toLowerCase();
+
+    // 预设或特定 agent 映射基准
+    let baseVersion = 0;
+    const match = n.match(/gemini-(\d+(?:\.\d+)?)/);
+    if (match) {
+        baseVersion = parseFloat(match[1]);
+    } else if (n === 'gemini-pro-agent') {
+        baseVersion = 3.1;
+    } else if (n === 'gemini-flash-agent') {
+        baseVersion = 3.0;
+    } else if (n.includes('claude-sonnet-4-6') || n.includes('claude-opus-4-6')) {
+        baseVersion = 4.6;
+    } else if (n.includes('claude-sonnet-4-5') || n.includes('claude-haiku-4-5')) {
+        baseVersion = 4.5;
+    }
+
+    // 质量/规格梯度加权 (High / Tiered > Medium > Normal > Agent > Low)
+    let tierBonus = 0.05;
+    if (n.includes('high') || n.includes('tiered')) {
+        tierBonus = 0.08;
+    } else if (n.includes('medium')) {
+        tierBonus = 0.06;
+    } else if (n.includes('agent')) {
+        tierBonus = 0.05;
+    } else if (n.includes('extra-low')) {
+        tierBonus = 0.01;
+    } else if (n.includes('low') || n.includes('lite')) {
+        tierBonus = 0.02;
+    }
+
+    return baseVersion + tierBonus;
+}
+
+/**
+ * 动态查找配额模型：按类别筛选候选模型，并自动选出版本最高、性能规格最强的旗舰模型。
+ * 完全自适应 Google AI / Gemini API 发布的任意新版本模型（如 3.8, 3.9, 4.0 等）。
  */
 export function findQuotaModel<T extends { name: string }>(
     models: T[] | undefined,
     category: ModelCategory,
 ): T | undefined {
     if (!models || models.length === 0) return undefined;
-    const preferred: Partial<Record<ModelCategory, string[]>> = {
-        'gemini-pro': [
-            'gemini-3.8-pro-high',
-            'gemini-3.8-pro',
-            'gemini-3.1-pro-high',
-            'gemini-pro-agent',
-            'gemini-3-pro-high',
-            'gemini-3.1-pro',
-            'gemini-3.1-pro-low',
-            'gemini-3-pro-low',
-            'gemini-2.5-pro',
-        ],
-        'gemini-flash': [
-            'gemini-3.8-flash-tiered',
-            'gemini-3.8-flash',
-            'gemini-3.5-flash',
-            'gemini-3.1-flash',
-            'gemini-3-flash-agent',
-            'gemini-3-flash',
-            'gemini-2.5-flash',
-        ],
-        'claude': ['claude-sonnet-4-6', 'claude-opus-4-6-thinking'],
-    };
-    const names = preferred[category];
-    if (names) {
-        for (const name of names) {
-            const found = models.find(m => m.name === name);
-            if (found) return found;
-        }
-    }
-    return models.find(m => categorizeModel(m.name) === category);
+
+    // 筛选出属于该类别的所有模型
+    const candidates = models.filter(m => categorizeModel(m.name) === category);
+    if (candidates.length === 0) return undefined;
+
+    // 按动态算力评分降序排序，始终选中最高版本
+    return candidates.sort((a, b) => extractModelScore(b.name) - extractModelScore(a.name))[0];
 }
 
 export function getModelProtectionKey(name: string): string | null {
