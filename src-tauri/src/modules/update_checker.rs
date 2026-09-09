@@ -99,19 +99,19 @@ pub async fn check_for_updates() -> Result<UpdateInfo, String> {
         }
     }
 
-    // 3. Try GitHub Raw
-    match check_static_url(GITHUB_RAW_URL, "GitHub Raw").await {
+    // 3. Try jsDelivr (Fast CDN mirror, accessible globally without VPN)
+    match check_static_url(JSDELIVR_URL, "jsDelivr").await {
         Ok(info) => return Ok(info),
         Err(e) => {
             logger::log_warn(&format!(
-                "GitHub Raw check failed: {}. Trying next fallback...",
+                "jsDelivr check failed: {}. Trying GitHub Raw...",
                 e
             ));
         }
     }
 
-    // 4. Try jsDelivr
-    match check_static_url(JSDELIVR_URL, "jsDelivr").await {
+    // 4. Try GitHub Raw
+    match check_static_url(GITHUB_RAW_URL, "GitHub Raw").await {
         Ok(info) => return Ok(info),
         Err(e) => {
             logger::log_error(&format!("All update checks failed. Last error: {}", e));
@@ -188,7 +188,8 @@ async fn check_updater_json() -> Result<UpdateInfo, String> {
 async fn create_client() -> Result<reqwest::Client, String> {
     let mut builder = reqwest::Client::builder()
         .user_agent("Antigravity-Manager")
-        .timeout(std::time::Duration::from_secs(10));
+        .connect_timeout(std::time::Duration::from_secs(15))
+        .timeout(std::time::Duration::from_secs(30));
 
     // Load config to check for upstream proxy
     if let Ok(config) = crate::modules::config::load_app_config() {
