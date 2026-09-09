@@ -5,7 +5,7 @@ import { isTauri } from '../../utils/env';
 
 export function NavLogo() {
     const [imgFailed, setImgFailed] = useState(false);
-    const [version, setVersion] = useState('5.0.5');
+    const [version, setVersion] = useState('5.0.6');
 
     useEffect(() => {
         if (isTauri()) {
