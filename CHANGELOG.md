@@ -4,11 +4,15 @@
 
 *   **Version History**:
     *   **v5.1.0 (2026-09-09)**:
-        -   **[Major Feature & Token Analytics] Dual-Source Token Analytics & Historical Brain Scanner**:
+        -   **[Major Feature & Token Analytics] Dual-Source Token Analytics, Live Watcher & Multi-Target Separation**:
+            -   **Real-Time Background Watcher**: Added an autonomous, ultra-lightweight background file watcher in Rust (`start_live_watcher`) that monitors conversation updates every 3 seconds and emits real-time events to the UI without requiring manual scan clicks.
+            -   **3-Tier Target Separation**: Intelligently segments token usage across 3 distinct targets: **Antigravity IDE**, **Antigravity CLI (`agy`)**, and **Local Gateway / Proxy (port 8045)**.
             -   **Historical Disk Scanner**: Added native Rust `brain_scanner` engine to automatically scan local conversation transcripts (`~/.gemini/antigravity/brain/`), recover historical token usage from Antigravity IDE direct conversations, and persist them into `token_stats.db` with incremental deduplication.
             -   **Proxy Stream Bug Fixes**: Fixed Claude SSE `input_tokens` capture inside `message_start` events, prevented token overwriting across stream deltas, and eliminated trailing `usageMetadata` drops before `[DONE]` in OpenAI streaming mapper.
             -   **Third-Party Provider Resilience**: Added fallback identity so token tracking never drops requests missing `X-Account-Email`.
-            -   **Interactive Dashboard**: Added "Scan History" button to Token Stats page with live scanning status and recovery notification banner.
+            -   **Interactive Dashboard**: Added "Scan History" button, live pulsating synchronization badge (`Live IDE / CLI Sync`), and token recovery feedback banner to Token Stats page.
+        -   **[Branding & Asset Alignment] Official App Icon Identities**:
+            -   **Official Icon Set**: Aligned Antigravity IDE and Platform branding icons across `/public` and `/src/assets` to match official product visual identities.
         -   **[Quota & Multi-Account] Stabilize Model Category Selection & Prioritize 5h Quota**:
             -   **Active Quota Prioritization**: Prioritized 5-hour quota windows for active accounts and stabilized model category selector.
         -   **[OAuth & UX Enhancement] Redesign Success Screen & Target Badges**:
