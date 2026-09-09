@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { request as invoke } from '../utils/request';
 import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu } from 'lucide-react';
+import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2 } from 'lucide-react';
 
 interface TokenStatsAggregated {
     period: string;
@@ -51,6 +51,14 @@ interface TokenStatsSummary {
     unique_accounts: number;
 }
 
+interface BrainScanResult {
+    conversations_found: number;
+    conversations_scanned: number;
+    conversations_skipped: number;
+    total_new_tokens: number;
+    errors: string[];
+}
+
 type TimeRange = 'hourly' | 'daily' | 'weekly';
 type ViewMode = 'model' | 'account';
 
@@ -89,6 +97,21 @@ const TokenStats: React.FC = () => {
     const [allAccounts, setAllAccounts] = useState<string[]>([]);
     const [summary, setSummary] = useState<TokenStatsSummary | null>(null);
     const [loading, setLoading] = useState(true);
+    const [scanning, setScanning] = useState(false);
+    const [scanResult, setScanResult] = useState<BrainScanResult | null>(null);
+
+    const handleScanBrain = async () => {
+        setScanning(true);
+        try {
+            const res = await invoke<BrainScanResult>('scan_brain_conversations');
+            setScanResult(res);
+            await fetchData();
+        } catch (error) {
+            console.error('Brain scan failed:', error);
+        } finally {
+            setScanning(false);
+        }
+    };
 
     const fetchData = async () => {
         setLoading(true);
@@ -370,14 +393,43 @@ const TokenStats: React.FC = () => {
                             </button>
                         </div>
                         <button
+                            onClick={handleScanBrain}
+                            disabled={scanning}
+                            title={t('token_stats.scan_history', 'اسکن تاریخچه گفتگوها')}
+                            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+                        >
+                            <History className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
+                            <span>{scanning ? t('token_stats.scanning', 'در حال اسکن...') : t('token_stats.scan_history', 'Scan History')}</span>
+                        </button>
+                        <button
                             onClick={fetchData}
                             disabled={loading}
+                            title={t('common.refresh', 'تازه سازی')}
                             className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
                         >
                             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                         </button>
                     </div>
                 </div>
+
+                {scanResult && (
+                    <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 rounded-xl flex items-center justify-between text-xs text-indigo-800 dark:text-indigo-200">
+                        <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
+                            <span>
+                                {t('token_stats.scan_success', 'اسکن تاریخچه تکمیل شد:')}{' '}
+                                <strong>{scanResult.conversations_found}</strong> گفتگو بررسی شد ({scanResult.conversations_scanned} اسکن جدید، {scanResult.conversations_skipped} از قبل به‌روز)،{' '}
+                                <strong>{formatNumber(scanResult.total_new_tokens)}</strong> توکن تاریخی بازیابی گردید.
+                            </span>
+                        </div>
+                        <button 
+                            onClick={() => setScanResult(null)}
+                            className="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium px-2 py-0.5"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
 
                 {summary && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">

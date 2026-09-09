@@ -80,11 +80,14 @@ impl ProxyMonitor {
     }
 
     pub async fn log_request(&self, log: ProxyRequestLog) {
-        if let (Some(account), Some(input), Some(output)) =
-            (&log.account_email, log.input_tokens, log.output_tokens)
-        {
+        // Record token stats regardless of account_email presence
+        // Falls back to "unknown" for third-party providers that don't set X-Account-Email
+        if let (Some(input), Some(output)) = (log.input_tokens, log.output_tokens) {
             let model = log.model.clone().unwrap_or_else(|| "unknown".to_string());
-            let account = account.clone();
+            let account = log
+                .account_email
+                .clone()
+                .unwrap_or_else(|| "unknown".to_string());
             let cached = log.cached_tokens.unwrap_or(0);
             tokio::task::spawn_blocking(move || {
                 if let Err(e) = crate::modules::token_stats::record_usage(

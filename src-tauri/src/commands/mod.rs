@@ -1231,3 +1231,11 @@ pub async fn query_transit_info(url: String, key: String) -> Result<String, Stri
         Err(format!("HTTP {}: {}", status, text))
     }
 }
+
+#[tauri::command]
+pub async fn scan_brain_conversations() -> Result<crate::modules::brain_scanner::BrainScanResult, String> {
+    tokio::task::spawn_blocking(|| crate::modules::brain_scanner::scan_brain_conversations())
+        .await
+        .map_err(|e| e.to_string())?
+}
+

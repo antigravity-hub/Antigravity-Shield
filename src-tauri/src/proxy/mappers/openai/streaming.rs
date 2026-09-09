@@ -391,7 +391,6 @@ where
                                                                 openai_chunk["usage"] = serde_json::to_value(usage).unwrap();
                                                             }
                                                         }
-                                                        if finish_reason.is_some() { final_usage = None; }
                                                         let sse_out = format!("data: {}\n\n", serde_json::to_string(&openai_chunk).unwrap_or_default());
                                                         yield Ok::<Bytes, String>(Bytes::from(sse_out));
                                                     }
@@ -441,6 +440,18 @@ where
         }
 
         if !error_occurred {
+            if let Some(ref usage) = final_usage {
+                let usage_chunk = json!({
+                    "id": &stream_id,
+                    "object": "chat.completion.chunk",
+                    "created": created_ts,
+                    "model": &model,
+                    "choices": [],
+                    "usage": serde_json::to_value(usage).unwrap()
+                });
+                let sse_out = format!("data: {}\n\n", serde_json::to_string(&usage_chunk).unwrap_or_default());
+                yield Ok::<Bytes, String>(Bytes::from(sse_out));
+            }
             yield Ok::<Bytes, String>(Bytes::from("data: [DONE]\n\n"));
         }
     };
@@ -520,7 +531,6 @@ where
                                                 "choices": [{ "text": content_out, "index": 0, "logprobs": null, "finish_reason": finish_reason }]
                                             });
                                             if let Some(ref usage) = final_usage { legacy_chunk["usage"] = serde_json::to_value(usage).unwrap(); }
-                                            if finish_reason.is_some() { final_usage = None; }
                                             yield Ok::<Bytes, String>(Bytes::from(format!("data: {}\n\n", serde_json::to_string(&legacy_chunk).unwrap_or_default())));
                                         }
                                     }
@@ -547,6 +557,14 @@ where
             }
         }
         if !error_occurred {
+            if let Some(ref usage) = final_usage {
+                let usage_chunk = json!({
+                    "id": &stream_id, "object": "text_completion", "created": created_ts, "model": &model,
+                    "choices": [],
+                    "usage": serde_json::to_value(usage).unwrap()
+                });
+                yield Ok::<Bytes, String>(Bytes::from(format!("data: {}\n\n", serde_json::to_string(&usage_chunk).unwrap_or_default())));
+            }
             yield Ok::<Bytes, String>(Bytes::from("data: [DONE]\n\n"));
         }
     };

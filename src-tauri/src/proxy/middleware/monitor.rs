@@ -788,9 +788,10 @@ pub async fn monitor_middleware(
                             .or(json.get("usageMetadata"))
                             .or(json.get("response").and_then(|r| r.get("usage")))
                             .or(json.get("response").and_then(|r| r.get("usageMetadata")))
+                            .or(json.get("message").and_then(|m| m.get("usage")))
                         {
-                            log.input_tokens = extract_input_tokens(usage);
-                            log.output_tokens = extract_output_tokens(usage);
+                            log.input_tokens = log.input_tokens.or_else(|| extract_input_tokens(usage));
+                            log.output_tokens = log.output_tokens.or_else(|| extract_output_tokens(usage));
                             cached_tokens = cached_tokens.or_else(|| extract_cached_tokens(usage));
                             log.cached_tokens = log.cached_tokens.or(cached_tokens);
                             reasoning_tokens =
@@ -925,9 +926,10 @@ pub async fn monitor_middleware(
                                     .or(json.get("usageMetadata"))
                                     .or(json.get("response").and_then(|r| r.get("usage")))
                                     .or(json.get("response").and_then(|r| r.get("usageMetadata")))
+                                    .or(json.get("message").and_then(|m| m.get("usage")))
                                 {
-                                    log.input_tokens = extract_input_tokens(usage);
-                                    log.output_tokens = extract_output_tokens(usage);
+                                    log.input_tokens = log.input_tokens.or_else(|| extract_input_tokens(usage));
+                                    log.output_tokens = log.output_tokens.or_else(|| extract_output_tokens(usage));
                                     log.cached_tokens =
                                         log.cached_tokens.or_else(|| extract_cached_tokens(usage));
                                     break;
@@ -974,9 +976,10 @@ pub async fn monitor_middleware(
                             .or(json.get("usageMetadata"))
                             .or(json.get("response").and_then(|r| r.get("usage")))
                             .or(json.get("response").and_then(|r| r.get("usageMetadata")))
+                            .or(json.get("message").and_then(|m| m.get("usage")))
                         {
-                            log.input_tokens = extract_input_tokens(usage);
-                            log.output_tokens = extract_output_tokens(usage);
+                            log.input_tokens = log.input_tokens.or_else(|| extract_input_tokens(usage));
+                            log.output_tokens = log.output_tokens.or_else(|| extract_output_tokens(usage));
                             log.cached_tokens =
                                 log.cached_tokens.or_else(|| extract_cached_tokens(usage));
 
