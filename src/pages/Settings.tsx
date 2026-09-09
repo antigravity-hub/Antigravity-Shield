@@ -406,6 +406,14 @@ function Settings() {
             console.error('Settings auto-update failed:', errorMsg);
             setIsAutoUpdating(false);
             showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
+            if (updateInfo?.downloadUrl) {
+                try {
+                    const { openUrl } = await import('@tauri-apps/plugin-opener');
+                    await openUrl(updateInfo.downloadUrl);
+                } catch {
+                    window.open(updateInfo.downloadUrl, '_blank');
+                }
+            }
         }
     };
 

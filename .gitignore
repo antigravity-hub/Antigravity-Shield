@@ -58,3 +58,4 @@ pnpm-lock.yaml
 Downloads/
 dist_release/
 prebuilt_bindings.rs
+*.db

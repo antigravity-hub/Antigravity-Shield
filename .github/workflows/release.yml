@@ -184,6 +184,12 @@ jobs:
 
           WINDOWS_NSIS_SIG=$(read_sig "*_x64-setup.exe.sig")
           WIN_EXE=$(find all-artifacts -name "*_x64-setup.exe" -type f -exec basename {} \; 2>/dev/null | head -1)
+          # GitHub Releases replaces spaces with dots in asset filenames upon upload.
+          # Sanitize filename so updater.json points to the exact asset URL on GitHub.
+          WIN_EXE_CLEAN="${WIN_EXE// /.}"
+          if [ -z "$WIN_EXE_CLEAN" ]; then
+            WIN_EXE_CLEAN="Antigravity.Shield_${VER}_x64-setup.exe"
+          fi
 
           jq -n \
             --arg version "$VER" \
@@ -191,7 +197,7 @@ jobs:
             --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --arg dl "$DOWNLOAD_BASE" \
             --arg win_nsis_sig "$WINDOWS_NSIS_SIG" \
-            --arg win_exe "${WIN_EXE:-Antigravity.Shield_${VER}_x64-setup.exe}" \
+            --arg win_exe "$WIN_EXE_CLEAN" \
             '{
               version: $version,
               notes: $notes,
@@ -214,7 +220,9 @@ jobs:
             -name "*.exe" -o \
             -name "*.sig" \
           \) -print0 | while IFS= read -r -d '' file; do
-            cp "$file" release-files/
+            base=$(basename "$file")
+            clean_base="${base// /.}"
+            cp "$file" "release-files/$clean_base"
           done
           find release-files -maxdepth 1 -type f -print
 
