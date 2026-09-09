@@ -1,6 +1,6 @@
 [package]
 name = "antigravity-shield"
-version = "5.0.9"
+version = "5.1.0"
 description = "Antigravity Shield - Hardened AI Account Manager & Proxy Gateway"
 authors = ["DoctorGuidance"]
 license = "CC-BY-NC-SA-4.0"

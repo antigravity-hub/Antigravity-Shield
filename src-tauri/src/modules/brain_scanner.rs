@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use regex::Regex;
 use serde_json::Value;
 use rusqlite::{params, Connection};
-use std::time::{SystemTime, UNIX_EPOCH};
+use chrono::Utc;
 
 #[derive(serde::Serialize)]
 pub struct BrainScanResult {
@@ -92,8 +92,10 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
         if let Ok(mut stmt) = conn.prepare("SELECT last_line_offset, total_tokens_found FROM brain_scan_progress WHERE conversation_id = ?1") {
             if let Ok(mut rows) = stmt.query(params![name]) {
                 if let Ok(Some(row)) = rows.next() {
-                    last_offset = row.get::<_, usize>(0).unwrap_or(0);
-                    total_tokens = row.get::<_, u64>(1).unwrap_or(0);
+                    let offset: i64 = row.get(0).unwrap_or(0);
+                    last_offset = offset.max(0) as usize;
+                    let tokens: i64 = row.get(1).unwrap_or(0);
+                    total_tokens = tokens.max(0) as u64;
                 }
             }
         }
@@ -161,7 +163,7 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                 total_tokens += new_tokens_for_conv;
             }
 
-            let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+            let now = Utc::now().timestamp();
             let _ = conn.execute(
                 "INSERT INTO brain_scan_progress (conversation_id, last_line_offset, last_scan_timestamp, total_tokens_found) 
                  VALUES (?1, ?2, ?3, ?4)
@@ -169,7 +171,7 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                     last_line_offset = excluded.last_line_offset,
                     last_scan_timestamp = excluded.last_scan_timestamp,
                     total_tokens_found = excluded.total_tokens_found",
-                params![name, line_count, now, total_tokens],
+                params![name, line_count as i64, now, total_tokens as i64],
             );
         }
     }

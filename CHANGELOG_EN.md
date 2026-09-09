@@ -3,7 +3,7 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
-    *   **v5.0.9 (2026-09-09)**:
+    *   **v5.1.0 (2026-09-09)**:
         -   **[Major Feature & Token Analytics] Dual-Source Token Analytics & Historical Brain Scanner**:
             -   **Historical Disk Scanner**: Added native Rust `brain_scanner` engine to automatically scan local conversation transcripts (`~/.gemini/antigravity/brain/`), recover historical token usage from Antigravity IDE direct conversations, and persist them into `token_stats.db` with incremental deduplication.
             -   **Proxy Stream Bug Fixes**: Fixed Claude SSE `input_tokens` capture inside `message_start` events, prevented token overwriting across stream deltas, and eliminated trailing `usageMetadata` drops before `[DONE]` in OpenAI streaming mapper.
