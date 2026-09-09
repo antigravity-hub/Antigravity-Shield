@@ -3,6 +3,18 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
+    *   **v5.0.9 (2026-09-09)**:
+        -   **[Major Feature & Token Analytics] Dual-Source Token Analytics & Historical Brain Scanner**:
+            -   **Historical Disk Scanner**: Added native Rust `brain_scanner` engine to automatically scan local conversation transcripts (`~/.gemini/antigravity/brain/`), recover historical token usage from Antigravity IDE direct conversations, and persist them into `token_stats.db` with incremental deduplication.
+            -   **Proxy Stream Bug Fixes**: Fixed Claude SSE `input_tokens` capture inside `message_start` events, prevented token overwriting across stream deltas, and eliminated trailing `usageMetadata` drops before `[DONE]` in OpenAI streaming mapper.
+            -   **Third-Party Provider Resilience**: Added fallback identity so token tracking never drops requests missing `X-Account-Email`.
+            -   **Interactive Dashboard**: Added "Scan History" button to Token Stats page with live scanning status and recovery notification banner.
+        -   **[Quota & Multi-Account] Stabilize Model Category Selection & Prioritize 5h Quota**:
+            -   **Active Quota Prioritization**: Prioritized 5-hour quota windows for active accounts and stabilized model category selector.
+        -   **[OAuth & UX Enhancement] Redesign Success Screen & Target Badges**:
+            -   **Redesigned OAuth Screen**: Re-architected OAuth success page with active target badges and weekly countdown stepper.
+        -   **[Security & Dependencies] Resolve Dependabot Alerts**:
+            -   **Upgraded Dependencies**: Resolved security alerts across `quinn`, `rustls-webpki`, `colord`, `tauri`, `tar`, `serde_with`, and `rand`.
     *   **v5.0.8 (2026-09-09)**:
         -   **[Global Auto-Updater & Pipeline Fix] Sanitize Asset File Naming to Eliminate 404 Errors**:
             -   **Normalized Release Assets**: Replaced all whitespace in Windows installer package names with dots (`Antigravity.Shield_${VERSION}_x64-setup.exe`), fully aligning with GitHub Releases API sanitization policies and guaranteeing that `updater.json` download links match published assets with 100% accuracy.
