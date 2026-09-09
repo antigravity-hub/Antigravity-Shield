@@ -3,6 +3,22 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **Version History**:
+    *   **v5.2.0 (2026-09-09)**:
+        -   **[Major Feature & Visual Analytics] Annual GitHub-Style Token Heatmap & Granular Time Filtering**:
+            -   **Annual Activity Heatmap**: Implemented a full 53-week × 7-day contribution-style calendar heatmap in `TokenHeatmap.tsx` featuring 5 dynamic intensity levels, interactive tooltips, year picker, and daily/weekly view toggling.
+            -   **Click-to-Inspect Filtering**: Clicking any calendar cell instantly filters granular token analytics and model/account breakdowns down to that specific date.
+            -   **Extended Time Ranges**: Added 1 Month (`30d`), 1 Year (`365d`), and Custom Date Range picker with dual date inputs.
+            -   **Target Source Filter**: Added instant filtering tabs across **All Sources**, **Antigravity IDE**, **Antigravity Platform**, and **Antigravity CLI (`agy`)**.
+        -   **[Performance & Stability] Elimination of Stale Closure & UI Flickering**:
+            -   **Silent Reactive Sync**: Fixed background listener (`live_token_stats_update`) using mutable references to preserve active filter state, eliminating chart unmounting and layout reset glitches during live token synchronization.
+        -   **[Quota & Multi-Account UX] 5-Hour Quota Window & 7-Day Countdown Stepper Alignment**:
+            -   **Strict LTR 7-Day Stepper**: Reordered countdown stepper numbers from Left-to-Right (`[1, 2, 3, 4, 5, 6, 7]`) with `dir="ltr"` so expired days empty from the right. Remaining active days now match glowing border accents, while current active day retains high-contrast white text.
+            -   **5H Quota Separation**: When 5H mode is active, account cards and table rows dynamically display rolling 5-hour quota gauges and reset timers instead of 7-day weekly steppers.
+            -   **Refresh Cancellation & Target Switch**: Added an active pulsating Stop button allowing users to cancel long-running account quota refreshes at any moment, and removed blocking restrictions preventing app target switching during refresh.
+        -   **[i18n & Localization] Comprehensive Language Parity**:
+            -   **Full Internationalization**: Fully translated transcript recovery feedback banners, source filters, heatmap legends, and refresh cancellation labels across English (`en.json`), Persian (`fa.json`), and Chinese (`zh.json`).
+        -   **[Release & Cleanup] Clean UI & Upgraded Client Bundling**:
+            -   **Clean UI**: Removed deprecated Telegram card component and fixed potential update check timeouts.
     *   **v5.1.0 (2026-09-09)**:
         -   **[Major Feature & Token Analytics] Dual-Source Token Analytics, Live Watcher & Multi-Target Separation**:
             -   **Real-Time Background Watcher**: Added an autonomous, ultra-lightweight background file watcher in Rust (`start_live_watcher`) that monitors conversation updates every 3 seconds and emits real-time events to the UI without requiring manual scan clicks.
