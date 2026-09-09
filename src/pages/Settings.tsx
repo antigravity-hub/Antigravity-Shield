@@ -576,6 +576,9 @@ function Settings() {
                                     <option value="ko">한국어</option>
                                     <option value="ru">Русский</option>
                                     <option value="ar">العربية</option>
+                                    <option value="es">Español</option>
+                                    <option value="my">Bahasa Melayu</option>
+                                    <option value="fa">Persian</option>
                                 </select>
                             </div>
 

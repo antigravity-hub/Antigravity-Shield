@@ -32,6 +32,7 @@ fn load_translations(lang: &str) -> HashMap<String, String> {
         "ar" | "ar-SA" => include_str!("../../../src/locales/ar.json"),
         "es" | "es-ES" | "es-MX" => include_str!("../../../src/locales/es.json"),
         "my" | "ms" | "ms-MY" => include_str!("../../../src/locales/my.json"),
+        "fa" | "fa-IR" => include_str!("../../../src/locales/fa.json"),
         "en" | "en-US" => include_str!("../../../src/locales/en.json"),
         _ => include_str!("../../../src/locales/en.json"),
     };

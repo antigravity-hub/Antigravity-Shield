@@ -77,7 +77,7 @@ function App() {
     if (config?.language) {
       i18n.changeLanguage(config.language);
       // Support RTL
-      if (config.language === 'ar') {
+      if (config.language === 'ar' || config.language === 'fa' || config.language.startsWith('fa-')) {
         document.documentElement.dir = 'rtl';
       } else {
         document.documentElement.dir = 'ltr';
