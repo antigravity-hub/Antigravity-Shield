@@ -201,6 +201,24 @@ const TokenStats: React.FC = () => {
         fetchData();
     }, [timeRange]);
 
+    useEffect(() => {
+        let unlistenFn: (() => void) | null = null;
+        (async () => {
+            try {
+                const { listen } = await import('@tauri-apps/api/event');
+                unlistenFn = await listen('live_token_stats_update', () => {
+                    fetchData();
+                });
+            } catch (e) {
+                // Ignore if not in Tauri window
+            }
+        })();
+
+        return () => {
+            if (unlistenFn) unlistenFn();
+        };
+    }, []);
+
     const pieData = accountData.slice(0, 8).map((account, index) => ({
         name: account.account_email.split('@')[0] + '...',
         value: account.total_tokens,
@@ -355,10 +373,16 @@ const TokenStats: React.FC = () => {
         <div className="h-full w-full overflow-y-auto">
             <div className="p-5 space-y-4 max-w-7xl mx-auto">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                        <Zap className="w-6 h-6 text-blue-500" />
-                        {t('token_stats.title', 'Token 消费统计')}
-                    </h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                            <Zap className="w-6 h-6 text-blue-500" />
+                            {t('token_stats.title', 'Token 消费统计')}
+                        </h1>
+                        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>{t('token_stats.live_sync', 'Live IDE / CLI Sync')}</span>
+                        </div>
+                    </div>
                     <div className="flex items-center gap-2">
                         <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
                             <button

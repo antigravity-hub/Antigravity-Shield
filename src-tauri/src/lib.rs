@@ -511,6 +511,10 @@ pub fn run() {
             modules::scheduler::start_scheduler(Some(app.handle().clone()), scheduler_state.inner().clone());
             info!("Smart scheduler (7-Day Weekly Reset Warmup) initialized.");
 
+            // Start real-time background watcher for Antigravity IDE & CLI transcripts
+            modules::brain_scanner::start_live_watcher(Some(app.handle().clone()));
+            info!("Real-time Brain transcript watcher initialized.");
+
             // [PHASE 1] 已整合至 Axum 端口 (8045)，不再单独启动 19527 端口
             info!("Management API integrated into main proxy server (port 8045)");
 

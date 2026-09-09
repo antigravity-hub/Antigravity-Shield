@@ -5,8 +5,9 @@ use regex::Regex;
 use serde_json::Value;
 use rusqlite::{params, Connection};
 use chrono::Utc;
+use tauri::Emitter;
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, Clone, Debug)]
 pub struct BrainScanResult {
     pub conversations_found: usize,
     pub conversations_scanned: usize,
@@ -156,7 +157,28 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
             result.conversations_scanned += 1;
             
             if new_tokens_for_conv > 0 {
-                if let Err(e) = crate::modules::token_stats::record_usage("brain-scan", "brain-scan", 0, new_tokens_for_conv as u32, 0) {
+                // Determine target application: Antigravity IDE vs Antigravity CLI (agy)
+                let target_label = match crate::modules::account::load_account_index() {
+                    Ok(idx) => match idx.current_target_ide.as_deref() {
+                        Some("agy") => "Antigravity CLI",
+                        Some("ide") => "Antigravity IDE",
+                        _ => "Antigravity IDE",
+                    },
+                    Err(_) => "Antigravity IDE",
+                };
+
+                let account_email = match crate::modules::account::get_current_account() {
+                    Ok(Some(acc)) => acc.email,
+                    _ => "antigravity-user".to_string(),
+                };
+
+                if let Err(e) = crate::modules::token_stats::record_usage(
+                    &account_email,
+                    target_label,
+                    0,
+                    new_tokens_for_conv as u32,
+                    0,
+                ) {
                      result.errors.push(format!("Failed to record usage for {}: {}", name, e));
                 }
                 result.total_new_tokens += new_tokens_for_conv;
@@ -177,4 +199,30 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
     }
 
     Ok(result)
+}
+
+/// Start background real-time watcher polling every 3s
+pub fn start_live_watcher(app_handle: Option<tauri::AppHandle>) {
+    tauri::async_runtime::spawn(async move {
+        tracing::info!("[LiveBrainWatcher] Started background transcript monitor (3s cycle)...");
+        loop {
+            tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
+
+            let scan_res = tokio::task::spawn_blocking(|| {
+                scan_brain_conversations()
+            }).await;
+
+            if let Ok(Ok(res)) = scan_res {
+                if res.total_new_tokens > 0 {
+                    tracing::info!(
+                        "[LiveBrainWatcher] 🚀 Live tokens captured: {} tokens across {} conversations",
+                        res.total_new_tokens, res.conversations_scanned
+                    );
+                    if let Some(ref handle) = app_handle {
+                        let _ = handle.emit("live_token_stats_update", &res);
+                    }
+                }
+            }
+        }
+    });
 }
