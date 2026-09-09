@@ -24,6 +24,7 @@ const DEFAULT_MODEL_LABELS: Record<string, string> = {
     'gemini-3.8-pro': 'Gemini 3.8 Pro',
     'gemini-3.8-pro-high': 'Gemini 3.8 Pro High',
     'gemini-3.8-flash': 'Gemini 3.8 Flash',
+    'gemini-3.8-flash-tiered': 'Gemini 3.8 Flash',
     'gemini-3.8-flash-thinking': 'Gemini 3.8 Flash (Thinking)',
     'gemini-pro-agent': 'Gemini 3.1 Pro (High)',
     'gemini-3.1-pro-high': 'Gemini 3.1 Pro High',
@@ -32,7 +33,7 @@ const DEFAULT_MODEL_LABELS: Record<string, string> = {
     'gemini-3.1-pro-low': 'Gemini 3.1 Pro Low',
     'gemini-3-pro-low': 'Gemini 3.1 Pro Low',
     'gemini-2.5-pro': 'Gemini 2.5 Pro',
-    'gemini-3-flash-agent': 'Gemini 3.5 Flash (High)',
+    'gemini-3-flash-agent': 'Gemini 3 Flash (High)',
     'gemini-3.5-flash': 'Gemini 3.5 Flash',
     'gemini-3.1-flash': 'Gemini 3.1 Flash',
     'gemini-3-flash': 'Gemini 3 Flash',
@@ -105,8 +106,26 @@ export function findQuotaModel<T extends { name: string }>(
 ): T | undefined {
     if (!models || models.length === 0) return undefined;
     const preferred: Partial<Record<ModelCategory, string[]>> = {
-        'gemini-pro': ['gemini-3.8-pro-high', 'gemini-3.8-pro', 'gemini-pro-agent', 'gemini-3.1-pro-high', 'gemini-3.1-pro', 'gemini-3.1-pro-low', 'gemini-2.5-pro'],
-        'gemini-flash': ['gemini-3.8-flash', 'gemini-3.1-flash', 'gemini-3-flash-agent', 'gemini-3-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'],
+        'gemini-pro': [
+            'gemini-3.8-pro-high',
+            'gemini-3.8-pro',
+            'gemini-3.1-pro-high',
+            'gemini-pro-agent',
+            'gemini-3-pro-high',
+            'gemini-3.1-pro',
+            'gemini-3.1-pro-low',
+            'gemini-3-pro-low',
+            'gemini-2.5-pro',
+        ],
+        'gemini-flash': [
+            'gemini-3.8-flash-tiered',
+            'gemini-3.8-flash',
+            'gemini-3.5-flash',
+            'gemini-3.1-flash',
+            'gemini-3-flash-agent',
+            'gemini-3-flash',
+            'gemini-2.5-flash',
+        ],
         'claude': ['claude-sonnet-4-6', 'claude-opus-4-6-thinking'],
     };
     const names = preferred[category];

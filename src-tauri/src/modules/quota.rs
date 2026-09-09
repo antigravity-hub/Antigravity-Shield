@@ -4,14 +4,15 @@ use rquest;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-// Quota API endpoints (Official Production endpoints)
-// [HARDENED] Removed sandbox/daily staging endpoints that trigger Google 403 Forbidden bans (Ref: Issue #2261).
-const QUOTA_API_ENDPOINTS: [&str; 1] = [
+// Quota API endpoints (Primary Antigravity IDE endpoint, fallback to standard Cloud Code)
+const QUOTA_API_ENDPOINTS: [&str; 2] = [
+    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
     "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
 ];
 
 // Quota Summary API endpoints (weekly + 5h grouped quota)
-const QUOTA_SUMMARY_ENDPOINTS: [&str; 1] = [
+const QUOTA_SUMMARY_ENDPOINTS: [&str; 2] = [
+    "https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
     "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
 ];
 
@@ -417,6 +418,45 @@ pub async fn fetch_quota_with_cache(
                     quota_data.quota_groups =
                         fetch_quota_summary(access_token, email, project_id.as_deref(), account_id)
                             .await;
+
+                    // If quota_groups contains 5h bucket with exhausted quota (e.g. remainingFraction == 0.0),
+                    // sync and enforce this on corresponding models so they reflect the real 5h lockout!
+                    if let Some(ref groups) = quota_data.quota_groups {
+                        for group in groups {
+                            let g_name = group.display_name.to_lowercase();
+                            let is_gemini = g_name.contains("gemini") || !g_name.contains("claude");
+                            let is_claude = g_name.contains("claude") || g_name.contains("gpt");
+
+                            for bucket in &group.buckets {
+                                let b_win = bucket.window.to_lowercase();
+                                let b_id = bucket.bucket_id.to_lowercase();
+                                let is_5h = b_win.contains("5h") || b_id.contains("5h") || b_win.contains("hour") || b_id.contains("hour");
+
+                                if is_5h {
+                                    let group_pct = (bucket.remaining_fraction * 100.0) as i32;
+                                    for model in &mut quota_data.models {
+                                        let m_name = model.name.to_lowercase();
+                                        let matches_group = if is_gemini && m_name.starts_with("gemini") {
+                                            true
+                                        } else if is_claude && (m_name.starts_with("claude") || m_name.starts_with("gpt")) {
+                                            true
+                                        } else {
+                                            false
+                                        };
+
+                                        if matches_group {
+                                            if group_pct < model.percentage {
+                                                model.percentage = group_pct;
+                                            }
+                                            if !bucket.reset_time.is_empty() && (model.percentage == 0 || model.reset_time.is_empty()) {
+                                                model.reset_time = bucket.reset_time.clone();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     return Ok((quota_data, project_id.clone()));
                 }

@@ -28,6 +28,26 @@ export interface ModelConfig {
  */
 export const MODEL_CONFIG: Record<string, ModelConfig> = {
     // Gemini 3.x 系列
+    'gemini-3.8-pro-high': {
+        label: 'Gemini 3.8 Pro High',
+        shortLabel: 'G3.8 Pro',
+        protectedKey: 'gemini-pro',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.pro_high',
+        i18nDescKey: 'proxy.model.pro_high',
+        group: 'Gemini 3',
+        tags: ['pro', 'high'],
+    },
+    'gemini-3.8-flash-tiered': {
+        label: 'Gemini 3.8 Flash',
+        shortLabel: 'G3.8 Flash',
+        protectedKey: 'gemini-flash',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.flash_preview',
+        i18nDescKey: 'proxy.model.flash_preview',
+        group: 'Gemini 3',
+        tags: ['flash'],
+    },
     // [Migrate] Gemini 3 Pro High/Low -> Gemini 3.1 Pro High/Low
     'gemini-3.1-pro-high': {
         label: 'Gemini 3.1 Pro High',
@@ -121,8 +141,8 @@ export const MODEL_CONFIG: Record<string, ModelConfig> = {
         tags: ['pro'],
     },
     'gemini-3-flash-agent': {
-        label: 'Gemini 3.5 Flash (High)',
-        shortLabel: 'G3.5 Flash',
+        label: 'Gemini 3 Flash (High)',
+        shortLabel: 'G3 Flash',
         protectedKey: 'gemini-flash',
         Icon: Gemini.Color,
         i18nKey: 'proxy.model.flash_preview',

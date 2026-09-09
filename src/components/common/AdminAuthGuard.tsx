@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Key, Globe, AlertCircle, Loader2 } from 'lucide-react';
+import { Lock, Key, AlertCircle, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { isTauri } from '../../utils/env';
 import { encryptSensitiveData, decryptSensitiveData } from '../../utils/secureStorage';
+import { FlagIcon } from './FlagIcon';
 
 /**
  * AdminAuthGuard
@@ -105,6 +106,7 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
 
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
+        document.documentElement.dir = ['ar', 'fa'].includes(lng) ? 'rtl' : 'ltr';
         setShowLangMenu(false);
     };
 
@@ -121,6 +123,7 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
         { code: 'ar', name: 'العربية' },
         { code: 'es', name: 'Español' },
         { code: 'my', name: 'Bahasa Melayu' },
+        { code: 'fa', name: 'Persian' },
     ];
 
     if (isAuthenticated) {
@@ -134,22 +137,23 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
                 <div className="relative">
                     <button
                         onClick={() => setShowLangMenu(!showLangMenu)}
-                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-base-100 rounded-2xl shadow-sm border border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                        className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-base-100 rounded-2xl shadow-sm border border-slate-100 dark:border-white/5 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
                     >
-                        <Globe className="w-4 h-4" />
+                        <FlagIcon code={i18n.language} className="w-4.5 h-3.5" />
                         <span className="text-sm font-medium uppercase">{i18n.language.split('-')[0]}</span>
                     </button>
 
                     {showLangMenu && (
-                        <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-base-100 rounded-2xl shadow-xl border border-slate-100 dark:border-white/5 py-2 z-50 animate-in fade-in zoom-in duration-200">
+                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-base-100 rounded-2xl shadow-xl border border-slate-100 dark:border-white/5 py-2 z-50 animate-in fade-in zoom-in duration-200">
                             {languages.map((lang) => (
                                 <button
                                     key={lang.code}
                                     onClick={() => changeLanguage(lang.code)}
-                                    className={`w-full text-left px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${i18n.language === lang.code ? 'text-blue-500 font-bold' : 'text-slate-600 dark:text-slate-300'
+                                    className={`w-full text-left rtl:text-right px-4 py-2 text-sm flex items-center gap-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${i18n.language === lang.code ? 'text-blue-500 font-bold' : 'text-slate-600 dark:text-slate-300'
                                         }`}
                                 >
-                                    {lang.name}
+                                    <FlagIcon code={lang.code} className="w-4.5 h-3.5 shrink-0" />
+                                    <span>{lang.name}</span>
                                 </button>
                             ))}
                         </div>
