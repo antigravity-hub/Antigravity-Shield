@@ -1,13 +1,18 @@
-name: Release (Windows NSIS)
+name: Release
 
 on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release Tag to build (e.g. v5.0.3)'
+        description: 'Release Tag to build (e.g. v5.3.0)'
         required: false
-        default: 'v5.0.3'
+        default: 'v5.3.0'
         type: string
+      build_unix:
+        description: 'Force build macOS and Linux (even for patch releases)'
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
       - 'v*'
@@ -20,6 +25,43 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  # Check if release is Major/Minor (ends with .0 like 5.3.0) or Patch (e.g. 5.3.1)
+  check-release-type:
+    name: Check Release Target
+    runs-on: ubuntu-latest
+    outputs:
+      build_unix: ${{ steps.check.outputs.build_unix }}
+      target_ver: ${{ steps.check.outputs.target_ver }}
+    steps:
+      - name: Determine if Unix build is needed
+        id: check
+        shell: bash
+        run: |
+          RAW_TAG="${{ github.event.inputs.release_tag || github.ref_name }}"
+          FORCE_UNIX="${{ github.event.inputs.build_unix }}"
+          
+          # Remove leading 'v' if present
+          VER="${RAW_TAG#v}"
+          echo "target_ver=$VER" >> "$GITHUB_OUTPUT"
+          
+          # Check if forced via manual workflow_dispatch input
+          if [ "$FORCE_UNIX" = "true" ]; then
+            echo "build_unix=true" >> "$GITHUB_OUTPUT"
+            echo "Unix builds forced via workflow dispatch input."
+            exit 0
+          fi
+          
+          # Major or Minor releases end in .0 (e.g. 5.3.0, 5.4.0, 6.0.0)
+          # Patch releases have a non-zero patch number (e.g. 5.3.1, 5.3.10)
+          if echo "$VER" | grep -Eq '^[0-9]+\.[0-9]+\.0$'; then
+            echo "build_unix=true" >> "$GITHUB_OUTPUT"
+            echo "Version $VER is a Major/Minor release (.0). Enabling macOS and Linux builds."
+          else
+            echo "build_unix=false" >> "$GITHUB_OUTPUT"
+            echo "Version $VER is a Patch release. Skipping macOS and Linux builds to save Actions quota."
+          fi
+
+  # Windows Build (Runs on every release: both Patch and Major/Minor)
   build-windows:
     name: Build Windows (.exe)
     runs-on: windows-2025
@@ -133,9 +175,248 @@ jobs:
             src-tauri/target/release/bundle/nsis/*.sig
           if-no-files-found: warn
 
+  # macOS Build (Only runs on Major/Minor releases like 5.3.0, skipped for patch releases like 5.3.1)
+  build-macos:
+    name: Build macOS (.dmg)
+    needs: [check-release-type]
+    if: needs.check-release-type.outputs.build_unix == 'true'
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline
+
+      - name: Sync version from release tag & optimize build speed
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ] && [ "$TARGET_VER" != "refs/heads/main" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+            if [ -f src-tauri/Cargo.lock ]; then
+              sed -i.bak -E '/name = "antigravity-shield"/{n;s/version = "[0-9]+\.[0-9]+\.[0-9]+.*"/version = "'"$TARGET_VER"'"/;}' src-tauri/Cargo.lock && rm -f src-tauri/Cargo.lock.bak
+            fi
+            cargo update -p antigravity-shield --manifest-path src-tauri/Cargo.toml || true
+          fi
+          node -e "
+            const fs = require('fs');
+            const p = 'src-tauri/tauri.conf.json';
+            if (fs.existsSync(p)) {
+              const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+              if (c.build) c.build.beforeBuildCommand = 'npx vite build';
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Optimized beforeBuildCommand to npx vite build');
+            }
+          "
+
+      - name: Disable updater artifacts without signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            if (!process.env.TAURI_SIGNING_PRIVATE_KEY || process.env.TAURI_SIGNING_PRIVATE_KEY.trim() === '') {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              console.log('Updater signing key configured.');
+            }
+          }
+          "
+
+      - name: Build macOS bundles
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npx tauri build --bundles dmg,app --ignore-version-mismatches 2>&1 | tee tauri-build-macos.log
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-macos
+          path: tauri-build-macos.log
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-macos
+          path: |
+            src-tauri/target/release/bundle/dmg/*.dmg
+            src-tauri/target/release/bundle/updater/*.tar.gz*
+          if-no-files-found: warn
+
+  # Linux Build (Only runs on Major/Minor releases like 5.3.0, skipped for patch releases like 5.3.1)
+  build-linux:
+    name: Build Linux (.deb, .AppImage)
+    needs: [check-release-type]
+    if: needs.check-release-type.outputs.build_unix == 'true'
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libssl-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            pkg-config \
+            libsoup-3.0-dev \
+            javascriptcoregtk-4.1 \
+            libjavascriptcoregtk-4.1-dev \
+            libnm-dev \
+            xdg-utils
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline
+
+      - name: Sync version from release tag & optimize build speed
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ] && [ "$TARGET_VER" != "refs/heads/main" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+            if [ -f src-tauri/Cargo.lock ]; then
+              sed -i.bak -E '/name = "antigravity-shield"/{n;s/version = "[0-9]+\.[0-9]+\.[0-9]+.*"/version = "'"$TARGET_VER"'"/;}' src-tauri/Cargo.lock && rm -f src-tauri/Cargo.lock.bak
+            fi
+            cargo update -p antigravity-shield --manifest-path src-tauri/Cargo.toml || true
+          fi
+          node -e "
+            const fs = require('fs');
+            const p = 'src-tauri/tauri.conf.json';
+            if (fs.existsSync(p)) {
+              const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+              if (c.build) c.build.beforeBuildCommand = 'npx vite build';
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Optimized beforeBuildCommand to npx vite build');
+            }
+          "
+
+      - name: Disable updater artifacts without signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            if (!process.env.TAURI_SIGNING_PRIVATE_KEY || process.env.TAURI_SIGNING_PRIVATE_KEY.trim() === '') {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              console.log('Updater signing key configured.');
+            }
+          }
+          "
+
+      - name: Build Linux packages
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npx tauri build --bundles deb,appimage --ignore-version-mismatches 2>&1 | tee tauri-build-linux.log
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-linux
+          path: tauri-build-linux.log
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-linux
+          path: |
+            src-tauri/target/release/bundle/deb/*.deb
+            src-tauri/target/release/bundle/appimage/*.AppImage
+            src-tauri/target/release/bundle/updater/*.tar.gz*
+          if-no-files-found: warn
+
+  # Publish release assets & updater.json
   publish-release:
     name: Publish Release to GitHub
-    needs: [build-windows]
+    needs: [check-release-type, build-windows, build-macos, build-linux]
     if: always() && !cancelled() && !contains(needs.*.result, 'failure')
     runs-on: ubuntu-latest
     permissions:
@@ -164,7 +445,7 @@ jobs:
           if [ ! -s release_notes.md ]; then
             echo "# Antigravity Shield $TARGET_VER" > release_notes.md
             echo "" >> release_notes.md
-            echo "Official release for Antigravity Shield $TARGET_VER. Download the Windows installer below." >> release_notes.md
+            echo "Official release for Antigravity Shield $TARGET_VER. Download installers below." >> release_notes.md
           fi
 
       - name: Build updater.json from signatures
@@ -188,14 +469,13 @@ jobs:
 
           WINDOWS_NSIS_SIG=$(read_sig "*_x64-setup.exe.sig")
           WIN_EXE=$(find all-artifacts -name "*_x64-setup.exe" -type f -exec basename {} \; 2>/dev/null | head -1)
-          # GitHub Releases replaces spaces with dots in asset filenames upon upload.
-          # Sanitize filename so updater.json points to the exact asset URL on GitHub.
           WIN_EXE_CLEAN="${WIN_EXE// /.}"
           if [ -z "$WIN_EXE_CLEAN" ]; then
             WIN_EXE_CLEAN="Antigravity.Shield_${VER}_x64-setup.exe"
           fi
 
-          jq -n \
+          # Base configuration with Windows platform
+          UPDATER_JSON=$(jq -n \
             --arg version "$VER" \
             --arg notes "Antigravity Shield $VERSION release" \
             --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
@@ -212,7 +492,34 @@ jobs:
                   signature: $win_nsis_sig
                 }
               }
-            }' > updater.json
+            }')
+
+          # Add macOS platform if artifacts and signature exist
+          MAC_SIG=$(read_sig "*.app.tar.gz.sig")
+          MAC_TAR=$(find all-artifacts -name "*.app.tar.gz" -type f -exec basename {} \; 2>/dev/null | head -1)
+          if [ -n "$MAC_SIG" ] && [ -n "$MAC_TAR" ]; then
+            MAC_TAR_CLEAN="${MAC_TAR// /.}"
+            UPDATER_JSON=$(echo "$UPDATER_JSON" | jq \
+              --arg dl "$DOWNLOAD_BASE" \
+              --arg mac_tar "$MAC_TAR_CLEAN" \
+              --arg mac_sig "$MAC_SIG" \
+              '.platforms["darwin-aarch64"] = { url: "\($dl)/\($mac_tar)", signature: $mac_sig } |
+               .platforms["darwin-x86_64"] = { url: "\($dl)/\($mac_tar)", signature: $mac_sig }')
+          fi
+
+          # Add Linux platform if artifacts and signature exist
+          LINUX_SIG=$(read_sig "*.AppImage.tar.gz.sig")
+          LINUX_TAR=$(find all-artifacts -name "*.AppImage.tar.gz" -type f -exec basename {} \; 2>/dev/null | head -1)
+          if [ -n "$LINUX_SIG" ] && [ -n "$LINUX_TAR" ]; then
+            LINUX_TAR_CLEAN="${LINUX_TAR// /.}"
+            UPDATER_JSON=$(echo "$UPDATER_JSON" | jq \
+              --arg dl "$DOWNLOAD_BASE" \
+              --arg linux_tar "$LINUX_TAR_CLEAN" \
+              --arg linux_sig "$LINUX_SIG" \
+              '.platforms["linux-x86_64"] = { url: "\($dl)/\($linux_tar)", signature: $linux_sig }')
+          fi
+
+          echo "$UPDATER_JSON" > updater.json
 
           echo "Generated updater.json:"
           cat updater.json
@@ -222,6 +529,12 @@ jobs:
           mkdir -p release-files
           find all-artifacts -type f \( \
             -name "*.exe" -o \
+            -name "*.msi" -o \
+            -name "*.dmg" -o \
+            -name "*.AppImage" -o \
+            -name "*.deb" -o \
+            -name "*.tar.gz" -o \
+            -name "*.zip" -o \
             -name "*.sig" \
           \) -print0 | while IFS= read -r -d '' file; do
             base=$(basename "$file")
