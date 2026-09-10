@@ -3,7 +3,15 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **Version History**:
-    *   **v5.3.0 (2026-09-10)**:
+    *   **v5.4.1 (2026-09-10)**:
+        -   **[Branding & Identity] Modern Shield Visual Identity & Asset Standardization**:
+            -   **New Shield Brand Logo**: Integrated new high-resolution shield brand logo across the UI navbar header, browser favicon, and system icons.
+            -   **Full Platform Asset Generation**: Regenerated multi-resolution Windows ICO, macOS ICNS, System Tray icons (32x32 & 64x64), and desktop app packages.
+            -   **Clean Workspace**: Purged outdated squircle artifacts and legacy nested upstream directories.
+        -   **[Updater & Reliability] Resilient Signature Verification & Graceful Fallback**:
+            -   **Cryptographic Keypair Update**: Configured new Minisign public key for secure in-app update delivery.
+            -   **Graceful Auto-Update Fallback**: Implemented proactive fallback in update dialogs to smoothly transition to direct download if signature validation encounters unexpected formatting or missing keys.
+    *   **v5.4.0 (2026-09-10)**:
         -   **[Major Feature & Multi-Target Core] Multi-Target Concurrent Activation Across Environments**:
             -   **Independent Environment Activation**: Supports simultaneous and independent active states for **Antigravity Platform**, **Antigravity IDE**, and **Antigravity CLI (`agy`)** across single or different accounts without dropping active sessions.
             -   **Vibrant Active Indicators**: Enhanced active state UX with emerald green containers, glowing active inner borders, and pulsating corner badges per target.
