@@ -1,5 +1,58 @@
-import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
+import { getCurrentWindow, LogicalPosition, LogicalSize, currentMonitor } from '@tauri-apps/api/window';
 import { isTauri } from './env';
+
+/**
+ * Apply optimal window size based on monitor resolution:
+ * - If monitor is Full HD (>= 1920x1080) and can fit: 1750 x 1000, centered
+ * - If monitor is less than Full HD: full width of available work area
+ */
+export const applyResponsiveFullViewSize = async () => {
+    if (!isTauri()) return;
+    try {
+        const win = getCurrentWindow();
+        const monitor = await currentMonitor();
+
+        if (monitor) {
+            const scale = monitor.scaleFactor || 1;
+            const physicalWidth = monitor.size.width;
+            const physicalHeight = monitor.size.height;
+
+            // Work area dimensions in logical pixels (accounting for Windows taskbar & system scaling)
+            const workAreaLogicalWidth = Math.floor(monitor.workArea.size.width / scale);
+            const workAreaLogicalHeight = Math.floor(monitor.workArea.size.height / scale);
+            const workAreaLogicalX = Math.floor(monitor.workArea.position.x / scale);
+            const workAreaLogicalY = Math.floor(monitor.workArea.position.y / scale);
+
+            const isFullHdOrHigher = physicalWidth >= 1920 && physicalHeight >= 1080;
+
+            if (isFullHdOrHigher && workAreaLogicalWidth >= 1750 && workAreaLogicalHeight >= 1000) {
+                // Monitor is Full HD (or higher) and logical work area comfortably fits 1750x1000
+                await win.setSize(new LogicalSize(1750, 1000));
+                await win.center();
+            } else {
+                // Monitor is less than Full HD (< 1920) or display scaling restricts available space:
+                // Run full width!
+                const targetWidth = workAreaLogicalWidth;
+                const targetHeight = Math.min(1000, workAreaLogicalHeight);
+                const posY = workAreaLogicalY + Math.max(0, Math.floor((workAreaLogicalHeight - targetHeight) / 2));
+                await win.setSize(new LogicalSize(targetWidth, targetHeight));
+                await win.setPosition(new LogicalPosition(workAreaLogicalX, posY));
+            }
+        } else {
+            // Fallback if monitor detection fails
+            const screenWidth = window.screen.availWidth || window.innerWidth;
+            const screenHeight = window.screen.availHeight || window.innerHeight;
+            if (screenWidth >= 1920 && screenHeight >= 1000) {
+                await win.setSize(new LogicalSize(1750, 1000));
+                await win.center();
+            } else {
+                await win.setSize(new LogicalSize(screenWidth, Math.min(1000, screenHeight)));
+            }
+        }
+    } catch (error) {
+        console.error('Failed to apply responsive window size:', error);
+    }
+};
 
 /**
  * Enter mini view mode
@@ -15,7 +68,7 @@ export const enterMiniMode = async (contentHeight: number, shouldCenter: boolean
         await win.setDecorations(false);
 
         // Set window size: width 300, height = content height 
-        await win.setSize(new LogicalSize(300, contentHeight+2));
+        await win.setSize(new LogicalSize(300, contentHeight + 2));
 
         await win.setAlwaysOnTop(true);
         // Enable window shadow
@@ -39,10 +92,8 @@ export const exitMiniMode = async () => {
     if (!isTauri()) return;
     try {
         const win = getCurrentWindow();
-        // Restore to a reasonable default size
-        await win.setSize(new LogicalSize(1200, 800));
+        await applyResponsiveFullViewSize();
         await win.setAlwaysOnTop(false);
-        await win.center();
         // Restore window decorations (title bar)
         await win.setDecorations(true);
         // Re-enable resizing
@@ -54,17 +105,18 @@ export const exitMiniMode = async () => {
 
 /**
  * Ensure window is in valid full view state (Self-healing)
- * Used on app startup to recover from improper shutdown in mini mode
+ * Used on app startup to configure responsive dimensions or recover from mini mode
  */
 export const ensureFullViewState = async () => {
     if (!isTauri()) return;
     try {
         const win = getCurrentWindow();
         const size = await win.outerSize();
-        // If window is suspiciously narrow (likely leftover from Mini View), restore default size
+        // If window is suspiciously narrow (likely leftover from Mini View or uninitialized), restore default size
         if (size.width < 500) {
-            await win.setSize(new LogicalSize(1200, 800));
-            await win.center();
+            await applyResponsiveFullViewSize();
+        } else {
+            await applyResponsiveFullViewSize();
         }
         // Always enforce standard window properties for Full View
         await win.setDecorations(true);

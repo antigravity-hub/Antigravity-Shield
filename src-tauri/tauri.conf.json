@@ -15,8 +15,9 @@
       {
         "label": "main",
         "title": "Antigravity Shield",
-        "width": 1024,
-        "height": 700,
+        "width": 1750,
+        "height": 1000,
+        "center": true,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
         "transparent": true,
