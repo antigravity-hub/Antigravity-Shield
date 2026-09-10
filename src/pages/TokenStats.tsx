@@ -80,10 +80,12 @@ const formatNumber = (num: number): string => {
 
 const shortenModelName = (model: string): string => {
     return model
-        .replace('gemini-', 'g-')
-        .replace('claude-', 'c-')
-        .replace('-preview', '')
-        .replace('-latest', '');
+        .replace(/^gemini-/i, 'g-')
+        .replace(/^claude-/i, 'c-')
+        .replace(/^deepseek-/i, 'ds-')
+        .replace(/^gpt-/i, 'gpt-')
+        .replace(/-preview[a-zA-Z0-9\-_]*/i, '')
+        .replace(/-latest/i, '');
 };
 
 const TokenStats: React.FC = () => {

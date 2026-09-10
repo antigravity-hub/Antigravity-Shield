@@ -16,26 +16,83 @@ pub struct BrainScanResult {
     pub errors: Vec<String>,
 }
 
-fn get_brain_dir() -> Result<PathBuf, String> {
-    if let Some(mut home) = dirs::home_dir() {
-        home.push(".gemini");
-        home.push("antigravity");
-        home.push("brain");
-        Ok(home)
-    } else {
-        let home_str = std::env::var("USERPROFILE")
-            .or_else(|_| std::env::var("HOME"))
-            .map_err(|_| "Could not find home directory".to_string())?;
-        let mut p = PathBuf::from(home_str);
-        p.push(".gemini");
-        p.push("antigravity");
-        p.push("brain");
-        Ok(p)
+fn get_gemini_antigravity_envs() -> Vec<PathBuf> {
+    let home = dirs::home_dir()
+        .or_else(|| std::env::var("USERPROFILE").or_else(|_| std::env::var("HOME")).ok().map(PathBuf::from));
+    let Some(home_path) = home else { return Vec::new(); };
+    let gemini_dir = home_path.join(".gemini");
+    if !gemini_dir.exists() { return Vec::new(); }
+
+    let mut envs = Vec::new();
+    if let Ok(entries) = fs::read_dir(&gemini_dir) {
+        for entry in entries.flatten() {
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.starts_with("antigravity") && entry.path().is_dir() {
+                envs.push(entry.path());
+            }
+        }
     }
+    envs
+}
+
+fn extract_model_from_blob(data: &[u8]) -> Option<String> {
+    // 1. Check Protobuf tag 19 (0x9a 0x01) - Google Antigravity standard model field
+    if let Some(pos) = data.windows(2).rposition(|w| w == [0x9a, 0x01]) {
+        if pos + 2 < data.len() {
+            let len = data[pos + 2] as usize;
+            if pos + 3 + len <= data.len() {
+                if let Ok(s) = std::str::from_utf8(&data[pos + 3..pos + 3 + len]) {
+                    if s.len() >= 3 && s.chars().all(|c| c.is_alphanumeric() || c == '-' || c == '.' || c == '_') {
+                        return Some(s.to_string());
+                    }
+                }
+            }
+        }
+    }
+    // 2. Vendor-agnostic regex fallback for any model name
+    if let Ok(re) = Regex::new(r"(?i)(?:gemini|claude|gpt|o1|o3|o4|deepseek|llama|qwen|mistral|codestral)-[a-zA-Z0-9\.\-]+") {
+        let text = String::from_utf8_lossy(data);
+        if let Some(m) = re.find_iter(&text).last() {
+            return Some(m.as_str().to_string());
+        }
+    }
+    None
+}
+
+fn get_conversation_metadata(env_dir: &PathBuf, conversation_id: &str) -> (String, String) {
+    let mut model = "gemini-auto".to_string();
+    let mut platform = if env_dir.to_string_lossy().contains("ide") {
+        "Antigravity IDE".to_string()
+    } else if env_dir.to_string_lossy().contains("cli") || env_dir.to_string_lossy().contains("agy") {
+        "Antigravity CLI".to_string()
+    } else {
+        "Antigravity Platform".to_string()
+    };
+
+    let db_path = env_dir.join("conversations").join(format!("{}.db", conversation_id));
+    if db_path.exists() {
+        if let Ok(conn) = Connection::open_with_flags(&db_path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY) {
+            // Extract platform from executor_metadata
+            if let Ok(data) = conn.query_row("SELECT data FROM executor_metadata LIMIT 1", [], |r| r.get::<_, Vec<u8>>(0)) {
+                let data_lossy = String::from_utf8_lossy(&data);
+                if data_lossy.contains("As IDE feedback") || data_lossy.contains("antigravity-ide") {
+                    platform = "Antigravity IDE".to_string();
+                }
+            }
+            // Extract model from gen_metadata
+            if let Ok(data) = conn.query_row("SELECT data FROM gen_metadata ORDER BY idx DESC LIMIT 1", [], |r| r.get::<_, Vec<u8>>(0)) {
+                if let Some(m) = extract_model_from_blob(&data) {
+                    model = m;
+                }
+            }
+        }
+    }
+
+    (model, platform)
 }
 
 pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
-    let brain_dir = get_brain_dir()?;
+    let env_dirs = get_gemini_antigravity_envs();
     let mut result = BrainScanResult {
         conversations_found: 0,
         conversations_scanned: 0,
@@ -44,7 +101,7 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
         errors: Vec::new(),
     };
 
-    if !brain_dir.exists() {
+    if env_dirs.is_empty() {
         return Ok(result);
     }
 
@@ -63,138 +120,156 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
 
     let uuid_regex = Regex::new(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").unwrap();
 
-    let entries = match fs::read_dir(&brain_dir) {
-        Ok(e) => e,
-        Err(e) => {
-            result.errors.push(format!("Failed to read brain dir: {}", e));
-            return Ok(result);
-        }
+    let account_email = match crate::modules::account::get_current_account() {
+        Ok(Some(acc)) => acc.email,
+        _ => "ershad.zolfi@gmail.com".to_string(),
     };
 
-    for entry in entries.flatten() {
-        if let Ok(file_type) = entry.file_type() {
-            if !file_type.is_dir() {
-                continue;
-            }
-        }
-        let name = entry.file_name().to_string_lossy().to_string();
-        if !uuid_regex.is_match(&name) {
+    for env_dir in env_dirs {
+        let brain_dir = env_dir.join("brain");
+        if !brain_dir.exists() {
             continue;
         }
 
-        result.conversations_found += 1;
-        let transcript_path = entry.path().join(".system_generated").join("logs").join("transcript.jsonl");
-        if !transcript_path.exists() {
-            continue;
-        }
-
-        let mut last_offset: usize = 0;
-        let mut total_tokens: u64 = 0;
-        if let Ok(mut stmt) = conn.prepare("SELECT last_line_offset, total_tokens_found FROM brain_scan_progress WHERE conversation_id = ?1") {
-            if let Ok(mut rows) = stmt.query(params![name]) {
-                if let Ok(Some(row)) = rows.next() {
-                    let offset: i64 = row.get(0).unwrap_or(0);
-                    last_offset = offset.max(0) as usize;
-                    let tokens: i64 = row.get(1).unwrap_or(0);
-                    total_tokens = tokens.max(0) as u64;
-                }
-            }
-        }
-
-        let file = match File::open(&transcript_path) {
-            Ok(f) => f,
+        let entries = match fs::read_dir(&brain_dir) {
+            Ok(e) => e,
             Err(e) => {
-                result.errors.push(format!("Failed to open {}: {}", name, e));
+                result.errors.push(format!("Failed to read brain dir: {}", e));
                 continue;
             }
         };
 
-        let reader = BufReader::new(file);
-        let mut line_count = 0;
-        let mut new_tokens_for_conv = 0;
-        let mut lines_processed = 0;
-
-        for line in reader.lines().flatten() {
-            line_count += 1;
-            if line_count <= last_offset {
+        for entry in entries.flatten() {
+            if let Ok(file_type) = entry.file_type() {
+                if !file_type.is_dir() {
+                    continue;
+                }
+            }
+            let name = entry.file_name().to_string_lossy().to_string();
+            if !uuid_regex.is_match(&name) {
                 continue;
             }
-            lines_processed += 1;
 
-            if let Ok(json) = serde_json::from_str::<Value>(&line) {
-                let is_planner = json.get("type").and_then(|v| v.as_str()) == Some("PLANNER_RESPONSE");
-                let is_model = json.get("source").and_then(|v| v.as_str()) == Some("MODEL");
-                
-                let mut line_tokens = 0;
+            result.conversations_found += 1;
 
-                if let Some(usage) = json.get("usage") {
-                    line_tokens += usage.get("output_tokens").or(usage.get("total_tokens")).and_then(|v| v.as_u64()).unwrap_or(0);
-                } else if let Some(tokens) = json.get("token_count") {
-                    line_tokens += tokens.as_u64().unwrap_or(0);
-                } else if let Some(tokens) = json.get("tokens") {
-                    line_tokens += tokens.as_u64().unwrap_or(0);
-                } else {
-                    if let Some(content) = json.get("content").and_then(|v| v.as_str()) {
-                        line_tokens += (content.len() / 4) as u64;
+            // Prefer transcript_full.jsonl for complete, untruncated tokens
+            let full_transcript = entry.path().join(".system_generated").join("logs").join("transcript_full.jsonl");
+            let std_transcript = entry.path().join(".system_generated").join("logs").join("transcript.jsonl");
+            let transcript_path = if full_transcript.exists() {
+                full_transcript
+            } else if std_transcript.exists() {
+                std_transcript
+            } else {
+                continue;
+            };
+
+            let mut last_offset: usize = 0;
+            let mut total_tokens: u64 = 0;
+            if let Ok(mut stmt) = conn.prepare("SELECT last_line_offset, total_tokens_found FROM brain_scan_progress WHERE conversation_id = ?1") {
+                if let Ok(mut rows) = stmt.query(params![name]) {
+                    if let Ok(Some(row)) = rows.next() {
+                        let offset: i64 = row.get(0).unwrap_or(0);
+                        last_offset = offset.max(0) as usize;
+                        let tokens: i64 = row.get(1).unwrap_or(0);
+                        total_tokens = tokens.max(0) as u64;
                     }
-                    if let Some(tool_calls) = json.get("tool_calls").and_then(|v| v.as_array()) {
-                        for tool_call in tool_calls {
-                            let tc_str = serde_json::to_string(tool_call).unwrap_or_default();
-                            line_tokens += (tc_str.len() / 4) as u64;
+                }
+            }
+
+            let file = match File::open(&transcript_path) {
+                Ok(f) => f,
+                Err(e) => {
+                    result.errors.push(format!("Failed to open {}: {}", name, e));
+                    continue;
+                }
+            };
+
+            let reader = BufReader::new(file);
+            let mut line_count = 0;
+            let mut new_in_tokens = 0u64;
+            let mut new_out_tokens = 0u64;
+            let mut lines_processed = 0;
+
+            for line in reader.lines().flatten() {
+                line_count += 1;
+                if line_count <= last_offset {
+                    continue;
+                }
+                lines_processed += 1;
+
+                if let Ok(json) = serde_json::from_str::<Value>(&line) {
+                    let stype = json.get("type").and_then(|v| v.as_str());
+                    let source = json.get("source").and_then(|v| v.as_str());
+
+                    let mut in_t = 0u64;
+                    let mut out_t = 0u64;
+
+                    if let Some(usage) = json.get("usage") {
+                        in_t = usage.get("input_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
+                        out_t = usage.get("output_tokens").or(usage.get("total_tokens")).and_then(|v| v.as_u64()).unwrap_or(0);
+                    }
+
+                    if stype == Some("USER_INPUT") || stype == Some("USER_EXPLICIT") || source == Some("USER") {
+                        if in_t == 0 {
+                            let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
+                            in_t = (content_len as f64 / 3.8).ceil() as u64;
                         }
+                        new_in_tokens += in_t.max(1);
+                    } else if stype == Some("GENERIC") {
+                        // Tool outputs are part of model input
+                        let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
+                        let tool_in = (content_len as f64 / 3.8).ceil() as u64;
+                        new_in_tokens += tool_in.max(1);
+                    } else if stype == Some("PLANNER_RESPONSE") || source == Some("MODEL") {
+                        if out_t == 0 {
+                            let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
+                            let thinking_len = json.get("thinking").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
+                            let tc_len = json.get("tool_calls").and_then(|v| v.as_array())
+                                .map(|arr| arr.iter().map(|tc| serde_json::to_string(tc).unwrap_or_default().len()).sum::<usize>())
+                                .unwrap_or(0);
+                            out_t = ((content_len + thinking_len + tc_len) as f64 / 3.8).ceil() as u64;
+                        }
+                        new_out_tokens += out_t.max(1);
                     }
                 }
-
-                if line_tokens > 0 && (is_planner || is_model) {
-                    new_tokens_for_conv += line_tokens;
-                }
-            }
-        }
-
-        if lines_processed == 0 {
-            result.conversations_skipped += 1;
-        } else {
-            result.conversations_scanned += 1;
-            
-            if new_tokens_for_conv > 0 {
-                // Determine target application: Antigravity IDE vs Antigravity CLI (agy)
-                let target_label = match crate::modules::account::load_account_index() {
-                    Ok(idx) => match idx.current_target_ide.as_deref() {
-                        Some("agy") => "Antigravity CLI",
-                        Some("ide") => "Antigravity IDE",
-                        _ => "Antigravity IDE",
-                    },
-                    Err(_) => "Antigravity IDE",
-                };
-
-                let account_email = match crate::modules::account::get_current_account() {
-                    Ok(Some(acc)) => acc.email,
-                    _ => "antigravity-user".to_string(),
-                };
-
-                if let Err(e) = crate::modules::token_stats::record_usage(
-                    &account_email,
-                    target_label,
-                    0,
-                    new_tokens_for_conv as u32,
-                    0,
-                ) {
-                     result.errors.push(format!("Failed to record usage for {}: {}", name, e));
-                }
-                result.total_new_tokens += new_tokens_for_conv;
-                total_tokens += new_tokens_for_conv;
             }
 
-            let now = Utc::now().timestamp();
-            let _ = conn.execute(
-                "INSERT INTO brain_scan_progress (conversation_id, last_line_offset, last_scan_timestamp, total_tokens_found) 
-                 VALUES (?1, ?2, ?3, ?4)
-                 ON CONFLICT(conversation_id) DO UPDATE SET 
-                    last_line_offset = excluded.last_line_offset,
-                    last_scan_timestamp = excluded.last_scan_timestamp,
-                    total_tokens_found = excluded.total_tokens_found",
-                params![name, line_count as i64, now, total_tokens as i64],
-            );
+            if lines_processed == 0 {
+                result.conversations_skipped += 1;
+            } else {
+                result.conversations_scanned += 1;
+                let new_tokens_for_conv = new_in_tokens + new_out_tokens;
+                
+                if new_tokens_for_conv > 0 {
+                    let (model, platform) = get_conversation_metadata(&env_dir, &name);
+                    let now = Utc::now().timestamp();
+
+                    if let Err(e) = crate::modules::token_stats::record_usage_full(
+                        &account_email,
+                        &model,
+                        new_in_tokens as u32,
+                        new_out_tokens as u32,
+                        0,
+                        &platform,
+                        Some(now),
+                    ) {
+                        result.errors.push(format!("Failed to record usage for {}: {}", name, e));
+                    }
+                    result.total_new_tokens += new_tokens_for_conv;
+                    total_tokens += new_tokens_for_conv;
+                }
+
+                let now = Utc::now().timestamp();
+                let _ = conn.execute(
+                    "INSERT INTO brain_scan_progress (conversation_id, last_line_offset, last_scan_timestamp, total_tokens_found) 
+                     VALUES (?1, ?2, ?3, ?4)
+                     ON CONFLICT(conversation_id) DO UPDATE SET 
+                        last_line_offset = excluded.last_line_offset,
+                        last_scan_timestamp = excluded.last_scan_timestamp,
+                        total_tokens_found = excluded.total_tokens_found",
+                    params![name, line_count as i64, now, total_tokens as i64],
+                );
+            }
         }
     }
 

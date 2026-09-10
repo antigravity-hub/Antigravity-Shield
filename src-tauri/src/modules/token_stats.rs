@@ -147,30 +147,41 @@ pub fn init_db() -> Result<(), String> {
         "token_stats_hourly",
         "total_cached_tokens INTEGER NOT NULL DEFAULT 0",
     )?;
+    add_column_if_missing(
+        &conn,
+        "token_usage",
+        "source TEXT NOT NULL DEFAULT 'Antigravity IDE'",
+    )?;
 
     Ok(())
 }
 
-/// Record token usage from a request
-pub fn record_usage(
+/// Record token usage with source and optional explicit timestamp
+pub fn record_usage_full(
     account_email: &str,
     model: &str,
     input_tokens: u32,
     output_tokens: u32,
     cached_tokens: u32,
+    source: &str,
+    timestamp_opt: Option<i64>,
 ) -> Result<(), String> {
     let conn = connect_db()?;
-    let timestamp = chrono::Local::now().timestamp();
+    let timestamp = timestamp_opt.unwrap_or_else(|| chrono::Local::now().timestamp());
     let total_tokens = input_tokens + output_tokens;
 
-    // Insert into raw usage table
+    // Insert into raw usage table with source
     conn.execute(
-        "INSERT INTO token_usage (timestamp, account_email, model, input_tokens, output_tokens, cached_tokens, total_tokens)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
-        params![timestamp, account_email, model, input_tokens, output_tokens, cached_tokens, total_tokens],
+        "INSERT INTO token_usage (timestamp, account_email, model, input_tokens, output_tokens, cached_tokens, total_tokens, source)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+        params![timestamp, account_email, model, input_tokens, output_tokens, cached_tokens, total_tokens, source],
     ).map_err(|e| e.to_string())?;
 
-    let hour_bucket = chrono::Local::now().format("%Y-%m-%d %H:00").to_string();
+    let dt = chrono::DateTime::from_timestamp(timestamp, 0)
+        .unwrap_or_else(chrono::Utc::now)
+        .with_timezone(&chrono::Local);
+    let hour_bucket = dt.format("%Y-%m-%d %H:00").to_string();
+
     conn.execute(
         "INSERT INTO token_stats_hourly (hour_bucket, account_email, total_input_tokens, total_output_tokens, total_cached_tokens, total_tokens, request_count)
          VALUES (?1, ?2, ?3, ?4, ?5, ?6, 1)
@@ -184,6 +195,17 @@ pub fn record_usage(
     ).map_err(|e| e.to_string())?;
 
     Ok(())
+}
+
+/// Record token usage from a request
+pub fn record_usage(
+    account_email: &str,
+    model: &str,
+    input_tokens: u32,
+    output_tokens: u32,
+    cached_tokens: u32,
+) -> Result<(), String> {
+    record_usage_full(account_email, model, input_tokens, output_tokens, cached_tokens, "Antigravity IDE", None)
 }
 
 /// Get hourly aggregated stats for a time range
