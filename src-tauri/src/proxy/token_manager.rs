@@ -4739,6 +4739,7 @@ mod tests {
             validation_url: None,
             model_quotas: HashMap::new(),
             model_limits: HashMap::new(),
+            device_profile: None,
         }
     }
 
@@ -5083,6 +5084,7 @@ mod tests {
             validation_url: None,
             model_quotas: HashMap::new(),
             model_limits: HashMap::new(),
+            device_profile: None,
         }
     }
 

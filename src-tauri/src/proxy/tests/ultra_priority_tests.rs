@@ -55,6 +55,7 @@ fn create_test_token(
         validation_url: None,
         model_quotas,
         model_limits: std::collections::HashMap::new(),
+        device_profile: None,
     }
 }
 

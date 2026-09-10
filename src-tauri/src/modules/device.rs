@@ -601,6 +601,7 @@ mod tests {
                 expires_in: 3600,
                 expiry_timestamp: 9999999,
                 project_id: None,
+                ..Default::default()
             },
         );
         let enterprise_acc = crate::models::Account::new(
@@ -612,6 +613,7 @@ mod tests {
                 expires_in: 3600,
                 expiry_timestamp: 9999999,
                 project_id: None,
+                ..Default::default()
             },
         );
 

@@ -40,6 +40,7 @@ mod tests {
             validation_url: None,
             model_quotas: std::collections::HashMap::new(),
             model_limits: std::collections::HashMap::new(),
+            device_profile: None,
         }
     }
 
@@ -1107,6 +1108,7 @@ mod tests {
             validation_url: None,
             model_quotas: std::collections::HashMap::new(),
             model_limits: std::collections::HashMap::new(),
+            device_profile: None,
         }
     }
 }

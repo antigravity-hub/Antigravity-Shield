@@ -286,6 +286,9 @@ mod tests {
             ],
             current_account_id: Some("acc-1".to_string()),
             current_target_ide: None,
+            active_platform_account_id: None,
+            active_ide_account_id: None,
+            active_cli_account_id: None,
         };
 
         // Save the index
@@ -352,6 +355,9 @@ mod tests {
             }],
             current_account_id: None,
             current_target_ide: None,
+            active_platform_account_id: None,
+            active_ide_account_id: None,
+            active_cli_account_id: None,
         };
         save_account_index_in_dir(dir.path(), &index).unwrap();
 
@@ -716,6 +722,9 @@ fn rebuild_index_from_accounts_in_dir(data_dir: &PathBuf) -> Result<AccountIndex
         accounts: summaries,
         current_account_id,
         current_target_ide: None,
+        active_platform_account_id: None,
+        active_ide_account_id: None,
+        active_cli_account_id: None,
     })
 }
 

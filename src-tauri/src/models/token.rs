@@ -58,3 +58,21 @@ impl TokenData {
         self
     }
 }
+
+impl Default for TokenData {
+    fn default() -> Self {
+        Self {
+            access_token: String::new(),
+            refresh_token: String::new(),
+            expires_in: 0,
+            expiry_timestamp: 0,
+            token_type: "Bearer".to_string(),
+            email: None,
+            project_id: None,
+            oauth_client_key: None,
+            session_id: None,
+            is_gcp_tos: false,
+            id_token: None,
+        }
+    }
+}
