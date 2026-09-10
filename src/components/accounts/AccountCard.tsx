@@ -44,8 +44,15 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
     const currentTargetIde = useAccountStore((state) => state.currentTargetIde);
+    const isTargetActiveForAccount = useAccountStore((state) => state.isTargetActiveForAccount);
+    const hasAnyActiveTarget = useAccountStore((state) => state.hasAnyActiveTarget);
     const isDisabled = Boolean(account.disabled);
     const validationBlockedLabel = getValidationBlockedStatusLabel(account.validation_blocked_reason, t);
+
+    const isPlatformActive = isTargetActiveForAccount(account.id, 'platform');
+    const isIdeActive = isTargetActiveForAccount(account.id, 'ide');
+    const isCliActive = isTargetActiveForAccount(account.id, 'agy');
+    const isAnyActive = hasAnyActiveTarget(account.id) || propIsCurrent;
 
     const getActiveBadgeLabel = (target: string | null | undefined) => {
         switch (target) {
@@ -240,8 +247,8 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
     return (
         <div className={cn(
             "flex flex-col p-3 rounded-xl border transition-all hover:shadow-md",
-            isCurrent
-                ? "bg-blue-50/30 border-blue-200 dark:bg-blue-900/10 dark:border-blue-900/30"
+            isAnyActive
+                ? "bg-emerald-50/20 border-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-700/60 ring-1 ring-emerald-500/20"
                 : "bg-white dark:bg-base-100 border-gray-200 dark:border-base-300",
             (isRefreshing || isDisabled) && "opacity-70"
         )}>
@@ -258,13 +265,49 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                 <div className="flex-1 min-w-0 flex flex-col gap-1.5">
                     <h3 className={cn(
                         "font-semibold text-sm truncate w-full",
-                        isCurrent ? "text-blue-700 dark:text-blue-400" : "text-gray-900 dark:text-base-content"
+                        isAnyActive ? "text-emerald-700 dark:text-emerald-400 font-bold" : "text-gray-900 dark:text-base-content"
                     )} title={account.email}>
                         {account.email}
                     </h3>
                     <div className="flex items-center justify-between w-full gap-2">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                            {isCurrent && (
+                            {isPlatformActive && (
+                                <span 
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold border border-emerald-500/30"
+                                    title="Active in Antigravity Platform"
+                                >
+                                    <span className="relative flex h-1.5 w-1.5">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_5px_#10b981]"></span>
+                                    </span>
+                                    Platform
+                                </span>
+                            )}
+                            {isIdeActive && (
+                                <span 
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-sky-500/15 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 text-[9px] font-extrabold border border-sky-500/30"
+                                    title="Active in Antigravity IDE"
+                                >
+                                    <span className="relative flex h-1.5 w-1.5">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500 shadow-[0_0_5px_#0284c7]"></span>
+                                    </span>
+                                    IDE
+                                </span>
+                            )}
+                            {isCliActive && (
+                                <span 
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-500/15 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[9px] font-extrabold border border-indigo-500/30"
+                                    title="Active in Antigravity CLI"
+                                >
+                                    <span className="relative flex h-1.5 w-1.5">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500 shadow-[0_0_5px_#6366f1]"></span>
+                                    </span>
+                                    CLI
+                                </span>
+                            )}
+                            {!isPlatformActive && !isIdeActive && !isCliActive && isCurrent && (
                                 <span
                                     className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold shadow-xs border border-emerald-500/30 dark:border-emerald-500/40 select-none tracking-wide"
                                     title={`Active in Antigravity ${getActiveBadgeLabel(currentTargetIde).replace(' Active', '')}`}

@@ -189,6 +189,12 @@ pub async fn get_current_account() -> Result<Option<Account>, String> {
     }
 }
 
+/// 获取各环境活跃账号映射
+#[tauri::command]
+pub async fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccounts, String> {
+    modules::account::get_active_target_accounts()
+}
+
 /// 导出账号（包含 refresh_token）
 use crate::models::AccountExportResponse;
 

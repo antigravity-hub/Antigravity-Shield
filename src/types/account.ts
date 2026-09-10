@@ -15,12 +15,19 @@ export interface Account {
     protected_models?: string[];
     live_limited_models?: Record<string, LiveLimitStatus>;
     custom_label?: string;  // 用户自定义标签
+    active_targets?: string[]; // 激活的环境列表 ['platform', 'ide', 'agy']
     validation_blocked?: boolean;
     validation_blocked_until?: number;
     validation_blocked_reason?: string;
     validation_url?: string;
     created_at: number;
     last_used: number;
+}
+
+export interface ActiveTargetAccounts {
+    platform: string | null;
+    ide: string | null;
+    agy: string | null;
 }
 
 export interface LiveLimitStatus {

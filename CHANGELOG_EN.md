@@ -3,6 +3,20 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
+    *   **v5.3.0 (2026-09-10)**:
+        -   **[Major Feature & Multi-Target Core] Multi-Target Concurrent Activation Across Environments**:
+            -   **Independent Environment Activation**: Supports simultaneous and independent active states for **Antigravity Platform**, **Antigravity IDE**, and **Antigravity CLI (`agy`)** across single or different accounts without dropping active sessions.
+            -   **Vibrant Active Indicators**: Enhanced active state UX with emerald green containers, glowing active inner borders, and pulsating corner badges per target.
+        -   **[Table & Quota Architecture] Dual Countdown Columns & Fixed Model Quota Explorer**:
+            -   **Simultaneous 5H & Weekly Counters**: Replaced top filter switch with dedicated side-by-side columns for 5-Hour rolling resets and Weekly resets.
+            -   **Clean Model Column**: Model Quotas column now strictly displays AI model allocations, fully restoring the "Show All Quotas" toggle functionality.
+            -   **Balanced Column Spacing**: Optimized column widths for enhanced data density and legibility across all screen resolutions.
+        -   **[Usability & Customization] Auto-Sort, Column Drag-and-Drop & Custom Views**:
+            -   **Auto-Sort by Quota**: Added automatic sorting engine prioritizing accounts with highest remaining 5H quota, followed by weekly quota.
+            -   **Interactive Column Reordering**: Added drag-and-drop support for table column headers with persistent layout memory in `localStorage`.
+            -   **Last Used Column Visibility**: Added customizable visibility toggle for the Last Used column (default hidden).
+        -   **[Fixes & Dialog Polish] Accurate Refresh All Confirmation**:
+            -   **Fixed Refresh Warning**: Updated batch refresh modal to cleanly distinguish between single account, batch selection, and full account fleet refresh without referencing "current account".
     *   **v5.2.0 (2026-09-09)**:
         -   **[Major Feature & Visual Analytics] Annual GitHub-Style Token Heatmap & Granular Time Filtering**:
             -   **Annual Activity Heatmap**: Implemented a full 53-week × 7-day contribution-style calendar heatmap in `TokenHeatmap.tsx` featuring 5 dynamic intensity levels, interactive tooltips, year picker, and daily/weekly view toggling.

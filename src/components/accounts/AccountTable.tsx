@@ -33,7 +33,6 @@ import {
     Check,
     Clock,
     Bot,
-    Sparkles,
     Tag,
 } from 'lucide-react';
 import type { Account, ModelQuota } from '../../types/account';
@@ -74,6 +73,7 @@ interface AccountTableProps {
     onReorder?: (accountIds: string[]) => void;
     onViewError: (accountId: string) => void;
     quotaWindow?: '5h' | 'weekly';
+    showLastUsed?: boolean;
 }
 
 interface SortableRowProps {
@@ -95,6 +95,8 @@ interface SortableRowProps {
     onUpdateLabel?: (label: string) => void;
     onViewError: () => void;
     quotaWindow?: '5h' | 'weekly';
+    showLastUsed?: boolean;
+    columnOrder: string[];
 }
 
 interface AccountRowContentProps {
@@ -114,6 +116,8 @@ interface AccountRowContentProps {
     onUpdateLabel?: (label: string) => void;
     onViewError: () => void;
     quotaWindow?: '5h' | 'weekly';
+    showLastUsed?: boolean;
+    columnOrder: string[];
 }
 
 // ============================================================================
@@ -173,8 +177,12 @@ function SortableAccountRow({
     onUpdateLabel,
     onViewError,
     quotaWindow,
+    showLastUsed,
+    columnOrder,
 }: SortableRowProps) {
     const { t } = useTranslation();
+    const hasAnyActiveTarget = useAccountStore((state) => state.hasAnyActiveTarget);
+    const isAnyActive = hasAnyActiveTarget(account.id) || isCurrent;
     const {
         attributes,
         listeners,
@@ -197,9 +205,10 @@ function SortableAccountRow({
             style={style as React.CSSProperties}
             className={cn(
                 "group transition-colors border-b border-gray-100 dark:border-base-200",
-                isCurrent && "bg-blue-50/50 dark:bg-blue-900/10",
-                isDragging && "bg-blue-100 dark:bg-blue-900/30 shadow-lg",
-                !isDragging && "hover:bg-gray-50 dark:hover:bg-base-200"
+                isAnyActive && "bg-emerald-50/40 dark:bg-emerald-950/20",
+                isDragging && "bg-emerald-100 dark:bg-emerald-900/30 shadow-lg",
+                !isDragging && !isAnyActive && "hover:bg-gray-50 dark:hover:bg-base-200",
+                !isDragging && isAnyActive && "hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30"
             )}
         >
             {/* 拖拽手柄 */}
@@ -240,6 +249,8 @@ function SortableAccountRow({
                 onUpdateLabel={onUpdateLabel}
                 onViewError={onViewError}
                 quotaWindow={quotaWindow}
+                showLastUsed={showLastUsed}
+                columnOrder={columnOrder}
             />
         </tr>
     );
@@ -265,18 +276,18 @@ function AccountRowContent({
     onWarmup,
     onUpdateLabel,
     onViewError,
-    quotaWindow,
+    quotaWindow: _quotaWindow,
+    showLastUsed,
+    columnOrder,
 }: AccountRowContentProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
-    const { currentTargetIde } = useAccountStore();
+    const isTargetActiveForAccount = useAccountStore((state) => state.isTargetActiveForAccount);
+    const isPlatformActive = isTargetActiveForAccount(account.id, 'platform');
+    const isIdeActive = isTargetActiveForAccount(account.id, 'ide');
+    const isCliActive = isTargetActiveForAccount(account.id, 'agy');
+    const isAnyActive = isPlatformActive || isIdeActive || isCliActive || isCurrent;
     const validationBlockedLabel = getValidationBlockedStatusLabel(account.validation_blocked_reason, t);
-
-    const getActiveBadgeLabel = (target?: string | null) => {
-        if (target === 'ide') return 'IDE Active';
-        if (target === 'agy') return 'CLI Active';
-        return 'Platform Active';
-    };
 
     // 自定义标签编辑状态
     const [isEditingLabel, setIsEditingLabel] = useState(false);
@@ -301,52 +312,6 @@ function AccountRowContent({
             handleCancelLabel();
         }
     };
-
-    // 解析周配额项 (当处于 weekly 视图时)
-    const weeklyItems = useMemo(() => {
-        if (quotaWindow !== 'weekly') return [];
-        return (account.quota?.quota_groups || []).flatMap(group => {
-            return group.buckets
-                .filter(b => b.window.toLowerCase().includes('week') || b.bucket_id.toLowerCase().includes('week'))
-                .map(b => {
-                    const shortGroupName = group.display_name
-                        .replace(/ models?$/i, '')
-                        .replace(/Claude and GPT/i, 'Claude/GPT');
-                    return {
-                        id: `${group.display_name}-${b.bucket_id}`,
-                        label: b.display_name ? `${shortGroupName} (${b.display_name})` : `${shortGroupName} (周)`,
-                        percentage: Math.round((b.remaining_fraction || 0) * 100),
-                        resetTime: b.reset_time,
-                        Icon: shortGroupName.toLowerCase().includes('claude') ? Sparkles : Bot,
-                    };
-                });
-        });
-    }, [quotaWindow, account.quota?.quota_groups]);
-
-    // 解析 5H 配额项 (当处于 5h 视图时)
-    const fiveHourItems = useMemo(() => {
-        if (quotaWindow !== '5h') return [];
-        return (account.quota?.quota_groups || []).flatMap(group => {
-            return group.buckets
-                .filter(b => {
-                    const win = (b.window || '').toLowerCase();
-                    const id = (b.bucket_id || '').toLowerCase();
-                    return win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour');
-                })
-                .map(b => {
-                    const shortGroupName = group.display_name
-                        .replace(/ models?$/i, '')
-                        .replace(/Claude and GPT/i, 'Claude/GPT');
-                    return {
-                        id: `${group.display_name}-${b.bucket_id}`,
-                        label: b.display_name ? `${shortGroupName} (${b.display_name})` : `${shortGroupName} (5H)`,
-                        percentage: Math.round((b.remaining_fraction || 0) * 100),
-                        resetTime: b.reset_time,
-                        Icon: shortGroupName.toLowerCase().includes('claude') ? Sparkles : Bot,
-                    };
-                });
-        });
-    }, [quotaWindow, account.quota?.quota_groups]);
 
     // 获取要显示的模型列表
     const pinnedModels = ensurePinnedImageSelector(
@@ -385,7 +350,6 @@ function AccountRowContent({
                 };
             }).filter((item): item is { id: string; label: string; protectedKey: string; data: ModelQuota | undefined } => item !== null)
     ).filter(m => {
-            // 过滤特定的思考变体：在已有非 thinking 主力模型时隐藏冗余的 thinking 项，避免误杀唯一模型
             const isHiddenThinking = m.id.includes('thinking') && (
                 showAllQuotas || (account.quota?.models || []).some(other =>
                     !other.name.toLowerCase().includes('thinking') &&
@@ -395,8 +359,6 @@ function AccountRowContent({
 
             if (isHiddenThinking) return false;
 
-            // 基于标签去重 (例如 G3.1 Pro 只显示一次)
-            // 优先显示有配额数据的 ID
             const labelKey = `${m.label}-${m.protectedKey}`;
             if (uniqueLabels.has(labelKey)) {
                 return false;
@@ -408,290 +370,308 @@ function AccountRowContent({
             return true;
         })
     ).filter((m, index, self) => {
-        // 第二次过滤：确保即使没有数据的重复 Label 也只保留一个
         const labelKey = `${m.label}-${m.protectedKey}`;
         return self.findIndex(t => `${t.label}-${t.protectedKey}` === labelKey) === index;
     });
 
+    const renderEmailCell = () => (
+        <td key="email" className="px-2 py-1 align-middle w-[260px] min-w-[240px]">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                <span className={cn(
+                    "font-medium text-sm break-all transition-colors",
+                    isAnyActive ? "text-emerald-700 dark:text-emerald-400 font-semibold" : "text-gray-900 dark:text-base-content"
+                )} title={account.email}>
+                    {account.email}
+                </span>
+
+                <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                    {isPlatformActive && (
+                        <span 
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold border border-emerald-500/30"
+                            title="Active in Antigravity Platform"
+                        >
+                            <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                            </span>
+                            Platform
+                        </span>
+                    )}
+                    {isIdeActive && (
+                        <span 
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-sky-500/15 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 text-[10px] font-extrabold border border-sky-500/30"
+                            title="Active in Antigravity IDE"
+                        >
+                            <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500 shadow-[0_0_6px_#0284c7]"></span>
+                            </span>
+                            IDE
+                        </span>
+                    )}
+                    {isCliActive && (
+                        <span 
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-500/15 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-extrabold border border-indigo-500/30"
+                            title="Active in Antigravity CLI"
+                        >
+                            <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500 shadow-[0_0_6px_#6366f1]"></span>
+                            </span>
+                            CLI
+                        </span>
+                    )}
+                    {!isPlatformActive && !isIdeActive && !isCliActive && isCurrent && (
+                        <span 
+                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold border border-emerald-500/30"
+                            title="Active in Antigravity"
+                        >
+                            <span className="relative flex h-1.5 w-1.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                            </span>
+                            Active
+                        </span>
+                    )}
+                    {isDisabled && (
+                        <span
+                            className="px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-rose-200/50"
+                        >
+                            <Ban className="w-2.5 h-2.5" />
+                            <span>{t('accounts.disabled')}</span>
+                        </span>
+                    )}
+
+                    {account.proxy_disabled && (
+                        <span
+                            className="px-2 py-0.5 rounded-md bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-orange-200/50"
+                        >
+                            <Ban className="w-2.5 h-2.5" />
+                            <span>{t('accounts.proxy_disabled')}</span>
+                        </span>
+                    )}
+
+                    {account.quota?.is_forbidden && (
+                        <span className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-red-200/50">
+                            <Lock className="w-2.5 h-2.5" />
+                            <span>{t('accounts.forbidden')}</span>
+                        </span>
+                    )}
+                    {account.validation_blocked && (
+                        <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/50">
+                            <Clock className="w-2.5 h-2.5" />
+                            <span>{validationBlockedLabel}</span>
+                        </span>
+                    )}
+
+                    {account.quota?.subscription_tier && (() => {
+                        const tier = account.quota.subscription_tier.toLowerCase();
+                        if (tier.includes('ultra')) {
+                            return (
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
+                                    <Gem className="w-2.5 h-2.5 fill-current" />
+                                    {t('accounts.ultra')}
+                                </span>
+                            );
+                        } else if (tier.includes('pro')) {
+                            return (
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
+                                    <Diamond className="w-2.5 h-2.5 fill-current" />
+                                    {t('accounts.pro')}
+                                </span>
+                            );
+                        } else {
+                            return (
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 text-[10px] font-bold shadow-sm border border-gray-200 dark:border-white/10 hover:bg-gray-200 transition-colors cursor-default">
+                                    <Circle className="w-2.5 h-2.5" />
+                                    {t('accounts.free')}
+                                </span>
+                            );
+                        }
+                    })()}
+
+                    {account.custom_label && !isEditingLabel && (
+                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 text-[10px] font-bold shadow-sm border border-orange-200/50 dark:border-orange-800/50">
+                            <Tag className="w-2.5 h-2.5" />
+                            {account.custom_label}
+                        </span>
+                    )}
+
+                    {isEditingLabel && (
+                        <div className="flex items-center gap-1">
+                            <input
+                                type="text"
+                                className="px-1.5 py-0.5 text-[10px] w-20 border border-orange-300 dark:border-orange-700 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white dark:bg-base-200"
+                                placeholder={t('accounts.custom_label_placeholder', 'Label')}
+                                value={labelInput}
+                                onChange={(e) => setLabelInput(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                autoFocus
+                                maxLength={15}
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                            <button
+                                className="p-0.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-all"
+                                onClick={(e) => { e.stopPropagation(); handleSaveLabel(); }}
+                            >
+                                <Check className="w-3 h-3" />
+                            </button>
+                            <button
+                                className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-all"
+                                onClick={(e) => { e.stopPropagation(); handleCancelLabel(); }}
+                            >
+                                <X className="w-3 h-3" />
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </td>
+    );
+
+    const renderModelsCell = () => (
+        <td key="models" className="px-2 py-1 align-middle w-[280px] min-w-[260px]">
+            {isDisabled || account.quota?.is_forbidden || account.validation_blocked ? (
+                <div className={cn(
+                    "flex items-center justify-center gap-3 py-1.5 px-4 rounded-xl border group/error",
+                    account.validation_blocked ? "bg-amber-50/50 dark:bg-amber-900/10 border-amber-100/50 dark:border-amber-900/20" : "bg-red-50/50 dark:bg-red-900/10 border-red-100/50 dark:border-red-900/20"
+                )}>
+                    <div className={cn(
+                        "flex items-center gap-1.5",
+                        account.validation_blocked ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
+                    )}>
+                        {account.validation_blocked ? <Clock className="w-3.5 h-3.5" /> : (account.quota?.is_forbidden ? <Lock className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />)}
+                        <span className={cn(
+                            "text-[11px] font-bold",
+                            account.validation_blocked ? "text-amber-700/80 dark:text-amber-400" : "text-red-700/80 dark:text-red-400"
+                        )}>
+                            {account.validation_blocked ? validationBlockedLabel : (isDisabled ? t('accounts.status.disabled') : t('accounts.forbidden_msg'))}
+                        </span>
+                    </div>
+                    <div className={cn(
+                        "w-px h-3",
+                        account.validation_blocked ? "bg-amber-200 dark:bg-amber-800/50" : "bg-red-200 dark:bg-red-800/50"
+                    )} />
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onViewError(); }}
+                        className="text-[10px] font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
+                    >
+                        {t('accounts.view_error')}
+                    </button>
+                </div>
+            ) : (
+                <div className={cn(
+                    "grid gap-x-2 gap-y-1 py-0",
+                    displayModels.length === 1 ? "grid-cols-1" : "grid-cols-2"
+                )}>
+                    {displayModels.map((model) => {
+                        const modelData = model.data;
+                        return (
+                            <QuotaItem
+                                key={model.id}
+                                label={model.label}
+                                percentage={modelData?.percentage || 0}
+                                resetTime={modelData?.reset_time}
+                                isProtected={isModelProtected(account.protected_models, model.protectedKey)}
+                                liveLimit={getLiveLimitForModel(account, model.id, model.protectedKey)}
+                                Icon={MODEL_CONFIG[model.id]?.Icon || Bot}
+                            />
+                        );
+                    })}
+                </div>
+            )}
+        </td>
+    );
+
+    const renderFiveHourCell = () => {
+        let resetTime: string | null = null;
+        let minDiff = Infinity;
+        const now = Date.now();
+        for (const group of account.quota?.quota_groups || []) {
+            for (const b of group.buckets || []) {
+                const win = (b.window || '').toLowerCase();
+                const id = (b.bucket_id || '').toLowerCase();
+                if ((win.includes('5h') || id.includes('5h') || win.includes('hour')) && b.reset_time) {
+                    const diff = new Date(b.reset_time).getTime() - now;
+                    if (diff > 0 && diff < minDiff) {
+                        minDiff = diff;
+                        resetTime = b.reset_time;
+                    }
+                }
+            }
+        }
+        if (!resetTime && account.quota?.models) {
+            for (const m of account.quota.models) {
+                if (m.reset_time) {
+                    const diff = new Date(m.reset_time).getTime() - now;
+                    if (diff > 0 && diff < minDiff) {
+                        minDiff = diff;
+                        resetTime = m.reset_time;
+                    }
+                }
+            }
+        }
+        const isReady = !resetTime || minDiff <= 0;
+        const totalMinutes = isReady ? 0 : Math.ceil(minDiff / (1000 * 60));
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return (
+            <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[105px] min-w-[100px]">
+                <div className="flex items-center gap-1.5" title={resetTime ? `5H Reset: ${new Date(resetTime).toLocaleString()}` : '5H Quota Ready'}>
+                    <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
+                    <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
+                        {isReady ? '0h 0m' : `${hours}h ${minutes}m`}
+                    </span>
+                    <span className={cn(
+                        "text-[9px] font-bold px-1 py-0.2 rounded font-mono",
+                        isReady
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                            : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                    )}>
+                        5H
+                    </span>
+                </div>
+            </td>
+        );
+    };
+
+    const renderWeeklyCell = () => (
+        <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[115px] min-w-[110px]">
+            <WeeklyCountdown account={account} layout="table" />
+        </td>
+    );
+
+    const renderLastUsedCell = () => (
+        <td key="last_used" className="px-2 py-1 align-middle w-[85px] min-w-[80px]">
+            <div className="flex flex-col">
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400 font-mono whitespace-nowrap">
+                    {new Date(account.last_used * 1000).toLocaleDateString()}
+                </span>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono whitespace-nowrap leading-tight">
+                    {new Date(account.last_used * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+            </div>
+        </td>
+    );
 
     return (
         <>
-            {/* 邮箱列 */}
-            <td className="px-2 py-1 align-middle">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <span className={cn(
-                        "font-medium text-sm break-all transition-colors",
-                        isCurrent ? "text-blue-700 dark:text-blue-400" : "text-gray-900 dark:text-base-content"
-                    )} title={account.email}>
-                        {account.email}
-                    </span>
-
-                    <div className="flex items-center gap-1.5 shrink-0">
-                        {isCurrent && (
-                            <span 
-                                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold shadow-xs border border-emerald-500/30 dark:border-emerald-500/40 select-none tracking-wide"
-                                title={`Active in Antigravity ${getActiveBadgeLabel(currentTargetIde).replace(' Active', '')}`}
-                            >
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
-                                </span>
-                                {getActiveBadgeLabel(currentTargetIde)}
-                            </span>
-                        )}
-                        {isDisabled && (
-                            <span
-                                className="px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-rose-200/50"
-                            >
-                                <Ban className="w-2.5 h-2.5" />
-                                <span>{t('accounts.disabled')}</span>
-                            </span>
-                        )}
-
-                        {account.proxy_disabled && (
-                            <span
-                                className="px-2 py-0.5 rounded-md bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-orange-200/50"
-                            >
-                                <Ban className="w-2.5 h-2.5" />
-                                <span>{t('accounts.proxy_disabled')}</span>
-                            </span>
-                        )}
-
-                        {account.quota?.is_forbidden && (
-                            <span className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-red-200/50">
-                                <Lock className="w-2.5 h-2.5" />
-                                <span>{t('accounts.forbidden')}</span>
-                            </span>
-                        )}
-                        {account.validation_blocked && (
-                            <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/50">
-                                <Clock className="w-2.5 h-2.5" />
-                                <span>{validationBlockedLabel}</span>
-                            </span>
-                        )}
-
-
-                        {/* 订阅类型徽章 */}
-                        {account.quota?.subscription_tier && (() => {
-                            const tier = account.quota.subscription_tier.toLowerCase();
-                            if (tier.includes('ultra')) {
-                                return (
-                                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
-                                        <Gem className="w-2.5 h-2.5 fill-current" />
-                                        {t('accounts.ultra')}
-                                    </span>
-                                );
-                            } else if (tier.includes('pro')) {
-                                return (
-                                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
-                                        <Diamond className="w-2.5 h-2.5 fill-current" />
-                                        {t('accounts.pro')}
-                                    </span>
-                                );
-                            } else {
-                                return (
-                                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 text-[10px] font-bold shadow-sm border border-gray-200 dark:border-white/10 hover:bg-gray-200 transition-colors cursor-default">
-                                        <Circle className="w-2.5 h-2.5" />
-                                        {t('accounts.free')}
-                                    </span>
-                                );
-                            }
-                        })()}
-                        {/* 自定义标签 */}
-                        {account.custom_label && !isEditingLabel && (
-                            <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 text-[10px] font-bold shadow-sm border border-orange-200/50 dark:border-orange-800/50">
-                                <Tag className="w-2.5 h-2.5" />
-                                {account.custom_label}
-                            </span>
-                        )}
-                        {/* 标签编辑输入框 */}
-                        {isEditingLabel && (
-                            <div className="flex items-center gap-1">
-                                <input
-                                    type="text"
-                                    className="px-1.5 py-0.5 text-[10px] w-20 border border-orange-300 dark:border-orange-700 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 bg-white dark:bg-base-200"
-                                    placeholder={t('accounts.custom_label_placeholder', 'Label')}
-                                    value={labelInput}
-                                    onChange={(e) => setLabelInput(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    autoFocus
-                                    maxLength={15}
-                                    onClick={(e) => e.stopPropagation()}
-                                />
-                                <button
-                                    className="p-0.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded transition-all"
-                                    onClick={(e) => { e.stopPropagation(); handleSaveLabel(); }}
-                                >
-                                    <Check className="w-3 h-3" />
-                                </button>
-                                <button
-                                    className="p-0.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-all"
-                                    onClick={(e) => { e.stopPropagation(); handleCancelLabel(); }}
-                                >
-                                    <X className="w-3 h-3" />
-                                </button>
-                            </div>
-                        )}
-                    </div>
-
-                </div>
-            </td>
-
-            {/* 模型配额列 */}
-            <td className="px-2 py-1 align-middle">
-                {isDisabled || account.quota?.is_forbidden || account.validation_blocked ? (
-                    <div className={cn(
-                        "flex items-center justify-center gap-3 py-1.5 px-4 rounded-xl border group/error",
-                        account.validation_blocked ? "bg-amber-50/50 dark:bg-amber-900/10 border-amber-100/50 dark:border-amber-900/20" : "bg-red-50/50 dark:bg-red-900/10 border-red-100/50 dark:border-red-900/20"
-                    )}>
-                        <div className={cn(
-                            "flex items-center gap-1.5",
-                            account.validation_blocked ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
-                        )}>
-                            {account.validation_blocked ? <Clock className="w-3.5 h-3.5" /> : (account.quota?.is_forbidden ? <Lock className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />)}
-                            <span className={cn(
-                                "text-[11px] font-bold",
-                                account.validation_blocked ? "text-amber-700/80 dark:text-amber-400" : "text-red-700/80 dark:text-red-400"
-                            )}>
-                                {account.validation_blocked ? validationBlockedLabel : (isDisabled ? t('accounts.status.disabled') : t('accounts.forbidden_msg'))}
-                            </span>
-                        </div>
-                        <div className={cn(
-                            "w-px h-3",
-                            account.validation_blocked ? "bg-amber-200 dark:bg-amber-800/50" : "bg-red-200 dark:bg-red-800/50"
-                        )} />
-                        <button
-                            onClick={(e) => { e.stopPropagation(); onViewError(); }}
-                            className="text-[10px] font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
-                        >
-                            {t('accounts.view_error')}
-                        </button>
-                    </div>
-                ) : (
-                    <div className={cn(
-                        "grid gap-x-2 gap-y-1 py-0",
-                        (quotaWindow === '5h' && fiveHourItems.length > 0)
-                            ? (fiveHourItems.length === 1 ? "grid-cols-1" : "grid-cols-2")
-                            : (quotaWindow === 'weekly' && weeklyItems.length > 0)
-                                ? (weeklyItems.length === 1 ? "grid-cols-1" : "grid-cols-2")
-                                : (displayModels.length === 1 ? "grid-cols-1" : "grid-cols-2")
-                    )}>
-                        {quotaWindow === '5h' && fiveHourItems.length > 0 ? (
-                            fiveHourItems.map((item) => (
-                                <QuotaItem
-                                    key={item.id}
-                                    label={item.label}
-                                    percentage={item.percentage}
-                                    resetTime={item.resetTime}
-                                    Icon={item.Icon}
-                                />
-                            ))
-                        ) : quotaWindow === 'weekly' && weeklyItems.length > 0 ? (
-                            weeklyItems.map((item) => (
-                                <QuotaItem
-                                    key={item.id}
-                                    label={item.label}
-                                    percentage={item.percentage}
-                                    resetTime={item.resetTime}
-                                    Icon={item.Icon}
-                                />
-                            ))
-                        ) : (
-                            displayModels.map((model) => {
-                                const modelData = model.data;
-
-                                return (
-                                    <QuotaItem
-                                        key={model.id}
-                                        label={model.label}
-                                        percentage={modelData?.percentage || 0}
-                                        resetTime={modelData?.reset_time}
-                                        isProtected={isModelProtected(account.protected_models, model.protectedKey)}
-                                        liveLimit={getLiveLimitForModel(account, model.id, model.protectedKey)}
-                                        Icon={MODEL_CONFIG[model.id]?.Icon || Bot}
-                                    />
-                                );
-                            })
-                        )}
-                    </div>
-                )}
-            </td>
-
-            {/* 重置倒计时列: 5H 模式展示 5小时滚动倒计时，Weekly 模式展示周阶梯 */}
-            <td className="px-2 py-1 align-middle whitespace-nowrap">
-                {quotaWindow === '5h' ? (() => {
-                    let resetTime: string | null = null;
-                    let minDiff = Infinity;
-                    const now = Date.now();
-                    for (const group of account.quota?.quota_groups || []) {
-                        for (const b of group.buckets || []) {
-                            const win = (b.window || '').toLowerCase();
-                            const id = (b.bucket_id || '').toLowerCase();
-                            if ((win.includes('5h') || id.includes('5h') || win.includes('hour')) && b.reset_time) {
-                                const diff = new Date(b.reset_time).getTime() - now;
-                                if (diff > 0 && diff < minDiff) {
-                                    minDiff = diff;
-                                    resetTime = b.reset_time;
-                                }
-                            }
-                        }
-                    }
-                    if (!resetTime && account.quota?.models) {
-                        for (const m of account.quota.models) {
-                            if (m.reset_time) {
-                                const diff = new Date(m.reset_time).getTime() - now;
-                                if (diff > 0 && diff < minDiff) {
-                                    minDiff = diff;
-                                    resetTime = m.reset_time;
-                                }
-                            }
-                        }
-                    }
-                    const isReady = !resetTime || minDiff <= 0;
-                    const totalMinutes = isReady ? 0 : Math.ceil(minDiff / (1000 * 60));
-                    const hours = Math.floor(totalMinutes / 60);
-                    const minutes = totalMinutes % 60;
-                    return (
-                        <div className="flex items-center gap-1.5" title={resetTime ? `5H Reset: ${new Date(resetTime).toLocaleString()}` : '5H Quota Ready'}>
-                            <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
-                            <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
-                                {isReady ? '0h 0m' : `${hours}h ${minutes}m`}
-                            </span>
-                            <span className={cn(
-                                "text-[9px] font-bold px-1 py-0.2 rounded font-mono",
-                                isReady
-                                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                    : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
-                            )}>
-                                5H
-                            </span>
-                        </div>
-                    );
-                })() : (
-                    <WeeklyCountdown account={account} layout="table" />
-                )}
-            </td>
-
-            {/* 最后使用时间列 */}
-            <td className="px-2 py-1 align-middle">
-                <div className="flex flex-col">
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400 font-mono whitespace-nowrap">
-                        {new Date(account.last_used * 1000).toLocaleDateString()}
-                    </span>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono whitespace-nowrap leading-tight">
-                        {new Date(account.last_used * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                </div>
-            </td>
+            {columnOrder.map((colId) => {
+                if (colId === 'email') return renderEmailCell();
+                if (colId === 'models') return renderModelsCell();
+                if (colId === 'five_hour') return renderFiveHourCell();
+                if (colId === 'weekly') return renderWeeklyCell();
+                if (colId === 'last_used' && showLastUsed) return renderLastUsedCell();
+                return null;
+            })}
 
             {/* 操作列 */}
             <td className={cn(
-                "px-1 py-1 sticky right-0 z-10 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center align-middle",
-                // 动态背景色处理
-                isCurrent
-                    ? "bg-[#f1f6ff] dark:bg-[#1e2330]" // 接近 blue-50/50 的实色
+                "px-1 py-1 sticky right-0 z-10 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center align-middle w-[210px]",
+                isAnyActive
+                    ? "bg-[#ecfdf5] dark:bg-[#064e3b]/30"
                     : "bg-white dark:bg-base-100",
-                !isCurrent && "group-hover:bg-gray-50 dark:group-hover:bg-base-200"
+                !isAnyActive && "group-hover:bg-gray-50 dark:group-hover:bg-base-200"
             )}>
                 <AccountActionControls
                     account={account}
@@ -723,6 +703,8 @@ function AccountRowContent({
  * 账号表格组件
  * 支持拖拽排序、多选、批量操作等功能
  */
+const DEFAULT_COLUMN_ORDER = ['email', 'models', 'five_hour', 'weekly', 'last_used'];
+
 function AccountTable({
     accounts,
     selectedIds,
@@ -743,11 +725,48 @@ function AccountTable({
     onUpdateLabel,
     onViewError,
     quotaWindow,
+    showLastUsed = false,
 }: AccountTableProps) {
     const { t } = useTranslation();
 
     const [activeId, setActiveId] = useState<string | null>(null);
-    // showAllQuotas 已经在 useConfigStore 中解构获取
+
+    const [columnOrder, setColumnOrder] = useState<string[]>(() => {
+        try {
+            const saved = localStorage.getItem('accounts_column_order');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    const combined = [...parsed.filter((c: string) => DEFAULT_COLUMN_ORDER.includes(c))];
+                    for (const def of DEFAULT_COLUMN_ORDER) {
+                        if (!combined.includes(def)) combined.push(def);
+                    }
+                    return combined;
+                }
+            }
+        } catch {
+            // ignore
+        }
+        return [...DEFAULT_COLUMN_ORDER];
+    });
+
+    const handleColumnDrop = (draggedId: string, targetId: string) => {
+        if (draggedId === targetId) return;
+        setColumnOrder((prev) => {
+            const oldIndex = prev.indexOf(draggedId);
+            const newIndex = prev.indexOf(targetId);
+            if (oldIndex === -1 || newIndex === -1) return prev;
+            const newOrder = [...prev];
+            const [removed] = newOrder.splice(oldIndex, 1);
+            newOrder.splice(newIndex, 0, removed);
+            try {
+                localStorage.setItem('accounts_column_order', JSON.stringify(newOrder));
+            } catch {
+                // ignore
+            }
+            return newOrder;
+        });
+    };
 
     // 配置拖拽传感器
     const sensors = useSensors(
@@ -778,6 +797,98 @@ function AccountTable({
                 onReorder(arrayMove(accountIds, oldIndex, newIndex));
             }
         }
+    };
+
+    const renderColumnHeader = (colId: string) => {
+        const commonHeaderProps = {
+            draggable: true,
+            onDragStart: (e: React.DragEvent) => {
+                e.dataTransfer.setData('text/plain', colId);
+                e.dataTransfer.effectAllowed = 'move';
+            },
+            onDragOver: (e: React.DragEvent) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            },
+            onDrop: (e: React.DragEvent) => {
+                e.preventDefault();
+                const draggedId = e.dataTransfer.getData('text/plain');
+                if (draggedId) handleColumnDrop(draggedId, colId);
+            },
+            title: t('accounts.drag_column_to_reorder', '拖动表头调整列顺序'),
+        };
+
+        if (colId === 'email') {
+            return (
+                <th
+                    key="email"
+                    {...commonHeaderProps}
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[260px] min-w-[240px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                >
+                    <div className="flex items-center gap-1">
+                        <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
+                        <span>{t('accounts.table.email')}</span>
+                    </div>
+                </th>
+            );
+        }
+        if (colId === 'models') {
+            return (
+                <th
+                    key="models"
+                    {...commonHeaderProps}
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[280px] min-w-[260px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                >
+                    <div className="flex items-center gap-1">
+                        <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
+                        <span>{t('accounts.table.quota')}</span>
+                    </div>
+                </th>
+            );
+        }
+        if (colId === 'five_hour') {
+            return (
+                <th
+                    key="five_hour"
+                    {...commonHeaderProps}
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[105px] min-w-[100px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                >
+                    <div className="flex items-center gap-1">
+                        <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
+                        <span>{t('accounts.table.five_hour_countdown', '5H Reset')}</span>
+                    </div>
+                </th>
+            );
+        }
+        if (colId === 'weekly') {
+            return (
+                <th
+                    key="weekly"
+                    {...commonHeaderProps}
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[115px] min-w-[110px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                >
+                    <div className="flex items-center gap-1">
+                        <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
+                        <span>{t('accounts.table.weekly_countdown', 'Weekly Reset')}</span>
+                    </div>
+                </th>
+            );
+        }
+        if (colId === 'last_used' && showLastUsed) {
+            return (
+                <th
+                    key="last_used"
+                    {...commonHeaderProps}
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[85px] min-w-[80px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                >
+                    <div className="flex items-center gap-1">
+                        <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
+                        <span>{t('accounts.table.last_used')}</span>
+                    </div>
+                </th>
+            );
+        }
+        return null;
     };
 
     if (accounts.length === 0) {
@@ -811,17 +922,10 @@ function AccountTable({
                                     onChange={onToggleAll}
                                 />
                             </th>
-                            <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[300px] whitespace-nowrap">{t('accounts.table.email')}</th>
-                            <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[340px] whitespace-nowrap">
-                                {quotaWindow === 'weekly' ? t('accounts.table.weekly_quota', '周配额') : t('accounts.table.quota')}
-                            </th>
-                            <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[170px] whitespace-nowrap">
-                                {quotaWindow === '5h' ? t('accounts.table.five_hour_countdown', '5H Reset') : t('accounts.table.weekly_countdown', 'Weekly Reset')}
-                            </th>
-                            <th className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[90px] whitespace-nowrap">{t('accounts.table.last_used')}</th>
-                            <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[220px] bg-gray-50 dark:bg-base-200 z-20 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center">{t('accounts.table.actions')}</th>
-                        </tr >
-                    </thead >
+                            {columnOrder.map((colId) => renderColumnHeader(colId))}
+                            <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[210px] bg-gray-50 dark:bg-base-200 z-20 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center">{t('accounts.table.actions')}</th>
+                        </tr>
+                    </thead>
                     <SortableContext items={accountIds} strategy={verticalListSortingStrategy}>
                         <tbody className="divide-y divide-gray-100 dark:divide-base-200">
                             {accounts.map((account) => (
@@ -845,12 +949,14 @@ function AccountTable({
                                     onUpdateLabel={onUpdateLabel ? (label: string) => onUpdateLabel(account.id, label) : undefined}
                                     onViewError={() => onViewError(account.id)}
                                     quotaWindow={quotaWindow}
+                                    showLastUsed={showLastUsed}
+                                    columnOrder={columnOrder}
                                 />
                             ))}
                         </tbody>
                     </SortableContext>
-                </table >
-            </div >
+                </table>
+            </div>
 
             {/* 拖拽悬浮预览层 */}
             <DragOverlay>
@@ -887,6 +993,8 @@ function AccountTable({
                                         isDisabled={Boolean(activeAccount.disabled)}
                                         onViewError={() => { }}
                                         quotaWindow={quotaWindow}
+                                        showLastUsed={showLastUsed}
+                                        columnOrder={columnOrder}
                                     />
                                 </tr>
                             </tbody>

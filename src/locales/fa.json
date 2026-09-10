@@ -299,10 +299,12 @@
       "delete_title": "Delete Confirmation",
       "batch_delete_msg": "Are you sure you want to delete the selected {{count}} accounts? This action cannot be undone.",
       "delete_msg": "Are you sure you want to delete this account? This action cannot be undone.",
-      "refresh_title": "Refresh Quota",
-      "batch_refresh_title": "Batch Refresh",
-      "refresh_msg": "Are you sure you want to refresh the quota for the current account?",
-      "batch_refresh_msg": "Are you sure you want to refresh quotas for the selected {{count}} accounts? This may take some time.",
+      "refresh_title": "بروزرسانی سهمیه",
+      "refresh_all_title": "بروزرسانی تمام اکانت‌ها",
+      "batch_refresh_title": "بروزرسانی گروهی",
+      "refresh_msg": "آیا از بروزرسانی سهمیه اکانت فعلی اطمینان دارید؟",
+      "refresh_all_msg": "آیا از بروزرسانی سهمیه تمام اکانت‌ها اطمینان دارید؟ این عملیات ممکن است کمی زمان ببرد.",
+      "batch_refresh_msg": "آیا از بروزرسانی سهمیه {{count}} اکانت انتخاب‌شده اطمینان دارید؟ این عملیات ممکن است کمی زمان ببرد.",
       "disable_proxy_title": "Disable Proxy",
       "disable_proxy_msg": "Are you sure you want to disable proxy for this account? The account will remain usable in the app.",
       "enable_proxy_title": "Enable Proxy",
@@ -312,11 +314,14 @@
       "batch_warmup_title": "Batch Manual Warmup",
       "batch_warmup_msg": "Are you sure you want to trigger warmup for the selected {{count}} accounts immediately?"
     },
+    "auto_sort": "مرتب‌سازی خودکار",
+    "show_last_used": "نمایش آخرین استفاده",
     "switch_to_agy": "تغییر به Antigravity CLI (agy)",
     "table": {
       "email": "ایمیل",
       "quota": "سهمیه مدل‌ها",
-      "weekly_countdown": "زمان مانده هفتگی",
+      "five_hour_countdown": "ریست ۵ ساعته",
+      "weekly_countdown": "ریست هفتگی",
       "last_used": "آخرین استفاده",
       "actions": "عملیات"
     }

@@ -340,8 +340,10 @@
       "batch_delete_msg": "Are you sure you want to delete the selected {{count}} accounts? This action cannot be undone.",
       "delete_msg": "Are you sure you want to delete this account? This action cannot be undone.",
       "refresh_title": "Refresh Quota",
+      "refresh_all_title": "Refresh All Accounts",
       "batch_refresh_title": "Batch Refresh",
       "refresh_msg": "Are you sure you want to refresh the quota for the current account?",
+      "refresh_all_msg": "Are you sure you want to refresh quotas for all accounts? This may take some time.",
       "batch_refresh_msg": "Are you sure you want to refresh quotas for the selected {{count}} accounts? This may take some time.",
       "disable_proxy_title": "Disable Proxy",
       "disable_proxy_msg": "Are you sure you want to disable proxy for this account? The account will remain usable in the app.",
@@ -352,6 +354,8 @@
       "batch_warmup_title": "Batch Manual Warmup",
       "batch_warmup_msg": "Are you sure you want to trigger warmup for the selected {{count}} accounts immediately?"
     },
+    "auto_sort": "Auto Sort",
+    "show_last_used": "Show Last Used",
     "switch_to_agy": "Switch to Antigravity CLI (agy)"
   },
   "settings": {

@@ -6,12 +6,20 @@ interface AccountState {
     accounts: Account[];
     currentAccount: Account | null;
     currentTargetIde: string | null;
+    activeTargetAccounts: {
+        platform: string | null;
+        ide: string | null;
+        agy: string | null;
+    };
     loading: boolean;
     error: string | null;
 
     // Actions
     fetchAccounts: () => Promise<void>;
     fetchCurrentAccount: () => Promise<void>;
+    fetchActiveTargetAccounts: () => Promise<void>;
+    isTargetActiveForAccount: (accountId: string, target: 'platform' | 'ide' | 'agy') => boolean;
+    hasAnyActiveTarget: (accountId: string) => boolean;
     addAccount: (email: string, refreshToken: string) => Promise<void>;
     deleteAccount: (accountId: string) => Promise<void>;
     deleteAccounts: (accountIds: string[]) => Promise<void>;
@@ -38,15 +46,64 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     accounts: [],
     currentAccount: null,
     currentTargetIde: localStorage.getItem('antigravity_current_target_ide') || 'platform',
+    activeTargetAccounts: {
+        platform: localStorage.getItem('antigravity_active_platform_account'),
+        ide: localStorage.getItem('antigravity_active_ide_account'),
+        agy: localStorage.getItem('antigravity_active_agy_account'),
+    },
     loading: false,
     error: null,
+
+    isTargetActiveForAccount: (accountId: string, target: 'platform' | 'ide' | 'agy') => {
+        const acc = get().accounts.find(a => a.id === accountId);
+        if (acc?.active_targets?.includes(target)) return true;
+        const targetMap = get().activeTargetAccounts;
+        return targetMap[target] === accountId;
+    },
+
+    hasAnyActiveTarget: (accountId: string) => {
+        const acc = get().accounts.find(a => a.id === accountId);
+        if (acc?.active_targets && acc.active_targets.length > 0) return true;
+        const targetMap = get().activeTargetAccounts;
+        return targetMap.platform === accountId || targetMap.ide === accountId || targetMap.agy === accountId;
+    },
+
+    fetchActiveTargetAccounts: async () => {
+        try {
+            const targets = await accountService.getActiveTargetAccounts();
+            if (targets) {
+                if (targets.platform) localStorage.setItem('antigravity_active_platform_account', targets.platform);
+                if (targets.ide) localStorage.setItem('antigravity_active_ide_account', targets.ide);
+                if (targets.agy) localStorage.setItem('antigravity_active_agy_account', targets.agy);
+                set({ activeTargetAccounts: targets });
+            }
+        } catch (e) {
+            console.error('Fetch active target accounts failed:', e);
+        }
+    },
 
     fetchAccounts: async () => {
         set({ loading: true, error: null });
         try {
             console.log('[Store] Fetching accounts...');
             const accounts = await accountService.listAccounts();
-            set({ accounts, loading: false });
+            const targetAccounts = get().activeTargetAccounts;
+            const currentAcc = get().currentAccount;
+            const enrichedAccounts = accounts.map(acc => {
+                const targets = new Set(acc.active_targets || []);
+                if (targetAccounts.platform === acc.id) targets.add('platform');
+                if (targetAccounts.ide === acc.id) targets.add('ide');
+                if (targetAccounts.agy === acc.id) targets.add('agy');
+                if (targets.size === 0 && currentAcc?.id === acc.id) {
+                    const ide = get().currentTargetIde || 'platform';
+                    targets.add(ide === 'ide' ? 'ide' : (ide === 'agy' ? 'agy' : 'platform'));
+                }
+                return {
+                    ...acc,
+                    active_targets: Array.from(targets)
+                };
+            });
+            set({ accounts: enrichedAccounts, loading: false });
         } catch (error) {
             console.error('[Store] Fetch accounts failed:', error);
             set({ error: String(error), loading: false });
@@ -58,6 +115,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         try {
             const account = await accountService.getCurrentAccount();
             const stored = localStorage.getItem('antigravity_current_target_ide');
+            await get().fetchActiveTargetAccounts();
             set({
                 currentAccount: account,
                 currentTargetIde: stored || get().currentTargetIde || 'platform',
@@ -114,10 +172,39 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         set({ loading: true, error: null });
         try {
             await accountService.switchAccount(accountId, targetIde);
-            const resolvedTarget = targetIde || 'platform';
+            const resolvedTarget = (targetIde === 'ide' ? 'ide' : (targetIde === 'agy' || targetIde === 'cli' ? 'agy' : 'platform')) as 'platform' | 'ide' | 'agy';
             localStorage.setItem('antigravity_current_target_ide', resolvedTarget);
-            await get().fetchCurrentAccount();
-            set({ loading: false, currentTargetIde: resolvedTarget });
+
+            // Update activeTargetAccounts map
+            const currentTargets = { ...get().activeTargetAccounts };
+            currentTargets[resolvedTarget] = accountId;
+            localStorage.setItem(`antigravity_active_${resolvedTarget}_account`, accountId);
+
+            // Immediately update in-memory accounts active_targets
+            const updatedAccounts = get().accounts.map(acc => {
+                const targets = new Set(acc.active_targets || []);
+                if (acc.id !== accountId) {
+                    targets.delete(resolvedTarget);
+                } else {
+                    targets.add(resolvedTarget);
+                }
+                return {
+                    ...acc,
+                    active_targets: Array.from(targets)
+                };
+            });
+
+            set({
+                loading: false,
+                currentTargetIde: resolvedTarget,
+                activeTargetAccounts: currentTargets,
+                accounts: updatedAccounts,
+            });
+
+            await Promise.all([
+                get().fetchCurrentAccount(),
+                get().fetchAccounts(),
+            ]);
         } catch (error) {
             set({ error: String(error), loading: false });
             throw error;

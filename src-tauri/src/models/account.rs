@@ -74,6 +74,9 @@ pub struct Account {
     /// 用户自定义标签
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_label: Option<String>,
+    /// 当前激活的环境目标 (platform / ide / agy)
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub active_targets: Vec<String>,
 }
 
 impl Account {
@@ -104,6 +107,7 @@ impl Account {
             proxy_id: None,
             proxy_bound_at: None,
             custom_label: None,
+            active_targets: Vec::new(),
         }
     }
 
@@ -121,6 +125,14 @@ impl Account {
     }
 }
 
+/// 各环境当前激活的账号映射
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ActiveTargetAccounts {
+    pub platform: Option<String>,
+    pub ide: Option<String>,
+    pub agy: Option<String>,
+}
+
 /// 账号索引数据（accounts.json）
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountIndex {
@@ -129,6 +141,12 @@ pub struct AccountIndex {
     pub current_account_id: Option<String>,
     #[serde(default)]
     pub current_target_ide: Option<String>,
+    #[serde(default)]
+    pub active_platform_account_id: Option<String>,
+    #[serde(default)]
+    pub active_ide_account_id: Option<String>,
+    #[serde(default)]
+    pub active_cli_account_id: Option<String>,
 }
 
 /// 账号摘要信息
@@ -155,6 +173,9 @@ impl AccountIndex {
             accounts: Vec::new(),
             current_account_id: None,
             current_target_ide: None,
+            active_platform_account_id: None,
+            active_ide_account_id: None,
+            active_cli_account_id: None,
         }
     }
 }

@@ -59,7 +59,12 @@ export function AccountActionControls({
     layout = 'table',
 }: AccountActionControlsProps) {
     const { t } = useTranslation();
-    const { currentTargetIde } = useAccountStore();
+    const { isTargetActiveForAccount } = useAccountStore();
+    const isPlatformActive = isTargetActiveForAccount(account.id, 'platform');
+    const isIdeActive = isTargetActiveForAccount(account.id, 'ide');
+    const isCliActive = isTargetActiveForAccount(account.id, 'agy');
+    const isAnyActive = isPlatformActive || isIdeActive || isCliActive || isCurrent;
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
     const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
@@ -110,8 +115,8 @@ export function AccountActionControls({
             {/* Primary Target Switch Hub */}
             <div className={cn(
                 "flex items-center rounded-xl p-0.5 border shadow-sm transition-all",
-                isCurrent
-                    ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/40 shadow-emerald-500/10"
+                isAnyActive
+                    ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/50 shadow-emerald-500/20"
                     : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
             )}>
                 {/* Switch Target 1: Antigravity Platform */}
@@ -121,18 +126,18 @@ export function AccountActionControls({
                         "p-1.5 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
-                            : isCurrent && (!currentTargetIde || currentTargetIde === 'platform' || currentTargetIde === 'classic')
-                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                            : isPlatformActive
+                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"
                     )}
                     onClick={() => onSwitch()}
                     disabled={isSwitching || isDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : t('accounts.switch_to_platform', 'Switch to Antigravity Platform')}
+                    title={isDisabled ? t('accounts.disabled_tooltip') : isPlatformActive ? t('accounts.platform_active', 'Antigravity Platform (Active)') : t('accounts.switch_to_platform', 'Switch to Antigravity Platform')}
                 >
-                    {isCurrent && (!currentTargetIde || currentTargetIde === 'platform' || currentTargetIde === 'classic') && (
-                        <span className="absolute -top-1 -right-0.5 flex h-2 w-2 z-10 pointer-events-none">
+                    {isPlatformActive && (
+                        <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-1 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
                         </span>
                     )}
                     {isSwitching ? (
@@ -149,18 +154,18 @@ export function AccountActionControls({
                         "p-1.5 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
-                            : isCurrent && currentTargetIde === 'ide'
-                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                            : isIdeActive
+                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400"
                     )}
                     onClick={() => onSwitch('ide')}
                     disabled={isSwitching || isDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : t('accounts.switch_to_ide', 'Switch to Antigravity IDE')}
+                    title={isDisabled ? t('accounts.disabled_tooltip') : isIdeActive ? t('accounts.ide_active', 'Antigravity IDE (Active)') : t('accounts.switch_to_ide', 'Switch to Antigravity IDE')}
                 >
-                    {isCurrent && currentTargetIde === 'ide' && (
-                        <span className="absolute -top-1 -right-0.5 flex h-2 w-2 z-10 pointer-events-none">
+                    {isIdeActive && (
+                        <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-1 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
                         </span>
                     )}
                     <AntigravityIdeIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
@@ -173,18 +178,18 @@ export function AccountActionControls({
                         "p-1.5 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
-                            : isCurrent && currentTargetIde === 'agy'
-                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                            : isCliActive
+                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
                     )}
                     onClick={() => onSwitch('agy')}
                     disabled={isSwitching || isDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : t('accounts.switch_to_agy', 'Switch to Antigravity CLI (agy)')}
+                    title={isDisabled ? t('accounts.disabled_tooltip') : isCliActive ? t('accounts.cli_active', 'Antigravity CLI (Active)') : t('accounts.switch_to_agy', 'Switch to Antigravity CLI (agy)')}
                 >
-                    {isCurrent && currentTargetIde === 'agy' && (
-                        <span className="absolute -top-1 -right-0.5 flex h-2 w-2 z-10 pointer-events-none">
+                    {isCliActive && (
+                        <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-1 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
                         </span>
                     )}
                     <AntigravityCliIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />

@@ -564,6 +564,7 @@ pub fn run() {
             commands::delete_device_version,
             commands::open_device_folder,
             commands::get_current_account,
+            commands::get_active_target_accounts,
             // Quota commands
             commands::fetch_account_quota,
             commands::refresh_all_quotas,

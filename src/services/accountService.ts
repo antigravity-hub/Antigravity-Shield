@@ -1,6 +1,6 @@
-import i18n from '../i18n';
-import { Account, DeviceProfile, DeviceProfileVersion, QuotaData } from '../types/account';
+import { Account, ActiveTargetAccounts, DeviceProfile, DeviceProfileVersion, QuotaData } from '../types/account';
 import { request as invoke } from '../utils/request';
+import i18n from '../i18n';
 
 // 检查环境 (可选)
 function ensureTauriEnvironment() {
@@ -22,6 +22,10 @@ export async function listAccounts(): Promise<Account[]> {
 
 export async function getCurrentAccount(): Promise<Account | null> {
     return await invoke('get_current_account');
+}
+
+export async function getActiveTargetAccounts(): Promise<ActiveTargetAccounts> {
+    return await invoke<ActiveTargetAccounts>('get_active_target_accounts').catch(() => ({ platform: null, ide: null, agy: null }));
 }
 
 export async function addAccount(email: string, refreshToken: string): Promise<Account> {

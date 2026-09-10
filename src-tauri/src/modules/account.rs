@@ -924,9 +924,44 @@ pub fn list_accounts() -> Result<Vec<Account>, String> {
     let index = load_account_index()?;
     let mut accounts = Vec::new();
 
+    let active_platform = index.active_platform_account_id.as_ref().or_else(|| {
+        if index.current_target_ide.as_deref() == Some("platform") || index.current_target_ide.is_none() {
+            index.current_account_id.as_ref()
+        } else {
+            None
+        }
+    });
+    let active_ide = index.active_ide_account_id.as_ref().or_else(|| {
+        if index.current_target_ide.as_deref() == Some("ide") {
+            index.current_account_id.as_ref()
+        } else {
+            None
+        }
+    });
+    let active_cli = index.active_cli_account_id.as_ref().or_else(|| {
+        if index.current_target_ide.as_deref() == Some("agy") || index.current_target_ide.as_deref() == Some("cli") {
+            index.current_account_id.as_ref()
+        } else {
+            None
+        }
+    });
+
     for summary in &index.accounts {
         match load_account(&summary.id) {
-            Ok(account) => accounts.push(account),
+            Ok(mut account) => {
+                let mut targets = Vec::new();
+                if active_platform == Some(&account.id) {
+                    targets.push("platform".to_string());
+                }
+                if active_ide == Some(&account.id) {
+                    targets.push("ide".to_string());
+                }
+                if active_cli == Some(&account.id) {
+                    targets.push("agy".to_string());
+                }
+                account.active_targets = targets;
+                accounts.push(account);
+            }
             Err(e) => {
                 crate::modules::logger::log_error(&format!(
                     "Failed to load account {}: {}",
@@ -1084,6 +1119,15 @@ pub fn delete_account(account_id: &str) -> Result<(), String> {
     if index.current_account_id.as_deref() == Some(account_id) {
         index.current_account_id = index.accounts.first().map(|s| s.id.clone());
     }
+    if index.active_platform_account_id.as_deref() == Some(account_id) {
+        index.active_platform_account_id = None;
+    }
+    if index.active_ide_account_id.as_deref() == Some(account_id) {
+        index.active_ide_account_id = None;
+    }
+    if index.active_cli_account_id.as_deref() == Some(account_id) {
+        index.active_cli_account_id = None;
+    }
 
     save_account_index(&index)?;
 
@@ -1118,6 +1162,15 @@ pub fn delete_accounts(account_ids: &[String]) -> Result<(), String> {
         // Clear current account if it's being deleted
         if index.current_account_id.as_deref() == Some(account_id) {
             index.current_account_id = None;
+        }
+        if index.active_platform_account_id.as_deref() == Some(account_id) {
+            index.active_platform_account_id = None;
+        }
+        if index.active_ide_account_id.as_deref() == Some(account_id) {
+            index.active_ide_account_id = None;
+        }
+        if index.active_cli_account_id.as_deref() == Some(account_id) {
+            index.active_cli_account_id = None;
         }
 
         // Delete account file
@@ -1628,7 +1681,49 @@ pub fn set_current_account_id_with_target(
     let mut index = load_account_index()?;
     index.current_account_id = Some(account_id.to_string());
     index.current_target_ide = target_ide.map(|s| s.to_string());
+
+    match target_ide {
+        Some("ide") => index.active_ide_account_id = Some(account_id.to_string()),
+        Some("agy") | Some("cli") => index.active_cli_account_id = Some(account_id.to_string()),
+        _ => index.active_platform_account_id = Some(account_id.to_string()),
+    }
+
     save_account_index(&index)
+}
+
+/// Get active target accounts for all environments
+pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccounts, String> {
+    let index = load_account_index()?;
+
+    let platform = index.active_platform_account_id.clone().or_else(|| {
+        if index.current_target_ide.as_deref() == Some("platform") || index.current_target_ide.is_none() {
+            index.current_account_id.clone()
+        } else {
+            None
+        }
+    });
+
+    let ide = index.active_ide_account_id.clone().or_else(|| {
+        if index.current_target_ide.as_deref() == Some("ide") {
+            index.current_account_id.clone()
+        } else {
+            None
+        }
+    });
+
+    let agy = index.active_cli_account_id.clone().or_else(|| {
+        if index.current_target_ide.as_deref() == Some("agy") || index.current_target_ide.as_deref() == Some("cli") {
+            index.current_account_id.clone()
+        } else {
+            None
+        }
+    });
+
+    Ok(crate::models::ActiveTargetAccounts {
+        platform,
+        ide,
+        agy,
+    })
 }
 
 /// Update account quota

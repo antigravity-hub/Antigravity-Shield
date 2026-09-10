@@ -1,7 +1,7 @@
 
 
 import {
-  Calendar,
+  ArrowUpDown,
   Clock,
   Download,
   LayoutGrid,
@@ -80,9 +80,17 @@ function Accounts() {
     return (saved === 'list' || saved === 'grid') ? saved : 'list';
   });
 
-  const [quotaWindow, setQuotaWindow] = useState<QuotaWindow>(() => {
+  const [quotaWindow] = useState<QuotaWindow>(() => {
     const saved = localStorage.getItem('accounts_quota_window');
     return (saved === '5h' || saved === 'weekly') ? saved : '5h';
+  });
+
+  const [autoSort, setAutoSort] = useState<boolean>(() => {
+    return localStorage.getItem('accounts_auto_sort') === 'true';
+  });
+
+  const [showLastUsed, setShowLastUsed] = useState<boolean>(() => {
+    return localStorage.getItem('accounts_show_last_used') === 'true';
   });
 
   // Save view mode preference
@@ -94,6 +102,14 @@ function Accounts() {
   useEffect(() => {
     localStorage.setItem('accounts_quota_window', quotaWindow);
   }, [quotaWindow]);
+
+  useEffect(() => {
+    localStorage.setItem('accounts_auto_sort', String(autoSort));
+  }, [autoSort]);
+
+  useEffect(() => {
+    localStorage.setItem('accounts_show_last_used', String(showLastUsed));
+  }, [showLastUsed]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deviceAccount, setDeviceAccount] = useState<Account | null>(null);
   const [detailsAccount, setDetailsAccount] = useState<Account | null>(null);
@@ -305,11 +321,61 @@ function Accounts() {
     return result;
   }, [searchedAccounts, filter]);
 
+  const getAccountQuotaScores = (account: Account) => {
+    let fiveHourSum = 0;
+    let fiveHourCount = 0;
+    let weeklySum = 0;
+    let weeklyCount = 0;
+
+    for (const group of account.quota?.quota_groups || []) {
+      for (const b of group.buckets || []) {
+        const win = (b.window || '').toLowerCase();
+        const id = (b.bucket_id || '').toLowerCase();
+        const fraction = b.remaining_fraction !== undefined ? b.remaining_fraction : 0;
+
+        if (win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour')) {
+          fiveHourSum += fraction;
+          fiveHourCount++;
+        } else if (win.includes('week') || id.includes('week')) {
+          weeklySum += fraction;
+          weeklyCount++;
+        }
+      }
+    }
+
+    if (fiveHourCount === 0 && account.quota?.models) {
+      for (const m of account.quota.models) {
+        fiveHourSum += (m.percentage || 0) / 100;
+        fiveHourCount++;
+      }
+    }
+
+    const fiveHourAvg = fiveHourCount > 0 ? (fiveHourSum / fiveHourCount) : 0;
+    const weeklyAvg = weeklyCount > 0 ? (weeklySum / weeklyCount) : 0;
+
+    return { fiveHourAvg, weeklyAvg };
+  };
+
+  // 排序逻辑 (如果开启了 Auto Sort，则按 5H 剩余配额从高到低排序，次级按周配额排序)
+  const sortedAccounts = useMemo(() => {
+    if (!autoSort) return filteredAccounts;
+    return [...filteredAccounts].sort((a, b) => {
+      const scoreA = getAccountQuotaScores(a);
+      const scoreB = getAccountQuotaScores(b);
+      // Primary: remaining 5h quota (higher is better)
+      if (Math.abs(scoreB.fiveHourAvg - scoreA.fiveHourAvg) > 0.001) {
+        return scoreB.fiveHourAvg - scoreA.fiveHourAvg;
+      }
+      // Secondary: remaining weekly quota (higher is better)
+      return scoreB.weeklyAvg - scoreA.weeklyAvg;
+    });
+  }, [filteredAccounts, autoSort]);
+
   // Pagination Logic
   const paginatedAccounts = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredAccounts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredAccounts, currentPage, ITEMS_PER_PAGE]);
+    return sortedAccounts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [sortedAccounts, currentPage, ITEMS_PER_PAGE]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -820,33 +886,39 @@ function Accounts() {
           )}
         </div>
 
-        {/* 配额周期切换 (5H / 7天周配额) */}
-        <div className="flex gap-1 bg-gray-100 dark:bg-base-200 p-1 rounded-lg shrink-0 items-center">
+        {/* 自动排序开关与最后使用时间列显示开关 */}
+        <div className="flex gap-1 bg-gray-100/80 dark:bg-base-200 p-1 rounded-xl shrink-0 items-center border border-gray-200/50 dark:border-white/5">
           <button
             className={cn(
-              "px-2 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1",
-              quotaWindow === "5h"
-                ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content",
+              "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shrink-0",
+              autoSort
+                ? "bg-white dark:bg-base-100 text-emerald-600 dark:text-emerald-400 shadow-sm ring-1 ring-black/5"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40",
             )}
-            onClick={() => setQuotaWindow("5h")}
-            title={t("accounts.quota_window_5h", "5小时滑动配额")}
+            onClick={() => setAutoSort(!autoSort)}
+            title={t("accounts.auto_sort", "Auto Sort: High 5H Quota First")}
           >
-            <Clock className="w-3.5 h-3.5" />
-            <span>5H</span>
+            <ArrowUpDown className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{t("accounts.auto_sort", "Auto Sort")}</span>
+            {autoSort && (
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            )}
           </button>
           <button
             className={cn(
-              "px-2 py-1 text-xs font-semibold rounded-md transition-all flex items-center gap-1",
-              quotaWindow === "weekly"
-                ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content",
+              "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shrink-0",
+              showLastUsed
+                ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-black/5"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40",
             )}
-            onClick={() => setQuotaWindow("weekly")}
-            title={t("accounts.quota_window_weekly", "7天周配额")}
+            onClick={() => setShowLastUsed(!showLastUsed)}
+            title={t("accounts.show_last_used", "Show Last Used Column")}
           >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>{t("accounts.quota_window_weekly_short", "周配额")}</span>
+            <Clock className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{t("accounts.table.last_used", "Last Used")}</span>
+            {showLastUsed && (
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            )}
           </button>
         </div>
 
@@ -1145,6 +1217,7 @@ function Accounts() {
                 onUpdateLabel={handleUpdateLabel}
                 onViewError={(id: string) => setErrorAccountId(id)}
                 quotaWindow={quotaWindow}
+                showLastUsed={showLastUsed}
               />
             </div>
           </div>
@@ -1232,14 +1305,14 @@ function Accounts() {
         title={
           selectedIds.size > 0
             ? t("accounts.dialog.batch_refresh_title")
-            : t("accounts.dialog.refresh_title")
+            : t("accounts.dialog.refresh_all_title", "Refresh All Accounts Quota")
         }
         message={
           selectedIds.size > 0
             ? t("accounts.dialog.batch_refresh_msg", {
               count: selectedIds.size,
             })
-            : t("accounts.dialog.refresh_msg")
+            : t("accounts.dialog.refresh_all_msg", "Are you sure you want to refresh quota for all accounts? This may take some time.")
         }
         type="confirm"
         confirmText={t("common.refresh")}
