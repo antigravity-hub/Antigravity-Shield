@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { X, Sparkles, Loader2, CheckCircle, RotateCcw, ExternalLink } from 'lucide-react';
+import { X, Sparkles, Loader2, CheckCircle, RotateCcw, ExternalLink, ShieldAlert, Clock } from 'lucide-react';
 import { request as invoke } from '../utils/request';
 import { useTranslation } from 'react-i18next';
 import { check as tauriCheck } from '@tauri-apps/plugin-updater';
 import { relaunch as tauriRelaunch } from '@tauri-apps/plugin-process';
 import { isTauri } from '../utils/env';
 import { showToast } from './common/ToastContainer';
+import { getUpdateSeverity, isGracePeriodActive, activateGracePeriod, UpdateSeverity } from '../utils/version';
 
 interface UpdateInfo {
   has_update: boolean;
@@ -24,6 +25,7 @@ type UpdateState = 'checking' | 'available' | 'downloading' | 'ready' | 'error' 
 export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+  const [severity, setSeverity] = useState<UpdateSeverity>('none');
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [updateState, setUpdateState] = useState<UpdateState>('checking');
@@ -44,6 +46,16 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
       }
 
       setUpdateInfo(info);
+
+      // Determine severity (major/mandatory vs minor/dismissible)
+      const detectedSeverity = getUpdateSeverity(info.current_version, info.latest_version);
+      setSeverity(detectedSeverity);
+
+      // If mandatory update has an active emergency grace period, do not block now
+      if (detectedSeverity === 'major' && isGracePeriodActive(info.latest_version)) {
+        onClose();
+        return;
+      }
 
       // 2. If not in Tauri — no auto-update possible
       if (!isTauri()) {
@@ -79,6 +91,14 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
       const errorMsg = error instanceof Error ? error.message : String(error);
       console.error('Update check failed:', errorMsg);
       onClose();
+    }
+  };
+
+  const handleGracePeriod = () => {
+    if (updateInfo) {
+      activateGracePeriod(updateInfo.latest_version, 30);
+      showToast(t('update_notification.grace_period_activated', '30-minute grace period active. Please update your system soon.'), 'info');
+      handleClose();
     }
   };
 
@@ -147,6 +167,300 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
     return null;
   }
 
+  const isMandatory = severity === 'major';
+
+  // --- 1. MANDATORY / MAJOR UPDATE MODAL (Centered, Blocking, No Dismiss) ---
+  if (isMandatory) {
+    return (
+      <div
+        className={`
+          fixed inset-0 z-[200] flex items-center justify-center p-4
+          bg-black/75 backdrop-blur-md
+          transition-all duration-300 ease-out
+          ${isVisible && !isClosing ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+        `}
+      >
+        <div
+          className={`
+            relative overflow-hidden
+            w-full max-w-md p-6
+            rounded-2xl
+            border border-red-500/30 dark:border-red-500/20
+            shadow-[0_20px_60px_-15px_rgba(239,68,68,0.2)]
+            bg-white dark:bg-slate-900
+            transition-all duration-300 ease-out
+            ${isVisible && !isClosing ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}
+          `}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Ambient Glow */}
+          <div className="absolute -top-12 -right-12 w-40 h-40 bg-red-500/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10">
+            {/* Header with pulsing alert badge */}
+            <div className="flex items-start gap-3.5 mb-4">
+              <div className="relative flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500/20 to-red-500/20 border border-red-500/30 text-red-500 dark:text-red-400 shadow-md">
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
+                </span>
+                <ShieldAlert className="w-6 h-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 mb-1">
+                  {t('update_notification.mandatory_badge', 'MANDATORY UPDATE')}
+                </span>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                  {t('update_notification.mandatory_title', 'Critical Update Required')}
+                </h2>
+              </div>
+            </div>
+
+            {/* Version Transition Chip */}
+            <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200/80 dark:border-slate-700/60 mb-4">
+              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                <span>{t('settings.about.version', 'Version')}:</span>
+                <span className="font-mono font-medium px-2 py-0.5 rounded bg-gray-200/70 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
+                  v{updateInfo?.current_version}
+                </span>
+                <span className="text-gray-400">➔</span>
+                <span className="font-mono font-bold px-2 py-0.5 rounded bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                  v{updateInfo?.latest_version}
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-red-600 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                Required
+              </span>
+            </div>
+
+            {/* Description */}
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-5">
+              {t('update_notification.mandatory_desc', 'This release introduces critical protocol upgrades and anti-403 security safeguards. Updating is mandatory to prevent account suspensions and service interruptions.')}
+            </p>
+
+            {/* Downloading State */}
+            {updateState === 'downloading' && (
+              <div className="mb-5 p-4 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/40">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-600 dark:text-blue-400" />
+                    <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                      {t('update_notification.downloading', 'Downloading update in background...')}
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+                    {downloadProgress}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${downloadProgress}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Ready State */}
+            {updateState === 'ready' && (
+              <div className="flex flex-col gap-3 mb-2">
+                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 flex items-center gap-2.5 text-emerald-700 dark:text-emerald-300 text-sm">
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                  <span>{t('update_notification.restart_prompt', 'Update downloaded and ready to install. Restart now?')}</span>
+                </div>
+                <button
+                  onClick={handleRestart}
+                  className="
+                    w-full py-3 px-4 rounded-xl
+                    bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500
+                    text-white font-semibold text-sm
+                    shadow-lg shadow-emerald-500/25
+                    transition-all duration-200
+                    flex items-center justify-center gap-2
+                    active:scale-[0.98]
+                  "
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>{t('update_notification.btn_restart', 'Restart & Install Now')}</span>
+                </button>
+              </div>
+            )}
+
+            {/* Available State */}
+            {updateState === 'available' && (
+              <div className="flex flex-col gap-2.5">
+                <button
+                  onClick={handleStartDownload}
+                  className="
+                    group/btn relative overflow-hidden
+                    w-full py-3 px-4 rounded-xl
+                    bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500
+                    text-white font-semibold text-sm
+                    shadow-lg shadow-blue-500/25
+                    transition-all duration-200
+                    flex items-center justify-center gap-2
+                    active:scale-[0.98]
+                  "
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>{t('update_notification.btn_update', 'Update & Install Now')}</span>
+                  <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-20 pointer-events-none" />
+                </button>
+
+                {/* Emergency Grace Period Button */}
+                <button
+                  onClick={handleGracePeriod}
+                  className="
+                    w-full py-2.5 px-3 rounded-xl
+                    border border-gray-200 dark:border-slate-700
+                    text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200
+                    hover:bg-gray-100 dark:hover:bg-slate-800
+                    transition-all duration-150
+                    text-xs font-medium flex items-center justify-center gap-2
+                  "
+                >
+                  <Clock className="w-3.5 h-3.5 text-amber-500" />
+                  <span>{t('update_notification.btn_grace_period', 'Emergency: 30-Min Grace Period (Finish Task)')}</span>
+                </button>
+
+                {/* Fallback Direct Release Download Link */}
+                {updateInfo?.download_url && (
+                  <button
+                    onClick={async () => {
+                      try {
+                        const { openUrl } = await import('@tauri-apps/plugin-opener');
+                        await openUrl(updateInfo.download_url);
+                      } catch {
+                        window.open(updateInfo.download_url, '_blank');
+                      }
+                    }}
+                    className="
+                      w-full py-1.5 px-2 text-center
+                      text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300
+                      transition-colors duration-150
+                      text-xs flex items-center justify-center gap-1
+                    "
+                  >
+                    <span>{t('settings.about.download_manual', 'Manual Download / Release Page')}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Manual State */}
+            {updateState === 'manual' && (
+              <div className="flex flex-col gap-2.5">
+                <button
+                  onClick={async () => {
+                    if (updateInfo) {
+                      try {
+                        const { openUrl } = await import('@tauri-apps/plugin-opener');
+                        await openUrl(updateInfo.download_url);
+                      } catch {
+                        window.open(updateInfo.download_url, '_blank');
+                      }
+                    }
+                  }}
+                  className="
+                    w-full py-3 px-4 rounded-xl
+                    bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500
+                    text-white font-semibold text-sm
+                    shadow-lg shadow-blue-500/25
+                    transition-all duration-200
+                    flex items-center justify-center gap-2
+                    active:scale-[0.98]
+                  "
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>{navigator.language.startsWith('zh') ? '前往下载页面' : 'Go to Download Page'}</span>
+                </button>
+                <button
+                  onClick={handleGracePeriod}
+                  className="
+                    w-full py-2.5 px-3 rounded-xl
+                    border border-gray-200 dark:border-slate-700
+                    text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200
+                    hover:bg-gray-100 dark:hover:bg-slate-800
+                    transition-all duration-150
+                    text-xs font-medium flex items-center justify-center gap-2
+                  "
+                >
+                  <Clock className="w-3.5 h-3.5 text-amber-500" />
+                  <span>{t('update_notification.btn_grace_period', 'Emergency: 30-Min Grace Period')}</span>
+                </button>
+              </div>
+            )}
+
+            {/* Error State */}
+            {updateState === 'error' && (
+              <div className="flex flex-col gap-2.5">
+                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400 text-xs">
+                  {t('update_notification.toast.failed', 'Auto-update failed')}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setUpdateState('checking');
+                      setDownloadProgress(0);
+                      checkUpdates();
+                    }}
+                    className="
+                      flex-1 py-2.5 px-3 rounded-xl
+                      bg-blue-600 hover:bg-blue-500 text-white
+                      font-medium text-xs
+                      flex items-center justify-center gap-1.5
+                      transition-all duration-150
+                    "
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>{t('common.retry', 'Retry')}</span>
+                  </button>
+                  {updateInfo?.download_url && (
+                    <button
+                      onClick={async () => {
+                        try {
+                          const { openUrl } = await import('@tauri-apps/plugin-opener');
+                          await openUrl(updateInfo.download_url);
+                        } catch {
+                          window.open(updateInfo.download_url, '_blank');
+                        }
+                      }}
+                      className="
+                        flex-1 py-2.5 px-3 rounded-xl
+                        bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700
+                        text-gray-700 dark:text-gray-300 font-medium text-xs
+                        flex items-center justify-center gap-1.5
+                        transition-all duration-150
+                      "
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>{t('settings.about.download_manual', 'Direct Link')}</span>
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={handleGracePeriod}
+                  className="
+                    w-full py-2 px-3 rounded-xl
+                    border border-gray-200 dark:border-slate-700
+                    text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
+                    text-xs font-medium flex items-center justify-center gap-1.5
+                  "
+                >
+                  <Clock className="w-3 h-3 text-amber-500" />
+                  <span>{t('update_notification.btn_grace_period', 'Emergency: 30-Min Grace Period')}</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // --- 2. ROUTINE / MINOR UPDATE FLOATING TOAST (Dismissible for current session) ---
   return (
     <div
       className={`

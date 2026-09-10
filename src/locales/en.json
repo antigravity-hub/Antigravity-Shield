@@ -1257,6 +1257,11 @@
     "btn_update": "Update Now",
     "btn_restart": "Restart",
     "btn_later": "Later",
+    "mandatory_badge": "MANDATORY UPDATE",
+    "mandatory_title": "Critical Update Required",
+    "mandatory_desc": "This release introduces critical protocol upgrades and anti-403 security safeguards. Updating is mandatory to prevent account suspensions and service interruptions.",
+    "btn_grace_period": "30-Min Grace Period (Finish Task)",
+    "grace_period_activated": "30-minute grace period activated. Please update your system soon.",
     "toast": {
       "not_ready": "Update artifacts are not ready yet. Will retry later.",
       "failed": "Auto-update failed"
