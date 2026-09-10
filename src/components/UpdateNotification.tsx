@@ -144,8 +144,13 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       console.error('Update download failed:', errorMsg);
-      setUpdateState('error');
-      showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
+      if (errorMsg.toLowerCase().includes('minisign') || errorMsg.toLowerCase().includes('signature')) {
+        setUpdateState('manual');
+        showToast(t('update_notification.toast.signature_invalid', 'Automated verification unavailable. Switching to manual download.'), 'warning');
+      } else {
+        setUpdateState('error');
+        showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
+      }
     }
   };
 

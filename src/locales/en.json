@@ -1264,7 +1264,8 @@
     "grace_period_activated": "30-minute grace period activated. Please update your system soon.",
     "toast": {
       "not_ready": "Update artifacts are not ready yet. Will retry later.",
-      "failed": "Auto-update failed"
+      "failed": "Auto-update failed",
+      "signature_invalid": "Automated verification unavailable. Switching to manual download."
     }
   },
   "login": {
