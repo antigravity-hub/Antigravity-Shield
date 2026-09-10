@@ -154,7 +154,7 @@ docker run -d --name antigravity-shield \
   -e API_KEY=sk-your-api-key \
   -e WEB_PASSWORD=your-admin-password \
   -v ~/.antigravity_tools:/root/.antigravity_tools \
-  lbjlaq/antigravity-manager:latest
+  doctorguidance/antigravity-shield:latest
 ```
 
 ---

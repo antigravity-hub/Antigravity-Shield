@@ -500,12 +500,13 @@
       "new_version_available": "Versi baharu {{version}} tersedia",
       "download_update": "Muat Turun",
       "update_check_failed": "Semakan kemas kini gagal",
-      "support_btn": "Sokong Pengarang",
-      "support_title": "Derma & Sokongan",
-      "support_desc": "Jika anda mendapati projek ini berguna, sila belanja saya kopi! Sokongan anda adalah motivasi terbesar untuk saya menyelenggara projek ini.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_btn": "Sokong Pembangun",
+      "support_title": "Sumbangan & Sokongan",
+      "support_desc": "Jika anda mendapati projek ini berguna, sokongan kripto anda adalah motivasi terbesar untuk mengekalkan dan menambah baik projek ini.",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "Salin Alamat",
+      "support_copied": "Alamat telah disalin ke papan keratan!"
     },
     "advanced_thinking": {
       "title": "အဆင့်မြင့်တွေးခေါ်မှုနှင့် ကမ္ဘာလုံးဆိုင်ရာဖွဲ့စည်းမှု",

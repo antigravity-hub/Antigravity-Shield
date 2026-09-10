@@ -575,12 +575,13 @@
       "brew_error_brew_already_latest": "Ya está actualizado, no se requiere actualización",
       "brew_error_brew_not_supported": "La actualización mediante Homebrew no es compatible con esta plataforma",
       "update_check_failed": "Error al verificar actualizaciones",
-      "support_btn": "Apoyar al Autor",
+      "support_btn": "Apoyar al Desarrollador",
       "support_title": "Donación y Apoyo",
-      "support_desc": "Si encuentras útil este proyecto, ¡siéntete libre de invitarme un café! Tu apoyo es la mayor motivación para mantener este proyecto.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_desc": "Si encuentras útil este proyecto, ¡tu apoyo en criptomonedas es la mayor motivación para seguir manteniéndolo y mejorándolo!",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "Copiar dirección",
+      "support_copied": "¡Dirección copiada al portapapeles!"
     },
     "advanced_thinking": {
       "title": "Pensamiento Avanzado y Configuración Global",

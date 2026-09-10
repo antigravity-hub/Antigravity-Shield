@@ -595,12 +595,13 @@
       "download_manual": "Manual Download / Release",
       "downloading_progress": "Downloading update ({{progress}}%)...",
       "restart_to_apply": "Restart to Apply",
-      "support_btn": "Support Author",
+      "support_btn": "Support Developer",
       "support_title": "Donation & Support",
-      "support_desc": "If you find this project helpful, feel free to buy me a coffee! Your support is the biggest motivation for me to maintain this project.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_desc": "If you find this project helpful, your crypto support is the greatest motivation to maintain and continuously improve this project.",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "Copy Address",
+      "support_copied": "Address copied to clipboard!"
     },
     "advanced_thinking": {
       "title": "Advanced Thinking & Global Config",

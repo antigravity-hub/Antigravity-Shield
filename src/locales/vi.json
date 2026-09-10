@@ -499,12 +499,13 @@
       "new_version_available": "Có phiên bản mới {{version}}",
       "download_update": "Tải xuống",
       "update_check_failed": "Kiểm tra cập nhật thất bại",
-      "support_btn": "Hỗ trợ tác giả",
+      "support_btn": "Ủng hộ nhà phát triển",
       "support_title": "Quyên góp & Hỗ trợ",
-      "support_desc": "Nếu bạn thấy dự án này hữu ích, hãy mời tác giả một ly cà phê! Sự hỗ trợ của bạn là động lực lớn nhất để tôi duy trì dự án này.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_desc": "Nếu bạn thấy dự án này hữu ích, sự ủng hộ bằng tiền mã hóa của bạn là động lực lớn nhất để duy trì và cải tiến dự án.",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "Sao chép địa chỉ",
+      "support_copied": "Đã sao chép địa chỉ vào bộ nhớ tạm!"
     },
     "advanced_thinking": {
       "title": "Tư duy Nâng cao & Cấu hình Toàn cầu",

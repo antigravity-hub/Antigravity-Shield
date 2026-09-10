@@ -575,12 +575,13 @@
       "brew_error_brew_already_latest": "Уже установлена последняя версия, обновление не требуется",
       "brew_error_brew_not_supported": "Обновление через Homebrew не поддерживается на этой платформе",
       "update_check_failed": "Не удалось проверить обновления",
-      "support_btn": "Поддержать автора",
-      "support_title": "Донат и поддержка",
-      "support_desc": "Если вы считаете этот проект полезным, не стесняйтесь купить мне кофе! Ваша поддержка — главная мотивация для меня поддерживать этот проект.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_btn": "Поддержать разработчика",
+      "support_title": "Донаты и поддержка",
+      "support_desc": "Если проект полезен вам, ваша криптовалютная поддержка станет лучшей мотивацией для его дальнейшего развития.",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "Скопировать адрес",
+      "support_copied": "Адрес скопирован в буфер обмена!"
     },
     "advanced_thinking": {
       "title": "Расширенное мышление и глобальная конфигурация",

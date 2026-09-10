@@ -575,12 +575,13 @@
       "brew_error_brew_already_latest": "Already up to date, no upgrade needed",
       "brew_error_brew_not_supported": "Homebrew update is not supported on this platform",
       "update_check_failed": "アップデートの確認に失敗しました",
-      "support_btn": "作者をサポート",
+      "support_btn": "開発者を支援",
       "support_title": "寄付とサポート",
-      "support_desc": "このプロジェクトがお役に立てば、コーヒーを一杯ご馳走してください！皆様のサポートが、プロジェクトを継続する最大の動機です。",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "コーヒーを奢る"
+      "support_desc": "このプロジェクトがお役に立ちましたら、暗号資産でのご支援が継続的なメンテナンスの大きな励みとなります。",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "アドレスをコピー",
+      "support_copied": "アドレスをコピーしました！"
     },
     "advanced_thinking": {
       "title": "推論とグローバル設定",

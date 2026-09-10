@@ -575,12 +575,13 @@
       "brew_error_brew_already_latest": "이미 최신 버전이며 업그레이드가 필요하지 않습니다",
       "brew_error_brew_not_supported": "이 플랫폼에서는 Homebrew 업데이트를 지원하지 않습니다",
       "update_check_failed": "업데이트 확인 실패",
-      "support_btn": "저자 후원",
-      "support_title": "기부 및 후원",
-      "support_desc": "이 프로젝트가 도움이 되었다면 커피 한 잔 사주세요! 여러분의 후원은 프로젝트를 유지하는 데 큰 힘이 됩니다.",
-      "support_alipay": "알리페이",
-      "support_wechat": "위챗 페이",
-      "support_buymeacoffee": "Buy Me a Coffee 후원"
+      "support_btn": "개발자 후원",
+      "support_title": "후원 및 지원",
+      "support_desc": "이 프로젝트가 도움이 되셨다면, 암호화폐 후원은 프로젝트의 지속적인 유지 관리에 큰 힘이 됩니다.",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "주소 복사",
+      "support_copied": "주소가 클립보드에 복사되었습니다!"
     },
     "advanced_thinking": {
       "title": "고급 사고 및 전역 설정",

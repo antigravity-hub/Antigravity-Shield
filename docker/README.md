@@ -54,7 +54,7 @@ docker run -d \
   -e WEB_PASSWORD=your-login-password \
   -e ABV_MAX_BODY_SIZE=104857600 \
   -v ~/.antigravity_tools:/root/.antigravity_tools \
-  lbjlaq/antigravity-manager:latest
+  doctorguidance/antigravity-shield:latest
 ```
 
 #### 🔐 鑒權邏輯 (Security Scenarios)

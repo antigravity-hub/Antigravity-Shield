@@ -502,12 +502,13 @@
       "new_version_available": "إصدار جديد {{version}} متاح",
       "download_update": "تنزيل",
       "update_check_failed": "فشل التحقق من التحديث",
-      "support_btn": "دعم المؤلف",
-      "support_title": "تبرع ودعم",
-      "support_desc": "إذا وجدت هذا المشروع مفيدًا، لا تتردد في شراء قهوة لي! دعمك هو أكبر حافز لي لصيانة هذا المشروع.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_btn": "دعم المطور",
+      "support_title": "التبرع والدعم",
+      "support_desc": "إذا وجدت هذا المشروع مفيداً، فإن دعمك بالعملات الرقمية هو أكبر دافع لمواصلة تطوير هذا المشروع وتحسينه.",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "نسخ العنوان",
+      "support_copied": "تم نسخ العنوان إلى الحافظة!"
     },
     "advanced_thinking": {
       "title": "التفكير المتقدم والتكوين العالمي",

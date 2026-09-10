@@ -465,12 +465,13 @@
       "new_version_available": "Yeni sürüm {{version}} mevcut",
       "download_update": "İndir",
       "update_check_failed": "Güncelleme kontrolü başarısız",
-      "support_btn": "Yazarı Destekle",
+      "support_btn": "Geliştiriciyi Destekle",
       "support_title": "Bağış ve Destek",
-      "support_desc": "Bu projeyi yararlı buluyorsanız, yazara bir kahve ısmarlayabilirsiniz! Desteğiniz, bu projeyi sürdürmek için en büyük motivasyon kaynağımdır.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_desc": "Bu projeyi faydalı buluyorsanız, kripto bağışınız projenin sürdürülmesi ve geliştirilmesi için en büyük motivasyondur.",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "Adresi Kopyala",
+      "support_copied": "Adres panoya kopyalandı!"
     },
     "advanced_thinking": {
       "title": "Gelişmiş Düşünme ve Küresel Yapılandırma",

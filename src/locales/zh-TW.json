@@ -499,12 +499,13 @@
       "new_version_available": "發現新版本 {{version}}",
       "download_update": "前往下載",
       "update_check_failed": "檢查更新失敗",
-      "support_btn": "贊助作者",
-      "support_title": "贊助支持",
-      "support_desc": "如果您覺得本工具對您有幫助，歡迎掃碼請作者喝杯咖啡！您的支持是我持續維護項目的最大動力。",
-      "support_alipay": "Alipay",
-      "support_wechat": "Weixin Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_btn": "支持開發者",
+      "support_title": "贊助與支持",
+      "support_desc": "如果您覺得本專案對您有所幫助，歡迎透過加密貨幣贊助支持！您的支持是本專案持續維護的最大動力。",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "複製地址",
+      "support_copied": "地址已複製到剪貼簿！"
     },
     "debug": {
       "debug_logging": "除錯日誌",
@@ -1227,7 +1228,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN 中轉站",
     "eyebrow": "中轉站",
-    "description": "Antigravity Tools 官方合作中轉站，提供穩定、開放、高性價比的大模型 API 服務。支援 Claude、OpenAI、Gemini 等主流模型。透過專屬連結註冊，可享最高充值永久 95 折優惠。",
+    "description": "Antigravity Shield API Hub，提供穩定、開放、高性價比的大模型 API 服務。支援 Claude、OpenAI、Gemini 等主流模型，適合在各類開發工具中統一配置使用。",
     "viewNow": "立即查看",
     "usage": {
       "remainingAmount": "剩餘額度",

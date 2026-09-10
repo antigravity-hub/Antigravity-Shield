@@ -582,12 +582,13 @@
       "download_manual": "Manual Download / Release",
       "downloading_progress": "Downloading update ({{progress}}%)...",
       "restart_to_apply": "Restart to Apply",
-      "support_btn": "Support Author",
-      "support_title": "Donation & Support",
-      "support_desc": "If you find this project helpful, feel free to buy me a coffee! Your support is the biggest motivation for me to maintain this project.",
-      "support_alipay": "Alipay",
-      "support_wechat": "WeChat Pay",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_btn": "حمایت از توسعه‌دهنده",
+      "support_title": "حمایت از پروژه و توسعه‌دهنده",
+      "support_desc": "اگر این پروژه برای شما مفید بوده است، با حمایت مالی رمزارزی خود به پایداری و بهبود مداوم آن کمک کنید!",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "کپی آدرس",
+      "support_copied": "آدرس کپی شد!"
     },
     "advanced_thinking": {
       "title": "Advanced Thinking & Global Config",
@@ -1374,17 +1375,17 @@
     "description": "توضیحات"
   },
   "apiKeyFun": {
-    "title": "APIKEY.FUN Hub",
-    "eyebrow": "Hub",
-    "description": "The official Antigravity Shield API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
-    "viewNow": "View Now",
+    "title": "مرکز APIKEY.FUN",
+    "eyebrow": "مرکز API",
+    "description": "مرکز رسمی API برای Antigravity Shield، ارائه‌دهنده سرویس‌های پایدار و مقرون‌به‌صرفه مدل‌های بزرگ هوش مصنوعی نظیر Claude، OpenAI و Gemini. مناسب برای پیکربندی یکپارچه در ابزارهای Codex، Gemini CLI و Claude Code.",
+    "viewNow": "مشاهده",
     "usage": {
-      "remainingAmount": "Remaining",
-      "usedAmount": "Used",
-      "todayRequests": "Today's Requests",
-      "todayTokens": "Today's Tokens",
-      "totalRequests": "Total Requests",
-      "totalTokens": "Total Tokens"
+      "remainingAmount": "اعتبار باقی‌مانده",
+      "usedAmount": "اعتبار مصرف‌شده",
+      "todayRequests": "درخواست‌های امروز",
+      "todayTokens": "توکن‌های امروز",
+      "totalRequests": "کل درخواست‌ها",
+      "totalTokens": "کل توکن‌ها"
     },
     "keyManager": {
       "title": "Key Management",

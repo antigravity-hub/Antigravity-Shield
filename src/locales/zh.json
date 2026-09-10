@@ -588,12 +588,13 @@
       "download_manual": "手动下载 / 发行版",
       "downloading_progress": "正在下载更新 ({{progress}}%)...",
       "restart_to_apply": "立即重启以生效",
-      "support_btn": "支持作者",
-      "support_title": "赞助支持",
-      "support_desc": "如果您觉得本工具对您有帮助，欢迎扫码请作者喝杯咖啡！您的支持是我持续维护项目的最大动力。",
-      "support_alipay": "支付宝",
-      "support_wechat": "微信支付",
-      "support_buymeacoffee": "Buy Me a Coffee"
+      "support_btn": "支持开发者",
+      "support_title": "赞助与支持",
+      "support_desc": "如果您觉得本项目对您有所帮助，欢迎通过加密货币赞助支持！您的支持是本项目持续维护和演进的最大动力。",
+      "support_gram": "GRAM (TON)",
+      "support_tron": "Tron (TRX / USDT)",
+      "support_copy_address": "复制地址",
+      "support_copied": "地址已复制到剪贴板！"
     },
     "advanced_thinking": {
       "title": "高级思维与全局配置",
@@ -1431,7 +1432,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN 中转站",
     "eyebrow": "中转站",
-    "description": "Antigravity Shield 官方合作中转站，为用户提供稳定、开放、高性价比的大模型 API 接入服务。支持 Claude、OpenAI、Gemini 等主流模型，适合在 Codex、Gemini CLI、Claude Code 及其他开发工具中统一配置使用。通过 Antigravity Shield 专属链接注册，可享受最高充值永久 95 折优惠。",
+    "description": "Antigravity Shield API Hub，为用户提供稳定、开放、高性价比的大模型 API 接入服务。支持 Claude、OpenAI、Gemini 等主流模型，适合在 Codex、Gemini CLI、Claude Code 及其他开发工具中统一配置使用。",
     "viewNow": "立即查看",
     "usage": {
       "remainingAmount": "剩余额度",

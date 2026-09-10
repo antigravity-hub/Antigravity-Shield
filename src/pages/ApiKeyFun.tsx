@@ -383,13 +383,13 @@ export const ApiKeyFun: React.FC = () => {
                             </span>
                         </div>
                         <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300/90 leading-relaxed font-normal mt-1">
-                            {t('apiKeyFun.description', { defaultValue: 'Antigravity Shield 官方合作中转站，为用户提供稳定、开放、高性价比的大模型 API 接入服务。支持 Claude、OpenAI、Gemini 等主流模型，适合在 Codex、Gemini CLI、Claude Code 及其他开发工具中统一配置使用。通过 Antigravity Shield 专属链接注册，可享受最高充值永久 95 折优惠。' })}
+                            {t('apiKeyFun.description', { defaultValue: 'Antigravity Shield API Hub，为用户提供稳定、开放、高性价比的大模型 API 接入服务。支持 Claude、OpenAI、Gemini 等主流模型，适合在 Codex、Gemini CLI、Claude Code 及其他开发工具中统一配置使用。' })}
                         </p>
                     </div>
                 </div>
 
                 <a
-                    href="https://apikey.fun/register?aff=AntManager"
+                    href="https://apikey.fun"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-white hover:bg-blue-50 dark:bg-base-200 dark:hover:bg-base-300 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-md shadow-blue-500/10 dark:shadow-none flex-shrink-0 hover:scale-[1.02] active:scale-[0.98] duration-200 z-10"
