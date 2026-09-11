@@ -494,7 +494,7 @@ function Settings() {
 
     return (
         <div className="h-full w-full overflow-y-auto">
-            <div className="p-5 space-y-4 max-w-7xl mx-auto">
+            <div className="p-5 space-y-4 max-w-[1720px] 2xl:max-w-[1850px] w-full mx-auto">
                 {/* 顶部工具栏：Tab 导航和保存按钮 */}
                 <div className="flex justify-between items-center">
                     {/* Tab 导航 - 采用顶部导航栏样式：外层灰色容器 */}

@@ -175,7 +175,7 @@ function Dashboard() {
     return (
         <div className="h-full w-full overflow-y-auto">
             <div
-                className="p-6 space-y-6 max-w-7xl mx-auto"
+                className="p-6 space-y-6 max-w-[1720px] 2xl:max-w-[1850px] w-full mx-auto"
                 style={{ position: 'relative', zIndex: 1 }}
             >
                 {/* 问候语、Shield 状态和操作按钮 */}

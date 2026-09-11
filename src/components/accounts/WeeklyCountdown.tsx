@@ -199,7 +199,7 @@ export function WeeklyCountdown({
             </div>
 
             {/* 7-day Stepper (1 2 3 4 5 6 7) - strictly LTR, empties from right */}
-            <div dir="ltr" className="flex items-center gap-0.5">
+            <div dir="ltr" className="flex items-center gap-[1.5px]">
                 {weekDays.map((dayNum) => {
                     const isCurrentDay = dayNum === info.daysRemaining;
                     const isRemainingDay = dayNum < info.daysRemaining;
@@ -209,7 +209,7 @@ export function WeeklyCountdown({
                         <div
                             key={dayNum}
                             className={cn(
-                                "w-4 h-4 rounded text-[9px] font-mono font-bold flex items-center justify-center transition-all relative",
+                                "w-3.5 h-3.5 rounded text-[8px] font-mono font-bold flex items-center justify-center transition-all relative",
                                 isCurrentDay && "bg-gradient-to-t from-cyan-600 to-emerald-400 text-white shadow-[0_0_8px_rgba(6,182,212,0.6)] ring-1 ring-cyan-300 scale-110 z-10",
                                 isRemainingDay && "bg-cyan-500/10 dark:bg-cyan-950/30 border border-cyan-500/35 dark:border-cyan-400/35 text-cyan-600 dark:text-cyan-400",
                                 isPassedDay && "bg-slate-100/70 dark:bg-slate-800/40 border border-dashed border-slate-200/80 dark:border-slate-700/60 text-slate-300 dark:text-slate-600 opacity-40 line-through"

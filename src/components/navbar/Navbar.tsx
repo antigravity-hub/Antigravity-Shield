@@ -106,7 +106,7 @@ function Navbar() {
                 />
             )}
 
-            <div className="max-w-7xl mx-auto px-6 relative" style={{ zIndex: 10 }}>
+            <div className="max-w-[1720px] 2xl:max-w-[1850px] w-full mx-auto px-4 sm:px-6 relative" style={{ zIndex: 10 }}>
                 {/* Flexbox 布局 */}
                 <div className="flex items-center h-16 gap-3">
                     {/* Logo */}

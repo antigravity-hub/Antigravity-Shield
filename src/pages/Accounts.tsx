@@ -867,7 +867,7 @@ function Accounts() {
   };
 
   return (
-    <div className="h-full flex flex-col p-5 gap-4 max-w-7xl mx-auto w-full">
+    <div className="h-full flex flex-col p-4 sm:p-5 gap-4 max-w-[1720px] 2xl:max-w-[1850px] mx-auto w-full">
       {/* 测试按钮 - 在最顶部 */}
       <input
         ref={fileInputRef}

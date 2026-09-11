@@ -1062,7 +1062,7 @@ print(response.choices[0].message.content)`;
 
     return (
         <div className="h-full w-full overflow-y-auto overflow-x-hidden">
-            <div className="p-5 space-y-4 max-w-7xl mx-auto">
+            <div className="p-5 space-y-4 max-w-[1720px] 2xl:max-w-[1850px] w-full mx-auto">
 
                 {/* Loading State */}
                 {configLoading && (

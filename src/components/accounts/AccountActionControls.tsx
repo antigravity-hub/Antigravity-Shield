@@ -107,14 +107,14 @@ export function AccountActionControls({
     return (
         <div 
             className={cn(
-                "flex items-center gap-1.5",
+                "flex items-center gap-1",
                 isCard ? "w-full justify-between pt-2 border-t border-slate-100 dark:border-slate-800/80" : "justify-center"
             )}
             onClick={(e) => e.stopPropagation()}
         >
             {/* Primary Target Switch Hub */}
             <div className={cn(
-                "flex items-center rounded-xl p-0.5 border shadow-sm transition-all",
+                "flex items-center rounded-xl p-0.5 border shadow-sm transition-all gap-0.5",
                 isAnyActive
                     ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/50 shadow-emerald-500/20"
                     : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
@@ -123,7 +123,7 @@ export function AccountActionControls({
                 <button
                     type="button"
                     className={cn(
-                        "p-1.5 rounded-lg transition-all relative group/btn",
+                        "p-1 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
                             : isPlatformActive
@@ -151,7 +151,7 @@ export function AccountActionControls({
                 <button
                     type="button"
                     className={cn(
-                        "p-1.5 rounded-lg transition-all relative group/btn",
+                        "p-1 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
                             : isIdeActive
@@ -175,7 +175,7 @@ export function AccountActionControls({
                 <button
                     type="button"
                     className={cn(
-                        "p-1.5 rounded-lg transition-all relative group/btn",
+                        "p-1 rounded-lg transition-all relative group/btn",
                         (isSwitching || isDisabled)
                             ? "opacity-50 cursor-not-allowed"
                             : isCliActive
@@ -197,12 +197,12 @@ export function AccountActionControls({
             </div>
 
             {/* Quick Actions Group */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
                 {/* Refresh Quota Button */}
                 <button
                     type="button"
                     className={cn(
-                        "p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-800/50 transition-all",
+                        "p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-800/50 transition-all",
                         isRefreshing && "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/50"
                     )}
                     onClick={onRefresh}
@@ -215,7 +215,7 @@ export function AccountActionControls({
                 {/* Quota Details Modal Button */}
                 <button
                     type="button"
-                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 border border-transparent hover:border-cyan-200 dark:hover:border-cyan-800/50 transition-all"
+                    className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 border border-transparent hover:border-cyan-200 dark:hover:border-cyan-800/50 transition-all"
                     onClick={onViewDetails}
                     title={t('common.details')}
                 >
@@ -227,7 +227,7 @@ export function AccountActionControls({
                     ref={menuButtonRef}
                     type="button"
                     className={cn(
-                        "p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all",
+                        "p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all",
                         isMenuOpen && "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                     )}
                     onClick={handleToggleMenu}
