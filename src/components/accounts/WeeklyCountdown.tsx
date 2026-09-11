@@ -10,92 +10,10 @@ interface WeeklyCountdownProps {
     className?: string;
 }
 
-export interface WeeklyResetInfo {
-    resetTime: string | null;
-    totalHours: number;
-    daysRemaining: number;
-    hoursInDay: number;
-    isReady: boolean;
-}
+import { getAccountWeeklyReset, ResetCycleInfo } from '../../utils/quota';
 
-/**
- * Extracts and calculates weekly reset cycle data for an account
- */
-export function getAccountWeeklyReset(account: Account): WeeklyResetInfo {
-    let resetTime: string | null = null;
-    let minDiffMs = Infinity;
-    const now = Date.now();
-
-    // 1. Check weekly bucket inside quota_groups first
-    if (account.quota?.quota_groups) {
-        for (const group of account.quota.quota_groups) {
-            for (const b of group.buckets || []) {
-                const isWeeklyBucket =
-                    b.window?.toLowerCase().includes('week') ||
-                    b.bucket_id?.toLowerCase().includes('week');
-
-                if (isWeeklyBucket && b.reset_time) {
-                    const target = new Date(b.reset_time).getTime();
-                    const diff = target - now;
-                    if (diff > 0 && diff < minDiffMs) {
-                        minDiffMs = diff;
-                        resetTime = b.reset_time;
-                    } else if (!resetTime) {
-                        resetTime = b.reset_time;
-                    }
-                }
-            }
-        }
-    }
-
-    // 2. Fallback to model reset_time if no quota_groups bucket found
-    if (!resetTime && account.quota?.models) {
-        for (const m of account.quota.models) {
-            if (m.reset_time) {
-                const target = new Date(m.reset_time).getTime();
-                const diff = target - now;
-                if (diff > 0 && diff < minDiffMs) {
-                    minDiffMs = diff;
-                    resetTime = m.reset_time;
-                }
-            }
-        }
-    }
-
-    if (!resetTime) {
-        return {
-            resetTime: null,
-            totalHours: 0,
-            daysRemaining: 0,
-            hoursInDay: 0,
-            isReady: true,
-        };
-    }
-
-    const diffMs = new Date(resetTime).getTime() - now;
-    if (diffMs <= 0) {
-        return {
-            resetTime,
-            totalHours: 0,
-            daysRemaining: 0,
-            hoursInDay: 0,
-            isReady: true,
-        };
-    }
-
-    const totalHours = Math.ceil(diffMs / (1000 * 60 * 60));
-    // 7-day cycle: e.g. 7, 6, 5, 4, 3, 2, 1
-    const daysRemaining = Math.min(7, Math.max(1, Math.ceil(totalHours / 24)));
-    const hoursInDay = totalHours % 24;
-
-    return {
-        resetTime,
-        totalHours,
-        daysRemaining,
-        hoursInDay,
-        isReady: false,
-    };
-}
+export type WeeklyResetInfo = ResetCycleInfo;
+export { getAccountWeeklyReset };
 
 export function WeeklyCountdown({
     account,

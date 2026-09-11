@@ -10,7 +10,7 @@ import clsx from 'clsx';
 import { formatTimeRemaining, formatCompactNumber } from '../../utils/format';
 import { enterMiniMode, exitMiniMode } from '../../utils/windowManager';
 import { getModelDisplayName, findQuotaModel } from '../../config/modelConfig';
-import { getVersion } from '@tauri-apps/api/app';
+import { useAppVersion } from '../../constants/version';
 import { listen } from '@tauri-apps/api/event';
 
 import { useConfigStore } from '../../stores/useConfigStore';
@@ -33,7 +33,7 @@ export default function MiniView() {
     const { t } = useTranslation();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [appVersion, setAppVersion] = useState('0.0.0');
+    const appVersion = useAppVersion();
     const [latestLog, setLatestLog] = useState<ProxyRequestLog | null>(null);
 
     // Subscribe to proxy logs
@@ -59,24 +59,6 @@ export default function MiniView() {
         };
     }, []);
 
-    // Get app version
-    useEffect(() => {
-        const fetchVersion = async () => {
-            if (isTauri()) {
-                try {
-                    const version = await getVersion();
-                    setAppVersion(version);
-                } catch (error) {
-                    console.error('Failed to get app version:', error);
-                }
-            } else {
-                // Fallback for web mode if needed, or import from package.json
-                setAppVersion('4.6.7');
-            }
-        };
-        fetchVersion();
-    }, []);
-
     // Auto-refresh logic based on config
     useEffect(() => {
         if (!config?.auto_refresh || !config?.refresh_interval || config.refresh_interval <= 0) return;
@@ -97,19 +79,27 @@ export default function MiniView() {
     useEffect(() => {
         const adjustSize = async () => {
             if (isTauri() && containerRef.current) {
-                // Get the content height
-                const height = containerRef.current.scrollHeight;
-                // Calculate content height for the utility (which adds 20px padding)
-                // We want final height to be approx (scroll height - header adjustment)
-                await enterMiniMode(height);
+                const contentEl = containerRef.current.querySelector('.mini-content-scroll') as HTMLElement | null;
+                const contentHeight = contentEl ? contentEl.scrollHeight + 80 : 340;
+                await enterMiniMode(contentHeight);
             }
         };
 
-        // Run initially and whenever account data (content) changes
-        // Use a small timeout to ensure rendering is complete
-        const timer = setTimeout(adjustSize, 50);
+        adjustSize();
+        const timer = setTimeout(adjustSize, 40);
         return () => clearTimeout(timer);
     }, [currentAccount]);
+
+    // Keyboard shortcut (Escape to maximize/restore full view)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                handleMaximize();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     const handleRefresh = async () => {
         if (!currentAccount || isRefreshing) return;
@@ -123,8 +113,12 @@ export default function MiniView() {
     };
 
     const handleMaximize = async () => {
-        await exitMiniMode();
         setMiniView(false);
+        await exitMiniMode();
+    };
+
+    const handleDoubleClickHeader = () => {
+        handleMaximize();
     };
 
 
@@ -189,22 +183,22 @@ export default function MiniView() {
     };
 
     return (
-        <div className="h-screen w-full flex items-center justify-center bg-transparent">
-            {/* Main Container - 300px fixed width */}
-            <motion.div
+        <div className="w-full h-full flex flex-col bg-white/95 dark:bg-[#111622]/95 backdrop-blur-md border border-gray-200/60 dark:border-white/10 rounded-xl overflow-hidden shadow-2xl select-none">
+            <div
                 ref={containerRef}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="w-[300px] flex flex-col bg-white/80 dark:bg-[#121212]/80 backdrop-blur-md shadow-2xl overflow-hidden border-x border-y border-gray-200/50 dark:border-white/10 sm:rounded-2xl"
+                className="w-full h-full flex flex-col overflow-hidden"
             >
-                {/* Header / Drag Region */}
+                {/* Header / Drag Region - Pinned to top */}
                 <div
-                    className="flex-none flex items-center justify-between px-4 py-1 bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5 select-none"
+                    className="flex-none flex items-center justify-between px-3.5 h-10 bg-gray-50/90 dark:bg-white/5 border-b border-gray-200/50 dark:border-white/10 select-none cursor-move"
                     onMouseDown={handleMouseDown}
+                    onDoubleClick={handleDoubleClickHeader}
                     data-tauri-drag-region
                 >
-                    <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white overflow-hidden">
+                    <div 
+                        className="flex items-center gap-2 text-xs font-semibold text-gray-900 dark:text-white overflow-hidden"
+                        data-tauri-drag-region
+                    >
                         <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)] animate-pulse shrink-0" />
                         <span className="truncate" title={currentAccount?.email}>
                             {currentAccount?.email?.split('@')[0] || 'No Account'}
@@ -213,30 +207,33 @@ export default function MiniView() {
 
                     <div
                         className="flex items-center gap-1 no-drag shrink-0"
+                        data-tauri-drag-region="false"
                         onMouseDown={(e) => e.stopPropagation()}
                     >
                         <button
                             onClick={handleRefresh}
+                            data-tauri-drag-region="false"
                             className={clsx(
-                                "p-2 rounded-lg hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors"
+                                "p-1.5 rounded-lg hover:bg-gray-200/60 dark:hover:bg-white/10 transition-colors"
                             )}
                             title={t('common.refresh', 'Refresh')}
                         >
-                            <RefreshCw size={14} className={clsx(isRefreshing && "animate-spin text-blue-500")} />
+                            <RefreshCw size={13} className={clsx(isRefreshing && "animate-spin text-blue-500")} />
                         </button>
-                        <div className="w-px h-3 bg-gray-300 dark:bg-white/20 mx-1" />
+                        <div className="w-px h-3 bg-gray-300 dark:bg-white/20 mx-0.5" />
                         <button
                             onClick={handleMaximize}
-                            className="p-2 rounded-lg hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                            title={t('common.maximize', 'Full View')}
+                            data-tauri-drag-region="false"
+                            className="p-1.5 rounded-lg hover:bg-gray-200/60 dark:hover:bg-white/10 transition-colors text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                            title={`${t('common.maximize', 'Full View')} (Esc)`}
                         >
-                            <Maximize2 size={14} />
+                            <Maximize2 size={13} />
                         </button>
                     </div>
                 </div>
 
                 {/* Content Scroll Area */}
-                <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+                <div className="mini-content-scroll flex-1 overflow-y-auto overflow-x-hidden p-3.5 space-y-4 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
                     {!currentAccount ? (
                         <div className="h-full flex flex-col items-center justify-center text-center opacity-50 space-y-2">
                             <ShieldAlert size={32} />
@@ -322,7 +319,7 @@ export default function MiniView() {
                         </>
                     )}
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 }

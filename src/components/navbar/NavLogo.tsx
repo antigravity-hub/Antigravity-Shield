@@ -1,19 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Shield } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { isTauri } from '../../utils/env';
+import { useState } from 'react';
+import { useAppVersion } from '../../constants/version';
 
 export function NavLogo() {
     const [imgFailed, setImgFailed] = useState(false);
-    const [version, setVersion] = useState('5.0.7');
-
-    useEffect(() => {
-        if (isTauri()) {
-            import('@tauri-apps/api/app').then(({ getVersion }) => {
-                getVersion().then(v => setVersion(v)).catch(() => {});
-            }).catch(() => {});
-        }
-    }, []);
+    const version = useAppVersion();
 
     return (
         <Link 

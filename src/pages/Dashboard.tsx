@@ -13,6 +13,7 @@ import { useAccountStore } from '../stores/useAccountStore';
 import { Account } from '../types/account';
 import { isTauri } from '../utils/env';
 import { request as invoke } from '../utils/request';
+import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 
 function Dashboard() {
     const { t } = useTranslation();
@@ -175,7 +176,7 @@ function Dashboard() {
     return (
         <div className="h-full w-full overflow-y-auto">
             <div
-                className="p-6 space-y-6 max-w-[1720px] 2xl:max-w-[1850px] w-full mx-auto"
+                className={`p-6 space-y-6 ${CONTAINER_MAX_WIDTH}`}
                 style={{ position: 'relative', zIndex: 1 }}
             >
                 {/* 问候语、Shield 状态和操作按钮 */}

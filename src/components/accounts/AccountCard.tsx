@@ -11,6 +11,7 @@ import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { useAccountStore } from '../../stores/useAccountStore';
+import { getAccountFiveHourReset } from '../../utils/quota';
 
 interface AccountCardProps {
     account: Account;
@@ -204,40 +205,15 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
     // 5H 倒计时计算
     const fiveHourResetInfo = useMemo(() => {
         if (quotaWindow !== '5h') return null;
-        let resetTime: string | null = null;
-        let minDiff = Infinity;
-        const now = Date.now();
+        const cycle = getAccountFiveHourReset(account);
+        return {
+            isReady: cycle.isReady,
+            hours: cycle.hoursInDay,
+            minutes: cycle.minutesInHour,
+            resetTime: cycle.resetTime
+        };
+    }, [quotaWindow, account]);
 
-        for (const group of account.quota?.quota_groups || []) {
-            for (const b of group.buckets || []) {
-                const win = (b.window || '').toLowerCase();
-                const id = (b.bucket_id || '').toLowerCase();
-                if ((win.includes('5h') || id.includes('5h') || win.includes('hour')) && b.reset_time) {
-                    const diff = new Date(b.reset_time).getTime() - now;
-                    if (diff > 0 && diff < minDiff) {
-                        minDiff = diff;
-                        resetTime = b.reset_time;
-                    }
-                }
-            }
-        }
-        if (!resetTime && account.quota?.models) {
-            for (const m of account.quota.models) {
-                if (m.reset_time) {
-                    const diff = new Date(m.reset_time).getTime() - now;
-                    if (diff > 0 && diff < minDiff) {
-                        minDiff = diff;
-                        resetTime = m.reset_time;
-                    }
-                }
-            }
-        }
-        if (!resetTime || minDiff <= 0) return { isReady: true, hours: 0, minutes: 0, resetTime: null };
-        const totalMinutes = Math.ceil(minDiff / (1000 * 60));
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        return { isReady: false, hours, minutes, resetTime };
-    }, [quotaWindow, account.quota]);
 
     const isModelProtected = (key?: string) => {
         if (!key) return false;

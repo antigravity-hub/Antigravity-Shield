@@ -18,6 +18,9 @@ import { check as tauriCheck } from '@tauri-apps/plugin-updater';
 
 import DebugConsole from '../components/debug/DebugConsole';
 import ProxyPoolSettings from '../components/settings/ProxyPoolSettings';
+import { APP_VERSION, getAppVersion } from '../constants/version';
+import { CONTAINER_MAX_WIDTH } from '../constants/layout';
+import { copyToClipboard } from '../utils/clipboard';
 
 
 function Settings() {
@@ -25,7 +28,7 @@ function Settings() {
     const { config, loadConfig, saveConfig, updateLanguage, updateTheme } = useConfigStore();
     const { enable, disable, isEnabled } = useDebugConsole();
     const [activeTab, setActiveTab] = useState<'general' | 'account' | 'proxy' | 'advanced' | 'debug' | 'about'>('general');
-    const [appVersion, setAppVersion] = useState<string>('5.0.0');
+    const [appVersion, setAppVersion] = useState<string>(APP_VERSION);
     const [formData, setFormData] = useState<AppConfig>({
         language: 'zh',
         theme: 'system',
@@ -91,7 +94,7 @@ function Settings() {
     const [dataDirPath, setDataDirPath] = useState<string>('~/.antigravity_tools/');
 
     const handleCopyAddress = (addr: string) => {
-        navigator.clipboard.writeText(addr);
+        copyToClipboard(addr);
         setCopiedAddress(addr);
         showToast(t('settings.about.support_copied', 'Address copied!'), 'success');
         setTimeout(() => {
@@ -152,11 +155,7 @@ function Settings() {
             .catch(err => console.error('Failed to get auto launch status:', err));
 
         // 获取应用真实版本号
-        if (isTauri()) {
-            import('@tauri-apps/api/app').then(({ getVersion }) => {
-                getVersion().then(v => setAppVersion(v)).catch(() => {});
-            });
-        }
+        getAppVersion().then(v => setAppVersion(v));
 
         // 检测是否通过 Homebrew Cask 安装 (仅 Tauri 环境)
         if (isTauri()) {
@@ -494,7 +493,7 @@ function Settings() {
 
     return (
         <div className="h-full w-full overflow-y-auto">
-            <div className="p-5 space-y-4 max-w-[1720px] 2xl:max-w-[1850px] w-full mx-auto">
+            <div className={`p-5 space-y-4 ${CONTAINER_MAX_WIDTH}`}>
                 {/* 顶部工具栏：Tab 导航和保存按钮 */}
                 <div className="flex justify-between items-center">
                     {/* Tab 导航 - 采用顶部导航栏样式：外层灰色容器 */}
@@ -1769,7 +1768,7 @@ function Settings() {
                                 <button
                                     className="shrink-0 px-2 py-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border border-gray-200 dark:border-base-300 rounded hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
                                     onClick={() => {
-                                        navigator.clipboard.writeText('brew upgrade --cask antigravity-shield');
+                                        copyToClipboard('brew upgrade --cask antigravity-shield');
                                         showToast(t('common.copied', 'Copied'), 'success');
                                     }}
                                 >
@@ -1784,7 +1783,7 @@ function Settings() {
                                 <button
                                     className="shrink-0 px-2 py-1 text-xs text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200 border border-amber-200 dark:border-amber-700 rounded hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
                                     onClick={() => {
-                                        navigator.clipboard.writeText('sudo xattr -rd com.apple.quarantine "/Applications/Antigravity Shield.app"');
+                                        copyToClipboard('sudo xattr -rd com.apple.quarantine "/Applications/Antigravity Shield.app"');
                                         showToast(t('common.copied', 'Copied'), 'success');
                                     }}
                                 >

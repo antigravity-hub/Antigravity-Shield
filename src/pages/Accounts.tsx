@@ -32,8 +32,10 @@ import { Account } from "../types/account";
 import { cn } from "../utils/cn";
 import { isTauri } from "../utils/env";
 import { request as invoke } from "../utils/request";
+import { getAccountWeeklyReset } from "../utils/quota";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
+import { CONTAINER_MAX_WIDTH } from "../constants/layout";
 
 type FilterType = "all" | "pro" | "ultra" | "free";
 type ViewMode = "list" | "grid";
@@ -323,52 +325,91 @@ function Accounts() {
   }, [searchedAccounts, filter]);
 
   const getAccountQuotaScores = (account: Account) => {
-    let fiveHourSum = 0;
-    let fiveHourCount = 0;
-    let weeklySum = 0;
-    let weeklyCount = 0;
+    // 0. Usability/health check: accounts with errors, disabled or forbidden should be at the bottom
+    const isUsable = !account.disabled && !account.proxy_disabled && !account.quota?.is_forbidden && !account.validation_blocked;
 
+    // 1. Calculate 5-hour quota percentage (0-100)
+    // Priority: use non-thinking models in account.quota.models (which matches the exact UI display)
+    let fiveHourScore = 0;
+    const models = account.quota?.models;
+    if (models && models.length > 0) {
+      const nonThinking = models.filter(m => !m.name.toLowerCase().includes('thinking'));
+      const targetModels = nonThinking.length > 0 ? nonThinking : models;
+      const sum = targetModels.reduce((acc, m) => acc + (m.percentage || 0), 0);
+      fiveHourScore = Math.round(sum / targetModels.length);
+    } else {
+      let fgSum = 0;
+      let fgCount = 0;
+      for (const group of account.quota?.quota_groups || []) {
+        for (const b of group.buckets || []) {
+          const win = (b.window || '').toLowerCase();
+          const id = (b.bucket_id || '').toLowerCase();
+          if (win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour')) {
+            fgSum += (b.remaining_fraction !== undefined ? b.remaining_fraction : 0) * 100;
+            fgCount++;
+          }
+        }
+      }
+      if (fgCount > 0) {
+        fiveHourScore = Math.round(fgSum / fgCount);
+      }
+    }
+
+    // 2. Weekly Quota fraction / percentage (0-100)
+    let weeklyQuotaScore = 100;
+    let wSum = 0;
+    let wCount = 0;
     for (const group of account.quota?.quota_groups || []) {
       for (const b of group.buckets || []) {
         const win = (b.window || '').toLowerCase();
         const id = (b.bucket_id || '').toLowerCase();
-        const fraction = b.remaining_fraction !== undefined ? b.remaining_fraction : 0;
-
-        if (win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour')) {
-          fiveHourSum += fraction;
-          fiveHourCount++;
-        } else if (win.includes('week') || id.includes('week')) {
-          weeklySum += fraction;
-          weeklyCount++;
+        if (win.includes('week') || id.includes('week')) {
+          wSum += (b.remaining_fraction !== undefined ? b.remaining_fraction : 0) * 100;
+          wCount++;
         }
       }
     }
-
-    if (fiveHourCount === 0 && account.quota?.models) {
-      for (const m of account.quota.models) {
-        fiveHourSum += (m.percentage || 0) / 100;
-        fiveHourCount++;
-      }
+    if (wCount > 0) {
+      weeklyQuotaScore = Math.round(wSum / wCount);
     }
 
-    const fiveHourAvg = fiveHourCount > 0 ? (fiveHourSum / fiveHourCount) : 0;
-    const weeklyAvg = weeklyCount > 0 ? (weeklySum / weeklyCount) : 0;
+    // 3. Weekly reset countdown hours (from getAccountWeeklyReset)
+    // Higher hours remaining means further away from reset / more cycle remaining (e.g. 7d/162h > 4d/91h > 2d/40h > 1d/22h)
+    const weeklyReset = getAccountWeeklyReset(account);
+    const weeklyResetHours = weeklyReset.totalHours || 0;
 
-    return { fiveHourAvg, weeklyAvg };
+    return {
+      isUsable,
+      fiveHourScore,
+      weeklyQuotaScore,
+      weeklyResetHours,
+    };
   };
 
-  // 排序逻辑 (如果开启了 Auto Sort，则按 5H 剩余配额从高到低排序，次级按周配额排序)
+  // 排序逻辑 (Auto Sort: 优先可用账号 -> 5H 剩余配额从高到低 -> 次级按周配额比例 -> 同级按 Weekly Reset 倒计时从多到少)
   const sortedAccounts = useMemo(() => {
     if (!autoSort) return filteredAccounts;
     return [...filteredAccounts].sort((a, b) => {
       const scoreA = getAccountQuotaScores(a);
       const scoreB = getAccountQuotaScores(b);
-      // Primary: remaining 5h quota (higher is better)
-      if (Math.abs(scoreB.fiveHourAvg - scoreA.fiveHourAvg) > 0.001) {
-        return scoreB.fiveHourAvg - scoreA.fiveHourAvg;
+
+      // 0. Usable accounts first
+      if (scoreA.isUsable !== scoreB.isUsable) {
+        return scoreA.isUsable ? -1 : 1;
       }
-      // Secondary: remaining weekly quota (higher is better)
-      return scoreB.weeklyAvg - scoreA.weeklyAvg;
+
+      // 1. Primary: 5H Quota percentage (higher is better)
+      if (scoreB.fiveHourScore !== scoreA.fiveHourScore) {
+        return scoreB.fiveHourScore - scoreA.fiveHourScore;
+      }
+
+      // 2. Secondary: Weekly Quota percentage (higher is better)
+      if (scoreB.weeklyQuotaScore !== scoreA.weeklyQuotaScore) {
+        return scoreB.weeklyQuotaScore - scoreA.weeklyQuotaScore;
+      }
+
+      // 3. Tertiary (Tie-breaker): Weekly Reset hours (higher is better: e.g. 162h > 91h > 40h > 22h)
+      return scoreB.weeklyResetHours - scoreA.weeklyResetHours;
     });
   }, [filteredAccounts, autoSort]);
 
@@ -867,7 +908,7 @@ function Accounts() {
   };
 
   return (
-    <div className="h-full flex flex-col p-4 sm:p-5 gap-4 max-w-[1720px] 2xl:max-w-[1850px] mx-auto w-full">
+    <div className={`h-full flex flex-col p-4 sm:p-5 gap-4 ${CONTAINER_MAX_WIDTH}`}>
       {/* 测试按钮 - 在最顶部 */}
       <input
         ref={fileInputRef}

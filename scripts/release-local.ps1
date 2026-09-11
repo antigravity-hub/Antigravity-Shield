@@ -71,25 +71,11 @@ Write-Host "► Step 1: Bumping version to $Version..." -ForegroundColor Green
 
 if (-not $DryRun) {
     Push-Location $ROOT
-
-    # package.json
-    $pkg = Get-Content "package.json" -Raw | ConvertFrom-Json
-    $pkg.version = $Version
-    $pkg | ConvertTo-Json -Depth 10 | Set-Content "package.json" -Encoding UTF8
-    Write-Host "  ✓ package.json → $Version"
-
-    # tauri.conf.json
-    $tauri = Get-Content "src-tauri/tauri.conf.json" -Raw | ConvertFrom-Json
-    $tauri.version = $Version
-    $tauri | ConvertTo-Json -Depth 20 | Set-Content "src-tauri/tauri.conf.json" -Encoding UTF8
-    Write-Host "  ✓ tauri.conf.json → $Version"
-
-    # Cargo.toml (sed-style replacement)
-    $cargo = Get-Content "src-tauri/Cargo.toml" -Raw
-    $cargo = $cargo -replace '(?m)^version = "\d+\.\d+\.\d+"', "version = `"$Version`""
-    Set-Content "src-tauri/Cargo.toml" $cargo -Encoding UTF8
-    Write-Host "  ✓ Cargo.toml → $Version"
-
+    node scripts/bump_version.mjs $Version
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Failed to bump version using bump_version.mjs"
+        exit 1
+    }
     Pop-Location
 } else {
     Write-Host "  [DRY RUN] Would bump version to $Version in package.json, tauri.conf.json, Cargo.toml"

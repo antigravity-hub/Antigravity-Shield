@@ -1,6 +1,7 @@
 import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, ChevronRight } from 'lucide-react';
 import { Account } from '../../types/account';
 import { formatDate } from '../../utils/format';
+import { copyToClipboard } from '../../utils/clipboard';
 import { useTranslation, Trans } from 'react-i18next';
 import ModalDialog from '../common/ModalDialog';
 import { useState } from 'react';
@@ -97,12 +98,12 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
 
     // 复制功能
     const handleCopyUrl = (url: string) => {
-        navigator.clipboard.writeText(url);
+        copyToClipboard(url);
         showToast(t('accounts.validation_url_copied', '验证链接已复制到剪贴板'), 'success');
     };
 
     const handleCopyText = (text: string, msg: string) => {
-        navigator.clipboard.writeText(text);
+        copyToClipboard(text);
         showToast(msg, 'success');
     };
 

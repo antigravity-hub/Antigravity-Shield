@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { request as invoke } from '../utils/request';
 import { isTauri } from '../utils/env';
 import { copyToClipboard } from '../utils/clipboard';
+import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 import {
     Power,
     Copy,
@@ -1062,7 +1063,7 @@ print(response.choices[0].message.content)`;
 
     return (
         <div className="h-full w-full overflow-y-auto overflow-x-hidden">
-            <div className="p-5 space-y-4 max-w-[1720px] 2xl:max-w-[1850px] w-full mx-auto">
+            <div className={`p-5 space-y-4 ${CONTAINER_MAX_WIDTH}`}>
 
                 {/* Loading State */}
                 {configLoading && (

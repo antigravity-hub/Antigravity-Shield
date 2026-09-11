@@ -6,10 +6,12 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "node scripts/sync_version.mjs && tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "tauri:debug": "RUST_LOG=debug npm run tauri dev"
+    "tauri:debug": "RUST_LOG=debug npm run tauri dev",
+    "version:sync": "node scripts/sync_version.mjs",
+    "version:bump": "node scripts/bump_version.mjs"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",

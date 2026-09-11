@@ -43,6 +43,7 @@ import { QuotaItem } from './QuotaItem';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { MODEL_CONFIG, sortModels, getModelProtectionKey, resolveQuotaModels, ensurePinnedImageSelector } from '../../config/modelConfig';
 import { categorizeModel } from '../../utils/modelCategory';
+import { getAccountFiveHourReset } from '../../utils/quota';
 import { cn } from '../../utils/cn';
 import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
@@ -584,47 +585,17 @@ function AccountRowContent({
     );
 
     const renderFiveHourCell = () => {
-        let resetTime: string | null = null;
-        let minDiff = Infinity;
-        const now = Date.now();
-        for (const group of account.quota?.quota_groups || []) {
-            for (const b of group.buckets || []) {
-                const win = (b.window || '').toLowerCase();
-                const id = (b.bucket_id || '').toLowerCase();
-                if ((win.includes('5h') || id.includes('5h') || win.includes('hour')) && b.reset_time) {
-                    const diff = new Date(b.reset_time).getTime() - now;
-                    if (diff > 0 && diff < minDiff) {
-                        minDiff = diff;
-                        resetTime = b.reset_time;
-                    }
-                }
-            }
-        }
-        if (!resetTime && account.quota?.models) {
-            for (const m of account.quota.models) {
-                if (m.reset_time) {
-                    const diff = new Date(m.reset_time).getTime() - now;
-                    if (diff > 0 && diff < minDiff) {
-                        minDiff = diff;
-                        resetTime = m.reset_time;
-                    }
-                }
-            }
-        }
-        const isReady = !resetTime || minDiff <= 0;
-        const totalMinutes = isReady ? 0 : Math.ceil(minDiff / (1000 * 60));
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
+        const fiveHour = getAccountFiveHourReset(account);
         return (
             <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[95px] min-w-[90px]">
-                <div className="flex items-center gap-1.5" title={resetTime ? `5H Reset: ${new Date(resetTime).toLocaleString()}` : '5H Quota Ready'}>
+                <div className="flex items-center gap-1.5" title={fiveHour.resetTime ? `5H Reset: ${new Date(fiveHour.resetTime).toLocaleString()}` : '5H Quota Ready'}>
                     <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
                     <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
-                        {isReady ? '0h 0m' : `${hours}h ${minutes}m`}
+                        {fiveHour.isReady ? '0h 0m' : `${fiveHour.hoursInDay}h ${fiveHour.minutesInHour}m`}
                     </span>
                     <span className={cn(
                         "text-[9px] font-bold px-1 py-0.2 rounded font-mono",
-                        isReady
+                        fiveHour.isReady
                             ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                             : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
                     )}>

@@ -59,7 +59,7 @@ export const applyResponsiveFullViewSize = async () => {
  * @param contentHeight The height of the content to fit
  * @param shouldCenter Whether to center the window (default: false)
  */
-export const enterMiniMode = async (contentHeight: number, shouldCenter: boolean = false) => {
+export const enterMiniMode = async (contentHeight?: number, shouldCenter: boolean = false) => {
     if (!isTauri()) return;
     try {
         const win = getCurrentWindow();
@@ -67,8 +67,13 @@ export const enterMiniMode = async (contentHeight: number, shouldCenter: boolean
         // Hide window decorations (title bar) first to ensure accurate sizing
         await win.setDecorations(false);
 
-        // Set window size: width 300, height = content height 
-        await win.setSize(new LogicalSize(300, contentHeight + 2));
+        // Calculate safe dimensions: 320px width, safe clamped height (min 320px, max 480px)
+        const safeHeight = contentHeight 
+            ? Math.min(Math.max(contentHeight + 16, 320), 480)
+            : 350;
+
+        // Set window size: width 320, safe padded height
+        await win.setSize(new LogicalSize(320, safeHeight));
 
         await win.setAlwaysOnTop(true);
         // Enable window shadow
