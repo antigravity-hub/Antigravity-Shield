@@ -3,6 +3,18 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **Version History**:
+    *   **v5.6.0 (2026-09-10)**:
+        -   **[Architecture & Tooling] Single Source of Truth (SSoT) Version Synchronizer**:
+            -   **Authoritative Version Synchronization**: Established `package.json` as the Single Source of Truth (SSoT) across the entire platform. Implemented automated synchronizer `scripts/sync_version.mjs` that updates `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`, and `src-tauri/Cargo.lock` in a single command.
+            -   **One-Command Version Bumper**: Added `scripts/bump_version.mjs` and npm scripts (`npm run version:bump <patch|minor|major|x.y.z>` and `npm run version:sync`), integrated directly into pre-build hooks to eliminate version drift.
+            -   **Vite Compile-Time Injection**: Injected `__APP_VERSION__` into Vite's bundler and centralized frontend version consumption via `src/constants/version.ts`, removing hardcoded fallback versions across `NavLogo`, `MiniView`, and `Settings`.
+        -   **[Codebase Organization & Deduplication] Unified Constants & Quota Cycle Engine**:
+            -   **Global Layout Tokens**: Centralized responsive container layout classes (`CONTAINER_MAX_WIDTH`) in `src/constants/layout.ts`, eliminating duplicate class definitions across 6 major platform pages.
+            -   **Unified Quota Cycle Calculations**: Extracted duplicated 30-line bucket scanning loops from `WeeklyCountdown`, `AccountTable`, and `AccountCard` into pure, reusable functions in `src/utils/quota.ts` (`getAccountWeeklyReset` and `getAccountFiveHourReset`).
+            -   **Cross-Platform Clipboard Standardization**: Replaced raw `navigator.clipboard.writeText` calls in Settings and Error Dialogs with the robust fallback utility `copyToClipboard`.
+        -   **[Accounts & MiniView UX] Intelligent Multi-Tier Account Sorting & MiniView Window Polish**:
+            -   **Smart Account Prioritization**: Enhanced `getAccountQuotaScores` to sort usable accounts first, followed by remaining 5H quota percentage, weekly fraction, and cycle countdown hours.
+            -   **MiniView Ergonomics**: Added clamped safe sizing (320px width, bounded height), Escape key shortcut to return to full view, header double-click to maximize, and smooth drag handling.
     *   **v5.5.0 (2026-09-10)**:
         -   **[Sync Architecture] Hybrid Adaptive Jittered Sync & Live Data Freshness Indicator**:
             -   **Humanized Anti-Abuse Jittering**: Replaced rigid interval timers with a recursive randomized scheduler (+15s to +45s dynamic jitter) to eliminate automated request fingerprinting against Google Cloud Code endpoints.
