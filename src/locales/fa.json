@@ -126,6 +126,14 @@
     }
   },
   "accounts": {
+    "sync_freshness": {
+      "never": "هنوز همگام نشده",
+      "just_now": "همگام: هم‌اکنون",
+      "minutes_ago": "همگام: {{count}} دقیقه پیش",
+      "hours_ago": "همگام: {{count}} ساعت پیش",
+      "cooldown_active": "مهلت انتظار: {{seconds}} ثانیه",
+      "tooltip": "وضعیت زنده استعلام‌شده از سرورهای گوگل کلودکد"
+    },
     "account": "حساب",
     "search_placeholder": "جستجوی ایمیل...",
     "all": "همه",

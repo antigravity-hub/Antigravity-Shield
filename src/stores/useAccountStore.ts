@@ -13,6 +13,7 @@ interface AccountState {
     };
     loading: boolean;
     error: string | null;
+    lastSyncedAt: number | null;
 
     // Actions
     fetchAccounts: () => Promise<void>;
@@ -25,6 +26,7 @@ interface AccountState {
     deleteAccounts: (accountIds: string[]) => Promise<void>;
     switchAccount: (accountId: string, targetIde?: string) => Promise<void>;
     refreshQuota: (accountId: string) => Promise<void>;
+    refreshActiveAccountQuota: () => Promise<void>;
     refreshAllQuotas: () => Promise<accountService.RefreshStats>;
     reorderAccounts: (accountIds: string[]) => Promise<void>;
 
@@ -53,6 +55,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     },
     loading: false,
     error: null,
+    lastSyncedAt: null,
 
     isTargetActiveForAccount: (accountId: string, target: 'platform' | 'ide' | 'agy') => {
         const acc = get().accounts.find(a => a.id === accountId);
@@ -216,10 +219,35 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         try {
             await accountService.fetchAccountQuota(accountId);
             await get().fetchAccounts();
-            set({ loading: false });
+            set({ loading: false, lastSyncedAt: Date.now() });
         } catch (error) {
             set({ error: String(error), loading: false });
             throw error;
+        }
+    },
+
+    refreshActiveAccountQuota: async () => {
+        const { currentAccount, accounts, activeTargetAccounts } = get();
+        const targetIds = new Set<string>();
+        if (currentAccount?.id) targetIds.add(currentAccount.id);
+        Object.values(activeTargetAccounts).forEach(id => {
+            if (id) targetIds.add(id);
+        });
+
+        if (targetIds.size === 0 && accounts.length > 0) {
+            targetIds.add(accounts[0].id);
+        }
+
+        if (targetIds.size === 0) return;
+
+        try {
+            for (const id of targetIds) {
+                await accountService.fetchAccountQuota(id);
+            }
+            await get().fetchAccounts();
+            set({ lastSyncedAt: Date.now() });
+        } catch (error) {
+            console.error('[AccountStore] refreshActiveAccountQuota error:', error);
         }
     },
 
@@ -228,7 +256,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         try {
             const stats = await accountService.refreshAllQuotas();
             await get().fetchAccounts();
-            set({ loading: false });
+            set({ loading: false, lastSyncedAt: Date.now() });
             return stats;
         } catch (error) {
             set({ error: String(error), loading: false });

@@ -57,6 +57,7 @@ function Accounts() {
     warmUpAccounts,
     warmUpAccount,
     updateAccountLabel,
+    lastSyncedAt,
   } = useAccountStore();
   const { config, showAllQuotas, toggleShowAllQuotas } = useConfigStore();
 
@@ -552,9 +553,43 @@ function Accounts() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isRefreshConfirmOpen, setIsRefreshConfirmOpen] = useState(false);
+  const [refreshCooldown, setRefreshCooldown] = useState(0);
+  const [, setTimeTick] = useState(0);
   const cancelRefreshRef = useRef(false);
 
+  useEffect(() => {
+    const ticker = setInterval(() => {
+      setTimeTick((prev) => prev + 1);
+    }, 15000);
+    return () => clearInterval(ticker);
+  }, []);
+
+  useEffect(() => {
+    if (refreshCooldown <= 0) return;
+    const timer = setTimeout(() => {
+      setRefreshCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [refreshCooldown]);
+
+  const getFreshnessDisplay = () => {
+    if (!lastSyncedAt) {
+      return { text: t("accounts.sync_freshness.never", "Not synced yet"), minutes: 999 };
+    }
+    const diffSec = Math.floor((Date.now() - lastSyncedAt) / 1000);
+    if (diffSec < 45) {
+      return { text: t("accounts.sync_freshness.just_now", "Synced: Just now"), minutes: 0 };
+    }
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) {
+      return { text: t("accounts.sync_freshness.minutes_ago", { count: diffMin, defaultValue: `Synced: ${diffMin}m ago` }), minutes: diffMin };
+    }
+    const diffHr = Math.floor(diffMin / 60);
+    return { text: t("accounts.sync_freshness.hours_ago", { count: diffHr, defaultValue: `Synced: ${diffHr}h ago` }), minutes: diffMin };
+  };
+
   const handleRefreshClick = () => {
+    if (refreshCooldown > 0) return;
     setIsRefreshConfirmOpen(true);
   };
 
@@ -620,6 +655,7 @@ function Accounts() {
     } finally {
       setIsRefreshing(false);
       setRefreshingIds(new Set());
+      setRefreshCooldown(20);
     }
   };
 
@@ -1092,6 +1128,22 @@ function Accounts() {
             </>
           )}
 
+          {/* Data Freshness Indicator */}
+          <div 
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-100/90 dark:bg-base-200/80 border border-gray-200/60 dark:border-white/5 text-[11px] font-medium text-gray-500 dark:text-gray-400 select-none shadow-2xs"
+            title={t("accounts.sync_freshness.tooltip", "Live status verified against Google Cloud Code upstream")}
+          >
+            <span className={cn(
+              "w-2 h-2 rounded-full transition-all duration-300",
+              isRefreshing ? "bg-amber-400 animate-ping" : 
+              getFreshnessDisplay().minutes <= 5 ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" : 
+              getFreshnessDisplay().minutes <= 15 ? "bg-sky-400" : "bg-gray-400"
+            )} />
+            <span className="font-mono text-[10px] text-gray-600 dark:text-gray-300 font-semibold">
+              {getFreshnessDisplay().text}
+            </span>
+          </div>
+
           {isRefreshing ? (
             <button
               className="px-2.5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 shadow-sm animate-pulse"
@@ -1105,19 +1157,29 @@ function Accounts() {
             </button>
           ) : (
             <button
-              className="px-2.5 py-2 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1.5 shadow-sm"
+              disabled={refreshCooldown > 0}
+              className={cn(
+                "px-2.5 py-2 text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 shadow-sm",
+                refreshCooldown > 0 
+                  ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-80" 
+                  : "bg-blue-500 hover:bg-blue-600 active:scale-95"
+              )}
               onClick={handleRefreshClick}
               title={
-                selectedIds.size > 0
-                  ? t("accounts.refresh_selected", { count: selectedIds.size })
-                  : t("accounts.refresh_all")
+                refreshCooldown > 0
+                  ? t("accounts.sync_freshness.cooldown_active", { seconds: refreshCooldown, defaultValue: `Cooldown: ${refreshCooldown}s` })
+                  : selectedIds.size > 0
+                    ? t("accounts.refresh_selected", { count: selectedIds.size })
+                    : t("accounts.refresh_all")
               }
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className={cn("w-3.5 h-3.5", refreshCooldown > 0 && "opacity-70")} />
               <span className="hidden xl:inline">
-                {selectedIds.size > 0
-                  ? t("accounts.refresh_selected", { count: selectedIds.size })
-                  : t("accounts.refresh_all")}
+                {refreshCooldown > 0
+                  ? `${refreshCooldown}s`
+                  : selectedIds.size > 0
+                    ? t("accounts.refresh_selected", { count: selectedIds.size })
+                    : t("accounts.refresh_all")}
               </span>
             </button>
           )}

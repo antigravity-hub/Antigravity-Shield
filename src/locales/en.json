@@ -126,6 +126,14 @@
     }
   },
   "accounts": {
+    "sync_freshness": {
+      "never": "Not synced yet",
+      "just_now": "Synced: Just now",
+      "minutes_ago": "Synced: {{count}}m ago",
+      "hours_ago": "Synced: {{count}}h ago",
+      "cooldown_active": "Cooldown: {{seconds}}s",
+      "tooltip": "Live status verified against Google Cloud Code upstream"
+    },
     "account": "Account",
     "search_placeholder": "Search email...",
     "all": "All",
