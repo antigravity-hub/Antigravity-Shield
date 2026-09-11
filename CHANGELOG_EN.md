@@ -3,6 +3,14 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
+    *   **v5.6.1 (2026-09-11)**:
+        -   **[Account Activation & Multi-Target Exclusivity] Strict Target Exclusivity & State Synchronization**:
+            -   **Single-Target Exclusivity Guarantee**: Enforced strict single-target assignment (`platform`, `ide`, `cli`) where activating an account on any target immediately supersedes any previously active account for that target, preventing desynchronization.
+            -   **Eliminated Target Stale Duplication Race Condition**: Replaced concurrent state updates with sequenced single-source-of-truth updates (`fetchActiveTargetAccounts` -> `fetchCurrentAccount` -> `fetchAccounts`).
+            -   **Removed Erroneous Fallback Injection**: Eliminated legacy fallback logic that erroneously re-injected active targets onto accounts when `targetAccounts` was stale.
+            -   **Precise Action Controls & Badge Disambiguation**: Updated `AccountActionControls` to explicitly pass `'platform'` target on switch, and updated `AccountCard` badge presentation to strictly reflect verified active environment targets.
+        -   **[Process Management] Windows Graceful Process Shutdown & Session Preservation**:
+            -   **Graceful Window Close Protocol**: Implemented non-blocking `WM_CLOSE` window dispatch (`win_graceful::post_wm_close_to_windows`) across both current and default desktop sessions on Windows before initiating fallback termination, ensuring IDE conversation history, unsaved edits, and workspace state are safely flushed to disk.
     *   **v5.6.0 (2026-09-10)**:
         -   **[Architecture & Tooling] Single Source of Truth (SSoT) Version Synchronizer**:
             -   **Authoritative Version Synchronization**: Established `package.json` as the Single Source of Truth (SSoT) across the entire platform. Implemented automated synchronizer `scripts/sync_version.mjs` that updates `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`, and `src-tauri/Cargo.lock` in a single command.
