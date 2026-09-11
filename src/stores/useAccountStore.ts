@@ -58,17 +58,19 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     lastSyncedAt: null,
 
     isTargetActiveForAccount: (accountId: string, target: 'platform' | 'ide' | 'agy') => {
-        const acc = get().accounts.find(a => a.id === accountId);
-        if (acc?.active_targets?.includes(target)) return true;
         const targetMap = get().activeTargetAccounts;
-        return targetMap[target] === accountId;
+        if (targetMap && targetMap[target]) {
+            return targetMap[target] === accountId;
+        }
+        const acc = get().accounts.find(a => a.id === accountId);
+        return Boolean(acc?.active_targets?.includes(target));
     },
 
     hasAnyActiveTarget: (accountId: string) => {
-        const acc = get().accounts.find(a => a.id === accountId);
-        if (acc?.active_targets && acc.active_targets.length > 0) return true;
         const targetMap = get().activeTargetAccounts;
-        return targetMap.platform === accountId || targetMap.ide === accountId || targetMap.agy === accountId;
+        if (targetMap.platform === accountId || targetMap.ide === accountId || targetMap.agy === accountId) return true;
+        const acc = get().accounts.find(a => a.id === accountId);
+        return Boolean(acc?.active_targets && acc.active_targets.length > 0);
     },
 
     fetchActiveTargetAccounts: async () => {
@@ -76,8 +78,14 @@ export const useAccountStore = create<AccountState>((set, get) => ({
             const targets = await accountService.getActiveTargetAccounts();
             if (targets) {
                 if (targets.platform) localStorage.setItem('antigravity_active_platform_account', targets.platform);
+                else localStorage.removeItem('antigravity_active_platform_account');
+
                 if (targets.ide) localStorage.setItem('antigravity_active_ide_account', targets.ide);
+                else localStorage.removeItem('antigravity_active_ide_account');
+
                 if (targets.agy) localStorage.setItem('antigravity_active_agy_account', targets.agy);
+                else localStorage.removeItem('antigravity_active_agy_account');
+
                 set({ activeTargetAccounts: targets });
             }
         } catch (e) {
@@ -89,18 +97,30 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         set({ loading: true, error: null });
         try {
             console.log('[Store] Fetching accounts...');
-            const accounts = await accountService.listAccounts();
-            const targetAccounts = get().activeTargetAccounts;
-            const currentAcc = get().currentAccount;
+            const [accounts, activeTargets] = await Promise.all([
+                accountService.listAccounts(),
+                accountService.getActiveTargetAccounts().catch(() => null),
+            ]);
+
+            const targetAccounts = activeTargets || get().activeTargetAccounts;
+            if (activeTargets) {
+                if (activeTargets.platform) localStorage.setItem('antigravity_active_platform_account', activeTargets.platform);
+                else localStorage.removeItem('antigravity_active_platform_account');
+
+                if (activeTargets.ide) localStorage.setItem('antigravity_active_ide_account', activeTargets.ide);
+                else localStorage.removeItem('antigravity_active_ide_account');
+
+                if (activeTargets.agy) localStorage.setItem('antigravity_active_agy_account', activeTargets.agy);
+                else localStorage.removeItem('antigravity_active_agy_account');
+
+                set({ activeTargetAccounts: activeTargets });
+            }
+
             const enrichedAccounts = accounts.map(acc => {
-                const targets = new Set(acc.active_targets || []);
+                const targets = new Set<string>();
                 if (targetAccounts.platform === acc.id) targets.add('platform');
                 if (targetAccounts.ide === acc.id) targets.add('ide');
                 if (targetAccounts.agy === acc.id) targets.add('agy');
-                if (targets.size === 0 && currentAcc?.id === acc.id) {
-                    const ide = get().currentTargetIde || 'platform';
-                    targets.add(ide === 'ide' ? 'ide' : (ide === 'agy' ? 'agy' : 'platform'));
-                }
                 return {
                     ...acc,
                     active_targets: Array.from(targets)
@@ -174,8 +194,8 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     switchAccount: async (accountId: string, targetIde?: string) => {
         set({ loading: true, error: null });
         try {
-            await accountService.switchAccount(accountId, targetIde);
             const resolvedTarget = (targetIde === 'ide' ? 'ide' : (targetIde === 'agy' || targetIde === 'cli' ? 'agy' : 'platform')) as 'platform' | 'ide' | 'agy';
+            await accountService.switchAccount(accountId, resolvedTarget);
             localStorage.setItem('antigravity_current_target_ide', resolvedTarget);
 
             // Update activeTargetAccounts map
@@ -198,16 +218,16 @@ export const useAccountStore = create<AccountState>((set, get) => ({
             });
 
             set({
-                loading: false,
                 currentTargetIde: resolvedTarget,
                 activeTargetAccounts: currentTargets,
                 accounts: updatedAccounts,
             });
 
-            await Promise.all([
-                get().fetchCurrentAccount(),
-                get().fetchAccounts(),
-            ]);
+            // Sequential synchronization prevents race conditions and stale currentAccount
+            await get().fetchActiveTargetAccounts();
+            await get().fetchCurrentAccount();
+            await get().fetchAccounts();
+            set({ loading: false });
         } catch (error) {
             set({ error: String(error), loading: false });
             throw error;

@@ -44,7 +44,6 @@ const DEFAULT_MODELS = Object.entries(MODEL_CONFIG).map(([id, config]) => ({
 function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, isRefreshing, isSwitching = false, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow }: AccountCardProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
-    const currentTargetIde = useAccountStore((state) => state.currentTargetIde);
     const isTargetActiveForAccount = useAccountStore((state) => state.isTargetActiveForAccount);
     const hasAnyActiveTarget = useAccountStore((state) => state.hasAnyActiveTarget);
     const isDisabled = Boolean(account.disabled);
@@ -54,19 +53,6 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
     const isIdeActive = isTargetActiveForAccount(account.id, 'ide');
     const isCliActive = isTargetActiveForAccount(account.id, 'agy');
     const isAnyActive = hasAnyActiveTarget(account.id) || propIsCurrent;
-
-    const getActiveBadgeLabel = (target: string | null | undefined) => {
-        switch (target) {
-            case 'ide':
-                return 'IDE Active';
-            case 'platform':
-                return 'Platform Active';
-            case 'agy':
-                return 'CLI Active';
-            default:
-                return 'Active';
-        }
-    };
 
     // 自定义标签编辑状态
     const [isEditingLabel, setIsEditingLabel] = useState(false);
@@ -286,13 +272,13 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                             {!isPlatformActive && !isIdeActive && !isCliActive && isCurrent && (
                                 <span
                                     className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold shadow-xs border border-emerald-500/30 dark:border-emerald-500/40 select-none tracking-wide"
-                                    title={`Active in Antigravity ${getActiveBadgeLabel(currentTargetIde).replace(' Active', '')}`}
+                                    title={t('accounts.current', 'Current')}
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_5px_#10b981]"></span>
                                     </span>
-                                    {getActiveBadgeLabel(currentTargetIde)}
+                                    {t('accounts.current', 'Current')}
                                 </span>
                             )}
                             {isDisabled && (

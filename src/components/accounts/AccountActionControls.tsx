@@ -130,7 +130,7 @@ export function AccountActionControls({
                                 ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"
                     )}
-                    onClick={() => onSwitch()}
+                    onClick={() => onSwitch('platform')}
                     disabled={isSwitching || isDisabled}
                     title={isDisabled ? t('accounts.disabled_tooltip') : isPlatformActive ? t('accounts.platform_active', 'Antigravity Platform (Active)') : t('accounts.switch_to_platform', 'Switch to Antigravity Platform')}
                 >
