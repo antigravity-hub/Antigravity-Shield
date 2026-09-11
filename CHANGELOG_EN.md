@@ -3,6 +3,17 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
+    *   **v5.5.0 (2026-09-10)**:
+        -   **[Sync Architecture] Hybrid Adaptive Jittered Sync & Live Data Freshness Indicator**:
+            -   **Humanized Anti-Abuse Jittering**: Replaced rigid interval timers with a recursive randomized scheduler (+15s to +45s dynamic jitter) to eliminate automated request fingerprinting against Google Cloud Code endpoints.
+            -   **Prioritized Target Sync & Staggered Fleet Refresh**: Targeted background sync directly to active environment accounts (Platform/IDE/CLI) while executing full fleet quota sweeps every 3rd cycle to eliminate network overhead.
+            -   **Power & Tab Visibility Awareness**: Pauses periodic refresh cycles when the window is hidden/minimized to conserve local resources and network bandwidth.
+            -   **Live Data Freshness Badge**: Added an animated real-time status pill in the Accounts toolbar showing upstream sync timestamp ("Synced: Just now", "Synced: Xm ago") with visual heartbeat dot.
+            -   **Manual Refresh Rate-Limiter**: Added a 20-second cooldown on the manual refresh trigger to prevent upstream rate limits.
+        -   **[UI & Layout Hardening] Wide-Screen Workspace Expansion & Column Rebalance**:
+            -   **1750px Workspace Container**: Expanded max container constraint from 1280px (`max-w-7xl`) to `max-w-[1720px] 2xl:max-w-[1850px]` across Navbar, Accounts, Dashboard, Proxy, and Settings, eliminating black sidebars on modern displays.
+            -   **Expanded Model Quota Column**: Broadened Model Quota column width to `min-w-[360px] xl:min-w-[420px] 2xl:min-w-[480px]`, giving model name badges over 3× more horizontal space for full legibility.
+            -   **Sleek Actions & Reset Columns**: Compacted the Actions column from 210px to 165px with tighter button paddings, and streamlined Weekly Reset stepper squares to 14px (`w-3.5 h-3.5`).
     *   **v5.4.1 (2026-09-10)**:
         -   **[Branding & Identity] Modern Shield Visual Identity & Asset Standardization**:
             -   **New Shield Brand Logo**: Integrated new high-resolution shield brand logo across the UI navbar header, browser favicon, and system icons.
