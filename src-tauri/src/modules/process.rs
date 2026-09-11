@@ -6,6 +6,87 @@ use sysinfo::System;
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 
+#[cfg(target_os = "windows")]
+mod win_graceful {
+    use std::ffi::c_void;
+    type HWND = *mut c_void;
+    type BOOL = i32;
+    type LPARAM = isize;
+    type DWORD = u32;
+    type UINT = u32;
+    type HDESK = *mut c_void;
+
+    const WM_CLOSE: UINT = 0x0010;
+    const DESKTOP_ENUMERATE: DWORD = 0x0040;
+
+    extern "system" {
+        fn EnumWindows(
+            lpEnumFunc: unsafe extern "system" fn(HWND, LPARAM) -> BOOL,
+            lParam: LPARAM,
+        ) -> BOOL;
+        fn OpenDesktopW(
+            lpszDesktop: *const u16,
+            dwFlags: DWORD,
+            fInherit: BOOL,
+            dwDesiredAccess: DWORD,
+        ) -> HDESK;
+        fn CloseDesktop(hDesktop: HDESK) -> BOOL;
+        fn EnumDesktopWindows(
+            hDesktop: HDESK,
+            lpfn: unsafe extern "system" fn(HWND, LPARAM) -> BOOL,
+            lParam: LPARAM,
+        ) -> BOOL;
+        fn GetWindowThreadProcessId(hWnd: HWND, lpdwProcessId: *mut DWORD) -> DWORD;
+        fn PostMessageW(hWnd: HWND, Msg: UINT, wParam: usize, lParam: isize) -> BOOL;
+        fn IsWindowVisible(hWnd: HWND) -> BOOL;
+    }
+
+    struct WindowMatchData<'a> {
+        target_pids: &'a [u32],
+        matched_hwnds: Vec<HWND>,
+    }
+
+    unsafe extern "system" fn enum_proc(hwnd: HWND, lparam: LPARAM) -> BOOL {
+        let data = &mut *(lparam as *mut WindowMatchData);
+        let mut pid: DWORD = 0;
+        GetWindowThreadProcessId(hwnd, &mut pid);
+        if data.target_pids.contains(&pid) && IsWindowVisible(hwnd) != 0 {
+            data.matched_hwnds.push(hwnd);
+        }
+        1
+    }
+
+    pub fn post_wm_close_to_windows(pids: &[u32]) -> usize {
+        let mut data = WindowMatchData {
+            target_pids: pids,
+            matched_hwnds: Vec::new(),
+        };
+
+        unsafe {
+            // 1. Enumerate top-level windows on the current desktop
+            EnumWindows(enum_proc, &mut data as *mut _ as LPARAM);
+
+            // 2. Also enumerate on the interactive "Default" desktop to cover separated desktop sessions
+            let default_desktop_name: Vec<u16> = "Default\0".encode_utf16().collect();
+            let hdesk = OpenDesktopW(default_desktop_name.as_ptr(), 0, 0, DESKTOP_ENUMERATE);
+            if !hdesk.is_null() {
+                EnumDesktopWindows(hdesk, enum_proc, &mut data as *mut _ as LPARAM);
+                CloseDesktop(hdesk);
+            }
+
+            // Deduplicate window handles
+            data.matched_hwnds.sort();
+            data.matched_hwnds.dedup();
+
+            let count = data.matched_hwnds.len();
+            for &hwnd in &data.matched_hwnds {
+                PostMessageW(hwnd, WM_CLOSE, 0, 0);
+            }
+            count
+        }
+    }
+}
+
 /// Get normalized path of the current running executable
 fn get_current_exe_path() -> Option<std::path::PathBuf> {
     std::env::current_exe()
@@ -460,21 +541,92 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
 
     #[cfg(target_os = "windows")]
     {
-        // Windows: Precise kill by PID to support multiple versions or custom filenames
         let pids = get_antigravity_pids(target_ide);
         if !pids.is_empty() {
             crate::modules::logger::log_info(&format!(
-                "Precisely closing {} identified processes on Windows...",
-                pids.len()
+                "[Windows] Closing {} identified Antigravity ({:?}) processes with graceful priority...",
+                pids.len(),
+                target_ide
             ));
-            for pid in pids {
+
+            // Identify root main process(es) to prioritize closing window coordinators
+            let mut system = System::new();
+            system.refresh_processes(sysinfo::ProcessesToUpdate::All);
+            let pid_set: std::collections::HashSet<u32> = pids.iter().cloned().collect();
+            let mut main_pids = Vec::new();
+            for &pid_u32 in &pids {
+                let pid = sysinfo::Pid::from_u32(pid_u32);
+                if let Some(proc) = system.process(pid) {
+                    let parent_in_set = proc
+                        .parent()
+                        .map(|p| pid_set.contains(&p.as_u32()))
+                        .unwrap_or(false);
+                    if !parent_in_set {
+                        main_pids.push(pid_u32);
+                    }
+                }
+            }
+            if main_pids.is_empty() {
+                main_pids = pids.clone();
+            }
+
+            crate::modules::logger::log_info(&format!(
+                "[Windows] Main process(es) identified: {:?}",
+                main_pids
+            ));
+
+            // Phase 1: Graceful window close (WM_CLOSE) + graceful taskkill
+            let closed_win_count = win_graceful::post_wm_close_to_windows(&pids);
+            crate::modules::logger::log_info(&format!(
+                "[Windows] Posted WM_CLOSE to {} window(s)",
+                closed_win_count
+            ));
+
+            for pid in &main_pids {
                 let _ = Command::new("taskkill")
-                    .args(["/F", "/PID", &pid.to_string()])
+                    .args(["/PID", &pid.to_string()])
                     .creation_flags(0x08000000) // CREATE_NO_WINDOW
                     .output();
             }
-            // Give some time for system to clean up PIDs
-            thread::sleep(Duration::from_millis(200));
+
+            // Wait for graceful exit (max 70% of timeout_secs, default ~14s)
+            let graceful_timeout = (timeout_secs * 7) / 10;
+            let start = std::time::Instant::now();
+            while start.elapsed() < Duration::from_secs(graceful_timeout) {
+                if !is_antigravity_running(target_ide) {
+                    crate::modules::logger::log_info(
+                        "[Windows] All Antigravity processes gracefully closed. Conversation history and workspace state preserved."
+                    );
+                    return Ok(());
+                }
+                thread::sleep(Duration::from_millis(500));
+            }
+
+            // Phase 2: Force kill (taskkill /F) if graceful exit timed out
+            if is_antigravity_running(target_ide) {
+                let remaining_pids = get_antigravity_pids(target_ide);
+                if !remaining_pids.is_empty() {
+                    crate::modules::logger::log_warn(&format!(
+                        "[Windows] Graceful exit timed out, force killing {} remaining processes (taskkill /F)...",
+                        remaining_pids.len()
+                    ));
+                    for pid in &remaining_pids {
+                        let _ = Command::new("taskkill")
+                            .args(["/F", "/PID", &pid.to_string()])
+                            .creation_flags(0x08000000) // CREATE_NO_WINDOW
+                            .output();
+                    }
+                    thread::sleep(Duration::from_millis(500));
+                }
+            }
+
+            if !is_antigravity_running(target_ide) {
+                crate::modules::logger::log_info("[Windows] All processes exited after forced cleanup");
+                return Ok(());
+            }
+        } else {
+            crate::modules::logger::log_info("Antigravity not running, no need to close");
+            return Ok(());
         }
     }
 
