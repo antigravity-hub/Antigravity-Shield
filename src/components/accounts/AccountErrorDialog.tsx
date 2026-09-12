@@ -1,7 +1,8 @@
-import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, ChevronRight } from 'lucide-react';
+import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, ChevronRight, BookOpen, Sparkles, Send } from 'lucide-react';
 import { Account } from '../../types/account';
 import { formatDate } from '../../utils/format';
 import { copyToClipboard } from '../../utils/clipboard';
+import { openVerificationGuide, openExternalUrl } from '../../utils/guideOpener';
 import { useTranslation, Trans } from 'react-i18next';
 import ModalDialog from '../common/ModalDialog';
 import { useState } from 'react';
@@ -15,6 +16,7 @@ interface AccountErrorDialogProps {
 export default function AccountErrorDialog({ account, onClose }: AccountErrorDialogProps) {
     const [showRaw, setShowRaw] = useState(false);
     const [showGuide, setShowGuide] = useState(false);
+    const [showPdfGuide, setShowPdfGuide] = useState(true);
     const { t } = useTranslation();
     if (!account) return null;
 
@@ -94,7 +96,13 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
 
     // 识别错误类型
     const isViolation = rawReason.toLowerCase().includes('terms of service') || rawReason.toLowerCase().includes('violation');
-    const isVerificationNeeded = !isViolation && (rawReason.toLowerCase().includes('verify your account') || !!account.validation_url);
+    const isVerificationNeeded = !isViolation && (
+        isValidationBlocked ||
+        rawReason.toLowerCase().includes('verify your account') ||
+        rawReason.toLowerCase().includes('further action') ||
+        rawReason.toLowerCase().includes('validation required') ||
+        !!account.validation_url
+    );
 
     // 复制功能
     const handleCopyUrl = (url: string) => {
@@ -229,6 +237,83 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                 <Copy className="w-3 h-3" />
                                 {isViolation ? t('accounts.copy_appeal_url', '复制申诉链接') : t('accounts.copy_validation_url', '复制验证链接')}
                             </button>
+                        </div>
+                    )}
+
+                    {/* Verification Loop & Further Action Required Fix Guide */}
+                    {isVerificationNeeded && !showRaw && (
+                        <div className="mt-4 border border-amber-200 dark:border-amber-800/50 rounded-xl overflow-hidden shadow-sm bg-amber-50/40 dark:bg-amber-950/20">
+                            <button
+                                onClick={() => setShowPdfGuide(!showPdfGuide)}
+                                className="w-full flex items-center justify-between p-3 bg-amber-100/60 dark:bg-amber-900/30 hover:bg-amber-100/90 dark:hover:bg-amber-900/50 transition-colors"
+                            >
+                                <div className="flex items-center gap-2 text-amber-900 dark:text-amber-300 font-bold text-xs">
+                                    <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                                    <span>{t('accounts.verification_guide.card_title')}</span>
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-200 dark:bg-amber-800/80 text-amber-900 dark:text-amber-100">
+                                        {t('accounts.verification_guide.card_badge')}
+                                    </span>
+                                </div>
+                                {showPdfGuide ? <ChevronDown className="w-4 h-4 text-amber-600" /> : <ChevronRight className="w-4 h-4 text-amber-600" />}
+                            </button>
+
+                            {showPdfGuide && (
+                                <div className="p-4 text-xs space-y-3 bg-white dark:bg-base-200 text-gray-700 dark:text-gray-300">
+                                    <p className="text-[11px] leading-relaxed text-gray-600 dark:text-gray-300">
+                                        {t('accounts.verification_guide.card_desc')}
+                                    </p>
+
+                                    {/* 7-Step List */}
+                                    <div className="border-t border-gray-100 dark:border-base-300/50 pt-2.5">
+                                        <h5 className="font-bold text-gray-800 dark:text-gray-200 mb-2 text-[11px] flex items-center gap-1.5">
+                                            <BookOpen className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                                            {t('accounts.verification_guide.steps_title')}
+                                        </h5>
+                                        <ol className="list-decimal pl-4 space-y-1.5 text-[11px] text-gray-600 dark:text-gray-300 marker:font-bold marker:text-amber-600">
+                                            <li>{t('accounts.verification_guide.step1')}</li>
+                                            <li>{t('accounts.verification_guide.step2')}</li>
+                                            <li>{t('accounts.verification_guide.step3')}</li>
+                                            <li>{t('accounts.verification_guide.step4')}</li>
+                                            <li>{t('accounts.verification_guide.step5')}</li>
+                                            <li>{t('accounts.verification_guide.step6')}</li>
+                                            <li className="font-semibold text-emerald-700 dark:text-emerald-400">{t('accounts.verification_guide.step7')}</li>
+                                        </ol>
+                                    </div>
+
+                                    {/* Action Buttons: Open PDF & Open GCP */}
+                                    <div className="pt-2 flex flex-col sm:flex-row gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => openVerificationGuide()}
+                                            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-all shadow-sm active:scale-[0.98]"
+                                        >
+                                            <BookOpen className="w-3.5 h-3.5" />
+                                            {t('accounts.verification_guide.open_pdf')}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => openExternalUrl('https://console.cloud.google.com/welcome')}
+                                            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold bg-gray-100 dark:bg-base-300 hover:bg-gray-200 dark:hover:bg-base-100 text-gray-800 dark:text-gray-200 rounded-lg transition-all active:scale-[0.98] border border-gray-200 dark:border-base-300"
+                                        >
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                            {t('accounts.verification_guide.open_gcp')}
+                                        </button>
+                                    </div>
+
+                                    {/* Telegram Contact Note */}
+                                    <div className="text-[10px] text-gray-500 dark:text-gray-400 pt-1 flex items-center justify-between border-t border-gray-100 dark:border-base-300/40">
+                                        <span>{t('accounts.verification_guide.phone_note')}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => openExternalUrl('https://t.me/DrGuidance')}
+                                            className="text-blue-500 hover:underline flex items-center gap-1 font-medium ml-1 flex-shrink-0"
+                                        >
+                                            <Send className="w-2.5 h-2.5" />
+                                            @DrGuidance
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
 

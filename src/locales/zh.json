@@ -194,6 +194,23 @@
       "tip3": "若操作失败，请前往 <1>Google Cloud Console</1> 中的 Generative Language API 查看是否被冻结权限。若是，说明账号触发了风控，建议让账号冷却 72 小时后再次尝试。",
       "tip4": "你也可以尝试执行 <1>npm install -g @google/gemini-cli</1>，只要不弹出错误，大概率在软件内删除账号重新授权即可。"
     },
+    "verification_guide": {
+      "card_title": "谷歌账号验证死循环修复 (Cloud Shell 绕过教程)",
+      "card_badge": "实测有效方案",
+      "card_desc": "谷歌在 Antigravity 登录时拦截并提示 \"Further action is required to use Antigravity IDE\"，是因为该账号必须先在 Google Cloud Shell 中完成手机短信验证才能解禁 IDE 权限。",
+      "steps_title": "7步快速绕过验证",
+      "step1": "访问 console.cloud.google.com/welcome，登录该账号并勾选同意 GCP 服务条款。",
+      "step2": "点击左上角导航菜单 (☰)，进入 IAM & Admin。",
+      "step3": "点击右上角顶栏的 Cloud Shell 终端图标 (>_)。",
+      "step4": "在弹出的 Cloud Shell 介绍窗口中点击右下角 Continue。",
+      "step5": "出现 \"Verify your account\" 提示时，点击蓝色 Verify 按钮。",
+      "step6": "选择 \"Verify your phone number\"，输入手机号并填写接收到的 6 位验证码。",
+      "step7": "回到 Antigravity IDE 登录页点击 Sign in，即可成功登录并畅快使用！",
+      "open_pdf": "查看高清 PDF 图文教程",
+      "open_gcp": "前往 Google Cloud 控制台",
+      "phone_note": "若手机号提示不可用或被拒，可在 Telegram 联络 @DrGuidance 寻求协助。",
+      "hint_banner": "遇到 \"Further action is required\" 或账号验证死循环？"
+    },
     "no_data": "无数据",
     "last_used": "最后使用",
     "reset_time": "重置时间",

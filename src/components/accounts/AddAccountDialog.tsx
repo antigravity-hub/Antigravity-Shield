@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Database, Globe, FileClock, Loader2, CheckCircle2, XCircle, Copy, Check, Info, Link2 } from 'lucide-react';
+import { Plus, Database, Globe, FileClock, Loader2, CheckCircle2, XCircle, Copy, Check, Info, Link2, BookOpen } from 'lucide-react';
 import { useAccountStore } from '../../stores/useAccountStore';
 import { useTranslation } from 'react-i18next';
 import { listen } from '@tauri-apps/api/event';
@@ -8,6 +8,7 @@ import { open } from '@tauri-apps/plugin-dialog';
 import { request as invoke } from '../../utils/request';
 import { isTauri } from '../../utils/env';
 import { copyToClipboard } from '../../utils/clipboard';
+import { openVerificationGuide } from '../../utils/guideOpener';
 
 interface AddAccountDialogProps {
     onAdd: (email: string, refreshToken: string) => Promise<void>;
@@ -617,6 +618,21 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
                                                     {t('common.submit')}
                                                 </button>
                                             </div>
+                                        </div>
+
+                                        {/* Google Verification Loop & Further Action Fix Guide Hint */}
+                                        <div className="mt-4 p-3 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 flex items-center justify-between gap-2 text-xs">
+                                            <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-medium">
+                                                <BookOpen className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                                                <span>{t('accounts.verification_guide.hint_banner')}</span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => openVerificationGuide()}
+                                                className="px-2.5 py-1 text-[11px] font-semibold bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-all shadow-sm active:scale-95 whitespace-nowrap flex-shrink-0"
+                                            >
+                                                {t('accounts.verification_guide.open_pdf')}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

@@ -203,6 +203,23 @@
       "tip3": "If it still fails, check the Generative Language API in <1>Google Cloud Console</1> to see if permissions are frozen. If so, your account is under risk control. Please let the account cool down for 72 hours before trying again.",
       "tip4": "You can also try <1>npm install -g @google/gemini-cli</1>. If it doesn't throw errors, simply deleting and re-authorizing the account in the app will likely fix it."
     },
+    "verification_guide": {
+      "card_title": "Google Verification Loop Fix (Cloud Shell Bypass)",
+      "card_badge": "Proven Solution",
+      "card_desc": "Google blocks Antigravity OAuth with \"Further action is required to use Antigravity IDE\" because the Google account requires SMS verification in Cloud Shell before IDE access is granted.",
+      "steps_title": "7-Step Quick Bypass Method",
+      "step1": "Open Google Cloud Console with your account and accept GCP Terms of Service.",
+      "step2": "Click top-left Navigation Menu (☰) and open IAM & Admin.",
+      "step3": "Click Activate Cloud Shell (>_) on the top-right toolbar.",
+      "step4": "Click Continue on the Cloud Shell welcome modal.",
+      "step5": "When the \"Verify your account\" popup appears, click Verify.",
+      "step6": "Select \"Verify your phone number\" and complete the 6-digit SMS verification code.",
+      "step7": "Return to Antigravity IDE login page, click Sign in, and IDE will activate immediately!",
+      "open_pdf": "Open Visual PDF Guide",
+      "open_gcp": "Open Google Cloud Console",
+      "phone_note": "If your phone number is rejected or unavailable, contact @DrGuidance on Telegram for assistance.",
+      "hint_banner": "Encountered \"Further action is required\" or account verification loop?"
+    },
     "no_data": "No Data",
     "last_used": "Last Used",
     "reset_time": "Reset Time",

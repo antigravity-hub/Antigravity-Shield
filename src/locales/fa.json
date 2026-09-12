@@ -203,6 +203,23 @@
       "tip3": "If it still fails, check the Generative Language API in <1>Google Cloud Console</1> to see if permissions are frozen. If so, your account is under risk control. Please let the account cool down for 72 hours before trying again.",
       "tip4": "You can also try <1>npm install -g @google/gemini-cli</1>. If it doesn't throw errors, simply deleting and re-authorizing the account in the app will likely fix it."
     },
+    "verification_guide": {
+      "card_title": "آموزش حل لوپ احراز هویت گوگل (بای‌پس از طریق Cloud Shell)",
+      "card_badge": "راهکار قطعی و تست‌شده",
+      "card_desc": "گوگل در فرآیند لاگین Antigravity با پیام «Further action is required to use Antigravity IDE» دسترسی را متوقف می‌کند؛ چون این حساب ابتدا باید احراز هویت پیامکی را در Cloud Shell گوگل انجام دهد تا قفل IDE برداشته شود.",
+      "steps_title": "مراحل ۷ گانه حل سریع مشکل",
+      "step1": "وارد console.cloud.google.com/welcome شده و با همان ایمیل تیک پذیرش قوانین GCP را بزنید.",
+      "step2": "از منوی سمت چپ (☰) روی بخش IAM & Admin کلیک کنید.",
+      "step3": "از نوار بالای صفحه آیکون ترمینال Cloud Shell (>_) را اجرا کنید.",
+      "step4": "در پنجره باز شده دکمه آبی Continue را انتخاب کنید.",
+      "step5": "با مشاهده پیام Verify your account روی دکمه Verify کلیک کنید.",
+      "step6": "گزینه Verify your phone number را زده و کد تأیید ۶ رقمی پیامک‌شده را وارد نمایید.",
+      "step7": "به صفحه ورود در Antigravity IDE برگشته و روی Sign in کلیک کنید؛ اکانت فوراً متصل می‌شود!",
+      "open_pdf": "مشاهده فایل PDF راهنمای تصویری",
+      "open_gcp": "ورود به Google Cloud Console",
+      "phone_note": "در صورت مشکل یا عدم تأیید شماره تماس، می‌توانید در تلگرام با آیدی DrGuidance@ در ارتباط باشید.",
+      "hint_banner": "به خطای «Further action is required» یا لوپ احراز هویت خورده‌اید؟"
+    },
     "no_data": "بدون داده",
     "last_used": "آخرین استفاده",
     "reset_time": "زمان بازنشانی",
