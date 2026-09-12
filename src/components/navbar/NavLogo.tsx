@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Shield } from 'lucide-react';
 import { useState } from 'react';
-import { useAppVersion } from '../../constants/version';
+import { NavVersionBadge } from './NavVersionBadge';
 
 export function NavLogo() {
     const [imgFailed, setImgFailed] = useState(false);
-    const version = useAppVersion();
 
     return (
         <Link 
@@ -44,9 +43,7 @@ export function NavLogo() {
                     <span className="text-[9px] font-mono font-black uppercase px-1.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 shadow-[0_0_8px_rgba(6,182,212,0.25)]">
                         PRO
                     </span>
-                    <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/60 shadow-xs">
-                        v{version}
-                    </span>
+                    <NavVersionBadge />
                 </div>
                 <span className="text-[10px] text-slate-400 dark:text-slate-400 tracking-wider font-medium flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
@@ -56,4 +53,5 @@ export function NavLogo() {
         </Link>
     );
 }
+
 

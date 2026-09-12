@@ -157,9 +157,15 @@ function App() {
     // Periodic check every 1 hour (3600000 ms)
     const interval = setInterval(periodicCheck, 3600000);
 
+    const handleOpenUpdate = () => {
+      setShowUpdateNotification(true);
+    };
+    window.addEventListener('open-update-notification', handleOpenUpdate);
+
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
+      window.removeEventListener('open-update-notification', handleOpenUpdate);
     };
   }, []);
 

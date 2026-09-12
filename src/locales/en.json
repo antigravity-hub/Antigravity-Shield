@@ -583,6 +583,7 @@
       "checking_update": "Checking...",
       "latest_version": "You're up to date",
       "new_version_available": "New version {{version}} available",
+      "check_cooldown": "Please wait {{seconds}}s before checking again",
       "download_update": "Download",
       "brew_upgrade": "Update via Homebrew",
       "brew_upgrading": "Upgrading...",
