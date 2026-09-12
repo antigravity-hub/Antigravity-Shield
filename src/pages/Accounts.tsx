@@ -2,6 +2,8 @@
 
 import {
   ArrowUpDown,
+  Bot,
+  Calendar,
   Clock,
   Download,
   LayoutGrid,
@@ -40,6 +42,7 @@ import { CONTAINER_MAX_WIDTH } from "../constants/layout";
 type FilterType = "all" | "pro" | "ultra" | "free";
 type ViewMode = "list" | "grid";
 export type QuotaWindow = "5h" | "weekly";
+export type QuotaProvider = "gemini" | "claude";
 
 
 function Accounts() {
@@ -83,9 +86,14 @@ function Accounts() {
     return (saved === 'list' || saved === 'grid') ? saved : 'list';
   });
 
-  const [quotaWindow] = useState<QuotaWindow>(() => {
+  const [quotaWindow, setQuotaWindow] = useState<QuotaWindow>(() => {
     const saved = localStorage.getItem('accounts_quota_window');
     return (saved === '5h' || saved === 'weekly') ? saved : '5h';
+  });
+
+  const [quotaProvider, setQuotaProvider] = useState<QuotaProvider>(() => {
+    const saved = localStorage.getItem('accounts_quota_provider');
+    return (saved === 'gemini' || saved === 'claude') ? saved : 'gemini';
   });
 
   const [autoSort, setAutoSort] = useState<boolean>(() => {
@@ -105,6 +113,11 @@ function Accounts() {
   useEffect(() => {
     localStorage.setItem('accounts_quota_window', quotaWindow);
   }, [quotaWindow]);
+
+  // Save quota provider preference
+  useEffect(() => {
+    localStorage.setItem('accounts_quota_provider', quotaProvider);
+  }, [quotaProvider]);
 
   useEffect(() => {
     localStorage.setItem('accounts_auto_sort', String(autoSort));
@@ -375,7 +388,7 @@ function Accounts() {
 
     // 3. Weekly reset countdown hours (from getAccountWeeklyReset)
     // Higher hours remaining means further away from reset / more cycle remaining (e.g. 7d/162h > 4d/91h > 2d/40h > 1d/22h)
-    const weeklyReset = getAccountWeeklyReset(account);
+    const weeklyReset = getAccountWeeklyReset(account, quotaProvider);
     const weeklyResetHours = weeklyReset.totalHours || 0;
 
     return {
@@ -425,7 +438,7 @@ function Accounts() {
       // 3. Tertiary (Tie-breaker): Weekly Reset hours (higher is better: e.g. 162h > 91h > 40h > 22h)
       return scoreB.weeklyResetHours - scoreA.weeklyResetHours;
     });
-  }, [filteredAccounts, autoSort]);
+  }, [filteredAccounts, autoSort, quotaProvider]);
 
   // Pagination Logic
   const paginatedAccounts = useMemo(() => {
@@ -1043,6 +1056,77 @@ function Accounts() {
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
+        </div>
+
+        {/* 配额窗口与模型族切换控制组 (5H / Weekly & Gemini / Claude) */}
+        <div className="flex gap-1 bg-gray-100/80 dark:bg-base-200 p-1 rounded-xl shrink-0 items-center border border-gray-200/50 dark:border-white/5">
+          {/* 5H 与 Weekly 窗口切换 */}
+          <div className="flex items-center gap-0.5">
+            <button
+              className={cn(
+                "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 shrink-0",
+                quotaWindow === '5h'
+                  ? "bg-white dark:bg-base-100 text-cyan-600 dark:text-cyan-400 shadow-sm ring-1 ring-black/5"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
+              )}
+              onClick={() => setQuotaWindow('5h')}
+              title={t('accounts.quota_window_5h', '5-Hour Rolling Quota')}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>5H</span>
+            </button>
+            <button
+              className={cn(
+                "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 shrink-0",
+                quotaWindow === 'weekly'
+                  ? "bg-white dark:bg-base-100 text-cyan-600 dark:text-cyan-400 shadow-sm ring-1 ring-black/5"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
+              )}
+              onClick={() => setQuotaWindow('weekly')}
+              title={t('accounts.quota_window_weekly', '7-Day Weekly Quota')}
+            >
+              <Calendar className="w-3.5 h-3.5" />
+              <span>{t('accounts.quota_window_weekly_short', 'Weekly')}</span>
+            </button>
+          </div>
+
+          <div className="w-px h-3.5 bg-gray-300 dark:bg-gray-700/80 mx-0.5 shrink-0" />
+
+          {/* Gemini / Claude 模型提供商切换 */}
+          <div className="flex items-center gap-0.5">
+            <button
+              className={cn(
+                "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shrink-0",
+                quotaProvider === 'gemini'
+                  ? "bg-white dark:bg-base-100 text-emerald-600 dark:text-emerald-400 shadow-sm ring-1 ring-black/5"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
+              )}
+              onClick={() => setQuotaProvider('gemini')}
+              title={t('accounts.provider_gemini_tooltip', 'Gemini Quota & Reset Timers')}
+            >
+              <Bot className="w-3.5 h-3.5 text-cyan-500" />
+              <span className="hidden sm:inline font-medium">Gemini</span>
+              {quotaProvider === 'gemini' && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              )}
+            </button>
+            <button
+              className={cn(
+                "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shrink-0",
+                quotaProvider === 'claude'
+                  ? "bg-white dark:bg-base-100 text-indigo-600 dark:text-indigo-400 shadow-sm ring-1 ring-black/5"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
+              )}
+              onClick={() => setQuotaProvider('claude')}
+              title={t('accounts.provider_claude_tooltip', 'Claude Quota & Reset Timers')}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              <span className="hidden sm:inline font-medium">Claude</span>
+              {quotaProvider === 'claude' && (
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* 过滤按钮组 - 图标化响应式 */}

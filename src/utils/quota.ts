@@ -4,27 +4,40 @@ export interface ResetCycleInfo {
     resetTime: string | null;
     totalHours: number;
     totalMinutes: number;
+    exactDaysRemaining: number;
     daysRemaining: number;
     hoursInDay: number;
     minutesInHour: number;
     isReady: boolean;
+    isAvailable?: boolean;
 }
 
 /**
- * Extracts and calculates cycle reset information for an account given a target window type.
- * windowType: 'week' for 7-day quota groups, or '5h' / 'hour' for 5-hour quota groups.
+ * Extracts and calculates cycle reset information for an account given a target window type and model category.
+ * windowType: 'weekly' for 7-day quota groups, or 'five_hour' for 5-hour quota groups.
+ * category: 'gemini' | 'claude' (default: 'gemini')
  */
 export function getAccountCycleReset(
     account: Account,
-    windowType: 'weekly' | 'five_hour'
+    windowType: 'weekly' | 'five_hour',
+    category: 'gemini' | 'claude' = 'gemini'
 ): ResetCycleInfo {
     let resetTime: string | null = null;
     let minDiffMs = Infinity;
     const now = Date.now();
+    let hasMatchingCategory = false;
 
     // 1. Check bucket inside quota_groups
     if (account.quota?.quota_groups) {
         for (const group of account.quota.quota_groups) {
+            const name = (group.display_name || '').toLowerCase();
+            const isCategory = category === 'claude'
+                ? (name.includes('claude') || name.includes('gpt'))
+                : (name.includes('gemini') || !name.includes('claude'));
+
+            if (!isCategory) continue;
+            hasMatchingCategory = true;
+
             for (const b of group.buckets || []) {
                 const bWindow = (b.window || '').toLowerCase();
                 const bId = (b.bucket_id || '').toLowerCase();
@@ -51,6 +64,14 @@ export function getAccountCycleReset(
     // 2. Fallback to model reset_time if no matching quota_groups bucket found
     if (!resetTime && account.quota?.models) {
         for (const m of account.quota.models) {
+            const mName = m.name.toLowerCase();
+            const isCategory = category === 'claude'
+                ? (mName.startsWith('claude') || mName.startsWith('gpt'))
+                : (mName.startsWith('gemini') || !mName.startsWith('claude'));
+
+            if (!isCategory) continue;
+            hasMatchingCategory = true;
+
             if (m.reset_time) {
                 const target = new Date(m.reset_time).getTime();
                 const diff = target - now;
@@ -62,15 +83,32 @@ export function getAccountCycleReset(
         }
     }
 
+    // If Claude requested, but account has no Claude group or models (e.g. Free accounts)
+    if (category === 'claude' && !hasMatchingCategory) {
+        return {
+            resetTime: null,
+            totalHours: 0,
+            totalMinutes: 0,
+            exactDaysRemaining: 0,
+            daysRemaining: 0,
+            hoursInDay: 0,
+            minutesInHour: 0,
+            isReady: false,
+            isAvailable: false,
+        };
+    }
+
     if (!resetTime) {
         return {
             resetTime: null,
             totalHours: 0,
             totalMinutes: 0,
+            exactDaysRemaining: 0,
             daysRemaining: 0,
             hoursInDay: 0,
             minutesInHour: 0,
             isReady: true,
+            isAvailable: true,
         };
     }
 
@@ -80,15 +118,18 @@ export function getAccountCycleReset(
             resetTime,
             totalHours: 0,
             totalMinutes: 0,
+            exactDaysRemaining: 0,
             daysRemaining: 0,
             hoursInDay: 0,
             minutesInHour: 0,
             isReady: true,
+            isAvailable: true,
         };
     }
 
-    const totalMinutes = Math.ceil(diffMs / (1000 * 60));
-    const totalHours = Math.ceil(diffMs / (1000 * 60 * 60));
+    const exactDaysRemaining = Math.max(0, Math.min(7, diffMs / (24 * 60 * 60 * 1000)));
+    const totalMinutes = Math.max(0, Math.ceil(diffMs / (1000 * 60)));
+    const totalHours = Math.floor(totalMinutes / 60);
     const daysRemaining = Math.floor(totalHours / 24);
     const hoursInDay = totalHours % 24;
     const minutesInHour = totalMinutes % 60;
@@ -97,25 +138,78 @@ export function getAccountCycleReset(
         resetTime,
         totalHours,
         totalMinutes,
+        exactDaysRemaining,
         daysRemaining,
         hoursInDay,
         minutesInHour,
         isReady: false,
+        isAvailable: true,
     };
 }
 
 /**
  * Convenient wrapper to calculate weekly reset cycle for an account.
  */
-export function getAccountWeeklyReset(account: Account): ResetCycleInfo {
-    return getAccountCycleReset(account, 'weekly');
+export function getAccountWeeklyReset(
+    account: Account,
+    category: 'gemini' | 'claude' = 'gemini'
+): ResetCycleInfo {
+    return getAccountCycleReset(account, 'weekly', category);
 }
 
 /**
  * Convenient wrapper to calculate 5-hour reset cycle for an account.
  */
-export function getAccountFiveHourReset(account: Account): ResetCycleInfo {
-    return getAccountCycleReset(account, 'five_hour');
+export function getAccountFiveHourReset(
+    account: Account,
+    category: 'gemini' | 'claude' = 'gemini'
+): ResetCycleInfo {
+    return getAccountCycleReset(account, 'five_hour', category);
+}
+
+/**
+ * Returns the weekly token quota percentage (0-100) and whether the provider is available on this account.
+ */
+export function getWeeklyTokenQuota(
+    account: Account,
+    category: 'gemini' | 'claude' = 'gemini'
+): { percentage: number | null; isAvailable: boolean } {
+    if (!account.quota) return { percentage: null, isAvailable: false };
+
+    // Check availability for Claude (e.g. Free accounts do not support Claude)
+    const claudeGroup = (account.quota.quota_groups || []).find(g => {
+        const name = (g.display_name || '').toLowerCase();
+        return name.includes('claude') || name.includes('gpt');
+    });
+    const claudeModels = (account.quota.models || []).filter(m => {
+        const name = m.name.toLowerCase();
+        return name.startsWith('claude') || name.startsWith('gpt');
+    });
+    const isClaudeAvailable = Boolean(claudeGroup || claudeModels.length > 0);
+
+    if (category === 'claude' && !isClaudeAvailable) {
+        return { percentage: null, isAvailable: false };
+    }
+
+    const bucketPct = getBucketPercentage(account.quota.quota_groups, category, 'weekly');
+    if (bucketPct !== null) {
+        return { percentage: bucketPct, isAvailable: true };
+    }
+
+    // Fallback to average of models for that category
+    const targetModels = (account.quota.models || []).filter(m => {
+        const name = m.name.toLowerCase();
+        return category === 'claude'
+            ? (name.startsWith('claude') || name.startsWith('gpt'))
+            : (name.startsWith('gemini') || !name.startsWith('claude'));
+    });
+
+    if (targetModels.length > 0) {
+        const sum = targetModels.reduce((acc, m) => acc + (m.percentage ?? 0), 0);
+        return { percentage: Math.round(sum / targetModels.length), isAvailable: true };
+    }
+
+    return { percentage: null, isAvailable: true };
 }
 
 /**

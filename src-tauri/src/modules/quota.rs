@@ -789,10 +789,10 @@ pub async fn warm_up_all_accounts() -> Result<String, String> {
         if !warmup_items.is_empty() {
             let total_before = warmup_items.len();
 
-            // Filter out models warmed up within 4 hours
+            // Filter out models warmed up within 5-hour rolling window (18000s)
             warmup_items.retain(|(_, email, model, _, _, _)| {
                 let history_key = format!("{}:{}:100", email, model);
-                !crate::modules::scheduler::check_cooldown(&history_key, 14400)
+                !crate::modules::scheduler::check_cooldown(&history_key, 18000)
             });
 
             if warmup_items.is_empty() {
@@ -938,8 +938,14 @@ pub async fn warm_up_account(account_id: &str) -> Result<String, String> {
         }
     }
 
+    // Filter out models warmed up within 5-hour rolling window (18000s)
+    models_to_warm.retain(|(name, _)| {
+        let history_key = format!("{}:{}:100", email, name);
+        !crate::modules::scheduler::check_cooldown(&history_key, 18000)
+    });
+
     if models_to_warm.is_empty() {
-        return Ok("No warmup needed".to_string());
+        return Ok("All models are in 5-hour cooldown, no warmup needed".to_string());
     }
 
     let warmed_count = models_to_warm.len();

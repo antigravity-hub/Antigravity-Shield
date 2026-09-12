@@ -21,10 +21,11 @@ interface AccountGridProps {
     onUpdateLabel?: (accountId: string, label: string) => void;
     onViewError: (accountId: string) => void;
     quotaWindow?: '5h' | 'weekly';
+    quotaProvider?: 'gemini' | 'claude';
 }
 
 
-function AccountGrid({ accounts, selectedIds, refreshingIds, onToggleSelect, currentAccountId, switchingAccountId, switchingTarget, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow }: AccountGridProps) {
+function AccountGrid({ accounts, selectedIds, refreshingIds, onToggleSelect, currentAccountId, switchingAccountId, switchingTarget, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow, quotaProvider }: AccountGridProps) {
     const { t } = useTranslation();
     if (accounts.length === 0) {
         return (
@@ -58,6 +59,7 @@ function AccountGrid({ accounts, selectedIds, refreshingIds, onToggleSelect, cur
                     onUpdateLabel={onUpdateLabel ? (label: string) => onUpdateLabel(account.id, label) : undefined}
                     onViewError={() => onViewError(account.id)}
                     quotaWindow={quotaWindow}
+                    quotaProvider={quotaProvider}
                 />
             ))}
         </div>

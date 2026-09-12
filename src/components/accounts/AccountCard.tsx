@@ -32,6 +32,7 @@ interface AccountCardProps {
     onUpdateLabel?: (label: string) => void;
     onViewError: () => void;
     quotaWindow?: '5h' | 'weekly';
+    quotaProvider?: 'gemini' | 'claude';
 }
 
 // 使用统一的模型配置
@@ -42,7 +43,7 @@ const DEFAULT_MODELS = Object.entries(MODEL_CONFIG).map(([id, config]) => ({
     Icon: config.Icon
 }));
 
-function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, isRefreshing, isSwitching = false, switchingTarget, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow }: AccountCardProps) {
+function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, isRefreshing, isSwitching = false, switchingTarget, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow, quotaProvider = 'gemini' }: AccountCardProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
     const isTargetActiveForAccount = useAccountStore((state) => state.isTargetActiveForAccount);
@@ -193,14 +194,15 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
     // 5H 倒计时计算
     const fiveHourResetInfo = useMemo(() => {
         if (quotaWindow !== '5h') return null;
-        const cycle = getAccountFiveHourReset(account);
+        const cycle = getAccountFiveHourReset(account, quotaProvider);
         return {
+            isAvailable: cycle.isAvailable !== false,
             isReady: cycle.isReady,
             hours: cycle.hoursInDay,
             minutes: cycle.minutesInHour,
             resetTime: cycle.resetTime
         };
-    }, [quotaWindow, account]);
+    }, [quotaWindow, account, quotaProvider]);
 
 
     const isModelProtected = (key?: string) => {
@@ -429,27 +431,39 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
             {/* 配额重置倒计时: 5H 模式展示 5小时滚动重置，Weekly 模式展示周阶梯 */}
             <div className="px-2 pb-2">
                 {quotaWindow === '5h' ? (
-                    <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 text-xs">
-                        <div className="flex items-center gap-1.5">
-                            <Clock className="w-3.5 h-3.5 text-cyan-500" />
-                            <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
-                                {fiveHourResetInfo?.isReady ? '0h 0m' : `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`}
-                            </span>
-                            <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                                {t('accounts.quota_5h', '5-Hour Rolling')}
+                    !fiveHourResetInfo?.isAvailable ? (
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-400 dark:text-slate-500 text-xs">
+                            <div className="flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 opacity-40 text-indigo-400" />
+                                <span className="font-medium text-[11px] capitalize">{quotaProvider} 5H</span>
+                            </div>
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700/50">
+                                N/A (Free)
                             </span>
                         </div>
-                        <span className={cn(
-                            "text-[10px] font-bold px-1.5 py-0.5 rounded font-mono",
-                            fiveHourResetInfo?.isReady
-                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
-                        )}>
-                            {fiveHourResetInfo?.isReady ? t('common.ready', 'Ready') : t('accounts.rolling_5h', '5H Rolling')}
-                        </span>
-                    </div>
+                    ) : (
+                        <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 text-xs">
+                            <div className="flex items-center gap-1.5">
+                                <Clock className="w-3.5 h-3.5 text-cyan-500" />
+                                <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                                    {fiveHourResetInfo?.isReady ? '0h 0m' : `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`}
+                                </span>
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                                    {t('accounts.quota_5h', '5-Hour Rolling')}
+                                </span>
+                            </div>
+                            <span className={cn(
+                                "text-[10px] font-bold px-1.5 py-0.5 rounded font-mono",
+                                fiveHourResetInfo?.isReady
+                                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                    : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                            )}>
+                                {fiveHourResetInfo?.isReady ? t('common.ready', 'Ready') : t('accounts.rolling_5h', '5H Rolling')}
+                            </span>
+                        </div>
+                    )
                 ) : (
-                    <WeeklyCountdown account={account} layout="card" />
+                    <WeeklyCountdown account={account} provider={quotaProvider} layout="card" />
                 )}
             </div>
 
