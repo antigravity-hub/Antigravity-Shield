@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
+    *   **v5.7.1 (2026-09-12)**:
+        -   **[CI/CD & Release Pipeline] Resilient Release Publishing & In-App Updater Reliability**:
+            -   **Decoupled Release Artifact Packaging**: Hardened `release.yml` so that packaging and publishing of Windows NSIS installers and `updater.json` proceed independently of secondary platform status, guaranteeing immediate availability of in-app auto-update assets.
+            -   **Client In-App Updater Graceful Handling**: Enhanced `UpdateNotification` and `Settings` with robust error isolation around native update checks, preventing unexpected modal closures and smoothly guiding users to direct downloads if artifacts are still pending.
     *   **v5.6.2 (2026-09-12)**:
         -   **[CI/CD & Release Pipeline] Updater Minisign Public Key Alignment & Automated Build Fallback**:
             -   **Restored Authoritative Minisign Key**: Realigned `plugins.updater.pubkey` in `src-tauri/tauri.conf.json` with the repository's active signing key secret (`BEF5CF7BDA5F866F`), resolving the release build signature verification failures that blocked releases post-v5.4.0.
