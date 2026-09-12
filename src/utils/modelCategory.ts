@@ -46,6 +46,57 @@ const DEFAULT_MODEL_LABELS: Record<string, string> = {
     'claude-haiku-4-5': 'Claude Haiku 4.5',
 };
 
+const dynamicKnownModels = new Set<string>();
+
+// 默认填入预设模型列表中的所有模型键
+for (const key of Object.keys(DEFAULT_MODEL_LABELS)) {
+    dynamicKnownModels.add(key.trim().toLowerCase());
+}
+
+/**
+ * 动态注册已知模型（来自配置、API 响应或账号配额）
+ * 保证系统永远能感知到最新发布的模型，无需代码硬编码发版。
+ */
+export function registerKnownModels(modelNames: (string | undefined | null)[] | string): void {
+    const names = Array.isArray(modelNames) ? modelNames : [modelNames];
+    for (const name of names) {
+        if (name && typeof name === 'string') {
+            const clean = name.trim().toLowerCase();
+            if (clean) {
+                dynamicKnownModels.add(clean);
+            }
+        }
+    }
+}
+
+/**
+ * 判断是否为基础通用代际配额桶（如 gemini-3-flash, gemini-3-pro-high, gemini-pro-agent 等）
+ * 这些名称代表整个代际家族的通用配额槽位，而非特定锁定的微版本。
+ */
+export function isBaseQuotaBucket(name: string): boolean {
+    const n = name.trim().toLowerCase();
+    if (n === 'gemini-pro-agent' || n === 'gemini-flash-agent') return true;
+
+    // 匹配如 gemini-3-flash, gemini-3-pro, gemini-3-flash-agent, gemini-3-pro-high, gemini-4-flash 等基础代际名称
+    // 不匹配带有具体小数微版本的模型（如 gemini-3.8-flash, gemini-3.5-flash, gemini-2.5-flash, gemini-3.1-flash-image）
+    const match = n.match(/^gemini-(\d+)-(flash|pro)(?:-(high|low|agent))?$/);
+    return Boolean(match);
+}
+
+/**
+ * 动态获取指定类别中版本最高、性能最强的旗舰代表模型标识
+ */
+export function getLatestModelForCategory(category: ModelCategory): string | undefined {
+    const candidates: string[] = [];
+    for (const name of dynamicKnownModels) {
+        if (categorizeModel(name) === category) {
+            candidates.push(name);
+        }
+    }
+    if (candidates.length === 0) return undefined;
+    return candidates.sort((a, b) => extractModelScore(b) - extractModelScore(a))[0];
+}
+
 /**
  * 智能自动格式化模型显示名称：
  * 将未知或新发布的 Gemini/Claude 模型名称（如 gemini-3.8-pro）自动格式化为美观的标签（Gemini 3.8 Pro），无需手动录入。
@@ -53,6 +104,7 @@ const DEFAULT_MODEL_LABELS: Record<string, string> = {
 function autoFormatModelName(name: string): string {
     return name
         .split('-')
+        .filter(word => word.toLowerCase() !== 'tiered')
         .map(word => {
             if (word.toLowerCase() === 'gemini') return 'Gemini';
             if (word.toLowerCase() === 'claude') return 'Claude';
@@ -72,16 +124,40 @@ export function getModelDisplayName(
     fallback?: string,
 ): string {
     if (model) {
-        if (model.display_name && model.display_name.trim()) return model.display_name.trim();
-        if (model.name) {
-            return DEFAULT_MODEL_LABELS[model.name] || autoFormatModelName(model.name);
+        const rawName = model.name ? model.name.trim().toLowerCase() : '';
+        const explicitDisplayName = model.display_name?.trim();
+
+        // 如果显式传入了 display_name，并且不是陈旧的通用基础桶名称（例如 gemini-3-flash 上的 "Gemini 3 Flash"）
+        if (explicitDisplayName) {
+            const isStaleBaseDisplayName =
+                rawName === 'gemini-3-flash' && explicitDisplayName.toLowerCase() === 'gemini 3 flash';
+            if (!isStaleBaseDisplayName) {
+                return explicitDisplayName;
+            }
+        }
+
+        if (rawName) {
+            // 如果是通用代际配额桶，动态探测并提升为该类别下已知最高版本的旗舰模型标签
+            if (isBaseQuotaBucket(rawName)) {
+                const category = categorizeModel(rawName);
+                const latest = getLatestModelForCategory(category);
+                if (latest && latest !== rawName) {
+                    const latestScore = extractModelScore(latest);
+                    const currentScore = extractModelScore(rawName);
+                    if (latestScore > currentScore) {
+                        return DEFAULT_MODEL_LABELS[latest] || autoFormatModelName(latest);
+                    }
+                }
+            }
+
+            return DEFAULT_MODEL_LABELS[rawName] || autoFormatModelName(rawName);
         }
     }
     return fallback ?? '';
 }
 
 /**
- * 获取紧凑短名称（如 G3.1 Flash, G3.1 Pro, G3 Image, Claude 4.6），适合紧凑卡片/表格展示。
+ * 获取紧凑短名称（如 G3.8 Flash, G3.1 Pro, G3 Image, Claude 4.6），适合紧凑卡片/表格展示。
  */
 export function getModelShortDisplayName(
     model: ModelDisplayNameInput | null | undefined,
@@ -98,7 +174,7 @@ export function getModelShortDisplayName(
 }
 
 /**
- * 提取模型版本号（如 gemini-3.7-flash -> 3.7, gemini-3-flash -> 3.0, gemini-pro-agent -> 3.1 等）
+ * 提取模型版本号（如 gemini-3.8-flash -> 3.8, gemini-3-flash -> 3.0, gemini-pro-agent -> 3.1 等）
  */
 function extractModelScore(name: string): number {
     const n = name.toLowerCase();
@@ -106,16 +182,16 @@ function extractModelScore(name: string): number {
     // 预设或特定 agent 映射基准
     let baseVersion = 0;
     const match = n.match(/gemini-(\d+(?:\.\d+)?)/);
+    const claudeMatch = n.match(/claude-.*?-(\d+)(?:[.-](\d+))?/);
+
     if (match) {
         baseVersion = parseFloat(match[1]);
+    } else if (claudeMatch) {
+        baseVersion = parseFloat(claudeMatch[2] ? `${claudeMatch[1]}.${claudeMatch[2]}` : claudeMatch[1]);
     } else if (n === 'gemini-pro-agent') {
         baseVersion = 3.1;
     } else if (n === 'gemini-flash-agent') {
         baseVersion = 3.0;
-    } else if (n.includes('claude-sonnet-4-6') || n.includes('claude-opus-4-6')) {
-        baseVersion = 4.6;
-    } else if (n.includes('claude-sonnet-4-5') || n.includes('claude-haiku-4-5')) {
-        baseVersion = 4.5;
     }
 
     // 质量/规格梯度加权 (High / Tiered > Medium > Normal > Agent > Low)
@@ -153,6 +229,13 @@ export function findQuotaModel<T extends { name: string }>(
     category: ModelCategory,
 ): T | undefined {
     if (!models || models.length === 0) return undefined;
+
+    // 动态注册观察到的所有模型
+    for (const m of models) {
+        if (m && m.name) {
+            dynamicKnownModels.add(m.name.trim().toLowerCase());
+        }
+    }
 
     // 筛选出属于该类别的所有模型
     const candidates = models.filter(m => categorizeModel(m.name) === category);
@@ -211,6 +294,14 @@ export function resolveQuotaModels<T extends { name: string }>(
     models: T[] | undefined,
     selectorIds: string[],
 ): QuotaModelSelection<T>[] {
+    if (models && models.length > 0) {
+        for (const m of models) {
+            if (m && m.name) {
+                dynamicKnownModels.add(m.name.trim().toLowerCase());
+            }
+        }
+    }
+
     const seen = new Set<string>();
     const results: QuotaModelSelection<T>[] = [];
 

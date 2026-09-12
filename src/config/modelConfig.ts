@@ -397,6 +397,15 @@ export {
     ensurePinnedImageSelector,
     DEFAULT_IMAGE_PIN_SELECTOR,
     resolveQuotaModels,
+    registerKnownModels,
+    getLatestModelForCategory,
+    isBaseQuotaBucket,
     type ModelCategory,
     type QuotaModelSelection,
 } from '../utils/modelCategory';
+
+import { registerKnownModels } from '../utils/modelCategory';
+
+// 自动将配置中包含的所有模型键注册到动态模型库
+registerKnownModels(Object.keys(MODEL_CONFIG));
+

@@ -10,6 +10,10 @@ import {
     categorizeModel,
     getModelProtectionKey,
     getModelDisplayName,
+    getModelShortDisplayName,
+    registerKnownModels,
+    isBaseQuotaBucket,
+    getLatestModelForCategory,
     findQuotaModel,
     findImageQuotaModel,
     ensurePinnedImageSelector,
@@ -97,11 +101,15 @@ type ModelInput = { name: string; display_name?: string } | null | undefined;
 
 const displayNameCases: Array<[ModelInput, string | undefined, string]> = [
     [{ name: 'gemini-3-pro-high', display_name: 'Gemini 3.1 Pro High' }, undefined, 'Gemini 3.1 Pro High'],
-    [{ name: 'gemini-3-flash' }, undefined, 'Gemini 3 Flash'],
+    // Base bucket gemini-3-flash dynamically resolves to the latest flash model label (Gemini 3.8 Flash)
+    [{ name: 'gemini-3-flash' }, undefined, 'Gemini 3.8 Flash'],
     [{ name: 'gemini-3.1-flash-image', display_name: undefined }, undefined, 'Gemini 3.1 Flash Image'],
     [undefined, 'Claude 系列', 'Claude 系列'],
     [null, undefined, ''],
     [{ name: 'claude-opus-4-6-thinking', display_name: 'Claude Opus 4.6 TK' }, undefined, 'Claude Opus 4.6 TK'],
+    // Preserves specific non-base versions
+    [{ name: 'gemini-2.5-flash' }, undefined, 'Gemini 2.5 Flash'],
+    [{ name: 'gemini-3.5-flash' }, undefined, 'Gemini 3.5 Flash'],
 ];
 
 for (const [model, fallback, expected] of displayNameCases) {
@@ -114,6 +122,30 @@ for (const [model, fallback, expected] of displayNameCases) {
         assertEqual(getModelDisplayName(model, fallback), expected);
     });
 }
+
+// ── Dynamic Latest Model Resolution (Zero-Hardcode) ──────────────────────────
+
+test('isBaseQuotaBucket: correctly identifies generic base buckets vs micro versions', () => {
+    assertEqual(isBaseQuotaBucket('gemini-3-flash'), true);
+    assertEqual(isBaseQuotaBucket('gemini-pro-agent'), true);
+    assertEqual(isBaseQuotaBucket('gemini-flash-agent'), true);
+    assertEqual(isBaseQuotaBucket('gemini-3-pro-high'), true);
+    assertEqual(isBaseQuotaBucket('gemini-2.5-flash'), false);
+    assertEqual(isBaseQuotaBucket('gemini-3.5-flash'), false);
+    assertEqual(isBaseQuotaBucket('gemini-3.8-flash'), false);
+    assertEqual(isBaseQuotaBucket('gemini-3.1-flash-image'), false);
+});
+
+test('getModelShortDisplayName: dynamically resolves G3.8 Flash for gemini-3-flash', () => {
+    assertEqual(getModelShortDisplayName({ name: 'gemini-3-flash' }), 'G3.8 Flash');
+});
+
+test('Dynamic Forward-Compatibility: registering gemini-3.9-flash dynamically upgrades label', () => {
+    registerKnownModels('gemini-3.9-flash');
+    assertEqual(getLatestModelForCategory('gemini-flash'), 'gemini-3.9-flash');
+    assertEqual(getModelDisplayName({ name: 'gemini-3-flash' }), 'Gemini 3.9 Flash');
+    assertEqual(getModelShortDisplayName({ name: 'gemini-3-flash' }), 'G3.9 Flash');
+});
 
 // ── findQuotaModel ──────────────────────────────────────────────────────────
 
