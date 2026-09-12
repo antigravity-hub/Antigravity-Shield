@@ -1,10 +1,10 @@
-mod commands;
+pub mod commands;
 pub mod constants;
 pub mod error;
-mod models;
-mod modules;
-mod proxy; // Proxy service module
-mod utils;
+pub mod models;
+pub mod modules;
+pub mod proxy; // Proxy service module
+pub mod utils;
 
 use modules::logger;
 use std::sync::Arc;

@@ -15,6 +15,14 @@ edition = "2021"
 name = "antigravity_shield_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[[bin]]
+name = "antigravity-shield"
+path = "src/main.rs"
+
+[[bin]]
+name = "shield-daemon"
+path = "src/daemon_main.rs"
+
 [build-dependencies]
 tauri-build = { version = "^2.2.5", features = [] }
 
