@@ -91,7 +91,7 @@ function Settings() {
     const [isClearLogsOpen, setIsClearLogsOpen] = useState(false);
     const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
     const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
-    const [dataDirPath, setDataDirPath] = useState<string>('~/.antigravity_tools/');
+    const [dataDirPath, setDataDirPath] = useState<string>('~/.antigravity_shield/');
 
     const handleCopyAddress = (addr: string) => {
         copyToClipboard(addr);

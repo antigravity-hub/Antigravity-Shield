@@ -326,7 +326,7 @@
       "auto_launch": "Lancar pada Permulaan",
       "auto_launch_enabled": "Diaktifkan",
       "auto_launch_disabled": "Dinyahaktifkan",
-      "auto_launch_desc": "Lancarkan Antigravity Tools secara automatik apabila sistem bermula",
+      "auto_launch_desc": "Lancarkan Antigravity Shield secara automatik apabila sistem bermula",
       "auto_check_update": "Semak Kemas Kini Automatik",
       "auto_check_update_desc": "Semak versi baharu secara automatik pada permulaan",
       "auto_check_update_enabled": "Semakan automatik diaktifkan",
@@ -1015,8 +1015,8 @@
     "placeholder": "Masukkan kata laluan pengurusan atau Kunci API",
     "btn_login": "Sahkan dan Masuk",
     "note": "Nota: Jika kata laluan pengurusan berasingan ditetapkan, sila masukkan; jika tidak, masukkan API_KEY.",
-    "lookup_hint": "Jika terlupa, jalankan docker logs antigravity-manager untuk mencari Current API Key atau Web UI Password",
-    "config_hint": "Atau jalankan grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_tools/gui_config.json untuk melihat."
+    "lookup_hint": "Jika terlupa, jalankan docker logs antigravity-shield untuk mencari Current API Key atau Web UI Password",
+    "config_hint": "Atau jalankan grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_shield/gui_config.json untuk melihat."
   },
   "token_stats": {
     "title": "Statistik Penggunaan Token",
@@ -1093,7 +1093,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN Hub",
     "eyebrow": "Hub",
-    "description": "The official Antigravity Tools API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
+    "description": "The official Antigravity Shield API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
     "viewNow": "View Now",
     "usage": {
       "remainingAmount": "Remaining",

@@ -11,16 +11,10 @@ use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
 use uuid::Uuid;
 
-const DATA_DIR: &str = ".antigravity_tools";
 const GLOBAL_BASELINE: &str = "device_original.json";
 
 fn get_data_dir() -> Result<PathBuf, String> {
-    let home = dirs::home_dir().ok_or("failed_to_get_home_dir")?;
-    let data_dir = home.join(DATA_DIR);
-    if !data_dir.exists() {
-        fs::create_dir_all(&data_dir).map_err(|e| format!("failed_to_create_data_dir: {}", e))?;
-    }
-    Ok(data_dir)
+    crate::modules::account::get_data_dir()
 }
 
 /// Find storage.json path (prefer custom/portable paths)

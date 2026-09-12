@@ -328,7 +328,7 @@
       "auto_launch": "تشغيل عند البدء",
       "auto_launch_enabled": "مفعل",
       "auto_launch_disabled": "معطل",
-      "auto_launch_desc": "تشغيل Antigravity Tools تلقائيًا عند بدء النظام",
+      "auto_launch_desc": "تشغيل Antigravity Shield تلقائيًا عند بدء النظام",
       "auto_check_update": "تحقق تلقائي من التحديثات",
       "auto_check_update_desc": "التحقق تلقائيًا من الإصدارات الجديدة عند البدء",
       "auto_check_update_enabled": "التحقق التلقائي مفعل",
@@ -1019,8 +1019,8 @@
     "placeholder": "أدخل كلمة مرور الإدارة أو مفتاح API",
     "btn_login": "تحقق ودخول",
     "note": "ملاحظة: إذا تم تعيين كلمة مرور إدارة منفصلة، يرجى إدخالها؛ وإلا، أدخل مفتاح API.",
-    "lookup_hint": "إذا نسيت، قم بتشغيل docker logs antigravity-manager للعثور على مفتاح API الحالي أو كلمة مرور واجهة الويب",
-    "config_hint": "أو قم بتشغيل grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_tools/gui_config.json للعرض."
+    "lookup_hint": "إذا نسيت، قم بتشغيل docker logs antigravity-shield للعثور على مفتاح API الحالي أو كلمة مرور واجهة الويب",
+    "config_hint": "أو قم بتشغيل grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_shield/gui_config.json للعرض."
   },
   "token_stats": {
     "title": "إحصائيات استهلاك التوكن",
@@ -1195,7 +1195,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN Hub",
     "eyebrow": "Hub",
-    "description": "The official Antigravity Tools API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
+    "description": "The official Antigravity Shield API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
     "viewNow": "View Now",
     "usage": {
       "remainingAmount": "Remaining",

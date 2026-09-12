@@ -362,7 +362,7 @@
       "auto_launch": "시작 시 실행",
       "auto_launch_enabled": "활성화됨",
       "auto_launch_disabled": "비활성화됨",
-      "auto_launch_desc": "시스템 시작 시 Antigravity Tools 자동 실행",
+      "auto_launch_desc": "시스템 시작 시 Antigravity Shield 자동 실행",
       "auto_check_update": "자동 업데이트 확인",
       "auto_check_update_desc": "시작 시 새 버전을 자동으로 확인",
       "auto_check_update_enabled": "자동 확인 활성화됨",
@@ -627,7 +627,7 @@
       "long_prompt_warning": "프롬프트가 너무 깁니다 (2000자 초과). 컨텍스트 공간을 많이 차지할 수 있습니다."
     },
     "branding": {
-      "title": "Antigravity Tools",
+      "title": "Antigravity Shield",
       "subtitle": "전문적인 계정 관리"
     }
   },
@@ -1248,8 +1248,8 @@
     "error_invalid_key": "비밀번호 또는 API 키가 잘못되었습니다. 다시 시도하십시오",
     "error_network": "네트워크 연결에 실패했습니다. 서비스가 실행 중인지 확인하십시오",
     "note": "참고: 별도의 관리 비밀번호가 설정된 경우 관리 비밀번호를 입력하십시오. 그렇지 않으면 API_KEY를 입력하십시오.",
-    "lookup_hint": "잊으신 경우 docker logs antigravity-manager를 실행하여 Current API Key 또는 Web UI Password를 찾으십시오.",
-    "config_hint": "또는 grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_tools/gui_config.json을 실행하여 확인하십시오."
+    "lookup_hint": "잊으신 경우 docker logs antigravity-shield를 실행하여 Current API Key 또는 Web UI Password를 찾으십시오.",
+    "config_hint": "또는 grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_shield/gui_config.json을 실행하여 확인하십시오."
   },
   "token_stats": {
     "title": "토큰 사용 통계",
@@ -1421,7 +1421,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN 허브",
     "eyebrow": "허브",
-    "description": "Antigravity Tools 공식 API 허브로, 안정적이고 개방적이며 가성비 높은 대형 모델 API 서비스를 제공합니다. Claude, OpenAI, Gemini 등 주요 모델을 지원하며 Codex, Gemini CLI, Claude Code 등 개발 도구에서 통합 설정해 사용하기 좋습니다.",
+    "description": "Antigravity Shield 공식 API 허브로, 안정적이고 개방적이며 가성비 높은 대형 모델 API 서비스를 제공합니다. Claude, OpenAI, Gemini 등 주요 모델을 지원하며 Codex, Gemini CLI, Claude Code 등 개발 도구에서 통합 설정해 사용하기 좋습니다.",
     "viewNow": "지금 보기",
     "usage": {
       "remainingAmount": "잔액",

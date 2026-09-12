@@ -362,7 +362,7 @@
       "auto_launch": "Iniciar al Arrancar",
       "auto_launch_enabled": "Habilitado",
       "auto_launch_disabled": "Deshabilitado",
-      "auto_launch_desc": "Iniciar automáticamente Antigravity Tools al arrancar el sistema",
+      "auto_launch_desc": "Iniciar automáticamente Antigravity Shield al arrancar el sistema",
       "auto_check_update": "Verificar Actualizaciones Automáticamente",
       "auto_check_update_desc": "Verificar automáticamente nuevas versiones al iniciar",
       "auto_check_update_enabled": "Verificación automática habilitada",
@@ -627,7 +627,7 @@
       "long_prompt_warning": "Las instrucciones son muy largas (más de 2000 caracteres) y pueden consumir mucho espacio del contexto."
     },
     "branding": {
-      "title": "Antigravity Tools",
+      "title": "Antigravity Shield",
       "subtitle": "Gestión profesional de cuentas"
     }
   },
@@ -1248,8 +1248,8 @@
     "error_invalid_key": "Contraseña o clave API no válida, intente de nuevo",
     "error_network": "Error de conexión de red, verifique si el servicio se está ejecutando",
     "note": "Nota: Si se estableció una contraseña de administración separada, ingrésela; de lo contrario, ingrese la API_KEY.",
-    "lookup_hint": "Si olvidó, ejecute docker logs antigravity-manager para encontrar la Current API Key o Web UI Password",
-    "config_hint": "O ejecute grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_tools/gui_config.json para ver."
+    "lookup_hint": "Si olvidó, ejecute docker logs antigravity-shield para encontrar la Current API Key o Web UI Password",
+    "config_hint": "O ejecute grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_shield/gui_config.json para ver."
   },
   "token_stats": {
     "title": "Estadísticas de Consumo de Tokens",
@@ -1421,7 +1421,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN Hub",
     "eyebrow": "Hub",
-    "description": "El API Hub oficial de Antigravity Tools, que proporciona servicios de API de modelos grandes estables, abiertos y rentables. Admite modelos populares como Claude, OpenAI y Gemini. Ideal para configuración unificada en Codex, Gemini CLI, Claude Code y otras herramientas de desarrollo.",
+    "description": "El API Hub oficial de Antigravity Shield, que proporciona servicios de API de modelos grandes estables, abiertos y rentables. Admite modelos populares como Claude, OpenAI y Gemini. Ideal para configuración unificada en Codex, Gemini CLI, Claude Code y otras herramientas de desarrollo.",
     "viewNow": "Ver ahora",
     "usage": {
       "remainingAmount": "Restante",

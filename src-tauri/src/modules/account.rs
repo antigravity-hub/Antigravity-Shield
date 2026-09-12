@@ -525,6 +525,53 @@ mod tests {
         assert!(!updated.live_limited_models.contains_key("gemini-2.5-pro"));
         std::env::remove_var("ABV_DATA_DIR");
     }
+
+    #[test]
+    fn test_copy_dir_recursive_and_migration_safety() {
+        let temp_src = std::env::temp_dir().join(format!("test_src_{}", Uuid::new_v4()));
+        let temp_dst = std::env::temp_dir().join(format!("test_dst_{}", Uuid::new_v4()));
+
+        fs::create_dir_all(&temp_src).unwrap();
+        fs::create_dir_all(temp_src.join("accounts")).unwrap();
+
+        fs::write(temp_src.join("accounts.json"), "{\"accounts\":{}}").unwrap();
+        fs::write(temp_src.join("gui_config.json"), "{\"port\":8045}").unwrap();
+        fs::write(
+            temp_src.join("accounts").join("acc1.json"),
+            "{\"email\":\"test@example.com\"}",
+        )
+        .unwrap();
+
+        // Perform recursive copy
+        copy_dir_recursive(&temp_src, &temp_dst).unwrap();
+
+        // Verify dst has all files
+        assert!(temp_dst.join("accounts.json").exists());
+        assert!(temp_dst.join("gui_config.json").exists());
+        assert!(temp_dst.join("accounts").join("acc1.json").exists());
+
+        // Verify contents
+        assert_eq!(
+            fs::read_to_string(temp_dst.join("accounts.json")).unwrap(),
+            "{\"accounts\":{}}"
+        );
+        assert_eq!(
+            fs::read_to_string(temp_dst.join("accounts").join("acc1.json")).unwrap(),
+            "{\"email\":\"test@example.com\"}"
+        );
+
+        // Modify a file in dst and ensure re-copy does not overwrite existing non-empty file
+        fs::write(temp_dst.join("accounts.json"), "{\"modified\":true}").unwrap();
+        copy_dir_recursive(&temp_src, &temp_dst).unwrap();
+        assert_eq!(
+            fs::read_to_string(temp_dst.join("accounts.json")).unwrap(),
+            "{\"modified\":true}"
+        );
+
+        // Clean up
+        let _ = fs::remove_dir_all(temp_src);
+        let _ = fs::remove_dir_all(temp_dst);
+    }
 }
 
 /// Global account write lock to prevent corruption during concurrent operations
@@ -536,27 +583,171 @@ pub(crate) fn lock_account_file_updates() -> Result<std::sync::MutexGuard<'stati
         .map_err(|e| format!("failed_to_acquire_lock: {}", e))
 }
 
-// ... existing constants ...
-const DATA_DIR: &str = ".antigravity_tools";
+// Data directory constants
+const DATA_DIR: &str = ".antigravity_shield";
+const LEGACY_DATA_DIRS: &[&str] = &[
+    ".antigravity_tools",
+    ".antigravity-tools",
+    ".antigravity_manager",
+    ".antigravity-manager",
+];
 const ACCOUNTS_INDEX: &str = "accounts.json";
 const ACCOUNTS_DIR: &str = "accounts";
 
+/// Helper function to copy a directory recursively without overwriting existing non-empty files
+fn copy_dir_recursive(src: &std::path::Path, dst: &std::path::Path) -> std::io::Result<()> {
+    if !dst.exists() {
+        fs::create_dir_all(dst)?;
+    }
+
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let file_type = entry.file_type()?;
+        let src_path = entry.path();
+        let file_name = entry.file_name();
+        let dst_path = dst.join(&file_name);
+
+        if file_type.is_dir() {
+            copy_dir_recursive(&src_path, &dst_path)?;
+        } else if file_type.is_file() {
+            let should_copy = if dst_path.exists() {
+                match fs::metadata(&dst_path) {
+                    Ok(meta) => meta.len() == 0,
+                    Err(_) => false,
+                }
+            } else {
+                true
+            };
+
+            if should_copy {
+                if let Err(e) = fs::copy(&src_path, &dst_path) {
+                    crate::modules::logger::log_warn(&format!(
+                        "Failed to copy {:?} to {:?}: {}",
+                        src_path, dst_path, e
+                    ));
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Automatically and safely migrates data from legacy directories (.antigravity_tools, etc.)
+/// to the unified Antigravity Shield directory (.antigravity_shield).
+/// This runs on startup and is completely idempotent and non-destructive.
+fn migrate_legacy_data_dir(target_dir: &std::path::Path) {
+    let target_accounts = target_dir.join(ACCOUNTS_INDEX);
+    let target_config = target_dir.join("gui_config.json");
+
+    // If target directory already contains accounts.json or gui_config.json,
+    // migration has already completed or active data already exists.
+    if target_accounts.exists() || target_config.exists() {
+        return;
+    }
+
+    let Some(home) = dirs::home_dir() else {
+        return;
+    };
+
+    for legacy_name in LEGACY_DATA_DIRS {
+        let legacy_dir = home.join(legacy_name);
+        if !legacy_dir.exists() || !legacy_dir.is_dir() {
+            continue;
+        }
+
+        // Avoid self-migration if target equals legacy dir
+        if legacy_dir == target_dir {
+            continue;
+        }
+
+        // Check if legacy directory has any actual data
+        let legacy_accounts = legacy_dir.join(ACCOUNTS_INDEX);
+        let legacy_config = legacy_dir.join("gui_config.json");
+        let legacy_accounts_dir = legacy_dir.join(ACCOUNTS_DIR);
+
+        let has_data = legacy_accounts.exists()
+            || legacy_config.exists()
+            || (legacy_accounts_dir.exists() && legacy_accounts_dir.is_dir());
+
+        if !has_data {
+            continue;
+        }
+
+        crate::modules::logger::log_info(&format!(
+            "Detected legacy data directory at {:?}. Migrating data to {:?}",
+            legacy_dir, target_dir
+        ));
+
+        // 1. Ensure target directory exists
+        if let Err(e) = fs::create_dir_all(target_dir) {
+            crate::modules::logger::log_error(&format!(
+                "Failed to create target directory {:?} for migration: {}",
+                target_dir, e
+            ));
+            return;
+        }
+
+        // 2. Recursively copy all files and directories
+        if let Err(e) = copy_dir_recursive(&legacy_dir, target_dir) {
+            crate::modules::logger::log_error(&format!(
+                "Error copying legacy data from {:?} to {:?}: {}",
+                legacy_dir, target_dir, e
+            ));
+        }
+
+        // 3. Write migration info file in target directory
+        let migration_info = format!(
+            "Migrated from: {:?}\nMigrated at: {}\nAntigravity Shield version: {}\n",
+            legacy_dir,
+            chrono::Utc::now().to_rfc3339(),
+            env!("CARGO_PKG_VERSION")
+        );
+        let _ = fs::write(target_dir.join("MIGRATION_SOURCE.txt"), migration_info);
+
+        // 4. In legacy directory, write a notice that data has been safely migrated
+        let legacy_notice = format!(
+            "NOTE: This directory was safely copied to {:?} on {}.\nAntigravity Shield now uses {:?} as its active data directory.\nThis directory is kept as an untouched backup.\n",
+            target_dir,
+            chrono::Utc::now().to_rfc3339(),
+            target_dir
+        );
+        let _ = fs::write(legacy_dir.join("MIGRATED_TO_ANTIGRAVITY_SHIELD.txt"), legacy_notice);
+
+        crate::modules::logger::log_info(&format!(
+            "Successfully migrated legacy data from {:?} to {:?}. Original directory preserved as backup.",
+            legacy_dir, target_dir
+        ));
+
+        // Migrate from the first valid legacy directory found
+        break;
+    }
+}
+
 /// Get data directory path
 pub fn get_data_dir() -> Result<PathBuf, String> {
-    // [NEW] Support custom data directory via environment variable
-    if let Ok(env_path) = std::env::var("ABV_DATA_DIR") {
-        if !env_path.trim().is_empty() {
-            let data_dir = PathBuf::from(env_path);
+    // Support custom data directory via environment variables (with backward compatibility)
+    let env_path = std::env::var("ANTIGRAVITY_SHIELD_DATA_DIR")
+        .or_else(|_| std::env::var("SHIELD_DATA_DIR"))
+        .or_else(|_| std::env::var("ABV_DATA_DIR"))
+        .ok();
+
+    if let Some(path_str) = env_path {
+        if !path_str.trim().is_empty() {
+            let data_dir = PathBuf::from(path_str.trim());
             if !data_dir.exists() {
                 fs::create_dir_all(&data_dir)
                     .map_err(|e| format!("failed_to_create_custom_data_dir: {}", e))?;
             }
+            migrate_legacy_data_dir(&data_dir);
             return Ok(data_dir);
         }
     }
 
     let home = dirs::home_dir().ok_or("failed_to_get_home_dir")?;
     let data_dir = home.join(DATA_DIR);
+
+    // Perform migration if needed before ensuring dir exists
+    migrate_legacy_data_dir(&data_dir);
 
     // Ensure directory exists
     if !data_dir.exists() {

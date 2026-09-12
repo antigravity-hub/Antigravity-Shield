@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Configuration
-APP_NAME="Antigravity Tools"
+APP_NAME="Antigravity Shield"
 VERSION=$(grep '"version":' package.json | head -n 1 | awk -F: '{ print $2 }' | sed 's/[", ]//g')
-DMG_NAME="Antigravity_Tools_${VERSION}_ManualFix.dmg"
+DMG_NAME="Antigravity_Shield_${VERSION}_ManualFix.dmg"
 SRC_APP_PATH="src-tauri/target/release/bundle/macos/${APP_NAME}.app"
 DIST_DIR="dist_dmg"
 

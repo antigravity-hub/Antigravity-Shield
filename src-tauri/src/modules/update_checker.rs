@@ -413,6 +413,8 @@ pub fn is_homebrew_installed() -> bool {
     #[cfg(target_os = "macos")]
     {
         let caskroom_paths = [
+            "/opt/homebrew/Caskroom/antigravity-shield",
+            "/usr/local/Caskroom/antigravity-shield",
             "/opt/homebrew/Caskroom/antigravity-tools",
             "/usr/local/Caskroom/antigravity-tools",
         ];
@@ -450,7 +452,7 @@ pub fn is_appimage_running() -> bool {
     }
 }
 
-/// Execute `brew upgrade --cask antigravity-tools` with timeout (macOS only)
+/// Execute `brew upgrade --cask antigravity-shield` with timeout (macOS only)
 #[cfg(not(target_os = "macos"))]
 pub async fn brew_upgrade_cask() -> Result<String, String> {
     Err("brew_not_supported".to_string())
@@ -458,7 +460,15 @@ pub async fn brew_upgrade_cask() -> Result<String, String> {
 
 #[cfg(target_os = "macos")]
 pub async fn brew_upgrade_cask() -> Result<String, String> {
-    logger::log_info("Starting Homebrew Cask upgrade for antigravity-tools...");
+    let cask_name = if std::path::Path::new("/opt/homebrew/Caskroom/antigravity-shield").exists()
+        || std::path::Path::new("/usr/local/Caskroom/antigravity-shield").exists()
+    {
+        "antigravity-shield"
+    } else {
+        "antigravity-tools"
+    };
+
+    logger::log_info(&format!("Starting Homebrew Cask upgrade for {}...", cask_name));
 
     // Find brew binary
     let brew_path = if std::path::Path::new("/opt/homebrew/bin/brew").exists() {
@@ -473,7 +483,7 @@ pub async fn brew_upgrade_cask() -> Result<String, String> {
     let result = tokio::time::timeout(
         std::time::Duration::from_secs(180),
         tokio::process::Command::new(brew_path)
-            .args(["upgrade", "--cask", "antigravity-tools"])
+            .args(["upgrade", "--cask", cask_name])
             .output(),
     )
     .await;

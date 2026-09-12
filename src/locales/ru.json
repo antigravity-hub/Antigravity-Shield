@@ -362,7 +362,7 @@
       "auto_launch": "Запуск при старте системы",
       "auto_launch_enabled": "Включено",
       "auto_launch_disabled": "Отключено",
-      "auto_launch_desc": "Автоматически запускать Antigravity Tools при старте системы",
+      "auto_launch_desc": "Автоматически запускать Antigravity Shield при старте системы",
       "auto_check_update": "Автоматическая проверка обновлений",
       "auto_check_update_desc": "Автоматически проверять наличие новой версии при запуске",
       "auto_check_update_enabled": "Автопроверка включена",
@@ -1248,8 +1248,8 @@
     "error_invalid_key": "Неверный пароль или API-ключ, попробуйте снова",
     "error_network": "Сбой сетевого подключения. Проверьте, запущена ли служба",
     "note": "Примечание: если установлен отдельный пароль управления, введите его; в противном случае введите API_KEY.",
-    "lookup_hint": "Если вы забыли, запустите docker logs antigravity-manager, чтобы найти текущий ключ API или пароль Web UI.",
-    "config_hint": "Или выполните grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_tools/gui_config.json для просмотра."
+    "lookup_hint": "Если вы забыли, запустите docker logs antigravity-shield, чтобы найти текущий ключ API или пароль Web UI.",
+    "config_hint": "Или выполните grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_shield/gui_config.json для просмотра."
   },
   "token_stats": {
     "title": "Статистика токенов",
@@ -1421,7 +1421,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN Hub",
     "eyebrow": "Hub",
-    "description": "The official Antigravity Tools API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
+    "description": "The official Antigravity Shield API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
     "viewNow": "View Now",
     "usage": {
       "remainingAmount": "Remaining",

@@ -200,15 +200,15 @@ brew install --cask antigravity-tools
 # 方式 1: 直接运行 (推荐)
 # - API_KEY: 必填。用于所有协议的 AI 请求鉴定。
 # - WEB_PASSWORD: 可选。用于管理后台登录。若不设置则默认使用 API_KEY。
-docker run -d --name antigravity-manager \
+docker run -d --name antigravity-shield \
   -p 8045:8045 \
   -e API_KEY=sk-your-api-key \
   -e WEB_PASSWORD=your-login-password \
   -e ABV_MAX_BODY_SIZE=104857600 \
-  -v ~/.antigravity_tools:/root/.antigravity_tools \
-  lbjlaq/antigravity-manager:latest
+  -v ~/.antigravity_shield:/root/.antigravity_shield \
+  doctorguidance/antigravity-shield:latest
 
-# 忘记密钥？执行 docker logs antigravity-manager 或 grep -E '"api_key"|"admin_password"' ~/.antigravity_tools/gui_config.json
+# 忘记密钥？执行 docker logs antigravity-shield 或 grep -E '"api_key"|"admin_password"' ~/.antigravity_shield/gui_config.json
 
 #### 🔐 鉴权逻辑说明
 *   **场景 A：仅设置了 `API_KEY`**
@@ -222,7 +222,7 @@ docker run -d --name antigravity-manager \
 如果您是从 v4.0.1 及更早版本升级，系统默认未设置 `WEB_PASSWORD`。您可以通过以下任一方式设置：
 1.  **Web UI 界面 (推荐)**：使用原有 `API_KEY` 登录后，在 **API 反代设置** 页面手动设置并保存。新密码将持久化存储在 `gui_config.json` 中。
 2.  **环境变量 (Docker)**：在启动容器时增加 `-e WEB_PASSWORD=您的新密码`。**注意：环境变量具有最高优先级，将覆盖 UI 中的任何修改。**
-3.  **配置文件 (持久化)**：直接修改 `~/.antigravity_tools/gui_config.json`，在 `proxy` 对象中修改或添加 `"admin_password": "您的新密码"` 字段。
+3.  **配置文件 (持久化)**：直接修改 `~/.antigravity_shield/gui_config.json`，在 `proxy` 对象中修改或添加 `"admin_password": "您的新密码"` 字段。
     - *注：`WEB_PASSWORD` 是环境变量名，`admin_password` 是配置文件中的 JSON 键名。*
 
 > [!TIP]
@@ -240,7 +240,7 @@ docker compose up -d
 > **访问地址**: `http://localhost:8045` (管理后台) | `http://localhost:8045/v1` (API Base)
 > **系统要求**:
 > - **内存**: 建议 **1GB** (最小 256MB)。
-> - **持久化**: 需挂载 `/root/.antigravity_tools` 以保存数据。
+> - **持久化**: 需挂载 `/root/.antigravity_shield` 以保存数据。
 > - **架构**: 支持 x86_64 和 ARM64。
 > **详情见**: [Docker 部署指南 (docker)](./docker/README.md)
 

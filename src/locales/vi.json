@@ -325,7 +325,7 @@
       "auto_launch": "Mở khi đăng nhập",
       "auto_launch_enabled": "Đã bật",
       "auto_launch_disabled": "Đã tắt",
-      "auto_launch_desc": "Tự động mở Antigravity Tools khi bạn đăng nhập vào máy",
+      "auto_launch_desc": "Tự động mở Antigravity Shield khi bạn đăng nhập vào máy",
       "auto_check_update": "Tự động kiểm tra cập nhật",
       "auto_check_update_desc": "Tự động kiểm tra phiên bản mới khi mở app",
       "auto_check_update_enabled": "Đã bật tự động kiểm tra",
@@ -1042,8 +1042,8 @@
     "placeholder": "Nhập mật khẩu quản trị hoặc API Key",
     "btn_login": "Xác minh và Vào",
     "note": "Lưu ý: Nếu đã thiết lập mật khẩu quản trị riêng, vui lòng nhập mật khẩu đó; nếu không, hãy nhập API_KEY.",
-    "lookup_hint": "Nếu quên, hãy chạy lệnh docker logs antigravity-manager để tìm API Key hiện tại hoặc Mật khẩu Web UI.",
-    "config_hint": "Hoặc chạy lệnh grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_tools/gui_config.json để xem."
+    "lookup_hint": "Nếu quên, hãy chạy lệnh docker logs antigravity-shield để tìm API Key hiện tại hoặc Mật khẩu Web UI.",
+    "config_hint": "Hoặc chạy lệnh grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_shield/gui_config.json để xem."
   },
   "token_stats": {
     "title": "Thống kê Token",
@@ -1205,7 +1205,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN Hub",
     "eyebrow": "Hub",
-    "description": "The official Antigravity Tools API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
+    "description": "The official Antigravity Shield API Hub, providing stable, open, and cost-effective large model API services. Supports mainstream models like Claude, OpenAI, and Gemini. Ideal for unified configuration in Codex, Gemini CLI, Claude Code, and other development tools.",
     "viewNow": "View Now",
     "usage": {
       "remainingAmount": "Remaining",

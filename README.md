@@ -163,7 +163,7 @@ docker run -d --name antigravity-shield \
   -p 8045:8045 \
   -e API_KEY=sk-your-api-key \
   -e WEB_PASSWORD=your-admin-password \
-  -v ~/.antigravity_tools:/root/.antigravity_tools \
+  -v ~/.antigravity_shield:/root/.antigravity_shield \
   doctorguidance/antigravity-shield:latest
 ```
 

@@ -70,9 +70,11 @@ def extract_conversation_models(db_path):
     return default_model, step_models, platform
 
 def main():
-    db_path = r'C:\Users\ersha\.antigravity_tools\token_stats.db'
+    shield_path = os.path.expanduser(r'~/.antigravity_shield/token_stats.db')
+    legacy_path = os.path.expanduser(r'~/.antigravity_tools/token_stats.db')
+    db_path = shield_path if os.path.exists(shield_path) else legacy_path
     if not os.path.exists(db_path):
-        print(f"Error: Database not found at {db_path}")
+        print(f"Error: Database not found at {shield_path} or {legacy_path}")
         return
 
     # Backup DB

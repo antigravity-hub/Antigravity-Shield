@@ -362,7 +362,7 @@
       "auto_launch": "起動時に実行",
       "auto_launch_enabled": "有効",
       "auto_launch_disabled": "無効",
-      "auto_launch_desc": "システム起動時にAntigravity Toolsを自動的に起動する",
+      "auto_launch_desc": "システム起動時にAntigravity Shieldを自動的に起動する",
       "auto_check_update": "更新を自動確認",
       "auto_check_update_desc": "起動時に新しいバージョンを自動的に確認します",
       "auto_check_update_enabled": "自動確認は有効です",
@@ -627,7 +627,7 @@
       "long_prompt_warning": "プロンプトがかなり長く（2000文字以上）、コンテキスト スペースを大幅に消費する可能性があります。"
     },
     "branding": {
-      "title": "Antigravity Tools",
+      "title": "Antigravity Shield",
       "subtitle": "プロフェッショナルなアカウント管理"
     }
   },
@@ -1248,8 +1248,8 @@
     "error_invalid_key": "パスワードまたは API キーが無効です。再試行してください",
     "error_network": "ネットワーク接続に失敗しました。サービスが実行中か確認してください",
     "note": "注意：独立した管理パスワードが設定されている場合は管理パスワードを入力してください。そうでない場合は API_KEY を入力してください。",
-    "lookup_hint": "お忘れの場合は、docker logs antigravity-manager を実行して Current API Key または Web UI Password を探してください",
-    "config_hint": "または grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_tools/gui_config.json を実行して確認してください。"
+    "lookup_hint": "お忘れの場合は、docker logs antigravity-shield を実行して Current API Key または Web UI Password を探してください",
+    "config_hint": "または grep -E '\"api_key\"|\"admin_password\"' ~/.antigravity_shield/gui_config.json を実行して確認してください。"
   },
   "token_stats": {
     "title": "トークン統計",
@@ -1421,7 +1421,7 @@
   "apiKeyFun": {
     "title": "APIKEY.FUN ハブ",
     "eyebrow": "ハブ",
-    "description": "Antigravity Tools 公式提携ハブ。安定かつ高コストパフォーマンスのAPIサービスを提供します。Claude、OpenAI、Geminiなどのモデルをサポート。",
+    "description": "Antigravity Shield 公式提携ハブ。安定かつ高コストパフォーマンスのAPIサービスを提供します。Claude、OpenAI、Geminiなどのモデルをサポート。",
     "viewNow": "今すぐ見る",
     "usage": {
       "remainingAmount": "残高",
