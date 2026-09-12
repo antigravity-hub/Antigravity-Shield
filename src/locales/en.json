@@ -211,6 +211,8 @@
     "switch_to_platform": "Switch to Antigravity Platform",
     "switch_to_ide": "Switch to Antigravity IDE",
     "switch_to_agy": "Switch to Antigravity CLI (agy)",
+    "exhausted": "Quota Exhausted",
+    "exhausted_tooltip": "Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.",
     "actions": "Actions",
     "device_fingerprint": "Device Fingerprint",
     "show_all_quotas": "Show All Quotas",

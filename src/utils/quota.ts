@@ -1,4 +1,4 @@
-import { Account } from '../types/account';
+import { Account, QuotaGroup } from '../types/account';
 
 export interface ResetCycleInfo {
     resetTime: string | null;
@@ -117,3 +117,117 @@ export function getAccountWeeklyReset(account: Account): ResetCycleInfo {
 export function getAccountFiveHourReset(account: Account): ResetCycleInfo {
     return getAccountCycleReset(account, 'five_hour');
 }
+
+/**
+ * Extracts percentage (0-100) for a given category ('gemini' | 'claude') and window ('5h' | 'weekly') from quota_groups.
+ */
+export function getBucketPercentage(
+    quotaGroups: QuotaGroup[] | undefined,
+    category: 'gemini' | 'claude',
+    targetWindow: '5h' | 'weekly'
+): number | null {
+    if (!quotaGroups || quotaGroups.length === 0) return null;
+
+    for (const group of quotaGroups) {
+        const name = (group.display_name || '').toLowerCase();
+        const isTarget = category === 'claude'
+            ? (name.includes('claude') || name.includes('gpt'))
+            : (name.includes('gemini') || !name.includes('claude'));
+
+        if (isTarget) {
+            const bucket = group.buckets?.find(b => {
+                const win = (b.window || '').toLowerCase();
+                const id = (b.bucket_id || '').toLowerCase();
+                if (targetWindow === 'weekly') {
+                    return win.includes('week') || id.includes('week');
+                } else {
+                    return win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour');
+                }
+            });
+
+            if (bucket && typeof bucket.remaining_fraction === 'number') {
+                return Math.round(bucket.remaining_fraction * 100);
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Determines whether an account's quota is completely exhausted (0% weekly and 0% 5-hour)
+ * across both Gemini and Claude (or where Claude is unavailable/unsupported).
+ * If the weekly cycle timer has already elapsed (isReady === true), the account is considered
+ * eligible for fresh quota and not locked out.
+ */
+export function isAccountQuotaExhausted(account: Account): boolean {
+    if (!account.quota) return false;
+
+    // If weekly cycle has ended (timer finished and ready for reset), not exhausted
+    const weeklyReset = getAccountWeeklyReset(account);
+    if (weeklyReset.isReady) {
+        return false;
+    }
+
+    // 1. Evaluate Gemini Quota
+    const geminiWeekly = getBucketPercentage(account.quota.quota_groups, 'gemini', 'weekly');
+    const gemini5h = getBucketPercentage(account.quota.quota_groups, 'gemini', '5h');
+
+    const geminiModels = (account.quota.models || []).filter(m =>
+        m.name.toLowerCase().startsWith('gemini')
+    );
+    const hasGeminiModels = geminiModels.length > 0;
+    const allGeminiModelsZero = hasGeminiModels && geminiModels.every(m => (m.percentage ?? 0) <= 0);
+
+    let isGeminiExhausted = false;
+    if (geminiWeekly !== null && gemini5h !== null) {
+        isGeminiExhausted = geminiWeekly <= 0 && gemini5h <= 0;
+    } else if (geminiWeekly !== null) {
+        isGeminiExhausted = geminiWeekly <= 0 && (gemini5h === 0 || allGeminiModelsZero);
+    } else if (gemini5h !== null) {
+        isGeminiExhausted = gemini5h <= 0 && allGeminiModelsZero;
+    } else if (hasGeminiModels) {
+        isGeminiExhausted = allGeminiModelsZero;
+    }
+
+    // If Gemini is not exhausted, the account still has usable Gemini quota
+    if (!isGeminiExhausted) {
+        return false;
+    }
+
+    // 2. Evaluate Claude Availability & Quota
+    const claudeGroup = (account.quota.quota_groups || []).find(g => {
+        const name = (g.display_name || '').toLowerCase();
+        return name.includes('claude') || name.includes('gpt');
+    });
+
+    const claudeModels = (account.quota.models || []).filter(m => {
+        const name = m.name.toLowerCase();
+        return name.startsWith('claude') || name.startsWith('gpt');
+    });
+
+    const isClaudeAvailable = Boolean(claudeGroup || claudeModels.length > 0);
+
+    // If Claude is not available on this account (e.g. Free tier), Gemini exhaustion determines state
+    if (!isClaudeAvailable) {
+        return true;
+    }
+
+    // If Claude is available, both Claude weekly and Claude 5-hour must also be exhausted
+    const claudeWeekly = getBucketPercentage(account.quota.quota_groups, 'claude', 'weekly');
+    const claude5h = getBucketPercentage(account.quota.quota_groups, 'claude', '5h');
+    const allClaudeModelsZero = claudeModels.length > 0 && claudeModels.every(m => (m.percentage ?? 0) <= 0);
+
+    let isClaudeExhausted = false;
+    if (claudeWeekly !== null && claude5h !== null) {
+        isClaudeExhausted = claudeWeekly <= 0 && claude5h <= 0;
+    } else if (claudeWeekly !== null) {
+        isClaudeExhausted = claudeWeekly <= 0 && (claude5h === 0 || allClaudeModelsZero);
+    } else if (claude5h !== null) {
+        isClaudeExhausted = claude5h <= 0 && allClaudeModelsZero;
+    } else if (claudeModels.length > 0) {
+        isClaudeExhausted = allClaudeModelsZero;
+    }
+
+    return isClaudeExhausted;
+}
+

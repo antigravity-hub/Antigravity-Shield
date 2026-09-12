@@ -11,7 +11,7 @@ import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { useAccountStore } from '../../stores/useAccountStore';
-import { getAccountFiveHourReset } from '../../utils/quota';
+import { getAccountFiveHourReset, isAccountQuotaExhausted } from '../../utils/quota';
 
 interface AccountCardProps {
     account: Account;
@@ -20,6 +20,7 @@ interface AccountCardProps {
     isCurrent: boolean;
     isRefreshing: boolean;
     isSwitching?: boolean;
+    switchingTarget?: string | null;
     onSwitch: (targetIde?: string) => void;
     onRefresh: () => void;
     onViewDevice: () => void;
@@ -41,12 +42,13 @@ const DEFAULT_MODELS = Object.entries(MODEL_CONFIG).map(([id, config]) => ({
     Icon: config.Icon
 }));
 
-function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, isRefreshing, isSwitching = false, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow }: AccountCardProps) {
+function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, isRefreshing, isSwitching = false, switchingTarget, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow }: AccountCardProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
     const isTargetActiveForAccount = useAccountStore((state) => state.isTargetActiveForAccount);
     const hasAnyActiveTarget = useAccountStore((state) => state.hasAnyActiveTarget);
     const isDisabled = Boolean(account.disabled);
+    const isExhausted = isAccountQuotaExhausted(account);
     const validationBlockedLabel = getValidationBlockedStatusLabel(account.validation_blocked_reason, t);
 
     const isPlatformActive = isTargetActiveForAccount(account.id, 'platform');
@@ -212,7 +214,8 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
             isAnyActive
                 ? "bg-emerald-50/20 border-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-700/60 ring-1 ring-emerald-500/20"
                 : "bg-white dark:bg-base-100 border-gray-200 dark:border-base-300",
-            (isRefreshing || isDisabled) && "opacity-70"
+            (isRefreshing || isDisabled) && "opacity-70",
+            isExhausted && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:opacity-85 transition-opacity"
         )}>
 
             {/* Header: Checkbox + Email + Badges */}
@@ -307,6 +310,15 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                 <span className="px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-[9px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/50">
                                     <Clock className="w-2.5 h-2.5" />
                                     {validationBlockedLabel.toUpperCase()}
+                                </span>
+                            )}
+                            {isExhausted && (
+                                <span
+                                    className="px-1.5 py-0.5 rounded-md bg-slate-200/90 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[9px] font-bold flex items-center gap-1 shadow-sm border border-slate-300/60 dark:border-slate-700/60"
+                                    title={t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.')}
+                                >
+                                    <Clock className="w-2.5 h-2.5 text-slate-500" />
+                                    {t('accounts.exhausted', 'Quota Exhausted').toUpperCase()}
                                 </span>
                             )}
                             {/* 订阅类型徽章 */}
@@ -479,7 +491,9 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     isCurrent={isCurrent}
                     isRefreshing={isRefreshing}
                     isSwitching={isSwitching}
+                    switchingTarget={switchingTarget}
                     isDisabled={isDisabled}
+                    isExhausted={isExhausted}
                     onSwitch={onSwitch}
                     onRefresh={onRefresh}
                     onViewDevice={onViewDevice}

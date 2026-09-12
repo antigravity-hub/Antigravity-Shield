@@ -43,7 +43,7 @@ import { QuotaItem } from './QuotaItem';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { MODEL_CONFIG, sortModels, getModelProtectionKey, resolveQuotaModels, ensurePinnedImageSelector } from '../../config/modelConfig';
 import { categorizeModel } from '../../utils/modelCategory';
-import { getAccountFiveHourReset } from '../../utils/quota';
+import { getAccountFiveHourReset, isAccountQuotaExhausted } from '../../utils/quota';
 import { cn } from '../../utils/cn';
 import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
@@ -61,6 +61,7 @@ interface AccountTableProps {
     onToggleAll: () => void;
     currentAccountId: string | null;
     switchingAccountId: string | null;
+    switchingTarget?: string | null;
     onSwitch: (accountId: string, targetIde?: string) => void;
     onRefresh: (accountId: string) => void;
     onViewDevice: (accountId: string) => void;
@@ -83,6 +84,7 @@ interface SortableRowProps {
     isRefreshing: boolean;
     isCurrent: boolean;
     isSwitching: boolean;
+    switchingTarget?: string | null;
     isDragging?: boolean;
     onSelect: () => void;
     onSwitch: (targetIde?: string) => void;
@@ -105,6 +107,7 @@ interface AccountRowContentProps {
     isCurrent: boolean;
     isRefreshing: boolean;
     isSwitching: boolean;
+    switchingTarget?: string | null;
     isDisabled: boolean;
     onSwitch: (targetIde?: string) => void;
     onRefresh: () => void;
@@ -165,6 +168,7 @@ function SortableAccountRow({
     isRefreshing,
     isCurrent,
     isSwitching,
+    switchingTarget,
     isDragging,
     onSelect,
     onSwitch,
@@ -184,6 +188,7 @@ function SortableAccountRow({
     const { t } = useTranslation();
     const hasAnyActiveTarget = useAccountStore((state) => state.hasAnyActiveTarget);
     const isAnyActive = hasAnyActiveTarget(account.id) || isCurrent;
+    const isExhausted = isAccountQuotaExhausted(account);
     const {
         attributes,
         listeners,
@@ -209,7 +214,8 @@ function SortableAccountRow({
                 isAnyActive && "bg-emerald-50/40 dark:bg-emerald-950/20",
                 isDragging && "bg-emerald-100 dark:bg-emerald-900/30 shadow-lg",
                 !isDragging && !isAnyActive && "hover:bg-gray-50 dark:hover:bg-base-200",
-                !isDragging && isAnyActive && "hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30"
+                !isDragging && isAnyActive && "hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30",
+                isExhausted && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
             )}
         >
             {/* 拖拽手柄 */}
@@ -238,6 +244,7 @@ function SortableAccountRow({
                 isCurrent={isCurrent}
                 isRefreshing={isRefreshing}
                 isSwitching={isSwitching}
+                switchingTarget={switchingTarget}
                 isDisabled={Boolean(account.disabled)}
                 onSwitch={onSwitch}
                 onRefresh={onRefresh}
@@ -266,6 +273,7 @@ function AccountRowContent({
     isCurrent,
     isRefreshing,
     isSwitching,
+    switchingTarget,
     isDisabled,
     onSwitch,
     onRefresh,
@@ -288,6 +296,7 @@ function AccountRowContent({
     const isIdeActive = isTargetActiveForAccount(account.id, 'ide');
     const isCliActive = isTargetActiveForAccount(account.id, 'agy');
     const isAnyActive = isPlatformActive || isIdeActive || isCliActive || isCurrent;
+    const isExhausted = isAccountQuotaExhausted(account);
     const validationBlockedLabel = getValidationBlockedStatusLabel(account.validation_blocked_reason, t);
 
     // 自定义标签编辑状态
@@ -462,6 +471,16 @@ function AccountRowContent({
                         <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/50">
                             <Clock className="w-2.5 h-2.5" />
                             <span>{validationBlockedLabel}</span>
+                        </span>
+                    )}
+
+                    {isExhausted && (
+                        <span
+                            className="px-2 py-0.5 rounded-md bg-slate-200/90 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-slate-300/60 dark:border-slate-700/60"
+                            title={t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.')}
+                        >
+                            <Clock className="w-2.5 h-2.5 text-slate-500" />
+                            <span>{t('accounts.exhausted', 'Quota Exhausted')}</span>
                         </span>
                     )}
 
@@ -649,7 +668,9 @@ function AccountRowContent({
                     isCurrent={isCurrent}
                     isRefreshing={isRefreshing}
                     isSwitching={isSwitching}
+                    switchingTarget={switchingTarget}
                     isDisabled={isDisabled}
+                    isExhausted={isExhausted}
                     onSwitch={onSwitch}
                     onRefresh={onRefresh}
                     onViewDevice={onViewDevice}
@@ -684,6 +705,7 @@ function AccountTable({
     onToggleAll,
     currentAccountId,
     switchingAccountId,
+    switchingTarget,
     onSwitch,
     onRefresh,
     onViewDevice,
@@ -907,6 +929,7 @@ function AccountTable({
                                     isRefreshing={refreshingIds.has(account.id)}
                                     isCurrent={account.id === currentAccountId}
                                     isSwitching={account.id === switchingAccountId}
+                                    switchingTarget={account.id === switchingAccountId ? switchingTarget : null}
                                     isDragging={account.id === activeId}
                                     onSelect={() => onToggleSelect(account.id)}
                                     onSwitch={(targetIde?: string) => onSwitch(account.id, targetIde)}
@@ -954,6 +977,7 @@ function AccountTable({
                                         isCurrent={activeAccount.id === currentAccountId}
                                         isRefreshing={refreshingIds.has(activeAccount.id)}
                                         isSwitching={activeAccount.id === switchingAccountId}
+                                        switchingTarget={activeAccount.id === switchingAccountId ? switchingTarget : null}
                                         onSwitch={() => { }}
                                         onRefresh={() => { }}
                                         onViewDevice={() => { }}

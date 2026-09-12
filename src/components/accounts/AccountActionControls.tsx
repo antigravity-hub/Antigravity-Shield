@@ -28,7 +28,9 @@ interface AccountActionControlsProps {
     isCurrent: boolean;
     isRefreshing: boolean;
     isSwitching: boolean;
+    switchingTarget?: string | null;
     isDisabled: boolean;
+    isExhausted?: boolean;
     onSwitch: (targetIde?: string) => void;
     onRefresh: () => void;
     onViewDevice: () => void;
@@ -46,7 +48,9 @@ export function AccountActionControls({
     isCurrent,
     isRefreshing,
     isSwitching,
+    switchingTarget,
     isDisabled,
+    isExhausted = false,
     onSwitch,
     onRefresh,
     onViewDevice,
@@ -64,6 +68,7 @@ export function AccountActionControls({
     const isIdeActive = isTargetActiveForAccount(account.id, 'ide');
     const isCliActive = isTargetActiveForAccount(account.id, 'agy');
     const isAnyActive = isPlatformActive || isIdeActive || isCliActive || isCurrent;
+    const isSwitchDisabled = isSwitching || isDisabled || isExhausted;
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -117,22 +122,24 @@ export function AccountActionControls({
                 "flex items-center rounded-xl p-0.5 border shadow-sm transition-all gap-0.5",
                 isAnyActive
                     ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/50 shadow-emerald-500/20"
-                    : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
+                    : isExhausted
+                        ? "bg-slate-200/50 dark:bg-slate-800/40 border-slate-300/60 dark:border-slate-700/40 opacity-70"
+                        : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
             )}>
                 {/* Switch Target 1: Antigravity Platform */}
                 <button
                     type="button"
                     className={cn(
                         "p-1 rounded-lg transition-all relative group/btn",
-                        (isSwitching || isDisabled)
+                        isSwitchDisabled
                             ? "opacity-50 cursor-not-allowed"
                             : isPlatformActive
                                 ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"
                     )}
                     onClick={() => onSwitch('platform')}
-                    disabled={isSwitching || isDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : isPlatformActive ? t('accounts.platform_active', 'Antigravity Platform (Active)') : t('accounts.switch_to_platform', 'Switch to Antigravity Platform')}
+                    disabled={isSwitchDisabled}
+                    title={isDisabled ? t('accounts.disabled_tooltip') : isExhausted ? t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.') : isPlatformActive ? t('accounts.platform_active', 'Antigravity Platform (Active)') : t('accounts.switch_to_platform', 'Switch to Antigravity Platform')}
                 >
                     {isPlatformActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
@@ -140,7 +147,7 @@ export function AccountActionControls({
                             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
                         </span>
                     )}
-                    {isSwitching ? (
+                    {isSwitching && (switchingTarget === 'platform' || !switchingTarget) ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
                     ) : (
                         <AntigravityPlatformIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
@@ -152,15 +159,15 @@ export function AccountActionControls({
                     type="button"
                     className={cn(
                         "p-1 rounded-lg transition-all relative group/btn",
-                        (isSwitching || isDisabled)
+                        isSwitchDisabled
                             ? "opacity-50 cursor-not-allowed"
                             : isIdeActive
                                 ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400"
                     )}
                     onClick={() => onSwitch('ide')}
-                    disabled={isSwitching || isDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : isIdeActive ? t('accounts.ide_active', 'Antigravity IDE (Active)') : t('accounts.switch_to_ide', 'Switch to Antigravity IDE')}
+                    disabled={isSwitchDisabled}
+                    title={isDisabled ? t('accounts.disabled_tooltip') : isExhausted ? t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.') : isIdeActive ? t('accounts.ide_active', 'Antigravity IDE (Active)') : t('accounts.switch_to_ide', 'Switch to Antigravity IDE')}
                 >
                     {isIdeActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
@@ -168,7 +175,11 @@ export function AccountActionControls({
                             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
                         </span>
                     )}
-                    <AntigravityIdeIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
+                    {isSwitching && switchingTarget === 'ide' ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-sky-500" />
+                    ) : (
+                        <AntigravityIdeIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
+                    )}
                 </button>
 
                 {/* Switch Target 3: Antigravity CLI (agy) */}
@@ -176,15 +187,15 @@ export function AccountActionControls({
                     type="button"
                     className={cn(
                         "p-1 rounded-lg transition-all relative group/btn",
-                        (isSwitching || isDisabled)
+                        isSwitchDisabled
                             ? "opacity-50 cursor-not-allowed"
                             : isCliActive
                                 ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
                     )}
                     onClick={() => onSwitch('agy')}
-                    disabled={isSwitching || isDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : isCliActive ? t('accounts.cli_active', 'Antigravity CLI (Active)') : t('accounts.switch_to_agy', 'Switch to Antigravity CLI (agy)')}
+                    disabled={isSwitchDisabled}
+                    title={isDisabled ? t('accounts.disabled_tooltip') : isExhausted ? t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.') : isCliActive ? t('accounts.cli_active', 'Antigravity CLI (Active)') : t('accounts.switch_to_agy', 'Switch to Antigravity CLI (agy)')}
                 >
                     {isCliActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
@@ -192,7 +203,11 @@ export function AccountActionControls({
                             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
                         </span>
                     )}
-                    <AntigravityCliIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
+                    {isSwitching && switchingTarget === 'agy' ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" />
+                    ) : (
+                        <AntigravityCliIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
+                    )}
                 </button>
             </div>
 

@@ -32,7 +32,7 @@ import { Account } from "../types/account";
 import { cn } from "../utils/cn";
 import { isTauri } from "../utils/env";
 import { request as invoke } from "../utils/request";
-import { getAccountWeeklyReset } from "../utils/quota";
+import { getAccountWeeklyReset, isAccountQuotaExhausted } from "../utils/quota";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { CONTAINER_MAX_WIDTH } from "../constants/layout";
@@ -386,16 +386,30 @@ function Accounts() {
     };
   };
 
-  // 排序逻辑 (Auto Sort: 优先可用账号 -> 5H 剩余配额从高到低 -> 次级按周配额比例 -> 同级按 Weekly Reset 倒计时从多到少)
+  // 排序逻辑 (Auto Sort: 优先可用账号 -> 排除已耗尽账号排到末尾 -> 5H 剩余配额从高到低 -> 次级按周配额比例 -> 同级按 Weekly Reset 倒计时从多到少)
   const sortedAccounts = useMemo(() => {
-    if (!autoSort) return filteredAccounts;
+    if (!autoSort) {
+      return [...filteredAccounts].sort((a, b) => {
+        const exhA = isAccountQuotaExhausted(a);
+        const exhB = isAccountQuotaExhausted(b);
+        if (exhA !== exhB) return exhA ? 1 : -1;
+        return 0;
+      });
+    }
     return [...filteredAccounts].sort((a, b) => {
       const scoreA = getAccountQuotaScores(a);
       const scoreB = getAccountQuotaScores(b);
 
-      // 0. Usable accounts first
+      // 0. Usable accounts first (disabled/error accounts to the very bottom)
       if (scoreA.isUsable !== scoreB.isUsable) {
         return scoreA.isUsable ? -1 : 1;
+      }
+
+      // 0.5. Exhausted accounts (0% 5h and 0% weekly) move to the bottom of usable accounts
+      const exhA = isAccountQuotaExhausted(a);
+      const exhB = isAccountQuotaExhausted(b);
+      if (exhA !== exhB) {
+        return exhA ? 1 : -1;
       }
 
       // 1. Primary: 5H Quota percentage (higher is better)
@@ -460,14 +474,17 @@ function Accounts() {
   const [switchingAccountId, setSwitchingAccountId] = useState<string | null>(
     null,
   );
+  const [switchingTarget, setSwitchingTarget] = useState<string | null>(null);
 
   const handleSwitch = async (accountId: string, targetIde?: string) => {
     if (switchingAccountId) return;
 
+    const target = targetIde || 'platform';
     setSwitchingAccountId(accountId);
-    console.log("[Accounts] handleSwitch called for:", accountId, "targetIde:", targetIde);
+    setSwitchingTarget(target);
+    console.log("[Accounts] handleSwitch called for:", accountId, "targetIde:", target);
     try {
-      await switchAccount(accountId, targetIde);
+      await switchAccount(accountId, target);
       showToast(t("common.success"), "success");
     } catch (error) {
       console.error("[Accounts] Switch failed:", error);
@@ -476,6 +493,7 @@ function Accounts() {
       // Add a small delay for smoother UX
       setTimeout(() => {
         setSwitchingAccountId(null);
+        setSwitchingTarget(null);
       }, 500);
     }
   };
@@ -1303,6 +1321,7 @@ function Accounts() {
                 onToggleAll={handleToggleAll}
                 currentAccountId={currentAccount?.id || null}
                 switchingAccountId={switchingAccountId}
+                switchingTarget={switchingTarget}
                 onSwitch={handleSwitch}
                 onRefresh={handleRefresh}
                 onViewDevice={handleViewDevice}
@@ -1333,6 +1352,7 @@ function Accounts() {
               onToggleSelect={handleToggleSelect}
               currentAccountId={currentAccount?.id || null}
               switchingAccountId={switchingAccountId}
+              switchingTarget={switchingTarget}
               onSwitch={handleSwitch}
               onRefresh={handleRefresh}
               onViewDevice={handleViewDevice}
