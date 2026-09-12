@@ -98,53 +98,12 @@
 
 ## 📸 界面导览 (GUI Overview)
 
-<div align="center">
-  <p><em>点击下方任意幻灯片折叠卡片即可展开高分辨率界面与数据监控面板：</em></p>
-</div>
-
-<!-- Compact 3-Column Preview Strip -->
 | 🎛️ 账号与配额监控大盘 | 📊 年度 Token 消耗热力图 | 📈 模型细分消耗与占比 |
 | :---: | :---: | :---: |
-| <a href="#zh-slide-1"><img src="docs/images/dashboard-accounts-dark.png" alt="多账号配额监控" width="260"></a> | <a href="#zh-slide-2"><img src="docs/images/token-stats-heatmap.png" alt="Token 消耗热力图" width="260"></a> | <a href="#zh-slide-3"><img src="docs/images/token-stats-breakdown.png" alt="模型消耗明细" width="260"></a> |
+| <a href="docs/images/dashboard-accounts-dark.png"><img src="docs/images/dashboard-accounts-dark.png" alt="多账号配额监控" width="280"></a> | <a href="docs/images/token-stats-heatmap.png"><img src="docs/images/token-stats-heatmap.png" alt="Token 消耗热力图" width="280"></a> | <a href="docs/images/token-stats-breakdown.png"><img src="docs/images/token-stats-breakdown.png" alt="模型消耗明细" width="280"></a> |
 | <sub>全模型配额、重置倒计时与独立目标切换</sub> | <sub>GitHub 风格 37 天活跃热力图与用量走势</sub> | <sub>模型请求量、输入/输出与 Token 占比统计</sub> |
 
 <br>
-
-<a id="zh-slide-1"></a>
-<details open>
-<summary><h3>🎛️ 幻灯片 1：多账号配额监控与状态大盘 (Dashboard & Accounts)</h3></summary>
-<p align="center">
-  <a href="docs/images/dashboard-accounts-dark.png" target="_blank">
-    <img src="docs/images/dashboard-accounts-dark.png" alt="多账号配额监控大盘" width="950" style="border-radius: 10px; border: 1px solid #30363d;">
-  </a>
-  <br>
-  <em>实时监控 Claude Sonnet 4.6 与 Gemini 3.1 Pro/Flash 配额进度、周度/5小时重置倒计时，并支持针对 Platform、IDE 与 CLI 的独立目标零停机平滑切换。</em>
-</p>
-</details>
-
-<a id="zh-slide-2"></a>
-<details>
-<summary><h3>📊 幻灯片 2：年度 Token 消耗热力图与用量走势 (Token Stats Heatmap)</h3></summary>
-<p align="center">
-  <a href="docs/images/token-stats-heatmap.png" target="_blank">
-    <img src="docs/images/token-stats-heatmap.png" alt="Token 消耗热力图与走势" width="950" style="border-radius: 10px; border: 1px solid #30363d;">
-  </a>
-  <br>
-  <em>GitHub 风格年度活跃热力图、实时 Live IDE / CLI 同步监测、输入/输出 Token 聚合统计看板及多模型动态消耗曲线。</em>
-</p>
-</details>
-
-<a id="zh-slide-3"></a>
-<details>
-<summary><h3>📈 幻灯片 3：细粒度模型消耗与请求占比明细 (Model Breakdown)</h3></summary>
-<p align="center">
-  <a href="docs/images/token-stats-breakdown.png" target="_blank">
-    <img src="docs/images/token-stats-breakdown.png" alt="模型消耗明细与占比" width="950" style="border-radius: 10px; border: 1px solid #30363d;">
-  </a>
-  <br>
-  <em>按模型统计的请求总量、输入/输出分布、上下文缓存 Token 统计以及覆盖 Gemini、Claude 与 GPT 各模型的全景占比明细。</em>
-</p>
-</details>
 
 <details>
 <summary><h4>🔍 查看更多界面截图 (系统设置、API 反代与基础功能)</h4></summary>
