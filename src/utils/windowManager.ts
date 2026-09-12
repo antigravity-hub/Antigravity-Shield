@@ -67,19 +67,22 @@ export const enterMiniMode = async (contentHeight?: number, shouldCenter: boolea
         // Hide window decorations (title bar) first to ensure accurate sizing
         await win.setDecorations(false);
 
-        // Calculate safe dimensions: 320px width, safe clamped height (min 320px, max 480px)
+        // Allow micro and compact dimensions: minimum 110px width, 80px height
+        await win.setMinSize(new LogicalSize(110, 80));
+
+        // Calculate safe initial dimensions: 320px width, safe clamped height (min 320px, max 480px)
         const safeHeight = contentHeight 
             ? Math.min(Math.max(contentHeight + 16, 320), 480)
             : 350;
 
-        // Set window size: width 320, safe padded height
+        // Set initial window size: width 320, safe padded height
         await win.setSize(new LogicalSize(320, safeHeight));
 
         await win.setAlwaysOnTop(true);
         // Enable window shadow
         await win.setShadow(true);
-        // Disable resizing in mini mode
-        await win.setResizable(false);
+        // Enable freeform resizing in mini mode (Spotify-style)
+        await win.setResizable(true);
 
         // Center window only if requested (usually on first load)
         if (shouldCenter) {
@@ -97,6 +100,8 @@ export const exitMiniMode = async () => {
     if (!isTauri()) return;
     try {
         const win = getCurrentWindow();
+        // Restore standard minimum dimensions for Full View
+        await win.setMinSize(new LogicalSize(500, 400));
         await applyResponsiveFullViewSize();
         await win.setAlwaysOnTop(false);
         // Restore window decorations (title bar)
@@ -116,6 +121,7 @@ export const ensureFullViewState = async () => {
     if (!isTauri()) return;
     try {
         const win = getCurrentWindow();
+        await win.setMinSize(new LogicalSize(500, 400));
         const size = await win.outerSize();
         // If window is suspiciously narrow (likely leftover from Mini View or uninitialized), restore default size
         if (size.width < 500) {
