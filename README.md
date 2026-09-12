@@ -20,6 +20,7 @@
 
   <p>
     <a href="#-why-antigravity-shield-the-anti-403-solution">Why Shield? (Anti-403)</a> • 
+    <a href="#-interface-showcase">Interface Showcase</a> • 
     <a href="#-key-features">Key Features</a> • 
     <a href="#-quick-integration">Quick Integration</a> • 
     <a href="#-architecture">Architecture</a> • 
@@ -61,6 +62,54 @@ While the original upstream project (`lbjlaq/Antigravity-Manager`) provided a ba
 * 🏗️ **[PROJECT.md](./PROJECT.md)** — Architectural subsystem boundaries, 14-feature inventory, and interface contracts.
 * 🧪 **[TEST_INFRA.md](./TEST_INFRA.md)** — 4-tier E2E testing framework specification with 64 automated test scenarios.
 * 🇨🇳 **[README_ZH.md](./README_ZH.md)** — 简体中文完整文档与说明.
+
+---
+
+## 📸 Interface Showcase
+
+<!-- Compact 3-Column Preview Strip -->
+| 🎛️ Account & Quota Dashboard | 📊 Activity Heatmap & Token Stats | 📈 Model Consumption Breakdown |
+| :---: | :---: | :---: |
+| <a href="#slide-1"><img src="docs/images/dashboard-accounts-dark.png" alt="Dashboard Accounts Quota Monitor" width="260"></a> | <a href="#slide-2"><img src="docs/images/token-stats-heatmap.png" alt="Token Stats Heatmap" width="260"></a> | <a href="#slide-3"><img src="docs/images/token-stats-breakdown.png" alt="Model Consumption Breakdown" width="260"></a> |
+| <sub>Multi-tier quota status & quick switches</sub> | <sub>37-day activity map & usage curves</sub> | <sub>Per-model requests, input/output & share</sub> |
+
+<br>
+
+<a id="slide-1"></a>
+<details open>
+<summary><h3>🎛️ Slide 1: Account Monitoring & Multi-Tier Quota Dashboard</h3></summary>
+<p align="center">
+  <a href="docs/images/dashboard-accounts-dark.png" target="_blank">
+    <img src="docs/images/dashboard-accounts-dark.png" alt="Dashboard Accounts Quota Monitor" width="950" style="border-radius: 10px; border: 1px solid #30363d;">
+  </a>
+  <br>
+  <em>Real-time quota monitoring across Claude Sonnet 4.6 & Gemini 3.1 Pro/Flash, automated weekly/5h reset counters, and zero-downtime target switching (Platform, IDE, CLI).</em>
+</p>
+</details>
+
+<a id="slide-2"></a>
+<details>
+<summary><h3>📊 Slide 2: Annual Activity Heatmap & Token Consumption</h3></summary>
+<p align="center">
+  <a href="docs/images/token-stats-heatmap.png" target="_blank">
+    <img src="docs/images/token-stats-heatmap.png" alt="Token Consumption Heatmap and Trends" width="950" style="border-radius: 10px; border: 1px solid #30363d;">
+  </a>
+  <br>
+  <em>GitHub-style annual token heatmap, real-time live IDE/CLI sync tracking, aggregate input/output token counters, and dynamic multi-model usage curves.</em>
+</p>
+</details>
+
+<a id="slide-3"></a>
+<details>
+<summary><h3>📈 Slide 3: Model Consumption Breakdown & Request Share</h3></summary>
+<p align="center">
+  <a href="docs/images/token-stats-breakdown.png" target="_blank">
+    <img src="docs/images/token-stats-breakdown.png" alt="Model Breakdown Table" width="950" style="border-radius: 10px; border: 1px solid #30363d;">
+  </a>
+  <br>
+  <em>Granular per-model metrics tracking total request volumes, input/output distributions, cached token counters, and percentage shares across Gemini, Claude, and GPT models.</em>
+</p>
+</details>
 
 ---
 
