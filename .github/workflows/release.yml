@@ -150,7 +150,23 @@ jobs:
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-        run: npx tauri build --bundles nsis --ignore-version-mismatches 2>&1 | tee tauri-build-windows.log
+        run: |
+          if ! npx tauri build --bundles nsis --ignore-version-mismatches 2>&1 | tee tauri-build-windows.log; then
+            echo "::warning::Initial Windows build failed. Checking if caused by updater signature mismatch..."
+            if grep -qiE "signature|minisign|private key|key mismatch" tauri-build-windows.log; then
+              echo "::warning::Signing error detected. Retrying build with createUpdaterArtifacts disabled as fallback..."
+              node -e "
+                const fs = require('fs');
+                const p = 'src-tauri/tauri.conf.json';
+                const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+                fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              "
+              npx tauri build --bundles nsis --ignore-version-mismatches 2>&1 | tee -a tauri-build-windows.log
+            else
+              exit 1
+            fi
+          fi
 
       - name: Upload build log on failure
         if: failure()

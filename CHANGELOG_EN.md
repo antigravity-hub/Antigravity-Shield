@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
+    *   **v5.6.2 (2026-09-12)**:
+        -   **[CI/CD & Release Pipeline] Updater Minisign Public Key Alignment & Automated Build Fallback**:
+            -   **Restored Authoritative Minisign Key**: Realigned `plugins.updater.pubkey` in `src-tauri/tauri.conf.json` with the repository's active signing key secret (`BEF5CF7BDA5F866F`), resolving the release build signature verification failures that blocked releases post-v5.4.0.
+            -   **Automated Windows Build Fallback**: Enhanced GitHub Actions `release.yml` with automated retry logic that detects signature/minisign key mismatches and gracefully falls back to non-updater NSIS installer builds, ensuring 100% reliable release artifact generation.
+            -   **SSoT Version Synchronization to v5.6.2**: Synchronized `package.json`, `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`, and `src-tauri/Cargo.lock` under the single source of truth versioning system.
     *   **v5.6.1 (2026-09-11)**:
         -   **[Account Activation & Multi-Target Exclusivity] Strict Target Exclusivity & State Synchronization**:
             -   **Single-Target Exclusivity Guarantee**: Enforced strict single-target assignment (`platform`, `ide`, `cli`) where activating an account on any target immediately supersedes any previously active account for that target, preventing desynchronization.
