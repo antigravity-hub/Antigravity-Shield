@@ -1,9 +1,10 @@
-import { Sun, Moon, LogOut, Minimize2 } from 'lucide-react';
+import { Sun, Moon, LogOut, Minimize2, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LanguageDropdown, MoreDropdown } from './NavDropdowns';
 import { LANGUAGES } from './constants';
 import { isTauri } from '../../utils/env';
 import { useViewStore } from '../../stores/useViewStore';
+import { useSupportModalStore } from '../../stores/useSupportModalStore';
 
 interface NavSettingsProps {
     theme: 'light' | 'dark';
@@ -27,6 +28,7 @@ export function NavSettings({
 }: NavSettingsProps) {
     const { t } = useTranslation();
     const { setMiniView } = useViewStore();
+    const { openModal } = useSupportModalStore();
 
     const handleLogout = () => {
         sessionStorage.removeItem('abv_admin_auth_token');
@@ -40,6 +42,15 @@ export function NavSettings({
         <>
             {/* 独立按钮 (≥ 480px) */}
             <div className="hidden min-[480px]:flex items-center gap-2">
+                {/* 赞助与支持按钮 / Support Button */}
+                <button
+                    onClick={openModal}
+                    className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center transition-all duration-200 group"
+                    title={t('settings.about.support_btn', 'Support Developer')}
+                >
+                    <Heart className="w-5 h-5 text-rose-500/80 dark:text-rose-400/80 group-hover:text-rose-500 dark:group-hover:text-rose-400 fill-rose-500/15 group-hover:fill-rose-500/40 transition-all duration-200 group-hover:scale-110" />
+                </button>
+
                 {/* 迷你视图切换按钮 */}
                 <button
                     onClick={() => setMiniView(true)}

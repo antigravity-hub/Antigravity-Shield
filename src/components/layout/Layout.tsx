@@ -3,6 +3,7 @@ import { getCurrentWindow } from '@tauri-apps/api/window';
 import Navbar from '../navbar/Navbar';
 import BackgroundTaskRunner from '../common/BackgroundTaskRunner';
 import ToastContainer from '../common/ToastContainer';
+import SupportModal from '../common/SupportModal';
 import { useViewStore } from '../../stores/useViewStore';
 import MiniView from './MiniView';
 import { useEffect } from 'react';
@@ -50,6 +51,7 @@ function Layout() {
             />
             <BackgroundTaskRunner />
             <ToastContainer />
+            <SupportModal />
             <Navbar />
             <main className="flex-1 overflow-hidden flex flex-col relative">
                 <Outlet />

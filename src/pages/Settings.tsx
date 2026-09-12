@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw, Copy, Check } from 'lucide-react';
+import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw } from 'lucide-react';
 import { request as invoke } from '../utils/request';
 import { open } from '@tauri-apps/plugin-dialog';
 import { useConfigStore } from '../stores/useConfigStore';
@@ -10,6 +10,7 @@ import QuotaProtection from '../components/settings/QuotaProtection';
 import SmartWarmup from '../components/settings/SmartWarmup';
 import PinnedQuotaModels from '../components/settings/PinnedQuotaModels';
 import { useDebugConsole } from '../stores/useDebugConsole';
+import { useSupportModalStore } from '../stores/useSupportModalStore';
 
 import { useTranslation } from 'react-i18next';
 import { isTauri } from '../utils/env';
@@ -27,6 +28,7 @@ function Settings() {
     const { t, i18n } = useTranslation();
     const { config, loadConfig, saveConfig, updateLanguage, updateTheme } = useConfigStore();
     const { enable, disable, isEnabled } = useDebugConsole();
+    const { openModal: openSupportModal } = useSupportModalStore();
     const [activeTab, setActiveTab] = useState<'general' | 'account' | 'proxy' | 'advanced' | 'debug' | 'about'>('general');
     const [appVersion, setAppVersion] = useState<string>(APP_VERSION);
     const [formData, setFormData] = useState<AppConfig>({
@@ -87,20 +89,8 @@ function Settings() {
     });
 
     // Dialog state
-    // Dialog state
     const [isClearLogsOpen, setIsClearLogsOpen] = useState(false);
-    const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
-    const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
     const [dataDirPath, setDataDirPath] = useState<string>('~/.antigravity_shield/');
-
-    const handleCopyAddress = (addr: string) => {
-        copyToClipboard(addr);
-        setCopiedAddress(addr);
-        showToast(t('settings.about.support_copied', 'Address copied!'), 'success');
-        setTimeout(() => {
-            setCopiedAddress((curr) => (curr === addr ? null : curr));
-        }, 2000);
-    };
 
     // Antigravity cache clearing state
     const [isClearCacheOpen, setIsClearCacheOpen] = useState(false);
@@ -1553,7 +1543,7 @@ function Settings() {
 
                                     {/* Support Card */}
                                     <div
-                                        onClick={() => setIsSupportModalOpen(true)}
+                                        onClick={openSupportModal}
                                         className="bg-white dark:bg-base-100 p-4 rounded-2xl border border-gray-100 dark:border-base-300 shadow-sm hover:shadow-md hover:border-pink-200 dark:hover:border-pink-800 transition-all group flex flex-col items-center text-center gap-3 cursor-pointer"
                                     >
                                         <div className="p-3 bg-pink-50 dark:bg-pink-900/20 rounded-xl group-hover:scale-110 transition-transform duration-300">
@@ -1813,106 +1803,6 @@ function Settings() {
                         {t('settings.about.brew_upgrade_success')}
                     </p>
                 </ModalDialog>
-
-                {/* Support Modal */}
-                <div className={`modal ${isSupportModalOpen ? 'modal-open' : ''} z-[100]`}>
-                    <div data-tauri-drag-region className="fixed top-0 left-0 right-0 h-8 z-[110]" />
-                    <div className="modal-box relative max-w-xl bg-white dark:bg-base-100 shadow-2xl rounded-3xl p-0 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-300">
-                        <div className="flex flex-col items-center p-6 sm:p-8">
-                            <div className="w-16 h-16 bg-pink-50 dark:bg-pink-900/20 rounded-2xl flex items-center justify-center mb-5 shadow-sm">
-                                <Heart className="w-8 h-8 text-pink-500 fill-pink-500" />
-                            </div>
-
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-base-content mb-2">{t('settings.about.support_title')}</h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm text-center mb-6 max-w-md leading-relaxed">
-                                {t('settings.about.support_desc')}
-                            </p>
-
-                            {/* QR Codes Grid */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full mb-6">
-                                {/* GRAM (TON) */}
-                                <div className="flex flex-col items-center p-4 rounded-2xl bg-gray-50 dark:bg-base-200 border border-gray-100 dark:border-base-300 shadow-sm transition-all hover:border-blue-300 dark:hover:border-blue-700">
-                                    <div className="w-full max-w-[190px] aspect-square relative bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 p-2">
-                                        <img src="/images/donate/gram.png" alt="GRAM (TON)" className="w-full h-full object-contain" />
-                                    </div>
-                                    <div className="mt-3 text-center w-full">
-                                        <div className="text-sm font-black text-gray-800 dark:text-gray-100 mb-1">
-                                            {t('settings.about.support_gram', 'GRAM (TON)')}
-                                        </div>
-                                        <div
-                                            className="text-[11px] font-mono text-gray-600 dark:text-gray-300 truncate px-2 py-1.5 bg-white dark:bg-base-300 rounded-lg border border-gray-200 dark:border-base-100 mb-2 select-all cursor-pointer hover:bg-gray-100 dark:hover:bg-base-100 transition-colors"
-                                            title="UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN"
-                                            onClick={() => handleCopyAddress('UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN')}
-                                        >
-                                            UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleCopyAddress('UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN')}
-                                            className="w-full py-1.5 px-3 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5"
-                                        >
-                                            {copiedAddress === 'UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN' ? (
-                                                <>
-                                                    <Check className="w-3.5 h-3.5 text-emerald-500" />
-                                                    <span className="text-emerald-500 font-bold">{t('settings.about.support_copied', 'Copied')}</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Copy className="w-3.5 h-3.5" />
-                                                    <span>{t('settings.about.support_copy_address', 'Copy Address')}</span>
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Tron (TRX) */}
-                                <div className="flex flex-col items-center p-4 rounded-2xl bg-gray-50 dark:bg-base-200 border border-gray-100 dark:border-base-300 shadow-sm transition-all hover:border-red-300 dark:hover:border-red-700">
-                                    <div className="w-full max-w-[190px] aspect-square relative bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 p-2">
-                                        <img src="/images/donate/tron.png" alt="Tron" className="w-full h-full object-contain" />
-                                    </div>
-                                    <div className="mt-3 text-center w-full">
-                                        <div className="text-sm font-black text-gray-800 dark:text-gray-100 mb-1">
-                                            {t('settings.about.support_tron', 'Tron (TRX / USDT)')}
-                                        </div>
-                                        <div
-                                            className="text-[11px] font-mono text-gray-600 dark:text-gray-300 truncate px-2 py-1.5 bg-white dark:bg-base-300 rounded-lg border border-gray-200 dark:border-base-100 mb-2 select-all cursor-pointer hover:bg-gray-100 dark:hover:bg-base-100 transition-colors"
-                                            title="TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH"
-                                            onClick={() => handleCopyAddress('TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH')}
-                                        >
-                                            TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleCopyAddress('TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH')}
-                                            className="w-full py-1.5 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5"
-                                        >
-                                            {copiedAddress === 'TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH' ? (
-                                                <>
-                                                    <Check className="w-3.5 h-3.5 text-emerald-500" />
-                                                    <span className="text-emerald-500 font-bold">{t('settings.about.support_copied', 'Copied')}</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Copy className="w-3.5 h-3.5" />
-                                                    <span>{t('settings.about.support_copy_address', 'Copy Address')}</span>
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button
-                                onClick={() => setIsSupportModalOpen(false)}
-                                className="w-full sm:w-auto px-12 py-3 bg-gray-100 dark:bg-base-300 text-gray-700 dark:text-gray-200 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-base-200 transition-all"
-                            >
-                                {t('common.close') || 'Close'}
-                            </button>
-                        </div>
-                    </div>
-                    <div className="modal-backdrop bg-black/60 backdrop-blur-md fixed inset-0 z-[-1]" onClick={() => setIsSupportModalOpen(false)}></div>
-                </div>
             </div >
         </div >
     );

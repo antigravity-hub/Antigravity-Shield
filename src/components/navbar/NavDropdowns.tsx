@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, MoreVertical, Sun, Moon, LogOut, Minimize2 } from 'lucide-react';
+import { ChevronDown, MoreVertical, Sun, Moon, LogOut, Minimize2, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { NavItem, Language } from './constants';
 import { isTauri } from '../../utils/env';
 import { useViewStore } from '../../stores/useViewStore';
+import { useSupportModalStore } from '../../stores/useSupportModalStore';
 import { FlagIcon } from '../common/FlagIcon';
 
 // useClickOutside Hook
@@ -180,6 +181,7 @@ export function MoreDropdown({
     const menuRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation();
     const { setMiniView } = useViewStore();
+    const { openModal } = useSupportModalStore();
 
     useClickOutside(menuRef, () => setIsOpen(false));
 
@@ -214,13 +216,25 @@ export function MoreDropdown({
             {/* 下拉菜单 */}
             {isOpen && (
                 <div className="absolute ltr:right-0 rtl:left-0 mt-2 w-48 bg-white dark:bg-base-200 rounded-xl shadow-lg border border-gray-100 dark:border-base-100 py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ltr:origin-top-right rtl:origin-top-left z-50">
+                    {/* 赞助与支持 / Support */}
+                    <button
+                        onClick={() => {
+                            openModal();
+                            setIsOpen(false);
+                        }}
+                        className="w-full px-4 py-2.5 text-left rtl:text-right text-sm flex items-center gap-3 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors text-gray-700 dark:text-gray-300 hover:text-rose-500 dark:hover:text-rose-400 group"
+                    >
+                        <Heart className="w-4 h-4 text-rose-500 fill-rose-500/20 group-hover:fill-rose-500 transition-colors" />
+                        <span>{t('settings.about.support_btn', 'Support Developer')}</span>
+                    </button>
+
                     {/* 迷你视图 */}
                     <button
                         onClick={() => {
                             setMiniView(true);
                             setIsOpen(false);
                         }}
-                        className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-base-100 transition-colors text-gray-700 dark:text-gray-300"
+                        className="w-full px-4 py-2.5 text-left rtl:text-right text-sm flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-base-100 transition-colors text-gray-700 dark:text-gray-300"
                     >
                         <Minimize2 className="w-4 h-4" />
                         <span>{t('nav.mini_view', 'Mini View')}</span>
