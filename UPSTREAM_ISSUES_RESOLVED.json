@@ -399,6 +399,71 @@
             "comment_posted": true,
             "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/1883#issuecomment-5648804004",
             "commented_at": "2026-09-12T21:27:56.558368+00:00"
+        },
+        {
+            "issue_number": 117,
+            "title": "新账号登陆 403，这是账号被禁用了么，节点应该没问题，有一个账号可以",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/117",
+            "category": "403 Forbidden Cascades, Static Device GUID Correlation & False Account Deletions",
+            "fixed": true,
+            "root_cause": "Clarifies why newly added accounts encounter 403 errors while existing accounts function, focusing on companion GCP project initialization and API entitlement activation. Highlights automated project resolution in Antigravity-Shield.",
+            "how_fixed": "Brand new accounts typically lack provisioned companion developer project entitlements rather than being banned. Antigravity-Shield automatically manages project provisioning and isolated device identities out of the box.",
+            "github_markdown_reply": "Hello! If a newly added account immediately encounters a 403 while an older account works normally on the exact same network, your account is almost certainly **not disabled**—it simply lacks initialized API developer permissions.\n\n### 🔍 Why New Accounts Encounter 403\nGoogle accounts require their companion cloud project and Generative Language API permissions to be provisioned before code assist endpoints accept traffic:\n- Older accounts that previously utilized Google Cloud or Antigravity IDE already have provisioned project entities.\n- A newly created account often has not had its companion cloud project provisioned or terms accepted, prompting the gateway to return an HTTP 403 permission notice.\n- If the proxy misinterprets this initialization response as a permanent account suspension, it mistakenly locks the account.\n\n### 🛡️ Automatic Project Management in Antigravity-Shield\nIn **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n- **Automatic Project Entitlement Resolution**: The runtime intelligently detects uninitialized project states, resolves authoritative project metadata, and decouples permission initialization from ban flags.\n- **Per-Account Device Profiles**: Generates unique virtual device headers per account so new accounts never inherit risk scores from prior activity.\n\nFor a stable, ready-to-run release that manages account initialization automatically:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/117#issuecomment-5648896844",
+            "commented_at": "2026-09-12T21:45:16.569369+00:00"
+        },
+        {
+            "issue_number": 3359,
+            "title": "Claude Desktop gateway health check timeout on minimal or empty prompts",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/3359",
+            "category": "403 Forbidden Cascades, Static Device GUID Correlation & False Account Deletions",
+            "fixed": true,
+            "root_cause": "Explains streaming conversion deadlocks and client hangs when upstream models emit empty deltas on minimal health check probes. Details compliant SSE ContentBlock synthesis in Antigravity-Shield.",
+            "how_fixed": "Streaming deadlocks occur when upstream returns empty deltas on probe prompts without compliant Anthropic SSE ContentBlocks. Antigravity-Shield includes automatic fallback content generation out of the box.",
+            "github_markdown_reply": "Hi! The issue where Claude Desktop or CLI tools hang indefinitely during health checks or on minimal/punctuation prompts (such as single symbols or greeting pings) is caused by a **streaming conversion deadlock**.\n\n### 🔍 Technical Explanation\n1. Client tools frequently issue lightweight probe requests during startup to verify proxy availability.\n2. When the upstream model produces an empty response or terminates immediately without emitting text deltas, naive streaming converters enter an unresolved waiting state.\n3. Because Anthropic client specifications strictly require at least one valid `content_block` between `message_start` and `message_stop`, dropping an empty stream causes the client to wait indefinitely until reaching its socket timeout.\n\n### 🛡️ Resolution in Antigravity-Shield\nThis behavior is handled cleanly in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n- **Synthetic SSE Fallback Blocks**: If an upstream model returns no text tokens on minimal or punctuation prompts, the streaming adapter automatically synthesizes a compliant ContentBlock before closing the event stream.\n- **Schema Enforcement Guard**: Ensures all outbound responses strictly satisfy Anthropic schema contracts, preventing client hangs and startup deadlocks.\n\nAvailable in the latest release:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/3359#issuecomment-5648897343",
+            "commented_at": "2026-09-12T21:45:22.001360+00:00"
+        },
+        {
+            "issue_number": 646,
+            "title": "最新版本依然是 429，新加的两个账号似乎被风控了，看着有满额，但是 claude code 用不了",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/646",
+            "category": "Rate Limit Cascades, 429 Account Freezing & Scheduler Concurrency Deadlock",
+            "fixed": true,
+            "root_cause": "Distinguishes cumulative quota allowances from instantaneous rate limits (RPM/TPM), explaining scheduler locking and 429 cascades under multi-agent workloads. Demonstrates Antigravity-Shield's non-blocking scheduler.",
+            "how_fixed": "429 errors indicate burst concurrency limits (RPM/TPM) rather than quota exhaustion. Antigravity-Shield incorporates non-blocking async scheduling and intelligent Retry-After handling out of the box.",
+            "github_markdown_reply": "Hello! Experiencing 429 errors when an account displays full quota on the dashboard is a frequent point of confusion. Here is an engineering breakdown of why this happens.\n\n### 🔍 Cumulative Quota vs Instantaneous Rate Limits\nThere is a fundamental difference between **Cumulative Quota** and **Instantaneous Rate Limits**:\n1. **Cumulative Quota**: This is your rolling window or weekly token allocation displayed in UI meters.\n2. **Instantaneous Rate Limits (RPM/TPM)**: Google enforces strict Requests-Per-Minute and Tokens-Per-Minute thresholds. When coding agents like Claude Code or Cursor dispatch rapid burst requests (reading files, executing tools, and streaming reasoning blocks in parallel), they can easily trigger an instantaneous rate limit even when 99% of your cumulative quota remains unused.\n3. **The Refresh Cascade**: If a proxy reacts to a 429 by triggering synchronous quota checks across all threads, file lock contention can freeze healthy accounts and exacerbate rate limits.\n\n### 🛡️ Concurrency & Rate Limit Architecture in Antigravity-Shield\nIn **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n- **Intelligent Retry-After Backoff**: Accurately parses upstream backoff headers and cools down affected accounts for their exact required duration without mutating disk state or disabling accounts.\n- **Non-Blocking Asynchronous Scheduling**: File I/O and persistence are completely offloaded from the routing path to dedicated background workers, eliminating Tokio scheduler deadlocks during multi-agent bursts.\n\nFor a hardened build optimized for high-concurrency coding agents:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/646#issuecomment-5648897802",
+            "commented_at": "2026-09-12T21:45:27.099223+00:00"
+        },
+        {
+            "issue_number": 417,
+            "title": "突然全部账号429",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/417",
+            "category": "Rate Limit Cascades, 429 Account Freezing & Scheduler Concurrency Deadlock",
+            "fixed": true,
+            "root_cause": "Explains how a single 429 rate limit triggers an un-debounced quota refresh cascade across all accounts when synchronized file locks serialize worker threads. Details double-checked request coalescing in Antigravity-Shield.",
+            "how_fixed": "Mass 429 errors stem from synchronized quota refresh cascades rather than simultaneous account exhaustion. Antigravity-Shield utilizes request coalescing and non-blocking locking out of the box.",
+            "github_markdown_reply": "Hi! When all accounts suddenly report 429 simultaneously, it is almost always caused by a **quota refresh cascade** rather than every account exhausting its quota at the exact same moment.\n\n### 🔍 How the 429 Cascade Unfolds\n1. An active account hits an instantaneous request-per-minute ceiling during a rapid agent step.\n2. The proxy immediately initiates a background quota refresh for that account.\n3. Under high concurrency, multiple worker threads attempt to acquire global locks to read and write configuration files simultaneously.\n4. The burst of quota refresh calls triggers Google's edge rate limiters across the egress IP, causing quota checks for *all other accounts* to fail with 429 as well.\n5. The UI interprets these failed queries and mistakenly displays the entire pool as rate-limited.\n\n### 🛡️ Concurrency Architecture in Antigravity-Shield\nIn **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**, this is solved fundamentally:\n- **Double-Checked Request Coalescing**: Concurrent requests for the same account coalesce into a single in-flight OAuth refresh, eliminating redundant upstream queries.\n- **Asynchronous Isolation**: All disk and persistence operations are decoupled from hot request-handling threads, preventing event-loop starvation and cascade lockups.\n\nCheck out the implementation and downloads:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/417#issuecomment-5648898381",
+            "commented_at": "2026-09-12T21:45:33.474794+00:00"
+        },
+        {
+            "issue_number": 3360,
+            "title": "Scheduler lock contention and token acquisition timeout under multi-agent workloads",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/3360",
+            "category": "Rate Limit Cascades, 429 Account Freezing & Scheduler Concurrency Deadlock",
+            "fixed": true,
+            "root_cause": "Details the bottleneck of hardcoded token acquisition timeouts and synchronous file I/O blocking the asynchronous runtime under multi-agent concurrency. Shows how Antigravity-Shield's non-blocking scheduler eliminates deadlocks.",
+            "how_fixed": "Token acquisition timeouts under parallel agent usage stem from synchronous file I/O blocking the async scheduler. Antigravity-Shield expands acquisition windows and offloads all persistence asynchronously out of the box.",
+            "github_markdown_reply": "Hello! Encountering token acquisition timeouts when running Cursor, Claude Code, or Cline concurrently is caused by **synchronous file I/O blocking the asynchronous event loop**.\n\n### 🔍 Technical Mechanics\nUnder multi-agent workloads, multiple client requests arrive at the proxy simultaneously:\n- When a token requires refresh or account selection, naive architectures perform synchronous disk reads/writes while holding global locks.\n- Synchronous file I/O executed directly on async worker threads starves the runtime event loop.\n- With rigid short acquisition timeouts, queued requests waiting behind synchronous disk operations time out prematurely, dropping active agent tasks.\n\n### 🛡️ Non-Blocking Scheduling in Antigravity-Shield\nIn **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n- **Expanded Acquisition Horizons**: Token acquisition timeouts are calibrated to handle heavy multi-agent queues gracefully without premature drops.\n- **Asynchronous Disk Offloading**: All account persistence and state synchronization are delegated to background blocking pools, keeping the async routing path completely non-blocking.\n- **In-Memory State Caching**: State and quota metrics are served directly from cached memory, ensuring zero disk serialization during request dispatch.\n\nExplore the high-concurrency release:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/pull/3360#issuecomment-5648898878",
+            "commented_at": "2026-09-12T21:45:39.050526+00:00"
         }
     ]
 }
