@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-2025] # [ubuntu-latest, windows-2025, macos-latest] - Linux & macOS commented out to save CI minutes
+        platform: [ubuntu-latest]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

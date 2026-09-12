@@ -3,6 +3,12 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **Version History**:
+    *   **v5.7.2 (2026-09-12)**:
+        -   **[CI/CD & Security] Automated Minisign Key Derivation & Auto-Update Signature Resolution**:
+            -   **Dynamic Minisign Public Key Alignment**: Configured GitHub Actions `release.yml` to automatically derive the exact matching Minisign public key directly from repository secret `TAURI_SIGNING_PRIVATE_KEY` during Windows packaging, eliminating key mismatch errors and guaranteeing cryptographic `.sig` artifact generation.
+            -   **Comprehensive Updater Artifact Collection**: Expanded release packaging patterns to capture updater `.sig` signatures across NSIS and updater bundle directories, ensuring `updater.json` is always populated with valid verification signatures.
+            -   **Enhanced In-App Signature Error Fallback**: Added graceful handling in `Settings` and `UpdateNotification` for Minisign verification anomalies, providing informative user messaging and immediate direct download fallbacks.
+            -   **Optimized CI Rust Compilation Matrix**: Realigned `check-rust` workflow matrix to `ubuntu-latest` for fast, reproducible toolchain checks without runner MSVC link dependencies.
     *   **v5.7.1 (2026-09-12)**:
         -   **[CI/CD & Release Pipeline] Resilient Release Publishing & In-App Updater Reliability**:
             -   **Decoupled Release Artifact Packaging**: Hardened `release.yml` so that packaging and publishing of Windows NSIS installers and `updater.json` proceed independently of secondary platform status, guaranteeing immediate availability of in-app auto-update assets.

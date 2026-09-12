@@ -119,7 +119,7 @@ jobs:
             }
           "
 
-      - name: Disable updater artifacts without signing key
+      - name: Configure updater signing key & sync public key
         shell: bash
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -129,12 +129,40 @@ jobs:
           const p = 'src-tauri/tauri.conf.json';
           if (fs.existsSync(p)) {
             const c = JSON.parse(fs.readFileSync(p, 'utf8'));
-            if (!process.env.TAURI_SIGNING_PRIVATE_KEY || process.env.TAURI_SIGNING_PRIVATE_KEY.trim() === '') {
+            const privKey = process.env.TAURI_SIGNING_PRIVATE_KEY;
+            if (!privKey || privKey.trim() === '') {
               if (c.bundle) c.bundle.createUpdaterArtifacts = false;
               fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
               console.log('No signing key: disabled createUpdaterArtifacts');
             } else {
-              console.log('Updater signing key configured.');
+              console.log('Signing key detected. Checking minisign public key...');
+              try {
+                const lines = privKey.trim().split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                if (lines.length >= 2) {
+                  const commentLine = lines[0];
+                  const m = commentLine.match(/minisign secret key:\s*([0-9A-Fa-f]+)/i);
+                  const keyIdHex = m ? m[1].toUpperCase() : '';
+                  const payload = Buffer.from(lines[1], 'base64');
+                  if (payload.length >= 92) {
+                    const keyIdBytes = payload.subarray(52, 60);
+                    const pubBytes = payload.subarray(60, 92);
+                    const pubPayload = Buffer.concat([Buffer.from('Ed'), keyIdBytes, pubBytes]);
+                    const pubB64 = pubPayload.toString('base64');
+                    const pubComment = 'untrusted comment: minisign public key: ' + (keyIdHex || keyIdBytes.toString('hex').toUpperCase());
+                    const fullPub = pubComment + '\n' + pubB64 + '\n';
+                    const pubkeyBase64 = Buffer.from(fullPub).toString('base64');
+                    
+                    if (!c.plugins) c.plugins = {};
+                    if (!c.plugins.updater) c.plugins.updater = {};
+                    c.plugins.updater.pubkey = pubkeyBase64;
+                    if (c.bundle) c.bundle.createUpdaterArtifacts = true;
+                    fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+                    console.log('Successfully synced matching updater public key (Key ID: ' + (keyIdHex || 'detected') + ')');
+                  }
+                }
+              } catch (e) {
+                console.warn('Could not auto-derive public key, keeping existing pubkey:', e.message);
+              }
             }
           }
           "
@@ -183,6 +211,9 @@ jobs:
           path: |
             src-tauri/target/release/bundle/nsis/*.exe
             src-tauri/target/release/bundle/nsis/*.sig
+            src-tauri/target/release/bundle/updater/*.sig
+            src-tauri/target/release/bundle/updater/*.zip
+            src-tauri/target/release/bundle/updater/*.tar.gz*
           if-no-files-found: warn
 
   # macOS Build (Only runs on Major/Minor releases like 5.3.0, skipped for patch releases like 5.3.1)
@@ -480,6 +511,16 @@ jobs:
           }
 
           WINDOWS_NSIS_SIG=$(read_sig "*_x64-setup.exe.sig")
+          if [ -z "$WINDOWS_NSIS_SIG" ]; then
+            WINDOWS_NSIS_SIG=$(read_sig "*.nsis.zip.sig")
+          fi
+          if [ -z "$WINDOWS_NSIS_SIG" ]; then
+            WINDOWS_NSIS_SIG=$(read_sig "*windows*.sig")
+          fi
+          if [ -z "$WINDOWS_NSIS_SIG" ]; then
+            WINDOWS_NSIS_SIG=$(read_sig "*.sig")
+          fi
+          echo "Discovered Windows signature length: ${#WINDOWS_NSIS_SIG}"
           WIN_EXE=$(find all-artifacts -name "*_x64-setup.exe" -type f -exec basename {} \; 2>/dev/null | head -1)
           WIN_EXE_CLEAN="${WIN_EXE// /.}"
           if [ -z "$WIN_EXE_CLEAN" ]; then

@@ -406,6 +406,8 @@ function Settings() {
             setIsAutoUpdating(false);
             if (errorMsg.toLowerCase().includes('release json') || errorMsg.toLowerCase().includes('not found')) {
                 showToast(t('update_notification.toast.not_ready', 'Update package not ready. Opening release page...'), 'info');
+            } else if (errorMsg.toLowerCase().includes('minisign') || errorMsg.toLowerCase().includes('signature')) {
+                showToast(t('update_notification.toast.signature_invalid', 'Automated verification unavailable. Switching to manual download.'), 'warning');
             } else {
                 showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
             }
