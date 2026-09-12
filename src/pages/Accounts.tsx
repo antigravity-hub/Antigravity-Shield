@@ -1423,6 +1423,7 @@ function Accounts() {
                 onUpdateLabel={handleUpdateLabel}
                 onViewError={(id: string) => setErrorAccountId(id)}
                 quotaWindow={quotaWindow}
+                quotaProvider={quotaProvider}
                 showLastUsed={showLastUsed}
               />
             </div>
@@ -1453,6 +1454,7 @@ function Accounts() {
               onUpdateLabel={handleUpdateLabel}
               onViewError={(id: string) => setErrorAccountId(id)}
               quotaWindow={quotaWindow}
+              quotaProvider={quotaProvider}
             />
           </div>
         )}
