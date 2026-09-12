@@ -334,6 +334,71 @@
             "comment_posted": true,
             "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/2228#issuecomment-5646021034",
             "commented_at": "2026-09-12T12:56:29Z"
+        },
+        {
+            "issue_number": 1430,
+            "title": "登录需要验证手机怎么破？",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/1430",
+            "category": "Google Verification Challenge, Phone Verification & Robot Captcha Loop",
+            "fixed": true,
+            "root_cause": "Explains Google's companion GCP project phone and identity verification requirement for Gemini API access. Details how unbuffered OAuth challenge handling causes recursive sign-in loops, and how Antigravity-Shield automates challenge detection and non-destructive quarantine.",
+            "how_fixed": "Understand that Google requires companion developer project verification rather than account deletion. In Antigravity-Shield, verification challenge URLs and non-destructive quarantine are handled automatically out of the box.",
+            "github_markdown_reply": "Hi everyone! Getting stuck on a phone verification prompt or seeing \"Further action is required to use Antigravity IDE\" during sign-in is a common stumbling block. Here is a high-level engineering breakdown of why this occurs and how it is addressed.\n\n### 🔍 Conceptual Root Cause\nGoogle's security infrastructure requires accounts accessing Gemini code assist endpoints to have an initialized, verified Google Cloud companion project. When an account lacks completed developer-level phone or identity verification on Google Cloud, the OAuth authorization handshake is paused in a challenge state.\n\nIf client software treats this challenge response as a fatal authentication error, it abruptly discards local credentials, trapping the user in an endless sign-in loop even though the account is completely healthy.\n\n### 🛡️ Out-of-the-Box Resolution in Antigravity-Shield\nRather than requiring manual troubleshooting or risking account corruption, this challenge behavior is handled automatically in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n- **Intelligent Challenge Detection**: The authorization engine intercepts Google challenge metadata, preserves the session, and surfaces direct verification checkpoints without corrupting stored credentials.\n- **Non-Destructive Quarantine**: Accounts undergoing temporary verification challenges are placed in an automated cooling queue, allowing your remaining healthy accounts to continue serving coding requests seamlessly.\n\nIf you are looking for a pre-configured, hardened build that manages Google verification challenges gracefully out of the box, feel free to check out:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/1430#issuecomment-5648802609",
+            "commented_at": "2026-09-12T21:27:39.527363+00:00"
+        },
+        {
+            "issue_number": 43,
+            "title": "Antigravity 出现 Authentication Required Please sign in.",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/43",
+            "category": "Google Verification Challenge, Phone Verification & Robot Captcha Loop",
+            "fixed": true,
+            "root_cause": "Explains persistent 'Authentication Required' prompts caused by token refresh desynchronization and unhandled secondary security challenges. Outlines Antigravity-Shield's non-destructive quarantine and resilient token state management.",
+            "how_fixed": "Recognize that cyclic authentication prompts stem from unhandled challenge payloads purging local credentials. Antigravity-Shield resolves this automatically through non-destructive quarantine and resilient token state management.",
+            "github_markdown_reply": "Hello! The recurring `Authentication Required Please sign in` prompt typically happens when local credential caches become desynchronized with Google's upstream authentication state, or when the account is flagged for secondary validation.\n\n### 🔍 Conceptual Root Cause\nWhen Google issues a background security challenge (such as regional validation or developer project verification), the OAuth token refresh endpoint returns an error payload containing challenge metadata rather than a standard token. If client software fails to interpret this challenge response and immediately drops or purges local credentials, the IDE is left with an unauthenticated session, triggering persistent sign-in requests on every interaction.\n\n### 🛡️ Automated Handling in Antigravity-Shield\nIn **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**, this failure mode is eliminated architecturally:\n- **Resilient Challenge Extraction**: Upstream challenge payloads are captured and isolated without destroying local authentication state.\n- **Graceful Account Failover**: Accounts requiring secondary clearance are automatically paused in memory while healthy accounts in your pool continue handling requests without interrupting your active IDE session.\n\nFor a ready-to-use desktop build that handles authentication challenges and token refreshing reliably out of the box:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/43#issuecomment-5648802970",
+            "commented_at": "2026-09-12T21:27:43.583941+00:00"
+        },
+        {
+            "issue_number": 3361,
+            "title": "Google verification loop and robot challenge handling",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/3361",
+            "category": "Google Verification Challenge, Phone Verification & Robot Captcha Loop",
+            "fixed": true,
+            "root_cause": "Addresses automated challenge detection for robot captchas and verification loops when rapid authentications originate across varying network topologies. Demonstrates black-box challenge isolation in Antigravity-Shield.",
+            "how_fixed": "Understand that robot challenges and verification loops result from unhandled OAuth challenge metadata. Antigravity-Shield automatically detects challenge responses and isolates accounts into non-destructive quarantine out of the box.",
+            "github_markdown_reply": "Hi everyone! If you are encountering Google robot verification challenges or repetitive verification loops during OAuth authorization, here is an engineering overview of the mechanism.\n\n### 🔍 Conceptual Root Cause\nGoogle periodically presents robot verification challenges or secondary checkpoints when multiple sign-ins originate from automated environments or shifting network topologies. When local management tools fail to recognize these challenge states and terminate the handshake prematurely, the account enters a cyclic loop where upstream services expect a challenge completion that the client never acknowledges.\n\n### 🛡️ Reference Implementation in Antigravity-Shield\nIn **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**, challenge workflows are fully automated:\n- **Challenge Metadata Interception**: The system inspects error metadata from upstream authorization endpoints, isolates challenge and appeal URLs, and presents actionable clearance notices.\n- **Non-Destructive In-Memory Quarantine**: Affected accounts enter an automated temporary cooldown queue without altering stored credentials on disk, allowing other pooled accounts to service ongoing agent requests without disruption.\n\nIf you need a turnkey solution that handles Google verification challenges smoothly out of the box:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/pull/3361#issuecomment-5648803317",
+            "commented_at": "2026-09-12T21:27:47.985931+00:00"
+        },
+        {
+            "issue_number": 649,
+            "title": "反代是有封号风险，Agent terminated due to error，不能用了",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/649",
+            "category": "403 Forbidden Cascades, Static Device GUID Correlation & False Account Deletions",
+            "fixed": true,
+            "root_cause": "Explains how sharing static physical hardware identifiers across multiple accounts triggers anti-abuse correlation, causing cascading 403 errors and false account disqualifications. Highlights Antigravity-Shield virtual device isolation.",
+            "how_fixed": "Avoid multi-account rotation without device isolation. Antigravity-Shield provides per-account virtual hardware fingerprinting and multi-tier quarantine out of the box.",
+            "github_markdown_reply": "Hello! Seeing `Agent terminated due to error` accompanied by sudden 403 errors across multiple accounts typically indicates telemetry fingerprint correlation and premature local account invalidation, rather than actual permanent account bans.\n\n### 🔍 Why False 403 Cascades Occur\nWhen multiple accounts are rotated on a single machine, client proxies often send identical physical hardware GUIDs and static session identifiers with every outbound request. Google's anti-abuse risk scoring correlates these accounts under a single entity.\n\nIf one account encounters a transient rate limit or secondary checkpoint returning HTTP 403, unbuffered error handlers frequently mark the account as permanently disabled and immediately divert traffic to adjacent accounts. This triggers a rapid domino effect, falsely disabling the entire account pool within minutes even though the accounts remain active and healthy upstream.\n\n### 🛡️ Architectural Solution in Antigravity-Shield\nWe engineered **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)** specifically to prevent account correlation and false cascades:\n- **Per-Account Virtual Hardware Isolation**: Each account operates with its own isolated, deterministic virtual device identity and session headers. Google never sees a shared hardware hash across your accounts.\n- **Multi-Tier Quarantine Engine**: Differentiates between transient edge throttles, temporary verification requests, and genuine policy errors. Accounts are never permanently disabled on disk without conclusive evidence, and transient holds recover automatically.\n\nTo run multiple accounts safely with built-in hardware isolation and cascade protection:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/649#issuecomment-5648803662",
+            "commented_at": "2026-09-12T21:27:52.518119+00:00"
+        },
+        {
+            "issue_number": 1883,
+            "title": "大部分账号全部 403",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/1883",
+            "category": "403 Forbidden Cascades, Static Device GUID Correlation & False Account Deletions",
+            "fixed": true,
+            "root_cause": "Explains simultaneous 403 lockouts resulting from shared telemetry footprints and destructive local disk invalidation loops. Shows how Antigravity-Shield isolates virtual identities and preserves disk state.",
+            "how_fixed": "Do not assume accounts are banned when mass 403 errors occur. Antigravity-Shield automatically provides virtual device separation and non-destructive memory quarantine out of the box.",
+            "github_markdown_reply": "Hi! Seeing all or most of your accounts suddenly report 403 simultaneously is a known symptom of **hardware signature correlation** combined with **destructive failover loops**.\n\n### 🔍 Architectural Breakdown\n1. **Shared Telemetry Footprint**: When requests for different accounts share identical machine identifiers and session signatures, upstream risk algorithms correlate the requests. If one account triggers a temporary quota or location check, adjacent accounts sharing that signature are subjected to heightened scrutiny.\n2. **Destructive Local Invalidation**: When naive proxy logic encounters any HTTP 403 status code, it immediately flags the account as permanently forbidden on local disk. This converts what was merely a temporary 5-minute cooldown into a permanent account lockout on your machine.\n\n### 🛡️ How Antigravity-Shield Prevents Mass 403s\nIn **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**, this vulnerability is completely resolved:\n- **Deterministic Virtual Device Isolation**: Every account is assigned a unique, isolated virtual machine signature, preventing telemetry cross-contamination.\n- **Non-Destructive In-Memory Quarantine**: Transient 403 errors trigger a temporary memory-only cooldown. Local disk credentials remain intact, and accounts automatically rejoin active rotation once the cooldown expires.\n\nIf you are looking for an out-of-the-box build that protects your account pool from mass 403 cascades:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/1883#issuecomment-5648804004",
+            "commented_at": "2026-09-12T21:27:56.558368+00:00"
         }
     ]
 }
