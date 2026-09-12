@@ -1171,7 +1171,7 @@ function Accounts() {
 
           {/* Data Freshness Indicator */}
           <div 
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-100/90 dark:bg-base-200/80 border border-gray-200/60 dark:border-white/5 text-[11px] font-medium text-gray-500 dark:text-gray-400 select-none shadow-2xs"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-100/90 dark:bg-slate-800/90 border border-gray-200/60 dark:border-slate-600/40 text-[11px] font-medium text-gray-500 dark:text-slate-300 select-none shadow-2xs"
             title={t("accounts.sync_freshness.tooltip", "Live status verified against Google Cloud Code upstream")}
           >
             <span className={cn(
@@ -1180,7 +1180,7 @@ function Accounts() {
               getFreshnessDisplay().minutes <= 5 ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" : 
               getFreshnessDisplay().minutes <= 15 ? "bg-sky-400" : "bg-gray-400"
             )} />
-            <span className="font-mono text-[10px] text-gray-600 dark:text-gray-300 font-semibold">
+            <span className="font-mono text-[10px] text-gray-600 dark:text-slate-200 font-semibold">
               {getFreshnessDisplay().text}
             </span>
           </div>
