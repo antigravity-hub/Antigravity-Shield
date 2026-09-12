@@ -268,7 +268,10 @@
                 "src-tauri/src/proxy/token_manager.rs",
                 "src-tauri/src/modules/oauth.rs"
             ],
-            "github_markdown_reply": "Hi! We've overhauled Google challenge handling in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Rather than immediately deleting accounts when Google requests secondary phone verification, the app extracts the `validation_url` and isolates the account temporarily for 10 minutes.\n- Other healthy accounts continue serving requests uninterrupted, and the user can safely clear the challenge via browser.\n\nRepository:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+            "github_markdown_reply": "Hi! We've overhauled Google challenge handling in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n- Rather than immediately deleting accounts when Google requests secondary phone verification, the app extracts the `validation_url` and isolates the account temporarily for 10 minutes.\n- Other healthy accounts continue serving requests uninterrupted, and the user can safely clear the challenge via browser.\n\nRepository:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/3160#issuecomment-5646020284",
+            "commented_at": "2026-09-12T12:56:26Z"
         },
         {
             "issue_number": 2209,
@@ -301,7 +304,36 @@
                 "src-tauri/src/proxy/token_manager.rs",
                 "src-tauri/src/modules/quota.rs"
             ],
-            "github_markdown_reply": "Hello! Account ban triggers and the 403 deletion cascade have been completely resolved in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### 🛡️ Anti-Detection & Safe Quarantine Architecture\n1. **Isolated Device Fingerprinting**: Each account has its own isolated virtual device profile and machine ID, preventing Google from linking multiple accounts to a single hardware hash.\n2. **3-Tier 403 Quarantine**: Temporary 403 errors and verification challenges are quarantined in memory for 5–10 minutes instead of being destructively marked as banned on disk.\n3. **Production URL Strict Whitelisting**: Blocks non-production internal paths that flag accounts.\n\nExplore the hardened project:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**"
+            "github_markdown_reply": "Hello! Account ban triggers and the 403 deletion cascade have been completely resolved in **[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**:\n\n### 🛡️ Anti-Detection & Safe Quarantine Architecture\n1. **Isolated Device Fingerprinting**: Each account has its own isolated virtual device profile and machine ID, preventing Google from linking multiple accounts to a single hardware hash.\n2. **3-Tier 403 Quarantine**: Temporary 403 errors and verification challenges are quarantined in memory for 5–10 minutes instead of being destructively marked as banned on disk.\n3. **Production URL Strict Whitelisting**: Blocks non-production internal paths that flag accounts.\n\nExplore the hardened project:\n👉 **[DoctorGuidance/Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)**",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/655#issuecomment-5646019912",
+            "commented_at": "2026-09-12T12:56:24Z"
+        },
+        {
+            "issue_number": 1822,
+            "title": "账号突然全部 403 了",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/1822",
+            "category": "Account Quarantine & Domino Effect",
+            "fixed": true,
+            "root_cause": "On encountering 403 or policy errors, upstream rotated blindly through all available accounts, causing cascading fleet bans in minutes.",
+            "how_fixed": "Immediate in-memory isolation for 5-10 min cooldown. Extracts Google appeal_url and protects remaining accounts from repeat strikes.",
+            "github_markdown_reply": "你好！针对一个账号异常引发全池账号连锁 403 的雪崩问题，**[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)** 实现了智能故障隔离熔断体系...",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/1822#issuecomment-5646020630",
+            "commented_at": "2026-09-12T12:56:27Z"
+        },
+        {
+            "issue_number": 2228,
+            "title": "This service has been disabled in this account for violation of Terms of Service",
+            "url": "https://github.com/lbjlaq/Antigravity-Manager/issues/2228",
+            "category": "Production Whitelist & Safe Appeal",
+            "fixed": true,
+            "root_cause": "Internal staging and non-whitelisted paths triggered Google ToS flags.",
+            "how_fixed": "Enforced 100% production whitelist and sanitized request paths.",
+            "github_markdown_reply": "Hello! 针对因请求端点不规范触发 Google ToS 违规拦截的问题，**[Antigravity-Shield](https://github.com/DoctorGuidance/Antigravity-Shield)** 实现了 100% 官方生产端点白名单...",
+            "comment_posted": true,
+            "comment_url": "https://github.com/lbjlaq/Antigravity-Manager/issues/2228#issuecomment-5646021034",
+            "commented_at": "2026-09-12T12:56:29Z"
         }
     ]
 }
