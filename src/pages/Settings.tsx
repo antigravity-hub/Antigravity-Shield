@@ -404,7 +404,11 @@ function Settings() {
             const errorMsg = error instanceof Error ? error.message : String(error);
             console.error('Settings auto-update failed:', errorMsg);
             setIsAutoUpdating(false);
-            showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
+            if (errorMsg.toLowerCase().includes('release json') || errorMsg.toLowerCase().includes('not found')) {
+                showToast(t('update_notification.toast.not_ready', 'Update package not ready. Opening release page...'), 'info');
+            } else {
+                showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
+            }
             if (updateInfo?.downloadUrl) {
                 try {
                     const { openUrl } = await import('@tauri-apps/plugin-opener');

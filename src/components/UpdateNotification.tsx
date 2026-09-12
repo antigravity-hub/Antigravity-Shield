@@ -75,18 +75,24 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
       }
 
       // 3. Check native updater bundle
-      const update = await tauriCheck();
-      if (!update) {
-        // updater.json not ready or manual download needed
-        console.warn('Native updater returned null, prompting manual release download');
+      try {
+        const update = await tauriCheck();
+        if (!update) {
+          // updater.json not ready or manual download needed
+          console.warn('Native updater returned null, prompting manual release download');
+          setUpdateState('manual');
+          setTimeout(() => setIsVisible(true), 100);
+          return;
+        }
+
+        nativeUpdateRef.current = update;
+        setUpdateState('available');
+        setTimeout(() => setIsVisible(true), 100);
+      } catch (checkErr) {
+        console.warn('Native updater check failed, falling back to manual release mode:', checkErr);
         setUpdateState('manual');
         setTimeout(() => setIsVisible(true), 100);
-        return;
       }
-
-      nativeUpdateRef.current = update;
-      setUpdateState('available');
-      setTimeout(() => setIsVisible(true), 100);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       console.error('Update check failed:', errorMsg);

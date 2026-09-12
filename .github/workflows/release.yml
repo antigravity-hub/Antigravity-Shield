@@ -51,15 +51,9 @@ jobs:
             exit 0
           fi
           
-          # Major or Minor releases end in .0 (e.g. 5.3.0, 5.4.0, 6.0.0)
-          # Patch releases have a non-zero patch number (e.g. 5.3.1, 5.3.10)
-          if echo "$VER" | grep -Eq '^[0-9]+\.[0-9]+\.0$'; then
-            echo "build_unix=true" >> "$GITHUB_OUTPUT"
-            echo "Version $VER is a Major/Minor release (.0). Enabling macOS and Linux builds."
-          else
-            echo "build_unix=false" >> "$GITHUB_OUTPUT"
-            echo "Version $VER is a Patch release. Skipping macOS and Linux builds to save Actions quota."
-          fi
+          # Default to skipping Unix builds for tag pushes to ensure fast, reliable Windows distribution
+          echo "build_unix=false" >> "$GITHUB_OUTPUT"
+          echo "Defaulting to Windows build for release $VER to ensure zero-failure updater delivery."
 
   # Windows Build (Runs on every release: both Patch and Major/Minor)
   build-windows:
@@ -196,6 +190,7 @@ jobs:
     name: Build macOS (.dmg)
     needs: [check-release-type]
     if: needs.check-release-type.outputs.build_unix == 'true'
+    continue-on-error: true
     runs-on: macos-latest
     permissions:
       contents: write
@@ -304,6 +299,7 @@ jobs:
     name: Build Linux (.deb, .AppImage)
     needs: [check-release-type]
     if: needs.check-release-type.outputs.build_unix == 'true'
+    continue-on-error: true
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -433,7 +429,7 @@ jobs:
   publish-release:
     name: Publish Release to GitHub
     needs: [check-release-type, build-windows, build-macos, build-linux]
-    if: always() && !cancelled() && !contains(needs.*.result, 'failure')
+    if: always() && !cancelled() && (needs.build-windows.result == 'success' || needs.build-macos.result == 'success' || needs.build-linux.result == 'success')
     runs-on: ubuntu-latest
     permissions:
       contents: write
