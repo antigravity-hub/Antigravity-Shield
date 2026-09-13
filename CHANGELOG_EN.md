@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 *   **Version History**:
+    *   **v5.7.4 (2026-09-13)**:
+        -   **[Security & CI/CD] Streamlined Updater Keypair & Cryptographic Signature Automation**:
+            -   **Unencrypted Signing Key Integration**: Updated `tauri.conf.json` with matching Minisign public key for the newly generated non-passphrase keypair, enabling frictionless automated package signing in CI/CD environments.
+            -   **Hardened Release Workflow Signing Logic**: Streamlined GitHub Actions `release.yml` to preserve authoritative configuration values and ensure updater artifact generation is always triggered when signing keys are detected.
     *   **v5.7.3 (2026-09-13)**:
         -   **[Build & Release Pipeline] Multi-Target Binary Decoupling & Windows Packaging Stabilization**:
             -   **Rust Visibility Alignment**: Corrected `enabled_account_ids` visibility in `TokenManager` to public, allowing auxiliary binary targets (`shield-daemon`) to compile cleanly across Linux CI and release workflows.
