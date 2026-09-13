@@ -135,34 +135,9 @@ jobs:
               fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
               console.log('No signing key: disabled createUpdaterArtifacts');
             } else {
-              console.log('Signing key detected. Checking minisign public key...');
-              try {
-                const lines = privKey.trim().split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-                if (lines.length >= 2) {
-                  const commentLine = lines[0];
-                  const m = commentLine.match(/minisign secret key:\s*([0-9A-Fa-f]+)/i);
-                  const keyIdHex = m ? m[1].toUpperCase() : '';
-                  const payload = Buffer.from(lines[1], 'base64');
-                  if (payload.length >= 92) {
-                    const keyIdBytes = payload.subarray(52, 60);
-                    const pubBytes = payload.subarray(60, 92);
-                    const pubPayload = Buffer.concat([Buffer.from('Ed'), keyIdBytes, pubBytes]);
-                    const pubB64 = pubPayload.toString('base64');
-                    const pubComment = 'untrusted comment: minisign public key: ' + (keyIdHex || keyIdBytes.toString('hex').toUpperCase());
-                    const fullPub = pubComment + '\n' + pubB64 + '\n';
-                    const pubkeyBase64 = Buffer.from(fullPub).toString('base64');
-                    
-                    if (!c.plugins) c.plugins = {};
-                    if (!c.plugins.updater) c.plugins.updater = {};
-                    c.plugins.updater.pubkey = pubkeyBase64;
-                    if (c.bundle) c.bundle.createUpdaterArtifacts = true;
-                    fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
-                    console.log('Successfully synced matching updater public key (Key ID: ' + (keyIdHex || 'detected') + ')');
-                  }
-                }
-              } catch (e) {
-                console.warn('Could not auto-derive public key, keeping existing pubkey:', e.message);
-              }
+              if (c.bundle) c.bundle.createUpdaterArtifacts = true;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Signing key detected: ensured createUpdaterArtifacts is true');
             }
           }
           "
