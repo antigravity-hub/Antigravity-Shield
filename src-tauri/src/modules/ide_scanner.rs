@@ -96,7 +96,6 @@ pub fn detect_all_ides() -> Vec<IdeInfo> {
     vec![
         detect_antigravity_ide(),
         detect_vscode(),
-        detect_cursor(),
         detect_jetbrains(),
         detect_zed(),
         detect_xcode(),
@@ -111,7 +110,7 @@ fn detect_antigravity_ide() -> IdeInfo {
     let is_installed = exe_path.is_some();
     let path_str = exe_path.as_ref().map(|p| p.to_string_lossy().to_string());
 
-    let toolkit_installed = check_extension_installed(&["Antigravity IDE", "Antigravity", ".antigravity"]);
+    let toolkit_installed = check_extension_installed(&["Antigravity IDE", "Antigravity", ".antigravity", ".antigravity-ide"]);
 
     IdeInfo {
         id: "antigravity".to_string(),
@@ -182,55 +181,6 @@ fn detect_vscode() -> IdeInfo {
     }
 }
 
-/// Detects Cursor IDE
-fn detect_cursor() -> IdeInfo {
-    let mut exe_path: Option<PathBuf> = None;
-
-    #[cfg(target_os = "windows")]
-    {
-        if let Ok(local_app_data) = std::env::var("LOCALAPPDATA") {
-            let p1 = PathBuf::from(&local_app_data).join("Programs").join("cursor").join("Cursor.exe");
-            let p2 = PathBuf::from(&local_app_data).join("cursor").join("Cursor.exe");
-            if p1.exists() {
-                exe_path = Some(p1);
-            } else if p2.exists() {
-                exe_path = Some(p2);
-            }
-        }
-    }
-
-    #[cfg(target_os = "macos")]
-    {
-        let p = PathBuf::from("/Applications/Cursor.app/Contents/MacOS/Cursor");
-        if p.exists() {
-            exe_path = Some(p);
-        }
-    }
-
-    #[cfg(target_os = "linux")]
-    {
-        if let Ok(p) = which::which("cursor") {
-            exe_path = Some(p);
-        }
-    }
-
-    let is_installed = exe_path.is_some();
-    let path_str = exe_path.as_ref().map(|p| p.to_string_lossy().to_string());
-    let toolkit_installed = check_extension_installed(&[".cursor"]);
-
-    IdeInfo {
-        id: "cursor".to_string(),
-        name: "Cursor".to_string(),
-        category: "code_oss".to_string(),
-        is_installed,
-        executable_path: path_str,
-        version: None,
-        toolkit_installed,
-        supports_auto_install: true,
-        official_extension_url: Some("https://marketplace.visualstudio.com/items?itemName=Google.google-antigravity".to_string()),
-        guide_url: Some("https://antigravity.google/blog/antigravity-ide-extensions".to_string()),
-    }
-}
 
 /// Detects JetBrains IDEs (IntelliJ, WebStorm, PyCharm, etc.)
 fn detect_jetbrains() -> IdeInfo {
@@ -323,7 +273,7 @@ fn detect_xcode() -> IdeInfo {
 
     IdeInfo {
         id: "xcode".to_string(),
-        name: "Xcode".to_string(),
+        name: "Apple Xcode".to_string(),
         category: "standalone".to_string(),
         is_installed: found,
         executable_path: if found { Some("/Applications/Xcode.app".to_string()) } else { None },
@@ -403,16 +353,35 @@ pub fn install_toolkit_to_ide(ide_id: &str) -> Result<String, String> {
                 .or_else(|| crate::modules::process::get_antigravity_executable_path(None))
                 .ok_or_else(|| "Antigravity IDE executable not found.".to_string())?;
 
-            let output = Command::new(&exe)
-                .args(["--install-extension", &vsix_str])
-                .output()
-                .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?;
+            let bin_cmd = exe.parent().map(|p| p.join("bin").join("antigravity-ide.cmd"));
+            let bin_sh = exe.parent().map(|p| p.join("bin").join("antigravity-ide"));
+
+            let output = if cfg!(target_os = "windows") && bin_cmd.as_ref().map(|p| p.exists()).unwrap_or(false) {
+                let cmd_file = bin_cmd.unwrap();
+                Command::new("cmd")
+                    .args(["/c", &cmd_file.to_string_lossy(), "--install-extension", &vsix_str])
+                    .output()
+                    .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
+            } else if bin_sh.as_ref().map(|p| p.exists()).unwrap_or(false) {
+                let sh_file = bin_sh.unwrap();
+                Command::new(&sh_file)
+                    .args(["--install-extension", &vsix_str])
+                    .output()
+                    .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
+            } else {
+                Command::new(&exe)
+                    .args(["--install-extension", &vsix_str])
+                    .output()
+                    .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
+            };
 
             if output.status.success() {
                 Ok("Toolkit extension installed successfully to Antigravity IDE!".to_string())
             } else {
                 let err = String::from_utf8_lossy(&output.stderr);
-                Err(format!("Antigravity installer exited with error: {}", err.trim()))
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let msg = if !err.trim().is_empty() { err } else { stdout };
+                Err(format!("Antigravity installer error: {}", msg.trim()))
             }
         }
         "vscode" => {
@@ -426,19 +395,6 @@ pub fn install_toolkit_to_ide(ide_id: &str) -> Result<String, String> {
             } else {
                 let err = String::from_utf8_lossy(&output.stderr);
                 Err(format!("VS Code installer error: {}", err.trim()))
-            }
-        }
-        "cursor" => {
-            let output = Command::new("cursor")
-                .args(["--install-extension", &vsix_str])
-                .output()
-                .map_err(|e| format!("Failed to launch 'cursor' CLI. Ensure Cursor is in your PATH. Error: {}", e))?;
-
-            if output.status.success() {
-                Ok("Toolkit extension installed successfully to Cursor!".to_string())
-            } else {
-                let err = String::from_utf8_lossy(&output.stderr);
-                Err(format!("Cursor installer error: {}", err.trim()))
             }
         }
         _ => Err(format!("Automated 1-click install is not supported for '{}'. Please use the manual setup guide.", ide_id)),

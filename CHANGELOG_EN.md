@@ -4,14 +4,14 @@
 
 - **Version History**:
   - **v5.8.0 (2026-09-13)**:
-    - **[Antigravity Toolkit Hub] Seamless IDE Integration & 1-Click Setup**:
-      - **Automatic IDE Detection**: Instantly discovers installed VS Code, Cursor, Windsurf, VSCodium, and Antigravity IDE environments on your system.
-      - **One-Click Extension Installation**: Install the Antigravity Toolkit extension to your IDE with a single click — no marketplace search or manual setup required.
-      - **Live Connection Status**: A real-time connectivity badge in the header shows whether your IDE extension is actively connected and which account is in use.
-      - **Toolkit Management Hub**: A dedicated control center for managing IDE integrations, viewing active sessions, and troubleshooting connections.
-    - **[User Interface] Improved Accounts Toolbar Layout**:
-      - **Responsive Two-Row Toolbar**: The Accounts page toolbar now adapts gracefully to smaller window sizes, preventing controls from overflowing or being cut off.
-      - **Better Control Organization**: Search, sorting, and quota views are grouped logically on the first row, with batch operations and data tools on the second row.
+    - **[Antigravity Toolkit Hub] Multi-IDE Integration & Real-Time Connection Bridge**:
+      - **Automated IDE Environment Discovery**: Integrated high-speed native discovery scanner (`src-tauri/src/modules/ide_scanner.rs`) detecting Antigravity IDE, Visual Studio Code, JetBrains, Zed, and Apple Xcode across standard installation paths.
+      - **One-Click Extension Deployment**: Bundled pre-packaged `antigravity-toolkit.vsix` within application resources, providing single-click installation and CLI verification directly from the GUI.
+      - **Real-Time Session Heartbeat & Status Telemetry**: Introduced dynamic header connectivity badge and background telemetry server tracking live IDE sessions and connected account states.
+      - **Interactive Toolkit Management Hub**: Created modal interface (`ToolkitIntegrationModal.tsx`) with comprehensive IDE management controls, live session state, and diagnostic logging.
+    - **[User Interface & Responsiveness] Adaptive Two-Row Accounts Toolbar Overhaul**:
+      - **Fluid Multi-Row Layout**: Re-architected Accounts page toolbar into an intelligent responsive two-row hierarchy, eliminating horizontal overflow across compact window dimensions and varied desktop DPI scalings.
+      - **Ergonomic Control Organization**: Structured search, auto-sort, and quota views on the primary tier with dedicated clear-search trigger, while grouping batch operations, import/export actions, and data freshness telemetry along the secondary tier.
   - **v5.7.4 (2026-09-13)**:
     - **[Security & CI/CD] Streamlined Updater Keypair & Cryptographic Signature Automation**:
       - **Unencrypted Signing Key Integration**: Updated `tauri.conf.json` with matching Minisign public key for the newly generated non-passphrase keypair, enabling frictionless automated package signing in CI/CD environments.
