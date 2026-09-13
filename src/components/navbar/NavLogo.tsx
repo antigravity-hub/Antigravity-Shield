@@ -45,7 +45,7 @@ export function NavLogo() {
                     </span>
                     <NavVersionBadge />
                 </div>
-                <span className="text-[10px] text-slate-400 dark:text-slate-400 tracking-wider font-medium flex items-center gap-1">
+                <span className="text-[10px] text-slate-400 dark:text-slate-400 tracking-wider font-medium hidden xl:flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
                     AI Gateway Shield
                 </span>
