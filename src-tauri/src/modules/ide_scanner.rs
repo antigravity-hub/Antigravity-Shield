@@ -2,19 +2,17 @@ use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::RwLock;
+use std::sync::{LazyLock, RwLock};
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 // ============================================================================
 // Heartbeat & Connection Tracking
 // ============================================================================
 
-lazy_static::lazy_static! {
-    static ref LAST_HEARTBEAT: RwLock<Option<Instant>> = RwLock::new(None);
-    static ref ACTIVE_IDE_NAME: RwLock<Option<String>> = RwLock::new(None);
-    static ref ACTIVE_EXT_VERSION: RwLock<Option<String>> = RwLock::new(None);
-    static ref ACTIVE_EMAIL: RwLock<Option<String>> = RwLock::new(None);
-}
+static LAST_HEARTBEAT: LazyLock<RwLock<Option<Instant>>> = LazyLock::new(|| RwLock::new(None));
+static ACTIVE_IDE_NAME: LazyLock<RwLock<Option<String>>> = LazyLock::new(|| RwLock::new(None));
+static ACTIVE_EXT_VERSION: LazyLock<RwLock<Option<String>>> = LazyLock::new(|| RwLock::new(None));
+static ACTIVE_EMAIL: LazyLock<RwLock<Option<String>>> = LazyLock::new(|| RwLock::new(None));
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ToolkitHeartbeatPayload {
