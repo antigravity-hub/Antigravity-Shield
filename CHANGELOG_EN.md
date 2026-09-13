@@ -3,6 +3,17 @@
 > Complete version history for Antigravity Shield. Return to project home at [README_EN.md](README_EN.md).
 
 - **Version History**:
+  - **v5.8.1 (2026-09-13)**:
+    - **[MiniView & Window Management] Adaptive Window State Restoration & Geometry Persistence**:
+      - **Bi-Directional State Preservation**: Implemented intelligent window dimension and position memory across full view and mini view transitions, faithfully restoring previous geometries and maximized states.
+      - **Persistent Always-On-Top Layering**: Enforced background-layer immunity in mini view, ensuring critical session and quota telemetry remain visible during active IDE workflows.
+      - **Micro & Compact Dimension Support**: Expanded dynamic sizing boundaries to support ultra-compact footprints down to 110x52 with native drag handles and refined backdrop blur aesthetics.
+    - **[Accounts & Quota Intelligence] Disambiguated Reset Cycle Analytics**:
+      - **Strict Window Disambiguation**: Hardened 5-hour and weekly quota bucket detection across Rust backend and frontend engines, preventing window collision and ensuring accurate cycle countdowns.
+      - **Accounts View Polish**: Unified weekly progress bar widths, integrated descriptive tooltip guides, and streamlined table header metrics.
+    - **[Toolkit Integration & Layout Polish] Viewport Optimization & Seamless Setup**:
+      - **Toolkit Viewport Resilience**: Resolved modal scrolling overflow on lower-resolution displays and streamlined 1-click Antigravity IDE setup workflow.
+      - **Navigation Responsiveness**: Enhanced navigation header logo adaptability and enforced strict minimum window bounds to prevent navigation item truncation.
   - **v5.8.0 (2026-09-13)**:
     - **[Antigravity Toolkit Hub] Multi-IDE Integration & Real-Time Connection Bridge**:
       - **Automated IDE Environment Discovery**: Integrated high-speed native discovery scanner (`src-tauri/src/modules/ide_scanner.rs`) detecting Antigravity IDE, Visual Studio Code, JetBrains, Zed, and Apple Xcode across standard installation paths.
