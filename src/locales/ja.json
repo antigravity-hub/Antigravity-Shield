@@ -310,7 +310,8 @@
       "email": "メールアドレス",
       "quota": "モデルクォータ",
       "last_used": "最終使用",
-      "actions": "操作"
+      "actions": "操作",
+      "weekly_info_tooltip": "1-7のボックス：週間サイクルの各日\nパーセンテージバー：今週利用可能なトークン枠"
     },
     "drag_to_reorder": "ドラッグして並べ替え",
     "empty": {
@@ -340,7 +341,8 @@
       "batch_warmup_title": "一括手動ウォームアップ",
       "batch_warmup_msg": "選択した{{count}}個のアカウントに対して、直ちにウォームアップを開始してもよろしいですか？"
     },
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "switch_to_agy": "Switch to Antigravity CLI (agy)",
+    "drag_column_to_reorder": "ヘッダーをドラッグして列の順序を変更"
   },
   "settings": {
     "save": "設定を保存",

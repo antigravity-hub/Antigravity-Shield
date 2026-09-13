@@ -353,7 +353,8 @@
       "quota": "Model Quota",
       "weekly_countdown": "Weekly Reset",
       "last_used": "Last Used",
-      "actions": "Actions"
+      "actions": "Actions",
+      "weekly_info_tooltip": "Boxes 1-7: Days of the weekly cycle\nPercentage bar: Usable weekly token quota"
     },
     "drag_to_reorder": "Drag to reorder",
     "empty": {
@@ -387,7 +388,7 @@
     },
     "auto_sort": "Auto Sort",
     "show_last_used": "Show Last Used",
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "drag_column_to_reorder": "Drag column header to reorder"
   },
   "settings": {
     "save": "Save Settings",

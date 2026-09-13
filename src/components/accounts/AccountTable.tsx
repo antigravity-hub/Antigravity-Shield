@@ -48,6 +48,8 @@ import { cn } from '../../utils/cn';
 import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
+import HelpTooltip from '../common/HelpTooltip';
+
 
 // ============================================================================
 // 类型定义
@@ -641,7 +643,7 @@ function AccountRowContent({
     };
 
     const renderWeeklyCell = () => (
-        <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[100px] min-w-[95px]">
+        <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[126px] min-w-[120px]">
             <WeeklyCountdown account={account} provider={quotaProvider} layout="table" />
         </td>
     );
@@ -672,11 +674,11 @@ function AccountRowContent({
 
             {/* 操作列 */}
             <td className={cn(
-                "px-1 py-1 sticky right-0 z-10 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center align-middle w-[165px] min-w-[160px]",
+                "px-1 py-1 sticky right-0 z-10 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.15)] dark:shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.5)] text-center align-middle w-[165px] min-w-[160px]",
                 isAnyActive
-                    ? "bg-[#ecfdf5] dark:bg-[#064e3b]/30"
-                    : "bg-white dark:bg-base-100",
-                !isAnyActive && "group-hover:bg-gray-50 dark:group-hover:bg-base-200"
+                    ? "bg-[#ecfdf5] dark:bg-[#063b2f]"
+                    : "bg-white dark:bg-[#0f172a]",
+                !isAnyActive && "group-hover:bg-gray-50 dark:group-hover:bg-[#1e293b]"
             )}>
                 <AccountActionControls
                     account={account}
@@ -824,7 +826,7 @@ function AccountTable({
                 const draggedId = e.dataTransfer.getData('text/plain');
                 if (draggedId) handleColumnDrop(draggedId, colId);
             },
-            title: t('accounts.drag_column_to_reorder', '拖动表头调整列顺序'),
+            title: t('accounts.drag_column_to_reorder', 'Drag column header to reorder'),
         };
 
         if (colId === 'email') {
@@ -874,11 +876,22 @@ function AccountTable({
                 <th
                     key="weekly"
                     {...commonHeaderProps}
-                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[100px] min-w-[95px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[126px] min-w-[120px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
                 >
-                    <div className="flex items-center gap-1">
-                        <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
-                        <span>{t('accounts.table.weekly_countdown', 'Weekly Reset')}</span>
+                    <div className="flex items-center justify-between gap-1">
+                        <div className="flex items-center gap-1">
+                            <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
+                            <span>{t('accounts.table.weekly_countdown', 'Weekly Reset')}</span>
+                        </div>
+                        <HelpTooltip
+                            text={t(
+                                'accounts.table.weekly_info_tooltip',
+                                'The 7 boxes represent the days of the weekly cycle; the percentage bar below shows the usable weekly token quota.'
+                            )}
+                            placement="bottom"
+                            iconSize={13}
+                            className="shrink-0 normal-case"
+                        />
                     </div>
                 </th>
             );
@@ -917,7 +930,7 @@ function AccountTable({
             onDragEnd={handleDragEnd}
         >
             <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[960px]">
                     <thead>
                         <tr className="border-b border-gray-100 dark:border-base-200 bg-gray-50 dark:bg-base-200">
                             <th className="pl-2 py-2 text-left w-8">
@@ -932,7 +945,7 @@ function AccountTable({
                                 />
                             </th>
                             {columnOrder.map((colId) => renderColumnHeader(colId))}
-                            <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[165px] min-w-[160px] bg-gray-50 dark:bg-base-200 z-20 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.1)] dark:shadow-[-12px_0_12px_-12px_rgba(255,255,255,0.05)] text-center">{t('accounts.table.actions')}</th>
+                            <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[165px] min-w-[160px] bg-gray-50 dark:bg-[#0f172a] z-20 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.15)] dark:shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.5)] text-center">{t('accounts.table.actions')}</th>
                         </tr>
                     </thead>
                     <SortableContext items={accountIds} strategy={verticalListSortingStrategy}>

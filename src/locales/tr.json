@@ -266,7 +266,8 @@
       "email": "E-posta",
       "quota": "Model Kotası",
       "last_used": "Son Kullanım",
-      "actions": "İşlemler"
+      "actions": "İşlemler",
+      "weekly_info_tooltip": "1-7 kutuları: Haftalık döngünün günleri\nYüzde çubuğu: Bu hafta kullanılabilecek token kotası"
     },
     "drag_to_reorder": "Yeniden sıralamak için sürükleyin",
     "empty": {
@@ -292,7 +293,8 @@
       "enable_proxy_title": "Proxy'yi Etkinleştir",
       "enable_proxy_msg": "Bu hesap için proxy'yi yeniden etkinleştirmek istediğinizden emin misiniz?"
     },
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "switch_to_agy": "Switch to Antigravity CLI (agy)",
+    "drag_column_to_reorder": "Sıralamak için sütun başlığını sürükleyin"
   },
   "settings": {
     "save": "Ayarları Kaydet",

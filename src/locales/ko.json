@@ -310,7 +310,8 @@
       "email": "이메일",
       "quota": "모델 할당량",
       "last_used": "최근 사용",
-      "actions": "작업"
+      "actions": "작업",
+      "weekly_info_tooltip": "1-7 상자: 주간 주기의 요일\n퍼센트 바: 이번 주 사용 가능한 토큰 할당량"
     },
     "drag_to_reorder": "드래그하여 순서 변경",
     "empty": {
@@ -340,7 +341,8 @@
       "batch_warmup_title": "일괄 수동 웜업",
       "batch_warmup_msg": "선택한 {{count}}개 계정에 대해 즉시 웜업을 트리거하시겠습니까?"
     },
-    "switch_to_agy": "Antigravity CLI (agy)로 전환"
+    "switch_to_agy": "Antigravity CLI (agy)로 전환",
+    "drag_column_to_reorder": "열 머리글을 드래그하여 순서 변경"
   },
   "settings": {
     "save": "설정 저장",

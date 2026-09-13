@@ -274,7 +274,8 @@
       "email": "E-mel",
       "quota": "Kuota Model",
       "last_used": "Terakhir Digunakan",
-      "actions": "Tindakan"
+      "actions": "Tindakan",
+      "weekly_info_tooltip": "အကွက် ၁-၇: အပတ်စဉ် သံသရာ ရက်များ\nရာခိုင်နှုန်းဘား: ဤအပတ်အတွက် သုံးစွဲနိုင်သော တိုကင်ခွဲတမ်း"
     },
     "drag_to_reorder": "Seret untuk menyusun semula",
     "empty": {
@@ -304,7 +305,8 @@
       "batch_warmup_title": "Pemanasan Manual Kelompok",
       "batch_warmup_msg": "Adakah anda pasti mahu mencetuskan pemanasan untuk {{count}} akaun yang dipilih dengan segera?"
     },
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "switch_to_agy": "Switch to Antigravity CLI (agy)",
+    "drag_column_to_reorder": "ကော်လံခေါင်းစဉ်ကို ဆွဲရွှေ့၍ အစီအစဉ်ပြောင်းပါ"
   },
   "settings": {
     "save": "Simpan Tetapan",

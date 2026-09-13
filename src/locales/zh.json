@@ -218,7 +218,7 @@
     "switch_to_classic": "切换到 Antigravity (经典版)",
     "switch_to_platform": "切换到 Antigravity Platform",
     "switch_to_ide": "切换到 Antigravity IDE",
-    "switch_to_agy": "切换到 Antigravity CLI (agy)",
+    "switch_to_agy": "Switch to Antigravity CLI (agy)",
     "exhausted": "配额已耗尽",
     "exhausted_tooltip": "该账号周配额与5小时配额均已耗尽，等待周期重置。",
     "actions": "操作",
@@ -339,7 +339,8 @@
       "email": "邮箱",
       "quota": "模型配额",
       "last_used": "最后使用",
-      "actions": "操作"
+      "actions": "操作",
+      "weekly_info_tooltip": "1-7方块：每周周期天数\n百分比进度条：本周可用Token配额"
     },
     "drag_to_reorder": "拖拽排序",
     "empty": {
@@ -369,7 +370,7 @@
       "batch_warmup_title": "批量手动预热",
       "batch_warmup_msg": "确定要为选中的 {{count}} 个账号立即触发预热吗？"
     },
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "drag_column_to_reorder": "拖动表头调整列顺序"
   },
   "settings": {
     "save": "保存设置",

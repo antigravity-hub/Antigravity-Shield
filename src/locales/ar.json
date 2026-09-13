@@ -276,7 +276,8 @@
       "email": "البريد الإلكتروني",
       "quota": "حصة النموذج",
       "last_used": "آخر استخدام",
-      "actions": "إجراءات"
+      "actions": "إجراءات",
+      "weekly_info_tooltip": "المربعات 1-7: أيام الدورة الأسبوعية\nشريط النسبة: حصة الرموز المتاحة لهذا الأسبوع"
     },
     "drag_to_reorder": "اسحب لإعادة الترتيب",
     "empty": {
@@ -306,7 +307,8 @@
       "batch_warmup_title": "تنشيط يدوي جماعي",
       "batch_warmup_msg": "هل أنت متأكد من إطلاق التنشيط لـ {{count}} حساب المحدد فورًا؟"
     },
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "switch_to_agy": "Switch to Antigravity CLI (agy)",
+    "drag_column_to_reorder": "اسحب رأس العمود لإعادة الترتيب"
   },
   "settings": {
     "save": "حفظ الإعدادات",

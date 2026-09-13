@@ -182,12 +182,12 @@ export function WeeklyCountdown({
                     })}
                 </div>
 
-                {/* Burning Fuse Bar (#93b93b) under the 7 boxes with ember glow and percentage on the right */}
-                <div className="flex items-center gap-2 pt-0.5">
-                    <div className="flex-1 relative flex items-center">
-                        {/* Background track */}
-                        <div className="w-full h-1.5 rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-hidden relative shadow-inner">
-                            {/* Burning Fuse Progress Bar in vibrant #93b93b */}
+                {/* Sparkler Progress Bar matching 100% width of 7-day boxes */}
+                <div className="flex flex-col gap-1 pt-0.5 w-full">
+                    <div className="w-full relative py-0.5">
+                        {/* Background track matching 100% width */}
+                        <div className="w-full h-1.5 rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-visible relative shadow-inner">
+                            {/* Progress Bar in vibrant #93b93b */}
                             <div
                                 className="h-full rounded-full transition-all duration-500 relative"
                                 style={{
@@ -196,57 +196,70 @@ export function WeeklyCountdown({
                                     boxShadow: '0 0 6px rgba(147, 185, 59, 0.45)',
                                 }}
                             />
-                        </div>
 
-                        {/* Burning Ember / Spark Tip at the edge of the burning fuse */}
-                        {(quota.percentage ?? 0) > 0 && (
-                            <div
-                                className="absolute top-1/2 -translate-y-1/2 pointer-events-none -ml-1 transition-all duration-500 z-10"
-                                style={{ left: `${Math.min(99, Math.max(1, quota.percentage ?? 0))}%` }}
-                            >
-                                <span className="relative flex h-2 w-2">
-                                    <span
-                                        className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-80"
-                                        style={{ backgroundColor: '#93b93b' }}
-                                    />
-                                    <span
-                                        className="relative inline-flex rounded-full h-2 w-2 shadow-[0_0_8px_#93b93b,0_0_3px_#ffffff]"
-                                        style={{ backgroundColor: '#d4ed73' }}
-                                    />
-                                </span>
-                            </div>
-                        )}
+                            {/* Sparkler (فشفشه) Tip at the edge of the bar */}
+                            {(quota.percentage ?? 0) > 0 && (
+                                <div
+                                    className="absolute top-1/2 -translate-y-1/2 pointer-events-none -ml-1.5 transition-all duration-500 z-10"
+                                    style={{ left: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%` }}
+                                >
+                                    <div className="relative flex items-center justify-center w-3 h-3">
+                                        {/* Ping aura */}
+                                        <span
+                                            className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full opacity-75"
+                                            style={{ backgroundColor: '#bef264' }}
+                                        />
+                                        {/* Rotating / flickering sparkler star (فشفشه) */}
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            className="w-3.5 h-3.5 animate-sparkler text-lime-300 absolute pointer-events-none"
+                                        >
+                                            <path
+                                                d="M12 0 L13.8 8.2 L22 12 L13.8 15.8 L12 24 L10.2 15.8 L2 12 L10.2 8.2 Z"
+                                                fill="#d9f99d"
+                                            />
+                                            <path
+                                                d="M12 4 L13 11 L20 12 L13 13 L12 20 L11 13 L4 12 L11 11 Z"
+                                                fill="#ffffff"
+                                            />
+                                        </svg>
+                                        {/* Micro shooting sparks */}
+                                        <span className="absolute w-1 h-1 rounded-full bg-yellow-200 sparkler-particle-1 pointer-events-none" />
+                                        <span className="absolute w-1 h-1 rounded-full bg-lime-200 sparkler-particle-2 pointer-events-none" />
+                                        <span className="absolute w-0.5 h-0.5 rounded-full bg-white sparkler-particle-3 pointer-events-none" />
+                                        {/* Radiant white/lime center core */}
+                                        <span
+                                            className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white shadow-[0_0_6px_#ffffff,0_0_8px_#84cc16]"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Percentage counter on the right */}
-                    <span
-                        className="text-[11px] font-mono font-extrabold shrink-0 drop-shadow-xs min-w-[32px] text-right"
-                        style={{ color: '#93b93b' }}
-                        title={`${t('accounts.quota_weekly', 'Weekly Quota')}: ${quota.percentage ?? 0}%`}
-                    >
-                        {quota.percentage !== null ? `${quota.percentage}%` : '0%'}
-                    </span>
+                    {/* Percentage counter on the right edge */}
+                    <div className="flex justify-end items-center -mt-0.5">
+                        <span
+                            className="text-[11px] font-mono font-extrabold shrink-0 drop-shadow-xs"
+                            style={{ color: '#93b93b' }}
+                            title={`${t('accounts.quota_weekly', 'Weekly Quota')}: ${quota.percentage ?? 0}%`}
+                        >
+                            {quota.percentage !== null ? `${quota.percentage}%` : '0%'}
+                        </span>
+                    </div>
                 </div>
             </div>
         );
     }
 
-    // Table view (Compact with partial water fill & mini burning bar)
+    // Table view (Compact with partial water fill & matching width sparkler bar)
     return (
         <div
-            className={cn("flex flex-col gap-1 select-none", className)}
+            className={cn("flex flex-col gap-1 select-none w-[114px]", className)}
             title={tooltipText}
         >
-            {/* Header: Clock + Remaining Hours without redundant (6d) */}
-            <div className="flex items-center gap-1.5">
-                <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
-                <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
-                    {info.totalHours}h
-                </span>
-            </div>
-
-            {/* 7-day Stepper: Compact Left to Right */}
-            <div dir="ltr" className="flex items-center gap-[1.5px]">
+            {/* 7-day Stepper: Left to Right, matching exactly 100% width of the progress bar below */}
+            <div dir="ltr" className="flex items-center justify-between gap-[2px] w-full">
                 {weekDays.map((dayNum) => {
                     const isFull = exactDays >= dayNum;
                     const isEmpty = exactDays <= dayNum - 1;
@@ -263,10 +276,10 @@ export function WeeklyCountdown({
                         <div
                             key={dayNum}
                             className={cn(
-                                "w-3.5 h-3.5 rounded text-[8px] font-mono font-bold flex items-center justify-center transition-all relative overflow-hidden border",
+                                "flex-1 h-4 rounded text-[8px] font-mono font-bold flex items-center justify-center transition-all relative overflow-hidden border",
                                 isFull && "border-cyan-500/35 dark:border-cyan-400/35 bg-gradient-to-t from-cyan-600 to-emerald-500 text-white shadow-[0_0_6px_rgba(6,182,212,0.4)]",
                                 isEmpty && "bg-slate-100/70 dark:bg-slate-800/40 border-dashed border-slate-200/80 dark:border-slate-700/60 text-slate-300 dark:text-slate-600 opacity-40 line-through",
-                                isActive && "border-cyan-400 bg-slate-100 dark:bg-slate-800/60 ring-1 ring-cyan-400 scale-110 z-10 text-white shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                                isActive && "border-cyan-400 bg-slate-100 dark:bg-slate-800/60 ring-1 ring-cyan-400 scale-105 z-10 text-white shadow-[0_0_8px_rgba(6,182,212,0.5)]"
                             )}
                         >
                             {/* Water layer for active day */}
@@ -288,21 +301,64 @@ export function WeeklyCountdown({
                 })}
             </div>
 
-            {/* Mini Burning Fuse Bar for Table */}
-            <div className="flex items-center gap-1 w-[90px] pt-0.5">
-                <div className="flex-1 h-1 rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-hidden relative shadow-inner">
+            {/* Sparkler Progress Bar matching 100% width of 7-day boxes */}
+            <div className="w-full relative py-0.5">
+                <div className="w-full h-1.5 rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-visible relative shadow-inner">
                     <div
-                        className="h-full rounded-full transition-all duration-300"
+                        className="h-full rounded-full transition-all duration-500 relative"
                         style={{
                             width: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%`,
-                            background: '#93b93b',
-                            boxShadow: '0 0 4px #93b93b',
+                            background: 'linear-gradient(90deg, rgba(147, 185, 59, 0.75) 0%, #93b93b 80%, #a8cf44 100%)',
+                            boxShadow: '0 0 6px rgba(147, 185, 59, 0.45)',
                         }}
                     />
+
+                    {/* Sparkler (فشفشه) Tip at the edge of the bar */}
+                    {(quota.percentage ?? 0) > 0 && (
+                        <div
+                            className="absolute top-1/2 -translate-y-1/2 pointer-events-none -ml-1.5 transition-all duration-500 z-10"
+                            style={{ left: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%` }}
+                        >
+                            <div className="relative flex items-center justify-center w-3 h-3">
+                                {/* Ping aura */}
+                                <span
+                                    className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full opacity-75"
+                                    style={{ backgroundColor: '#bef264' }}
+                                />
+                                {/* Rotating / flickering sparkler star (فشفشه) */}
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    className="w-3.5 h-3.5 animate-sparkler text-lime-300 absolute pointer-events-none"
+                                >
+                                    <path
+                                        d="M12 0 L13.8 8.2 L22 12 L13.8 15.8 L12 24 L10.2 15.8 L2 12 L10.2 8.2 Z"
+                                        fill="#d9f99d"
+                                    />
+                                    <path
+                                        d="M12 4 L13 11 L20 12 L13 13 L12 20 L11 13 L4 12 L11 11 Z"
+                                        fill="#ffffff"
+                                    />
+                                </svg>
+                                {/* Micro shooting sparks */}
+                                <span className="absolute w-1 h-1 rounded-full bg-yellow-200 sparkler-particle-1 pointer-events-none" />
+                                <span className="absolute w-1 h-1 rounded-full bg-lime-200 sparkler-particle-2 pointer-events-none" />
+                                <span className="absolute w-0.5 h-0.5 rounded-full bg-white sparkler-particle-3 pointer-events-none" />
+                                {/* Radiant white/lime center core */}
+                                <span
+                                    className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white shadow-[0_0_6px_#ffffff,0_0_8px_#84cc16]"
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
+            </div>
+
+            {/* Percentage text right below the bar, aligned to the right edge */}
+            <div className="flex justify-end items-center -mt-0.5">
                 <span
-                    className="text-[9px] font-mono font-bold shrink-0 leading-none"
+                    className="text-[9.5px] font-mono font-black shrink-0 leading-none"
                     style={{ color: '#93b93b' }}
+                    title={`${t('accounts.quota_weekly', 'Weekly Quota')}: ${quota.percentage ?? 0}%`}
                 >
                     {quota.percentage !== null ? `${quota.percentage}%` : '0%'}
                 </span>
@@ -310,3 +366,4 @@ export function WeeklyCountdown({
         </div>
     );
 }
+

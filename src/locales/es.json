@@ -310,7 +310,8 @@
       "email": "Correo",
       "quota": "Cuota del Modelo",
       "last_used": "Último Uso",
-      "actions": "Acciones"
+      "actions": "Acciones",
+      "weekly_info_tooltip": "Casillas 1-7: Días del ciclo semanal\nBarra de porcentaje: Cuota de tokens utilizable esta semana"
     },
     "drag_to_reorder": "Arrastrar para reordenar",
     "empty": {
@@ -340,7 +341,8 @@
       "batch_warmup_title": "Calentamiento Manual en Lote",
       "batch_warmup_msg": "¿Está seguro de que desea activar el calentamiento para las {{count}} cuentas seleccionadas inmediatamente?"
     },
-    "switch_to_agy": "Cambiar a CLI de Antigravity (agy)"
+    "switch_to_agy": "Cambiar a CLI de Antigravity (agy)",
+    "drag_column_to_reorder": "Arrastra el encabezado para reordenar"
   },
   "settings": {
     "save": "Guardar Configuración",

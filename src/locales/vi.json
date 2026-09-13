@@ -273,7 +273,8 @@
       "email": "Email",
       "quota": "Hạn mức Model",
       "last_used": "Dùng lần cuối",
-      "actions": "Thao tác"
+      "actions": "Thao tác",
+      "weekly_info_tooltip": "Ô 1-7: Các ngày trong chu kỳ tuần\nThanh phần trăm: Hạn mức token có thể dùng trong tuần"
     },
     "drag_to_reorder": "Kéo để sắp xếp lại",
     "empty": {
@@ -303,7 +304,8 @@
       "batch_warmup_title": "Làm nóng Thủ công Hàng loạt",
       "batch_warmup_msg": "Bạn có chắc muốn chạy tác vụ làm nóng cho {{count}} tài khoản đã chọn ngay bây giờ?"
     },
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "switch_to_agy": "Switch to Antigravity CLI (agy)",
+    "drag_column_to_reorder": "Kéo tiêu đề cột để sắp xếp lại"
   },
   "settings": {
     "save": "Lưu Cài đặt",

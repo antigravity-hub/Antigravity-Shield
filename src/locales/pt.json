@@ -333,7 +333,8 @@
       "quota": "Cota",
       "last_used": "Último Uso",
       "actions": "Ações",
-      "weekly_quota": "Cota Semanal"
+      "weekly_quota": "Cota Semanal",
+      "weekly_info_tooltip": "Caixas 1-7: Dias do ciclo semanal\nBarra de porcentagem: Cota de tokens utilizável nesta semana"
     },
     "drag_to_reorder": "Arraste para reordenar",
     "empty": {
@@ -364,7 +365,8 @@
       "batch_warmup_msg": "Tem certeza de que deseja acionar o aquecimento para as {{count}} contas selecionadas imediatamente?"
     },
     "switch_to_agy": "Alternar para Antigravity CLI (agy)",
-    "warmup_all_triggered": "Tarefa de pré-aquecimento disparada para todas as contas"
+    "warmup_all_triggered": "Tarefa de pré-aquecimento disparada para todas as contas",
+    "drag_column_to_reorder": "Arraste o cabeçalho para reordenar"
   },
   "settings": {
     "save": "Salvar Configurações",

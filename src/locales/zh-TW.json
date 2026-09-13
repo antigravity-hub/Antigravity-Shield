@@ -279,7 +279,8 @@
       "email": "信箱",
       "quota": "模型配額",
       "last_used": "最後使用",
-      "actions": "操作"
+      "actions": "操作",
+      "weekly_info_tooltip": "1-7方塊：每週週期天數\n百分比進度條：本週可用Token配額"
     },
     "drag_to_reorder": "拖拽排序",
     "empty": {
@@ -309,7 +310,8 @@
       "batch_warmup_title": "批次手動預熱",
       "batch_warmup_msg": "確定要為選中的 {{count}} 個帳號立即觸發預熱嗎？"
     },
-    "switch_to_agy": "Switch to Antigravity CLI (agy)"
+    "switch_to_agy": "Switch to Antigravity CLI (agy)",
+    "drag_column_to_reorder": "拖動表頭調整列順序"
   },
   "settings": {
     "save": "儲存設定",

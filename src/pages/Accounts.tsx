@@ -3,7 +3,6 @@
 import {
   ArrowUpDown,
   Bot,
-  Calendar,
   Clock,
   Download,
   LayoutGrid,
@@ -84,11 +83,7 @@ function Accounts() {
     const saved = localStorage.getItem('accounts_view_mode');
     return (saved === 'list' || saved === 'grid') ? saved : 'list';
   });
-
-  const [quotaWindow, setQuotaWindow] = useState<QuotaWindow>(() => {
-    const saved = localStorage.getItem('accounts_quota_window');
-    return (saved === '5h' || saved === 'weekly') ? saved : '5h';
-  });
+  const quotaWindow: QuotaWindow = 'weekly';
 
   const [quotaProvider, setQuotaProvider] = useState<QuotaProvider>(() => {
     const saved = localStorage.getItem('accounts_quota_provider');
@@ -107,11 +102,6 @@ function Accounts() {
   useEffect(() => {
     localStorage.setItem('accounts_view_mode', viewMode);
   }, [viewMode]);
-
-  // Save quota window preference
-  useEffect(() => {
-    localStorage.setItem('accounts_quota_window', quotaWindow);
-  }, [quotaWindow]);
 
   // Save quota provider preference
   useEffect(() => {
@@ -994,7 +984,7 @@ function Accounts() {
               title={t("accounts.auto_sort", "Auto Sort: High 5H Quota First")}
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{t("accounts.auto_sort", "Auto Sort")}</span>
+              <span className="hidden xl:inline">{t("accounts.auto_sort", "Auto Sort")}</span>
               {autoSort && (
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               )}
@@ -1010,7 +1000,7 @@ function Accounts() {
               title={t("accounts.show_last_used", "Show Last Used Column")}
             >
               <Clock className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{t("accounts.table.last_used", "Last Used")}</span>
+              <span className="hidden xl:inline">{t("accounts.table.last_used", "Last Used")}</span>
               {showLastUsed && (
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
               )}
@@ -1045,40 +1035,8 @@ function Accounts() {
             </button>
           </div>
 
-          {/* 配额窗口与模型族切换控制组 (5H / Weekly & Gemini / Claude) */}
+          {/* 模型提供商切换 (Gemini / Claude) */}
           <div className="flex gap-1 bg-gray-100/80 dark:bg-base-200 p-1 rounded-xl shrink-0 items-center border border-gray-200/50 dark:border-white/5">
-            {/* 5H 与 Weekly 窗口切换 */}
-            <div className="flex items-center gap-0.5">
-              <button
-                className={cn(
-                  "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 shrink-0",
-                  quotaWindow === '5h'
-                    ? "bg-white dark:bg-base-100 text-cyan-600 dark:text-cyan-400 shadow-sm ring-1 ring-black/5"
-                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
-                )}
-                onClick={() => setQuotaWindow('5h')}
-                title={t('accounts.quota_window_5h', '5-Hour Rolling Quota')}
-              >
-                <Clock className="w-3.5 h-3.5" />
-                <span>5H</span>
-              </button>
-              <button
-                className={cn(
-                  "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 shrink-0",
-                  quotaWindow === 'weekly'
-                    ? "bg-white dark:bg-base-100 text-cyan-600 dark:text-cyan-400 shadow-sm ring-1 ring-black/5"
-                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
-                )}
-                onClick={() => setQuotaWindow('weekly')}
-                title={t('accounts.quota_window_weekly', '7-Day Weekly Quota')}
-              >
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{t('accounts.quota_window_weekly_short', 'Weekly')}</span>
-              </button>
-            </div>
-
-            <div className="w-px h-3.5 bg-gray-300 dark:bg-gray-700/80 mx-0.5 shrink-0" />
-
             {/* Gemini / Claude 模型提供商切换 */}
             <div className="flex items-center gap-0.5">
               <button
@@ -1092,7 +1050,7 @@ function Accounts() {
                 title={t('accounts.provider_gemini_tooltip', 'Gemini Quota & Reset Timers')}
               >
                 <Bot className="w-3.5 h-3.5 text-cyan-500" />
-                <span className="hidden sm:inline font-medium">Gemini</span>
+                <span className="hidden xl:inline font-medium">Gemini</span>
                 {quotaProvider === 'gemini' && (
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 )}
@@ -1108,7 +1066,7 @@ function Accounts() {
                 title={t('accounts.provider_claude_tooltip', 'Claude Quota & Reset Timers')}
               >
                 <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                <span className="hidden sm:inline font-medium">Claude</span>
+                <span className="hidden xl:inline font-medium">Claude</span>
                 {quotaProvider === 'claude' && (
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
                 )}
@@ -1224,7 +1182,7 @@ function Accounts() {
                   })}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">
+                  <span className="hidden xl:inline">
                     {t("accounts.delete_selected", { count: selectedIds.size })}
                   </span>
                 </button>
@@ -1236,7 +1194,7 @@ function Accounts() {
                   })}
                 >
                   <ToggleLeft className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">
+                  <span className="hidden xl:inline">
                     {t("accounts.disable_proxy_selected", {
                       count: selectedIds.size,
                     })}
@@ -1250,7 +1208,7 @@ function Accounts() {
                   })}
                 >
                   <ToggleRight className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">
+                  <span className="hidden xl:inline">
                     {t("accounts.enable_proxy_selected", {
                       count: selectedIds.size,
                     })}
@@ -1266,7 +1224,7 @@ function Accounts() {
                 title={t("accounts.stop_refresh", "Stop Refresh")}
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
-                <span className="hidden sm:inline">
+                <span className="hidden xl:inline">
                   {t("accounts.stop_refresh", "Stop Refresh")}
                 </span>
               </button>
@@ -1289,7 +1247,7 @@ function Accounts() {
                 }
               >
                 <RefreshCw className={cn("w-3.5 h-3.5", refreshCooldown > 0 && "opacity-70")} />
-                <span className="hidden sm:inline">
+                <span className="hidden xl:inline">
                   {refreshCooldown > 0
                     ? `${refreshCooldown}s`
                     : selectedIds.size > 0
@@ -1312,7 +1270,7 @@ function Accounts() {
               <Sparkles
                 className={`w-3.5 h-3.5 ${isWarmuping ? "animate-pulse" : ""}`}
               />
-              <span className="hidden sm:inline">
+              <span className="hidden xl:inline">
                 {isWarmuping
                   ? t("common.loading")
                   : selectedIds.size > 0
@@ -1322,7 +1280,7 @@ function Accounts() {
             </button>
 
             <label className="flex items-center gap-2 cursor-pointer select-none px-2 py-2 border border-transparent hover:bg-gray-100 dark:hover:bg-base-200 rounded-lg transition-colors" title={t('accounts.show_all_quotas')}>
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-300 hidden md:inline">
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-300 hidden xl:inline">
                 {t('accounts.show_all_quotas')}
               </span>
               <input
@@ -1341,7 +1299,7 @@ function Accounts() {
               title={t("accounts.import_json")}
             >
               <Upload className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">
+              <span className="hidden xl:inline">
                 {t("accounts.import_json")}
               </span>
             </button>
@@ -1356,7 +1314,7 @@ function Accounts() {
               }
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">
+              <span className="hidden xl:inline">
                 {selectedIds.size > 0
                   ? t("accounts.export_selected", { count: selectedIds.size })
                   : t("common.export")}

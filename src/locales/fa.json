@@ -312,9 +312,12 @@
     },
     "table": {
       "email": "ایمیل",
-      "quota": "سهمیه مدل",
+      "quota": "سهمیه مدل‌ها",
+      "five_hour_countdown": "ریست ۵ ساعته",
+      "weekly_countdown": "ریست هفتگی",
       "last_used": "آخرین استفاده",
-      "actions": "عملیات"
+      "actions": "عملیات",
+      "weekly_info_tooltip": "جعبه‌های ۱ تا ۷: روزهای چرخه هفتگی\nنوار درصد: میزان توکن قابل استفاده در این هفته"
     },
     "drag_to_reorder": "برای تغییر ترتیب بکشید",
     "empty": {
@@ -348,15 +351,7 @@
     },
     "auto_sort": "مرتب‌سازی خودکار",
     "show_last_used": "نمایش آخرین استفاده",
-    "switch_to_agy": "تغییر به Antigravity CLI (agy)",
-    "table": {
-      "email": "ایمیل",
-      "quota": "سهمیه مدل‌ها",
-      "five_hour_countdown": "ریست ۵ ساعته",
-      "weekly_countdown": "ریست هفتگی",
-      "last_used": "آخرین استفاده",
-      "actions": "عملیات"
-    }
+    "drag_column_to_reorder": "برای تغییر ترتیب، ستون را بکشید"
   },
   "settings": {
     "save": "Save Settings",
