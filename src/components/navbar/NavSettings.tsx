@@ -5,6 +5,7 @@ import { LANGUAGES } from './constants';
 import { isTauri } from '../../utils/env';
 import { useViewStore } from '../../stores/useViewStore';
 import { useSupportModalStore } from '../../stores/useSupportModalStore';
+import { NavToolkitBadge } from './NavToolkitBadge';
 
 interface NavSettingsProps {
     theme: 'light' | 'dark';
@@ -42,6 +43,9 @@ export function NavSettings({
         <>
             {/* 独立按钮 (≥ 480px) */}
             <div className="hidden min-[480px]:flex items-center gap-2">
+                {/* Antigravity Toolkit 状态指示器 */}
+                <NavToolkitBadge />
+
                 {/* 赞助与支持按钮 / Support Button */}
                 <button
                     onClick={openModal}

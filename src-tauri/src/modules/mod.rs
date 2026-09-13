@@ -7,6 +7,7 @@ pub mod db;
 pub mod device;
 #[allow(dead_code)]
 pub mod http_api;
+pub mod ide_scanner;
 pub mod i18n;
 pub mod integration;
 pub mod log_bridge;

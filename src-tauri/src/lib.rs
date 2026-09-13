@@ -662,6 +662,11 @@ pub fn run() {
             commands::get_token_stats_account_trend_daily,
             // Brain scanner commands
             commands::scan_brain_conversations,
+            // Antigravity Toolkit & IDE Integration commands
+            commands::get_toolkit_status,
+            commands::detect_installed_ides,
+            commands::install_toolkit_to_ide,
+            commands::record_toolkit_heartbeat,
             proxy::cli_sync::get_cli_sync_status,
             proxy::cli_sync::execute_cli_sync,
             proxy::cli_sync::execute_cli_restore,

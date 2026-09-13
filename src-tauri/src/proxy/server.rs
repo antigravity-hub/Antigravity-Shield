@@ -896,6 +896,11 @@ impl AxumServer {
                 get(admin_get_antigravity_cache_paths),
             )
             .route("/system/logs/clear-cache", post(admin_clear_log_cache))
+            // Antigravity Toolkit & IDE Integration
+            .route("/toolkit/heartbeat", post(admin_toolkit_heartbeat))
+            .route("/toolkit/status", get(admin_toolkit_status))
+            .route("/toolkit/ides", get(admin_detect_installed_ides))
+            .route("/toolkit/install", post(admin_install_toolkit_to_ide))
             // Security / IP Monitoring
             .route("/security/logs", get(admin_get_ip_access_logs))
             .route("/security/logs/clear", post(admin_clear_ip_access_logs))
@@ -2683,6 +2688,37 @@ async fn admin_save_http_api_settings(
         )
     })?;
     Ok(StatusCode::OK)
+}
+
+// Antigravity Toolkit & IDE Integration Handlers
+async fn admin_toolkit_heartbeat(
+    Json(payload): Json<crate::modules::ide_scanner::ToolkitHeartbeatPayload>,
+) -> impl IntoResponse {
+    crate::modules::ide_scanner::record_heartbeat(payload);
+    Json(serde_json::json!({ "status": "ok" }))
+}
+
+async fn admin_toolkit_status() -> impl IntoResponse {
+    Json(crate::modules::ide_scanner::get_connection_status())
+}
+
+async fn admin_detect_installed_ides() -> impl IntoResponse {
+    Json(crate::modules::ide_scanner::detect_all_ides())
+}
+
+#[derive(Deserialize)]
+struct AdminInstallToolkitRequest {
+    ide_id: String,
+}
+
+async fn admin_install_toolkit_to_ide(
+    Json(payload): Json<AdminInstallToolkitRequest>,
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+    tokio::task::spawn_blocking(move || crate::modules::ide_scanner::install_toolkit_to_ide(&payload.ide_id))
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({ "error": e.to_string() }))))?
+        .map(|msg| Json(serde_json::json!({ "success": true, "message": msg })))
+        .map_err(|e| (StatusCode::BAD_REQUEST, Json(serde_json::json!({ "error": e }))))
 }
 
 // Cloudflared Handlers

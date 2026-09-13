@@ -1245,3 +1245,35 @@ pub async fn scan_brain_conversations() -> Result<crate::modules::brain_scanner:
         .map_err(|e| e.to_string())?
 }
 
+// ============================================================================
+// Antigravity Toolkit & IDE Integration Commands
+// ============================================================================
+
+#[tauri::command]
+pub async fn get_toolkit_status() -> Result<crate::modules::ide_scanner::ToolkitConnectionStatus, String> {
+    Ok(crate::modules::ide_scanner::get_connection_status())
+}
+
+#[tauri::command]
+pub async fn detect_installed_ides() -> Result<Vec<crate::modules::ide_scanner::IdeInfo>, String> {
+    tokio::task::spawn_blocking(crate::modules::ide_scanner::detect_all_ides)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn install_toolkit_to_ide(ide_id: String) -> Result<String, String> {
+    tokio::task::spawn_blocking(move || crate::modules::ide_scanner::install_toolkit_to_ide(&ide_id))
+        .await
+        .map_err(|e| e.to_string())?
+}
+
+#[tauri::command]
+pub async fn record_toolkit_heartbeat(
+    payload: crate::modules::ide_scanner::ToolkitHeartbeatPayload,
+) -> Result<(), String> {
+    crate::modules::ide_scanner::record_heartbeat(payload);
+    Ok(())
+}
+
+
