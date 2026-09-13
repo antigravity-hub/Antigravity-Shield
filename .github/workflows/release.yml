@@ -175,6 +175,7 @@ jobs:
         run: |
           if ! npx tauri build --bundles nsis --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-windows.log; then
             echo "::warning::Initial Windows build failed. Checking if caused by updater signature mismatch..."
+            tail -n 80 tauri-build-windows.log || true
             if grep -qiE "signature|minisign|private key|key mismatch" tauri-build-windows.log; then
               echo "::warning::Signing error detected. Retrying build with createUpdaterArtifacts disabled as fallback..."
               node -e "
@@ -184,8 +185,12 @@ jobs:
                 if (c.bundle) c.bundle.createUpdaterArtifacts = false;
                 fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
               "
-              npx tauri build --bundles nsis --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee -a tauri-build-windows.log
+              if ! npx tauri build --bundles nsis --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee -a tauri-build-windows.log; then
+                tail -n 100 tauri-build-windows.log || true
+                exit 1
+              fi
             else
+              tail -n 100 tauri-build-windows.log || true
               exit 1
             fi
           fi

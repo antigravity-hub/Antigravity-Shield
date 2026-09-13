@@ -124,8 +124,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if let Some(p) = cli.port {
         config.proxy.port = p;
     }
-    if let Some(b) = cli.bind {
-        config.proxy.host = b;
+    if let Some(b) = &cli.bind {
+        if b == "0.0.0.0" {
+            config.proxy.allow_lan_access = true;
+        } else if b == "127.0.0.1" {
+            config.proxy.allow_lan_access = false;
+        }
     }
 
     if cli.command == "status" || cli.command == "accounts" {
@@ -150,9 +154,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let integration = antigravity_shield_lib::modules::integration::SystemManager::Headless;
     let monitor = Arc::new(antigravity_shield_lib::proxy::monitor::ProxyMonitor::new(1000, None));
-    let cloudflared_state = Arc::new(antigravity_shield_lib::commands::cloudflared::CloudflaredState::default());
+    let cloudflared_state = Arc::new(antigravity_shield_lib::commands::cloudflared::CloudflaredState::new());
 
-    let host = config.proxy.host.clone();
+    let host = cli.bind.clone().unwrap_or_else(|| config.proxy.get_bind_address().to_string());
     let port = config.proxy.port;
 
     info!("🚀 Launching Axum AI Gateway on http://{}:{}...", host, port);

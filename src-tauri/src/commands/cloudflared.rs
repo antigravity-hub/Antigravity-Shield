@@ -15,7 +15,15 @@ impl CloudflaredState {
             manager: Arc::new(RwLock::new(None)),
         }
     }
+}
 
+impl Default for CloudflaredState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl CloudflaredState {
     /// 确保管理器已初始化
     pub async fn ensure_manager(&self) -> Result<(), String> {
         let mut lock = self.manager.write().await;
