@@ -3,6 +3,11 @@
 > 完整版本历史记录。返回项目主页请查看 [README.md](README.md) | [English Changelog](CHANGELOG_EN.md)。
 
 *   **Version History**:
+    *   **v5.7.3 (2026-09-13)**:
+        -   **[Build & Release Pipeline] Multi-Target Binary Decoupling & Windows Packaging Stabilization**:
+            -   **Rust Visibility Alignment**: Corrected `enabled_account_ids` visibility in `TokenManager` to public, allowing auxiliary binary targets (`shield-daemon`) to compile cleanly across Linux CI and release workflows.
+            -   **Explicit Tauri Binary Targeting**: Configured `release.yml` across Windows, macOS, and Linux packaging pipelines to explicitly pass `--bin antigravity-shield` to Cargo via `tauri build`, eliminating binary resolution ambiguity in multi-target Cargo manifests.
+            -   **Clean Headless Daemon Tracing**: Eliminated unused tracing imports and variables in `daemon_main.rs`, satisfying strict compiler lint gates.
     *   **v5.7.2 (2026-09-12)**:
         -   **[CI/CD & Security] Automated Minisign Key Derivation & Auto-Update Signature Resolution**:
             -   **Dynamic Minisign Public Key Alignment**: Configured GitHub Actions `release.yml` to automatically derive the exact matching Minisign public key directly from repository secret `TAURI_SIGNING_PRIVATE_KEY` during Windows packaging, eliminating key mismatch errors and guaranteeing cryptographic `.sig` artifact generation.

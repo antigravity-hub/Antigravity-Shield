@@ -342,7 +342,7 @@ impl TokenManager {
         scheduler.sync_accounts(self.enabled_account_ids());
     }
 
-    pub(crate) fn enabled_account_ids(&self) -> Vec<String> {
+    pub fn enabled_account_ids(&self) -> Vec<String> {
         self.tokens
             .iter()
             .map(|entry| entry.key().clone())

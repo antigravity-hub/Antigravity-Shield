@@ -173,7 +173,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: |
-          if ! npx tauri build --bundles nsis --ignore-version-mismatches 2>&1 | tee tauri-build-windows.log; then
+          if ! npx tauri build --bundles nsis --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-windows.log; then
             echo "::warning::Initial Windows build failed. Checking if caused by updater signature mismatch..."
             if grep -qiE "signature|minisign|private key|key mismatch" tauri-build-windows.log; then
               echo "::warning::Signing error detected. Retrying build with createUpdaterArtifacts disabled as fallback..."
@@ -184,7 +184,7 @@ jobs:
                 if (c.bundle) c.bundle.createUpdaterArtifacts = false;
                 fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
               "
-              npx tauri build --bundles nsis --ignore-version-mismatches 2>&1 | tee -a tauri-build-windows.log
+              npx tauri build --bundles nsis --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee -a tauri-build-windows.log
             else
               exit 1
             fi
@@ -307,7 +307,7 @@ jobs:
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-        run: npx tauri build --bundles dmg,app --ignore-version-mismatches 2>&1 | tee tauri-build-macos.log
+        run: npx tauri build --bundles dmg,app --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-macos.log
 
       - name: Upload build log on failure
         if: failure()
@@ -437,7 +437,7 @@ jobs:
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-        run: npx tauri build --bundles deb,appimage --ignore-version-mismatches 2>&1 | tee tauri-build-linux.log
+        run: npx tauri build --bundles deb,appimage --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-linux.log
 
       - name: Upload build log on failure
         if: failure()

@@ -4,7 +4,7 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
-use tracing::{error, info, warn};
+use tracing::info;
 
 #[derive(Debug)]
 struct CliArgs {
@@ -157,7 +157,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     info!("🚀 Launching Axum AI Gateway on http://{}:{}...", host, port);
 
-    let (server, _handle) = antigravity_shield_lib::proxy::AxumServer::start(
+    let (_server, _handle) = antigravity_shield_lib::proxy::AxumServer::start(
         host,
         port,
         token_manager.clone(),
