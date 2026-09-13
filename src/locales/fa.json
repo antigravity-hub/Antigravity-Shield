@@ -48,7 +48,16 @@
     "back": "بازگشت",
     "reason": "دلیل",
     "show_raw": "نمایش خام",
-    "show_parsed": "نمایش ساختاریافته"
+    "show_parsed": "نمایش ساختاریافته",
+    "switch": "سوییچ",
+    "switch_best": "سوییچ به بهترین حساب",
+    "switch_best_title": "سوییچ به بهترین حساب",
+    "select_target_title": "انتخاب محیط مقصد",
+    "no_alternative_account": "هیچ حساب جایگزین فعالی با سهمیه کافی یافت نشد.",
+    "switch_confirm_prompt": "آیا می‌خواهید به بهترین حساب پیشنهادی سوییچ کنید؟",
+    "confirm_proceed": "بله، ادامه",
+    "select_target_desc": "محیطی که می‌خواهید سهمیه در آن فعال شود را انتخاب کنید:",
+    "switch_success": "سوییچ با موفقیت انجام شد"
   },
   "nav": {
     "dashboard": "داشبورد",

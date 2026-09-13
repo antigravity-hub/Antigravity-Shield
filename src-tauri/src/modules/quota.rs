@@ -424,13 +424,16 @@ pub async fn fetch_quota_with_cache(
                     if let Some(ref groups) = quota_data.quota_groups {
                         for group in groups {
                             let g_name = group.display_name.to_lowercase();
-                            let is_gemini = g_name.contains("gemini") || !g_name.contains("claude");
                             let is_claude = g_name.contains("claude") || g_name.contains("gpt");
+                            let is_gemini = g_name.contains("gemini") || (!is_claude);
 
                             for bucket in &group.buckets {
                                 let b_win = bucket.window.to_lowercase();
                                 let b_id = bucket.bucket_id.to_lowercase();
-                                let is_5h = b_win.contains("5h") || b_id.contains("5h") || b_win.contains("hour") || b_id.contains("hour");
+                                let b_disp = bucket.display_name.as_deref().unwrap_or("").to_lowercase();
+
+                                let is_weekly = b_win.contains("week") || b_id.contains("week") || b_disp.contains("week") || b_win.contains("168") || b_id.contains("168") || b_win.contains("7d") || b_id.contains("7d");
+                                let is_5h = !is_weekly && (b_win.contains("5h") || b_id.contains("5h") || b_disp.contains("5h") || b_win.contains("5 hour") || b_disp.contains("5 hour") || b_id.contains("5 hour") || b_win.contains("five") || b_id.contains("five") || b_win.contains("18000") || b_id.contains("18000") || b_win.contains("hour") || b_id.contains("hour") || b_disp.contains("hour"));
 
                                 if is_5h {
                                     let group_pct = (bucket.remaining_fraction * 100.0) as i32;

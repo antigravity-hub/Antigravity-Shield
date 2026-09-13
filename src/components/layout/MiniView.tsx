@@ -17,6 +17,7 @@ import { CircularProgressRing } from './CircularProgressRing';
 import { GeminiBrandIcon, ClaudeBrandIcon } from '../common/BrandModelIcons';
 import { AntigravityPlatformIcon, AntigravityIdeIcon, AntigravityCliIcon } from '../common/TargetAppIcons';
 import { getRecommendedBestAccount } from '../../utils/bestAccount';
+import { getBucketPercentage, getAccountFiveHourReset } from '../../utils/quota';
 
 interface ProxyRequestLog {
     id: string;
@@ -162,7 +163,7 @@ export default function MiniView() {
         setIsSwitching(true);
         try {
             await switchAccount(bestAccount.id, target);
-            setSwitchFeedback(t('common.switch_success', 'سوییچ با موفقیت انجام شد'));
+            setSwitchFeedback(t('common.switch_success', 'Switch completed successfully'));
             setTimeout(() => {
                 setSwitchModalOpen(false);
                 setIsSwitching(false);
@@ -179,18 +180,53 @@ export default function MiniView() {
     const geminiFlashModel = findQuotaModel(currentAccount?.quota?.models, 'gemini-flash');
     const claudeModel = findQuotaModel(currentAccount?.quota?.models, 'claude');
 
-    // Aggregate percentages for compact display
-    const geminiPercentage = geminiProModel?.percentage ?? geminiFlashModel?.percentage ?? 0;
-    const claudePercentage = claudeModel?.percentage ?? 0;
+    // 5-hour rolling bucket quota from server groups
+    const gemini5hBucket = getBucketPercentage(currentAccount?.quota?.quota_groups, 'gemini', '5h');
+    const claude5hBucket = getBucketPercentage(currentAccount?.quota?.quota_groups, 'claude', '5h');
+
+    // Quota percentage for compact and micro displays
+    const geminiPercentage = gemini5hBucket !== null 
+        ? gemini5hBucket 
+        : (geminiProModel?.percentage ?? geminiFlashModel?.percentage ?? 0);
+    const claudePercentage = claude5hBucket !== null 
+        ? claude5hBucket 
+        : (claudeModel?.percentage ?? 0);
     const hasClaude = Boolean(claudeModel);
+
+    // Reset cycle calculations for compact time display
+    const geminiCycle = currentAccount ? getAccountFiveHourReset(currentAccount, 'gemini') : null;
+    const claudeCycle = currentAccount ? getAccountFiveHourReset(currentAccount, 'claude') : null;
+    const geminiResetFormatted = geminiCycle?.resetTime ? formatTimeRemaining(geminiCycle.resetTime) : (geminiProModel?.reset_time ? formatTimeRemaining(geminiProModel.reset_time) : null);
+    const claudeResetFormatted = claudeCycle?.resetTime ? formatTimeRemaining(claudeCycle.resetTime) : (claudeModel?.reset_time ? formatTimeRemaining(claudeModel.reset_time) : null);
 
     // Adaptive Breakpoint calculations
     const isMicro = dimensions.width < 155 || dimensions.height < 115;
     const isCompact = !isMicro && (dimensions.width < 255 || dimensions.height < 205);
 
-    // Helper to render standard model row
-    const renderModelRow = (model: any, displayName: string, colorClass: string) => {
+    // Adaptive Micro Ring scaling (scaled proportionally down to 22px to prevent overlapping and clipping)
+    const availableH = Math.max(20, dimensions.height - (dimensions.height >= 80 ? 26 : 10));
+    const availableW = hasClaude && dimensions.width > 85 ? Math.floor((dimensions.width - 24) / 2) : (dimensions.width - 16);
+    const microRingSize = Math.max(22, Math.min(availableH, availableW, 40));
+    const microIconSize = Math.max(10, Math.round(microRingSize * 0.42));
+    const microStrokeWidth = microRingSize <= 28 ? 2 : 3;
+    const shouldShowRingTooltip = dimensions.height >= 80;
+
+    // Helper to render standard model row with optional 5h bucket override
+    const renderModelRow = (
+        model: any, 
+        displayName: string, 
+        colorClass: string,
+        overridePercentage?: number | null,
+        overrideResetTime?: string | null
+    ) => {
         if (!model) return null;
+
+        const percentage = overridePercentage !== undefined && overridePercentage !== null 
+            ? overridePercentage 
+            : model.percentage;
+        const resetDisplay = overrideResetTime !== undefined && overrideResetTime !== null
+            ? overrideResetTime
+            : (model.reset_time ? `R: ${formatTimeRemaining(model.reset_time)}` : t('common.unknown'));
 
         const getStatusColor = (p: number) => {
             if (p >= 50) return 'text-[#93B93B]';
@@ -215,19 +251,19 @@ export default function MiniView() {
                     <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{displayName}</span>
                     <div className="flex items-center gap-2">
                         <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono">
-                            {model.reset_time ? `R: ${formatTimeRemaining(model.reset_time)}` : t('common.unknown')}
+                            {resetDisplay}
                         </span>
-                        <span className={clsx("text-xs font-bold font-mono", getStatusColor(model.percentage))}>
-                            {model.percentage}%
+                        <span className={clsx("text-xs font-bold font-mono", getStatusColor(percentage))}>
+                            {percentage}%
                         </span>
                     </div>
                 </div>
                 <div className="w-full bg-gray-100 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
                     <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${model.percentage}%` }}
+                        animate={{ width: `${percentage}%` }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className={clsx("h-full rounded-full shadow-[0_0_8px_currentColor]", getBarColor(model.percentage))}
+                        className={clsx("h-full rounded-full shadow-[0_0_8px_currentColor]", getBarColor(percentage))}
                     />
                 </div>
             </motion.div>
@@ -244,7 +280,7 @@ export default function MiniView() {
             {/* 1. ULTRA-COMPACT / MICRO RING MODE (width < 155 or height < 115) */}
             {isMicro && (
                 <div 
-                    className="w-full h-full flex flex-col items-center justify-center p-2 relative group select-none"
+                    className="w-full h-full flex flex-col items-center justify-center p-1.5 relative group select-none overflow-hidden"
                     data-tauri-drag-region
                 >
                     {/* Floating top micro-actions on hover */}
@@ -255,7 +291,7 @@ export default function MiniView() {
                         <button
                             onClick={handleOpenSwitchModal}
                             className="p-1 rounded-md bg-white/40 dark:bg-black/60 hover:bg-white/80 dark:hover:bg-white/20 text-amber-500 transition-colors shadow-sm"
-                            title={t('common.switch_best', 'سوییچ به بهترین حساب')}
+                            title={t('common.switch_best', 'Switch to Best Account')}
                             data-no-drag="true"
                         >
                             <Sparkles size={11} />
@@ -270,27 +306,29 @@ export default function MiniView() {
                         </button>
                     </div>
 
-                    {/* Circular Rings in Theme Color #93B93B */}
+                    {/* Circular Rings in Theme Color #93B93B with adaptive sizing */}
                     <div className="flex items-center justify-center gap-2" data-tauri-drag-region>
                         <CircularProgressRing
                             percentage={geminiPercentage}
-                            size={Math.min(dimensions.width - 24, dimensions.height - 24, 46)}
-                            strokeWidth={3.5}
+                            size={microRingSize}
+                            strokeWidth={microStrokeWidth}
                             color="#93B93B"
                             title={`Gemini: ${geminiPercentage}%`}
+                            showTooltip={shouldShowRingTooltip}
                         >
-                            <GeminiBrandIcon size={18} />
+                            <GeminiBrandIcon size={microIconSize} />
                         </CircularProgressRing>
 
                         {hasClaude && dimensions.width > 95 && (
                             <CircularProgressRing
                                 percentage={claudePercentage}
-                                size={Math.min(dimensions.width - 24, dimensions.height - 24, 46)}
-                                strokeWidth={3.5}
+                                size={microRingSize}
+                                strokeWidth={microStrokeWidth}
                                 color="#93B93B"
                                 title={`Claude: ${claudePercentage}%`}
+                                showTooltip={shouldShowRingTooltip}
                             >
-                                <ClaudeBrandIcon size={18} />
+                                <ClaudeBrandIcon size={microIconSize} />
                             </CircularProgressRing>
                         )}
                     </div>
@@ -315,7 +353,7 @@ export default function MiniView() {
                             <button
                                 onClick={handleOpenSwitchModal}
                                 className="p-1.5 rounded-lg hover:bg-gray-200/60 dark:hover:bg-white/10 text-amber-500 hover:scale-105 active:scale-95 transition-all"
-                                title={t('common.switch_best', 'سوییچ به بهترین حساب')}
+                                title={t('common.switch_best', 'Switch to Best Account')}
                                 data-no-drag="true"
                             >
                                 <Sparkles size={13} />
@@ -331,27 +369,41 @@ export default function MiniView() {
                         </div>
                     </div>
 
-                    {/* Dual Capsule Badges */}
+                    {/* Dual Capsule Badges with Time beside Percentage */}
                     <div className="flex-1 flex flex-col justify-center gap-1.5" data-tauri-drag-region>
                         <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-gray-100/80 dark:bg-white/5 border border-gray-200/50 dark:border-white/5 shadow-sm">
-                            <div className="flex items-center gap-2">
-                                <GeminiBrandIcon size={16} />
-                                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Gemini</span>
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                                <GeminiBrandIcon size={16} className="shrink-0" />
+                                <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">Gemini</span>
                             </div>
-                            <span className={clsx("text-xs font-bold font-mono", geminiPercentage >= 50 ? "text-[#93B93B]" : geminiPercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
-                                {geminiPercentage}%
-                            </span>
+                            <div className="flex items-center gap-2 shrink-0">
+                                {geminiResetFormatted && (
+                                    <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono shrink-0">
+                                        R: {geminiResetFormatted}
+                                    </span>
+                                )}
+                                <span className={clsx("text-xs font-bold font-mono shrink-0", geminiPercentage >= 50 ? "text-[#93B93B]" : geminiPercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
+                                    {geminiPercentage}%
+                                </span>
+                            </div>
                         </div>
 
                         {hasClaude && (
                             <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-gray-100/80 dark:bg-white/5 border border-gray-200/50 dark:border-white/5 shadow-sm">
-                                <div className="flex items-center gap-2">
-                                    <ClaudeBrandIcon size={16} />
-                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Claude</span>
+                                <div className="flex items-center gap-2 min-w-0 flex-1">
+                                    <ClaudeBrandIcon size={16} className="shrink-0" />
+                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">Claude</span>
                                 </div>
-                                <span className={clsx("text-xs font-bold font-mono", claudePercentage >= 50 ? "text-[#93B93B]" : claudePercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
-                                    {claudePercentage}%
-                                </span>
+                                <div className="flex items-center gap-2 shrink-0">
+                                    {claudeResetFormatted && (
+                                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono shrink-0">
+                                            R: {claudeResetFormatted}
+                                        </span>
+                                    )}
+                                    <span className={clsx("text-xs font-bold font-mono shrink-0", claudePercentage >= 50 ? "text-[#93B93B]" : claudePercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
+                                        {claudePercentage}%
+                                    </span>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -384,10 +436,10 @@ export default function MiniView() {
                                 onClick={handleOpenSwitchModal}
                                 data-no-drag="true"
                                 className="flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-medium transition-all"
-                                title={t('common.switch_best', 'سوییچ به بهترین حساب')}
+                                title={t('common.switch_best', 'Switch to Best Account')}
                             >
                                 <Sparkles size={13} />
-                                <span>{t('common.switch', 'سوییچ')}</span>
+                                <span>{t('common.switch', 'Switch')}</span>
                             </button>
                             <div className="w-px h-3 bg-gray-300 dark:bg-white/20 mx-0.5" />
                             <button
@@ -426,9 +478,27 @@ export default function MiniView() {
                                 {/* Models List */}
                                 <AnimatePresence mode="popLayout">
                                     <div className="space-y-3.5">
-                                        {renderModelRow(geminiProModel, getModelDisplayName(geminiProModel), 'emerald')}
-                                        {renderModelRow(geminiFlashModel, getModelDisplayName(geminiFlashModel), 'emerald')}
-                                        {renderModelRow(claudeModel, getModelDisplayName(claudeModel, t('common.claude_series', 'Claude 系列')), 'cyan')}
+                                        {renderModelRow(
+                                            geminiProModel, 
+                                            getModelDisplayName(geminiProModel), 
+                                            'emerald',
+                                            gemini5hBucket !== null && gemini5hBucket < (geminiProModel?.percentage ?? 100) ? gemini5hBucket : geminiProModel?.percentage,
+                                            geminiResetFormatted ? `R: ${geminiResetFormatted}` : null
+                                        )}
+                                        {renderModelRow(
+                                            geminiFlashModel, 
+                                            getModelDisplayName(geminiFlashModel), 
+                                            'emerald',
+                                            gemini5hBucket !== null && gemini5hBucket < (geminiFlashModel?.percentage ?? 100) ? gemini5hBucket : geminiFlashModel?.percentage,
+                                            geminiResetFormatted ? `R: ${geminiResetFormatted}` : null
+                                        )}
+                                        {renderModelRow(
+                                            claudeModel, 
+                                            getModelDisplayName(claudeModel, t('common.claude_series', 'Claude Series')), 
+                                            'cyan',
+                                            claude5hBucket !== null && claude5hBucket < (claudeModel?.percentage ?? 100) ? claude5hBucket : claudeModel?.percentage,
+                                            claudeResetFormatted ? `R: ${claudeResetFormatted}` : null
+                                        )}
 
                                         {!geminiProModel && !geminiFlashModel && !claudeModel && (
                                             <div className="text-center py-4 text-xs text-gray-400">
@@ -512,7 +582,7 @@ export default function MiniView() {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5 text-xs font-bold text-gray-900 dark:text-white">
                                     <Sparkles size={14} className="text-amber-500" />
-                                    <span>{switchStep === 'confirm' ? t('common.switch_best_title', 'سوییچ به بهترین حساب') : t('common.select_target_title', 'انتخاب محیط مقصد')}</span>
+                                    <span>{switchStep === 'confirm' ? t('common.switch_best_title', 'Switch to Best Account') : t('common.select_target_title', 'Select Target Environment')}</span>
                                 </div>
                                 <button
                                     onClick={() => setSwitchModalOpen(false)}
@@ -528,12 +598,12 @@ export default function MiniView() {
                                 <div className="space-y-3">
                                     {!bestAccount ? (
                                         <div className="text-center py-2 text-xs text-gray-500 dark:text-gray-400">
-                                            {t('common.no_alternative_account', 'هیچ حساب جایگزین فعالی با سهمیه کافی یافت نشد.')}
+                                            {t('common.no_alternative_account', 'No active alternative account with sufficient quota found.')}
                                         </div>
                                     ) : (
                                         <>
                                             <p className="text-xs text-gray-600 dark:text-gray-300">
-                                                {t('common.switch_confirm_prompt', 'آیا می‌خواهید به بهترین اکانت سوییچ کنید؟')}
+                                                {t('common.switch_confirm_prompt', 'Do you want to switch to the best recommended account?')}
                                             </p>
 
                                             {/* Preview Best Account Box */}
@@ -557,7 +627,7 @@ export default function MiniView() {
                                             className="px-2.5 py-1 text-xs rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                                             data-no-drag="true"
                                         >
-                                            {t('common.cancel', 'انصراف')}
+                                            {t('common.cancel', 'Cancel')}
                                         </button>
                                         {bestAccount && (
                                             <button
@@ -565,7 +635,7 @@ export default function MiniView() {
                                                 className="px-3 py-1 text-xs rounded-lg bg-[#93B93B] hover:bg-[#83a734] text-black font-semibold shadow-md transition-all active:scale-95"
                                                 data-no-drag="true"
                                             >
-                                                {t('common.confirm_proceed', 'بله، ادامه')}
+                                                {t('common.confirm_proceed', 'Yes, Continue')}
                                             </button>
                                         )}
                                     </div>
@@ -576,7 +646,7 @@ export default function MiniView() {
                             {switchStep === 'target' && (
                                 <div className="space-y-3">
                                     <p className="text-[11px] text-gray-600 dark:text-gray-300">
-                                        {t('common.select_target_desc', 'محیطی که می‌خواهید سهمیه در آن فعال شود را انتخاب کنید:')}
+                                        {t('common.select_target_desc', 'Select the target environment where quota should be activated:')}
                                     </p>
 
                                     {/* 3 Interactive Target Icons */}

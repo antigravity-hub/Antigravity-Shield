@@ -6,6 +6,7 @@ import { isTauri } from '../../utils/env';
 import { useViewStore } from '../../stores/useViewStore';
 import { useSupportModalStore } from '../../stores/useSupportModalStore';
 import { NavToolkitBadge } from './NavToolkitBadge';
+import { enterMiniMode } from '../../utils/windowManager';
 
 interface NavSettingsProps {
     theme: 'light' | 'dark';
@@ -57,7 +58,10 @@ export function NavSettings({
 
                 {/* 迷你视图切换按钮 */}
                 <button
-                    onClick={() => setMiniView(true)}
+                    onClick={async () => {
+                        setMiniView(true);
+                        await enterMiniMode(320);
+                    }}
                     className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100 flex items-center justify-center transition-colors"
                     title={t('nav.mini_view', 'Mini View')}
                 >

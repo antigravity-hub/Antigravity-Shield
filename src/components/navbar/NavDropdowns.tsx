@@ -4,6 +4,7 @@ import { ChevronDown, MoreVertical, Sun, Moon, LogOut, Minimize2, Heart } from '
 import { useTranslation } from 'react-i18next';
 import type { NavItem, Language } from './constants';
 import { isTauri } from '../../utils/env';
+import { enterMiniMode } from '../../utils/windowManager';
 import { useViewStore } from '../../stores/useViewStore';
 import { useSupportModalStore } from '../../stores/useSupportModalStore';
 import { FlagIcon } from '../common/FlagIcon';
@@ -230,9 +231,10 @@ export function MoreDropdown({
 
                     {/* 迷你视图 */}
                     <button
-                        onClick={() => {
+                        onClick={async () => {
                             setMiniView(true);
                             setIsOpen(false);
+                            await enterMiniMode(320);
                         }}
                         className="w-full px-4 py-2.5 text-left rtl:text-right text-sm flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-base-100 transition-colors text-gray-700 dark:text-gray-300"
                     >

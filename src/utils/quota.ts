@@ -41,11 +41,13 @@ export function getAccountCycleReset(
             for (const b of group.buckets || []) {
                 const bWindow = (b.window || '').toLowerCase();
                 const bId = (b.bucket_id || '').toLowerCase();
+                const bDisplay = (b.display_name || '').toLowerCase();
 
-                const matches =
-                    windowType === 'weekly'
-                        ? bWindow.includes('week') || bId.includes('week')
-                        : bWindow.includes('5h') || bWindow.includes('5 hour') || bId.includes('5h') || bId.includes('five');
+                const isWeekly = bWindow.includes('week') || bId.includes('week') || bDisplay.includes('week') || bWindow.includes('168') || bId.includes('168') || bWindow.includes('7d') || bId.includes('7d');
+                const is5h = (bWindow.includes('5h') || bId.includes('5h') || bDisplay.includes('5h') || bWindow.includes('5 hour') || bDisplay.includes('5 hour') || bId.includes('5 hour') || bWindow.includes('five') || bId.includes('five') || bWindow.includes('18000') || bId.includes('18000')) ||
+                    (!isWeekly && (bWindow.includes('hour') || bId.includes('hour') || bDisplay.includes('hour')));
+
+                const matches = windowType === 'weekly' ? isWeekly : (is5h && !isWeekly);
 
                 if (matches && b.reset_time) {
                     const target = new Date(b.reset_time).getTime();
@@ -222,28 +224,48 @@ export function getBucketPercentage(
 ): number | null {
     if (!quotaGroups || quotaGroups.length === 0) return null;
 
+    const findMatchingBucket = (group: QuotaGroup) => {
+        return group.buckets?.find(b => {
+            const win = (b.window || '').toLowerCase();
+            const id = (b.bucket_id || '').toLowerCase();
+            const dName = (b.display_name || '').toLowerCase();
+
+            const isWeekly = win.includes('week') || id.includes('week') || dName.includes('week') || win.includes('168') || id.includes('168') || win.includes('7d') || id.includes('7d');
+            const is5h = (win.includes('5h') || id.includes('5h') || dName.includes('5h') || win.includes('5 hour') || dName.includes('5 hour') || id.includes('5 hour') || win.includes('five') || id.includes('five') || win.includes('18000') || id.includes('18000')) ||
+                (!isWeekly && (win.includes('hour') || id.includes('hour') || dName.includes('hour')));
+
+            return targetWindow === 'weekly' ? isWeekly : (is5h && !isWeekly);
+        });
+    };
+
+    // 1. Try explicit matching groups first
     for (const group of quotaGroups) {
         const name = (group.display_name || '').toLowerCase();
-        const isTarget = category === 'claude'
+        const isExplicit = category === 'claude'
             ? (name.includes('claude') || name.includes('gpt'))
-            : (name.includes('gemini') || !name.includes('claude'));
+            : name.includes('gemini');
 
-        if (isTarget) {
-            const bucket = group.buckets?.find(b => {
-                const win = (b.window || '').toLowerCase();
-                const id = (b.bucket_id || '').toLowerCase();
-                if (targetWindow === 'weekly') {
-                    return win.includes('week') || id.includes('week');
-                } else {
-                    return win.includes('5h') || id.includes('5h') || win.includes('hour') || id.includes('hour');
-                }
-            });
-
+        if (isExplicit) {
+            const bucket = findMatchingBucket(group);
             if (bucket && typeof bucket.remaining_fraction === 'number') {
                 return Math.round(bucket.remaining_fraction * 100);
             }
         }
     }
+
+    // 2. Fallback for gemini if no group explicitly named "gemini" exists
+    if (category === 'gemini') {
+        for (const group of quotaGroups) {
+            const name = (group.display_name || '').toLowerCase();
+            if (!name.includes('claude') && !name.includes('gpt')) {
+                const bucket = findMatchingBucket(group);
+                if (bucket && typeof bucket.remaining_fraction === 'number') {
+                    return Math.round(bucket.remaining_fraction * 100);
+                }
+            }
+        }
+    }
+
     return null;
 }
 

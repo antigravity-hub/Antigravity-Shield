@@ -48,7 +48,16 @@
     "back": "Back",
     "reason": "Reason",
     "show_raw": "Show Raw",
-    "show_parsed": "Show Parsed"
+    "show_parsed": "Show Parsed",
+    "switch": "Switch",
+    "switch_best": "Switch to Best Account",
+    "switch_best_title": "Switch to Best Account",
+    "select_target_title": "Select Target Environment",
+    "no_alternative_account": "No active alternative account with sufficient quota found.",
+    "switch_confirm_prompt": "Do you want to switch to the best recommended account?",
+    "confirm_proceed": "Yes, Continue",
+    "select_target_desc": "Select the target environment where quota should be activated:",
+    "switch_success": "Switch completed successfully"
   },
   "nav": {
     "dashboard": "Dashboard",
