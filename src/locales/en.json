@@ -96,7 +96,12 @@
     "switch_to_persian_short": "FA",
     "user_token": "User Tokens",
     "apikey_fun": "Transit Station",
-    "logout": "Logout"
+    "logout": "Logout",
+    "mini_view": "Mini View (Floating Widget)",
+    "window_minimize": "Minimize",
+    "window_maximize": "Maximize",
+    "window_restore": "Restore Down",
+    "window_close": "Close"
   },
   "dashboard": {
     "hello": "Hello, User 👋",

@@ -96,7 +96,12 @@
     "switch_to_persian_short": "FA",
     "user_token": "توکن‌های کاربر",
     "apikey_fun": "ایستگاه ترانزیت API",
-    "logout": "خروج"
+    "logout": "خروج",
+    "mini_view": "نمای مینی (ویجت شناور)",
+    "window_minimize": "کوچک‌کردن (Minimize)",
+    "window_maximize": "تمام‌صفحه (Maximize)",
+    "window_restore": "بازیابی اندازه (Restore)",
+    "window_close": "بستن (Close)"
   },
   "dashboard": {
     "hello": "سلام کاربر عزیز 👋",

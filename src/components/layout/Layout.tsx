@@ -10,6 +10,8 @@ import { useEffect } from 'react';
 import { isTauri } from '../../utils/env';
 import { ensureFullViewState } from '../../utils/windowManager';
 
+import WindowControls from './WindowControls';
+
 function Layout() {
     const { isMiniView } = useViewStore();
 
@@ -36,7 +38,7 @@ function Layout() {
         <div className="h-screen flex flex-col bg-[#FAFBFC] dark:bg-[#090d16] text-slate-900 dark:text-slate-100">
             {/* 全局窗口拖拽区域 - 使用 JS 手动触发拖拽，解决 HTML 属性失效问题 */}
             <div
-                className="fixed top-0 left-0 right-0 h-9"
+                className="fixed top-0 left-0 right-36 h-9"
                 style={{
                     zIndex: 9999,
                     backgroundColor: 'rgba(0,0,0,0.001)',
@@ -48,7 +50,15 @@ function Layout() {
                 onMouseDown={() => {
                     getCurrentWindow().startDragging();
                 }}
+                onDoubleClick={async () => {
+                    if (isTauri()) {
+                        try {
+                            await getCurrentWindow().toggleMaximize();
+                        } catch {}
+                    }
+                }}
             />
+            <WindowControls />
             <BackgroundTaskRunner />
             <ToastContainer />
             <SupportModal />
