@@ -353,13 +353,21 @@ pub fn install_toolkit_to_ide(ide_id: &str) -> Result<String, String> {
                 .or_else(|| crate::modules::process::get_antigravity_executable_path(None))
                 .ok_or_else(|| "Antigravity IDE executable not found.".to_string())?;
 
+            let cli_js = exe.parent().map(|p| p.join("resources").join("app").join("out").join("cli.js"));
             let bin_cmd = exe.parent().map(|p| p.join("bin").join("antigravity-ide.cmd"));
             let bin_sh = exe.parent().map(|p| p.join("bin").join("antigravity-ide"));
 
-            let output = if cfg!(target_os = "windows") && bin_cmd.as_ref().map(|p| p.exists()).unwrap_or(false) {
+            let output = if let Some(cli) = cli_js.filter(|p| p.exists()) {
+                // Direct Node-mode Electron execution; completely avoids cmd.exe space escaping issues
+                Command::new(&exe)
+                    .env("ELECTRON_RUN_AS_NODE", "1")
+                    .args([&cli.to_string_lossy().to_string(), "--install-extension", &vsix_str])
+                    .output()
+                    .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
+            } else if cfg!(target_os = "windows") && bin_cmd.as_ref().map(|p| p.exists()).unwrap_or(false) {
                 let cmd_file = bin_cmd.unwrap();
                 Command::new("cmd")
-                    .args(["/c", &cmd_file.to_string_lossy(), "--install-extension", &vsix_str])
+                    .args(["/s", "/c", &format!("\"\"{}\" --install-extension \"{}\"\"", cmd_file.to_string_lossy(), vsix_str)])
                     .output()
                     .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
             } else if bin_sh.as_ref().map(|p| p.exists()).unwrap_or(false) {
