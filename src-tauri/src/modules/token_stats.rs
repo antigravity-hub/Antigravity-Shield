@@ -59,6 +59,111 @@ pub struct AccountTrendPoint {
     pub account_data: std::collections::HashMap<String, u64>,
 }
 
+/// Normalize raw model identifiers (including thinking degrees, experimental variants, preview tags)
+/// into standard canonical model families for clean dashboard display and analytics.
+pub fn normalize_model_family(raw: &str) -> String {
+    let lower = raw.trim().to_lowercase();
+    if lower.is_empty() || lower == "unknown" {
+        return "Unknown".to_string();
+    }
+
+    // Gemini 3.8 Flash
+    if lower.contains("3.8-flash") || lower.contains("3p8-flash") {
+        return "Gemini 3.8 Flash".to_string();
+    }
+    // Gemini 3.7 Flash
+    if lower.contains("3.7-flash") || lower.contains("3p7-flash") {
+        return "Gemini 3.7 Flash".to_string();
+    }
+    // Gemini 3.6 Flash
+    if lower.contains("3.6-flash") || lower.contains("3p6-flash") {
+        return "Gemini 3.6 Flash".to_string();
+    }
+    // Gemini 3.5 Flash
+    if lower.contains("3.5-flash") || lower.contains("3p5-flash") {
+        return "Gemini 3.5 Flash".to_string();
+    }
+    // Gemini 3.1 Pro
+    if lower.contains("3.1-pro") || lower.contains("3p1-pro") {
+        return "Gemini 3.1 Pro".to_string();
+    }
+    // Gemini 3.1 Flash
+    if lower.contains("3.1-flash") || lower.contains("3p1-flash") {
+        return "Gemini 3.1 Flash".to_string();
+    }
+    // Gemini 2.5 Pro
+    if lower.contains("2.5-pro") || lower.contains("2p5-pro") {
+        return "Gemini 2.5 Pro".to_string();
+    }
+    // Gemini 2.5 Flash
+    if lower.contains("2.5-flash") || lower.contains("2p5-flash") {
+        return "Gemini 2.5 Flash".to_string();
+    }
+    // Gemini Pro Generic
+    if lower == "gemini-pro" || lower == "gemini-pro-agent" || lower.contains("gemini-1.5-pro") {
+        return "Gemini Pro".to_string();
+    }
+    // Gemini Flash Generic
+    if lower == "gemini-flash" || lower == "gemini-3-flash" || lower.contains("flash-agent") {
+        return "Gemini Flash".to_string();
+    }
+    // Claude 3.7 / 4 Sonnet
+    if lower.contains("sonnet-4") || lower.contains("claude-sonnet") || lower.contains("claude-3-7-sonnet") {
+        return "Claude 3.7 Sonnet".to_string();
+    }
+    // Claude 3.5 / 4 Opus
+    if lower.contains("opus-4") || lower.contains("claude-opus") || lower.contains("claude-3-opus") {
+        return "Claude 3.7 Opus".to_string();
+    }
+    // Claude 3.5 Haiku
+    if lower.contains("haiku") {
+        return "Claude 3.5 Haiku".to_string();
+    }
+    // GPT-4o / GPT-OSS
+    if lower.contains("gpt-oss") || lower == "gpt-oss" {
+        return "GPT-OSS Series".to_string();
+    }
+    if lower.contains("gpt-4o") {
+        return "GPT-4o".to_string();
+    }
+    if lower.contains("o3") {
+        return "OpenAI o3".to_string();
+    }
+    if lower.contains("o1") {
+        return "OpenAI o1".to_string();
+    }
+    // DeepSeek
+    if lower.contains("deepseek-r1") || lower.contains("deepseek-reasoner") {
+        return "DeepSeek R1".to_string();
+    }
+    if lower.contains("deepseek-v3") || lower.contains("deepseek-chat") {
+        return "DeepSeek V3".to_string();
+    }
+    // GLM / Z-AI
+    if lower.contains("glm-5") || lower.contains("z-ai") {
+        return "GLM-5 Flash".to_string();
+    }
+    // Antigravity Internal Auto
+    if lower == "gemini-auto" || lower == "gemini-default" || lower == "g-auto" || lower == "g-default" {
+        return "Gemini Auto (Smart Router)".to_string();
+    }
+    if lower == "antigravity ide" || lower == "gemini-cli" || lower.contains("guide.md") {
+        return "Antigravity Assistant".to_string();
+    }
+
+    // Default formatting: Capitalize words
+    raw.split('-')
+        .map(|s| {
+            let mut c = s.chars();
+            match c.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+            }
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
+}
+
 pub(crate) fn get_db_path() -> Result<PathBuf, String> {
     let data_dir = crate::modules::account::get_data_dir()?;
     Ok(data_dir.join("token_stats.db"))
@@ -450,10 +555,27 @@ pub fn get_model_stats(hours: i64) -> Result<Vec<ModelTokenStats>, String> {
         })
         .map_err(|e| e.to_string())?;
 
-    let mut result = Vec::new();
+    let mut family_map: std::collections::HashMap<String, ModelTokenStats> = std::collections::HashMap::new();
     for row in rows {
-        result.push(row.map_err(|e| e.to_string())?);
+        let stat = row.map_err(|e| e.to_string())?;
+        let family = normalize_model_family(&stat.model);
+        let entry = family_map.entry(family.clone()).or_insert_with(|| ModelTokenStats {
+            model: family,
+            total_input_tokens: 0,
+            total_output_tokens: 0,
+            total_cached_tokens: 0,
+            total_tokens: 0,
+            request_count: 0,
+        });
+        entry.total_input_tokens += stat.total_input_tokens;
+        entry.total_output_tokens += stat.total_output_tokens;
+        entry.total_cached_tokens += stat.total_cached_tokens;
+        entry.total_tokens += stat.total_tokens;
+        entry.request_count += stat.request_count;
     }
+
+    let mut result: Vec<ModelTokenStats> = family_map.into_values().collect();
+    result.sort_by(|a, b| b.total_tokens.cmp(&a.total_tokens));
     Ok(result)
 }
 
@@ -488,7 +610,9 @@ pub fn get_model_trend_hourly(hours: i64) -> Result<Vec<ModelTrendPoint>, String
 
     for row in rows {
         let (period, model, total) = row.map_err(|e| e.to_string())?;
-        trend_map.entry(period).or_default().insert(model, total);
+        let family = normalize_model_family(&model);
+        let period_entry = trend_map.entry(period).or_default();
+        *period_entry.entry(family).or_insert(0) += total;
     }
 
     Ok(trend_map
@@ -528,7 +652,9 @@ pub fn get_model_trend_daily(days: i64) -> Result<Vec<ModelTrendPoint>, String> 
 
     for row in rows {
         let (period, model, total) = row.map_err(|e| e.to_string())?;
-        trend_map.entry(period).or_default().insert(model, total);
+        let family = normalize_model_family(&model);
+        let period_entry = trend_map.entry(period).or_default();
+        *period_entry.entry(family).or_insert(0) += total;
     }
 
     Ok(trend_map

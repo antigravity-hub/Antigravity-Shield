@@ -189,6 +189,10 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
             let mut new_in_tokens = 0u64;
             let mut new_out_tokens = 0u64;
             let mut lines_processed = 0;
+            // Accumulate tokens grouped by hourly timestamp bucket
+            let mut bucket_map: std::collections::BTreeMap<i64, (u64, u64, u64)> = std::collections::BTreeMap::new();
+            let mut conversation_start_time: Option<i64> = None;
+            let mut last_message_time: Option<i64> = None;
 
             for line in reader.lines().flatten() {
                 line_count += 1;
@@ -201,12 +205,33 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                     let stype = json.get("type").and_then(|v| v.as_str());
                     let source = json.get("source").and_then(|v| v.as_str());
 
+                    // Extract actual created_at timestamp if present
+                    let msg_ts = json.get("created_at")
+                        .and_then(|v| v.as_str())
+                        .and_then(|s| chrono::DateTime::parse_from_rfc3339(s).ok())
+                        .map(|dt| dt.timestamp());
+
+                    if let Some(ts) = msg_ts {
+                        if conversation_start_time.is_none() {
+                            conversation_start_time = Some(ts);
+                        }
+                        last_message_time = Some(ts);
+                    }
+                    let current_ts = msg_ts.or(last_message_time).unwrap_or_else(|| Utc::now().timestamp());
+                    // Group to hourly timestamp
+                    let bucket_ts = (current_ts / 3600) * 3600;
+
                     let mut in_t = 0u64;
                     let mut out_t = 0u64;
+                    let mut cached_t = 0u64;
 
                     if let Some(usage) = json.get("usage") {
                         in_t = usage.get("input_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
                         out_t = usage.get("output_tokens").or(usage.get("total_tokens")).and_then(|v| v.as_u64()).unwrap_or(0);
+                        cached_t = usage.get("cache_read_input_tokens")
+                            .or_else(|| usage.get("cached_tokens"))
+                            .or_else(|| usage.get("cachedContentTokenCount"))
+                            .and_then(|v| v.as_u64()).unwrap_or(0);
                     }
 
                     if stype == Some("USER_INPUT") || stype == Some("USER_EXPLICIT") || source == Some("USER") {
@@ -214,12 +239,20 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                             let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
                             in_t = (content_len as f64 / 3.8).ceil() as u64;
                         }
-                        new_in_tokens += in_t.max(1);
+                        let in_val = in_t.max(1);
+                        new_in_tokens += in_val;
+                        let entry = bucket_map.entry(bucket_ts).or_insert((0, 0, 0));
+                        entry.0 += in_val;
+                        entry.2 += cached_t;
                     } else if stype == Some("GENERIC") {
                         // Tool outputs are part of model input
                         let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
                         let tool_in = (content_len as f64 / 3.8).ceil() as u64;
-                        new_in_tokens += tool_in.max(1);
+                        let tool_val = tool_in.max(1);
+                        new_in_tokens += tool_val;
+                        let entry = bucket_map.entry(bucket_ts).or_insert((0, 0, 0));
+                        entry.0 += tool_val;
+                        entry.2 += cached_t;
                     } else if stype == Some("PLANNER_RESPONSE") || source == Some("MODEL") {
                         if out_t == 0 {
                             let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
@@ -229,7 +262,11 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                                 .unwrap_or(0);
                             out_t = ((content_len + thinking_len + tc_len) as f64 / 3.8).ceil() as u64;
                         }
-                        new_out_tokens += out_t.max(1);
+                        let out_val = out_t.max(1);
+                        new_out_tokens += out_val;
+                        let entry = bucket_map.entry(bucket_ts).or_insert((0, 0, 0));
+                        entry.1 += out_val;
+                        entry.2 += cached_t;
                     }
                 }
             }
@@ -242,18 +279,31 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                 
                 if new_tokens_for_conv > 0 {
                     let (model, platform) = get_conversation_metadata(&env_dir, &name);
-                    let now = Utc::now().timestamp();
 
-                    if let Err(e) = crate::modules::token_stats::record_usage_full(
-                        &account_email,
-                        &model,
-                        new_in_tokens as u32,
-                        new_out_tokens as u32,
-                        0,
-                        &platform,
-                        Some(now),
-                    ) {
-                        result.errors.push(format!("Failed to record usage for {}: {}", name, e));
+                    // Estimate cached tokens for sessions with multiple turns if raw usage didn't report them
+                    let total_cached_in_session: u64 = bucket_map.values().map(|v| v.2).sum();
+                    let should_estimate_cache = total_cached_in_session == 0 && lines_processed > 3;
+
+                    for (bucket_ts, (in_tok, out_tok, raw_cached)) in bucket_map {
+                        let final_cached = if should_estimate_cache {
+                            // In multi-turn assistant sessions, system instructions and context prefixes (~15-30% of input)
+                            // are implicitly served from Gemini/Claude KV cache
+                            ((in_tok as f64) * 0.25).round() as u32
+                        } else {
+                            raw_cached as u32
+                        };
+
+                        if let Err(e) = crate::modules::token_stats::record_usage_full(
+                            &account_email,
+                            &model,
+                            in_tok as u32,
+                            out_tok as u32,
+                            final_cached,
+                            &platform,
+                            Some(bucket_ts),
+                        ) {
+                            result.errors.push(format!("Failed to record usage for {}: {}", name, e));
+                        }
                     }
                     result.total_new_tokens += new_tokens_for_conv;
                     total_tokens += new_tokens_for_conv;
