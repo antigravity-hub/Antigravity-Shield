@@ -104,8 +104,22 @@ pub fn detect_all_ides() -> Vec<IdeInfo> {
 
 /// Detects Antigravity IDE (official standalone IDE)
 fn detect_antigravity_ide() -> IdeInfo {
-    let exe_path = crate::modules::process::get_antigravity_executable_path(Some("ide"))
+    let mut exe_path = crate::modules::process::get_antigravity_executable_path(Some("ide"))
         .or_else(|| crate::modules::process::get_antigravity_executable_path(None));
+
+    // Normalize if path points to language server or nested helper
+    if let Some(ref exe) = exe_path {
+        let exe_str = exe.to_string_lossy().to_string();
+        if exe_str.contains("resources") || exe_str.contains("extensions") || exe_str.contains("language_server") {
+            if let Some(pos) = exe_str.to_lowercase().find("antigravity ide") {
+                let root_dir = PathBuf::from(&exe_str[..pos + "antigravity ide".len()]);
+                let cand = root_dir.join("Antigravity IDE.exe");
+                if cand.exists() {
+                    exe_path = Some(cand);
+                }
+            }
+        }
+    }
 
     let is_installed = exe_path.is_some();
     let path_str = exe_path.as_ref().map(|p| p.to_string_lossy().to_string());
@@ -354,9 +368,21 @@ pub fn install_toolkit_to_ide(ide_id: &str) -> Result<String, String> {
 
     match ide_id {
         "antigravity" => {
-            let exe = crate::modules::process::get_antigravity_executable_path(Some("ide"))
+            let mut exe = crate::modules::process::get_antigravity_executable_path(Some("ide"))
                 .or_else(|| crate::modules::process::get_antigravity_executable_path(None))
                 .ok_or_else(|| "Antigravity IDE executable not found.".to_string())?;
+
+            // Normalize if path points to language server or nested helper
+            let exe_str = exe.to_string_lossy().to_string();
+            if exe_str.contains("resources") || exe_str.contains("extensions") || exe_str.contains("language_server") {
+                if let Some(pos) = exe_str.to_lowercase().find("antigravity ide") {
+                    let root_dir = PathBuf::from(&exe_str[..pos + "antigravity ide".len()]);
+                    let cand = root_dir.join("Antigravity IDE.exe");
+                    if cand.exists() {
+                        exe = cand;
+                    }
+                }
+            }
 
             let cli_js = exe.parent().map(|p| p.join("resources").join("app").join("out").join("cli.js"));
             let bin_cmd = exe.parent().map(|p| p.join("bin").join("antigravity-ide.cmd"));

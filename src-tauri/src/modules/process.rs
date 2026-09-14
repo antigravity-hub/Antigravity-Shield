@@ -1150,6 +1150,14 @@ fn get_process_info(target_ide: Option<&str>) -> (Option<std::path::PathBuf>, Op
                 || name.contains("utility")
                 || name.contains("audio")
                 || name.contains("sandbox")
+                || name.contains("language_server")
+                || name.contains("languageserver")
+                || exe_path.contains("language_server")
+                || exe_path.contains("languageserver")
+                || exe_path.contains("resources\\app")
+                || exe_path.contains("resources/app")
+                || exe_path.contains("extensions\\")
+                || exe_path.contains("extensions/")
                 || exe_path.contains("crashpad");
 
             let path = Some(exe.to_path_buf());
