@@ -823,6 +823,7 @@ pub async fn test_proxy_connection(url: String) -> Result<crate::modules::proxy_
         client_hint: "Custom Proxy".to_string(),
         is_listening: true,
         is_working: probe.is_working,
+        gemini_supported: probe.gemini_supported,
         latency_ms: probe.latency_ms,
         error: probe.error,
     })

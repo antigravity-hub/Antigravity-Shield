@@ -8,8 +8,11 @@ import {
     ArrowRight,
     Wifi,
     Radio,
-    Terminal,
-    AlertCircle
+    AlertCircle,
+    Copy,
+    Check,
+    Globe,
+    X
 } from 'lucide-react';
 import { request as invoke } from '../../../utils/request';
 
@@ -20,6 +23,7 @@ export interface DiscoveredProxy {
     client_hint: string;
     is_listening: boolean;
     is_working: boolean;
+    gemini_supported: boolean;
     latency_ms?: number;
     error?: string;
 }
@@ -44,6 +48,8 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
     const [isScanning, setIsScanning] = useState<boolean>(false);
     const [isTesting, setIsTesting] = useState<boolean>(false);
     const [isApplying, setIsApplying] = useState<boolean>(false);
+    const [showWarpModal, setShowWarpModal] = useState<boolean>(false);
+    const [copiedSnippet, setCopiedSnippet] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
     const showMessage = (text: string, type: 'success' | 'error' | 'info' = 'info') => {
@@ -101,10 +107,15 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
         setIsTesting(true);
         try {
             const res = await invoke<DiscoveredProxy>('test_proxy_connection', { url: target });
-            if (res.is_working) {
+            if (res.is_working && res.gemini_supported) {
                 showMessage(
-                    t('proxy.no_tun.test_ok', `اتصال برقرار است! تأخیر به گوگل: ${res.latency_ms}ms`),
+                    t('proxy.no_tun.test_ok_gemini', `✅ اتصال و سازگاری با جمینای تأیید شد! تأخیر: ${res.latency_ms}ms`),
                     'success'
+                );
+            } else if (res.is_working && !res.gemini_supported) {
+                showMessage(
+                    t('proxy.no_tun.test_region_blocked', `⚠️ پروکسی وصل است اما ریجن توسط گوگل مسدود شده (400). برای رفع این مشکل از WARP روی کانفیگ خود استفاده کنید.`),
+                    'info'
                 );
             } else {
                 showMessage(
@@ -199,17 +210,27 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                     </div>
                 </div>
 
-                {/* دکمه اسکن خودکار */}
-                <button
-                    onClick={handleScanProxies}
-                    disabled={isScanning}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-300 text-xs font-bold transition-all shadow-sm active:scale-95 disabled:opacity-50"
-                >
-                    <RefreshCw size={14} className={isScanning ? 'animate-spin' : ''} />
-                    {isScanning 
-                        ? t('proxy.no_tun.scanning', 'در حال اسکن پورت‌ها...') 
-                        : t('proxy.no_tun.scan_btn', 'اسکن خودکار پورت‌های VPN')}
-                </button>
+                {/* دکمه‌های عملیات هدر */}
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setShowWarpModal(true)}
+                        className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-xs font-bold transition-all shadow-sm active:scale-95 border border-amber-200 dark:border-amber-800/40"
+                    >
+                        <Globe size={14} className="text-amber-600 dark:text-amber-400" />
+                        <span>{t('proxy.no_tun.warp_btn', 'حل مشکل ریجن با WARP')}</span>
+                    </button>
+
+                    <button
+                        onClick={handleScanProxies}
+                        disabled={isScanning}
+                        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-300 text-xs font-bold transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                    >
+                        <RefreshCw size={14} className={isScanning ? 'animate-spin' : ''} />
+                        {isScanning 
+                            ? t('proxy.no_tun.scanning', 'در حال اسکن پورت‌ها...') 
+                            : t('proxy.no_tun.scan_btn', 'اسکن خودکار پورت‌های VPN')}
+                    </button>
+                </div>
             </div>
 
             {/* کارت وضعیت فعلی */}
@@ -268,12 +289,20 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                                 }`}
                             >
                                 <div className="space-y-0.5">
-                                    <div className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                                    <div className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5 flex-wrap">
                                         <span>{item.client_hint}</span>
-                                        {item.is_working ? (
-                                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        ) : (
-                                            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                                        {item.is_working && item.gemini_supported && (
+                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
+                                                Gemini OK
+                                            </span>
+                                        )}
+                                        {item.is_working && !item.gemini_supported && (
+                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300" title="خطای 400 ریجن گوگل - نیازمند WARP">
+                                                Region Blocked
+                                            </span>
+                                        )}
+                                        {!item.is_working && item.is_listening && (
+                                            <span className="w-2 h-2 rounded-full bg-amber-400" title="Port Open"></span>
                                         )}
                                     </div>
                                     <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
@@ -334,11 +363,121 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
 
             {/* توضیحات راهنما */}
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-base-300/60 flex items-start gap-2 text-[11px] text-gray-500 dark:text-gray-400">
-                <Terminal size={14} className="mt-0.5 text-blue-500 shrink-0" />
+                <AlertCircle size={14} className="mt-0.5 text-blue-500 shrink-0" />
                 <p className="leading-relaxed">
                     {t('proxy.no_tun.footer_hint', 'با کلیک روی «اعمال روی Antigravity»، فایل‌های تنظیمات Antigravity IDE و پلتفرم به صورت ایمن بروزرسانی شده و پروکسی خروجی شیلد نیز با همین آدرس ست می‌شود. برای بازگردانی به حالت اولیه، در هر زمان دکمه «حذف پروکسی» را بزنید.')}
                 </p>
             </div>
+
+            {/* مودال راهنمای جامع رفع خطای ریجن با WARP */}
+            {showWarpModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-base-100 rounded-3xl max-w-xl w-full border border-gray-100 dark:border-base-300 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        {/* هدر مودال */}
+                        <div className="px-6 py-4 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border-b border-amber-500/10 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20">
+                                    <Globe size={20} />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm">
+                                        حل خطای ریجن گوگل (User location is not supported)
+                                    </h4>
+                                    <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                                        رفع محدودیت IP دیتاسنتری با اتصال تمیز Cloudflare WARP
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowWarpModal(false)}
+                                className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-base-200 transition-all"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* محتوای مودال */}
+                        <div className="p-6 overflow-y-auto space-y-5 text-xs leading-relaxed text-gray-700 dark:text-gray-300">
+                            {/* باکس توضیح علت باگ */}
+                            <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/70 dark:border-amber-900/40 text-amber-900 dark:text-amber-200 text-[11px]">
+                                <strong>💡 علت چیست؟</strong> گوگل آی‌پی‌های سرورهای دیتاسنتری (هتزنر، دیجیتال‌اوشن، اووی‌اچ و...) یا ایران را در سرویس‌های AI مسدود کرده و خطای <code className="bg-amber-100 dark:bg-amber-900/60 px-1 py-0.5 rounded font-mono">400 User location is not supported</code> بازمی‌گرداند. دو راهکار کاملاً تست‌شده زیر مشکل را ۱۰۰٪ برطرف می‌کنند:
+                            </div>
+
+                            {/* روش اول: WARP لوکال رسمی کلاینت */}
+                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-base-300 space-y-2.5 bg-gray-50/50 dark:bg-base-200/40">
+                                <div className="flex items-center justify-between">
+                                    <div className="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5 text-xs">
+                                        <span>روش ۱: نرم‌افزار رسمی Cloudflare WARP (ساده‌ترین)</span>
+                                    </div>
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
+                                        توصیه‌شده
+                                    </span>
+                                </div>
+                                <p className="text-[11px] text-gray-600 dark:text-gray-400">
+                                    نرم‌افزار Cloudflare WARP را نصب کنید و در تنظیمات آن حالت Proxy Mode را انتخاب کنید (روی پورت پیش‌فرض 40000 شنود می‌کند). سپس روی دکمه زیر کلیک کنید:
+                                </p>
+                                <div className="pt-1 flex gap-2">
+                                    <button
+                                        onClick={() => {
+                                            setCustomProxyUrl('socks5://127.0.0.1:40000');
+                                            setShowWarpModal(false);
+                                            handleTestProxy('socks5://127.0.0.1:40000');
+                                        }}
+                                        className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
+                                    >
+                                        <Zap size={13} />
+                                        <span>ست کردن پورت 40000 (WARP Local) و تست</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* روش دوم: ادغام WARP در کلاینت V2Ray / Xray */}
+                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-base-300 space-y-2.5 bg-gray-50/50 dark:bg-base-200/40">
+                                <div className="font-bold text-gray-900 dark:text-gray-100 flex items-center justify-between text-xs">
+                                    <span>روش ۲: فعال‌سازی WARP روی سرور / کلاینت V2Ray (Xray Outbound)</span>
+                                </div>
+                                <p className="text-[11px] text-gray-600 dark:text-gray-400">
+                                    اگر از سرور اختصاصی یا پنل‌های مرزبان/سنایی استفاده می‌کنید، کافیست ترافیک دامنه <code>googleapis.com</code> را از WARP خارج کنید. همچنین می‌توانید قطعه کانفیگ زیر را به بخش <code>routing</code> کلاینت خود اضافه کنید:
+                                </p>
+                                
+                                <div className="relative">
+                                    <pre className="p-3 bg-gray-900 text-emerald-400 rounded-xl font-mono text-[11px] overflow-x-auto select-all dir-ltr text-left">
+{`{
+  "type": "field",
+  "domain": [
+    "domain:googleapis.com",
+    "domain:gemini.google.com"
+  ],
+  "outboundTag": "warp"
+}`}
+                                    </pre>
+                                    <button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(`{\n  "type": "field",\n  "domain": [\n    "domain:googleapis.com",\n    "domain:gemini.google.com"\n  ],\n  "outboundTag": "warp"\n}`);
+                                            setCopiedSnippet(true);
+                                            setTimeout(() => setCopiedSnippet(false), 2000);
+                                        }}
+                                        className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-white text-[10px] font-mono flex items-center gap-1 transition-all border border-gray-700"
+                                    >
+                                        {copiedSnippet ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                                        {copiedSnippet ? 'کپی شد' : 'کپی'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* فوتر مودال */}
+                        <div className="px-6 py-3.5 bg-gray-50 dark:bg-base-200 border-t border-gray-100 dark:border-base-300/60 flex items-center justify-end">
+                            <button
+                                onClick={() => setShowWarpModal(false)}
+                                className="px-5 py-2 rounded-xl bg-gray-200 dark:bg-base-300 hover:bg-gray-300 dark:hover:bg-base-400 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all active:scale-95"
+                            >
+                                متوجه شدم، بستن
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

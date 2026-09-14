@@ -13,25 +13,28 @@ pub struct DiscoveredProxy {
     pub protocol: String,
     /// پورت محلی
     pub port: u16,
-    /// نام حدس‌زده‌شده کلاینت (مانند V2Ray / Xray / Clash / Sing-box / Custom)
+    /// نام حدس‌زده‌شده کلاینت (مانند V2Ray / Xray / Clash / Sing-box / WARP)
     pub client_hint: String,
     /// وضعیت در دسترس بودن پورت محلی
     pub is_listening: bool,
     /// وضعیت ارتباط اینترنت با گوگل از طریق این پروکسی
     pub is_working: bool,
+    /// وضعیت پشتیبانی این پروکسی از هوش مصنوعی گوگل و جمینای (بدون خطای 400 ریجن)
+    pub gemini_supported: bool,
     /// میزان تأخیر پینگ بر حسب میلی‌ثانیه (در صورت موفقیت)
     pub latency_ms: Option<u64>,
     /// پیام خطا در صورت عدم ارتباط
     pub error: Option<String>,
 }
 
-/// پورت‌های استاندارد و معروفی که فیلترشکن‌ها و کلاینت‌ها استفاده می‌کنند
+/// پورت‌های استاندارد و معروفی که فیلترشکن‌ها، WARP و کلاینت‌ها استفاده می‌کنند
 const CANDIDATE_PORTS: &[(u16, &str, &str)] = &[
     (10808, "socks5", "V2Ray / Xray (SOCKS5)"),
     (10809, "http", "V2Ray / Xray (HTTP)"),
     (7890, "http", "Clash / Mihomo (Mixed HTTP/SOCKS)"),
     (7891, "socks5", "Clash / Mihomo (SOCKS5)"),
     (7897, "http", "Clash Verge (HTTP/SOCKS)"),
+    (40000, "socks5", "Cloudflare WARP (SOCKS5)"),
     (2080, "socks5", "Sing-box / Nekoray (SOCKS5)"),
     (2081, "http", "Sing-box / Nekoray (HTTP)"),
     (1080, "socks5", "Shadowsocks / Standard SOCKS5"),
@@ -64,7 +67,7 @@ pub async fn scan_local_proxies() -> Vec<DiscoveredProxy> {
                 format!("http://127.0.0.1:{}", port)
             };
 
-            // 2. تست پروب اتصال و تأخیر به گوگل
+            // 2. تست پروب اتصال، تأخیر و سازگاری با جمینای
             let probe = probe_proxy_url(&proxy_url).await;
 
             results.push(DiscoveredProxy {
@@ -74,18 +77,23 @@ pub async fn scan_local_proxies() -> Vec<DiscoveredProxy> {
                 client_hint: hint.to_string(),
                 is_listening: true,
                 is_working: probe.is_working,
+                gemini_supported: probe.gemini_supported,
                 latency_ms: probe.latency_ms,
                 error: probe.error,
             });
         }
     }
 
-    // مرتب‌سازی نتایج: پروکسی‌های سالم و متصل اول، سپس بر اساس کمترین تأخیر (Latency)
+    // مرتب‌سازی نتایج: ابتدا پروکسی‌هایی که جمینای را ساپورت می‌کنند، سپس پروکسی‌های سالم، سپس بر اساس کمترین تأخیر
     results.sort_by(|a, b| {
-        match (a.is_working, b.is_working) {
+        match (a.gemini_supported, b.gemini_supported) {
             (true, false) => std::cmp::Ordering::Less,
             (false, true) => std::cmp::Ordering::Greater,
-            _ => a.latency_ms.unwrap_or(99999).cmp(&b.latency_ms.unwrap_or(99999)),
+            _ => match (a.is_working, b.is_working) {
+                (true, false) => std::cmp::Ordering::Less,
+                (false, true) => std::cmp::Ordering::Greater,
+                _ => a.latency_ms.unwrap_or(99999).cmp(&b.latency_ms.unwrap_or(99999)),
+            },
         }
     });
 
@@ -94,13 +102,14 @@ pub async fn scan_local_proxies() -> Vec<DiscoveredProxy> {
 
 pub struct ProbeResult {
     pub is_working: bool,
+    pub gemini_supported: bool,
     pub latency_ms: Option<u64>,
     pub error: Option<String>,
 }
 
 /// تست تأخیر و صحت اتصال یک URL پروکسی دلخواه
 pub async fn probe_proxy_url(proxy_url: &str) -> ProbeResult {
-    let test_url = "https://cloudcode-pa.googleapis.com";
+    let cloudcode_url = "https://cloudcode-pa.googleapis.com";
     let start_time = std::time::Instant::now();
 
     // ایجاد یک rquest با پروکسی
@@ -109,6 +118,7 @@ pub async fn probe_proxy_url(proxy_url: &str) -> ProbeResult {
         Err(e) => {
             return ProbeResult {
                 is_working: false,
+                gemini_supported: false,
                 latency_ms: None,
                 error: Some(format!("Invalid proxy format: {}", e)),
             };
@@ -124,17 +134,35 @@ pub async fn probe_proxy_url(proxy_url: &str) -> ProbeResult {
         Err(e) => {
             return ProbeResult {
                 is_working: false,
+                gemini_supported: false,
                 latency_ms: None,
                 error: Some(format!("Failed to build client: {}", e)),
             };
         }
     };
 
-    match client.head(test_url).send().await {
-        Ok(_resp) => {
+    // تست اولیه به اندپوینت تخصصی گوگل کلود و جمینای
+    match client.get(cloudcode_url).send().await {
+        Ok(resp) => {
             let latency = start_time.elapsed().as_millis() as u64;
+            let status = resp.status();
+            
+            // اگر استاتوس 400 باشد یعنی ریجن پشتیبانی نمی‌شود (User location is not supported)
+            if status.as_u16() == 400 {
+                let text = resp.text().await.unwrap_or_default();
+                if text.contains("User location is not supported") {
+                    return ProbeResult {
+                        is_working: true,
+                        gemini_supported: false,
+                        latency_ms: Some(latency),
+                        error: Some("Region blocked by Google (User location is not supported). Use WARP or clean proxy.".to_string()),
+                    };
+                }
+            }
+
             ProbeResult {
                 is_working: true,
+                gemini_supported: true,
                 latency_ms: Some(latency),
                 error: None,
             }
@@ -146,12 +174,14 @@ pub async fn probe_proxy_url(proxy_url: &str) -> ProbeResult {
                     let latency = fallback_start.elapsed().as_millis() as u64;
                     ProbeResult {
                         is_working: true,
+                        gemini_supported: false,
                         latency_ms: Some(latency),
-                        error: None,
+                        error: Some("Connected to Google, but CloudCode AI endpoint timed out or blocked".to_string()),
                     }
                 }
                 Err(_) => ProbeResult {
                     is_working: false,
+                    gemini_supported: false,
                     latency_ms: None,
                     error: Some(format!("{}", err)),
                 },
