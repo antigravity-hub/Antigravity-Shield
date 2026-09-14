@@ -1446,12 +1446,15 @@ pub async fn switch_account(
         load_account_index()?
     };
 
-    // 1. Verify account exists
-    if !index.accounts.iter().any(|s| s.id == account_id) {
-        return Err(format!("Account not found: {}", account_id));
-    }
+    // 1. Verify account exists (supports both UUID and email)
+    let target_summary = index
+        .accounts
+        .iter()
+        .find(|s| s.id == account_id || s.email.eq_ignore_ascii_case(account_id))
+        .ok_or_else(|| format!("Account not found: {}", account_id))?;
 
-    let mut account = load_account(account_id)?;
+    let resolved_id = target_summary.id.clone();
+    let mut account = load_account(&resolved_id)?;
     crate::modules::logger::log_info(&format!(
         "Switching to account: {} (ID: {}) (target_ide: {:?})",
         account.email, account.id, target_ide
@@ -1495,7 +1498,7 @@ pub async fn switch_account(
     integration.on_account_switch(&account, target_ide).await?;
 
     // 4. Update tool internal state
-    set_current_account_id_with_target(account_id, target_ide)?;
+    set_current_account_id_with_target(&resolved_id, target_ide)?;
 
     account.update_last_used();
     save_account(&account)?;

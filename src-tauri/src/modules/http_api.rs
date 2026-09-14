@@ -192,7 +192,12 @@ struct LogsResponse {
 
 #[derive(Deserialize)]
 struct SwitchRequest {
-    account_id: String,
+    #[serde(default, alias = "accountId", alias = "account_id")]
+    account_id: Option<String>,
+    #[serde(default)]
+    email: Option<String>,
+    #[serde(default, alias = "target_ide", alias = "targetIde")]
+    target_ide: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -342,17 +347,18 @@ async fn switch_account(
         *switching = true;
     }
 
-    let account_id = payload.account_id.clone();
+    let account_id = payload.account_id.or(payload.email).unwrap_or_default();
+    let target_ide = payload.target_ide.as_deref().or(Some("ide")).map(|s| s.to_string());
     let state_clone = state.clone();
 
     // Execute switch asynchronously (non-blocking response)
     tokio::spawn(async move {
         logger::log_info(&format!(
-            "[HTTP API] Starting account switch: {}",
-            account_id
+            "[HTTP API] Starting account switch: {} (target_ide: {:?})",
+            account_id, target_ide
         ));
 
-        match account::switch_account(&account_id, None, &state_clone.integration).await {
+        match account::switch_account(&account_id, target_ide.as_deref(), &state_clone.integration).await {
             Ok(()) => {
                 logger::log_info(&format!(
                     "[HTTP API] Account switch successful: {}",

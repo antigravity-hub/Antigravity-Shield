@@ -1317,9 +1317,13 @@ async fn admin_delete_account(
 }
 
 #[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
 struct SwitchRequest {
-    account_id: String,
+    #[serde(default, alias = "accountId", alias = "account_id")]
+    account_id: Option<String>,
+    #[serde(default)]
+    email: Option<String>,
+    #[serde(default, alias = "target_ide", alias = "targetIde")]
+    target_ide: Option<String>,
 }
 
 async fn admin_switch_account(
@@ -1343,12 +1347,16 @@ async fn admin_switch_account(
         *switching = true;
     }
 
-    let account_id = payload.account_id.clone();
-    logger::log_info(&format!("[API] Starting account switch: {}", account_id));
+    let account_id = payload
+        .account_id
+        .or(payload.email)
+        .unwrap_or_default();
+    let target_ide = payload.target_ide.as_deref().or(Some("ide"));
+    logger::log_info(&format!("[API] Starting account switch: {} (target_ide: {:?})", account_id, target_ide));
 
     let result = state
         .account_service
-        .switch_account(&account_id, None)
+        .switch_account(&account_id, target_ide)
         .await;
 
     {
