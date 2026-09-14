@@ -3,6 +3,12 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.8.2 (2026-09-14)**:
+        -   **[User Interface & Window Controls] Native Desktop Titlebar Window Controls**:
+            -   **Pixel-Perfect Window Caption Buttons**: Implemented dedicated Minimize (`—`), Maximize / Restore Down (`□` / `❐`), and Close (`✕`) caption controls in the frameless titlebar with Windows-native hover aesthetics and crimson close accent.
+            -   **Double-Click Titlebar Toggle**: Added native double-click maximize/unmaximize gesture handling across the upper drag region.
+            -   **Strict Capability Alignment**: Granted runtime permissions for window close, destroy, and toggle-maximize operations in the core capability policy (`src-tauri/capabilities/default.json`).
+            -   **Localization Clarification**: Disambiguated floating Mini View tooltip from standard window minimize action across all supported interface languages.
     *   **v5.8.1 (2026-09-13)**:
         -   **[MiniView & Window Management] Adaptive Window State Restoration & Geometry Persistence**:
             -   **Bi-Directional State Preservation**: Implemented intelligent window dimension and position memory across full view and mini view transitions, faithfully restoring previous geometries and maximized states.
