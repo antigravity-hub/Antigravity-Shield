@@ -48,7 +48,11 @@ function Layout() {
                 }}
                 data-tauri-drag-region
                 onMouseDown={() => {
-                    getCurrentWindow().startDragging();
+                    if (isTauri()) {
+                        try {
+                            getCurrentWindow().startDragging();
+                        } catch {}
+                    }
                 }}
                 onDoubleClick={async () => {
                     if (isTauri()) {

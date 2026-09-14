@@ -1,5 +1,5 @@
 import { getCurrentWindow, LogicalPosition, LogicalSize, PhysicalPosition, PhysicalSize, currentMonitor } from '@tauri-apps/api/window';
-import { isTauri } from './env';
+import { isTauri, isMac } from './env';
 
 /**
  * Apply optimal window size based on monitor resolution:
@@ -175,9 +175,9 @@ export const exitMiniMode = async () => {
             await win.setAlwaysOnTop(false);
         } catch (e) {}
 
-        // 2. Restore window decorations (title bar)
+        // 2. Restore window decorations (title bar) for Mac only; Windows/Linux use custom controls
         try {
-            await win.setDecorations(true);
+            await win.setDecorations(isMac());
         } catch (e) {}
 
         // 3. Restore standard minimum dimensions for Full View
@@ -233,8 +233,8 @@ export const ensureFullViewState = async () => {
                 await applyResponsiveFullViewSize();
             }
         }
-        // Always enforce standard window properties for Full View
-        await win.setDecorations(true);
+        // Always enforce standard window properties for Full View (Mac uses native overlay, Windows/Linux custom)
+        await win.setDecorations(isMac());
         await win.setResizable(true);
         await win.setAlwaysOnTop(false);
     } catch (error) {

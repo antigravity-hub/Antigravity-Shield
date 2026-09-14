@@ -20,6 +20,8 @@
         "minWidth": 110,
         "minHeight": 52,
         "center": true,
+        "decorations": false,
+        "shadow": true,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
         "transparent": true,

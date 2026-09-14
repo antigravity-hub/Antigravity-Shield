@@ -450,6 +450,9 @@ pub fn run() {
             }
 
             if let Some(window) = app.get_webview_window("main") {
+                #[cfg(target_os = "macos")]
+                let _ = window.set_decorations(true);
+
                 let _ = window.show();
                 let _ = window.set_focus();
                 info!("Main window explicitly shown and focused");
