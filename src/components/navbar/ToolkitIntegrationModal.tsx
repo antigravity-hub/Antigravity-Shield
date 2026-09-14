@@ -9,6 +9,7 @@ import {
   HelpCircle,
   CheckCircle2,
   Sparkles,
+  AlertTriangle,
 } from 'lucide-react';
 import { useToolkitStore, IdeInfo } from '../../stores/useToolkitStore';
 import { showToast } from '../common/ToastContainer';
@@ -24,6 +25,8 @@ export const ToolkitIntegrationModal: React.FC = () => {
     fetchIdes,
     installToIde,
   } = useToolkitStore();
+
+  const [ideToConfirm, setIdeToConfirm] = React.useState<IdeInfo | null>(null);
 
   if (!isModalOpen) return null;
 
@@ -202,7 +205,7 @@ export const ToolkitIntegrationModal: React.FC = () => {
                       <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                         {isAntigravity && ide.is_installed ? (
                           <button
-                            onClick={() => handleInstall(ide)}
+                            onClick={() => setIdeToConfirm(ide)}
                             disabled={isInstalling}
                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold text-white shadow-xs transition-all flex items-center gap-1.5 ${
                               ide.toolkit_installed
@@ -221,7 +224,7 @@ export const ToolkitIntegrationModal: React.FC = () => {
                           </button>
                         ) : ide.id === 'vscode' && ide.is_installed ? (
                           <button
-                            onClick={() => handleInstall(ide)}
+                            onClick={() => setIdeToConfirm(ide)}
                             disabled={isInstalling}
                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold text-white shadow-xs transition-all flex items-center gap-1.5 ${
                               ide.toolkit_installed
@@ -328,6 +331,47 @@ export const ToolkitIntegrationModal: React.FC = () => {
             Close
           </button>
         </div>
+
+        {/* Safety Confirmation Prompt Before Installation */}
+        {ideToConfirm && (
+          <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
+            <div className="w-full max-w-md bg-white dark:bg-[#0d1322] rounded-2xl shadow-2xl border border-amber-500/30 p-5 space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div className="space-y-1 min-w-0">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    لطفاً پنجره IDE را ببندید
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    برای جلوگیری از ری‌استارت ناگهانی یا تداخل در فایل‌های باز <strong>{ideToConfirm.name}</strong>، ابتدا تغییرات خود را ذخیره کرده و پنجره‌ی محیط توسعه را ببندید؛ سپس نصب را ادامه دهید.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                <button
+                  onClick={() => setIdeToConfirm(null)}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  انصراف
+                </button>
+                <button
+                  onClick={() => {
+                    const target = ideToConfirm;
+                    setIdeToConfirm(null);
+                    handleInstall(target);
+                  }}
+                  className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 active:scale-95 shadow-md shadow-blue-500/25 transition-all flex items-center gap-1.5"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>پنجره بسته شد؛ ادامه نصب</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

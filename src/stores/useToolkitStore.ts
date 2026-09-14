@@ -82,11 +82,6 @@ export const useToolkitStore = create<ToolkitState>((set, get) => ({
         if (res.ok) {
           const data: IdeInfo[] = await res.json();
           set({ ides: data, isLoadingIdes: false });
-
-          const agIde = data.find((i) => i.id === 'antigravity');
-          if (agIde && agIde.is_installed && !agIde.toolkit_installed && !get().installingIdes['antigravity']) {
-            get().installToIde('antigravity');
-          }
           return;
         }
       } catch {
@@ -99,11 +94,6 @@ export const useToolkitStore = create<ToolkitState>((set, get) => ({
     try {
       const data = await invoke<IdeInfo[]>('detect_installed_ides');
       set({ ides: data, isLoadingIdes: false });
-
-      const agIde = data.find((i) => i.id === 'antigravity');
-      if (agIde && agIde.is_installed && !agIde.toolkit_installed && !get().installingIdes['antigravity']) {
-        get().installToIde('antigravity');
-      }
     } catch (err) {
       console.warn('[ToolkitStore] Failed to detect IDEs:', err);
       set({ isLoadingIdes: false });
