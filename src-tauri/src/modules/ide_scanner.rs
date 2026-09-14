@@ -332,9 +332,14 @@ pub fn get_bundled_vsix_path() -> Option<PathBuf> {
     }
 
     // 3. Development fallback
-    let cand4 = PathBuf::from(r"d:\Ershad Zolfi\programming\coding with Gemini\antigravity-toolkit-extension\antigravity-toolkit-1.0.0.vsix");
-    if cand4.exists() {
-        return Some(cand4);
+    for v in &["1.0.1", "1.0.0"] {
+        let cand = PathBuf::from(format!(
+            r"d:\Ershad Zolfi\programming\coding with Gemini\antigravity-toolkit-extension\antigravity-toolkit-{}.vsix",
+            v
+        ));
+        if cand.exists() {
+            return Some(cand);
+        }
     }
 
     None
@@ -361,24 +366,24 @@ pub fn install_toolkit_to_ide(ide_id: &str) -> Result<String, String> {
                 // Direct Node-mode Electron execution; completely avoids cmd.exe space escaping issues
                 Command::new(&exe)
                     .env("ELECTRON_RUN_AS_NODE", "1")
-                    .args([&cli.to_string_lossy().to_string(), "--install-extension", &vsix_str])
+                    .args([&cli.to_string_lossy().to_string(), "--install-extension", &vsix_str, "--force"])
                     .output()
                     .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
             } else if cfg!(target_os = "windows") && bin_cmd.as_ref().map(|p| p.exists()).unwrap_or(false) {
                 let cmd_file = bin_cmd.unwrap();
                 Command::new("cmd")
-                    .args(["/s", "/c", &format!("\"\"{}\" --install-extension \"{}\"\"", cmd_file.to_string_lossy(), vsix_str)])
+                    .args(["/s", "/c", &format!("\"\"{}\" --install-extension \"{}\" --force\"", cmd_file.to_string_lossy(), vsix_str)])
                     .output()
                     .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
             } else if bin_sh.as_ref().map(|p| p.exists()).unwrap_or(false) {
                 let sh_file = bin_sh.unwrap();
                 Command::new(&sh_file)
-                    .args(["--install-extension", &vsix_str])
+                    .args(["--install-extension", &vsix_str, "--force"])
                     .output()
                     .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
             } else {
                 Command::new(&exe)
-                    .args(["--install-extension", &vsix_str])
+                    .args(["--install-extension", &vsix_str, "--force"])
                     .output()
                     .map_err(|e| format!("Failed to launch Antigravity CLI: {}", e))?
             };
