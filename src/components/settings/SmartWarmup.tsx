@@ -62,10 +62,10 @@ const SmartWarmup: React.FC<SmartWarmupProps> = ({ config, onChange }) => {
                     </div>
                     <div>
                         <div className="font-bold text-gray-900 dark:text-gray-100">
-                            {t('settings.warmup.title', '7天周配额智能预热')}
+                            {t('settings.warmup.title', 'Auto-Warm (100% Quota Recovery Warmup)')}
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            {t('settings.warmup.desc', '在各账号的 7 天周配额到达重置时间后自动唤醒 1 次，启动当周计时器，零多余消耗。')}
+                            {t('settings.warmup.desc', 'When any model\'s 5-hour rolling or weekly quota recovers to 100%, automatically trigger a gentle warm-up to activate the new cycle.')}
                         </p>
                     </div>
                 </div>

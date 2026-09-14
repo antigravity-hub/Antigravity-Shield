@@ -57,7 +57,7 @@ fn default_warmup_models() -> Vec<String> {
 impl ScheduledWarmupConfig {
     pub fn new() -> Self {
         Self {
-            enabled: false,
+            enabled: true,
             monitored_models: default_warmup_models(),
         }
     }

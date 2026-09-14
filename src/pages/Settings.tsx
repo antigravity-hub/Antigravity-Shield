@@ -64,7 +64,7 @@ function Settings() {
             }
         },
         scheduled_warmup: {
-            enabled: false,
+            enabled: true,
             monitored_models: []
         },
         quota_protection: {

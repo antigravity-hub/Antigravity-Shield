@@ -376,18 +376,26 @@ pub async fn trigger_warmup_for_account(account: &Account) {
             for bucket in group.buckets {
                 let is_weekly = bucket.window.to_lowercase().contains("week")
                     || bucket.bucket_id.to_lowercase().contains("week");
-                if !is_weekly {
+                let is_5h = bucket.window.to_lowercase().contains("5h")
+                    || bucket.bucket_id.to_lowercase().contains("5h")
+                    || bucket.window.to_lowercase().contains("rolling");
+
+                if !is_weekly && !is_5h {
                     continue;
                 }
 
+                // If quota is recovered to 100% (fraction >= 0.999)
                 if bucket.remaining_fraction >= 0.999 {
                     if let Some(reset_ts) = parse_reset_time_ts(&bucket.reset_time) {
                         if now_ts >= reset_ts - 60 {
+                            let cycle_type = if is_weekly { "weekly" } else { "5h" };
                             let history_key = format!(
-                                "{}:{}:weekly:{}",
-                                account.email, bucket.bucket_id, reset_ts
+                                "{}:{}:{}:{}",
+                                account.email, bucket.bucket_id, cycle_type, reset_ts
                             );
-                            if !check_cooldown(&history_key, 6 * 86400) {
+                            // Cooldown: 6 days for weekly, 4.5 hours for 5h
+                            let cooldown_secs = if is_weekly { 6 * 86400 } else { 16200 };
+                            if !check_cooldown(&history_key, cooldown_secs) {
                                 let model_to_ping = if bucket.bucket_id.contains("3p")
                                     || group.display_name.contains("Claude")
                                 {
@@ -408,6 +416,10 @@ pub async fn trigger_warmup_for_account(account: &Account) {
 
                                 if success {
                                     record_warmup_history(&history_key, now_ts);
+                                    logger::log_info(&format!(
+                                        "[AutoWarmup] ✅ Successfully auto-warmed {} ({} cycle) for {}",
+                                        model_to_ping, cycle_type, account.email
+                                    ));
                                 }
                             }
                         }
