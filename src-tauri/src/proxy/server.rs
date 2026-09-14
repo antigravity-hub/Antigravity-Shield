@@ -901,6 +901,9 @@ impl AxumServer {
             .route("/toolkit/status", get(admin_toolkit_status))
             .route("/toolkit/ides", get(admin_detect_installed_ides))
             .route("/toolkit/install", post(admin_install_toolkit_to_ide))
+            .route("/toolkit/accounts", get(admin_list_accounts))
+            .route("/toolkit/switch", post(admin_switch_account))
+            .route("/switch", post(admin_switch_account))
             // Security / IP Monitoring
             .route("/security/logs", get(admin_get_ip_access_logs))
             .route("/security/logs/clear", post(admin_clear_ip_access_logs))
@@ -991,6 +994,17 @@ impl AxumServer {
             .map_err(|e| format!("地址 {} 绑定失败: {}", addr, e))?;
 
         tracing::info!("反代服务器启动在 http://{}", addr);
+
+        // Also bind a local loopback bridge on 127.0.0.1:8765 for Antigravity Toolkit IDE extensions
+        if port != 8765 {
+            let app_8765 = app.clone();
+            tokio::spawn(async move {
+                if let Ok(listener_8765) = tokio::net::TcpListener::bind("127.0.0.1:8765").await {
+                    tracing::info!("Antigravity Toolkit loopback bridge listening on http://127.0.0.1:8765");
+                    let _ = axum::serve(listener_8765, app_8765).await;
+                }
+            });
+        }
 
         // 创建关闭通道
         let (shutdown_tx, mut shutdown_rx) = oneshot::channel::<()>();

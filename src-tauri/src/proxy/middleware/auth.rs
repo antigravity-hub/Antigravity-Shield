@@ -42,6 +42,7 @@ async fn auth_middleware_internal(
     // 过滤心跳和健康检查请求,避免日志噪音
     let is_health_check = path == "/healthz" || path == "/api/health" || path == "/health";
     let is_internal_endpoint = path.starts_with("/internal/");
+    let is_toolkit_endpoint = path.starts_with("/api/toolkit/") || path.starts_with("/toolkit/");
     if !path.contains("event_logging") && !is_health_check {
         tracing::info!("Request: {} {}", method, path);
     } else {
@@ -105,8 +106,8 @@ async fn auth_middleware_internal(
             return Ok(next.run(request).await);
         }
     } else {
-        // Management endpoints always require admin auth; only health checks stay public.
-        if is_health_check {
+        // Management endpoints always require admin auth; health checks & local toolkit endpoints stay public.
+        if is_health_check || is_toolkit_endpoint {
             return Ok(next.run(request).await);
         }
     }
