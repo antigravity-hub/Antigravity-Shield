@@ -125,6 +125,27 @@ function App() {
     };
   }, [fetchCurrentAccount, fetchAccounts]);
 
+  // Window Focus & Visibility Auto-Sync (Instantly updates UI when switching to Shield window)
+  useEffect(() => {
+    const handleSync = () => {
+      fetchCurrentAccount();
+      fetchAccounts();
+    };
+
+    window.addEventListener('focus', handleSync);
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        handleSync();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      window.removeEventListener('focus', handleSync);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [fetchCurrentAccount, fetchAccounts]);
+
   // Update notification state
   const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 

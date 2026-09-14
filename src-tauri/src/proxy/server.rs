@@ -903,6 +903,7 @@ impl AxumServer {
             .route("/toolkit/install", post(admin_install_toolkit_to_ide))
             .route("/toolkit/accounts", get(admin_list_accounts))
             .route("/toolkit/switch", post(admin_switch_account))
+            .route("/toolkit/sync-active", post(admin_toolkit_sync_active))
             .route("/switch", post(admin_switch_account))
             // Security / IP Monitoring
             .route("/security/logs", get(admin_get_ip_access_logs))
@@ -2726,6 +2727,62 @@ async fn admin_toolkit_status() -> impl IntoResponse {
 
 async fn admin_detect_installed_ides() -> impl IntoResponse {
     Json(crate::modules::ide_scanner::detect_all_ides())
+}
+
+#[derive(Deserialize)]
+struct AdminToolkitSyncActiveRequest {
+    #[serde(alias = "accountId", alias = "account_id")]
+    account_id: Option<String>,
+    email: Option<String>,
+    target_ide: Option<String>,
+}
+
+async fn admin_toolkit_sync_active(
+    State(state): State<AppState>,
+    Json(payload): Json<AdminToolkitSyncActiveRequest>,
+) -> impl IntoResponse {
+    use tauri::Emitter;
+
+    let account_id = payload.account_id.or(payload.email).unwrap_or_default();
+    let target_ide = payload.target_ide.as_deref().or(Some("ide"));
+
+    logger::log_info(&format!(
+        "[Toolkit API] Sync active account notification: {} (target_ide: {:?})",
+        account_id, target_ide
+    ));
+
+    // Resolve UUID if email was provided
+    let resolved_id = {
+        if let Ok(index) = crate::modules::account::load_account_index() {
+            index
+                .accounts
+                .iter()
+                .find(|s| s.id == account_id || s.email.eq_ignore_ascii_case(&account_id))
+                .map(|s| s.id.clone())
+                .unwrap_or_else(|| account_id.clone())
+        } else {
+            account_id.clone()
+        }
+    };
+
+    let _ = crate::modules::account::set_current_account_id_with_target(&resolved_id, target_ide);
+
+    // Reload token manager in memory
+    state.token_manager.clear_all_sessions();
+    let _ = state.token_manager.load_accounts().await;
+
+    // Emit event to Desktop UI so Shield immediately refreshes without window reload
+    if let crate::modules::integration::SystemManager::Desktop(ref handle) = state.integration {
+        let _ = handle.emit("tray://account-switched", resolved_id.clone());
+        let _ = handle.emit("accounts://refreshed", ());
+        crate::modules::tray::update_tray_menus(handle);
+    }
+
+    Json(serde_json::json!({
+        "status": "ok",
+        "account_id": resolved_id,
+        "message": "Shield UI active account synchronized in-memory"
+    }))
 }
 
 #[derive(Deserialize)]
