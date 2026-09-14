@@ -634,6 +634,11 @@ pub fn run() {
             commands::proxy::clear_proxy_rate_limit,
             commands::proxy::clear_all_proxy_rate_limits,
             commands::proxy::check_proxy_health,
+            commands::proxy::scan_local_proxies,
+            commands::proxy::test_proxy_connection,
+            commands::proxy::get_antigravity_proxy_status,
+            commands::proxy::apply_antigravity_proxy,
+            commands::proxy::remove_antigravity_proxy,
             // Proxy Pool Binding commands
             commands::proxy_pool::bind_account_proxy,
             commands::proxy_pool::unbind_account_proxy,

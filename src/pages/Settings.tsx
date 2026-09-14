@@ -19,6 +19,7 @@ import { check as tauriCheck } from '@tauri-apps/plugin-updater';
 
 import DebugConsole from '../components/debug/DebugConsole';
 import ProxyPoolSettings from '../components/settings/ProxyPoolSettings';
+import AntigravityProxyRouter from '../components/settings/proxy/AntigravityProxyRouter';
 import { APP_VERSION, getAppVersion } from '../constants/version';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 import { copyToClipboard } from '../utils/clipboard';
@@ -1382,6 +1383,22 @@ function Settings() {
                     {/* 代理设置 */}
                     {activeTab === 'proxy' && (
                         <div className="space-y-4 animate-in fade-in duration-300">
+                            {/* [NEW] No-TUN Antigravity Proxy Router & Auto-Discovery */}
+                            <AntigravityProxyRouter 
+                                onProxyApplied={(url) => {
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        proxy: {
+                                            ...prev.proxy,
+                                            upstream_proxy: {
+                                                enabled: true,
+                                                url: url
+                                            }
+                                        }
+                                    }));
+                                }}
+                            />
+
                             <ProxyPoolSettings
                                 config={formData.proxy?.proxy_pool || {
                                     enabled: false,

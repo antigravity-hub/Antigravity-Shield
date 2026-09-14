@@ -798,3 +798,94 @@ pub async fn get_proxy_pool_config(
         Err("服务未运行".to_string())
     }
 }
+
+// ============================================================================
+// [NEW] No-TUN Smart Proxy Router & Auto-Detection Commands
+// ============================================================================
+
+/// اسکن خودکار پورت‌های محلی پروکسی (V2Ray, Xray, Clash, Sing-box, etc.) و تست اتصال به گوگل
+#[tauri::command]
+pub async fn scan_local_proxies() -> Result<Vec<crate::modules::proxy_scanner::DiscoveredProxy>, String> {
+    Ok(crate::modules::proxy_scanner::scan_local_proxies().await)
+}
+
+/// تست ارتباط و محاسبه تأخیر پینگ یک پروکسی دلخواه
+#[tauri::command]
+pub async fn test_proxy_connection(url: String) -> Result<crate::modules::proxy_scanner::DiscoveredProxy, String> {
+    let probe = crate::modules::proxy_scanner::probe_proxy_url(&url).await;
+    let url_clone = url.clone();
+    let protocol = if url.starts_with("socks5") { "socks5" } else { "http" };
+    
+    Ok(crate::modules::proxy_scanner::DiscoveredProxy {
+        url: url_clone,
+        protocol: protocol.to_string(),
+        port: 0,
+        client_hint: "Custom Proxy".to_string(),
+        is_listening: true,
+        is_working: probe.is_working,
+        latency_ms: probe.latency_ms,
+        error: probe.error,
+    })
+}
+
+/// بررسی وضعیت فعلی تنظیمات پروکسی در Antigravity IDE و پلتفرم
+#[tauri::command]
+pub fn get_antigravity_proxy_status() -> Result<crate::modules::antigravity_network_patcher::AntigravityProxyStatus, String> {
+    Ok(crate::modules::antigravity_network_patcher::check_antigravity_proxy_status())
+}
+
+/// اعمال تنظیمات پروکسی به Antigravity (بدون نیاز به TUN) و همگام‌سازی با شیلد
+#[tauri::command]
+pub async fn apply_antigravity_proxy(
+    url: String,
+    sync_shield_upstream: Option<bool>,
+    state: State<'_, ProxyServiceState>,
+) -> Result<String, String> {
+    let count = crate::modules::antigravity_network_patcher::apply_proxy_to_settings(&url)?;
+    
+    // در صورت تمایل کاربر، پروکسی را به عنوان upstream_proxy شیلد نیز تنظیم و ذخیره می‌کنیم
+    if sync_shield_upstream.unwrap_or(true) {
+        if let Ok(mut app_config) = crate::modules::config::load_app_config() {
+            app_config.proxy.upstream_proxy.enabled = true;
+            app_config.proxy.upstream_proxy.url = url.clone();
+            let _ = crate::modules::config::save_app_config(&app_config);
+        }
+
+        // بروزرسانی داینامیک سرور در حال اجرا
+        let instance_lock = state.instance.read().await;
+        if let Some(instance) = instance_lock.as_ref() {
+            instance.axum_server.update_proxy(crate::proxy::config::UpstreamProxyConfig {
+                enabled: true,
+                url: url.clone(),
+            }).await;
+        }
+    }
+
+    Ok(format!("پروکسی با موفقیت روی {} نسخه از Antigravity اعمال شد.", count))
+}
+
+/// حذف تنظیمات پروکسی از Antigravity و بازگردانی به حالت عادی
+#[tauri::command]
+pub async fn remove_antigravity_proxy(
+    disable_shield_upstream: Option<bool>,
+    state: State<'_, ProxyServiceState>,
+) -> Result<String, String> {
+    let count = crate::modules::antigravity_network_patcher::remove_proxy_from_settings()?;
+
+    if disable_shield_upstream.unwrap_or(true) {
+        if let Ok(mut app_config) = crate::modules::config::load_app_config() {
+            app_config.proxy.upstream_proxy.enabled = false;
+            let _ = crate::modules::config::save_app_config(&app_config);
+        }
+
+        let instance_lock = state.instance.read().await;
+        if let Some(instance) = instance_lock.as_ref() {
+            instance.axum_server.update_proxy(crate::proxy::config::UpstreamProxyConfig {
+                enabled: false,
+                url: String::new(),
+            }).await;
+        }
+    }
+
+    Ok(format!("تنظیمات پروکسی از {} نسخه از Antigravity حذف شد.", count))
+}
