@@ -44,6 +44,7 @@
     "update_success": "Updated successfully",
     "delete_success": "Deleted successfully",
     "copied": "Copied to clipboard",
+    "none": "None",
     "retry": "Retry",
     "back": "Back",
     "reason": "Reason",
@@ -516,7 +517,9 @@
         "checking": "Checking",
         "healthy": "Healthy",
         "timeout": "Timeout"
-      }
+      },
+      "inactive_notice": "Proxy Pool Inactive",
+      "confirm_batch_delete": "Are you sure you want to delete selected proxies?"
     },
     "advanced": {
       "title": "Advanced Settings",
@@ -723,6 +726,53 @@
     "action": {
       "start": "Start Service",
       "stop": "Stop Service"
+    },
+    "no_tun": {
+      "title": "Direct Antigravity Proxy Connection (No-TUN)",
+      "mode_badge": "No-TUN Mode",
+      "desc": "Dedicated traffic routing for Antigravity IDE, platform and CLI from V2Ray/Xray/Clash proxies without affecting entire Windows system.",
+      "warp_btn": "Fix Region with WARP",
+      "scan_btn": "Auto-Scan VPN Ports",
+      "scanning": "Scanning ports...",
+      "scan_success": "Scan complete: {{count}} ports discovered.",
+      "scan_empty": "No active local proxy found on common ports. Please enter port manually.",
+      "test_ok_gemini": "✅ Connection and Gemini compatibility verified! Latency: {{latency}}ms",
+      "test_region_blocked": "⚠️ Proxy connected but region is blocked by Google (400). Use WARP on your configuration to fix this.",
+      "test_fail": "Connection failed: {{error}}",
+      "url_empty": "Please enter a proxy address.",
+      "status_active": "Proxy Active on Antigravity",
+      "status_inactive": "Proxy Inactive (Direct System Connection)",
+      "no_proxy_set": "No settings applied.",
+      "clear_btn": "Remove Proxy",
+      "discovered_title": "Discovered local proxies on your system:",
+      "region_blocked_tooltip": "Google Region 400 Error - Requires WARP",
+      "port_open": "Port Open",
+      "gemini_ok": "Gemini OK",
+      "region_blocked": "Region Blocked",
+      "status_open": "Open",
+      "status_down": "Down",
+      "input_label": "Target Proxy Address (SOCKS5 or HTTP):",
+      "input_placeholder": "e.g. socks5://127.0.0.1:10808 or http://127.0.0.1:10809",
+      "test_btn": "Test Latency",
+      "testing": "Testing...",
+      "apply_btn": "Apply to Antigravity",
+      "applying": "Applying...",
+      "footer_hint": "Clicking \"Apply to Antigravity\" safely updates Antigravity IDE and platform configuration files, and sets the shield outbound proxy to this address. To revert back to direct connection, click \"Remove Proxy\" at any time.",
+      "warp_modal": {
+        "title": "Fix Google Region Error (User location is not supported)",
+        "subtitle": "Bypass datacenter IP restrictions with clean Cloudflare WARP routing",
+        "reason_title": "💡 What is the cause?",
+        "reason_desc": "Google blocks datacenter IPs (Hetzner, DigitalOcean, OVH, etc.) or restricted regions from accessing AI services, returning a 400 User location is not supported error. The two tested solutions below will resolve the issue:",
+        "method1_title": "Method 1: Cloudflare WARP Official Client (Recommended)",
+        "recommended": "Recommended",
+        "method1_desc": "Install the official Cloudflare WARP client and set it to Proxy Mode in settings (listens on default port 40000). Then click below:",
+        "method1_btn": "Set Port 40000 (WARP Local) and Test",
+        "method2_title": "Method 2: Enable WARP on Server / V2Ray Client (Xray Outbound)",
+        "method2_desc": "If you use a VPS or Marzban/Sanaei panel, route googleapis.com traffic through WARP. You can also add the following rule to your client routing:",
+        "copied": "Copied",
+        "copy": "Copy",
+        "close": "Got it, close"
+      }
     },
     "config": {
       "title": "Service Configuration",

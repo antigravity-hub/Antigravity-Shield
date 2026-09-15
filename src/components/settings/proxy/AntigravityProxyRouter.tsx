@@ -84,12 +84,12 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                 const best = list.find(p => p.is_working) || list[0];
                 setCustomProxyUrl(best.url);
                 showMessage(
-                    t('proxy.no_tun.scan_success', `اسکن کامل شد: ${list.length} پورت شناسایی شد.`),
+                    t('proxy.no_tun.scan_success', { count: list.length, defaultValue: `Scan complete: ${list.length} ports discovered.` }),
                     'success'
                 );
             } else {
                 showMessage(
-                    t('proxy.no_tun.scan_empty', 'هیچ پروکسی محلی فعالی در پورت‌های متداول یافت نشد. لطفاً پورت را دستی وارد کنید.'),
+                    t('proxy.no_tun.scan_empty', 'No active local proxy found on common ports. Please enter port manually.'),
                     'info'
                 );
             }
@@ -109,17 +109,17 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
             const res = await invoke<DiscoveredProxy>('test_proxy_connection', { url: target });
             if (res.is_working && res.gemini_supported) {
                 showMessage(
-                    t('proxy.no_tun.test_ok_gemini', `✅ اتصال و سازگاری با جمینای تأیید شد! تأخیر: ${res.latency_ms}ms`),
+                    t('proxy.no_tun.test_ok_gemini', { latency: res.latency_ms, defaultValue: `✅ Connection and Gemini compatibility verified! Latency: ${res.latency_ms}ms` }),
                     'success'
                 );
             } else if (res.is_working && !res.gemini_supported) {
                 showMessage(
-                    t('proxy.no_tun.test_region_blocked', `⚠️ پروکسی وصل است اما ریجن توسط گوگل مسدود شده (400). برای رفع این مشکل از WARP روی کانفیگ خود استفاده کنید.`),
+                    t('proxy.no_tun.test_region_blocked', '⚠️ Proxy connected but region is blocked by Google (400). Use WARP on your configuration to fix this.'),
                     'info'
                 );
             } else {
                 showMessage(
-                    t('proxy.no_tun.test_fail', `عدم برقراری ارتباط: ${res.error || 'Timeout'}`),
+                    t('proxy.no_tun.test_fail', { error: res.error || 'Timeout', defaultValue: `Connection failed: ${res.error || 'Timeout'}` }),
                     'error'
                 );
             }
@@ -133,7 +133,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
     // اعمال پروکسی به Antigravity (بدون نیاز به TUN)
     const handleApplyProxy = async (proxyUrl: string) => {
         if (!proxyUrl.trim()) {
-            showMessage(t('proxy.no_tun.url_empty', 'لطفاً آدرس پروکسی را وارد کنید.'), 'error');
+            showMessage(t('proxy.no_tun.url_empty', 'Please enter a proxy address.'), 'error');
             return;
         }
         setIsApplying(true);
@@ -198,14 +198,14 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                     <div>
                         <div className="flex items-center gap-2">
                             <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base">
-                                {t('proxy.no_tun.title', 'اتصال مستقیم Antigravity به پروکسی (بدون TUN)')}
+                                {t('proxy.no_tun.title', 'Direct Antigravity Proxy Connection (No-TUN)')}
                             </h3>
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 uppercase tracking-wider">
-                                No-TUN Mode
+                                {t('proxy.no_tun.mode_badge', 'No-TUN Mode')}
                             </span>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
-                            {t('proxy.no_tun.desc', 'هدایت اختصاصی ترافیک Antigravity IDE، پلتفرم و CLI از پروکسی‌های V2Ray/Xray/Clash بدون درگیر شدن کل ویندوز.')}
+                            {t('proxy.no_tun.desc', 'Dedicated traffic routing for Antigravity IDE, platform and CLI from V2Ray/Xray/Clash proxies without affecting entire Windows system.')}
                         </p>
                     </div>
                 </div>
@@ -217,7 +217,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                         className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-xs font-bold transition-all shadow-sm active:scale-95 border border-amber-200 dark:border-amber-800/40"
                     >
                         <Globe size={14} className="text-amber-600 dark:text-amber-400" />
-                        <span>{t('proxy.no_tun.warp_btn', 'حل مشکل ریجن با WARP')}</span>
+                        <span>{t('proxy.no_tun.warp_btn', 'Fix Region with WARP')}</span>
                     </button>
 
                     <button
@@ -227,8 +227,8 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                     >
                         <RefreshCw size={14} className={isScanning ? 'animate-spin' : ''} />
                         {isScanning 
-                            ? t('proxy.no_tun.scanning', 'در حال اسکن پورت‌ها...') 
-                            : t('proxy.no_tun.scan_btn', 'اسکن خودکار پورت‌های VPN')}
+                            ? t('proxy.no_tun.scanning', 'Scanning ports...') 
+                            : t('proxy.no_tun.scan_btn', 'Auto-Scan VPN Ports')}
                     </button>
                 </div>
             </div>
@@ -250,11 +250,11 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                     <div>
                         <div className="text-xs font-bold text-gray-800 dark:text-gray-200">
                             {status?.is_applied 
-                                ? t('proxy.no_tun.status_active', 'پروکسی فعال روی Antigravity') 
-                                : t('proxy.no_tun.status_inactive', 'پروکسی غیرفعال (اتصال مستقیم سیستمی)')}
+                                ? t('proxy.no_tun.status_active', 'Proxy Active on Antigravity') 
+                                : t('proxy.no_tun.status_inactive', 'Proxy Inactive (Direct System Connection)')}
                         </div>
                         <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 font-mono">
-                            {status?.current_proxy || t('proxy.no_tun.no_proxy_set', 'تنظیماتی اعمال نشده است.')}
+                            {status?.current_proxy || t('proxy.no_tun.no_proxy_set', 'No settings applied.')}
                         </div>
                     </div>
                 </div>
@@ -265,7 +265,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                         disabled={isApplying}
                         className="px-3 py-1.5 rounded-lg border border-rose-200 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition-all disabled:opacity-50"
                     >
-                        {t('proxy.no_tun.clear_btn', 'حذف پروکسی')}
+                        {t('proxy.no_tun.clear_btn', 'Remove Proxy')}
                     </button>
                 )}
             </div>
@@ -275,7 +275,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                 <div className="mb-5 space-y-2">
                     <div className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
                         <Wifi size={13} />
-                        {t('proxy.no_tun.discovered_title', 'پروکسی‌های شناسایی‌شده در سیستم شما:')}
+                        {t('proxy.no_tun.discovered_title', 'Discovered local proxies on your system:')}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {discoveredProxies.map((item, idx) => (
@@ -293,16 +293,16 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                                         <span>{item.client_hint}</span>
                                         {item.is_working && item.gemini_supported && (
                                             <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
-                                                Gemini OK
+                                                {t('proxy.no_tun.gemini_ok', 'Gemini OK')}
                                             </span>
                                         )}
                                         {item.is_working && !item.gemini_supported && (
-                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300" title="خطای 400 ریجن گوگل - نیازمند WARP">
-                                                Region Blocked
+                                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300" title={t('proxy.no_tun.region_blocked_tooltip', 'Google Region 400 Error - Requires WARP')}>
+                                                {t('proxy.no_tun.region_blocked', 'Region Blocked')}
                                             </span>
                                         )}
                                         {!item.is_working && item.is_listening && (
-                                            <span className="w-2 h-2 rounded-full bg-amber-400" title="Port Open"></span>
+                                            <span className="w-2 h-2 rounded-full bg-amber-400" title={t('proxy.no_tun.port_open', 'Port Open')}></span>
                                         )}
                                     </div>
                                     <div className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">
@@ -316,7 +316,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                                         </span>
                                     ) : (
                                         <span className="text-[10px] text-gray-400">
-                                            {item.is_listening ? 'Open' : 'Down'}
+                                            {item.is_listening ? t('proxy.no_tun.status_open', 'Open') : t('proxy.no_tun.status_down', 'Down')}
                                         </span>
                                     )}
                                 </div>
@@ -329,7 +329,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
             {/* فیلد ورودی پورت یا آدرس پروکسی */}
             <div className="space-y-2">
                 <label className="block text-xs font-bold text-gray-700 dark:text-gray-300">
-                    {t('proxy.no_tun.input_label', 'آدرس پروکسی مورد نظر (SOCKS5 یا HTTP):')}
+                    {t('proxy.no_tun.input_label', 'Target Proxy Address (SOCKS5 or HTTP):')}
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2">
                     <div className="relative flex-1">
@@ -337,7 +337,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                             type="text"
                             value={customProxyUrl}
                             onChange={(e) => setCustomProxyUrl(e.target.value)}
-                            placeholder="مثال: socks5://127.0.0.1:10808 یا http://127.0.0.1:10809"
+                            placeholder={t('proxy.no_tun.input_placeholder', 'e.g. socks5://127.0.0.1:10808 or http://127.0.0.1:10809')}
                             className="w-full px-4 py-2.5 bg-white dark:bg-base-200 border border-gray-200 dark:border-base-300 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-xs font-mono transition-all shadow-inner text-gray-900 dark:text-gray-100"
                         />
                     </div>
@@ -347,7 +347,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                             disabled={isTesting || !customProxyUrl.trim()}
                             className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-base-300 hover:bg-gray-50 dark:hover:bg-base-200 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-all active:scale-95 disabled:opacity-50"
                         >
-                            {isTesting ? t('common.testing', 'در حال تست...') : t('common.test', 'تست تأخیر')}
+                            {isTesting ? t('proxy.no_tun.testing', 'Testing...') : t('proxy.no_tun.test_btn', 'Test Latency')}
                         </button>
                         <button
                             onClick={() => handleApplyProxy(customProxyUrl)}
@@ -355,7 +355,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                             className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-bold transition-all shadow-md shadow-blue-500/20 active:scale-95 disabled:opacity-50 flex items-center gap-1.5"
                         >
                             <ArrowRight size={14} />
-                            {isApplying ? t('common.applying', 'در حال اعمال...') : t('proxy.no_tun.apply_btn', 'اعمال روی Antigravity')}
+                            {isApplying ? t('proxy.no_tun.applying', 'Applying...') : t('proxy.no_tun.apply_btn', 'Apply to Antigravity')}
                         </button>
                     </div>
                 </div>
@@ -365,7 +365,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-base-300/60 flex items-start gap-2 text-[11px] text-gray-500 dark:text-gray-400">
                 <AlertCircle size={14} className="mt-0.5 text-blue-500 shrink-0" />
                 <p className="leading-relaxed">
-                    {t('proxy.no_tun.footer_hint', 'با کلیک روی «اعمال روی Antigravity»، فایل‌های تنظیمات Antigravity IDE و پلتفرم به صورت ایمن بروزرسانی شده و پروکسی خروجی شیلد نیز با همین آدرس ست می‌شود. برای بازگردانی به حالت اولیه، در هر زمان دکمه «حذف پروکسی» را بزنید.')}
+                    {t('proxy.no_tun.footer_hint', 'Clicking "Apply to Antigravity" safely updates Antigravity IDE and platform configuration files, and sets the shield outbound proxy to this address. To revert back to direct connection, click "Remove Proxy" at any time.')}
                 </p>
             </div>
 
@@ -381,10 +381,10 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm">
-                                        حل خطای ریجن گوگل (User location is not supported)
+                                        {t('proxy.no_tun.warp_modal.title', 'Fix Google Region Error (User location is not supported)')}
                                     </h4>
                                     <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                                        رفع محدودیت IP دیتاسنتری با اتصال تمیز Cloudflare WARP
+                                        {t('proxy.no_tun.warp_modal.subtitle', 'Bypass datacenter IP restrictions with clean Cloudflare WARP routing')}
                                     </p>
                                 </div>
                             </div>
@@ -400,21 +400,22 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                         <div className="p-6 overflow-y-auto space-y-5 text-xs leading-relaxed text-gray-700 dark:text-gray-300">
                             {/* باکس توضیح علت باگ */}
                             <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/70 dark:border-amber-900/40 text-amber-900 dark:text-amber-200 text-[11px]">
-                                <strong>💡 علت چیست؟</strong> گوگل آی‌پی‌های سرورهای دیتاسنتری (هتزنر، دیجیتال‌اوشن، اووی‌اچ و...) یا ایران را در سرویس‌های AI مسدود کرده و خطای <code className="bg-amber-100 dark:bg-amber-900/60 px-1 py-0.5 rounded font-mono">400 User location is not supported</code> بازمی‌گرداند. دو راهکار کاملاً تست‌شده زیر مشکل را ۱۰۰٪ برطرف می‌کنند:
+                                <strong>{t('proxy.no_tun.warp_modal.reason_title', '💡 What is the cause?')}</strong>{' '}
+                                {t('proxy.no_tun.warp_modal.reason_desc', 'Google blocks datacenter IPs (Hetzner, DigitalOcean, OVH, etc.) or restricted regions from accessing AI services, returning a 400 User location is not supported error. The two tested solutions below will resolve the issue:')}
                             </div>
 
                             {/* روش اول: WARP لوکال رسمی کلاینت */}
                             <div className="p-4 rounded-2xl border border-gray-200 dark:border-base-300 space-y-2.5 bg-gray-50/50 dark:bg-base-200/40">
                                 <div className="flex items-center justify-between">
                                     <div className="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5 text-xs">
-                                        <span>روش ۱: نرم‌افزار رسمی Cloudflare WARP (ساده‌ترین)</span>
+                                        <span>{t('proxy.no_tun.warp_modal.method1_title', 'Method 1: Cloudflare WARP Official Client (Recommended)')}</span>
                                     </div>
                                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
-                                        توصیه‌شده
+                                        {t('proxy.no_tun.warp_modal.recommended', 'Recommended')}
                                     </span>
                                 </div>
                                 <p className="text-[11px] text-gray-600 dark:text-gray-400">
-                                    نرم‌افزار Cloudflare WARP را نصب کنید و در تنظیمات آن حالت Proxy Mode را انتخاب کنید (روی پورت پیش‌فرض 40000 شنود می‌کند). سپس روی دکمه زیر کلیک کنید:
+                                    {t('proxy.no_tun.warp_modal.method1_desc', 'Install the official Cloudflare WARP client and set it to Proxy Mode in settings (listens on default port 40000). Then click below:')}
                                 </p>
                                 <div className="pt-1 flex gap-2">
                                     <button
@@ -426,7 +427,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                                         className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
                                     >
                                         <Zap size={13} />
-                                        <span>ست کردن پورت 40000 (WARP Local) و تست</span>
+                                        <span>{t('proxy.no_tun.warp_modal.method1_btn', 'Set Port 40000 (WARP Local) and Test')}</span>
                                     </button>
                                 </div>
                             </div>
@@ -434,10 +435,10 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                             {/* روش دوم: ادغام WARP در کلاینت V2Ray / Xray */}
                             <div className="p-4 rounded-2xl border border-gray-200 dark:border-base-300 space-y-2.5 bg-gray-50/50 dark:bg-base-200/40">
                                 <div className="font-bold text-gray-900 dark:text-gray-100 flex items-center justify-between text-xs">
-                                    <span>روش ۲: فعال‌سازی WARP روی سرور / کلاینت V2Ray (Xray Outbound)</span>
+                                    <span>{t('proxy.no_tun.warp_modal.method2_title', 'Method 2: Enable WARP on Server / V2Ray Client (Xray Outbound)')}</span>
                                 </div>
                                 <p className="text-[11px] text-gray-600 dark:text-gray-400">
-                                    اگر از سرور اختصاصی یا پنل‌های مرزبان/سنایی استفاده می‌کنید، کافیست ترافیک دامنه <code>googleapis.com</code> را از WARP خارج کنید. همچنین می‌توانید قطعه کانفیگ زیر را به بخش <code>routing</code> کلاینت خود اضافه کنید:
+                                    {t('proxy.no_tun.warp_modal.method2_desc', 'If you use a VPS or Marzban/Sanaei panel, route googleapis.com traffic through WARP. You can also add the following rule to your client routing:')}
                                 </p>
                                 
                                 <div className="relative">
@@ -460,7 +461,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                                         className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-white text-[10px] font-mono flex items-center gap-1 transition-all border border-gray-700"
                                     >
                                         {copiedSnippet ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
-                                        {copiedSnippet ? 'کپی شد' : 'کپی'}
+                                        {copiedSnippet ? t('proxy.no_tun.warp_modal.copied', 'Copied') : t('proxy.no_tun.warp_modal.copy', 'Copy')}
                                     </button>
                                 </div>
                             </div>
@@ -472,7 +473,7 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                                 onClick={() => setShowWarpModal(false)}
                                 className="px-5 py-2 rounded-xl bg-gray-200 dark:bg-base-300 hover:bg-gray-300 dark:hover:bg-base-400 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all active:scale-95"
                             >
-                                متوجه شدم، بستن
+                                {t('proxy.no_tun.warp_modal.close', 'Got it, close')}
                             </button>
                         </div>
                     </div>
