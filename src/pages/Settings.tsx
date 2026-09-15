@@ -1518,7 +1518,7 @@ function Settings() {
                                         <img
                                             src="/icon.png"
                                             alt="Antigravity Logo"
-                                            className="relative w-24 h-24 rounded-3xl shadow-2xl transform group-hover:scale-105 transition-all duration-500 rotate-3 group-hover:rotate-6 object-cover bg-white dark:bg-black"
+                                            className="relative w-24 h-24 drop-shadow-2xl transform group-hover:scale-105 transition-all duration-500 rotate-3 group-hover:rotate-6 object-contain bg-transparent"
                                         />
                                     </div>
 
