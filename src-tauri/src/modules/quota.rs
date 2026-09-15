@@ -965,7 +965,11 @@ pub async fn warm_up_account(account_id: &str) -> Result<String, String> {
             }
             tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
         }
-        let _ = crate::modules::account::refresh_all_quotas_logic().await;
+        if let Ok(mut acc) = crate::modules::account::load_account(&account_id_clone) {
+            if let Ok(quota) = crate::modules::account::fetch_quota_with_retry(&mut acc).await {
+                let _ = crate::modules::account::update_account_quota(&account_id_clone, quota);
+            }
+        }
     });
 
     Ok(format!(

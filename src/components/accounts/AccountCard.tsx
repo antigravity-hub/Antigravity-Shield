@@ -444,9 +444,18 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     ) : (
                         <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 text-xs">
                             <div className="flex items-center gap-1.5">
-                                <Clock className="w-3.5 h-3.5 text-cyan-500" />
-                                <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">
-                                    {fiveHourResetInfo?.isReady ? '0h 0m' : `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`}
+                                {fiveHourResetInfo?.isReady ? (
+                                    <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
+                                ) : (
+                                    <Clock className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+                                )}
+                                <span className={cn(
+                                    "font-mono font-bold",
+                                    fiveHourResetInfo?.isReady
+                                        ? "text-emerald-600 dark:text-emerald-400"
+                                        : "text-cyan-600 dark:text-cyan-400"
+                                )}>
+                                    {fiveHourResetInfo?.isReady ? t('common.ready', 'Ready') : `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`}
                                 </span>
                                 <span className="text-[10px] text-slate-400 dark:text-slate-500">
                                     {t('accounts.quota_5h', '5-Hour Rolling')}

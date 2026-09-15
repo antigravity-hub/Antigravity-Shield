@@ -625,21 +625,38 @@ function AccountRowContent({
                 </td>
             );
         }
+        const isReady = fiveHour.isReady;
+        const readyTooltip = `${quotaProvider.toUpperCase()} 5H: ${t('accounts.five_hour_ready_tooltip', 'Quota fully available (No waiting time)')}`;
+        const countdownTooltip = fiveHour.resetTime
+            ? `${quotaProvider.toUpperCase()} 5H Reset: ${new Date(fiveHour.resetTime).toLocaleString()}`
+            : readyTooltip;
+
         return (
             <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[90px] min-w-[85px]">
-                <div className="flex items-center gap-1.5" title={fiveHour.resetTime ? `${quotaProvider.toUpperCase()} 5H Reset: ${new Date(fiveHour.resetTime).toLocaleString()}` : `${quotaProvider.toUpperCase()} 5H Quota Ready`}>
-                    <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
-                    <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
-                        {fiveHour.isReady ? '0h 0m' : `${fiveHour.hoursInDay}h ${fiveHour.minutesInHour}m`}
-                    </span>
-                    <span className={cn(
-                        "text-[9px] font-bold px-1 py-0.2 rounded font-mono",
-                        fiveHour.isReady
-                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                            : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
-                    )}>
-                        5H
-                    </span>
+                <div className="flex items-center gap-1.5" title={isReady ? readyTooltip : countdownTooltip}>
+                    {isReady ? (
+                        <>
+                            <div className="flex items-center gap-1">
+                                <Check className="w-3 h-3 text-emerald-500 shrink-0" strokeWidth={2.5} />
+                                <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                                    {t('common.ready', 'Ready')}
+                                </span>
+                            </div>
+                            <span className="text-[9px] font-bold px-1 py-0.2 rounded font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                5H
+                            </span>
+                        </>
+                    ) : (
+                        <>
+                            <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
+                            <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
+                                {`${fiveHour.hoursInDay}h ${fiveHour.minutesInHour}m`}
+                            </span>
+                            <span className="text-[9px] font-bold px-1 py-0.2 rounded font-mono bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                                5H
+                            </span>
+                        </>
+                    )}
                 </div>
             </td>
         );

@@ -19,10 +19,18 @@ function BackgroundTaskRunner() {
         const { auto_refresh, refresh_interval } = config;
         const { refreshActiveAccountQuota, refreshAllQuotas } = useAccountStore.getState();
 
-        // Immediate sync on enable
+        // Immediate sync on startup/enable
         if (auto_refresh && !prevAutoRefreshRef.current) {
-            console.log('[BackgroundTask] Auto-refresh enabled, executing initial active sync...');
+            console.log('[BackgroundTask] Auto-refresh enabled, executing initial active and fleet sync...');
             refreshActiveAccountQuota();
+            // Stagger full fleet sync slightly (1.5s) to guarantee snappy startup without network congestion
+            setTimeout(() => {
+                if (!isCancelled) {
+                    refreshAllQuotas(true).catch(err => {
+                        console.warn('[BackgroundTask] Initial background full fleet sync failed gracefully:', err);
+                    });
+                }
+            }, 1500);
         }
         prevAutoRefreshRef.current = auto_refresh;
 
@@ -53,7 +61,7 @@ function BackgroundTaskRunner() {
                         // Every 3rd cycle do a full fleet sync; otherwise prioritize active account for speed & zero-spam
                         if (cycleCount % 3 === 0) {
                             console.log('[BackgroundTask] Staggered full fleet quota sync...');
-                            await refreshAllQuotas();
+                            await refreshAllQuotas(true);
                         } else {
                             console.log('[BackgroundTask] Active account priority quota sync...');
                             await refreshActiveAccountQuota();

@@ -338,6 +338,7 @@
     "stop_refresh": "توقف تازه‌سازی",
     "refresh_stopping": "در حال توقف تازه‌سازی...",
     "refresh_stopped": "تازه‌سازی متوقف شد",
+    "five_hour_ready_tooltip": "سهمیه ۵ ساعته کاملاً پر و آمادهٔ مصرف است (بدون زمان انتظار)",
     "details": {
       "title": "Quota Details",
       "model_quota": "Model Quota",
@@ -366,6 +367,7 @@
       "email": "ایمیل",
       "quota": "سهمیه مدل‌ها",
       "five_hour_countdown": "ریست ۵ ساعته",
+      "five_hour_ready_tooltip": "سهمیه ۵ ساعته کاملاً پر و آمادهٔ مصرف است (بدون زمان انتظار)",
       "weekly_countdown": "ریست هفتگی",
       "last_used": "آخرین استفاده",
       "actions": "عملیات",
