@@ -348,8 +348,13 @@ async fn switch_account(
     }
 
     let account_id = payload.account_id.or(payload.email).unwrap_or_default();
-    let target_ide = payload.target_ide.as_deref().or(Some("ide")).map(|s| s.to_string());
+    let target_ide = payload
+        .target_ide
+        .as_deref()
+        .or(Some("ide"))
+        .map(|s| s.to_string());
     let state_clone = state.clone();
+    let response_msg = format!("Account switch task started: {}", account_id);
 
     // Execute switch asynchronously (non-blocking response)
     tokio::spawn(async move {
@@ -358,7 +363,9 @@ async fn switch_account(
             account_id, target_ide
         ));
 
-        match account::switch_account(&account_id, target_ide.as_deref(), &state_clone.integration).await {
+        match account::switch_account(&account_id, target_ide.as_deref(), &state_clone.integration)
+            .await
+        {
             Ok(()) => {
                 logger::log_info(&format!(
                     "[HTTP API] Account switch successful: {}",
@@ -380,7 +387,7 @@ async fn switch_account(
         StatusCode::ACCEPTED,
         Json(SwitchResponse {
             success: true,
-            message: format!("Account switch task started: {}", payload.account_id),
+            message: response_msg,
         }),
     ))
 }
