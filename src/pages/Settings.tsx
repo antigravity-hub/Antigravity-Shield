@@ -36,7 +36,7 @@ function Settings() {
         language: 'zh',
         theme: 'system',
         auto_refresh: false,
-        refresh_interval: 15,
+        refresh_interval: 10,
         auto_sync: false,
         sync_interval: 5,
         proxy: {

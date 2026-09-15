@@ -11,7 +11,7 @@ import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { useAccountStore } from '../../stores/useAccountStore';
-import { getAccountFiveHourReset, isAccountQuotaExhausted } from '../../utils/quota';
+import { getAccountFiveHourReset, isAccountQuotaExhausted, safeQuotaPercentage } from '../../utils/quota';
 
 interface AccountCardProps {
     account: Account;
@@ -158,7 +158,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     return {
                         id: `${group.display_name}-${b.bucket_id}`,
                         label: b.display_name ? `${shortGroupName} (${b.display_name})` : `${shortGroupName} (${weeklySuffix})`,
-                        percentage: Math.round((b.remaining_fraction || 0) * 100),
+                        percentage: safeQuotaPercentage(b.remaining_fraction),
                         resetTime: b.reset_time,
                         Icon: shortGroupName.toLowerCase().includes('claude') ? Sparkles : Bot,
                     };
@@ -183,7 +183,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     return {
                         id: `${group.display_name}-${b.bucket_id}`,
                         label: b.display_name ? `${shortGroupName} (${b.display_name})` : `${shortGroupName} (5H)`,
-                        percentage: Math.round((b.remaining_fraction || 0) * 100),
+                        percentage: safeQuotaPercentage(b.remaining_fraction),
                         resetTime: b.reset_time,
                         Icon: shortGroupName.toLowerCase().includes('claude') ? Sparkles : Bot,
                     };

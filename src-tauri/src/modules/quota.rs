@@ -63,6 +63,20 @@ struct QuotaInfo {
     reset_time: Option<String>,
 }
 
+/// Convert remaining fraction (0.0 ..= 1.0) to percentage with strict non-rounding ceiling.
+/// If any quota has been consumed (fraction < 1.0), it never rounds up to 100%.
+#[inline]
+pub fn calculate_safe_percentage(remaining_fraction: f64) -> i32 {
+    if remaining_fraction >= 1.0 {
+        100
+    } else if remaining_fraction <= 0.0 {
+        0
+    } else {
+        let raw = (remaining_fraction * 100.0).round() as i32;
+        raw.min(99).max(1)
+    }
+}
+
 // ---- retrieveUserQuotaSummary 响应反序列化结构 ----
 
 #[derive(Debug, Deserialize)]
@@ -370,7 +384,7 @@ pub async fn fetch_quota_with_cache(
                         if let Some(quota_info) = info.quota_info {
                             let percentage = quota_info
                                 .remaining_fraction
-                                .map(|f| (f * 100.0) as i32)
+                                .map(calculate_safe_percentage)
                                 .unwrap_or(0);
 
                             let reset_time = quota_info.reset_time.clone().unwrap_or_default();
@@ -436,7 +450,7 @@ pub async fn fetch_quota_with_cache(
                                 let is_5h = !is_weekly && (b_win.contains("5h") || b_id.contains("5h") || b_disp.contains("5h") || b_win.contains("5 hour") || b_disp.contains("5 hour") || b_id.contains("5 hour") || b_win.contains("five") || b_id.contains("five") || b_win.contains("18000") || b_id.contains("18000") || b_win.contains("hour") || b_id.contains("hour") || b_disp.contains("hour"));
 
                                 if is_5h {
-                                    let group_pct = (bucket.remaining_fraction * 100.0) as i32;
+                                    let group_pct = calculate_safe_percentage(bucket.remaining_fraction);
                                     for model in &mut quota_data.models {
                                         let m_name = model.name.to_lowercase();
                                         let matches_group = if is_gemini && m_name.starts_with("gemini") {

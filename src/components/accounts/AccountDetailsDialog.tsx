@@ -5,6 +5,7 @@ import { Account } from '../../types/account';
 import { formatDate } from '../../utils/format';
 import { useTranslation } from 'react-i18next';
 import { MODEL_CONFIG, sortModels } from '../../config/modelConfig';
+import { safeQuotaPercentage } from '../../utils/quota';
 
 interface AccountDetailsDialogProps {
     account: Account | null;
@@ -186,7 +187,7 @@ export default function AccountDetailsDialog({ account, onClose }: AccountDetail
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         {group.buckets.map((bucket, bIdx) => {
-                                            const percentage = Math.round(bucket.remaining_fraction * 100);
+                                            const percentage = safeQuotaPercentage(bucket.remaining_fraction);
                                             return (
                                                 <div key={bIdx} className="bg-white dark:bg-base-200 p-3 rounded-lg border border-gray-100 dark:border-white/5 shadow-sm">
                                                     <div className="flex justify-between items-center mb-2">
