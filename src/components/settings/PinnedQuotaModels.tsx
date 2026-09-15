@@ -43,11 +43,13 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
     // 基础内置配置模型
     const baseModels = Object.entries(MODEL_CONFIG)
         .filter(([id, cfg]) => {
-            // 隐藏思考变体
+            // 隐藏思考变体（由主模型或关注项代理）
             if (id.includes('thinking')) return false;
+            // 隐藏内部微层级与冗余别名（如 -tiered, -agent）
+            if (id.includes('tiered') || id.includes('agent')) return false;
 
-            const labelKey = (cfg.shortLabel || cfg.label).toLowerCase();
-            // 在这一层，如果展示用的 labelKey 已经被加过了，就不要重复加到外派的选项里了
+            const labelKey = (cfg.label || cfg.shortLabel).toLowerCase();
+            // 在这一层，如果展示用的 labelKey 已经被加过了，就不要重复加到选项里了
             if (addedDisplayLabels.has(labelKey)) return false;
             addedDisplayLabels.add(labelKey);
             return true;
@@ -55,7 +57,8 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
         .map(([id, cfg]) => ({
             id,
             label: id,
-            desc: cfg.shortLabel || cfg.label || t(cfg.i18nDescKey || cfg.i18nKey, cfg.label)
+            title: cfg.label || cfg.shortLabel || id,
+            desc: id,
         }));
 
     // 提取所有账号的历史动态模型
@@ -63,6 +66,8 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
         .filter(m => {
             const id = m.name.toLowerCase();
             if (id.includes('thinking')) return false;
+            // 过滤内部子层级和遥测指标 (-low, -medium, -high, -tiered, -extra-low)
+            if (/-(low|medium|high|tiered|extra-low)$/i.test(id)) return false;
             // 查重：避免内置里已经包含的模型或同名 id 重复
             if (uniqueIds.has(id)) return false;
             uniqueIds.add(id);
@@ -71,7 +76,8 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
         .map(m => ({
             id: m.name.toLowerCase(),
             label: m.name.toLowerCase(),
-            desc: m.display_name || t('settings.pinned_quota_models.dynamic', 'Dynamic Extracted Model')
+            title: m.display_name || m.name.toLowerCase(),
+            desc: m.name.toLowerCase(),
         }));
 
     const modelOptions = [...baseModels, ...dynamicModels];
@@ -87,7 +93,8 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
             modelOptions.push({
                 id: modelId,
                 label: modelId,
-                desc: quotaModel?.display_name || cfg?.shortLabel || cfg?.label || t('common.unknown', '未知')
+                title: cfg?.label || quotaModel?.display_name || cfg?.shortLabel || modelId,
+                desc: modelId
             });
         }
     });
@@ -111,7 +118,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
 
             {/* 模型选择区域 */}
             <div className="mt-5 pt-5 border-t border-gray-100 dark:border-base-200 space-y-4">
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
                     {modelOptions.map((model) => {
                         const isSelected = config.models?.includes(model.id);
                         return (
@@ -119,17 +126,17 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                                 key={model.id}
                                 onClick={() => toggleModel(model.id)}
                                 className={`
-                                    flex items-center justify-between p-2 rounded-lg border cursor-pointer transition-all duration-200
+                                    flex items-center justify-between p-2.5 rounded-lg border cursor-pointer transition-all duration-200
                                     ${isSelected
-                                        ? 'bg-indigo-50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-400'
-                                        : 'bg-gray-50/50 dark:bg-base-200/50 border-gray-100 dark:border-base-300/50 text-gray-500 hover:border-gray-200 dark:hover:border-base-300'}
+                                        ? 'bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-700 text-indigo-900 dark:text-indigo-200 ring-1 ring-indigo-400/30 shadow-xs'
+                                        : 'bg-gray-50/50 dark:bg-base-200/50 border-gray-100 dark:border-base-300/50 text-gray-700 dark:text-gray-300 hover:border-gray-200 dark:hover:border-base-300'}
                                 `}
                             >
-                                <div className="flex flex-col min-w-0">
-                                    <span className="text-[11px] font-bold truncate">
-                                        {model.label}
+                                <div className="flex flex-col min-w-0 pr-1">
+                                    <span className="text-xs font-bold truncate">
+                                        {model.title}
                                     </span>
-                                    <span className="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                                    <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 mt-0.5 truncate">
                                         {model.desc}
                                     </span>
                                 </div>
