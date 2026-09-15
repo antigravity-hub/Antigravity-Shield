@@ -71,8 +71,8 @@ export const MODEL_CONFIG: Record<string, ModelConfig> = {
         tags: ['pro', 'high'],
     },
     'gemini-3-flash': {
-        label: 'Gemini 3 Flash',
-        shortLabel: 'G3 Flash',
+        label: 'Gemini 3.8 Flash',
+        shortLabel: 'G3.8 Flash',
         protectedKey: 'gemini-flash',
         Icon: Gemini.Color,
         i18nKey: 'proxy.model.flash_preview',

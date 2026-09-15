@@ -182,58 +182,23 @@ export function WeeklyCountdown({
                     })}
                 </div>
 
-                {/* Sparkler Progress Bar matching 100% width of 7-day boxes */}
+                {/* Glowing Vector Progress Bar matching 100% width of 7-day boxes */}
                 <div className="flex flex-col gap-1 pt-0.5 w-full">
                     <div className="w-full relative py-0.5">
-                        {/* Background track matching 100% width */}
-                        <div className="w-full h-1.5 rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-visible relative shadow-inner">
-                            {/* Progress Bar in vibrant #93b93b */}
+                        {/* Background track with inset depth */}
+                        <div className="w-full h-1.5 rounded-full bg-slate-200/90 dark:bg-slate-800/90 border border-slate-300/40 dark:border-slate-700/50 shadow-inner overflow-hidden relative">
+                            {/* Glowing Fill Bar with vector glossy highlight */}
                             <div
                                 className="h-full rounded-full transition-all duration-500 relative"
                                 style={{
                                     width: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%`,
-                                    background: 'linear-gradient(90deg, rgba(147, 185, 59, 0.75) 0%, #93b93b 80%, #a8cf44 100%)',
-                                    boxShadow: '0 0 6px rgba(147, 185, 59, 0.45)',
+                                    background: 'linear-gradient(90deg, #65a30d 0%, #84cc16 55%, #bef264 100%)',
+                                    boxShadow: '0 0 8px rgba(163, 230, 53, 0.6), inset 0 1px 0.5px rgba(255, 255, 255, 0.45)',
                                 }}
-                            />
-
-                            {/* Sparkler (فشفشه) Tip at the edge of the bar */}
-                            {(quota.percentage ?? 0) > 0 && (
-                                <div
-                                    className="absolute top-1/2 -translate-y-1/2 pointer-events-none -ml-1.5 transition-all duration-500 z-10"
-                                    style={{ left: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%` }}
-                                >
-                                    <div className="relative flex items-center justify-center w-3 h-3">
-                                        {/* Ping aura */}
-                                        <span
-                                            className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full opacity-75"
-                                            style={{ backgroundColor: '#bef264' }}
-                                        />
-                                        {/* Rotating / flickering sparkler star (فشفشه) */}
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            className="w-3.5 h-3.5 animate-sparkler text-lime-300 absolute pointer-events-none"
-                                        >
-                                            <path
-                                                d="M12 0 L13.8 8.2 L22 12 L13.8 15.8 L12 24 L10.2 15.8 L2 12 L10.2 8.2 Z"
-                                                fill="#d9f99d"
-                                            />
-                                            <path
-                                                d="M12 4 L13 11 L20 12 L13 13 L12 20 L11 13 L4 12 L11 11 Z"
-                                                fill="#ffffff"
-                                            />
-                                        </svg>
-                                        {/* Micro shooting sparks */}
-                                        <span className="absolute w-1 h-1 rounded-full bg-yellow-200 sparkler-particle-1 pointer-events-none" />
-                                        <span className="absolute w-1 h-1 rounded-full bg-lime-200 sparkler-particle-2 pointer-events-none" />
-                                        <span className="absolute w-0.5 h-0.5 rounded-full bg-white sparkler-particle-3 pointer-events-none" />
-                                        {/* Radiant white/lime center core */}
-                                        <span
-                                            className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white shadow-[0_0_6px_#ffffff,0_0_8px_#84cc16]"
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                            >
+                                {/* Top glossy inner reflection highlight */}
+                                <div className="absolute inset-x-0 top-0 h-[1px] bg-white/40 pointer-events-none" />
+                            </div>
                         </div>
                     </div>
 
@@ -301,55 +266,20 @@ export function WeeklyCountdown({
                 })}
             </div>
 
-            {/* Sparkler Progress Bar matching 100% width of 7-day boxes */}
+            {/* Glowing Vector Progress Bar matching 100% width of 7-day boxes */}
             <div className="w-full relative py-0.5">
-                <div className="w-full h-1.5 rounded-full bg-slate-200/80 dark:bg-slate-700/60 overflow-visible relative shadow-inner">
+                <div className="w-full h-1.5 rounded-full bg-slate-200/90 dark:bg-slate-800/90 border border-slate-300/40 dark:border-slate-700/50 shadow-inner overflow-hidden relative">
                     <div
                         className="h-full rounded-full transition-all duration-500 relative"
                         style={{
                             width: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%`,
-                            background: 'linear-gradient(90deg, rgba(147, 185, 59, 0.75) 0%, #93b93b 80%, #a8cf44 100%)',
-                            boxShadow: '0 0 6px rgba(147, 185, 59, 0.45)',
+                            background: 'linear-gradient(90deg, #65a30d 0%, #84cc16 55%, #bef264 100%)',
+                            boxShadow: '0 0 8px rgba(163, 230, 53, 0.6), inset 0 1px 0.5px rgba(255, 255, 255, 0.45)',
                         }}
-                    />
-
-                    {/* Sparkler (فشفشه) Tip at the edge of the bar */}
-                    {(quota.percentage ?? 0) > 0 && (
-                        <div
-                            className="absolute top-1/2 -translate-y-1/2 pointer-events-none -ml-1.5 transition-all duration-500 z-10"
-                            style={{ left: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%` }}
-                        >
-                            <div className="relative flex items-center justify-center w-3 h-3">
-                                {/* Ping aura */}
-                                <span
-                                    className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full opacity-75"
-                                    style={{ backgroundColor: '#bef264' }}
-                                />
-                                {/* Rotating / flickering sparkler star (فشفشه) */}
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    className="w-3.5 h-3.5 animate-sparkler text-lime-300 absolute pointer-events-none"
-                                >
-                                    <path
-                                        d="M12 0 L13.8 8.2 L22 12 L13.8 15.8 L12 24 L10.2 15.8 L2 12 L10.2 8.2 Z"
-                                        fill="#d9f99d"
-                                    />
-                                    <path
-                                        d="M12 4 L13 11 L20 12 L13 13 L12 20 L11 13 L4 12 L11 11 Z"
-                                        fill="#ffffff"
-                                    />
-                                </svg>
-                                {/* Micro shooting sparks */}
-                                <span className="absolute w-1 h-1 rounded-full bg-yellow-200 sparkler-particle-1 pointer-events-none" />
-                                <span className="absolute w-1 h-1 rounded-full bg-lime-200 sparkler-particle-2 pointer-events-none" />
-                                <span className="absolute w-0.5 h-0.5 rounded-full bg-white sparkler-particle-3 pointer-events-none" />
-                                {/* Radiant white/lime center core */}
-                                <span
-                                    className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white shadow-[0_0_6px_#ffffff,0_0_8px_#84cc16]"
-                                />
-                            </div>
-                        </div>
-                    )}
+                    >
+                        {/* Top glossy inner reflection highlight */}
+                        <div className="absolute inset-x-0 top-0 h-[1px] bg-white/40 pointer-events-none" />
+                    </div>
                 </div>
             </div>
 

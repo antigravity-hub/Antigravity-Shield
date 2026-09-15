@@ -41,7 +41,7 @@ import { useConfigStore } from '../../stores/useConfigStore';
 import { useAccountStore } from '../../stores/useAccountStore';
 import { QuotaItem } from './QuotaItem';
 import { WeeklyCountdown } from './WeeklyCountdown';
-import { MODEL_CONFIG, sortModels, getModelProtectionKey, resolveQuotaModels, ensurePinnedImageSelector } from '../../config/modelConfig';
+import { MODEL_CONFIG, sortModels, getModelProtectionKey, resolveQuotaModels, ensurePinnedImageSelector, getModelShortDisplayName } from '../../config/modelConfig';
 import { categorizeModel } from '../../utils/modelCategory';
 import { getAccountFiveHourReset, isAccountQuotaExhausted } from '../../utils/quota';
 import { cn } from '../../utils/cn';
@@ -342,7 +342,8 @@ function AccountRowContent({
         (showAllQuotas
             ? (account.quota?.models || []).map(m => {
                 const config = MODEL_CONFIG[m.name.toLowerCase()];
-                const label = m.display_name || (config?.i18nKey ? t(config.i18nKey) : (config?.shortLabel || config?.label || m.name));
+                const fallbackLabel = m.display_name || (config?.i18nKey ? t(config.i18nKey) : (config?.shortLabel || config?.label || m.name));
+                const label = getModelShortDisplayName(m, fallbackLabel);
                 return {
                     id: m.name.toLowerCase(),
                     label: label,
@@ -354,12 +355,14 @@ function AccountRowContent({
                 const selectorConfig = MODEL_CONFIG[sel.selectorId.toLowerCase()];
                 const resolvedConfig = sel.model ? MODEL_CONFIG[sel.model.name.toLowerCase()] : undefined;
                 if (!selectorConfig && !sel.model) return null;
-                const label = sel.model?.display_name
+                const dynamicShortLabel = sel.model ? getModelShortDisplayName(sel.model) : undefined;
+                const fallbackLabel = sel.model?.display_name
                     || (resolvedConfig?.shortLabel || resolvedConfig?.label)
                     || (selectorConfig?.shortLabel || selectorConfig?.label)
                     || (resolvedConfig?.i18nKey ? t(resolvedConfig.i18nKey) : undefined)
                     || (selectorConfig?.i18nKey ? t(selectorConfig.i18nKey) : undefined)
                     || sel.selectorId;
+                const label = dynamicShortLabel || fallbackLabel;
                 return {
                     id: sel.model?.name.toLowerCase() ?? sel.selectorId.toLowerCase(),
                     label,
@@ -393,7 +396,7 @@ function AccountRowContent({
     });
 
     const renderEmailCell = () => (
-        <td key="email" className="px-2 py-1 align-middle w-[260px] min-w-[240px]">
+        <td key="email" className="px-2 py-1 align-middle w-[230px] min-w-[200px] xl:w-[250px]">
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                 <span className={cn(
                     "font-medium text-sm break-all transition-colors",
@@ -558,7 +561,7 @@ function AccountRowContent({
     );
 
     const renderModelsCell = () => (
-        <td key="models" className="px-2 py-1 align-middle min-w-[360px] xl:min-w-[420px] 2xl:min-w-[480px]">
+        <td key="models" className="px-2 py-1 align-middle min-w-[310px] xl:min-w-[360px]">
             {isDisabled || account.quota?.is_forbidden || account.validation_blocked ? (
                 <div className={cn(
                     "flex items-center justify-center gap-3 py-1.5 px-4 rounded-xl border group/error",
@@ -615,7 +618,7 @@ function AccountRowContent({
         const fiveHour = getAccountFiveHourReset(account, quotaProvider);
         if (!fiveHour.isAvailable) {
             return (
-                <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[95px] min-w-[90px]">
+                <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[90px] min-w-[85px]">
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
                         N/A (Free)
                     </span>
@@ -623,7 +626,7 @@ function AccountRowContent({
             );
         }
         return (
-            <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[95px] min-w-[90px]">
+            <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[90px] min-w-[85px]">
                 <div className="flex items-center gap-1.5" title={fiveHour.resetTime ? `${quotaProvider.toUpperCase()} 5H Reset: ${new Date(fiveHour.resetTime).toLocaleString()}` : `${quotaProvider.toUpperCase()} 5H Quota Ready`}>
                     <Clock className="w-3 h-3 text-cyan-500 shrink-0" />
                     <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
@@ -643,7 +646,7 @@ function AccountRowContent({
     };
 
     const renderWeeklyCell = () => (
-        <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[126px] min-w-[120px]">
+        <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[112px]">
             <WeeklyCountdown account={account} provider={quotaProvider} layout="table" />
         </td>
     );
@@ -674,11 +677,14 @@ function AccountRowContent({
 
             {/* 操作列 */}
             <td className={cn(
-                "px-1 py-1 sticky right-0 z-10 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.15)] dark:shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.5)] text-center align-middle w-[165px] min-w-[160px]",
+                "px-1 py-1 sticky right-0 z-10 text-center align-middle w-[165px] min-w-[160px] border-l border-gray-100/80 dark:border-base-200/80 transition-colors",
                 isAnyActive
-                    ? "bg-[#ecfdf5] dark:bg-[#063b2f]"
-                    : "bg-white dark:bg-[#0f172a]",
-                !isAnyActive && "group-hover:bg-gray-50 dark:group-hover:bg-[#1e293b]"
+                    ? "bg-[#ecfdf5] dark:bg-[#07251e]"
+                    : isExhausted
+                        ? "bg-slate-50 dark:bg-[#0c1422]"
+                        : "bg-white dark:bg-base-100",
+                !isAnyActive && !isExhausted && "group-hover:bg-gray-50 dark:group-hover:bg-base-200",
+                isAnyActive && "group-hover:bg-emerald-50/80 dark:group-hover:bg-[#0a2f26]"
             )}>
                 <AccountActionControls
                     account={account}
@@ -834,7 +840,7 @@ function AccountTable({
                 <th
                     key="email"
                     {...commonHeaderProps}
-                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[260px] min-w-[240px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[230px] min-w-[200px] xl:w-[250px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
                 >
                     <div className="flex items-center gap-1">
                         <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
@@ -848,7 +854,7 @@ function AccountTable({
                 <th
                     key="models"
                     {...commonHeaderProps}
-                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[360px] xl:min-w-[420px] 2xl:min-w-[480px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider min-w-[310px] xl:min-w-[360px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
                 >
                     <div className="flex items-center gap-1">
                         <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
@@ -862,7 +868,7 @@ function AccountTable({
                 <th
                     key="five_hour"
                     {...commonHeaderProps}
-                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[95px] min-w-[90px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[90px] min-w-[85px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
                 >
                     <div className="flex items-center gap-1">
                         <GripVertical className="w-3 h-3 text-gray-400 opacity-60" />
@@ -876,7 +882,7 @@ function AccountTable({
                 <th
                     key="weekly"
                     {...commonHeaderProps}
-                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[126px] min-w-[120px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
+                    className="px-2 py-1 text-left rtl:text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-[118px] min-w-[112px] whitespace-nowrap cursor-grab active:cursor-grabbing select-none hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
                 >
                     <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center gap-1">
@@ -929,8 +935,8 @@ function AccountTable({
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <div className="overflow-x-auto">
-                <table className="w-full min-w-[960px]">
+            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700">
+                <table className="w-full min-w-[860px]">
                     <thead>
                         <tr className="border-b border-gray-100 dark:border-base-200 bg-gray-50 dark:bg-base-200">
                             <th className="pl-2 py-2 text-left w-8">
@@ -945,7 +951,7 @@ function AccountTable({
                                 />
                             </th>
                             {columnOrder.map((colId) => renderColumnHeader(colId))}
-                            <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[165px] min-w-[160px] bg-gray-50 dark:bg-[#0f172a] z-20 shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.15)] dark:shadow-[-12px_0_12px_-12px_rgba(0,0,0,0.5)] text-center">{t('accounts.table.actions')}</th>
+                            <th className="px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap sticky right-0 w-[165px] min-w-[160px] bg-gray-50 dark:bg-base-200 z-20 border-l border-gray-100/80 dark:border-base-200/80 text-center">{t('accounts.table.actions')}</th>
                         </tr>
                     </thead>
                     <SortableContext items={accountIds} strategy={verticalListSortingStrategy}>
