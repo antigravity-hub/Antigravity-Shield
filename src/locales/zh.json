@@ -43,6 +43,7 @@
     "update_success": "更新成功",
     "delete_success": "删除成功",
     "copied": "已复制到剪贴板",
+    "none": "无",
     "reason": "原因",
     "show_raw": "显示原始报文",
     "show_parsed": "显示解析后"
@@ -485,7 +486,9 @@
         "checking": "正在检测",
         "healthy": "正常",
         "timeout": "已超时"
-      }
+      },
+      "inactive_notice": "代理池未启用",
+      "confirm_batch_delete": "确定要删除所选的代理吗？"
     },
     "advanced": {
       "title": "高级设置",
@@ -688,6 +691,53 @@
     "action": {
       "start": "启动服务",
       "stop": "停止服务"
+    },
+    "no_tun": {
+      "title": "Antigravity 直连代理（无需 TUN）",
+      "mode_badge": "免 TUN 模式",
+      "desc": "将 Antigravity IDE、平台与 CLI 的流量精准路由至 V2Ray/Xray/Clash 代理，无需开启全局 TUN 虚拟网卡。",
+      "warp_btn": "WARP 解决地区受限",
+      "scan_btn": "自动扫描本地 VPN 端口",
+      "scanning": "正在扫描端口...",
+      "scan_success": "扫描完成：已发现 {{count}} 个可用端口。",
+      "scan_empty": "未在常见端口发现活跃的本地代理，请手动输入端口。",
+      "test_ok_gemini": "✅ 连接成功且已验证支持 Gemini！延迟: {{latency}}ms",
+      "test_region_blocked": "⚠️ 代理已连通，但当前 IP 被 Google 地区封锁 (400)。请开启 WARP 后再试。",
+      "test_fail": "连接失败: {{error}}",
+      "url_empty": "请输入代理地址。",
+      "status_active": "Antigravity 代理已生效",
+      "status_inactive": "代理未启用（系统直连模式）",
+      "no_proxy_set": "未配置代理。",
+      "clear_btn": "清除代理",
+      "discovered_title": "在您系统中检测到的本地代理：",
+      "region_blocked_tooltip": "Google 地区 400 错误 - 需要 WARP",
+      "port_open": "端口开放",
+      "gemini_ok": "Gemini 正常",
+      "region_blocked": "地区受限",
+      "status_open": "开放",
+      "status_down": "不可用",
+      "input_label": "目标代理地址 (SOCKS5 或 HTTP)：",
+      "input_placeholder": "例如: socks5://127.0.0.1:10808 或 http://127.0.0.1:10809",
+      "test_btn": "测试延迟",
+      "testing": "正在测试...",
+      "apply_btn": "应用到 Antigravity",
+      "applying": "正在应用...",
+      "footer_hint": "点击「应用到 Antigravity」将安全更新 Antigravity IDE 及平台配置文件，并将 Shield 出站代理指向该地址。如需恢复直连，可随时点击「清除代理」。",
+      "warp_modal": {
+        "title": "解决 Google 地区限制错误 (User location is not supported)",
+        "subtitle": "通过 Cloudflare WARP 规避机房 IP 限制，获得干净网络出口",
+        "reason_title": "💡 原因是什么？",
+        "reason_desc": "Google 会拦截来自机房数据中心（如 Hetzner、DigitalOcean、OVH 等）或限制地区的 IP，并返回 400 User location is not supported 错误。以下两种方案可彻底解决：",
+        "method1_title": "方案一：官方 Cloudflare WARP 客户端（最简单）",
+        "recommended": "推荐",
+        "method1_desc": "安装官方 Cloudflare WARP 客户端并在设置中切换为 Proxy Mode（默认监听 40000 端口），然后点击下方按钮：",
+        "method1_btn": "填入 40000 端口 (WARP Local) 并测试",
+        "method2_title": "方案二：在服务端 / V2Ray 客户端配置 WARP 出站 (Xray Outbound)",
+        "method2_desc": "如果您使用自建 VPS 或 Marzban/Sanaei 面板，可将 googleapis.com 流量路由至 WARP 出站，或在客户端 routing 中添加规则：",
+        "copied": "已复制",
+        "copy": "复制",
+        "close": "知道了，关闭"
+      }
     },
     "config": {
       "title": "服务配置",
