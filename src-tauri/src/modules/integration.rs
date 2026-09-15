@@ -62,7 +62,11 @@ impl SystemIntegration for DesktopIntegration {
         }
 
         // 0.5. [Two-Way Bridge] Check if IDE Toolkit extension is active & connected for Zero-Reload
-        let is_target_ide = target_ide == Some("ide") || target_ide == Some("code") || target_ide == Some("cursor");
+        let is_target_ide = target_ide == Some("ide")
+            || target_ide == Some("code")
+            || target_ide == Some("cursor")
+            || target_ide == Some("platform")
+            || target_ide.is_none();
         if is_target_ide && crate::modules::ide_scanner::is_toolkit_connected() {
             crate::modules::logger::log_info(&format!(
                 "[Desktop] IDE Toolkit is connected! Performing Zero-Reload switch via two-way tunnel for: {}",
@@ -79,13 +83,19 @@ impl SystemIntegration for DesktopIntegration {
             });
 
             // B. Silently update disk state.vscdb and storage.json without killing process
-            if let Ok(storage_path) = device::get_storage_path(target_ide) {
+            let effective_ide = if target_ide.is_none() || target_ide == Some("platform") {
+                Some("ide")
+            } else {
+                target_ide
+            };
+
+            if let Ok(storage_path) = device::get_storage_path(effective_ide) {
                 if let Some(ref profile) = account.device_profile {
                     let _ = device::write_profile(&storage_path, profile);
                 }
             }
 
-            if let Ok(db_path) = db::get_db_path(target_ide) {
+            if let Ok(db_path) = db::get_db_path(effective_ide) {
                 let _ = db::inject_token(
                     &db_path,
                     &account.token.access_token,
@@ -96,7 +106,7 @@ impl SystemIntegration for DesktopIntegration {
                     account.token.project_id.as_deref(),
                     account.token.id_token.as_deref(),
                     account.token.oauth_client_key.as_deref(),
-                    target_ide,
+                    effective_ide,
                 );
                 if let Some(ref profile) = account.device_profile {
                     let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
