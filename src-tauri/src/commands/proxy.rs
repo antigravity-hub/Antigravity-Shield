@@ -890,3 +890,24 @@ pub async fn remove_antigravity_proxy(
 
     Ok(format!("تنظیمات پروکسی از {} نسخه از Antigravity حذف شد.", count))
 }
+
+/// پروب پیشرفته سلامت اینترنت، گوگل و هوش مصنوعی جمینای
+#[tauri::command]
+pub async fn check_gemini_network_pulse(
+    custom_proxy: Option<String>,
+) -> Result<crate::modules::network_pulse::NetworkPulseResult, String> {
+    Ok(crate::modules::network_pulse::probe_network_health(custom_proxy).await)
+}
+
+/// اسکن کلاینت‌های فیلترشکن نصب‌شده یا در حال اجرا روی ویندوز
+#[tauri::command]
+pub fn detect_installed_vpns() -> Result<Vec<crate::modules::network_pulse::InstalledVpnInfo>, String> {
+    Ok(crate::modules::network_pulse::detect_installed_vpns())
+}
+
+/// اجرای مستقیم فایل یک فیلترشکن توسط کاربر
+#[tauri::command]
+pub fn launch_vpn_client(exe_path: String) -> Result<String, String> {
+    crate::modules::network_pulse::launch_vpn_executable(&exe_path)
+}
+

@@ -61,6 +61,57 @@ impl SystemIntegration for DesktopIntegration {
             return Ok(());
         }
 
+        // 0.5. [Two-Way Bridge] Check if IDE Toolkit extension is active & connected for Zero-Reload
+        let is_target_ide = target_ide == Some("ide") || target_ide == Some("code") || target_ide == Some("cursor");
+        if is_target_ide && crate::modules::ide_scanner::is_toolkit_connected() {
+            crate::modules::logger::log_info(&format!(
+                "[Desktop] IDE Toolkit is connected! Performing Zero-Reload switch via two-way tunnel for: {}",
+                account.email
+            ));
+
+            // A. Dispatch real-time command to IDE extension
+            crate::modules::ide_scanner::push_command(crate::modules::ide_scanner::ToolkitCommand {
+                id: uuid::Uuid::new_v4().to_string(),
+                action: "switch_account".to_string(),
+                account_id: account.id.clone(),
+                email: account.email.clone(),
+                timestamp: chrono::Utc::now().timestamp(),
+            });
+
+            // B. Silently update disk state.vscdb and storage.json without killing process
+            if let Ok(storage_path) = device::get_storage_path(target_ide) {
+                if let Some(ref profile) = account.device_profile {
+                    let _ = device::write_profile(&storage_path, profile);
+                }
+            }
+
+            if let Ok(db_path) = db::get_db_path(target_ide) {
+                let _ = db::inject_token(
+                    &db_path,
+                    &account.token.access_token,
+                    &account.token.refresh_token,
+                    account.token.expiry_timestamp,
+                    &account.email,
+                    account.token.is_gcp_tos,
+                    account.token.project_id.as_deref(),
+                    account.token.id_token.as_deref(),
+                    account.token.oauth_client_key.as_deref(),
+                    target_ide,
+                );
+                if let Some(ref profile) = account.device_profile {
+                    let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                }
+            }
+
+            self.show_notification(
+                "Antigravity Shield",
+                &format!("⚡ Switched to {} (Zero-Reload)", account.email),
+            );
+            self.update_tray();
+
+            return Ok(());
+        }
+
         // 1. 先关闭外部正在运行的进程（无论是原生还是IDE，先安全关闭，避免文件或凭据冲突）
         if process::is_antigravity_running(target_ide) {
             process::close_antigravity(20, target_ide)?;

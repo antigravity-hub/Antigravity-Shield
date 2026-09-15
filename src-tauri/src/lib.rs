@@ -642,6 +642,9 @@ pub fn run() {
             commands::proxy::get_antigravity_proxy_status,
             commands::proxy::apply_antigravity_proxy,
             commands::proxy::remove_antigravity_proxy,
+            commands::proxy::check_gemini_network_pulse,
+            commands::proxy::detect_installed_vpns,
+            commands::proxy::launch_vpn_client,
             // Proxy Pool Binding commands
             commands::proxy_pool::bind_account_proxy,
             commands::proxy_pool::unbind_account_proxy,

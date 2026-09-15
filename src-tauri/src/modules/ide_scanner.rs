@@ -74,6 +74,59 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
     }
 }
 
+pub fn is_toolkit_connected() -> bool {
+    let last = LAST_HEARTBEAT.read().ok().and_then(|guard| *guard);
+    match last {
+        Some(instant) => instant.elapsed().as_secs() <= 45,
+        None => false,
+    }
+}
+
+// ============================================================================
+// Bidirectional Full-Duplex Command Queue (Shield -> IDE)
+// ============================================================================
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ToolkitCommand {
+    pub id: String,
+    pub action: String, // "switch_account"
+    pub account_id: String,
+    pub email: String,
+    pub timestamp: i64,
+}
+
+static PENDING_COMMANDS: LazyLock<RwLock<Vec<ToolkitCommand>>> = LazyLock::new(|| RwLock::new(Vec::new()));
+static COMMAND_NOTIFY: LazyLock<tokio::sync::Notify> = LazyLock::new(|| tokio::sync::Notify::new());
+
+pub fn push_command(cmd: ToolkitCommand) {
+    if let Ok(mut lock) = PENDING_COMMANDS.write() {
+        // Keep queue bounded (e.g. latest 20 commands)
+        if lock.len() > 20 {
+            lock.remove(0);
+        }
+        lock.push(cmd);
+    }
+    COMMAND_NOTIFY.notify_waiters();
+}
+
+pub fn pop_command() -> Option<ToolkitCommand> {
+    if let Ok(mut lock) = PENDING_COMMANDS.write() {
+        if !lock.is_empty() {
+            return Some(lock.remove(0));
+        }
+    }
+    None
+}
+
+pub async fn wait_for_command(timeout_secs: u64) -> Option<ToolkitCommand> {
+    if let Some(cmd) = pop_command() {
+        return Some(cmd);
+    }
+    let timeout = Duration::from_secs(timeout_secs.clamp(1, 60));
+    let _ = tokio::time::timeout(timeout, COMMAND_NOTIFY.notified()).await;
+    pop_command()
+}
+
 // ============================================================================
 // IDE Detection & Installation
 // ============================================================================

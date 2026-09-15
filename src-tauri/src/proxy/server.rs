@@ -898,6 +898,7 @@ impl AxumServer {
             .route("/system/logs/clear-cache", post(admin_clear_log_cache))
             // Antigravity Toolkit & IDE Integration
             .route("/toolkit/heartbeat", post(admin_toolkit_heartbeat))
+            .route("/toolkit/commands/poll", get(admin_toolkit_poll_commands).post(admin_toolkit_poll_commands))
             .route("/toolkit/status", get(admin_toolkit_status))
             .route("/toolkit/ides", get(admin_detect_installed_ides))
             .route("/toolkit/install", post(admin_install_toolkit_to_ide))
@@ -2718,7 +2719,28 @@ async fn admin_toolkit_heartbeat(
     Json(payload): Json<crate::modules::ide_scanner::ToolkitHeartbeatPayload>,
 ) -> impl IntoResponse {
     crate::modules::ide_scanner::record_heartbeat(payload);
-    Json(serde_json::json!({ "status": "ok" }))
+    let pending_command = crate::modules::ide_scanner::pop_command();
+    Json(serde_json::json!({
+        "status": "ok",
+        "command": pending_command,
+    }))
+}
+
+#[derive(Deserialize)]
+struct PollCommandQuery {
+    timeout: Option<u64>,
+}
+
+async fn admin_toolkit_poll_commands(
+    Query(query): Query<PollCommandQuery>,
+) -> impl IntoResponse {
+    let timeout = query.timeout.unwrap_or(20);
+    let cmd = crate::modules::ide_scanner::wait_for_command(timeout).await;
+    if let Some(c) = cmd {
+        Json(serde_json::json!({ "status": "ok", "command": c }))
+    } else {
+        Json(serde_json::json!({ "status": "timeout", "command": null }))
+    }
 }
 
 async fn admin_toolkit_status() -> impl IntoResponse {
