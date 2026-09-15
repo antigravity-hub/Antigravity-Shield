@@ -176,7 +176,7 @@ impl AppConfig {
             language: "zh".to_string(),
             theme: "system".to_string(),
             auto_refresh: true,
-            refresh_interval: 15,
+            refresh_interval: 10,
             auto_sync: false,
             sync_interval: 5,
             default_export_path: None,

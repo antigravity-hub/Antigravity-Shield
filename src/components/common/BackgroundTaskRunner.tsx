@@ -9,19 +9,21 @@ function BackgroundTaskRunner() {
     const prevAutoRefreshRef = useRef(false);
     const prevAutoSyncRef = useRef(false);
 
+    const lastSyncTimeRef = useRef<number>(Date.now());
+
     // Hybrid Adaptive Jittered Auto-Refresh Quota Scheduler
     useEffect(() => {
         if (!config) return;
 
         let timeoutId: ReturnType<typeof setTimeout> | null = null;
         let isCancelled = false;
-        let cycleCount = 0;
         const { auto_refresh, refresh_interval } = config;
         const { refreshActiveAccountQuota, refreshAllQuotas } = useAccountStore.getState();
 
         // Immediate sync on startup/enable
         if (auto_refresh && !prevAutoRefreshRef.current) {
             console.log('[BackgroundTask] Auto-refresh enabled, executing initial active and fleet sync...');
+            lastSyncTimeRef.current = Date.now();
             refreshActiveAccountQuota();
             // Stagger full fleet sync slightly (1.5s) to guarantee snappy startup without network congestion
             setTimeout(() => {
@@ -38,36 +40,23 @@ function BackgroundTaskRunner() {
             const scheduleNextRun = () => {
                 if (isCancelled) return;
 
-                // Base interval in milliseconds (min 1 minute)
+                // Base interval in milliseconds (min 1 minute, default 10 minutes)
                 const baseMs = Math.max(1, refresh_interval) * 60 * 1000;
-                // Humanized anti-abuse jitter between +15s and +45s
-                const jitterMs = Math.floor(Math.random() * 30000) + 15000;
+                // Humanized anti-abuse jitter between +15s and +35s
+                const jitterMs = Math.floor(Math.random() * 20000) + 15000;
                 const nextDelay = baseMs + jitterMs;
 
-                console.log(`[BackgroundTask] Scheduled next jittered sync in ${(nextDelay / 1000).toFixed(1)}s (jitter: +${(jitterMs / 1000).toFixed(1)}s)`);
+                console.log(`[BackgroundTask] Scheduled next jittered fleet sync in ${(nextDelay / 1000).toFixed(1)}s (jitter: +${(jitterMs / 1000).toFixed(1)}s)`);
 
                 timeoutId = setTimeout(async () => {
                     if (isCancelled) return;
 
-                    // Pause network requests if document has been hidden/idle for a long time
-                    if (document.hidden && cycleCount > 0 && cycleCount % 2 !== 0) {
-                        console.log('[BackgroundTask] Window hidden, deferring sync cycle...');
-                        scheduleNextRun();
-                        return;
-                    }
-
                     try {
-                        cycleCount++;
-                        // Every 3rd cycle do a full fleet sync; otherwise prioritize active account for speed & zero-spam
-                        if (cycleCount % 3 === 0) {
-                            console.log('[BackgroundTask] Staggered full fleet quota sync...');
-                            await refreshAllQuotas(true);
-                        } else {
-                            console.log('[BackgroundTask] Active account priority quota sync...');
-                            await refreshActiveAccountQuota();
-                        }
+                        console.log('[BackgroundTask] Executing scheduled full-fleet quota sync...');
+                        lastSyncTimeRef.current = Date.now();
+                        await refreshAllQuotas(true);
                     } catch (err) {
-                        console.warn('[BackgroundTask] Quota sync cycle failed gracefully:', err);
+                        console.warn('[BackgroundTask] Fleet quota sync cycle failed gracefully:', err);
                     }
 
                     scheduleNextRun();
@@ -77,12 +66,34 @@ function BackgroundTaskRunner() {
             scheduleNextRun();
         }
 
+        // Opportunistic desktop focus wake-up:
+        // When user switches back from IDE/browser after being away for > 5 minutes, immediately sync.
+        const handleWakeup = () => {
+            if (!auto_refresh || isCancelled) return;
+            if (document.visibilityState === 'visible') {
+                const now = Date.now();
+                // If more than 5 minutes have elapsed since the last sync, trigger an immediate opportunistic refresh
+                if (now - lastSyncTimeRef.current > 5 * 60 * 1000) {
+                    console.log('[BackgroundTask] Window regained focus after idle, triggering opportunistic fleet sync...');
+                    lastSyncTimeRef.current = now;
+                    refreshAllQuotas(true).catch(err => {
+                        console.warn('[BackgroundTask] Opportunistic fleet sync failed gracefully:', err);
+                    });
+                }
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleWakeup);
+        window.addEventListener('focus', handleWakeup);
+
         return () => {
             isCancelled = true;
             if (timeoutId) {
                 console.log('[BackgroundTask] Clearing adaptive auto-refresh scheduler');
                 clearTimeout(timeoutId);
             }
+            document.removeEventListener('visibilitychange', handleWakeup);
+            window.removeEventListener('focus', handleWakeup);
         };
     }, [config?.auto_refresh, config?.refresh_interval]);
 

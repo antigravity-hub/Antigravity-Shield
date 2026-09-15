@@ -13,6 +13,20 @@ export interface ResetCycleInfo {
 }
 
 /**
+ * Converts remaining fraction (0.0 ..= 1.0) into integer percentage with strict non-rounding ceiling.
+ * If even a small fraction of quota is consumed (fraction < 1.0), it strictly caps at 99%
+ * so users immediately recognize consumption has started.
+ */
+export function safeQuotaPercentage(fraction?: number | null): number {
+    if (fraction === undefined || fraction === null || isNaN(fraction)) return 0;
+    if (fraction >= 1.0) return 100;
+    if (fraction <= 0.0) return 0;
+    const raw = fraction * 100;
+    if (raw > 99) return 99;
+    return Math.round(raw);
+}
+
+/**
  * Extracts and calculates cycle reset information for an account given a target window type and model category.
  * windowType: 'weekly' for 7-day quota groups, or 'five_hour' for 5-hour quota groups.
  * category: 'gemini' | 'claude' (default: 'gemini')
@@ -248,7 +262,7 @@ export function getBucketPercentage(
         if (isExplicit) {
             const bucket = findMatchingBucket(group);
             if (bucket && typeof bucket.remaining_fraction === 'number') {
-                return Math.round(bucket.remaining_fraction * 100);
+                return safeQuotaPercentage(bucket.remaining_fraction);
             }
         }
     }
@@ -260,7 +274,7 @@ export function getBucketPercentage(
             if (!name.includes('claude') && !name.includes('gpt')) {
                 const bucket = findMatchingBucket(group);
                 if (bucket && typeof bucket.remaining_fraction === 'number') {
-                    return Math.round(bucket.remaining_fraction * 100);
+                    return safeQuotaPercentage(bucket.remaining_fraction);
                 }
             }
         }
