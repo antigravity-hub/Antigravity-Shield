@@ -27,7 +27,7 @@ interface AccountState {
     switchAccount: (accountId: string, targetIde?: string) => Promise<void>;
     refreshQuota: (accountId: string) => Promise<void>;
     refreshActiveAccountQuota: () => Promise<void>;
-    refreshAllQuotas: () => Promise<accountService.RefreshStats>;
+    refreshAllQuotas: (silent?: boolean) => Promise<accountService.RefreshStats>;
     reorderAccounts: (accountIds: string[]) => Promise<void>;
 
     // 新增 actions
@@ -271,15 +271,16 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         }
     },
 
-    refreshAllQuotas: async () => {
-        set({ loading: true, error: null });
+    refreshAllQuotas: async (silent = false) => {
+        if (!silent) set({ loading: true, error: null });
         try {
             const stats = await accountService.refreshAllQuotas();
             await get().fetchAccounts();
-            set({ loading: false, lastSyncedAt: Date.now() });
+            if (!silent) set({ loading: false, lastSyncedAt: Date.now() });
+            else set({ lastSyncedAt: Date.now() });
             return stats;
         } catch (error) {
-            set({ error: String(error), loading: false });
+            if (!silent) set({ error: String(error), loading: false });
             throw error;
         }
     },
