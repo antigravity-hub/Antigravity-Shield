@@ -86,7 +86,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
     // - Safe buffer: Prioritize accounts with >= 20m remaining on 5h window or ready.
     const claudeSorted = candidates
         .map(a => {
-            const claudeOpus = findQuotaModel(a.quota?.models, 'claude-opus')?.percentage ?? null;
+            const claudeOpus = a.quota?.models?.find(m => m.name.toLowerCase().includes('opus'))?.percentage ?? null;
             const claudeGeneral = findQuotaModel(a.quota?.models, 'claude')?.percentage ?? null;
             const weeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', 'weekly');
             const fiveHourGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', '5h');

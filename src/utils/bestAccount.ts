@@ -89,7 +89,8 @@ export function getRecommendedBestAccount(
         const geminiSafeBuffer = geminiReset.isReady || geminiMinutes === 0 || geminiMinutes >= minResetMinutes;
 
         // ── 2. Claude Quota Calculation ──────────────────────────────────────
-        const claudeOpusModel = findQuotaModel(a.quota?.models, targetClaudeModel)?.percentage ?? null;
+        const claudeTargetKeyword = targetClaudeModel ? targetClaudeModel.toLowerCase() : 'opus';
+        const claudeOpusModel = a.quota?.models?.find(m => m.name.toLowerCase().includes(claudeTargetKeyword) || m.name.toLowerCase().includes('opus'))?.percentage ?? null;
         const claudeGeneralModel = findQuotaModel(a.quota?.models, 'claude')?.percentage ?? null;
         const claude5hGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', '5h');
         const claudeWeeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', 'weekly');
