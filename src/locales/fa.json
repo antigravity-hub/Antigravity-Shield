@@ -130,6 +130,11 @@
     "view_in_accounts": "مشاهده در حساب‌ها",
     "quota_5h": "سهمیه ۵ ساعته",
     "quota_weekly": "هفتگی",
+    "mode_gemini": "فقط Gemini (پیش‌فرض)",
+    "mode_claude": "Claude (Opus)",
+    "mode_both": "همه مدل‌ها",
+    "switch_to": "تغییر",
+    "safe_window": "پنجره امن (>۲۰ دقیقه)",
     "toast": {
       "switch_success": "تغییر حساب با موفقیت انجام شد!",
       "switch_error": "تغییر حساب ناموفق بود",

@@ -8,6 +8,7 @@ import { showToast } from '../components/common/ToastContainer';
 import BestAccounts from '../components/dashboard/BestAccounts';
 import { findImageQuotaModel, findQuotaModel } from '../config/modelConfig';
 import CurrentAccount from '../components/dashboard/CurrentAccount';
+import NetworkHealthPulse from '../components/dashboard/NetworkHealthPulse';
 import { exportAccounts } from '../services/accountService';
 import { useAccountStore } from '../stores/useAccountStore';
 import { Account } from '../types/account';
@@ -212,6 +213,9 @@ function Dashboard() {
                         </button>
                     </div>
                 </div>
+
+                {/* پایش سلامت اینترنت و هوش مصنوعی جمینای */}
+                <NetworkHealthPulse onOpenProxySettings={() => navigate('/settings')} />
 
                 {/* 统计卡片 - 5 columns */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
