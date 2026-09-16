@@ -15,6 +15,8 @@ import { Account } from '../types/account';
 import { isTauri } from '../utils/env';
 import { request as invoke } from '../utils/request';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
+import AntigravityRtlCard from '../components/settings/AntigravityRtlCard';
+import { isRtlRegionTimezone } from '../utils/timezone';
 
 function Dashboard() {
     const { t } = useTranslation();
@@ -216,6 +218,11 @@ function Dashboard() {
 
                 {/* پایش سلامت اینترنت و هوش مصنوعی جمینای */}
                 <NetworkHealthPulse onOpenProxySettings={() => navigate('/settings')} />
+
+                {/* کارت میانبر راست‌چین و فونت وزیرمتن (فقط در صورت تنظیم ساعت سیستم روی ایران یا کشورهای عربی) */}
+                {isRtlRegionTimezone() && (
+                    <AntigravityRtlCard compact={true} />
+                )}
 
                 {/* 统计卡片 - 5 columns */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">

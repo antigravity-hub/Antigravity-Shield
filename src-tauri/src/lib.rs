@@ -733,6 +733,9 @@ pub fn run() {
             commands::query_transit_info,
             // Patch commands
             commands::patch_agy_binary,
+            commands::get_antigravity_rtl_status,
+            commands::patch_antigravity_rtl,
+            commands::restore_antigravity_rtl,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
