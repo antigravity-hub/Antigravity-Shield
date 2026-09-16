@@ -12,6 +12,7 @@ import ThemeManager from './components/common/ThemeManager';
 import UserToken from './pages/UserToken';
 import { UpdateNotification } from './components/UpdateNotification';
 import DebugConsole from './components/debug/DebugConsole';
+import { VerificationGuideModal } from './components/common/VerificationGuideModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { useEffect, useState } from 'react';
 import { useConfigStore } from './stores/useConfigStore';
@@ -195,6 +196,7 @@ function App() {
       <AdminAuthGuard>
         <ThemeManager />
         <DebugConsole />
+        <VerificationGuideModal />
         {showUpdateNotification && (
           <UpdateNotification onClose={() => setShowUpdateNotification(false)} />
         )}
