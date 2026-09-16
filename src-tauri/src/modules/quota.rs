@@ -717,6 +717,7 @@ pub async fn warmup_model_directly(
             ));
             false
         }
+    }
 }
 
 /// Rank Flash models (higher is newer)
