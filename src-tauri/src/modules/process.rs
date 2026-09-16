@@ -1316,7 +1316,7 @@ pub fn get_antigravity_executable_path(target_ide: Option<&str>) -> Option<std::
 fn check_standard_locations(target_ide: Option<&str>) -> Option<std::path::PathBuf> {
     let folder_names: &[&str] = if target_ide == Some("ide") {
         &["Antigravity IDE"]
-    } else if target_ide == Some("code") || target_ide == Some("cursor") {
+    } else if target_ide == Some("platform") || target_ide == Some("code") || target_ide == Some("cursor") {
         &["Antigravity"]
     } else {
         &["Antigravity"]
