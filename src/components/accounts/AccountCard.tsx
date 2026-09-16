@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag } from 'lucide-react';
+import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { AccountActionControls } from './AccountActionControls';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { useAccountStore } from '../../stores/useAccountStore';
 import { getAccountFiveHourReset, isAccountQuotaExhausted, safeQuotaPercentage } from '../../utils/quota';
+import { openVerificationGuide } from '../../utils/guideOpener';
 
 interface AccountCardProps {
     account: Account;
@@ -367,21 +368,35 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
 
             {/* 配额展示 */}
             <div className="flex-1 px-2 mb-2 overflow-y-auto scrollbar-none">
-                {isDisabled || account.quota?.is_forbidden || account.proxy_disabled || account.validation_blocked ? (
-                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 h-full py-4 text-center">
-                        <div className={cn(
-                            "flex items-center gap-1.5",
-                            account.validation_blocked ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
-                        )}>
-                            {account.validation_blocked ? <Clock className="w-4 h-4" /> : (isDisabled || account.proxy_disabled ? <Ban className="w-4 h-4" /> : <Lock className="w-4 h-4" />)}
-                            <span className="text-[11px] font-bold">
-                                {account.validation_blocked ? validationBlockedLabel : (isDisabled ? t('accounts.status.disabled') : account.proxy_disabled ? t('accounts.status.proxy_disabled') : t('accounts.forbidden_msg'))}
+                {account.validation_blocked ? (
+                    <div className="flex flex-col items-center justify-center gap-2.5 h-full py-4 px-2 text-center bg-amber-500/10 dark:bg-amber-900/15 border border-amber-500/25 rounded-xl animate-fadeIn">
+                        <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                            <Clock className="w-4 h-4" />
+                            <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
+                                {t('accounts.verification_required_table_msg', 'نیازمند وریفیکیشن با آموزش روبرو')}
                             </span>
                         </div>
-                        <div className={cn(
-                            "w-px h-3 hidden sm:block",
-                            account.validation_blocked ? "bg-amber-200 dark:bg-amber-800/50" : "bg-red-200 dark:bg-red-800/50"
-                        )} />
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openVerificationGuide();
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+                        >
+                            <BookOpen className="w-3.5 h-3.5" />
+                            <span>{t('accounts.open_guide_btn', 'مشاهده آموزش')}</span>
+                        </button>
+                    </div>
+                ) : (isDisabled || account.quota?.is_forbidden || account.proxy_disabled ? (
+                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 h-full py-4 text-center">
+                        <div className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
+                            {isDisabled || account.proxy_disabled ? <Ban className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                            <span className="text-[11px] font-bold">
+                                {isDisabled ? t('accounts.status.disabled') : account.proxy_disabled ? t('accounts.status.proxy_disabled') : t('accounts.forbidden_msg')}
+                            </span>
+                        </div>
+                        <div className="w-px h-3 hidden sm:block bg-red-200 dark:bg-red-800/50" />
                         <button
                             onClick={(e) => { e.stopPropagation(); onViewError(); }}
                             className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline font-medium"
@@ -425,12 +440,16 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                             ))
                         )}
                     </div>
-                )}
+                ))}
             </div>
 
             {/* 配额重置倒计时: 5H 模式展示 5小时滚动重置，Weekly 模式展示周阶梯 */}
             <div className="px-2 pb-2">
-                {quotaWindow === '5h' ? (
+                {account.validation_blocked ? (
+                    <div className="flex items-center justify-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600/80 dark:text-amber-400/80 text-xs font-mono font-bold">
+                        —
+                    </div>
+                ) : quotaWindow === '5h' ? (
                     !fiveHourResetInfo?.isAvailable ? (
                         <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-400 dark:text-slate-500 text-xs">
                             <div className="flex items-center gap-1.5">

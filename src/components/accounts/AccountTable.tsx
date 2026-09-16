@@ -34,6 +34,7 @@ import {
     Clock,
     Bot,
     Tag,
+    BookOpen,
 } from 'lucide-react';
 import type { Account, ModelQuota } from '../../types/account';
 import { useTranslation } from 'react-i18next';
@@ -49,6 +50,7 @@ import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import HelpTooltip from '../common/HelpTooltip';
+import { openVerificationGuide } from '../../utils/guideOpener';
 
 
 // ============================================================================
@@ -562,27 +564,37 @@ function AccountRowContent({
 
     const renderModelsCell = () => (
         <td key="models" className="px-2 py-1 align-middle min-w-[260px]">
-            {isDisabled || account.quota?.is_forbidden || account.validation_blocked ? (
-                <div className={cn(
-                    "flex items-center justify-center gap-3 py-1.5 px-4 rounded-xl border group/error",
-                    account.validation_blocked ? "bg-amber-50/50 dark:bg-amber-900/10 border-amber-100/50 dark:border-amber-900/20" : "bg-red-50/50 dark:bg-red-900/10 border-red-100/50 dark:border-red-900/20"
-                )}>
-                    <div className={cn(
-                        "flex items-center gap-1.5",
-                        account.validation_blocked ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
-                    )}>
-                        {account.validation_blocked ? <Clock className="w-3.5 h-3.5" /> : (account.quota?.is_forbidden ? <Lock className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />)}
-                        <span className={cn(
-                            "text-[11px] font-bold",
-                            account.validation_blocked ? "text-amber-700/80 dark:text-amber-400" : "text-red-700/80 dark:text-red-400"
-                        )}>
-                            {account.validation_blocked ? validationBlockedLabel : (isDisabled ? t('accounts.status.disabled') : t('accounts.forbidden_msg'))}
+            {account.validation_blocked ? (
+                <div className="flex items-center justify-between gap-2.5 py-1.5 px-3 rounded-xl border bg-amber-500/10 dark:bg-amber-900/20 border-amber-500/30 dark:border-amber-500/30 shadow-sm animate-fadeIn">
+                    <div className="flex items-center gap-2 min-w-0">
+                        <div className="p-1 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 shrink-0">
+                            <Clock className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="text-xs font-bold text-amber-800 dark:text-amber-300 truncate">
+                            {t('accounts.verification_required_table_msg', 'نیازمند وریفیکیشن با آموزش روبرو')}
                         </span>
                     </div>
-                    <div className={cn(
-                        "w-px h-3",
-                        account.validation_blocked ? "bg-amber-200 dark:bg-amber-800/50" : "bg-red-200 dark:bg-red-800/50"
-                    )} />
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            openVerificationGuide();
+                        }}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                    >
+                        <BookOpen className="w-3.5 h-3.5" />
+                        <span>{t('accounts.open_guide_btn', 'مشاهده آموزش')}</span>
+                    </button>
+                </div>
+            ) : (isDisabled || account.quota?.is_forbidden ? (
+                <div className="flex items-center justify-center gap-3 py-1.5 px-4 rounded-xl border group/error bg-red-50/50 dark:bg-red-900/10 border-red-100/50 dark:border-red-900/20">
+                    <div className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
+                        {account.quota?.is_forbidden ? <Lock className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />}
+                        <span className="text-[11px] font-bold text-red-700/80 dark:text-red-400">
+                            {isDisabled ? t('accounts.status.disabled') : t('accounts.forbidden_msg')}
+                        </span>
+                    </div>
+                    <div className="w-px h-3 bg-red-200 dark:bg-red-800/50" />
                     <button
                         onClick={(e) => { e.stopPropagation(); onViewError(); }}
                         className="text-[10px] font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
@@ -610,11 +622,21 @@ function AccountRowContent({
                         );
                     })}
                 </div>
-            )}
+            ))}
         </td>
     );
 
     const renderFiveHourCell = () => {
+        if (account.validation_blocked) {
+            return (
+                <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]">
+                    <span className="text-[11px] text-amber-600/70 dark:text-amber-400/70 font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+                        —
+                    </span>
+                </td>
+            );
+        }
+
         const fiveHour = getAccountFiveHourReset(account, quotaProvider);
         if (!fiveHour.isAvailable) {
             return (
@@ -654,11 +676,23 @@ function AccountRowContent({
         );
     };
 
-    const renderWeeklyCell = () => (
-        <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[114px]">
-            <WeeklyCountdown account={account} provider={quotaProvider} layout="table" />
-        </td>
-    );
+    const renderWeeklyCell = () => {
+        if (account.validation_blocked) {
+            return (
+                <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[114px]">
+                    <span className="text-[11px] text-amber-600/70 dark:text-amber-400/70 font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+                        —
+                    </span>
+                </td>
+            );
+        }
+
+        return (
+            <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[114px]">
+                <WeeklyCountdown account={account} provider={quotaProvider} layout="table" />
+            </td>
+        );
+    };
 
     const renderLastUsedCell = () => (
         <td key="last_used" className="px-2 py-1 align-middle w-[85px] min-w-[80px]">
