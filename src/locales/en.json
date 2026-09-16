@@ -179,7 +179,8 @@
       "offline_desc": "Please check your network cable or Wi-Fi connection.",
       "all_systems_go": "All systems connected and ready for AI coding.",
       "warp_modal_title": "Guaranteed Solution for Gemini Region Sanctions with WARP",
-      "warp_modal_hint": "Google restricts certain IPs from accessing Gemini. Cloudflare WARP provides clean IPs, eliminating HTTP 400 and 'Gemini isn't currently supported in your country' errors."
+      "warp_modal_hint": "Google restricts certain IPs from accessing Gemini. Cloudflare WARP provides clean IPs, eliminating HTTP 400 and 'Gemini isn't currently supported in your country' errors.",
+      "warp_connect_btn": "Set Port 40000 (WARP Local) & Connect"
     }
   },
   "accounts": {
