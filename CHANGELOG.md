@@ -3,6 +3,12 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.10.2 (2026-09-16)**:
+        -   **[IDE Toolkit & Multi-Platform Distribution] Real-Time Quota Synchronization & Cross-Platform Releases**:
+            -   **Bundled Toolkit Extension v2.3.0**: Embedded latest Antigravity Toolkit Extension with autonomous filesystem watcher and two-way tunnel command push.
+            -   **Real-Time Tunnel Event Dispatch**: Added `quota_updated` event push on quota changes to deliver instantaneous updates to connected IDEs.
+            -   **Automated Multi-Platform Release Pipeline**: Enabled native macOS (.dmg) and Linux (.deb / .AppImage) automated packaging alongside Windows installers in CI.
+            -   **Verification Required State Handling**: Added direct verification guide links and visual badges for accounts requiring web authorization.
     *   **v5.9.1 (2026-09-16)**:
         -   **[Auto-Update & Distribution Resilience] Resilient Direct Streaming Installer Fallback Engine**:
             -   **Zero-Stall Streaming Installer**: Implemented native streaming download engine (`download_and_run_installer` in Rust) that fetches setup binaries directly with real-time chunked progress events, completely eliminating manual browser redirects when cryptographic verification is unavailable.

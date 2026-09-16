@@ -51,9 +51,9 @@ jobs:
             exit 0
           fi
           
-          # Default to skipping Unix builds for tag pushes to ensure fast, reliable Windows distribution
-          echo "build_unix=false" >> "$GITHUB_OUTPUT"
-          echo "Defaulting to Windows build for release $VER to ensure zero-failure updater delivery."
+          # Default to enabling Unix builds (macOS DMG & Linux deb/AppImage) alongside Windows
+          echo "build_unix=true" >> "$GITHUB_OUTPUT"
+          echo "Building macOS and Linux binaries alongside Windows for full multi-platform release."
 
   # Windows Build (Runs on every release: both Patch and Major/Minor)
   build-windows:
