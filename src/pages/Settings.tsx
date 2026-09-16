@@ -23,6 +23,7 @@ import AntigravityProxyRouter from '../components/settings/proxy/AntigravityProx
 import { APP_VERSION, getAppVersion } from '../constants/version';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 import { copyToClipboard } from '../utils/clipboard';
+import AntigravityRtlCard from '../components/settings/AntigravityRtlCard';
 
 
 function Settings() {
@@ -1173,6 +1174,11 @@ function Settings() {
                                         >
                                             {t('settings.advanced.patch_btn', '一键解除')}
                                         </button>
+                                    </div>
+
+                                    {/* ماژول پیشرفته راست‌چین و فونت بومی وزیرمتن برای Antigravity 2.0 و IDE */}
+                                    <div className="mt-4">
+                                        <AntigravityRtlCard compact={false} />
                                     </div>
                                 </div>
 

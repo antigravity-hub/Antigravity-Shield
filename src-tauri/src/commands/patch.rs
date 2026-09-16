@@ -191,3 +191,260 @@ pub async fn patch_agy_binary(file_path: String) -> Result<String, String> {
 
     Ok("Patch applied successfully!".into())
 }
+
+#[derive(serde::Serialize, serde::Deserialize, Clone, Debug)]
+pub struct AntigravityRtlStatus {
+    pub desktop_asar_path: Option<String>,
+    pub desktop_is_patched: bool,
+    pub desktop_has_backup: bool,
+    pub ide_css_path: Option<String>,
+    pub ide_is_patched: bool,
+    pub ide_has_backup: bool,
+}
+
+const VAZIRMATN_RTL_CSS: &str = r#"
+/* [Antigravity-Shield-RTL-Vazirmatn] */
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+* {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+p, li, span, div, h1, h2, h3, h4, h5, h6, textarea, input {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+}
+
+code, pre, pre *, code *, kbd, .monospace {
+  font-family: Menlo, Monaco, Consolas, "Fira Code", monospace !important;
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+  text-align: left !important;
+}
+/* [/Antigravity-Shield-RTL-Vazirmatn] */
+"#;
+
+#[tauri::command]
+pub async fn get_antigravity_rtl_status() -> Result<AntigravityRtlStatus, String> {
+    let mut desktop_asar = None;
+    let mut desktop_patched = false;
+    let mut desktop_backup = false;
+
+    // 1. Detect Desktop 2.0 app.asar
+    let possible_desktop_paths = vec![
+        dirs::data_local_dir().map(|d| d.join("Programs").join("antigravity").join("resources").join("app.asar")),
+        dirs::data_local_dir().map(|d| d.join("Programs").join("Antigravity").join("resources").join("app.asar")),
+    ];
+
+    for p in possible_desktop_paths.into_iter().flatten() {
+        if p.exists() {
+            desktop_asar = Some(p.to_string_lossy().to_string());
+            let bak = format!("{}.bak", p.to_string_lossy());
+            desktop_backup = Path::new(&bak).exists();
+
+            if let Ok(content) = fs::read(&p) {
+                // Check if patched signature exists in binary/archive
+                let signature = b"Antigravity-Shield-RTL-Vazirmatn";
+                desktop_patched = content.windows(signature.len()).any(|w| w == signature);
+            }
+            break;
+        }
+    }
+
+    // 2. Detect IDE CSS path
+    let mut ide_css = None;
+    let mut ide_patched = false;
+    let mut ide_backup = false;
+
+    let possible_ide_paths = vec![
+        dirs::data_local_dir().map(|d| d.join("Programs").join("Antigravity IDE").join("resources").join("app").join("out").join("vs").join("workbench").join("workbench.desktop.main.css")),
+        dirs::data_local_dir().map(|d| d.join("Programs").join("antigravity-ide").join("resources").join("app").join("out").join("vs").join("workbench").join("workbench.desktop.main.css")),
+    ];
+
+    for p in possible_ide_paths.into_iter().flatten() {
+        if p.exists() {
+            ide_css = Some(p.to_string_lossy().to_string());
+            let bak = format!("{}.bak", p.to_string_lossy());
+            ide_backup = Path::new(&bak).exists();
+
+            if let Ok(content) = fs::read_to_string(&p) {
+                ide_patched = content.contains("Antigravity-Shield-RTL-Vazirmatn");
+            }
+            break;
+        }
+    }
+
+    Ok(AntigravityRtlStatus {
+        desktop_asar_path: desktop_asar,
+        desktop_is_patched: desktop_patched,
+        desktop_has_backup: desktop_backup,
+        ide_css_path: ide_css,
+        ide_is_patched: ide_patched,
+        ide_has_backup: ide_backup,
+    })
+}
+
+#[tauri::command]
+pub async fn patch_antigravity_rtl() -> Result<String, String> {
+    let status = get_antigravity_rtl_status().await?;
+    let mut applied_count = 0;
+
+    // Patch IDE CSS if found
+    if let Some(css_path_str) = status.ide_css_path {
+        let css_path = Path::new(&css_path_str);
+        if css_path.exists() {
+            let backup_path = format!("{}.bak", css_path_str);
+            if !Path::new(&backup_path).exists() {
+                let _ = fs::copy(css_path, &backup_path);
+            }
+
+            let mut content = fs::read_to_string(css_path).map_err(|e| e.to_string())?;
+            if !content.contains("Antigravity-Shield-RTL-Vazirmatn") {
+                content.push_str("\n");
+                content.push_str(VAZIRMATN_RTL_CSS);
+                fs::write(css_path, content).map_err(|e| e.to_string())?;
+                applied_count += 1;
+            }
+        }
+    }
+
+    // Patch Desktop app.asar if node/npx or direct injection is possible
+    if let Some(asar_path_str) = status.desktop_asar_path {
+        let asar_path = Path::new(&asar_path_str);
+        if asar_path.exists() && !status.desktop_is_patched {
+            let backup_path = format!("{}.bak", asar_path_str);
+            if !Path::new(&backup_path).exists() {
+                let _ = fs::copy(asar_path, &backup_path);
+            }
+
+            // Extract, inject CSS, repack using npx asar
+            let temp_dir = std::env::temp_dir().join("shield_antigravity_extract");
+            let _ = fs::remove_dir_all(&temp_dir);
+
+            let extract_res = Command::new("npx.cmd")
+                .args(&["asar", "extract", &asar_path_str, &temp_dir.to_string_lossy()])
+                .output();
+
+            let success = match extract_res {
+                Ok(out) if out.status.success() => true,
+                _ => {
+                    // Fallback to npx or powershell
+                    let alt_res = Command::new("powershell")
+                        .args(&[
+                            "-NoProfile",
+                            "-Command",
+                            &format!("npx asar extract \"{}\" \"{}\"", asar_path_str, temp_dir.to_string_lossy())
+                        ])
+                        .output();
+                    matches!(alt_res, Ok(o) if o.status.success())
+                }
+            };
+
+            if success {
+                // Find preload.js or index.html to inject style
+                let mut patched_script = false;
+                if let Ok(entries) = walk_dir_find(&temp_dir, "preload.js") {
+                    for entry in entries {
+                        if let Ok(content) = fs::read_to_string(&entry) {
+                            if !content.contains("Antigravity-Shield-RTL-Vazirmatn") {
+                                let inject_code = format!(
+                                    r#"
+/* [Antigravity-Shield-RTL-Vazirmatn] */
+window.addEventListener('DOMContentLoaded', () => {{
+    try {{
+        const style = document.createElement('style');
+        style.id = 'shield-rtl-vazirmatn-style';
+        style.innerHTML = `{}`;
+        document.head.appendChild(style);
+    }} catch(e) {{}}
+}});
+/* [/Antigravity-Shield-RTL-Vazirmatn] */
+"#,
+                                    VAZIRMATN_RTL_CSS.replace('`', "\\`")
+                                );
+                                let _ = fs::write(&entry, format!("{}\n{}", content, inject_code));
+                                patched_script = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if patched_script {
+                    // Pack back to app.asar
+                    let _ = Command::new("npx.cmd")
+                        .args(&["asar", "pack", &temp_dir.to_string_lossy(), &asar_path_str])
+                        .output();
+                    let _ = fs::remove_dir_all(&temp_dir);
+                    applied_count += 1;
+                }
+            }
+        }
+    }
+
+    if applied_count > 0 {
+        Ok(format!("پچ راست‌چین و فونت وزیرمتن با موفقیت بر روی {} ماژول اعمال شد.", applied_count))
+    } else {
+        Ok("پچ پیش از این اعمال شده بود یا موردی برای تغییر یافت نشد.".into())
+    }
+}
+
+#[tauri::command]
+pub async fn restore_antigravity_rtl() -> Result<String, String> {
+    let status = get_antigravity_rtl_status().await?;
+    let mut restored_count = 0;
+
+    // 1. Restore IDE CSS
+    if let Some(css_path_str) = status.ide_css_path {
+        let css_path = Path::new(&css_path_str);
+        let backup_path = format!("{}.bak", css_path_str);
+        if Path::new(&backup_path).exists() {
+            fs::copy(&backup_path, css_path).map_err(|e| e.to_string())?;
+            restored_count += 1;
+        } else if css_path.exists() {
+            // Clean up appended CSS block if backup doesn't exist
+            if let Ok(content) = fs::read_to_string(css_path) {
+                if let Some(pos) = content.find("/* [Antigravity-Shield-RTL-Vazirmatn] */") {
+                    let cleaned = &content[..pos];
+                    let _ = fs::write(css_path, cleaned.trim_end());
+                    restored_count += 1;
+                }
+            }
+        }
+    }
+
+    // 2. Restore Desktop app.asar
+    if let Some(asar_path_str) = status.desktop_asar_path {
+        let asar_path = Path::new(&asar_path_str);
+        let backup_path = format!("{}.bak", asar_path_str);
+        if Path::new(&backup_path).exists() {
+            fs::copy(&backup_path, asar_path).map_err(|e| e.to_string())?;
+            restored_count += 1;
+        }
+    }
+
+    if restored_count > 0 {
+        Ok(format!("بازگردانی با موفقیت انجام شد. {} ماژول به حالت پیش‌فرض (LTR) بازگشتند.", restored_count))
+    } else {
+        Ok("فایل پشتیبانی برای بازگردانی یافت نشد.".into())
+    }
+}
+
+fn walk_dir_find(dir: &Path, target_filename: &str) -> std::io::Result<Vec<std::path::PathBuf>> {
+    let mut results = Vec::new();
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                if let Ok(mut sub) = walk_dir_find(&path, target_filename) {
+                    results.append(&mut sub);
+                }
+            } else if path.file_name().and_then(|n| n.to_str()) == Some(target_filename) {
+                results.push(path);
+            }
+        }
+    }
+    Ok(results)
+}
+
