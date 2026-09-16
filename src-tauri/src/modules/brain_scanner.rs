@@ -1,10 +1,10 @@
+use chrono::Utc;
+use regex::Regex;
+use rusqlite::{params, Connection};
+use serde_json::Value;
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
-use regex::Regex;
-use serde_json::Value;
-use rusqlite::{params, Connection};
-use chrono::Utc;
 use tauri::Emitter;
 
 #[derive(serde::Serialize, Clone, Debug)]
@@ -17,11 +17,19 @@ pub struct BrainScanResult {
 }
 
 fn get_gemini_antigravity_envs() -> Vec<PathBuf> {
-    let home = dirs::home_dir()
-        .or_else(|| std::env::var("USERPROFILE").or_else(|_| std::env::var("HOME")).ok().map(PathBuf::from));
-    let Some(home_path) = home else { return Vec::new(); };
+    let home = dirs::home_dir().or_else(|| {
+        std::env::var("USERPROFILE")
+            .or_else(|_| std::env::var("HOME"))
+            .ok()
+            .map(PathBuf::from)
+    });
+    let Some(home_path) = home else {
+        return Vec::new();
+    };
     let gemini_dir = home_path.join(".gemini");
-    if !gemini_dir.exists() { return Vec::new(); }
+    if !gemini_dir.exists() {
+        return Vec::new();
+    }
 
     let mut envs = Vec::new();
     if let Ok(entries) = fs::read_dir(&gemini_dir) {
@@ -97,7 +105,10 @@ pub fn is_valid_model_candidate(s: &str) -> bool {
 pub fn extract_model_from_blob(data: &[u8]) -> Option<String> {
     // 1. Check Protobuf tag 19 wire type 2 (0x9a 0x01) - Google Antigravity standard model field
     let mut search_end = data.len();
-    while let Some(rel_pos) = data[..search_end].windows(2).rposition(|w| w == [0x9a, 0x01]) {
+    while let Some(rel_pos) = data[..search_end]
+        .windows(2)
+        .rposition(|w| w == [0x9a, 0x01])
+    {
         let pos = rel_pos;
         if pos + 2 < data.len() {
             if let Some((len, varint_len)) = decode_varint(data, pos + 2) {
@@ -119,7 +130,7 @@ pub fn extract_model_from_blob(data: &[u8]) -> Option<String> {
 
     // 2. Vendor-agnostic fallback: Strict regex matching known AI model patterns only
     if let Ok(re) = Regex::new(
-        r"(?i)\b(gemini-(?:[0-9]|pro|flash|auto|default|ultra|embedding)[a-zA-Z0-9\.\-_]*|claude-(?:3|4|opus|sonnet|haiku)[a-zA-Z0-9\.\-_]*|gpt-(?:4|3|oss)[a-zA-Z0-9\.\-_]*|o3-mini(?:-[a-zA-Z0-9\.\-]+)?|o1(?:-preview|-mini)?|deepseek-(?:r1|v3|chat|reasoner|coder)[a-zA-Z0-9\.\-_]*)\b"
+        r"(?i)\b(gemini-(?:[0-9]|pro|flash|auto|default|ultra|embedding)[a-zA-Z0-9\.\-_]*|claude-(?:3|4|opus|sonnet|haiku)[a-zA-Z0-9\.\-_]*|gpt-(?:4|3|oss)[a-zA-Z0-9\.\-_]*|o3-mini(?:-[a-zA-Z0-9\.\-]+)?|o1(?:-preview|-mini)?|deepseek-(?:r1|v3|chat|reasoner|coder)[a-zA-Z0-9\.\-_]*)\b",
     ) {
         let text = String::from_utf8_lossy(data);
         for m in re.find_iter(&text) {
@@ -136,24 +147,36 @@ fn get_conversation_metadata(env_dir: &PathBuf, conversation_id: &str) -> (Strin
     let mut model = "gemini-auto".to_string();
     let mut platform = if env_dir.to_string_lossy().contains("ide") {
         "Antigravity IDE".to_string()
-    } else if env_dir.to_string_lossy().contains("cli") || env_dir.to_string_lossy().contains("agy") {
+    } else if env_dir.to_string_lossy().contains("cli") || env_dir.to_string_lossy().contains("agy")
+    {
         "Antigravity CLI".to_string()
     } else {
         "Antigravity Platform".to_string()
     };
 
-    let db_path = env_dir.join("conversations").join(format!("{}.db", conversation_id));
+    let db_path = env_dir
+        .join("conversations")
+        .join(format!("{}.db", conversation_id));
     if db_path.exists() {
-        if let Ok(conn) = Connection::open_with_flags(&db_path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY) {
+        if let Ok(conn) =
+            Connection::open_with_flags(&db_path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+        {
             // Extract platform from executor_metadata
-            if let Ok(data) = conn.query_row("SELECT data FROM executor_metadata LIMIT 1", [], |r| r.get::<_, Vec<u8>>(0)) {
+            if let Ok(data) =
+                conn.query_row("SELECT data FROM executor_metadata LIMIT 1", [], |r| {
+                    r.get::<_, Vec<u8>>(0)
+                })
+            {
                 let data_lossy = String::from_utf8_lossy(&data);
-                if data_lossy.contains("As IDE feedback") || data_lossy.contains("antigravity-ide") {
+                if data_lossy.contains("As IDE feedback") || data_lossy.contains("antigravity-ide")
+                {
                     platform = "Antigravity IDE".to_string();
                 }
             }
             // Extract model from gen_metadata: check up to 10 latest entries for the first valid model
-            if let Ok(mut stmt) = conn.prepare("SELECT data FROM gen_metadata ORDER BY idx DESC LIMIT 10") {
+            if let Ok(mut stmt) =
+                conn.prepare("SELECT data FROM gen_metadata ORDER BY idx DESC LIMIT 10")
+            {
                 if let Ok(rows) = stmt.query_map([], |r| r.get::<_, Vec<u8>>(0)) {
                     for row in rows.flatten() {
                         if let Some(m) = extract_model_from_blob(&row) {
@@ -190,7 +213,7 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
 
     let db_path = crate::modules::token_stats::get_db_path()?;
     let conn = Connection::open(&db_path).map_err(|e| format!("Failed to open DB: {}", e))?;
-    
+
     conn.execute(
         "CREATE TABLE IF NOT EXISTS brain_scan_progress (
             conversation_id TEXT PRIMARY KEY,
@@ -199,9 +222,11 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
             total_tokens_found INTEGER NOT NULL DEFAULT 0
         )",
         [],
-    ).map_err(|e| format!("Failed to create table: {}", e))?;
+    )
+    .map_err(|e| format!("Failed to create table: {}", e))?;
 
-    let uuid_regex = Regex::new(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").unwrap();
+    let uuid_regex =
+        Regex::new(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").unwrap();
 
     let account_email = match crate::modules::account::get_current_account() {
         Ok(Some(acc)) => acc.email,
@@ -217,7 +242,9 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
         let entries = match fs::read_dir(&brain_dir) {
             Ok(e) => e,
             Err(e) => {
-                result.errors.push(format!("Failed to read brain dir: {}", e));
+                result
+                    .errors
+                    .push(format!("Failed to read brain dir: {}", e));
                 continue;
             }
         };
@@ -236,8 +263,16 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
             result.conversations_found += 1;
 
             // Prefer transcript_full.jsonl for complete, untruncated tokens
-            let full_transcript = entry.path().join(".system_generated").join("logs").join("transcript_full.jsonl");
-            let std_transcript = entry.path().join(".system_generated").join("logs").join("transcript.jsonl");
+            let full_transcript = entry
+                .path()
+                .join(".system_generated")
+                .join("logs")
+                .join("transcript_full.jsonl");
+            let std_transcript = entry
+                .path()
+                .join(".system_generated")
+                .join("logs")
+                .join("transcript.jsonl");
             let transcript_path = if full_transcript.exists() {
                 full_transcript
             } else if std_transcript.exists() {
@@ -262,7 +297,9 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
             let file = match File::open(&transcript_path) {
                 Ok(f) => f,
                 Err(e) => {
-                    result.errors.push(format!("Failed to open {}: {}", name, e));
+                    result
+                        .errors
+                        .push(format!("Failed to open {}: {}", name, e));
                     continue;
                 }
             };
@@ -273,7 +310,8 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
             let mut new_out_tokens = 0u64;
             let mut lines_processed = 0;
             // Accumulate tokens grouped by hourly timestamp bucket
-            let mut bucket_map: std::collections::BTreeMap<i64, (u64, u64, u64)> = std::collections::BTreeMap::new();
+            let mut bucket_map: std::collections::BTreeMap<i64, (u64, u64, u64)> =
+                std::collections::BTreeMap::new();
             let mut conversation_start_time: Option<i64> = None;
             let mut last_message_time: Option<i64> = None;
 
@@ -289,7 +327,8 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                     let source = json.get("source").and_then(|v| v.as_str());
 
                     // Extract actual created_at timestamp if present
-                    let msg_ts = json.get("created_at")
+                    let msg_ts = json
+                        .get("created_at")
                         .and_then(|v| v.as_str())
                         .and_then(|s| chrono::DateTime::parse_from_rfc3339(s).ok())
                         .map(|dt| dt.timestamp());
@@ -300,7 +339,9 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                         }
                         last_message_time = Some(ts);
                     }
-                    let current_ts = msg_ts.or(last_message_time).unwrap_or_else(|| Utc::now().timestamp());
+                    let current_ts = msg_ts
+                        .or(last_message_time)
+                        .unwrap_or_else(|| Utc::now().timestamp());
                     // Group to hourly timestamp
                     let bucket_ts = (current_ts / 3600) * 3600;
 
@@ -309,17 +350,33 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                     let mut cached_t = 0u64;
 
                     if let Some(usage) = json.get("usage") {
-                        in_t = usage.get("input_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
-                        out_t = usage.get("output_tokens").or(usage.get("total_tokens")).and_then(|v| v.as_u64()).unwrap_or(0);
-                        cached_t = usage.get("cache_read_input_tokens")
+                        in_t = usage
+                            .get("input_tokens")
+                            .and_then(|v| v.as_u64())
+                            .unwrap_or(0);
+                        out_t = usage
+                            .get("output_tokens")
+                            .or(usage.get("total_tokens"))
+                            .and_then(|v| v.as_u64())
+                            .unwrap_or(0);
+                        cached_t = usage
+                            .get("cache_read_input_tokens")
                             .or_else(|| usage.get("cached_tokens"))
                             .or_else(|| usage.get("cachedContentTokenCount"))
-                            .and_then(|v| v.as_u64()).unwrap_or(0);
+                            .and_then(|v| v.as_u64())
+                            .unwrap_or(0);
                     }
 
-                    if stype == Some("USER_INPUT") || stype == Some("USER_EXPLICIT") || source == Some("USER") {
+                    if stype == Some("USER_INPUT")
+                        || stype == Some("USER_EXPLICIT")
+                        || source == Some("USER")
+                    {
                         if in_t == 0 {
-                            let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
+                            let content_len = json
+                                .get("content")
+                                .and_then(|v| v.as_str())
+                                .map(|s| s.len())
+                                .unwrap_or(0);
                             in_t = (content_len as f64 / 3.8).ceil() as u64;
                         }
                         let in_val = in_t.max(1);
@@ -329,7 +386,11 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                         entry.2 += cached_t;
                     } else if stype == Some("GENERIC") {
                         // Tool outputs are part of model input
-                        let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
+                        let content_len = json
+                            .get("content")
+                            .and_then(|v| v.as_str())
+                            .map(|s| s.len())
+                            .unwrap_or(0);
                         let tool_in = (content_len as f64 / 3.8).ceil() as u64;
                         let tool_val = tool_in.max(1);
                         new_in_tokens += tool_val;
@@ -338,12 +399,29 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                         entry.2 += cached_t;
                     } else if stype == Some("PLANNER_RESPONSE") || source == Some("MODEL") {
                         if out_t == 0 {
-                            let content_len = json.get("content").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
-                            let thinking_len = json.get("thinking").and_then(|v| v.as_str()).map(|s| s.len()).unwrap_or(0);
-                            let tc_len = json.get("tool_calls").and_then(|v| v.as_array())
-                                .map(|arr| arr.iter().map(|tc| serde_json::to_string(tc).unwrap_or_default().len()).sum::<usize>())
+                            let content_len = json
+                                .get("content")
+                                .and_then(|v| v.as_str())
+                                .map(|s| s.len())
                                 .unwrap_or(0);
-                            out_t = ((content_len + thinking_len + tc_len) as f64 / 3.8).ceil() as u64;
+                            let thinking_len = json
+                                .get("thinking")
+                                .and_then(|v| v.as_str())
+                                .map(|s| s.len())
+                                .unwrap_or(0);
+                            let tc_len = json
+                                .get("tool_calls")
+                                .and_then(|v| v.as_array())
+                                .map(|arr| {
+                                    arr.iter()
+                                        .map(|tc| {
+                                            serde_json::to_string(tc).unwrap_or_default().len()
+                                        })
+                                        .sum::<usize>()
+                                })
+                                .unwrap_or(0);
+                            out_t =
+                                ((content_len + thinking_len + tc_len) as f64 / 3.8).ceil() as u64;
                         }
                         let out_val = out_t.max(1);
                         new_out_tokens += out_val;
@@ -359,7 +437,7 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
             } else {
                 result.conversations_scanned += 1;
                 let new_tokens_for_conv = new_in_tokens + new_out_tokens;
-                
+
                 if new_tokens_for_conv > 0 {
                     let (model, platform) = get_conversation_metadata(&env_dir, &name);
 
@@ -385,7 +463,9 @@ pub fn scan_brain_conversations() -> Result<BrainScanResult, String> {
                             &platform,
                             Some(bucket_ts),
                         ) {
-                            result.errors.push(format!("Failed to record usage for {}: {}", name, e));
+                            result
+                                .errors
+                                .push(format!("Failed to record usage for {}: {}", name, e));
                         }
                     }
                     result.total_new_tokens += new_tokens_for_conv;
@@ -416,9 +496,7 @@ pub fn start_live_watcher(app_handle: Option<tauri::AppHandle>) {
         loop {
             tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
 
-            let scan_res = tokio::task::spawn_blocking(|| {
-                scan_brain_conversations()
-            }).await;
+            let scan_res = tokio::task::spawn_blocking(|| scan_brain_conversations()).await;
 
             if let Ok(Ok(res)) = scan_res {
                 if res.total_new_tokens > 0 {
@@ -503,4 +581,3 @@ mod tests {
         assert_eq!(extracted, None);
     }
 }
-

@@ -175,7 +175,11 @@ pub fn normalize_model_family(raw: &str) -> String {
     if lower == "gemini-flash" {
         return "Gemini Flash".to_string();
     }
-    if lower == "gemini-auto" || lower == "gemini-default" || lower == "g-auto" || lower == "g-default" {
+    if lower == "gemini-auto"
+        || lower == "gemini-default"
+        || lower == "g-auto"
+        || lower == "g-default"
+    {
         return "Gemini Auto (Smart Router)".to_string();
     }
     if lower == "gemini-rc" || lower.starts_with("gemini-exp") {
@@ -468,7 +472,15 @@ pub fn record_usage(
     output_tokens: u32,
     cached_tokens: u32,
 ) -> Result<(), String> {
-    record_usage_full(account_email, model, input_tokens, output_tokens, cached_tokens, "Antigravity IDE", None)
+    record_usage_full(
+        account_email,
+        model,
+        input_tokens,
+        output_tokens,
+        cached_tokens,
+        "Antigravity IDE",
+        None,
+    )
 }
 
 /// Get hourly aggregated stats for a time range
@@ -713,7 +725,8 @@ pub fn get_model_stats(hours: i64) -> Result<Vec<ModelTokenStats>, String> {
         })
         .map_err(|e| e.to_string())?;
 
-    let mut family_map: std::collections::HashMap<String, ModelTokenStats> = std::collections::HashMap::new();
+    let mut family_map: std::collections::HashMap<String, ModelTokenStats> =
+        std::collections::HashMap::new();
     for row in rows {
         let stat = row.map_err(|e| e.to_string())?;
         if is_non_model_identifier(&stat.model) {
@@ -723,14 +736,16 @@ pub fn get_model_stats(hours: i64) -> Result<Vec<ModelTokenStats>, String> {
         if family == "Non-Model Activity" {
             continue;
         }
-        let entry = family_map.entry(family.clone()).or_insert_with(|| ModelTokenStats {
-            model: family,
-            total_input_tokens: 0,
-            total_output_tokens: 0,
-            total_cached_tokens: 0,
-            total_tokens: 0,
-            request_count: 0,
-        });
+        let entry = family_map
+            .entry(family.clone())
+            .or_insert_with(|| ModelTokenStats {
+                model: family,
+                total_input_tokens: 0,
+                total_output_tokens: 0,
+                total_cached_tokens: 0,
+                total_tokens: 0,
+                request_count: 0,
+            });
         entry.total_input_tokens += stat.total_input_tokens;
         entry.total_output_tokens += stat.total_output_tokens;
         entry.total_cached_tokens += stat.total_cached_tokens;
@@ -934,14 +949,38 @@ mod tests {
         // Anthropic: Never Claude 3.7 Opus!
         assert_eq!(normalize_model_family("claude-3-opus"), "Claude 3 Opus");
         assert_eq!(normalize_model_family("claude-opus"), "Claude 3 Opus");
-        assert_eq!(normalize_model_family("claude-opus-4-6-thinking"), "Claude 4 Opus (Thinking)");
-        assert_eq!(normalize_model_family("claude-opus-4-5-thinking"), "Claude 4 Opus (Thinking)");
-        assert_eq!(normalize_model_family("claude-sonnet-4-6"), "Claude 4 Sonnet");
-        assert_eq!(normalize_model_family("claude-sonnet-4-6-thinking"), "Claude 4 Sonnet (Thinking)");
-        assert_eq!(normalize_model_family("claude-3-7-sonnet"), "Claude 3.7 Sonnet");
-        assert_eq!(normalize_model_family("claude-3-7-sonnet-thinking"), "Claude 3.7 Sonnet (Thinking)");
-        assert_eq!(normalize_model_family("claude-3-5-sonnet"), "Claude 3.5 Sonnet");
-        assert_eq!(normalize_model_family("claude-3-5-haiku"), "Claude 3.5 Haiku");
+        assert_eq!(
+            normalize_model_family("claude-opus-4-6-thinking"),
+            "Claude 4 Opus (Thinking)"
+        );
+        assert_eq!(
+            normalize_model_family("claude-opus-4-5-thinking"),
+            "Claude 4 Opus (Thinking)"
+        );
+        assert_eq!(
+            normalize_model_family("claude-sonnet-4-6"),
+            "Claude 4 Sonnet"
+        );
+        assert_eq!(
+            normalize_model_family("claude-sonnet-4-6-thinking"),
+            "Claude 4 Sonnet (Thinking)"
+        );
+        assert_eq!(
+            normalize_model_family("claude-3-7-sonnet"),
+            "Claude 3.7 Sonnet"
+        );
+        assert_eq!(
+            normalize_model_family("claude-3-7-sonnet-thinking"),
+            "Claude 3.7 Sonnet (Thinking)"
+        );
+        assert_eq!(
+            normalize_model_family("claude-3-5-sonnet"),
+            "Claude 3.5 Sonnet"
+        );
+        assert_eq!(
+            normalize_model_family("claude-3-5-haiku"),
+            "Claude 3.5 Haiku"
+        );
 
         // OpenAI: Precise matching
         assert_eq!(normalize_model_family("o3-mini"), "OpenAI o3-mini");
@@ -951,29 +990,80 @@ mod tests {
         assert_eq!(normalize_model_family("o1-preview"), "OpenAI o1-preview");
         assert_eq!(normalize_model_family("gpt-4o"), "GPT-4o");
         assert_eq!(normalize_model_family("gpt-4o-mini"), "GPT-4o mini");
-        assert_eq!(normalize_model_family("gpt-oss-120b-medium"), "GPT-OSS Series");
+        assert_eq!(
+            normalize_model_family("gpt-oss-120b-medium"),
+            "GPT-OSS Series"
+        );
 
         // Gemini: Canonical tiers & versions
-        assert_eq!(normalize_model_family("gemini-3.8-flash"), "Gemini 3.8 Flash");
-        assert_eq!(normalize_model_family("gemini-3.8-flash-tiered"), "Gemini 3.8 Flash");
-        assert_eq!(normalize_model_family("gemini-3.8-flash-medium"), "Gemini 3.8 Flash");
-        assert_eq!(normalize_model_family("gemini-3.7-flash"), "Gemini 3.7 Flash");
-        assert_eq!(normalize_model_family("gemini-3.7-flash-control"), "Gemini 3.7 Flash");
-        assert_eq!(normalize_model_family("gemini-3.6-flash"), "Gemini 3.6 Flash");
-        assert_eq!(normalize_model_family("gemini-3.1-pro-low"), "Gemini 3.1 Pro");
-        assert_eq!(normalize_model_family("gemini-2.5-flash"), "Gemini 2.5 Flash");
-        assert_eq!(normalize_model_family("gemini-2.5-flash-lite"), "Gemini 2.5 Flash Lite");
-        assert_eq!(normalize_model_family("gemini-auto"), "Gemini Auto (Smart Router)");
+        assert_eq!(
+            normalize_model_family("gemini-3.8-flash"),
+            "Gemini 3.8 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.8-flash-tiered"),
+            "Gemini 3.8 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.8-flash-medium"),
+            "Gemini 3.8 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.7-flash"),
+            "Gemini 3.7 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.7-flash-control"),
+            "Gemini 3.7 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.6-flash"),
+            "Gemini 3.6 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.1-pro-low"),
+            "Gemini 3.1 Pro"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-2.5-flash"),
+            "Gemini 2.5 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-2.5-flash-lite"),
+            "Gemini 2.5 Flash Lite"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-auto"),
+            "Gemini Auto (Smart Router)"
+        );
     }
 
     #[test]
     fn test_agentic_model_separation() {
-        assert_eq!(normalize_model_family("gemini-pro-agent"), "Gemini Pro (Agent)");
-        assert_eq!(normalize_model_family("gemini-3-flash-agent"), "Gemini 3 Flash (Agent)");
-        assert_eq!(normalize_model_family("flash-agent"), "Gemini Flash (Agent)");
-        assert_eq!(normalize_model_family("gemini-3.7-flash-agent"), "Gemini 3.7 Flash (Agent)");
-        assert_eq!(normalize_model_family("gemini-3.8-flash-agent"), "Gemini 3.8 Flash (Agent)");
-        assert_eq!(normalize_model_family("gemini-3.1-pro-agent"), "Gemini 3.1 Pro (Agent)");
+        assert_eq!(
+            normalize_model_family("gemini-pro-agent"),
+            "Gemini Pro (Agent)"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3-flash-agent"),
+            "Gemini 3 Flash (Agent)"
+        );
+        assert_eq!(
+            normalize_model_family("flash-agent"),
+            "Gemini Flash (Agent)"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.7-flash-agent"),
+            "Gemini 3.7 Flash (Agent)"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.8-flash-agent"),
+            "Gemini 3.8 Flash (Agent)"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3.1-pro-agent"),
+            "Gemini 3.1 Pro (Agent)"
+        );
     }
 
     #[test]
@@ -991,8 +1081,14 @@ mod tests {
         assert!(is_non_model_identifier("test_file.rs"));
         assert!(is_non_model_identifier("config.json"));
 
-        assert_eq!(normalize_model_family("Antigravity IDE"), "Non-Model Activity");
-        assert_eq!(normalize_model_family("gemini-3-image-guide.md"), "Non-Model Activity");
+        assert_eq!(
+            normalize_model_family("Antigravity IDE"),
+            "Non-Model Activity"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-3-image-guide.md"),
+            "Non-Model Activity"
+        );
         assert_eq!(normalize_model_family("O3-S"), "Non-Model Activity");
     }
 
@@ -1012,7 +1108,8 @@ mod tests {
                 source TEXT NOT NULL DEFAULT 'Antigravity IDE'
             )",
             [],
-        ).unwrap();
+        )
+        .unwrap();
 
         // Insert legacy polluted data
         conn.execute(
@@ -1024,31 +1121,68 @@ mod tests {
              (1004, 'test@example.com', 'gemini-cli', 20),
              (1005, 'test@example.com', 'claude-opus-4-6-thinking', 500)",
             [],
-        ).unwrap();
+        )
+        .unwrap();
 
         sanitize_legacy_data(&conn).unwrap();
 
         // 1. 'Antigravity IDE' should be updated to 'gemini-auto'
-        let ide_count: i64 = conn.query_row("SELECT COUNT(*) FROM token_usage WHERE model = 'Antigravity IDE'", [], |r| r.get(0)).unwrap();
+        let ide_count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM token_usage WHERE model = 'Antigravity IDE'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
         assert_eq!(ide_count, 0);
 
-        let auto_count: i64 = conn.query_row("SELECT COUNT(*) FROM token_usage WHERE model = 'gemini-auto'", [], |r| r.get(0)).unwrap();
+        let auto_count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM token_usage WHERE model = 'gemini-auto'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
         assert_eq!(auto_count, 2); // Antigravity IDE + gemini-cli both migrated to gemini-auto
 
         // 2. 'O3-S' should be deleted
-        let o3_count: i64 = conn.query_row("SELECT COUNT(*) FROM token_usage WHERE model = 'O3-S'", [], |r| r.get(0)).unwrap();
+        let o3_count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM token_usage WHERE model = 'O3-S'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
         assert_eq!(o3_count, 0);
 
         // 3. 'guide.md' should be deleted
-        let md_count: i64 = conn.query_row("SELECT COUNT(*) FROM token_usage WHERE model LIKE '%.md'", [], |r| r.get(0)).unwrap();
+        let md_count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM token_usage WHERE model LIKE '%.md'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
         assert_eq!(md_count, 0);
 
         // 4. 'Claude-Code' should be deleted
-        let cc_count: i64 = conn.query_row("SELECT COUNT(*) FROM token_usage WHERE model = 'Claude-Code'", [], |r| r.get(0)).unwrap();
+        let cc_count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM token_usage WHERE model = 'Claude-Code'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
         assert_eq!(cc_count, 0);
 
         // 5. Valid models should remain intact
-        let valid_count: i64 = conn.query_row("SELECT COUNT(*) FROM token_usage WHERE model = 'claude-opus-4-6-thinking'", [], |r| r.get(0)).unwrap();
+        let valid_count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM token_usage WHERE model = 'claude-opus-4-6-thinking'",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
         assert_eq!(valid_count, 1);
     }
 }

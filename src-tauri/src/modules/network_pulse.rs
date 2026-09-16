@@ -43,19 +43,61 @@ pub struct InstalledVpnInfo {
 }
 
 const KNOWN_VPNS: &[(&str, &str, &str, Option<u16>, &[&str])] = &[
-    ("v2rayn", "v2rayN", "v2rayN.exe", Some(10808), &["v2rayN", "v2rayN-Core", "v2rayN-With-Core"]),
-    ("clash-verge", "Clash Verge", "clash-verge.exe", Some(7897), &["clash-verge", "Clash Verge", "Clash Verge Rev"]),
-    ("clash-nyanpasu", "Clash Nyanpasu", "clash-nyanpasu.exe", Some(7890), &["Clash Nyanpasu", "clash-nyanpasu"]),
-    ("nekoray", "NekoRay", "nekoray.exe", Some(2080), &["nekoray", "NekoBox"]),
-    ("sing-box", "Sing-Box", "sing-box.exe", Some(2080), &["sing-box", "sing-box-windows"]),
-    ("hiddify", "Hiddify Next", "Hiddify.exe", Some(2080), &["Hiddify", "HiddifyNext"]),
-    ("warp", "Cloudflare WARP", "Cloudflare WARP.exe", Some(40000), &["Cloudflare\\Cloudflare WARP", "Cloudflare WARP"]),
+    (
+        "v2rayn",
+        "v2rayN",
+        "v2rayN.exe",
+        Some(10808),
+        &["v2rayN", "v2rayN-Core", "v2rayN-With-Core"],
+    ),
+    (
+        "clash-verge",
+        "Clash Verge",
+        "clash-verge.exe",
+        Some(7897),
+        &["clash-verge", "Clash Verge", "Clash Verge Rev"],
+    ),
+    (
+        "clash-nyanpasu",
+        "Clash Nyanpasu",
+        "clash-nyanpasu.exe",
+        Some(7890),
+        &["Clash Nyanpasu", "clash-nyanpasu"],
+    ),
+    (
+        "nekoray",
+        "NekoRay",
+        "nekoray.exe",
+        Some(2080),
+        &["nekoray", "NekoBox"],
+    ),
+    (
+        "sing-box",
+        "Sing-Box",
+        "sing-box.exe",
+        Some(2080),
+        &["sing-box", "sing-box-windows"],
+    ),
+    (
+        "hiddify",
+        "Hiddify Next",
+        "Hiddify.exe",
+        Some(2080),
+        &["Hiddify", "HiddifyNext"],
+    ),
+    (
+        "warp",
+        "Cloudflare WARP",
+        "Cloudflare WARP.exe",
+        Some(40000),
+        &["Cloudflare\\Cloudflare WARP", "Cloudflare WARP"],
+    ),
 ];
 
 /// شناسایی فیلترشکن‌های در حال اجرا یا نصب‌شده روی ویندوز
 pub fn detect_installed_vpns() -> Vec<InstalledVpnInfo> {
     let mut sys = System::new_all();
-    sys.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
+    sys.refresh_processes(sysinfo::ProcessesToUpdate::All);
 
     let mut results = Vec::new();
 
@@ -87,12 +129,13 @@ pub fn detect_installed_vpns() -> Vec<InstalledVpnInfo> {
 
     for &(id, name, process_name, default_port, folder_hints) in KNOWN_VPNS {
         // ۱. بررسی اجرای پروسه
-        let running_proc = running_processes.iter().find(|(p_name, _)| {
-            p_name.eq_ignore_ascii_case(process_name)
-        });
+        let running_proc = running_processes
+            .iter()
+            .find(|(p_name, _)| p_name.eq_ignore_ascii_case(process_name));
 
         let is_running = running_proc.is_some();
-        let mut executable_path = running_proc.and_then(|(_, path)| path.as_ref().map(|p| p.to_string_lossy().to_string()));
+        let mut executable_path = running_proc
+            .and_then(|(_, path)| path.as_ref().map(|p| p.to_string_lossy().to_string()));
 
         // ۲. اگر در حال اجرا نبود، جستجو در مسیرهای استاندارد
         if executable_path.is_none() {
@@ -165,7 +208,9 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
         // اگر کاربر پروکسی نداده، بررسی تنظیمات شیلد
         crate::modules::config::load_app_config()
             .ok()
-            .filter(|c| c.proxy.upstream_proxy.enabled && !c.proxy.upstream_proxy.url.trim().is_empty())
+            .filter(|c| {
+                c.proxy.upstream_proxy.enabled && !c.proxy.upstream_proxy.url.trim().is_empty()
+            })
             .map(|c| c.proxy.upstream_proxy.url)
     });
 
@@ -220,13 +265,32 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
                     let text = resp.text().await.unwrap_or_default();
 
                     // اگر استاتوس 400 باشد و شامل ارور لوکیشن باشد
-                    let is_region = status == 400 && (text.contains("User location is not supported") || text.contains("FAILED_PRECONDITION"));
-                    
-                    (true, !is_region, is_region, Some(latency), if is_region { Some("CloudCode API: User location is not supported (HTTP 400)".to_string()) } else { None })
+                    let is_region = status == 400
+                        && (text.contains("User location is not supported")
+                            || text.contains("FAILED_PRECONDITION"));
+
+                    (
+                        true,
+                        !is_region,
+                        is_region,
+                        Some(latency),
+                        if is_region {
+                            Some(
+                                "CloudCode API: User location is not supported (HTTP 400)"
+                                    .to_string(),
+                            )
+                        } else {
+                            None
+                        },
+                    )
                 }
-                Err(err) => {
-                    (false, false, false, None, Some(format!("API Connection Error: {}", err)))
-                }
+                Err(err) => (
+                    false,
+                    false,
+                    false,
+                    None,
+                    Some(format!("API Connection Error: {}", err)),
+                ),
             }
         }
     };
@@ -245,11 +309,23 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
                 Ok(resp) => {
                     let text = resp.text().await.unwrap_or_default();
                     let lower = text.to_lowercase();
-                    let is_region = lower.contains("isn't currently supported in your country") 
+                    let is_region = lower.contains("isn't currently supported in your country")
                         || lower.contains("not supported in your country")
                         || lower.contains("supported in your country");
 
-                    (true, !is_region, is_region, if is_region { Some("Gemini Web: Gemini isn't currently supported in your country".to_string()) } else { None })
+                    (
+                        true,
+                        !is_region,
+                        is_region,
+                        if is_region {
+                            Some(
+                                "Gemini Web: Gemini isn't currently supported in your country"
+                                    .to_string(),
+                            )
+                        } else {
+                            None
+                        },
+                    )
                 }
                 Err(_) => (false, false, false, None),
             }
@@ -270,7 +346,9 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
     // تشخیص قطعی تحریم ریجن
     let is_region_blocked = api_region_blocked || web_region_blocked;
     let region_error_message = if is_region_blocked {
-        api_err.or(web_err).or(Some("Google Gemini: Region/Country not supported.".to_string()))
+        api_err.or(web_err).or(Some(
+            "Google Gemini: Region/Country not supported.".to_string(),
+        ))
     } else {
         None
     };
