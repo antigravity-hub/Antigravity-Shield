@@ -187,14 +187,14 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                 </h2>
 
                 {/* Segmented Mode Selector */}
-                <div className="flex items-center bg-gray-100 dark:bg-base-200/80 p-0.5 rounded-lg text-[11px] font-medium">
+                <div className="flex items-center bg-gray-100 dark:bg-slate-900/90 border border-transparent dark:border-slate-800/80 p-0.5 rounded-lg text-[11px] font-medium">
                     <button
                         type="button"
                         onClick={() => handleModeChange('gemini')}
                         className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
                             switchMode === 'gemini'
-                                ? 'bg-white dark:bg-base-300 text-green-600 dark:text-green-400 font-semibold shadow-xs'
-                                : 'text-gray-500 hover:text-gray-900 dark:hover:text-base-content'
+                                ? 'bg-white dark:bg-slate-800 text-green-600 dark:text-green-400 font-semibold shadow-xs border border-transparent dark:border-slate-700/60'
+                                : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-200'
                         }`}
                         title={t('dashboard.mode_gemini')}
                     >
@@ -205,8 +205,8 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                         onClick={() => handleModeChange('claude')}
                         className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
                             switchMode === 'claude'
-                                ? 'bg-white dark:bg-base-300 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs'
-                                : 'text-gray-500 hover:text-gray-900 dark:hover:text-base-content'
+                                ? 'bg-white dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 font-semibold shadow-xs border border-transparent dark:border-slate-700/60'
+                                : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-200'
                         }`}
                         title={t('dashboard.mode_claude')}
                     >
@@ -217,8 +217,8 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                         onClick={() => handleModeChange('both')}
                         className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
                             switchMode === 'both'
-                                ? 'bg-white dark:bg-base-300 text-blue-600 dark:text-blue-400 font-semibold shadow-xs'
-                                : 'text-gray-500 hover:text-gray-900 dark:hover:text-base-content'
+                                ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-semibold shadow-xs border border-transparent dark:border-slate-700/60'
+                                : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-200'
                         }`}
                         title={t('dashboard.mode_both')}
                     >

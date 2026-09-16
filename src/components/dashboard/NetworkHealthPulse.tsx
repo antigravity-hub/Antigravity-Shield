@@ -208,9 +208,9 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                 </div>
 
                 {/* پایپ‌لاین بصری سه مرحله‌ای (Visual Pipeline Strip) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 rounded-xl bg-white/70 dark:bg-base-200/50 backdrop-blur-md border border-slate-200/60 dark:border-slate-800/60 shadow-inner">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 rounded-xl bg-white/70 dark:bg-slate-950/60 backdrop-blur-md border border-slate-200/60 dark:border-slate-800/60 shadow-inner">
                     {/* گره ۱: اینترنت عمومی */}
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-base-300/30 border border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800/80">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             pulse?.internet_ok
                                 ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
@@ -236,7 +236,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                     </div>
 
                     {/* گره ۲: دسترسی به گوگل (عدم فیلترینگ) */}
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-base-300/30 border border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800/80">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             pulse?.google_ok
                                 ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
@@ -262,7 +262,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                     </div>
 
                     {/* گره ۳: دسترسی به هوش مصنوعی جمینای */}
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-base-300/30 border border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800/80">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             pulse?.overall_status === 'healthy'
                                 ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
@@ -404,7 +404,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
 
                         {/* سناریو ۳: قطع کامل اینترنت فیزیکی */}
                         {pulse.overall_status === 'offline' && (
-                            <div className="p-4 rounded-xl bg-gray-100/90 dark:bg-base-200/80 border border-gray-200 dark:border-base-300 text-gray-800 dark:text-gray-200 flex items-center gap-3 text-xs">
+                            <div className="p-4 rounded-xl bg-gray-100/90 dark:bg-slate-900/80 border border-gray-200 dark:border-slate-800 text-gray-800 dark:text-gray-200 flex items-center gap-3 text-xs">
                                 <XCircle size={20} className="text-gray-500 shrink-0" />
                                 <div>
                                     <div className="font-bold">{t('dashboard.health_pulse.offline_title', 'اینترنت فیزیکی سیستم قطع است')}</div>
@@ -438,9 +438,9 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
             {/* مودال راهنمای جامع WARP جهت حل مشکل ریجن */}
             {showWarpModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-base-100 rounded-3xl border border-gray-200 dark:border-base-300 shadow-2xl max-w-xl w-full overflow-hidden text-right">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-2xl max-w-xl w-full overflow-hidden text-right">
                         {/* هدر مودال */}
-                        <div className="px-6 py-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-950/30 dark:to-orange-950/30 border-b border-gray-100 dark:border-base-300/60 flex items-center justify-between">
+                        <div className="px-6 py-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-950/30 dark:to-orange-950/30 border-b border-gray-100 dark:border-slate-800/80 flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                                     <Globe size={18} />
@@ -451,7 +451,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             </div>
                             <button
                                 onClick={() => setShowWarpModal(false)}
-                                className="w-8 h-8 rounded-full hover:bg-gray-200 dark:hover:bg-base-200 flex items-center justify-center text-gray-500 transition-all"
+                                className="w-8 h-8 rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center justify-center text-gray-500 transition-all"
                             >
                                 <X size={16} />
                             </button>
@@ -464,7 +464,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             </div>
 
                             {/* روش ۱: پورت 40000 وارپ رسمی */}
-                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-base-300 space-y-2.5 bg-gray-50/50 dark:bg-base-200/40">
+                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-slate-800 space-y-2.5 bg-gray-50/50 dark:bg-slate-800/40">
                                 <div className="font-bold text-gray-900 dark:text-gray-100 flex items-center justify-between text-xs">
                                     <span>روش ۱: نرم‌افزار رسمی Cloudflare WARP (ساده‌ترین روش)</span>
                                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
@@ -489,7 +489,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             </div>
 
                             {/* روش ۲: روتینگ وارپ در V2Ray */}
-                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-base-300 space-y-2.5 bg-gray-50/50 dark:bg-base-200/40">
+                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-slate-800 space-y-2.5 bg-gray-50/50 dark:bg-slate-800/40">
                                 <div className="font-bold text-gray-900 dark:text-gray-100 text-xs">
                                     روش ۲: عبور دامنه گوگل از WARP در V2Ray / Xray
                                 </div>
@@ -523,10 +523,10 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         </div>
 
                         {/* فوتر مودال */}
-                        <div className="px-6 py-3.5 bg-gray-50 dark:bg-base-200 border-t border-gray-100 dark:border-base-300/60 flex items-center justify-end">
+                        <div className="px-6 py-3.5 bg-gray-50 dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800/80 flex items-center justify-end">
                             <button
                                 onClick={() => setShowWarpModal(false)}
-                                className="px-5 py-2 rounded-xl bg-gray-200 dark:bg-base-300 hover:bg-gray-300 dark:hover:bg-base-400 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all active:scale-95"
+                                className="px-5 py-2 rounded-xl bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all active:scale-95"
                             >
                                 بستن
                             </button>
