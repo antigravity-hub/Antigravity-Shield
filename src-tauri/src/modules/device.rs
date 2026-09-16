@@ -47,7 +47,7 @@ pub fn get_storage_path(target_ide: Option<&str>) -> Result<PathBuf, String> {
 
     let folder_names: &[&str] = if target_ide == Some("ide") {
         &["Antigravity IDE"]
-    } else if target_ide == Some("code") || target_ide == Some("cursor") {
+    } else if target_ide == Some("platform") || target_ide == Some("code") || target_ide == Some("cursor") {
         &["Antigravity"]
     } else {
         // target_ide = None: try IDE folder first, fall back to classic name

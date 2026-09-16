@@ -43,7 +43,7 @@ pub fn get_all_candidate_db_paths(target_ide: Option<&str>) -> Vec<PathBuf> {
 
     let folder_names: &[&str] = if target_ide == Some("ide") {
         &["Antigravity IDE", "Antigravity"]
-    } else if target_ide == Some("code") || target_ide == Some("cursor") {
+    } else if target_ide == Some("platform") || target_ide == Some("code") || target_ide == Some("cursor") {
         &["Antigravity", "Antigravity IDE"]
     } else {
         &["Antigravity IDE", "Antigravity"]

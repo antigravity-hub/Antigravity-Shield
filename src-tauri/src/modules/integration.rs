@@ -65,7 +65,6 @@ impl SystemIntegration for DesktopIntegration {
         let is_target_ide = target_ide == Some("ide")
             || target_ide == Some("code")
             || target_ide == Some("cursor")
-            || target_ide == Some("platform")
             || target_ide.is_none();
         if is_target_ide && crate::modules::ide_scanner::is_toolkit_connected() {
             crate::modules::logger::log_info(&format!(
@@ -83,7 +82,7 @@ impl SystemIntegration for DesktopIntegration {
             });
 
             // B. Silently update disk state.vscdb and storage.json without killing process
-            let effective_ide = if target_ide.is_none() || target_ide == Some("platform") {
+            let effective_ide = if target_ide.is_none() {
                 Some("ide")
             } else {
                 target_ide
@@ -186,6 +185,27 @@ impl SystemIntegration for DesktopIntegration {
             if let Ok(storage_path) = device::get_storage_path(target_ide) {
                 if let Some(ref profile) = account.device_profile {
                     let _ = device::write_profile(&storage_path, profile);
+                }
+            }
+
+            // 2.3 同样更新 SQLite 数据库（如果存在 state.vscdb），以保证双重一致性
+            if let Ok(db_path) = db::get_db_path(target_ide) {
+                if db_path.exists() {
+                    let _ = db::inject_token(
+                        &db_path,
+                        &account.token.access_token,
+                        &account.token.refresh_token,
+                        account.token.expiry_timestamp,
+                        &account.email,
+                        account.token.is_gcp_tos,
+                        account.token.project_id.as_deref(),
+                        account.token.id_token.as_deref(),
+                        account.token.oauth_client_key.as_deref(),
+                        target_ide,
+                    );
+                    if let Some(ref profile) = account.device_profile {
+                        let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                    }
                 }
             }
         } else {
