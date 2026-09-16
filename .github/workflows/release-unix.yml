@@ -1,0 +1,425 @@
+name: Release Unix (macOS & Linux)
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag to build and attach artifacts to (e.g. v5.11.0)'
+        required: true
+        default: 'v5.11.0'
+        type: string
+
+concurrency:
+  group: release-unix-${{ github.event.inputs.release_tag }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  # --------------------------------------------------------------------------
+  # macOS Build (.dmg and .tar.gz)
+  # --------------------------------------------------------------------------
+  build-macos:
+    name: Build macOS (.dmg)
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.release_tag }}
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline
+
+      - name: Sync version from release tag & optimize build speed
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+            if [ -f src-tauri/Cargo.lock ]; then
+              sed -i.bak -E '/name = "antigravity-shield"/{n;s/version = "[0-9]+\.[0-9]+\.[0-9]+.*"/version = "'"$TARGET_VER"'"/;}' src-tauri/Cargo.lock && rm -f src-tauri/Cargo.lock.bak
+            fi
+          fi
+          node -e "
+            const fs = require('fs');
+            const p = 'src-tauri/tauri.conf.json';
+            if (fs.existsSync(p)) {
+              const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+              if (c.build) c.build.beforeBuildCommand = 'npx vite build';
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Optimized beforeBuildCommand to npx vite build');
+            }
+          "
+
+      - name: Configure updater signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            const rawKey = process.env.TAURI_SIGNING_PRIVATE_KEY || '';
+            const cleanKey = rawKey.replace(/[\r\n\s]/g, '');
+            if (!cleanKey) {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = true;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Signing key detected: enabled createUpdaterArtifacts');
+            }
+          }
+          "
+
+      - name: Build macOS bundles
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          # Sanitize private key by removing all whitespace and newlines
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            CLEAN_KEY=$(echo "$TAURI_SIGNING_PRIVATE_KEY" | tr -d '\r\n[:space:]')
+            export TAURI_SIGNING_PRIVATE_KEY="$CLEAN_KEY"
+          fi
+
+          if ! npx tauri build --bundles dmg,app --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-macos.log; then
+            echo "::warning::Initial macOS build failed. Checking if caused by signing key issue..."
+            tail -n 80 tauri-build-macos.log || true
+            if grep -qiE "signature|minisign|private key|key mismatch|symbol 10|decode base64" tauri-build-macos.log; then
+              echo "::warning::Signing error detected. Retrying build with createUpdaterArtifacts disabled as fallback..."
+              node -e "
+                const fs = require('fs');
+                const p = 'src-tauri/tauri.conf.json';
+                const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+                fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              "
+              if ! npx tauri build --bundles dmg,app --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee -a tauri-build-macos.log; then
+                tail -n 100 tauri-build-macos.log || true
+                exit 1
+              fi
+            else
+              tail -n 100 tauri-build-macos.log || true
+              exit 1
+            fi
+          fi
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-macos
+          path: tauri-build-macos.log
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-macos
+          path: |
+            src-tauri/target/release/bundle/dmg/*.dmg
+            src-tauri/target/release/bundle/updater/*.tar.gz*
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------------
+  # Linux Build (.deb and .AppImage)
+  # --------------------------------------------------------------------------
+  build-linux:
+    name: Build Linux (.deb, .AppImage)
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.release_tag }}
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libssl-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            pkg-config \
+            libsoup-3.0-dev \
+            javascriptcoregtk-4.1 \
+            libjavascriptcoregtk-4.1-dev \
+            libnm-dev \
+            xdg-utils
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline
+
+      - name: Sync version from release tag & optimize build speed
+        shell: bash
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag }}"
+          TARGET_VER="${TARGET_VER#v}"
+          if [ -n "$TARGET_VER" ]; then
+            echo "Synchronizing project versions to $TARGET_VER"
+            node -e "
+              const fs = require('fs');
+              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
+                if (fs.existsSync(f)) {
+                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
+                  d.version = '$TARGET_VER';
+                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
+                }
+              });
+            "
+            if [ -f src-tauri/Cargo.toml ]; then
+              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
+            fi
+            if [ -f src-tauri/Cargo.lock ]; then
+              sed -i.bak -E '/name = "antigravity-shield"/{n;s/version = "[0-9]+\.[0-9]+\.[0-9]+.*"/version = "'"$TARGET_VER"'"/;}' src-tauri/Cargo.lock && rm -f src-tauri/Cargo.lock.bak
+            fi
+          fi
+          node -e "
+            const fs = require('fs');
+            const p = 'src-tauri/tauri.conf.json';
+            if (fs.existsSync(p)) {
+              const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+              if (c.build) c.build.beforeBuildCommand = 'npx vite build';
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Optimized beforeBuildCommand to npx vite build');
+            }
+          "
+
+      - name: Configure updater signing key
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = 'src-tauri/tauri.conf.json';
+          if (fs.existsSync(p)) {
+            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+            const rawKey = process.env.TAURI_SIGNING_PRIVATE_KEY || '';
+            const cleanKey = rawKey.replace(/[\r\n\s]/g, '');
+            if (!cleanKey) {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('No signing key: disabled createUpdaterArtifacts');
+            } else {
+              if (c.bundle) c.bundle.createUpdaterArtifacts = true;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              console.log('Signing key detected: enabled createUpdaterArtifacts');
+            }
+          }
+          "
+
+      - name: Build Linux packages
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          # Sanitize private key by removing all whitespace and newlines
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            CLEAN_KEY=$(echo "$TAURI_SIGNING_PRIVATE_KEY" | tr -d '\r\n[:space:]')
+            export TAURI_SIGNING_PRIVATE_KEY="$CLEAN_KEY"
+          fi
+
+          if ! npx tauri build --bundles deb,appimage --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-linux.log; then
+            echo "::warning::Initial Linux build failed. Checking if caused by signing key issue..."
+            tail -n 80 tauri-build-linux.log || true
+            if grep -qiE "signature|minisign|private key|key mismatch|symbol 10|decode base64" tauri-build-linux.log; then
+              echo "::warning::Signing error detected. Retrying build with createUpdaterArtifacts disabled as fallback..."
+              node -e "
+                const fs = require('fs');
+                const p = 'src-tauri/tauri.conf.json';
+                const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+                fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              "
+              if ! npx tauri build --bundles deb,appimage --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee -a tauri-build-linux.log; then
+                tail -n 100 tauri-build-linux.log || true
+                exit 1
+              fi
+            else
+              tail -n 100 tauri-build-linux.log || true
+              exit 1
+            fi
+          fi
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-linux
+          path: tauri-build-linux.log
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets-linux
+          path: |
+            src-tauri/target/release/bundle/deb/*.deb
+            src-tauri/target/release/bundle/appimage/*.AppImage
+            src-tauri/target/release/bundle/updater/*.tar.gz*
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------------
+  # Publish Unix Artifacts to Existing GitHub Release
+  # --------------------------------------------------------------------------
+  publish-unix:
+    name: Attach macOS & Linux to Release
+    needs: [build-macos, build-linux]
+    if: always() && !cancelled() && (needs.build-macos.result == 'success' || needs.build-linux.result == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-artifacts
+
+      - name: Update updater.json and collect release files
+        env:
+          VERSION: ${{ github.event.inputs.release_tag }}
+          REPO: ${{ github.repository }}
+        run: |
+          DOWNLOAD_BASE="https://github.com/${REPO}/releases/download/${VERSION}"
+          VER="${VERSION#v}"
+
+          read_sig() {
+            local pattern="$1"
+            local sig_file
+            sig_file=$(find all-artifacts -name "$pattern" -type f 2>/dev/null | head -1)
+            if [ -n "$sig_file" ] && [ -f "$sig_file" ]; then
+              cat "$sig_file"
+            else
+              echo ""
+            fi
+          }
+
+          # Fetch existing updater.json from the release if present
+          mkdir -p release-files
+          if curl -fsSL "$DOWNLOAD_BASE/updater.json" -o existing_updater.json 2>/dev/null; then
+            echo "Fetched existing updater.json from release $VERSION"
+            UPDATER_JSON=$(cat existing_updater.json)
+          else
+            echo "No existing updater.json found. Creating base schema."
+            UPDATER_JSON=$(jq -n \
+              --arg version "$VER" \
+              --arg notes "Antigravity Shield $VERSION release" \
+              --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              '{ version: $version, notes: $notes, pub_date: $pub_date, platforms: {} }')
+          fi
+
+          # Add macOS platform if artifacts and signature exist
+          MAC_SIG=$(read_sig "*.app.tar.gz.sig")
+          MAC_TAR=$(find all-artifacts -name "*.app.tar.gz" -type f -exec basename {} \; 2>/dev/null | head -1)
+          if [ -n "$MAC_SIG" ] && [ -n "$MAC_TAR" ]; then
+            MAC_TAR_CLEAN="${MAC_TAR// /.}"
+            UPDATER_JSON=$(echo "$UPDATER_JSON" | jq \
+              --arg dl "$DOWNLOAD_BASE" \
+              --arg mac_tar "$MAC_TAR_CLEAN" \
+              --arg mac_sig "$MAC_SIG" \
+              '.platforms["darwin-aarch64"] = { url: "\($dl)/\($mac_tar)", signature: $mac_sig } |
+               .platforms["darwin-x86_64"] = { url: "\($dl)/\($mac_tar)", signature: $mac_sig }')
+          fi
+
+          # Add Linux platform if artifacts and signature exist
+          LINUX_SIG=$(read_sig "*.AppImage.tar.gz.sig")
+          LINUX_TAR=$(find all-artifacts -name "*.AppImage.tar.gz" -type f -exec basename {} \; 2>/dev/null | head -1)
+          if [ -n "$LINUX_SIG" ] && [ -n "$LINUX_TAR" ]; then
+            LINUX_TAR_CLEAN="${LINUX_TAR// /.}"
+            UPDATER_JSON=$(echo "$UPDATER_JSON" | jq \
+              --arg dl "$DOWNLOAD_BASE" \
+              --arg linux_tar "$LINUX_TAR_CLEAN" \
+              --arg linux_sig "$LINUX_SIG" \
+              '.platforms["linux-x86_64"] = { url: "\($dl)/\($linux_tar)", signature: $linux_sig }')
+          fi
+
+          echo "$UPDATER_JSON" > release-files/updater.json
+          echo "Updated updater.json:"
+          cat release-files/updater.json
+
+          # Copy binaries
+          find all-artifacts -type f \( \
+            -name "*.dmg" -o \
+            -name "*.AppImage" -o \
+            -name "*.deb" -o \
+            -name "*.tar.gz" -o \
+            -name "*.sig" \
+          \) -print0 | while IFS= read -r -d '' file; do
+            base=$(basename "$file")
+            clean_base="${base// /.}"
+            cp "$file" "release-files/$clean_base"
+          done
+
+          echo "Files to attach to release $VERSION:"
+          find release-files -maxdepth 1 -type f -print
+
+      - name: Attach Artifacts to GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          tag: ${{ github.event.inputs.release_tag }}
+          name: "${{ github.event.inputs.release_tag }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "release-files/*"
+          artifactErrorsFailBuild: false
+          replacesArtifacts: true
