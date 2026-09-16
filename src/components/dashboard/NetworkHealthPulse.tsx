@@ -154,7 +154,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         <div>
                             <div className="flex items-center gap-2">
                                 <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
-                                    {t('dashboard.health_pulse.title', 'پایش سلامت اینترنت و هوش مصنوعی جمینای')}
+                                    {t('dashboard.health_pulse.title', 'Internet & Gemini AI Health Pulse')}
                                 </h3>
                                 {/* بج وضعیت */}
                                 {pulse && (
@@ -172,15 +172,15 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                                 ? 'bg-amber-500'
                                                 : 'bg-rose-500'
                                         }`} />
-                                        {pulse.overall_status === 'healthy' && t('dashboard.health_pulse.status_healthy', 'آماده و پایدار')}
-                                        {pulse.overall_status === 'region_blocked' && t('dashboard.health_pulse.status_region', 'تحریم ریجن گوگل')}
-                                        {pulse.overall_status === 'filtered' && t('dashboard.health_pulse.status_filtered', 'مسدود / نیاز به فیلترشکن')}
-                                        {pulse.overall_status === 'offline' && t('dashboard.health_pulse.status_offline', 'اینترنت قطع است')}
+                                        {pulse.overall_status === 'healthy' && t('dashboard.health_pulse.status_healthy', 'Healthy & Ready')}
+                                        {pulse.overall_status === 'region_blocked' && t('dashboard.health_pulse.status_region', 'Region Unsupported')}
+                                        {pulse.overall_status === 'filtered' && t('dashboard.health_pulse.status_filtered', 'Blocked / VPN Required')}
+                                        {pulse.overall_status === 'offline' && t('dashboard.health_pulse.status_offline', 'Internet Disconnected')}
                                     </span>
                                 )}
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                {t('dashboard.health_pulse.subtitle', 'سنجش زندهٔ دسترسی به شبکه، گوگل و سرورهای هوش مصنوعی CloudCode')}
+                                {t('dashboard.health_pulse.subtitle', 'Real-time diagnostic probe for physical network, Google reachability, and Gemini AI endpoints')}
                             </p>
                         </div>
                     </div>
@@ -190,10 +190,10 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         <button
                             onClick={() => setShowWarpModal(true)}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-xs font-bold transition-all border border-amber-200 dark:border-amber-800/40 active:scale-95"
-                            title={t('dashboard.health_pulse.warp_guide_tooltip', 'راهنمای حل مشکل ریجن با Cloudflare WARP')}
+                            title={t('dashboard.health_pulse.warp_guide_tooltip', 'Guide to bypass Google region restrictions with Cloudflare WARP')}
                         >
                             <Globe size={13} className="text-amber-600 dark:text-amber-400" />
-                            <span>{t('dashboard.health_pulse.warp_btn', 'حل تحریم ریجن')}</span>
+                            <span>{t('dashboard.health_pulse.warp_btn', 'Fix Region Sanctions')}</span>
                         </button>
 
                         <button
@@ -202,7 +202,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-base-200 hover:bg-slate-100 dark:hover:bg-base-300 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all border border-slate-200 dark:border-slate-700 active:scale-95 shadow-xs disabled:opacity-50"
                         >
                             <RefreshCw size={13} className={loading ? 'animate-spin text-blue-600' : ''} />
-                            <span>{loading ? t('common.loading', 'درحال بررسی...') : t('dashboard.health_pulse.retest', 'تست مجدد')}</span>
+                            <span>{loading ? t('common.loading', 'Loading...') : t('dashboard.health_pulse.retest', 'Re-test')}</span>
                         </button>
                     </div>
                 </div>
@@ -221,7 +221,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                    {t('dashboard.health_pulse.node_net', 'اینترنت فیزیکی')}
+                                    {t('dashboard.health_pulse.node_net', 'Physical Internet')}
                                 </span>
                                 {pulse && (
                                     pulse.internet_ok 
@@ -230,7 +230,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                 )}
                             </div>
                             <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                                {pulse?.internet_ok ? t('dashboard.health_pulse.net_ok', 'اتصال شبکه برقرار است') : t('dashboard.health_pulse.net_fail', 'قطع یا بدون سیگنال')}
+                                {pulse?.internet_ok ? t('dashboard.health_pulse.net_ok', 'Network is connected') : t('dashboard.health_pulse.net_fail', 'No network connection')}
                             </span>
                         </div>
                     </div>
@@ -247,7 +247,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                    {t('dashboard.health_pulse.node_google', 'دسترسی به گوگل')}
+                                    {t('dashboard.health_pulse.node_google', 'Google Reachability')}
                                 </span>
                                 {pulse && (
                                     pulse.google_ok 
@@ -256,7 +256,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                 )}
                             </div>
                             <span className="text-[11px] text-gray-500 dark:text-gray-400">
-                                {pulse?.google_ok ? t('dashboard.health_pulse.google_ok', 'سرورهای گوگل باز می‌شوند') : t('dashboard.health_pulse.google_fail', 'مسدود / نیاز به پروکسی')}
+                                {pulse?.google_ok ? t('dashboard.health_pulse.google_ok', 'Google servers are reachable') : t('dashboard.health_pulse.google_fail', 'Blocked / Proxy required')}
                             </span>
                         </div>
                     </div>
@@ -275,7 +275,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                                 <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                    {t('dashboard.health_pulse.node_gemini', 'هوش مصنوعی جمینای')}
+                                    {t('dashboard.health_pulse.node_gemini', 'Gemini AI Core')}
                                 </span>
                                 {pulse && (
                                     pulse.overall_status === 'healthy'
@@ -287,10 +287,10 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             </div>
                             <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
                                 <span>
-                                    {pulse?.overall_status === 'healthy' && t('dashboard.health_pulse.gemini_ok', 'موتور و وب کاملاً فعال')}
-                                    {pulse?.overall_status === 'region_blocked' && t('dashboard.health_pulse.gemini_region', 'ریجن و کشور تحریم است')}
-                                    {pulse?.overall_status === 'filtered' && t('dashboard.health_pulse.gemini_fail', 'غیرقابل دسترسی')}
-                                    {pulse?.overall_status === 'offline' && t('dashboard.health_pulse.gemini_offline', 'شبکه قطع است')}
+                                    {pulse?.overall_status === 'healthy' && t('dashboard.health_pulse.gemini_ok', 'CloudCode & Web fully active')}
+                                    {pulse?.overall_status === 'region_blocked' && t('dashboard.health_pulse.gemini_region', 'Region is restricted')}
+                                    {pulse?.overall_status === 'filtered' && t('dashboard.health_pulse.gemini_fail', 'Unreachable')}
+                                    {pulse?.overall_status === 'offline' && t('dashboard.health_pulse.gemini_offline', 'Network is offline')}
                                 </span>
                                 {pulse?.latency_ms && (
                                     <span className="font-mono text-[10px] text-blue-600 dark:text-blue-400 font-semibold">
@@ -312,10 +312,10 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                     <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                                     <div className="space-y-1 text-xs">
                                         <div className="font-bold">
-                                            {t('dashboard.health_pulse.region_alert_title', 'اتصال شبکه برقرار است، اما موقعیت مکانی شما در جمینای تحریم است!')}
+                                            {t('dashboard.health_pulse.region_alert_title', 'Network is connected, but Gemini AI has restricted your region!')}
                                         </div>
                                         <p className="text-amber-700 dark:text-amber-300 leading-relaxed text-[11px]">
-                                            {t('dashboard.health_pulse.region_alert_desc', 'فیلترشکن شما به سرورهای گوگل وصل است اما آی‌پی شما توسط گوگل به عنوان کشور پشتیبانی‌نشده (Gemini isn\'t currently supported in your country / User location is not supported) شناسایی شده است.')}
+                                            {t('dashboard.health_pulse.region_alert_desc', "Your proxy connects to Google, but your IP has been flagged as an unsupported region (Gemini isn't currently supported in your country / User location is not supported).")}
                                         </p>
                                     </div>
                                 </div>
@@ -327,7 +327,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                         className="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
                                     >
                                         <Globe size={14} />
-                                        <span>{t('dashboard.health_pulse.fix_warp_btn', 'حل مشکل با Cloudflare WARP')}</span>
+                                        <span>{t('dashboard.health_pulse.fix_warp_btn', 'Fix Region with Cloudflare WARP')}</span>
                                     </button>
 
                                     {bestLocalProxy && (
@@ -338,7 +338,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                         >
                                             <Zap size={14} className="text-amber-600" />
                                             <span>
-                                                {t('dashboard.health_pulse.apply_local_proxy', 'تغییر خروجی IDE به پورت محلی')} ({bestLocalProxy.port})
+                                                {t('dashboard.health_pulse.apply_local_proxy', 'Route IDE traffic to local proxy')} ({bestLocalProxy.port})
                                             </span>
                                         </button>
                                     )}
@@ -348,7 +348,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                             onClick={onOpenProxySettings}
                                             className="px-3 py-2 rounded-xl text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-xs font-semibold transition-all"
                                         >
-                                            {t('dashboard.health_pulse.proxy_settings', 'تنظیمات پیشرفته پروکسی')}
+                                            {t('dashboard.health_pulse.proxy_settings', 'Advanced Proxy Settings')}
                                         </button>
                                     )}
                                 </div>
@@ -362,10 +362,10 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                     <AlertCircle size={18} className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
                                     <div className="space-y-1 text-xs">
                                         <div className="font-bold">
-                                            {t('dashboard.health_pulse.filtered_alert_title', 'امکان برقراری ارتباط با گوگل و هوش مصنوعی وجود ندارد')}
+                                            {t('dashboard.health_pulse.filtered_alert_title', 'Cannot reach Google and Gemini AI servers')}
                                         </div>
                                         <p className="text-rose-700 dark:text-rose-300 leading-relaxed text-[11px]">
-                                            {t('dashboard.health_pulse.filtered_alert_desc', 'سرورهای گوگل در شبکه شما مسدود یا فیلتر هستند. برای استفاده از Antigravity IDE فیلترشکن خود را روشن کنید.')}
+                                            {t('dashboard.health_pulse.filtered_alert_desc', 'Google servers are blocked on your current network. Please turn on your VPN to use Antigravity IDE.')}
                                         </p>
                                     </div>
                                 </div>
@@ -382,8 +382,8 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                             <Play size={13} className="fill-current" />
                                             <span>
                                                 {vpn.is_running 
-                                                    ? `${t('dashboard.health_pulse.vpn_running', 'باز کردن')} ${vpn.name}`
-                                                    : `${t('dashboard.health_pulse.vpn_launch', 'اجرای')} ${vpn.name}`}
+                                                    ? `${t('dashboard.health_pulse.vpn_running', 'Switch to')} ${vpn.name}`
+                                                    : `${t('dashboard.health_pulse.vpn_launch', 'Launch')} ${vpn.name}`}
                                             </span>
                                         </button>
                                     ))}
@@ -395,7 +395,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                             className="px-3.5 py-2 rounded-xl bg-white dark:bg-base-100 hover:bg-slate-100 text-gray-800 dark:text-gray-200 border border-slate-300 dark:border-slate-700 font-bold text-xs transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
                                         >
                                             <Zap size={14} className="text-blue-600" />
-                                            <span>{t('dashboard.health_pulse.apply_found_proxy', 'اتصال به پروکسی فعال')} ({bestLocalProxy.client_hint})</span>
+                                            <span>{t('dashboard.health_pulse.apply_found_proxy', 'Connect to active proxy')} ({bestLocalProxy.client_hint})</span>
                                         </button>
                                     )}
                                 </div>
@@ -407,9 +407,9 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             <div className="p-4 rounded-xl bg-gray-100/90 dark:bg-slate-900/80 border border-gray-200 dark:border-slate-800 text-gray-800 dark:text-gray-200 flex items-center gap-3 text-xs">
                                 <XCircle size={20} className="text-gray-500 shrink-0" />
                                 <div>
-                                    <div className="font-bold">{t('dashboard.health_pulse.offline_title', 'اینترنت فیزیکی سیستم قطع است')}</div>
+                                    <div className="font-bold">{t('dashboard.health_pulse.offline_title', 'Local network is disconnected')}</div>
                                     <p className="text-gray-500 dark:text-gray-400 text-[11px] mt-0.5">
-                                        {t('dashboard.health_pulse.offline_desc', 'لطفاً کابل شبکه یا اتصال Wi-Fi را بررسی نمایید.')}
+                                        {t('dashboard.health_pulse.offline_desc', 'Please check your network cable or Wi-Fi connection.')}
                                     </p>
                                 </div>
                             </div>
@@ -421,7 +421,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                 <div className="flex items-center gap-2">
                                     <ShieldCheck size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                                     <span className="font-medium text-[12px]">
-                                        {t('dashboard.health_pulse.all_systems_go', 'تمام سیستم‌ها متصل و آمادهٔ کدنویسی با هوش مصنوعی هستند.')}
+                                        {t('dashboard.health_pulse.all_systems_go', 'All systems connected and ready for AI coding.')}
                                     </span>
                                 </div>
                                 {pulse.active_proxy_url && (
@@ -435,18 +435,18 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                 )}
             </div>
 
-            {/* مودال راهنمای جامع WARP جهت حل مشکل ریجن */}
+            {/* WARP Guide Modal to resolve region blocks */}
             {showWarpModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-2xl max-w-xl w-full overflow-hidden text-right">
-                        {/* هدر مودال */}
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-2xl max-w-xl w-full overflow-hidden">
+                        {/* Modal Header */}
                         <div className="px-6 py-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-950/30 dark:to-orange-950/30 border-b border-gray-100 dark:border-slate-800/80 flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
                                 <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                                     <Globe size={18} />
                                 </div>
                                 <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">
-                                    {t('dashboard.health_pulse.warp_modal_title', 'حل تضمینی مشکل تحریم ریجن گوگل جمینای با WARP')}
+                                    {t('dashboard.health_pulse.warp_modal_title', 'Guaranteed Solution for Gemini Region Sanctions with WARP')}
                                 </h3>
                             </div>
                             <button
@@ -457,22 +457,22 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             </button>
                         </div>
 
-                        {/* بدنه مودال */}
+                        {/* Modal Body */}
                         <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
                             <div className="p-3.5 bg-amber-50 dark:bg-amber-950/20 rounded-2xl border border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-300 text-[11px]">
-                                {t('dashboard.health_pulse.warp_modal_hint', 'گوگل اتصال آی‌پی‌های ایران و برخی دیتاسنترها به جمینای را تحریم کرده است. کلودفلر WARP با ارائه آی‌پی تمیز و اختصاصی مسأله ارور ۴۰۰ و «Gemini isn\'t currently supported in your country» را به‌طور کامل رفع می‌کند.')}
+                                {t('dashboard.health_pulse.warp_modal_hint', "Google restricts certain IPs from accessing Gemini. Cloudflare WARP provides clean IPs, eliminating HTTP 400 and 'Gemini isn't currently supported in your country' errors.")}
                             </div>
 
-                            {/* روش ۱: پورت 40000 وارپ رسمی */}
+                            {/* Method 1: Cloudflare WARP Official Client */}
                             <div className="p-4 rounded-2xl border border-gray-200 dark:border-slate-800 space-y-2.5 bg-gray-50/50 dark:bg-slate-800/40">
                                 <div className="font-bold text-gray-900 dark:text-gray-100 flex items-center justify-between text-xs">
-                                    <span>روش ۱: نرم‌افزار رسمی Cloudflare WARP (ساده‌ترین روش)</span>
+                                    <span>{t('proxy.no_tun.warp_modal.method1_title', 'Method 1: Cloudflare WARP Official Client (Recommended)')}</span>
                                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
-                                        توصیه‌شده
+                                        {t('proxy.no_tun.warp_modal.recommended', 'Recommended')}
                                     </span>
                                 </div>
                                 <p className="text-[11px] text-gray-600 dark:text-gray-400">
-                                    نرم‌افزار رسمی Cloudflare WARP را اجرا کنید و در تنظیمات آن حالت Proxy Mode را انتخاب کنید (به طور خودکار روی پورت 40000 باز می‌شود):
+                                    {t('proxy.no_tun.warp_modal.method1_desc', 'Install the official Cloudflare WARP client and set it to Proxy Mode in settings (listens on default port 40000). Then click below:')}
                                 </p>
                                 <div className="pt-1 flex gap-2">
                                     <button
@@ -483,18 +483,18 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                         className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
                                     >
                                         <Zap size={13} />
-                                        <span>ست کردن پورت 40000 (WARP Local) و اتصال</span>
+                                        <span>{t('dashboard.health_pulse.warp_connect_btn', 'Set Port 40000 (WARP Local) & Connect')}</span>
                                     </button>
                                 </div>
                             </div>
 
-                            {/* روش ۲: روتینگ وارپ در V2Ray */}
+                            {/* Method 2: WARP routing in V2Ray / Xray */}
                             <div className="p-4 rounded-2xl border border-gray-200 dark:border-slate-800 space-y-2.5 bg-gray-50/50 dark:bg-slate-800/40">
                                 <div className="font-bold text-gray-900 dark:text-gray-100 text-xs">
-                                    روش ۲: عبور دامنه گوگل از WARP در V2Ray / Xray
+                                    {t('proxy.no_tun.warp_modal.method2_title', 'Method 2: Enable WARP on Server / V2Ray Client (Xray Outbound)')}
                                 </div>
                                 <p className="text-[11px] text-gray-600 dark:text-gray-400">
-                                    می‌توانید روتینگ زیر را به کلاینت V2Ray خود اضافه کنید تا ترافیک جمینای با WARP هدایت شود:
+                                    {t('proxy.no_tun.warp_modal.method2_desc', 'If you use a VPS or Marzban/Sanaei panel, route googleapis.com traffic through WARP. You can also add the following rule to your client routing:')}
                                 </p>
                                 <div className="relative">
                                     <pre className="p-3 bg-gray-900 text-emerald-400 rounded-xl font-mono text-[11px] overflow-x-auto select-all dir-ltr text-left">
@@ -516,19 +516,19 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                         className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-white text-[10px] font-mono flex items-center gap-1 transition-all border border-gray-700"
                                     >
                                         {copiedSnippet ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
-                                        {copiedSnippet ? 'کپی شد' : 'کپی'}
+                                        {copiedSnippet ? t('proxy.no_tun.warp_modal.copied', 'Copied') : t('proxy.no_tun.warp_modal.copy', 'Copy')}
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        {/* فوتر مودال */}
+                        {/* Modal Footer */}
                         <div className="px-6 py-3.5 bg-gray-50 dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800/80 flex items-center justify-end">
                             <button
                                 onClick={() => setShowWarpModal(false)}
                                 className="px-5 py-2 rounded-xl bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all active:scale-95"
                             >
-                                بستن
+                                {t('common.close', 'Close')}
                             </button>
                         </div>
                     </div>
