@@ -214,7 +214,7 @@ pub async fn handle_warmup(
             let status_code = status.as_u16();
 
             // 彻底读取响应体，确保上游连接完成并计费
-            let _ = response.bytes().await;
+            let resp_bytes = response.bytes().await.unwrap_or_default();
 
             // 记录预热请求到流量日志
             let log = ProxyRequestLog {
@@ -261,7 +261,7 @@ pub async fn handle_warmup(
                 )
                     .into_response()
             } else {
-                let error_text = response.text().await.unwrap_or_default();
+                let error_text = String::from_utf8_lossy(&resp_bytes).to_string();
 
                 // [FIX] 预热阶段检测到 403 时，标记账号为 forbidden，避免无效账号继续参与轮询
                 // 如果 account_id 为空（直接传入 access_token 的场景），通过 email 从索引中找到 ID
