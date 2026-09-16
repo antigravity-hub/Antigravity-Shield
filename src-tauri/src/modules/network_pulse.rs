@@ -25,6 +25,8 @@ pub struct NetworkPulseResult {
     pub latency_ms: Option<u64>,
     /// آدرس پروکسی فعال روی سیستم یا ورودی کاربر
     pub active_proxy_url: Option<String>,
+    /// آیا مسیر ترافیک به صورت مستقیم و بدون نیاز به پروکسی لوکال (TUN Mode) برقرار است؟
+    pub is_tun_active: bool,
     /// پروکسی‌های محلی باز و در حال گوش‌دادن (مانند 10808 یا 7890)
     pub discovered_proxies: Vec<crate::modules::proxy_scanner::DiscoveredProxy>,
     /// لیست فیلترشکن‌های شناخته‌شده روی سیستم کاربر (وضعیت اجرا و مسیر فایل)
@@ -169,7 +171,7 @@ pub fn detect_installed_vpns() -> Vec<InstalledVpnInfo> {
     results
 }
 
-/// اجرای مستقیم یک فیلترشکن توسط کاربر
+/// اجرای مستقیم یک فیلترشکن توسط کاربر (با پشتیبانی از UAC Elevation در ویندوز)
 pub fn launch_vpn_executable(exe_path: &str) -> Result<String, String> {
     let path = Path::new(exe_path);
     if !path.exists() {
@@ -184,11 +186,35 @@ pub fn launch_vpn_executable(exe_path: &str) -> Result<String, String> {
         const CREATE_NO_WINDOW: u32 = 0x08000000;
         const DETACHED_PROCESS: u32 = 0x00000008;
 
-        std::process::Command::new(path)
+        let spawn_res = std::process::Command::new(path)
             .current_dir(parent_dir)
             .creation_flags(DETACHED_PROCESS)
-            .spawn()
-            .map_err(|e| format!("خطا در اجرای برنامه: {}", e))?;
+            .spawn();
+
+        match spawn_res {
+            Ok(_) => Ok("نرم‌افزار با موفقیت اجرا شد.".to_string()),
+            Err(e) => {
+                // اگر خطای ۷۴۰ (نیاز به دسترسی Administrator) رخ داد، درخواست دیالوگ UAC با RunAs
+                if e.raw_os_error() == Some(740) {
+                    let ps_cmd = format!(
+                        "Start-Process -FilePath '{}' -WorkingDirectory '{}' -Verb RunAs",
+                        path.display(),
+                        parent_dir.display()
+                    );
+                    let fallback = std::process::Command::new("powershell")
+                        .args(["-NoProfile", "-WindowStyle", "Hidden", "-Command", &ps_cmd])
+                        .creation_flags(CREATE_NO_WINDOW)
+                        .spawn();
+
+                    match fallback {
+                        Ok(_) => Ok("درخواست دسترسی مدیر (UAC) ارسال شد. لطفاً در پنجره ویندوز تأیید کنید.".to_string()),
+                        Err(fe) => Err(format!("خطا در درخواست دسترسی مدیر: {}", fe)),
+                    }
+                } else {
+                    Err(format!("خطا در اجرای برنامه: {}", e))
+                }
+            }
+        }
     }
 
     #[cfg(not(target_os = "windows"))]
@@ -197,36 +223,23 @@ pub fn launch_vpn_executable(exe_path: &str) -> Result<String, String> {
             .current_dir(parent_dir)
             .spawn()
             .map_err(|e| format!("خطا در اجرای برنامه: {}", e))?;
+        Ok("نرم‌افزار با موفقیت اجرا شد.".to_string())
     }
-
-    Ok("نرم‌افزار با موفقیت اجرا شد.".to_string())
 }
 
-/// پروب پیشرفته سلامت شبکه، فیلترینگ و تحریم ریجن هوش مصنوعی جمینای
-pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseResult {
-    let proxy_url_opt = custom_proxy.or_else(|| {
-        // اگر کاربر پروکسی نداده، بررسی تنظیمات شیلد
-        crate::modules::config::load_app_config()
-            .ok()
-            .filter(|c| {
-                c.proxy.upstream_proxy.enabled && !c.proxy.upstream_proxy.url.trim().is_empty()
-            })
-            .map(|c| c.proxy.upstream_proxy.url)
-    });
+struct ProbeOutput {
+    internet_ok: bool,
+    google_ok: bool,
+    api_ok: bool,
+    api_region_blocked: bool,
+    latency_ms: Option<u64>,
+    api_err: Option<String>,
+    web_ok: bool,
+    web_region_blocked: bool,
+    web_err: Option<String>,
+}
 
-    let timeout_duration = Duration::from_secs(4);
-
-    // ساخت کلاینت HTTP با یا بدون پروکسی
-    let client = {
-        let mut builder = rquest::Client::builder().timeout(timeout_duration);
-        if let Some(ref p_url) = proxy_url_opt {
-            if let Ok(proxy) = rquest::Proxy::all(p_url) {
-                builder = builder.proxy(proxy);
-            }
-        }
-        builder.build().unwrap_or_else(|_| rquest::Client::new())
-    };
-
+async fn execute_probe(client: rquest::Client) -> ProbeOutput {
     // ۱. تست اینترنت عمومی با اتصال فوق‌سریع 204
     let internet_future = {
         let c = client.clone();
@@ -264,7 +277,6 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
                     let status = resp.status().as_u16();
                     let text = resp.text().await.unwrap_or_default();
 
-                    // اگر استاتوس 400 باشد و شامل ارور لوکیشن باشد
                     let is_region = status == 400
                         && (text.contains("User location is not supported")
                             || text.contains("FAILED_PRECONDITION"));
@@ -275,10 +287,7 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
                         is_region,
                         Some(latency),
                         if is_region {
-                            Some(
-                                "CloudCode API: User location is not supported (HTTP 400)"
-                                    .to_string(),
-                            )
+                            Some("CloudCode API: User location is not supported (HTTP 400)".to_string())
                         } else {
                             None
                         },
@@ -318,10 +327,7 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
                         !is_region,
                         is_region,
                         if is_region {
-                            Some(
-                                "Gemini Web: Gemini isn't currently supported in your country"
-                                    .to_string(),
-                            )
+                            Some("Gemini Web: Gemini isn't currently supported in your country".to_string())
                         } else {
                             None
                         },
@@ -332,7 +338,6 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
         }
     };
 
-    // اجرای موازی هر ۴ تست
     let (internet_ok, google_ok, api_result, web_result) = tokio::join!(
         internet_future,
         google_future,
@@ -343,10 +348,72 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
     let (_api_reachable, api_ok, api_region_blocked, latency_ms, api_err) = api_result;
     let (_web_reachable, web_ok, web_region_blocked, web_err) = web_result;
 
-    // تشخیص قطعی تحریم ریجن
-    let is_region_blocked = api_region_blocked || web_region_blocked;
+    ProbeOutput {
+        internet_ok,
+        google_ok,
+        api_ok,
+        api_region_blocked,
+        latency_ms,
+        api_err,
+        web_ok,
+        web_region_blocked,
+        web_err,
+    }
+}
+
+/// پروب پیشرفته سلامت شبکه، فیلترینگ و تحریم ریجن هوش مصنوعی جمینای
+pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseResult {
+    let proxy_url_opt = custom_proxy.or_else(|| {
+        crate::modules::config::load_app_config()
+            .ok()
+            .filter(|c| {
+                c.proxy.upstream_proxy.enabled && !c.proxy.upstream_proxy.url.trim().is_empty()
+            })
+            .map(|c| c.proxy.upstream_proxy.url)
+    });
+
+    let timeout_duration = Duration::from_secs(6);
+
+    // ۱. کلاینت مستقیم برای تست وضعیت TUN
+    let direct_client = rquest::Client::builder()
+        .timeout(timeout_duration)
+        .build()
+        .unwrap_or_else(|_| rquest::Client::new());
+
+    let mut is_tun_active = false;
+    let probe_res;
+
+    if let Some(ref p_url) = proxy_url_opt {
+        let mut builder = rquest::Client::builder().timeout(timeout_duration);
+        if let Ok(proxy) = rquest::Proxy::all(p_url) {
+            builder = builder.proxy(proxy);
+        }
+        let proxy_client = builder.build().unwrap_or_else(|_| rquest::Client::new());
+
+        let initial_probe = execute_probe(proxy_client).await;
+
+        // اگر با پروکسی گوگل در دسترس نبود، اتصال مستقیم (TUN) را بررسی می‌کنیم
+        if !initial_probe.google_ok {
+            let direct_probe = execute_probe(direct_client).await;
+            if direct_probe.google_ok {
+                probe_res = direct_probe;
+                is_tun_active = true;
+            } else {
+                probe_res = initial_probe;
+            }
+        } else {
+            probe_res = initial_probe;
+        }
+    } else {
+        probe_res = execute_probe(direct_client).await;
+        if probe_res.google_ok {
+            is_tun_active = true;
+        }
+    }
+
+    let is_region_blocked = probe_res.api_region_blocked || probe_res.web_region_blocked;
     let region_error_message = if is_region_blocked {
-        api_err.or(web_err).or(Some(
+        probe_res.api_err.or(probe_res.web_err).or(Some(
             "Google Gemini: Region/Country not supported.".to_string(),
         ))
     } else {
@@ -354,13 +421,13 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
     };
 
     // تشخیص وضعیت کلی
-    let overall_status = if !internet_ok && !google_ok {
+    let overall_status = if !probe_res.internet_ok && !probe_res.google_ok {
         "offline".to_string()
-    } else if !google_ok {
+    } else if !probe_res.google_ok {
         "filtered".to_string()
     } else if is_region_blocked {
         "region_blocked".to_string()
-    } else if api_ok || web_ok {
+    } else if probe_res.api_ok || probe_res.web_ok {
         "healthy".to_string()
     } else {
         "filtered".to_string()
@@ -371,15 +438,16 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
     let installed_vpns = detect_installed_vpns();
 
     NetworkPulseResult {
-        internet_ok,
-        google_ok,
-        gemini_api_ok: api_ok,
-        gemini_web_ok: web_ok,
+        internet_ok: probe_res.internet_ok,
+        google_ok: probe_res.google_ok,
+        gemini_api_ok: probe_res.api_ok,
+        gemini_web_ok: probe_res.web_ok,
         is_region_blocked,
         region_error_message,
         overall_status,
-        latency_ms,
+        latency_ms: probe_res.latency_ms,
         active_proxy_url: proxy_url_opt,
+        is_tun_active,
         discovered_proxies,
         installed_vpns,
     }

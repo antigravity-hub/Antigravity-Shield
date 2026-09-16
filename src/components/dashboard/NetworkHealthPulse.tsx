@@ -49,6 +49,7 @@ export interface NetworkPulseResult {
     overall_status: 'healthy' | 'region_blocked' | 'filtered' | 'offline';
     latency_ms?: number;
     active_proxy_url?: string;
+    is_tun_active?: boolean;
     discovered_proxies: DiscoveredProxy[];
     installed_vpns: InstalledVpnInfo[];
 }
@@ -90,6 +91,10 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
     // اجرای مستقیم فایل فیلترشکن
     const handleLaunchVpn = async (vpn: InstalledVpnInfo) => {
         if (!vpn.executable_path) return;
+        if (vpn.is_running) {
+            showToast(t('dashboard.health_pulse.vpn_already_running', `${vpn.name} در حال حاضر فعال و در حال اجرا است.`), 'info');
+            return;
+        }
         setLaunchingVpnId(vpn.id);
         try {
             const msg = await invoke<string>('launch_vpn_client', { exePath: vpn.executable_path });
@@ -115,6 +120,22 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
             });
             showToast(msg, 'success');
             await runNetworkProbe(proxyUrl);
+        } catch (err) {
+            showToast(`${t('common.error')}: ${err}`, 'error');
+        } finally {
+            setIsApplyingProxy(false);
+        }
+    };
+
+    // حذف پروکسی محلی و بازگشت به حالت مستقیم / TUN Mode
+    const handleRemoveLocalProxy = async () => {
+        setIsApplyingProxy(true);
+        try {
+            const msg = await invoke<string>('remove_antigravity_proxy', {
+                disableShieldUpstream: true
+            });
+            showToast(msg, 'success');
+            await runNetworkProbe();
         } catch (err) {
             showToast(`${t('common.error')}: ${err}`, 'error');
         } finally {
@@ -158,25 +179,34 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                 </h3>
                                 {/* بج وضعیت */}
                                 {pulse && (
-                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${
-                                        pulse.overall_status === 'healthy'
-                                            ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
-                                            : pulse.overall_status === 'region_blocked'
-                                            ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 animate-pulse'
-                                            : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300'
-                                    }`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${
                                             pulse.overall_status === 'healthy'
-                                                ? 'bg-emerald-500'
+                                                ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
                                                 : pulse.overall_status === 'region_blocked'
-                                                ? 'bg-amber-500'
-                                                : 'bg-rose-500'
-                                        }`} />
-                                        {pulse.overall_status === 'healthy' && t('dashboard.health_pulse.status_healthy', 'Healthy & Ready')}
-                                        {pulse.overall_status === 'region_blocked' && t('dashboard.health_pulse.status_region', 'Region Unsupported')}
-                                        {pulse.overall_status === 'filtered' && t('dashboard.health_pulse.status_filtered', 'Blocked / VPN Required')}
-                                        {pulse.overall_status === 'offline' && t('dashboard.health_pulse.status_offline', 'Internet Disconnected')}
-                                    </span>
+                                                ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 animate-pulse'
+                                                : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300'
+                                        }`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${
+                                                pulse.overall_status === 'healthy'
+                                                    ? 'bg-emerald-500'
+                                                    : pulse.overall_status === 'region_blocked'
+                                                    ? 'bg-amber-500'
+                                                    : 'bg-rose-500'
+                                            }`} />
+                                            {pulse.overall_status === 'healthy' && t('dashboard.health_pulse.status_healthy', 'Healthy & Ready')}
+                                            {pulse.overall_status === 'region_blocked' && t('dashboard.health_pulse.status_region', 'Region Unsupported')}
+                                            {pulse.overall_status === 'filtered' && t('dashboard.health_pulse.status_filtered', 'Blocked / VPN Required')}
+                                            {pulse.overall_status === 'offline' && t('dashboard.health_pulse.status_offline', 'Internet Disconnected')}
+                                        </span>
+
+                                        {pulse.is_tun_active && (
+                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 flex items-center gap-1 border border-teal-200 dark:border-teal-800">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
+                                                TUN Mode
+                                            </span>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
@@ -424,11 +454,29 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                         {t('dashboard.health_pulse.all_systems_go', 'All systems connected and ready for AI coding.')}
                                     </span>
                                 </div>
-                                {pulse.active_proxy_url && (
-                                    <div className="text-[11px] text-emerald-700 dark:text-emerald-300 font-mono bg-emerald-100/60 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md self-start sm:self-auto">
-                                        Proxy: {pulse.active_proxy_url}
-                                    </div>
-                                )}
+                                <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+                                    {pulse.is_tun_active && (
+                                        <div className="text-[11px] text-teal-700 dark:text-teal-300 font-bold bg-teal-100/70 dark:bg-teal-900/40 px-2 py-0.5 rounded-md flex items-center gap-1 border border-teal-300/60 dark:border-teal-700/60">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
+                                            {t('dashboard.health_pulse.tun_active', 'TUN Mode (Direct Routing)')}
+                                        </div>
+                                    )}
+                                    {pulse.active_proxy_url && (
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[11px] text-emerald-700 dark:text-emerald-300 font-mono bg-emerald-100/60 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">
+                                                Proxy: {pulse.active_proxy_url}
+                                            </span>
+                                            <button
+                                                onClick={handleRemoveLocalProxy}
+                                                disabled={isApplyingProxy}
+                                                className="text-[11px] text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline font-semibold transition-all"
+                                                title={t('dashboard.health_pulse.remove_proxy_tooltip', 'Switch to Direct / TUN Mode (Remove local proxy settings)')}
+                                            >
+                                                [{t('dashboard.health_pulse.remove_proxy_btn', 'Switch to TUN / Direct')}]
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

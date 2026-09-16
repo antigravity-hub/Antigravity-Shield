@@ -180,7 +180,11 @@
       "all_systems_go": "All systems connected and ready for AI coding.",
       "warp_modal_title": "Guaranteed Solution for Gemini Region Sanctions with WARP",
       "warp_modal_hint": "Google restricts certain IPs from accessing Gemini. Cloudflare WARP provides clean IPs, eliminating HTTP 400 and 'Gemini isn't currently supported in your country' errors.",
-      "warp_connect_btn": "Set Port 40000 (WARP Local) & Connect"
+      "warp_connect_btn": "Set Port 40000 (WARP Local) & Connect",
+      "tun_active": "TUN Mode Active (Direct Routing)",
+      "remove_proxy_btn": "Switch to TUN / Direct",
+      "remove_proxy_tooltip": "Remove local proxy settings and route via direct TUN adapter",
+      "vpn_already_running": "{{name}} is already active and running."
     }
   },
   "accounts": {
