@@ -24,6 +24,7 @@ export const ToolkitIntegrationModal: React.FC = () => {
     closeModal,
     fetchIdes,
     installToIde,
+    fetchStatus,
   } = useToolkitStore();
 
   const [ideToConfirm, setIdeToConfirm] = React.useState<IdeInfo | null>(null);
@@ -114,6 +115,8 @@ export const ToolkitIntegrationModal: React.FC = () => {
                         Active in <strong className="font-semibold">{status.active_ide}</strong>
                         {status.active_email && ` • ${status.active_email}`}
                       </>
+                    ) : status.any_ide_installed ? (
+                      'Extension installed in your IDE! Launch IDE or switch window to start live telemetry.'
                     ) : (
                       'Install the extension below for instant zero-restart account switching & live transcripts.'
                     )}
@@ -121,7 +124,10 @@ export const ToolkitIntegrationModal: React.FC = () => {
                 </div>
               </div>
               <button
-                onClick={fetchIdes}
+                onClick={() => {
+                  fetchIdes();
+                  fetchStatus();
+                }}
                 disabled={isLoadingIdes}
                 className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/80 dark:bg-black/30 hover:bg-white dark:hover:bg-black/50 border border-current/20 transition-all flex items-center gap-1.5 shrink-0"
               >

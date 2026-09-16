@@ -997,24 +997,56 @@ impl AxumServer {
             app
         };
 
-        // 绑定地址
-        let addr = format!("{}:{}", host, port);
-        let listener = tokio::net::TcpListener::bind(&addr)
-            .await
-            .map_err(|e| format!("地址 {} 绑定失败: {}", addr, e))?;
+        // 绑定地址 (支持智能动态故障转移与端口冲突自愈)
+        let mut actual_port = port;
+        let mut listener_opt = None;
+        let mut candidate_ports = vec![port];
+        if port == 8045 {
+            candidate_ports.extend_from_slice(&[8046, 8047, 8048, 8765, 8766]);
+        } else {
+            candidate_ports.extend_from_slice(&[port + 1, port + 2, 8045, 8765]);
+        }
+
+        for p in candidate_ports {
+            let try_addr = format!("{}:{}", host, p);
+            match tokio::net::TcpListener::bind(&try_addr).await {
+                Ok(l) => {
+                    actual_port = p;
+                    listener_opt = Some((try_addr, l));
+                    break;
+                }
+                Err(e) => {
+                    tracing::warn!("地址 {} 绑定失败 (尝试下一备用端口): {}", try_addr, e);
+                }
+            }
+        }
+
+        let (addr, listener) = listener_opt
+            .ok_or_else(|| format!("所有候选端口绑定均失败 (首选端口: {})", port))?;
 
         tracing::info!("反代服务器启动在 http://{}", addr);
 
-        // Also bind a local loopback bridge on 127.0.0.1:8765 for Antigravity Toolkit IDE extensions
-        if port != 8765 {
+        // Also bind a local loopback bridge for Antigravity Toolkit IDE extensions
+        let mut companion_port: Option<u16> = None;
+        if actual_port != 8765 {
             let app_8765 = app.clone();
-            tokio::spawn(async move {
-                if let Ok(listener_8765) = tokio::net::TcpListener::bind("127.0.0.1:8765").await {
-                    tracing::info!("Antigravity Toolkit loopback bridge listening on http://127.0.0.1:8765");
-                    let _ = axum::serve(listener_8765, app_8765).await;
+            for bp in [8765, 8766, 8767] {
+                if bp == actual_port {
+                    continue;
                 }
-            });
+                if let Ok(l) = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", bp)).await {
+                    companion_port = Some(bp);
+                    tracing::info!("Antigravity Toolkit loopback bridge listening on http://127.0.0.1:{}", bp);
+                    tokio::spawn(async move {
+                        let _ = axum::serve(l, app_8765).await;
+                    });
+                    break;
+                }
+            }
         }
+
+        // 自动持久化 bridge_info.json 供 IDE 插件/外部客户端自动发现活动端口
+        write_bridge_info(actual_port, companion_port);
 
         // 创建关闭通道
         let (shutdown_tx, mut shutdown_rx) = oneshot::channel::<()>();
@@ -2829,6 +2861,30 @@ async fn admin_toolkit_sync_active(
         "account_id": resolved_id,
         "message": "Shield UI active account synchronized in-memory"
     }))
+}
+
+pub fn write_bridge_info(primary_port: u16, companion_port: Option<u16>) {
+    if let Some(home) = dirs::home_dir() {
+        let shield_dir = home.join(".antigravity_shield");
+        let _ = std::fs::create_dir_all(&shield_dir);
+        let info_path = shield_dir.join("bridge_info.json");
+        let json = serde_json::json!({
+            "pid": std::process::id(),
+            "port": primary_port,
+            "companion_port": companion_port,
+            "api_url": format!("http://127.0.0.1:{}", primary_port),
+            "heartbeat_url": format!("http://127.0.0.1:{}/api/toolkit/heartbeat", primary_port),
+            "status": "running",
+            "timestamp": std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map(|d| d.as_secs())
+                .unwrap_or(0),
+        });
+        if let Ok(content) = serde_json::to_string_pretty(&json) {
+            let _ = std::fs::write(&info_path, content);
+            tracing::info!("[Toolkit Bridge] Discovery metadata written to {}", info_path.display());
+        }
+    }
 }
 
 #[derive(Deserialize)]

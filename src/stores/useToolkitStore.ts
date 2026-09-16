@@ -8,6 +8,7 @@ export interface ToolkitConnectionStatus {
   extension_version: string | null;
   active_email: string | null;
   seconds_since_last_ping: number | null;
+  any_ide_installed?: boolean;
 }
 
 export interface IdeInfo {
