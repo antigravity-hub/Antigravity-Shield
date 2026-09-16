@@ -3,6 +3,21 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.9.1 (2026-09-16)**:
+        -   **[Auto-Update & Distribution Resilience] Resilient Direct Streaming Installer Fallback Engine**:
+            -   **Zero-Stall Streaming Installer**: Implemented native streaming download engine (`download_and_run_installer` in Rust) that fetches setup binaries directly with real-time chunked progress events, completely eliminating manual browser redirects when cryptographic verification is unavailable.
+            -   **Clean Process Handoff**: Configured detached installer execution on Windows (`CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS`) with coordinated graceful process exit, ensuring NSIS can replace binaries cleanly without file locking.
+            -   **1-Click In-App Direct Installation**: Enhanced update modal and settings interfaces with automated transition to direct installation, providing users with a seamless single-click upgrade experience.
+        -   **[Security & Release Pipeline] Verified Minisign Keypair Alignment & Build Automation**:
+            -   **Cryptographic Keypair Realignment**: Synchronized authoritative Minisign public key in `tauri.conf.json` matching CI signing configuration with explicit password support, eliminating Minisign key derivation failures in GitHub Actions.
+            -   **Streamlined CI Packaging**: Hardened `.github/workflows/release.yml` updater artifact generation logic to guarantee clean packaging of installer bundles and verification manifests.
+    *   **v5.9.0 (2026-09-16)**:
+        -   **[Toolkit & API Integration] Bi-Directional IDE Bridge & Quota Intelligence**:
+            -   **Hardened Token Analytics**: Refined live quota calculations and strict non-rounding percentage display across connected accounts.
+            -   **Full-Fleet Synchronization**: Implemented automated fleet-wide quota auto-refresh and instant window-focus wakeup sync.
+    *   **v5.8.3 (2026-09-15)**:
+        -   **[Core & Process Monitoring] Process Signature Alignment**:
+            -   **System Diagnostic Alignment**: Aligned system process scanning routines with modern sysinfo signatures.
     *   **v5.8.2 (2026-09-14)**:
         -   **[User Interface & Window Controls] Native Desktop Titlebar Window Controls**:
             -   **Pixel-Perfect Window Caption Buttons**: Implemented dedicated Minimize (`—`), Maximize / Restore Down (`□` / `❐`), and Close (`✕`) caption controls in the frameless titlebar with Windows-native hover aesthetics and crimson close accent.
