@@ -35,25 +35,98 @@ fn get_gemini_antigravity_envs() -> Vec<PathBuf> {
     envs
 }
 
-fn extract_model_from_blob(data: &[u8]) -> Option<String> {
-    // 1. Check Protobuf tag 19 (0x9a 0x01) - Google Antigravity standard model field
-    if let Some(pos) = data.windows(2).rposition(|w| w == [0x9a, 0x01]) {
+/// Safely decode an unsigned LEB128 varint from `data` at `offset`.
+/// Returns `Some((value, bytes_read))` or `None` on overflow / EOF.
+pub fn decode_varint(data: &[u8], mut offset: usize) -> Option<(usize, usize)> {
+    let mut value: usize = 0;
+    let mut shift: u32 = 0;
+    let start = offset;
+    while offset < data.len() {
+        let byte = data[offset];
+        offset += 1;
+        value |= ((byte & 0x7F) as usize) << shift;
+        if (byte & 0x80) == 0 {
+            return Some((value, offset - start));
+        }
+        shift += 7;
+        if shift >= usize::BITS {
+            return None;
+        }
+    }
+    None
+}
+
+/// Check if candidate string looks like a legitimate model name, not a file, path, or platform string
+pub fn is_valid_model_candidate(s: &str) -> bool {
+    let lower = s.trim().to_lowercase();
+    if s.len() < 3 || s.len() > 80 {
+        return false;
+    }
+    if crate::modules::token_stats::is_non_model_identifier(s) {
+        return false;
+    }
+    if lower.contains("guide")
+        || lower.contains(".md")
+        || lower.contains(".txt")
+        || lower.contains(".rs")
+        || lower.contains(".ts")
+        || lower.contains(".json")
+        || lower.contains(".lock")
+        || lower.contains("node_modules")
+        || lower.contains('/')
+        || lower.contains('\\')
+    {
+        return false;
+    }
+
+    // Must match legitimate AI model naming patterns
+    lower.starts_with("gemini")
+        || lower.starts_with("claude")
+        || lower.starts_with("gpt")
+        || lower.starts_with("o1")
+        || lower.starts_with("o3")
+        || lower.starts_with("deepseek")
+        || lower.starts_with("qwen")
+        || lower.starts_with("llama")
+        || lower.starts_with("mistral")
+        || lower.starts_with("glm")
+        || lower.starts_with("g-")
+        || lower.starts_with("c-")
+}
+
+pub fn extract_model_from_blob(data: &[u8]) -> Option<String> {
+    // 1. Check Protobuf tag 19 wire type 2 (0x9a 0x01) - Google Antigravity standard model field
+    let mut search_end = data.len();
+    while let Some(rel_pos) = data[..search_end].windows(2).rposition(|w| w == [0x9a, 0x01]) {
+        let pos = rel_pos;
         if pos + 2 < data.len() {
-            let len = data[pos + 2] as usize;
-            if pos + 3 + len <= data.len() {
-                if let Ok(s) = std::str::from_utf8(&data[pos + 3..pos + 3 + len]) {
-                    if s.len() >= 3 && s.chars().all(|c| c.is_alphanumeric() || c == '-' || c == '.' || c == '_') {
-                        return Some(s.to_string());
+            if let Some((len, varint_len)) = decode_varint(data, pos + 2) {
+                let str_start = pos + 2 + varint_len;
+                if len >= 3 && len <= 128 && str_start + len <= data.len() {
+                    if let Ok(s) = std::str::from_utf8(&data[str_start..str_start + len]) {
+                        if is_valid_model_candidate(s) {
+                            return Some(s.to_string());
+                        }
                     }
                 }
             }
         }
+        if pos == 0 {
+            break;
+        }
+        search_end = pos;
     }
-    // 2. Vendor-agnostic regex fallback for any model name
-    if let Ok(re) = Regex::new(r"(?i)(?:gemini|claude|gpt|o1|o3|o4|deepseek|llama|qwen|mistral|codestral)-[a-zA-Z0-9\.\-]+") {
+
+    // 2. Vendor-agnostic fallback: Strict regex matching known AI model patterns only
+    if let Ok(re) = Regex::new(
+        r"(?i)\b(gemini-(?:[0-9]|pro|flash|auto|default|ultra|embedding)[a-zA-Z0-9\.\-_]*|claude-(?:3|4|opus|sonnet|haiku)[a-zA-Z0-9\.\-_]*|gpt-(?:4|3|oss)[a-zA-Z0-9\.\-_]*|o3-mini(?:-[a-zA-Z0-9\.\-]+)?|o1(?:-preview|-mini)?|deepseek-(?:r1|v3|chat|reasoner|coder)[a-zA-Z0-9\.\-_]*)\b"
+    ) {
         let text = String::from_utf8_lossy(data);
-        if let Some(m) = re.find_iter(&text).last() {
-            return Some(m.as_str().to_string());
+        for m in re.find_iter(&text) {
+            let s = m.as_str();
+            if is_valid_model_candidate(s) {
+                return Some(s.to_string());
+            }
         }
     }
     None
@@ -79,13 +152,23 @@ fn get_conversation_metadata(env_dir: &PathBuf, conversation_id: &str) -> (Strin
                     platform = "Antigravity IDE".to_string();
                 }
             }
-            // Extract model from gen_metadata
-            if let Ok(data) = conn.query_row("SELECT data FROM gen_metadata ORDER BY idx DESC LIMIT 1", [], |r| r.get::<_, Vec<u8>>(0)) {
-                if let Some(m) = extract_model_from_blob(&data) {
-                    model = m;
+            // Extract model from gen_metadata: check up to 10 latest entries for the first valid model
+            if let Ok(mut stmt) = conn.prepare("SELECT data FROM gen_metadata ORDER BY idx DESC LIMIT 10") {
+                if let Ok(rows) = stmt.query_map([], |r| r.get::<_, Vec<u8>>(0)) {
+                    for row in rows.flatten() {
+                        if let Some(m) = extract_model_from_blob(&row) {
+                            model = m;
+                            break;
+                        }
+                    }
                 }
             }
         }
+    }
+
+    // Never allow non-model or platform names to leak as model
+    if crate::modules::token_stats::is_non_model_identifier(&model) {
+        model = "gemini-auto".to_string();
     }
 
     (model, platform)
@@ -351,3 +434,73 @@ pub fn start_live_watcher(app_handle: Option<tauri::AppHandle>) {
         }
     });
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_decode_varint() {
+        // Single byte varint: 23
+        let data1 = [0x17];
+        let (val1, len1) = decode_varint(&data1, 0).unwrap();
+        assert_eq!(val1, 23);
+        assert_eq!(len1, 1);
+
+        // Multi-byte varint: 300 = 0xAC 0x02
+        let data2 = [0xAC, 0x02];
+        let (val2, len2) = decode_varint(&data2, 0).unwrap();
+        assert_eq!(val2, 300);
+        assert_eq!(len2, 2);
+
+        // Truncated varint
+        let data3 = [0x80];
+        assert!(decode_varint(&data3, 0).is_none());
+    }
+
+    #[test]
+    fn test_is_valid_model_candidate() {
+        // Legitimate AI models
+        assert!(is_valid_model_candidate("gemini-3.7-flash-tiered"));
+        assert!(is_valid_model_candidate("gemini-3.8-flash"));
+        assert!(is_valid_model_candidate("claude-3-7-sonnet"));
+        assert!(is_valid_model_candidate("claude-opus-4-6-thinking"));
+        assert!(is_valid_model_candidate("o3-mini"));
+        assert!(is_valid_model_candidate("gpt-4o"));
+        assert!(is_valid_model_candidate("deepseek-r1"));
+
+        // File names, tools, non-models MUST be rejected
+        assert!(!is_valid_model_candidate("gemini-3-image-guide.md"));
+        assert!(!is_valid_model_candidate("O3-S"));
+        assert!(!is_valid_model_candidate("Antigravity IDE"));
+        assert!(!is_valid_model_candidate("Claude-Code"));
+        assert!(!is_valid_model_candidate("gemini-cli"));
+        assert!(!is_valid_model_candidate("src/main.rs"));
+        assert!(!is_valid_model_candidate("package.json"));
+    }
+
+    #[test]
+    fn test_extract_model_from_blob_protobuf() {
+        // Construct protobuf blob containing tag 19 wire type 2 (0x9a, 0x01)
+        // followed by length 23 (0x17) and "gemini-3.7-flash-tiered"
+        let model_str = b"gemini-3.7-flash-tiered";
+        let mut blob = vec![0x12, 0x04, 0xaa, 0xbb, 0x9a, 0x01, model_str.len() as u8];
+        blob.extend_from_slice(model_str);
+        blob.extend_from_slice(&[0x00, 0x01, 0x02]);
+
+        let extracted = extract_model_from_blob(&blob);
+        assert_eq!(extracted, Some("gemini-3.7-flash-tiered".to_string()));
+    }
+
+    #[test]
+    fn test_extract_model_from_blob_rejects_non_models() {
+        // Even if tag 19 has "gemini-3-image-guide.md", it should be rejected
+        let invalid_str = b"gemini-3-image-guide.md";
+        let mut blob = vec![0x9a, 0x01, invalid_str.len() as u8];
+        blob.extend_from_slice(invalid_str);
+
+        let extracted = extract_model_from_blob(&blob);
+        assert_eq!(extracted, None);
+    }
+}
+

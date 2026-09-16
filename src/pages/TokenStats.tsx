@@ -80,8 +80,15 @@ const formatNumber = (num: number): string => {
 };
 
 const shortenModelName = (model: string): string => {
-    // If it's already a canonical family name like "Gemini 3.8 Flash", return it directly
-    if (model.includes(' ') || model.startsWith('Gemini') || model.startsWith('Claude') || model.startsWith('GPT')) {
+    // If it's already a canonical family name like "Gemini 3.8 Flash" or "OpenAI o3-mini", return it directly
+    if (
+        model.includes(' ') ||
+        model.startsWith('Gemini') ||
+        model.startsWith('Claude') ||
+        model.startsWith('GPT') ||
+        model.startsWith('OpenAI') ||
+        model.startsWith('DeepSeek')
+    ) {
         return model;
     }
     return model
