@@ -523,7 +523,7 @@ const TokenStats: React.FC = () => {
                                     }`}
                             >
                                 <Clock className="w-3.5 h-3.5" />
-                                {t('token_stats.hourly', 'ساعت')}
+                                {t('token_stats.hourly', 'Hour')}
                             </button>
                             <button
                                 onClick={() => { setTimeRange('daily'); setSelectedHeatmapDate(null); }}
@@ -533,7 +533,7 @@ const TokenStats: React.FC = () => {
                                     }`}
                             >
                                 <Calendar className="w-3.5 h-3.5" />
-                                {t('token_stats.daily', 'روز')}
+                                {t('token_stats.daily', 'Day')}
                             </button>
                             <button
                                 onClick={() => { setTimeRange('weekly'); setSelectedHeatmapDate(null); }}
@@ -543,7 +543,7 @@ const TokenStats: React.FC = () => {
                                     }`}
                             >
                                 <CalendarDays className="w-3.5 h-3.5" />
-                                {t('token_stats.weekly', 'هفته')}
+                                {t('token_stats.weekly', 'Week')}
                             </button>
                             <button
                                 onClick={() => { setTimeRange('monthly'); setSelectedHeatmapDate(null); }}
@@ -553,7 +553,7 @@ const TokenStats: React.FC = () => {
                                     }`}
                             >
                                 <CalendarRange className="w-3.5 h-3.5" />
-                                {t('token_stats.monthly', 'ماه')}
+                                {t('token_stats.monthly', 'Month')}
                             </button>
                             <button
                                 onClick={() => { setTimeRange('yearly'); setSelectedHeatmapDate(null); }}
@@ -563,7 +563,7 @@ const TokenStats: React.FC = () => {
                                     }`}
                             >
                                 <CalendarRange className="w-3.5 h-3.5" />
-                                {t('token_stats.yearly', 'سال')}
+                                {t('token_stats.yearly', 'Year')}
                             </button>
                             <button
                                 onClick={() => { setTimeRange('custom'); setSelectedHeatmapDate(null); }}
@@ -573,23 +573,23 @@ const TokenStats: React.FC = () => {
                                     }`}
                             >
                                 <Filter className="w-3.5 h-3.5" />
-                                {t('token_stats.custom_range', 'بازه انتخابی')}
+                                {t('token_stats.custom_range', 'Custom Range')}
                             </button>
                         </div>
 
                         <button
                             onClick={handleScanBrain}
                             disabled={scanning}
-                            title={t('token_stats.scan_history', 'اسکن تاریخچه گفتگوها')}
+                            title={t('token_stats.scan_history', 'Scan History')}
                             className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition-colors flex items-center gap-1.5 shadow-sm disabled:opacity-50"
                         >
                             <History className={`w-3.5 h-3.5 ${scanning ? 'animate-spin' : ''}`} />
-                            <span>{scanning ? t('token_stats.scanning', 'در حال اسکن...') : t('token_stats.scan_history', 'Scan History')}</span>
+                            <span>{scanning ? t('token_stats.scanning', 'Scanning...') : t('token_stats.scan_history', 'Scan History')}</span>
                         </button>
                         <button
                             onClick={() => fetchData(false)}
                             disabled={loading}
-                            title={t('common.refresh', 'تازه سازی')}
+                            title={t('common.refresh', 'Refresh')}
                             className="p-1.5 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
                         >
                             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -602,7 +602,7 @@ const TokenStats: React.FC = () => {
                     <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-xs font-medium text-gray-500 dark:text-gray-400 mr-1 flex items-center gap-1">
                             <Filter className="w-3.5 h-3.5" />
-                            {t('token_stats.filter_source', 'فیلتر منبع')}:
+                            {t('token_stats.filter_source', 'Source Filter')}:
                         </span>
                         <button
                             onClick={() => setSourceFilter('all')}
@@ -612,7 +612,7 @@ const TokenStats: React.FC = () => {
                                     : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                             }`}
                         >
-                            {t('token_stats.source_all', 'همه منابع')}
+                            {t('token_stats.source_all', 'All Sources')}
                         </button>
                         <button
                             onClick={() => setSourceFilter('Antigravity IDE')}
@@ -670,9 +670,9 @@ const TokenStats: React.FC = () => {
                         <div className="flex items-center gap-2">
                             <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
                             <span>
-                                {t('token_stats.scan_success', 'اسکن تاریخچه تکمیل شد:')}{' '}
-                                <strong>{scanResult.conversations_found}</strong> {t('token_stats.scan_summary_prefix', 'گفتگو بررسی شد')} ({scanResult.conversations_scanned} {t('token_stats.scan_new_scans', 'اسکن جدید')}، {scanResult.conversations_skipped} {t('token_stats.scan_already_up_to_date', 'از قبل به‌روز')})،{' '}
-                                <strong>{formatNumber(scanResult.total_new_tokens)}</strong> {t('token_stats.scan_tokens_recovered', 'توکن تاریخی بازیابی گردید')}.
+                                {t('token_stats.scan_success', 'Transcript scan completed:')}{' '}
+                                <strong>{scanResult.conversations_found}</strong> {t('token_stats.scan_summary_prefix', 'conversations checked')} ({scanResult.conversations_scanned} {t('token_stats.scan_new_scans', 'new')}, {scanResult.conversations_skipped} {t('token_stats.scan_already_up_to_date', 'up-to-date')}),{' '}
+                                <strong>{formatNumber(scanResult.total_new_tokens)}</strong> {t('token_stats.scan_tokens_recovered', 'historical tokens recovered')}.
                             </span>
                         </div>
                         <button 

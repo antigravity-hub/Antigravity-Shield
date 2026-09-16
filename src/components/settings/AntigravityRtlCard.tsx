@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Type, CheckCircle2, RotateCcw, Sparkles } from 'lucide-react';
 import { request as invoke } from '../../utils/request';
 import { showToast } from '../common/ToastContainer';
@@ -18,6 +19,7 @@ interface AntigravityRtlCardProps {
 }
 
 export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCardProps) {
+    const { t } = useTranslation();
     const [status, setStatus] = useState<AntigravityRtlStatus | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -73,19 +75,19 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
                     </div>
                     <div className="min-w-0">
                         <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 truncate">
-                            <span>فونت وزیرمتن و راست‌چین</span>
+                            <span>{t('rtl_card.compact_title', 'Vazirmatn & RTL Font')}</span>
                             {isPatched ? (
                                 <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold">
-                                    <CheckCircle2 className="w-2.5 h-2.5" /> فعال
+                                    <CheckCircle2 className="w-2.5 h-2.5" /> {t('rtl_card.active', 'Active')}
                                 </span>
                             ) : (
                                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 font-semibold">
-                                    غیرفعال
+                                    {t('rtl_card.inactive', 'Inactive')}
                                 </span>
                             )}
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                            پچ ظاهر Antigravity 2.0 و Antigravity IDE
+                            {t('rtl_card.compact_desc', 'Antigravity 2.0 & Antigravity IDE UI patch')}
                         </p>
                     </div>
                 </div>
@@ -97,17 +99,17 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
                             disabled={isLoading}
                             className="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
                         >
-                            {isLoading ? 'در حال اعمال...' : 'فعال‌سازی RTL'}
+                            {isLoading ? t('rtl_card.applying', 'Applying...') : t('rtl_card.enable_rtl', 'Enable RTL')}
                         </button>
                     ) : (
                         <button
                             onClick={handleRestore}
                             disabled={isLoading || !canRestore}
                             className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer flex items-center gap-1 disabled:opacity-50"
-                            title="بازگردانی به حالت پیش‌فرض انگلیسی/چپ‌چین"
+                            title={t('rtl_card.restore_tooltip', 'Restore to default English/LTR layout')}
                         >
                             <RotateCcw className="w-3 h-3" />
-                            <span>بازگردانی (LTR)</span>
+                            <span>{t('rtl_card.restore_ltr', 'Restore (LTR)')}</span>
                         </button>
                     )}
                 </div>
@@ -125,14 +127,14 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
                     <div>
                         <div className="flex items-center gap-2">
                             <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                                پشتیبانی بومی از راست‌چین (RTL) و فونت وزیرمتن
+                                {t('rtl_card.title', 'Native RTL & Vazirmatn Font Support')}
                             </h3>
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-                                ویژه فارسی / عربی
+                                {t('rtl_card.badge', 'Persian / Arabic')}
                             </span>
                         </div>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            تشخیص خودکار چت‌های فارسی و عربی بدون به هم ریختن کدهای برنامه‌نویسی در Antigravity 2.0 و IDE
+                            {t('rtl_card.desc', 'Auto-detect Persian and Arabic chats without breaking code syntax in Antigravity 2.0 & IDE')}
                         </p>
                     </div>
                 </div>
@@ -145,7 +147,7 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
                             className="px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                         >
                             <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-                            <span>بازگردانی اولیه (LTR)</span>
+                            <span>{t('rtl_card.restore_initial', 'Restore Default (LTR)')}</span>
                         </button>
                     )}
                     <button
@@ -158,21 +160,27 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
                         }`}
                     >
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>{isLoading ? 'در حال پردازش...' : isPatched ? 'بروزرسانی مجدد پچ' : 'اعمال یک‌کلیکه پچ'}</span>
+                        <span>
+                            {isLoading
+                                ? t('rtl_card.processing', 'Processing...')
+                                : isPatched
+                                ? t('rtl_card.reapply', 'Reapply Patch')
+                                : t('rtl_card.one_click_apply', '1-Click Apply Patch')}
+                        </span>
                     </button>
                 </div>
             </div>
 
-            {/* جزئیات وضعیت تارگت‌ها */}
+            {/* Target Status Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800">
                     <span className="text-slate-600 dark:text-slate-400">Antigravity 2.0 Desktop:</span>
                     {status?.desktop_asar_path ? (
                         <span className={`font-semibold flex items-center gap-1 ${status.desktop_is_patched ? 'text-emerald-500' : 'text-amber-500'}`}>
-                            {status.desktop_is_patched ? '✔ فعال (پچ شده)' : 'آماده اعمال'}
+                            {status.desktop_is_patched ? t('rtl_card.patched', '✔ Active (Patched)') : t('rtl_card.ready', 'Ready to Apply')}
                         </span>
                     ) : (
-                        <span className="text-slate-400">یافت نشد</span>
+                        <span className="text-slate-400">{t('rtl_card.not_found', 'Not Found')}</span>
                     )}
                 </div>
 
@@ -180,10 +188,10 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
                     <span className="text-slate-600 dark:text-slate-400">Antigravity IDE (Workbench):</span>
                     {status?.ide_css_path ? (
                         <span className={`font-semibold flex items-center gap-1 ${status.ide_is_patched ? 'text-emerald-500' : 'text-amber-500'}`}>
-                            {status.ide_is_patched ? '✔ فعال (پچ شده)' : 'آماده اعمال'}
+                            {status.ide_is_patched ? t('rtl_card.patched', '✔ Active (Patched)') : t('rtl_card.ready', 'Ready to Apply')}
                         </span>
                     ) : (
-                        <span className="text-slate-400">یافت نشد</span>
+                        <span className="text-slate-400">{t('rtl_card.not_found', 'Not Found')}</span>
                     )}
                 </div>
             </div>

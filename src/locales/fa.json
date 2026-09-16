@@ -1447,7 +1447,16 @@
     "heatmap_no_activity": "بدون فعالیت توکن در تاریخ",
     "total": "مجموع",
     "percentage": "سهم",
-    "no_data": "داده‌ای برای نمایش وجود ندارد"
+    "no_data": "داده‌ای برای نمایش وجود ندارد",
+    "requests": "درخواست‌ها",
+    "input": "ورودی",
+    "output": "خروجی",
+    "cached": "کش",
+    "cached_token": "توکن کش‌شده",
+    "model": "مدل",
+    "account": "حساب",
+    "model_details": "جزئیات به تفکیک مدل",
+    "account_details": "جزئیات به تفکیک حساب"
   },
   "errors": {
     "stream": {
@@ -1560,5 +1569,62 @@
       "fetchFailed": "Fetch failed: {{err}}",
       "queryFailed": "Failed to get valid quota or models. Please check if the API Key and Base URL are correct."
     }
+  },
+  "toolkit": {
+    "modal": {
+      "title": "ابزارها و پایگاه افزونه‌های IDE Antigravity",
+      "subtitle": "سوئیچ آنی اکانت‌ها، نمایش گرافیکی تاریخچه و همگام‌سازی ادیتور با یک کلیک",
+      "connected_title": "پل ارتباطی ابزار فعال و متصل است",
+      "waiting_title": "در انتظار اتصال پل ارتباطی ابزار",
+      "active_in": "فعال در <1>{{ide}}</1>{{email}}",
+      "installed_hint": "افزونه در IDE شما نصب است! محیط توسعه را باز کنید یا پنجره آن را فعال نمایید تا اطلاعات زنده جریان یابد.",
+      "not_installed_hint": "برای تعویض اکانت بدون ری‌استارت و مشاهده زنده تاریخچه، افزونه را در زیر نصب کنید.",
+      "rescan": "اسکن مجدد",
+      "supported_ides": "محیط‌های برنامه‌نویسی پشتیبانی‌شده",
+      "installed_count": "{{count}} ادیتور نصب‌شده در سیستم",
+      "official_ide": "IDE رسمی",
+      "installed": "نصب شده",
+      "not_found": "یافت نشد",
+      "auto_installed": "نصب خودکار",
+      "toolkit_ready": "افزونه آماده است",
+      "antigravity_path_desc": "Google Antigravity IDE (همگام‌سازی خودکار VSIX)",
+      "detected": "شناسایی‌شده در سیستم",
+      "not_installed": "در مسیرهای استاندارد نصب نیست",
+      "auto_installing": "در حال نصب خودکار...",
+      "installing": "در حال نصب...",
+      "reinstall": "نصب مجدد",
+      "auto_install_btn": "⚡ نصب خودکار ابزار",
+      "one_click_install": "⚡ نصب با یک کلیک",
+      "jetbrains_plugin": "پلاگین JetBrains",
+      "download_ide": "دانلود IDE",
+      "marketplace": "مارکت‌پلیس",
+      "setup_guide": "راهنمای راه‌اندازی",
+      "arch_title": "معماری چند ادیتوره (Antigravity IDE، VS Code، JetBrains، Zed و Apple Xcode):",
+      "arch_desc": "شیلد آنتی‌گرویتی یک درگاه پروکسی لوکال یکپارچه (127.0.0.1:8765) فراهم می‌کند که تمامی افزونه‌های رسمی آنتی‌گرویتی از آن پشتیبانی می‌کنند.",
+      "arch_blog": "مشاهده بلاگ رسمی افزونه‌های Google Antigravity IDE",
+      "close_ide_title": "لطفاً پنجره {{ide}} را ببندید",
+      "close_ide_desc": "برای جلوگیری از ری‌استارت ناگهانی یا تداخل در فایل‌های باز {{ide}}، ابتدا تغییرات خود را ذخیره کرده و پنجره‌ی محیط توسعه را ببندید؛ سپس نصب را ادامه دهید.",
+      "continue_install": "پنجره بسته شد: ادامه نصب"
+    }
+  },
+  "rtl_card": {
+    "title": "پشتیبانی بومی از راست‌چین (RTL) و فونت وزیرمتن",
+    "compact_title": "فونت وزیرمتن و راست‌چین",
+    "badge": "ویژه فارسی / عربی",
+    "desc": "تشخیص خودکار چت‌های فارسی و عربی بدون به هم ریختن کدهای برنامه‌نویسی در Antigravity 2.0 و IDE",
+    "compact_desc": "پچ ظاهر Antigravity 2.0 و Antigravity IDE",
+    "active": "فعال",
+    "inactive": "غیرفعال",
+    "patched": "✔ فعال (پچ شده)",
+    "ready": "آماده اعمال",
+    "not_found": "یافت نشد",
+    "enable_rtl": "فعال‌سازی RTL",
+    "applying": "در حال اعمال...",
+    "processing": "در حال پردازش...",
+    "restore_ltr": "بازگردانی (LTR)",
+    "restore_initial": "بازگردانی اولیه (LTR)",
+    "restore_tooltip": "بازگردانی به حالت پیش‌فرض انگلیسی/چپ‌چین",
+    "reapply": "بروزرسانی مجدد پچ",
+    "one_click_apply": "اعمال یک‌کلیکه پچ"
   }
 }
