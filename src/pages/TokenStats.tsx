@@ -178,22 +178,22 @@ const TokenStats: React.FC = () => {
 
             switch (currentRange) {
                 case 'hourly':
+                    hours = 1;
+                    data = await invoke<TokenStatsAggregated[]>('get_token_stats_hourly', { hours: 1 });
+                    modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_hourly', { hours: 1 });
+                    accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_hourly', { hours: 1 });
+                    break;
+                case 'daily':
                     hours = 24;
                     data = await invoke<TokenStatsAggregated[]>('get_token_stats_hourly', { hours: 24 });
                     modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_hourly', { hours: 24 });
                     accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_hourly', { hours: 24 });
                     break;
-                case 'daily':
-                    hours = 168;
+                case 'weekly':
+                    hours = 168; // 7 days
                     data = await invoke<TokenStatsAggregated[]>('get_token_stats_daily', { days: 7 });
                     modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_daily', { days: 7 });
                     accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_daily', { days: 7 });
-                    break;
-                case 'weekly':
-                    hours = 720;
-                    data = await invoke<TokenStatsAggregated[]>('get_token_stats_weekly', { weeks: 4 });
-                    modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_daily', { days: 30 });
-                    accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_daily', { days: 30 });
                     break;
                 case 'monthly':
                     hours = 720; // 30 days
@@ -203,7 +203,7 @@ const TokenStats: React.FC = () => {
                     break;
                 case 'yearly':
                     hours = 8760; // 365 days
-                    data = await invoke<TokenStatsAggregated[]>('get_token_stats_daily', { days: 365 });
+                    data = await invoke<TokenStatsAggregated[]>('get_token_stats_weekly', { weeks: 52 });
                     modelTrend = await invoke<ModelTrendPoint[]>('get_token_stats_model_trend_daily', { days: 365 });
                     accountTrend = await invoke<AccountTrendPoint[]>('get_token_stats_account_trend_daily', { days: 365 });
                     break;
@@ -291,11 +291,28 @@ const TokenStats: React.FC = () => {
             });
             setAccountTrendData(transformedAccountTrend);
 
-            const [accounts, models_stats, summaryData] = await Promise.all([
+            let [accounts, models_stats, summaryData] = await Promise.all([
                 invoke<AccountTokenStats[]>('get_token_stats_by_account', { hours }),
                 invoke<ModelTokenStats[]>('get_token_stats_by_model', { hours }),
                 invoke<TokenStatsSummary>('get_token_stats_summary', { hours })
             ]);
+
+            if (currentRange === 'custom' && (currentCustomStart || currentCustomEnd)) {
+                const totalInput = data.reduce((sum, d) => sum + (d.total_input_tokens || 0), 0);
+                const totalOutput = data.reduce((sum, d) => sum + (d.total_output_tokens || 0), 0);
+                const totalCached = data.reduce((sum, d) => sum + (d.total_cached_tokens || 0), 0);
+                const totalTok = data.reduce((sum, d) => sum + (d.total_tokens || 0), 0);
+                const totalReq = data.reduce((sum, d) => sum + (d.request_count || 0), 0);
+
+                summaryData = {
+                    total_input_tokens: totalInput,
+                    total_output_tokens: totalOutput,
+                    total_cached_tokens: totalCached,
+                    total_tokens: totalTok,
+                    total_requests: totalReq,
+                    unique_accounts: summaryData.unique_accounts
+                };
+            }
 
             setAccountData(accounts);
             setModelData(models_stats);
@@ -798,9 +815,12 @@ const TokenStats: React.FC = () => {
                                     <XAxis
                                         dataKey="period"
                                         tick={{ fontSize: 11, fill: '#6b7280' }}
+                                        minTickGap={20}
                                         tickFormatter={(val) => {
-                                            if (timeRange === 'hourly') return val.split(' ')[1] || val;
-                                            if (timeRange === 'daily') return val.split('-').slice(1).join('/');
+                                            if (!val) return '';
+                                            if (val.includes(' ')) return val.split(' ')[1] || val;
+                                            if (val.includes('-W')) return `W${val.split('-W')[1]}`;
+                                            if (val.includes('-')) return val.split('-').slice(1).join('/');
                                             return val;
                                         }}
                                         axisLine={false}
@@ -864,9 +884,12 @@ const TokenStats: React.FC = () => {
                                         <XAxis
                                             dataKey="period"
                                             tick={{ fontSize: 11, fill: '#6b7280' }}
+                                            minTickGap={20}
                                             tickFormatter={(val) => {
-                                                if (timeRange === 'hourly') return val.split(' ')[1] || val;
-                                                if (timeRange === 'daily') return val.split('-').slice(1).join('/');
+                                                if (!val) return '';
+                                                if (val.includes(' ')) return val.split(' ')[1] || val;
+                                                if (val.includes('-W')) return `W${val.split('-W')[1]}`;
+                                                if (val.includes('-')) return val.split('-').slice(1).join('/');
                                                 return val;
                                             }}
                                             axisLine={false}
