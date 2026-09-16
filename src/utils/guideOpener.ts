@@ -1,41 +1,46 @@
-﻿import { isTauri } from './env';
+import { isTauri } from './env';
+import { request as invoke } from './request';
 
 /**
- * Open the Antigravity Verification / Further Action Fix Guide PDF.
- * Works seamlessly in both Tauri desktop mode and standard Web browser mode.
+ * Open the Antigravity Verification / Further Action Fix Guide in the high-fidelity in-app modal.
+ * This prevents unexpected browser window redirects and eliminates tauri.localhost connection errors.
  */
-export async function openVerificationGuide() {
+export function openVerificationGuide() {
+    window.dispatchEvent(new CustomEvent('open-verification-guide'));
+}
+
+/**
+ * Open the guide directly using the operating system's native PDF reader (Adobe, Edge, etc.)
+ * Extracts the bundled binary directly to the system temp directory without relying on tauri.localhost.
+ */
+export async function openVerificationGuideInSystem(): Promise<string> {
     const pdfRelativePath = 'guides/Antigravity_Verification_Guide.pdf';
-    const webFallbackUrl = '/' + pdfRelativePath;
 
     if (isTauri()) {
         try {
-            const { openUrl, openPath } = await import('@tauri-apps/plugin-opener');
-            const { resolveResource } = await import('@tauri-apps/api/path');
-
-            // Attempt to resolve the bundled asset path first
-            try {
-                const resourcePath = await resolveResource(pdfRelativePath);
-                await openPath(resourcePath);
-                return;
-            } catch (pathErr) {
-                console.warn('[guideOpener] Could not open via local file path, trying relative URL or window.open:', pathErr);
-            }
-
-            // Fallback to opening via local browser URL
-            try {
-                await openUrl(window.location.origin + '/' + pdfRelativePath);
-                return;
-            } catch (urlErr) {
-                console.warn('[guideOpener] openUrl failed, falling back to window.open:', urlErr);
-            }
-        } catch (e) {
-            console.error('[guideOpener] Tauri plugin-opener error:', e);
+            const savedPath = await invoke<string>('open_verification_guide_doc');
+            return savedPath;
+        } catch (tauriErr) {
+            console.warn('[guideOpener] invoke open_verification_guide_doc failed:', tauriErr);
         }
     }
 
-    // Web fallback
-    window.open(webFallbackUrl, '_blank', 'noopener,noreferrer');
+    // Web fallback: open in browser tab or trigger direct download
+    const fallbackUrl = '/' + pdfRelativePath;
+    window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+    return fallbackUrl;
+}
+
+/**
+ * Download the verification guide PDF directly
+ */
+export function downloadVerificationGuide() {
+    const link = document.createElement('a');
+    link.href = '/guides/Antigravity_Verification_Guide.pdf';
+    link.download = 'Antigravity_Verification_Guide.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 /**

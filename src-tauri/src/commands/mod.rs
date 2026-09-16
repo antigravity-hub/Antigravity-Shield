@@ -835,6 +835,52 @@ pub async fn open_data_folder() -> Result<(), String> {
     Ok(())
 }
 
+/// 打开 Antigravity Verification Guide PDF 引导文档
+#[tauri::command]
+pub async fn open_verification_guide_doc(app: tauri::AppHandle) -> Result<String, String> {
+    const PDF_BYTES: &[u8] = include_bytes!("../../../public/guides/Antigravity_Verification_Guide.pdf");
+    let temp_dir = std::env::temp_dir();
+    let guide_path = temp_dir.join("Antigravity_Verification_Guide.pdf");
+
+    let write_needed = match std::fs::metadata(&guide_path) {
+        Ok(meta) => meta.len() != PDF_BYTES.len() as u64,
+        Err(_) => true,
+    };
+
+    if write_needed {
+        std::fs::write(&guide_path, PDF_BYTES)
+            .map_err(|e| format!("Failed to extract guide PDF: {}", e))?;
+    }
+
+    let path_str = guide_path.to_string_lossy().to_string();
+
+    // 优先使用 Tauri opener 插件打开本地 PDF 物理文件
+    if let Err(e) = app.opener().open_path(&path_str, None::<&str>) {
+        tracing::warn!("Failed to open guide via tauri opener: {}, falling back to system command", e);
+
+        #[cfg(target_os = "windows")]
+        {
+            use crate::utils::command::CommandExtWrapper;
+            let _ = std::process::Command::new("cmd")
+                .creation_flags_windows()
+                .args(["/C", "start", "", &path_str])
+                .spawn();
+        }
+
+        #[cfg(target_os = "macos")]
+        {
+            let _ = std::process::Command::new("open").arg(&path_str).spawn();
+        }
+
+        #[cfg(target_os = "linux")]
+        {
+            let _ = std::process::Command::new("xdg-open").arg(&path_str).spawn();
+        }
+    }
+
+    Ok(path_str)
+}
+
 /// 获取数据目录绝对路径
 #[tauri::command]
 pub async fn get_data_dir_path() -> Result<String, String> {

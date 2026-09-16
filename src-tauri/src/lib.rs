@@ -593,6 +593,7 @@ pub fn run() {
             commands::clear_antigravity_cache,
             commands::get_antigravity_cache_paths,
             commands::open_data_folder,
+            commands::open_verification_guide_doc,
             commands::get_data_dir_path,
             commands::show_main_window,
             commands::set_window_theme,
