@@ -395,8 +395,8 @@ fn oauth_success_html() -> &'static str {
             text-align: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.8s ease;
-            z-index: 5;
+            transition: opacity 0.5s ease;
+            z-index: 50;
             width: 100%;
             max-width: 440px;
             padding: 24px;
@@ -404,19 +404,51 @@ fn oauth_success_html() -> &'static str {
 
         .final-state.show {
             opacity: 1;
+            pointer-events: auto;
         }
 
         .final-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             color: #f8fafc;
             margin-bottom: 8px;
         }
 
         .final-hint {
-            font-size: 14px;
+            font-size: 14.5px;
             color: #94a3b8;
             line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .close-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(16, 185, 129, 0.35));
+            border: 1.5px solid rgba(56, 189, 248, 0.5);
+            border-radius: 9999px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.25);
+            pointer-events: auto;
+        }
+
+        .close-tab-btn:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(16, 185, 129, 0.55));
+            border-color: rgba(56, 189, 248, 0.85);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.45);
+        }
+
+        .close-tab-btn:active {
+            transform: translateY(0) scale(0.98);
         }
 
         @keyframes strokeDraw {
@@ -490,13 +522,13 @@ fn oauth_success_html() -> &'static str {
                         <circle class="timer-bar" id="timerBar" cx="48" cy="48" r="42"></circle>
                     </svg>
                     <div class="timer-number">
-                        <span id="countdownNum">10</span>
+                        <span id="countdownNum">3</span>
                         <span class="timer-unit">s</span>
                     </div>
                 </div>
                 <div class="timer-label">
                     <span class="timer-pulse"></span>
-                    <span>بسته شدن خودکار در ۱۰ ثانیه...</span>
+                    <span>بسته شدن خودکار در ۳ ثانیه...</span>
                 </div>
             </div>
 
@@ -505,13 +537,23 @@ fn oauth_success_html() -> &'static str {
     </div>
 
     <div class="final-state" id="finalState">
-        <div class="final-title">احراز هویت کامل شد</div>
-        <div class="final-hint">اکنون می‌توانید این برگه را با خیال راحت ببندید و به نرم‌افزار بازگردید.</div>
+        <div class="icon-box" style="margin: 0 auto 16px;">
+            <svg class="checkmark-svg" viewBox="0 0 52 52" fill="none">
+                <circle class="checkmark-circle" cx="26" cy="26" r="23" style="stroke-dashoffset: 0;" />
+                <path class="checkmark-check" d="M14.5 27.5L22 35L37.5 19" style="stroke-dashoffset: 0;" />
+            </svg>
+        </div>
+        <div class="final-title">احراز هویت با موفقیت انجام شد</div>
+        <div class="final-hint">اکانت با موفقیت به Antigravity Shield متصل گردید.<br>اکنون می‌توانید این برگه را با خیال راحت ببندید.</div>
+        <button class="close-tab-btn" onclick="tryCloseTab()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            بستن این برگه
+        </button>
     </div>
 
     <script>
-        let timeLeft = 10;
-        const totalDuration = 10;
+        let timeLeft = 3;
+        const totalDuration = 3;
         const countdownEl = document.getElementById('countdownNum');
         const timerBar = document.getElementById('timerBar');
         const card = document.getElementById('card');
@@ -726,8 +768,22 @@ fn oauth_success_html() -> &'static str {
         }
 
         let shardElements = null;
+        let isFinished = false;
+
+        card.style.cursor = 'pointer';
+        card.setAttribute('title', 'برای بستن سریع کلیک کنید');
+        card.addEventListener('click', () => {
+            if (!isFinished) {
+                isFinished = true;
+                clearInterval(countdownInterval);
+                if (!shardElements) shardElements = initializeShatterEffect();
+                dropShards(shardElements);
+                finishFlow();
+            }
+        });
 
         const countdownInterval = setInterval(() => {
+            if (isFinished) return;
             timeLeft--;
             
             if (timeLeft >= 0) {
@@ -736,53 +792,47 @@ fn oauth_success_html() -> &'static str {
                 timerBar.style.strokeDashoffset = progressOffset;
             }
 
-            if (timeLeft === 8) {
+            if (timeLeft === 2) {
                 shakeCard(false);
                 triggerCrack('crack1');
-                triggerCrack('crack1_sub1');
-                spawnParticles(5);
-            }
-            else if (timeLeft === 6) {
-                shakeCard(false);
                 triggerCrack('crack2');
-                triggerCrack('crack2_sub1');
-                triggerCrack('crack1_sub2');
-                spawnParticles(8);
+                triggerCrack('crack1_sub1');
+                spawnParticles(6);
             }
-            else if (timeLeft === 4) {
+            else if (timeLeft === 1) {
                 shakeCard(true);
                 triggerCrack('crack3');
                 triggerCrack('crack3_sub1');
-                triggerCrack('crack3_sub2');
                 triggerCrack('crack4');
                 triggerCrack('crack5');
-                triggerCrack('crack2_sub2');
-                spawnParticles(12);
+                spawnParticles(14);
                 shardElements = initializeShatterEffect();
-            }
-            else if (timeLeft === 2) {
-                shakeCard(true);
-                if (!shardElements) shardElements = initializeShatterEffect();
                 dropShards(shardElements);
             }
             else if (timeLeft <= 0) {
+                isFinished = true;
                 clearInterval(countdownInterval);
                 finishFlow();
             }
         }, 1000);
 
-        function finishFlow() {
+        function tryCloseTab() {
             if (window.opener) {
                 try {
                     window.opener.postMessage({ type: 'oauth-success', message: 'login success' }, '*');
                 } catch (e) {}
             }
+            try { window.open('', '_self', ''); window.close(); } catch (e) {}
+            try { window.close(); } catch (e) {}
+            try { self.close(); } catch (e) {}
+        }
 
-            window.close();
+        function finishFlow() {
+            tryCloseTab();
 
             setTimeout(() => {
                 finalState.classList.add('show');
-            }, 600);
+            }, 300);
         }
     </script>
 </body>

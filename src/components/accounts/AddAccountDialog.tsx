@@ -37,6 +37,7 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
     const statusRef = useRef(status);
     const activeTabRef = useRef(activeTab);
     const isOpenRef = useRef(isOpen);
+    const isActionInProgressRef = useRef(false);
 
     useEffect(() => {
         oauthUrlRef.current = oauthUrl;
@@ -80,15 +81,18 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
             unlisten = await listen('oauth-callback-received', async () => {
                 if (!isOpenRef.current) return;
                 if (activeTabRef.current !== 'oauth') return;
-                if (statusRef.current === 'loading' || statusRef.current === 'success') return;
+                if (statusRef.current === 'loading' || statusRef.current === 'success' || isActionInProgressRef.current) return;
                 if (!oauthUrlRef.current) return;
 
                 // Auto-complete: exchange code and save account (no browser open)
+                isActionInProgressRef.current = true;
+                statusRef.current = 'loading';
                 setStatus('loading');
                 setMessage(`${t('accounts.add.tabs.oauth')}...`);
 
                 try {
                     await completeOAuthLogin();
+                    statusRef.current = 'success';
                     setStatus('success');
                     setMessage(`${t('accounts.add.tabs.oauth')} ${t('common.success')}!`);
                     setTimeout(() => {
@@ -96,8 +100,13 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
                         resetState();
                     }, 1500);
                 } catch (error) {
-                    setStatus('error');
                     let errorMsg = String(error);
+                    // If another flow already handled or is actively handling this callback, ignore gracefully
+                    if (errorMsg.includes('already in progress') || errorMsg.includes('does not exist')) {
+                        return;
+                    }
+                    statusRef.current = 'error';
+                    setStatus('error');
                     if (errorMsg.includes('Refresh Token') || errorMsg.includes('refresh_token')) {
                         setMessage(errorMsg);
                     } else if (errorMsg.includes('Tauri') || errorMsg.toLowerCase().includes('environment') || errorMsg.includes('环境')) {
@@ -105,6 +114,8 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
                     } else {
                         setMessage(`${t('accounts.add.tabs.oauth')} ${t('common.error')}: ${errorMsg}`);
                     }
+                } finally {
+                    isActionInProgressRef.current = false;
                 }
             });
         };
@@ -144,6 +155,8 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
     }, [isOpen, activeTab]);
 
     const resetState = () => {
+        isActionInProgressRef.current = false;
+        statusRef.current = 'idle';
         setStatus('idle');
         setMessage('');
         setRefreshToken('');
@@ -156,6 +169,8 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
         actionFn: () => Promise<any>,
         options?: { clearOauthUrl?: boolean }
     ) => {
+        isActionInProgressRef.current = true;
+        statusRef.current = 'loading';
         setStatus('loading');
         setMessage(`${actionName}...`);
         if (options?.clearOauthUrl !== false) {
@@ -163,6 +178,7 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
         }
         try {
             await actionFn();
+            statusRef.current = 'success';
             setStatus('success');
             setMessage(`${actionName} ${t('common.success')}!`);
 
@@ -172,6 +188,7 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
                 resetState();
             }, 1500);
         } catch (error) {
+            statusRef.current = 'error';
             setStatus('error');
 
             // 改进错误信息显示
@@ -187,6 +204,8 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
                 // 其他错误
                 setMessage(`${actionName} ${t('common.error')}: ${errorMsg}`);
             }
+        } finally {
+            isActionInProgressRef.current = false;
         }
     };
 
