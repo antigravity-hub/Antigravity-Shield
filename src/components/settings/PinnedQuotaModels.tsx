@@ -209,14 +209,14 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
             {/* 智能分类与分层过滤器 (Category & Tier Tabs) */}
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-base-200 flex flex-wrap items-center justify-between gap-3">
                 {/* 家族代际筛选 (Family Generations) */}
-                <div className="flex items-center gap-1 bg-gray-100/80 dark:bg-base-200/80 p-1 rounded-xl">
+                <div className="flex items-center gap-1 bg-gray-100/80 dark:bg-slate-900/90 border border-transparent dark:border-slate-800/80 p-1 rounded-xl">
                     <button
                         type="button"
                         onClick={() => setSelectedFamily('all')}
                         className={cn(
                             "px-2.5 py-1 text-xs font-bold rounded-lg transition-all",
                             selectedFamily === 'all'
-                                ? "bg-white dark:bg-base-100 text-indigo-600 dark:text-indigo-400 shadow-xs"
+                                ? "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs border border-transparent dark:border-slate-700/60"
                                 : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                         )}
                     >
@@ -230,7 +230,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                             className={cn(
                                 "px-2.5 py-1 text-xs font-bold rounded-lg transition-all",
                                 selectedFamily === family
-                                    ? "bg-white dark:bg-base-100 text-indigo-600 dark:text-indigo-400 shadow-xs"
+                                    ? "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs border border-transparent dark:border-slate-700/60"
                                     : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                             )}
                         >
@@ -240,14 +240,14 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                 </div>
 
                 {/* 规格等级筛选 (Pro / Flash / Image Tier Filter) */}
-                <div className="flex items-center gap-1 bg-gray-100/80 dark:bg-base-200/80 p-1 rounded-xl">
+                <div className="flex items-center gap-1 bg-gray-100/80 dark:bg-slate-900/90 border border-transparent dark:border-slate-800/80 p-1 rounded-xl">
                     <button
                         type="button"
                         onClick={() => setSelectedTier('all')}
                         className={cn(
                             "px-2 py-1 text-xs font-bold rounded-lg transition-all",
                             selectedTier === 'all'
-                                ? "bg-white dark:bg-base-100 text-indigo-600 dark:text-indigo-400 shadow-xs"
+                                ? "bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs border border-transparent dark:border-slate-700/60"
                                 : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                         )}
                     >
@@ -298,7 +298,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
             {/* 分组展示模型 (Grouped Model Sections) */}
             <div className="mt-5 space-y-6">
                 {Object.keys(groupedOptions).length === 0 ? (
-                    <div className="p-8 text-center bg-gray-50 dark:bg-base-200/40 rounded-xl border border-dashed border-gray-200 dark:border-base-300 text-gray-400 text-xs">
+                    <div className="p-8 text-center bg-gray-50 dark:bg-slate-900/40 rounded-xl border border-dashed border-gray-200 dark:border-slate-800 text-gray-400 text-xs">
                         {t('common.no_matching_models', 'No models match the selected filter.')}
                     </div>
                 ) : (
@@ -319,7 +319,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                                         <span className="text-xs font-extrabold uppercase tracking-wider text-gray-800 dark:text-gray-200">
                                             {groupName}
                                         </span>
-                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-base-300 text-gray-500">
+                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-800 text-gray-500">
                                             {models.length}
                                         </span>
                                     </div>
@@ -343,7 +343,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                                                     "flex items-center justify-between p-2.5 rounded-lg border cursor-pointer transition-all duration-200 select-none",
                                                     isSelected
                                                         ? "bg-indigo-50/90 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-700 text-indigo-900 dark:text-indigo-200 ring-1 ring-indigo-400/30 shadow-xs"
-                                                        : "bg-gray-50/50 dark:bg-base-200/50 border-gray-100 dark:border-base-300/50 text-gray-700 dark:text-gray-300 hover:border-gray-200 dark:hover:border-base-300"
+                                                        : "bg-gray-50/50 dark:bg-slate-900/50 border-gray-100 dark:border-slate-800/50 text-gray-700 dark:text-gray-300 hover:border-gray-200 dark:hover:border-slate-700"
                                                 )}
                                             >
                                                 <div className="flex flex-col min-w-0 pr-1">
