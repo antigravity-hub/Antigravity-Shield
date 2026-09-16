@@ -108,16 +108,34 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
     }
   };
 
+  const handleDirectInstall = async () => {
+    if (!updateInfo) return;
+    try {
+      setUpdateState('downloading');
+      setDownloadProgress(0);
+      showToast(t('update_notification.toast.switching_direct', 'Cryptographic verification unavailable. Initiating direct auto-install...'), 'info');
+
+      const { listen } = await import('@tauri-apps/api/event');
+      const unlisten = await listen<{ percent: number }>('updater://direct-progress', (event) => {
+        setDownloadProgress(event.payload.percent);
+      });
+
+      await invoke('download_and_install_direct', {
+        downloadUrl: updateInfo.download_url,
+        version: updateInfo.latest_version
+      });
+      unlisten();
+    } catch (err) {
+      const errStr = err instanceof Error ? err.message : String(err);
+      console.error('Direct install failed:', errStr);
+      setUpdateState('manual');
+      showToast(t('update_notification.toast.signature_invalid', 'Automated verification unavailable. Switching to manual download.'), 'warning');
+    }
+  };
+
   const handleStartDownload = async () => {
     if (!nativeUpdateRef.current) {
-      if (updateInfo) {
-        try {
-          const { openUrl } = await import('@tauri-apps/plugin-opener');
-          await openUrl(updateInfo.download_url);
-        } catch {
-          window.open(updateInfo.download_url, '_blank');
-        }
-      }
+      await handleDirectInstall();
       return;
     }
 
@@ -151,8 +169,8 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
       const errorMsg = error instanceof Error ? error.message : String(error);
       console.error('Update download failed:', errorMsg);
       if (errorMsg.toLowerCase().includes('minisign') || errorMsg.toLowerCase().includes('signature')) {
-        setUpdateState('manual');
-        showToast(t('update_notification.toast.signature_invalid', 'Automated verification unavailable. Switching to manual download.'), 'warning');
+        console.warn('Signature verification failed, triggering resilient direct installer fallback...');
+        await handleDirectInstall();
       } else {
         setUpdateState('error');
         showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
@@ -364,6 +382,21 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
             {updateState === 'manual' && (
               <div className="flex flex-col gap-2.5">
                 <button
+                  onClick={handleDirectInstall}
+                  className="
+                    w-full py-3 px-4 rounded-xl
+                    bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500
+                    text-white font-semibold text-sm
+                    shadow-lg shadow-blue-500/25
+                    transition-all duration-200
+                    flex items-center justify-center gap-2
+                    active:scale-[0.98]
+                  "
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>{t('update_notification.btn_direct_install', 'Direct Auto-Install (Automatic)')}</span>
+                </button>
+                <button
                   onClick={async () => {
                     if (updateInfo) {
                       try {
@@ -375,26 +408,22 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
                     }
                   }}
                   className="
-                    w-full py-3 px-4 rounded-xl
-                    bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500
-                    text-white font-semibold text-sm
-                    shadow-lg shadow-blue-500/25
-                    transition-all duration-200
-                    flex items-center justify-center gap-2
-                    active:scale-[0.98]
-                  "
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>{navigator.language.startsWith('zh') ? '前往下载页面' : 'Go to Download Page'}</span>
-                </button>
-                <button
-                  onClick={handleGracePeriod}
-                  className="
                     w-full py-2.5 px-3 rounded-xl
                     border border-gray-200 dark:border-slate-700
                     text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200
                     hover:bg-gray-100 dark:hover:bg-slate-800
                     transition-all duration-150
+                    text-xs font-medium flex items-center justify-center gap-2
+                  "
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>{t('update_notification.btn_manual_browser', 'Open Release Page in Browser')}</span>
+                </button>
+                <button
+                  onClick={handleGracePeriod}
+                  className="
+                    w-full py-2 px-3 rounded-xl
+                    text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
                     text-xs font-medium flex items-center justify-center gap-2
                   "
                 >

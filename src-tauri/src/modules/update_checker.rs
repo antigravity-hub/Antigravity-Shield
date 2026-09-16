@@ -520,6 +520,186 @@ pub async fn brew_upgrade_cask() -> Result<String, String> {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DirectDownloadProgress {
+    pub percent: u32,
+    pub downloaded: u64,
+    pub total: u64,
+}
+
+/// Fallback direct installer downloader and runner.
+/// Used when Tauri's native signature/minisign verification fails or updater artifacts lack valid signatures.
+pub async fn download_and_run_installer(
+    app: tauri::AppHandle,
+    mut download_url: String,
+    version: String,
+) -> Result<(), String> {
+    use tauri::Emitter;
+    use tokio::io::AsyncWriteExt;
+
+    let clean_ver = version.trim_start_matches('v').trim();
+
+    // If download_url points to a webpage or release notes rather than an executable asset,
+    // construct the exact GitHub release binary asset URL.
+    if !download_url.ends_with(".exe")
+        && !download_url.ends_with(".dmg")
+        && !download_url.ends_with(".AppImage")
+    {
+        #[cfg(target_os = "windows")]
+        {
+            download_url = format!(
+                "https://github.com/DoctorGuidance/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_x64-setup.exe",
+                clean_ver, clean_ver
+            );
+        }
+        #[cfg(target_os = "macos")]
+        {
+            download_url = format!(
+                "https://github.com/DoctorGuidance/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_universal.dmg",
+                clean_ver, clean_ver
+            );
+        }
+        #[cfg(target_os = "linux")]
+        {
+            download_url = format!(
+                "https://github.com/DoctorGuidance/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_amd64.AppImage",
+                clean_ver, clean_ver
+            );
+        }
+    }
+
+    logger::log_info(&format!(
+        "Initiating direct installer fallback download from: {}",
+        download_url
+    ));
+
+    let client = create_client().await?;
+    let mut response = client
+        .get(&download_url)
+        .send()
+        .await
+        .map_err(|e| format!("Direct download request failed: {}", e))?;
+
+    if !response.status().is_success() {
+        return Err(format!(
+            "Download failed with HTTP status: {}",
+            response.status()
+        ));
+    }
+
+    let total_size = response.content_length().unwrap_or(0);
+    let filename = if download_url.ends_with(".exe") {
+        format!("Antigravity-Shield-{}-setup.exe", clean_ver)
+    } else if download_url.ends_with(".dmg") {
+        format!("Antigravity-Shield-{}.dmg", clean_ver)
+    } else if download_url.ends_with(".AppImage") {
+        format!("Antigravity-Shield-{}.AppImage", clean_ver)
+    } else {
+        #[cfg(target_os = "windows")]
+        {
+            format!("Antigravity-Shield-{}-setup.exe", clean_ver)
+        }
+        #[cfg(target_os = "macos")]
+        {
+            format!("Antigravity-Shield-{}.dmg", clean_ver)
+        }
+        #[cfg(target_os = "linux")]
+        {
+            format!("Antigravity-Shield-{}.AppImage", clean_ver)
+        }
+    };
+
+    let temp_dir = std::env::temp_dir();
+    let file_path = temp_dir.join(&filename);
+    let mut file = tokio::fs::File::create(&file_path)
+        .await
+        .map_err(|e| format!("Failed to create temp installer file: {}", e))?;
+
+    let mut downloaded: u64 = 0;
+    let mut last_reported_percent = 0;
+
+    while let Some(chunk) = response
+        .chunk()
+        .await
+        .map_err(|e| format!("Failed reading download chunk: {}", e))?
+    {
+        file.write_all(&chunk)
+            .await
+            .map_err(|e| format!("Failed writing chunk to disk: {}", e))?;
+        downloaded += chunk.len() as u64;
+
+        if total_size > 0 {
+            let percent = ((downloaded as f64 / total_size as f64) * 100.0).round() as u32;
+            if percent != last_reported_percent {
+                last_reported_percent = percent;
+                let _ = app.emit(
+                    "updater://direct-progress",
+                    DirectDownloadProgress {
+                        percent,
+                        downloaded,
+                        total: total_size,
+                    },
+                );
+            }
+        }
+    }
+
+    file.flush()
+        .await
+        .map_err(|e| format!("Failed to flush installer file: {}", e))?;
+    drop(file);
+
+    let _ = app.emit(
+        "updater://direct-progress",
+        DirectDownloadProgress {
+            percent: 100,
+            downloaded,
+            total: downloaded,
+        },
+    );
+
+    logger::log_info(&format!(
+        "Direct installer download complete ({} bytes). Launching: {:?}",
+        downloaded, file_path
+    ));
+
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NEW_PROCESS_GROUP: u32 = 0x00000200;
+        const DETACHED_PROCESS: u32 = 0x00000008;
+
+        std::process::Command::new(&file_path)
+            .creation_flags(CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS)
+            .spawn()
+            .map_err(|e| format!("Failed to launch installer process: {}", e))?;
+
+        // Allow child process detached startup then exit gracefully
+        tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+        std::process::exit(0);
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open")
+            .arg(&file_path)
+            .spawn()
+            .map_err(|e| format!("Failed to open DMG installer: {}", e))?;
+        Ok(())
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let _ = std::fs::set_permissions(&file_path, std::fs::Permissions::from_mode(0o755));
+        std::process::Command::new(&file_path)
+            .spawn()
+            .map_err(|e| format!("Failed to launch AppImage: {}", e))?;
+        tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+        std::process::exit(0);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

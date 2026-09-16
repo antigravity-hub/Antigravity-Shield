@@ -957,6 +957,21 @@ pub async fn brew_upgrade_cask() -> Result<String, String> {
     crate::modules::update_checker::brew_upgrade_cask().await
 }
 
+/// 直接下载安装程序并执行升级（用于原生 Minisign 校验失败或免配置更新场景）
+#[tauri::command]
+pub async fn download_and_install_direct(
+    app: tauri::AppHandle,
+    download_url: String,
+    version: String,
+) -> Result<(), String> {
+    modules::logger::log_info(&format!(
+        "收到前端触发的直接安装请求: {} (v{})",
+        download_url, version
+    ));
+    crate::modules::update_checker::download_and_run_installer(app, download_url, version).await
+}
+
+
 /// 获取更新设置
 #[tauri::command]
 pub async fn get_update_settings() -> Result<crate::modules::update_checker::UpdateSettings, String>
