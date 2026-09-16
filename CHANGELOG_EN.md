@@ -3,6 +3,46 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.0 (2026-09-16)**:
+        -   **[IDE Toolkit Hub v2.3.0 & Real-Time Sync] Bi-Directional Bridge & Automated Extension Deployment**:
+            -   **Embedded Antigravity Toolkit v2.3.0**: Embedded latest `antigravity-toolkit-2.3.0.vsix` with 1-click install and CLI verification for Antigravity IDE, Visual Studio Code, Cursor, and Windsurf.
+            -   **Real-Time Tunnel Quota Push**: Implemented dynamic `quota_updated` event push on quota changes or account rotation, delivering instantaneous balance updates to connected IDEs.
+            -   **Autonomous Port Fallback & Discovery**: Added intelligent port fallback and dynamic discovery sync (ports 10810/10811) with live header connectivity status badge.
+            -   **Platform Target Protection**: Preserved active target configuration against accidental bridge override during account switching.
+            -   **Toolkit Hub Modal & Diagnostics**: Rebuilt the management hub with localized controls, detailed connection logs, and automated environment detection.
+        -   **[Account Security & Verification Experience] Verification Alerts & Native Guide Viewer**:
+            -   **Verification-Required Account Detection**: Automated detection of Google account security challenges and verification-required states, displaying distinct amber indicators across dashboard and account tables.
+            -   **Native In-App Verification Guide Viewer**: Integrated interactive modal Markdown viewer with fallback browser opener, walking users through step-by-step unblocking workflows safely.
+            -   **OAuth Authentication Hardening**: Introduced atomic race guards in the local OAuth callback server, preventing hung browser tabs and ensuring instant tab closure upon authentication.
+        -   **[Network Health Pulse & Proxy Optimization] UAC Elevation & Lean Model Warmup**:
+            -   **Windows UAC Elevation & TUN Adapter Detection**: Enabled automatic UAC elevation (`runas`) when launching proxy/VPN tunnels and integrated smart virtual TUN interface scanning.
+            -   **Ultra-Lean Model Warmup Engine**: Re-architected warmup payloads targeting active Gemini 2.5 Flash and Claude models with minimal token consumption, preventing quota waste during application launch.
+            -   **Proxy Memory Safety & Buffer Move Resolution**: Eliminated buffer move hazards during HTTP streaming and response forwarding, ensuring stable multi-target proxy operations.
+            -   **Localized WARP Region-Bypass Guidance**: Embedded clear, multi-language setup instructions for Cloudflare WARP and proxy routing directly inside Network Health Pulse.
+        -   **[UI/UX, RTL Support & Persian Typography] Native RTL, Slate Theme & Precision Stats**:
+            -   **Native RTL & Vazirmatn Font Patch**: Integrated full right-to-left UI layout and Iranian Vazirmatn font injection for Antigravity IDE and Shield.
+            -   **Harmonized Dark Theme Palette**: Aligned modal, card, and table background surfaces to slate dark-mode tokens (`slate-900`/`slate-800`), eliminating light-theme fallback artifacts.
+            -   **Token Analytics Chart Polish**: Fixed aggregation time intervals and chart tick intervals for hourly, daily, and weekly token consumption visualization.
+            -   **Table Overflow Resolution**: Eliminated horizontal scrollbars on account lists and cleaned up action button separators for a sleek presentation.
+            -   **Comprehensive i18n Localization**: Completed English, Persian, and Chinese translations across Toolkit settings, WARP guides, and Token Stats.
+        -   **[Automated Release Pipeline] Hardened CI/CD & Cross-Platform Distribution**:
+            -   **Hardened Release Workflow**: Enforced strict validation gates in CI requiring complete Windows installer and updater manifest generation before publishing release assets.
+            -   **Multi-Platform Build Architecture**: Integrated automated macOS (`.dmg`) and Linux (`.deb` / `.AppImage`) packaging infrastructure in release actions.
+    *   **v5.9.1 (2026-09-16)**:
+        -   **[Auto-Update & Distribution Resilience] Resilient Direct Streaming Installer Fallback Engine**:
+            -   **Zero-Stall Streaming Installer**: Implemented native streaming download engine (`download_and_run_installer` in Rust) that fetches setup binaries directly with real-time chunked progress events, completely eliminating manual browser redirects when cryptographic verification is unavailable.
+            -   **Clean Process Handoff**: Configured detached installer execution on Windows (`CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS`) with coordinated graceful process exit, ensuring NSIS can replace binaries cleanly without file locking.
+            -   **1-Click In-App Direct Installation**: Enhanced update modal and settings interfaces with automated transition to direct installation, providing users with a seamless single-click upgrade experience.
+        -   **[Security & Release Pipeline] Verified Minisign Keypair Alignment & Build Automation**:
+            -   **Cryptographic Keypair Realignment**: Synchronized authoritative Minisign public key in `tauri.conf.json` matching CI signing configuration with explicit password support, eliminating Minisign key derivation failures in GitHub Actions.
+            -   **Streamlined CI Packaging**: Hardened `.github/workflows/release.yml` updater artifact generation logic to guarantee clean packaging of installer bundles and verification manifests.
+    *   **v5.9.0 (2026-09-16)**:
+        -   **[Toolkit & API Integration] Bi-Directional IDE Bridge & Quota Intelligence**:
+            -   **Hardened Token Analytics**: Refined live quota calculations and strict non-rounding percentage display across connected accounts.
+            -   **Full-Fleet Synchronization**: Implemented automated fleet-wide quota auto-refresh and instant window-focus wakeup sync.
+    *   **v5.8.3 (2026-09-15)**:
+        -   **[Core & Process Monitoring] Process Signature Alignment**:
+            -   **System Diagnostic Alignment**: Aligned system process scanning routines with modern sysinfo signatures.
     *   **v5.8.2 (2026-09-14)**:
         -   **[User Interface & Window Controls] Native Desktop Titlebar Window Controls**:
             -   **Pixel-Perfect Window Caption Buttons**: Implemented dedicated Minimize (`—`), Maximize / Restore Down (`□` / `❐`), and Close (`✕`) caption controls in the frameless titlebar with Windows-native hover aesthetics and crimson close accent.
