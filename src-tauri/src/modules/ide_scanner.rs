@@ -385,10 +385,12 @@ fn check_extension_installed(subdirs: &[&str]) -> bool {
 
 /// Resolves the bundled antigravity-toolkit.vsix path
 pub fn get_bundled_vsix_path() -> Option<PathBuf> {
-    // 1. Current working directory / resources
-    let cand1 = PathBuf::from("resources").join("antigravity-toolkit.vsix");
-    if cand1.exists() {
-        return Some(cand1);
+    // 1. Current working directory / resources / src-tauri resources
+    for dir in &["resources", "src-tauri/resources", "../resources"] {
+        let cand = PathBuf::from(dir).join("antigravity-toolkit.vsix");
+        if cand.exists() {
+            return Some(cand);
+        }
     }
 
     // 2. Relative to current executable
@@ -406,7 +408,7 @@ pub fn get_bundled_vsix_path() -> Option<PathBuf> {
     }
 
     // 3. Development fallback
-    for v in &["1.0.1", "1.0.0"] {
+    for v in &["2.2.0", "2.1.1", "1.0.1", "1.0.0"] {
         let cand = PathBuf::from(format!(
             r"d:\Ershad Zolfi\programming\coding with Gemini\antigravity-toolkit-extension\antigravity-toolkit-{}.vsix",
             v
