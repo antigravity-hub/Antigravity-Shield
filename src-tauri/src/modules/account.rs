@@ -2033,6 +2033,47 @@ pub fn update_account_quota(account_id: &str, quota: QuotaData) -> Result<(), St
     // This ensures in-memory protected_models are updated
     crate::proxy::server::trigger_account_reload(account_id);
 
+    // [REAL-TIME TUNNEL] Push quota update notification to IDE Toolkit extension
+    crate::modules::ide_scanner::push_command(crate::modules::ide_scanner::ToolkitCommand {
+        id: uuid::Uuid::new_v4().to_string(),
+        action: "quota_updated".to_string(),
+        account_id: account_id.to_string(),
+        email: account.email.clone(),
+        timestamp: chrono::Utc::now().timestamp(),
+    });
+
+    Ok(())
+}
+
+/// Set account validation blocked status (e.g. Google VALIDATION_REQUIRED 403)
+pub fn set_account_validation_blocked(
+    account_id: &str,
+    blocked: bool,
+    reason: Option<&str>,
+    validation_url: Option<&str>,
+) -> Result<(), String> {
+    let _account_write = lock_account_file_updates()?;
+    let mut account = load_account(account_id)?;
+
+    account.validation_blocked = blocked;
+    if blocked {
+        account.validation_blocked_reason = reason.map(|s| s.to_string());
+        if let Some(url) = validation_url {
+            account.validation_url = Some(url.to_string());
+        }
+        // Block until 7 days from now (persisted marker)
+        account.validation_blocked_until = Some(chrono::Utc::now().timestamp() + 7 * 86400);
+    } else {
+        account.validation_blocked_reason = None;
+        account.validation_url = None;
+        account.validation_blocked_until = None;
+    }
+
+    save_account(&account)?;
+
+    // Signal TokenManager to update in-memory state
+    crate::proxy::server::trigger_account_reload(account_id);
+
     Ok(())
 }
 

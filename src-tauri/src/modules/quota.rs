@@ -327,6 +327,36 @@ pub async fn fetch_quota_with_cache(
 
                             // [HARDENED M1] 隔离配额查询 403 错误：记录瞬时告警，严禁标记账号为 is_forbidden (Issue #2209, #3074)
                             let text = response.text().await.unwrap_or_default();
+
+                            // Check for Google account verification requirement (VALIDATION_REQUIRED)
+                            if text.contains("VALIDATION_REQUIRED") || text.contains("Verify your account to continue") {
+                                let mut extracted_url = None;
+                                if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&text) {
+                                    if let Some(details) = parsed.pointer("/error/details").and_then(|d| d.as_array()) {
+                                        for detail in details {
+                                            if let Some(meta) = detail.get("metadata") {
+                                                if let Some(url) = meta.get("validation_url").and_then(|u| u.as_str()) {
+                                                    extracted_url = Some(url.to_string());
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                crate::modules::logger::log_warn(&format!(
+                                    "⚠️ [{}] Account requires Google verification (VALIDATION_REQUIRED). Setting validation_blocked flag.",
+                                    email
+                                ));
+                                if let Some(acc_id) = account_id {
+                                    let _ = crate::modules::account::set_account_validation_blocked(
+                                        acc_id,
+                                        true,
+                                        Some("Verify your account to continue."),
+                                        extracted_url.as_deref(),
+                                    );
+                                }
+                            }
+
                             crate::modules::logger::log_warn(&format!(
                                 "Quota fetch received 403 Forbidden (endpoint: {}). Recording transient warning; account is NOT marked forbidden. Response: {}",
                                 ep_url, text
@@ -531,10 +561,39 @@ async fn fetch_quota_summary(
                 let status = response.status();
                 if !status.is_success() {
                     if status == rquest::StatusCode::FORBIDDEN {
-                        crate::modules::logger::log_warn(&format!(
-                            "QuotaSummary API {} returned 403 Forbidden for {}. Recording transient warning; best-effort summary unavailable.",
-                            ep_url, email
-                        ));
+                        let text = response.text().await.unwrap_or_default();
+                        if text.contains("VALIDATION_REQUIRED") || text.contains("Verify your account to continue") {
+                            let mut extracted_url = None;
+                            if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&text) {
+                                if let Some(details) = parsed.pointer("/error/details").and_then(|d| d.as_array()) {
+                                    for detail in details {
+                                        if let Some(meta) = detail.get("metadata") {
+                                            if let Some(url) = meta.get("validation_url").and_then(|u| u.as_str()) {
+                                                extracted_url = Some(url.to_string());
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            crate::modules::logger::log_warn(&format!(
+                                "⚠️ [{}] QuotaSummary API detected VALIDATION_REQUIRED. Marking account as validation_blocked.",
+                                email
+                            ));
+                            if let Some(acc_id) = account_id {
+                                let _ = crate::modules::account::set_account_validation_blocked(
+                                    acc_id,
+                                    true,
+                                    Some("Verify your account to continue."),
+                                    extracted_url.as_deref(),
+                                );
+                            }
+                        } else {
+                            crate::modules::logger::log_warn(&format!(
+                                "QuotaSummary API {} returned 403 Forbidden for {}. Recording transient warning; best-effort summary unavailable.",
+                                ep_url, email
+                            ));
+                        }
                         return None;
                     }
                     crate::modules::logger::log_warn(&format!(
