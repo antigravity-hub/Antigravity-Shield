@@ -158,7 +158,11 @@
       "all_systems_go": "所有系统连接正常，已准备好进行 AI 编程。",
       "warp_modal_title": "使用 WARP 彻底解决 Gemini 地区限制",
       "warp_modal_hint": "Google 限制了部分 IP 访问 Gemini。Cloudflare WARP 提供干净的出口 IP，可彻底解决 HTTP 400 及不支持错误。",
-      "warp_connect_btn": "填入 40000 端口 (WARP Local) 并连接"
+      "warp_connect_btn": "填入 40000 端口 (WARP Local) 并连接",
+      "tun_active": "TUN 模式已激活（直接路由）",
+      "remove_proxy_btn": "切换为 TUN / 直连",
+      "remove_proxy_tooltip": "清除本地代理设置并使用直接 TUN 适配器路由",
+      "vpn_already_running": "{{name}} 已在运行中。"
     }
   },
   "accounts": {

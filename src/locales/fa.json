@@ -180,7 +180,11 @@
       "all_systems_go": "تمام سیستم‌ها متصل و آمادهٔ کدنویسی با هوش مصنوعی هستند.",
       "warp_modal_title": "حل تضمینی مشکل تحریم ریجن گوگل جمینای با WARP",
       "warp_modal_hint": "گوگل اتصال آی‌پی‌های ایران و برخی دیتاسنترها به جمینای را تحریم کرده است. کلودفلر WARP با ارائه آی‌پی تمیز و اختصاصی مسأله ارور ۴۰۰ و «Gemini isn't currently supported in your country» را به‌طور کامل رفع می‌کند.",
-      "warp_connect_btn": "ست کردن پورت 40000 (WARP Local) و اتصال"
+      "warp_connect_btn": "ست کردن پورت 40000 (WARP Local) و اتصال",
+      "tun_active": "حالت TUN فعال است (مسیریابی مستقیم)",
+      "remove_proxy_btn": "بازگشت به حالت مستقیم / TUN",
+      "remove_proxy_tooltip": "حذف تنظیمات پروکسی محلی و استفاده از ترافیک مستقیم کارت شبکه TUN",
+      "vpn_already_running": "{{name}} در حال حاضر فعال و در حال اجرا است."
     }
   },
   "accounts": {
