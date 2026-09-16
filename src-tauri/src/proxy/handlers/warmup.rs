@@ -93,13 +93,13 @@ pub async fn handle_warmup(
             messages: vec![crate::proxy::mappers::claude::models::Message {
                 role: "user".to_string(),
                 content: crate::proxy::mappers::claude::models::MessageContent::String(
-                    "ping".to_string(),
+                    "Hi".to_string(),
                 ),
             }],
-            max_tokens: Some(1),
+            max_tokens: Some(5),
             stream: false,
             system: None,
-            temperature: None,
+            temperature: Some(0.0),
             top_p: None,
             top_k: None,
             tools: None,
@@ -145,9 +145,9 @@ pub async fn handle_warmup(
         let base_request = if is_image {
             json!({
                 "model": req.model,
-                "contents": [{"role": "user", "parts": [{"text": "Say hi"}]}],
+                "contents": [{"role": "user", "parts": [{"text": "Hi"}]}],
                 "generationConfig": {
-                    "maxOutputTokens": 10,
+                    "maxOutputTokens": 5,
                     "temperature": 0,
                     "responseModalities": ["TEXT"]
                 },
@@ -156,9 +156,13 @@ pub async fn handle_warmup(
         } else {
             json!({
                 "model": req.model,
-                "contents": [{"role": "user", "parts": [{"text": "Say hi"}]}],
+                "contents": [{"role": "user", "parts": [{"text": "Hi"}]}],
                 "generationConfig": {
-                    "temperature": 0
+                    "temperature": 0,
+                    "maxOutputTokens": 5,
+                    "thinkingConfig": {
+                        "thinkingBudget": 0
+                    }
                 },
                 "session_id": session_id
             })
@@ -174,36 +178,27 @@ pub async fn handle_warmup(
         ) // [FIX] Added None for token param
     };
 
-    // ===== 步骤 3: 调用 UpstreamClient =====
-    let model_lower = req.model.to_lowercase();
-    let prefer_non_stream = model_lower.contains("flash-lite") || model_lower.contains("2.5-pro");
-
-    let (method, query) = if prefer_non_stream {
-        ("generateContent", None)
-    } else {
-        ("streamGenerateContent", Some("alt=sse"))
-    };
-
+    // ===== 步骤 3: 调用 UpstreamClient (优先非流式 generateContent 确保完整计费与重置) =====
     let mut result = state
         .upstream
         .call_v1_internal(
-            method,
+            "generateContent",
             &access_token,
             body.clone(),
-            query,
+            None,
             Some(account_id.as_str()),
         )
         .await;
 
-    // 如果流式请求失败，尝试非流式请求
-    if result.is_err() && !prefer_non_stream {
+    // 如果非流式失败，回退到流式请求
+    if result.is_err() {
         result = state
             .upstream
             .call_v1_internal(
-                "generateContent",
+                "streamGenerateContent",
                 &access_token,
                 body,
-                None,
+                Some("alt=sse"),
                 Some(account_id.as_str()),
             )
             .await;
@@ -217,6 +212,9 @@ pub async fn handle_warmup(
             let response = call_result.response;
             let status = response.status();
             let status_code = status.as_u16();
+
+            // 彻底读取响应体，确保上游连接完成并计费
+            let _ = response.bytes().await;
 
             // 记录预热请求到流量日志
             let log = ProxyRequestLog {

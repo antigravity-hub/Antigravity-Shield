@@ -717,7 +717,76 @@ pub async fn warmup_model_directly(
             ));
             false
         }
+}
+
+/// Rank Flash models (higher is newer)
+fn get_flash_rank(lower: &str) -> i32 {
+    if lower.contains("3.8") { 380 }
+    else if lower.contains("3.7") { 370 }
+    else if lower.contains("3.5") { 350 }
+    else if lower.contains("3.1") { 310 }
+    else if lower.contains("gemini-3") || lower.contains("3-flash") { 300 }
+    else if lower.contains("2.5") { 250 }
+    else if lower.contains("2.0") || lower.contains("2-flash") { 200 }
+    else if lower.contains("1.5") { 150 }
+    else { 100 }
+}
+
+/// Rank Claude models (higher is newer)
+fn get_claude_rank(lower: &str) -> i32 {
+    if lower.contains("4-6") || lower.contains("4.6") { 460 }
+    else if lower.contains("4") { 400 }
+    else if lower.contains("3-7") || lower.contains("3.7") { 370 }
+    else if lower.contains("3-5") || lower.contains("3.5") { 350 }
+    else if lower.contains("3-sonnet") { 300 }
+    else if lower.contains("3-opus") { 290 }
+    else if lower.contains("3-haiku") { 280 }
+    else { 100 }
+}
+
+/// Select at most 2 models for warmup:
+/// 1. The latest active Flash model (Gemini quota bucket)
+/// 2. The latest active Claude model (Claude quota bucket, if available)
+pub fn select_target_warmup_models(
+    models: &[crate::models::quota::ModelQuota],
+) -> Vec<crate::models::quota::ModelQuota> {
+    let mut best_flash: Option<(i32, crate::models::quota::ModelQuota)> = None;
+    let mut best_claude: Option<(i32, crate::models::quota::ModelQuota)> = None;
+
+    for m in models {
+        if m.percentage < 100 {
+            continue;
+        }
+        let lower = m.name.to_lowercase();
+        // Skip thinking variants and image models for warmup
+        if lower.contains("thinking") || lower.contains("image") || lower.contains("imagen") {
+            continue;
+        }
+
+        // Check for Flash
+        if lower.contains("flash") {
+            let rank = get_flash_rank(&lower);
+            if best_flash.as_ref().map_or(true, |(r, _)| rank > *r) {
+                best_flash = Some((rank, m.clone()));
+            }
+        }
+        // Check for Claude
+        else if lower.contains("claude") {
+            let rank = get_claude_rank(&lower);
+            if best_claude.as_ref().map_or(true, |(r, _)| rank > *r) {
+                best_claude = Some((rank, m.clone()));
+            }
+        }
     }
+
+    let mut result = Vec::new();
+    if let Some((_, flash)) = best_flash {
+        result.push(flash);
+    }
+    if let Some((_, claude)) = best_claude {
+        result.push(claude);
+    }
+    result
 }
 
 /// Smart warmup for all accounts
@@ -778,24 +847,19 @@ pub async fn warm_up_all_accounts() -> Result<String, String> {
                         ));
                         continue;
                     }
-                    let mut account_warmed_series = std::collections::HashSet::new();
-                    for m in fresh_quota.models {
-                        if m.percentage >= 100 {
-                            let model_to_ping = m.name.clone();
-
-                            // Removed hardcoded whitelist - now warms up any model at 100%
-                            if !account_warmed_series.contains(&model_to_ping) {
-                                warmup_items.push((
-                                    id.clone(),
-                                    email.clone(),
-                                    model_to_ping.clone(),
-                                    token.clone(),
-                                    pid.clone(),
-                                    m.percentage,
-                                ));
-                                account_warmed_series.insert(model_to_ping);
-                            }
-                        } else if m.percentage >= NEAR_READY_THRESHOLD {
+                    let target_models = select_target_warmup_models(&fresh_quota.models);
+                    for m in target_models {
+                        warmup_items.push((
+                            id.clone(),
+                            email.clone(),
+                            m.name.clone(),
+                            token.clone(),
+                            pid.clone(),
+                            m.percentage,
+                        ));
+                    }
+                    for m in &fresh_quota.models {
+                        if m.percentage >= NEAR_READY_THRESHOLD && m.percentage < 100 {
                             has_near_ready_models = true;
                         }
                     }
@@ -940,19 +1004,10 @@ pub async fn warm_up_account(account_id: &str) -> Result<String, String> {
         return Err("Account is forbidden (403), skipping warmup".to_string());
     }
 
+    let target_models = select_target_warmup_models(&fresh_quota.models);
     let mut models_to_warm = Vec::new();
-    let mut warmed_series = std::collections::HashSet::new();
-
-    for m in fresh_quota.models {
-        if m.percentage >= 100 {
-            let model_name = m.name.clone();
-
-            // Removed hardcoded whitelist - now warms up any model at 100%
-            if !warmed_series.contains(&model_name) {
-                models_to_warm.push((model_name.clone(), m.percentage));
-                warmed_series.insert(model_name);
-            }
-        }
+    for m in target_models {
+        models_to_warm.push((m.name.clone(), m.percentage));
     }
 
     // Filter out models warmed up within 5-hour rolling window (18000s)
