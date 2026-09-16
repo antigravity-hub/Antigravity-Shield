@@ -28,6 +28,7 @@ pub struct ToolkitConnectionStatus {
     pub extension_version: Option<String>,
     pub active_email: Option<String>,
     pub seconds_since_last_ping: Option<u64>,
+    pub any_ide_installed: bool,
 }
 
 pub fn record_heartbeat(payload: ToolkitHeartbeatPayload) {
@@ -51,6 +52,10 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
     let version = ACTIVE_EXT_VERSION.read().ok().and_then(|guard| guard.clone());
     let email = ACTIVE_EMAIL.read().ok().and_then(|guard| guard.clone());
 
+    let any_ide_installed = check_extension_installed(&[
+        "Antigravity IDE", "Antigravity", ".antigravity", ".antigravity-ide", ".vscode"
+    ]);
+
     match last {
         Some(instant) => {
             let elapsed = instant.elapsed().as_secs();
@@ -62,6 +67,7 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
                 extension_version: if is_connected { version } else { None },
                 active_email: if is_connected { email } else { None },
                 seconds_since_last_ping: Some(elapsed),
+                any_ide_installed,
             }
         }
         None => ToolkitConnectionStatus {
@@ -70,6 +76,7 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
             extension_version: None,
             active_email: None,
             seconds_since_last_ping: None,
+            any_ide_installed,
         },
     }
 }

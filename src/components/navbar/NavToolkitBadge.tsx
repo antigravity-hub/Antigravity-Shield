@@ -14,20 +14,33 @@ export const NavToolkitBadge: React.FC = () => {
   }, [fetchStatus]);
 
   const isConnected = status.is_connected;
+  const isInstalled = !!status.any_ide_installed;
+
+  const getBadgeStyle = () => {
+    if (isConnected) {
+      return 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-xs';
+    }
+    if (isInstalled) {
+      return 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-xs';
+    }
+    return 'bg-slate-100 hover:bg-slate-200/80 dark:bg-base-200 dark:hover:bg-base-100 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-base-300 hover:border-slate-300 dark:hover:border-slate-600';
+  };
+
+  const getTitle = () => {
+    if (isConnected) {
+      return `Antigravity Toolkit: Connected\nActive IDE: ${status.active_ide || 'IDE'}\nAccount: ${status.active_email || 'Synced'}\nClick to manage IDEs`;
+    }
+    if (isInstalled) {
+      return 'Antigravity Toolkit: Detected in IDE (Waiting for Heartbeat)\nClick to inspect connection & auto-heal bridge';
+    }
+    return 'Antigravity Toolkit: Not Detected\nClick to inspect installed IDEs & install extension with 1-click';
+  };
 
   return (
     <button
       onClick={openModal}
-      className={`relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 select-none ${
-        isConnected
-          ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-xs'
-          : 'bg-slate-100 hover:bg-slate-200/80 dark:bg-base-200 dark:hover:bg-base-100 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-base-300 hover:border-slate-300 dark:hover:border-slate-600'
-      }`}
-      title={
-        isConnected
-          ? `Antigravity Toolkit: Connected\nActive IDE: ${status.active_ide || 'IDE'}\nAccount: ${status.active_email || 'Synced'}\nClick to manage IDEs`
-          : 'Antigravity Toolkit: Disconnected\nClick to inspect installed IDEs & install extension with 1-click'
-      }
+      className={`relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 select-none ${getBadgeStyle()}`}
+      title={getTitle()}
     >
       {isConnected ? (
         <>
@@ -37,6 +50,15 @@ export const NavToolkitBadge: React.FC = () => {
           </span>
           <PlugZap className="w-3.5 h-3.5 text-emerald-500" />
           <span className="font-semibold hidden sm:inline">Toolkit Active</span>
+        </>
+      ) : isInstalled ? (
+        <>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+          </span>
+          <PlugZap className="w-3.5 h-3.5 text-amber-500" />
+          <span className="font-semibold hidden sm:inline">Toolkit Waiting</span>
         </>
       ) : (
         <>
