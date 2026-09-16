@@ -603,6 +603,7 @@ pub fn run() {
             commands::check_homebrew_installation,
             commands::check_appimage_installation,
             commands::brew_upgrade_cask,
+            commands::download_and_install_direct,
             commands::get_update_settings,
             commands::save_update_settings,
             commands::should_check_updates,

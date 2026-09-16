@@ -407,17 +407,53 @@ function Settings() {
             setIsAutoUpdating(false);
             if (errorMsg.toLowerCase().includes('release json') || errorMsg.toLowerCase().includes('not found')) {
                 showToast(t('update_notification.toast.not_ready', 'Update package not ready. Opening release page...'), 'info');
+                if (updateInfo?.downloadUrl) {
+                    try {
+                        const { openUrl } = await import('@tauri-apps/plugin-opener');
+                        await openUrl(updateInfo.downloadUrl);
+                    } catch {
+                        window.open(updateInfo.downloadUrl, '_blank');
+                    }
+                }
             } else if (errorMsg.toLowerCase().includes('minisign') || errorMsg.toLowerCase().includes('signature')) {
-                showToast(t('update_notification.toast.signature_invalid', 'Automated verification unavailable. Switching to manual download.'), 'warning');
+                try {
+                    showToast(t('update_notification.toast.switching_direct', 'Cryptographic verification unavailable. Initiating direct auto-install...'), 'info');
+                    setIsAutoUpdating(true);
+                    setUpdateProgress(0);
+
+                    const { listen } = await import('@tauri-apps/api/event');
+                    const unlisten = await listen<{ percent: number }>('updater://direct-progress', (event) => {
+                        setUpdateProgress(event.payload.percent);
+                    });
+
+                    await invoke('download_and_install_direct', {
+                        downloadUrl: updateInfo?.downloadUrl || '',
+                        version: updateInfo?.latestVersion || ''
+                    });
+                    unlisten();
+                    return;
+                } catch (directErr) {
+                    console.error('Settings direct download fallback failed:', directErr);
+                    setIsAutoUpdating(false);
+                    showToast(t('update_notification.toast.signature_invalid', 'Automated verification unavailable. Switching to manual download.'), 'warning');
+                    if (updateInfo?.downloadUrl) {
+                        try {
+                            const { openUrl } = await import('@tauri-apps/plugin-opener');
+                            await openUrl(updateInfo.downloadUrl);
+                        } catch {
+                            window.open(updateInfo.downloadUrl, '_blank');
+                        }
+                    }
+                }
             } else {
                 showToast(`${t('update_notification.toast.failed')}: ${errorMsg}`, 'error');
-            }
-            if (updateInfo?.downloadUrl) {
-                try {
-                    const { openUrl } = await import('@tauri-apps/plugin-opener');
-                    await openUrl(updateInfo.downloadUrl);
-                } catch {
-                    window.open(updateInfo.downloadUrl, '_blank');
+                if (updateInfo?.downloadUrl) {
+                    try {
+                        const { openUrl } = await import('@tauri-apps/plugin-opener');
+                        await openUrl(updateInfo.downloadUrl);
+                    } catch {
+                        window.open(updateInfo.downloadUrl, '_blank');
+                    }
                 }
             }
         }
