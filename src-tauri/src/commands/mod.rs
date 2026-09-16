@@ -484,8 +484,12 @@ pub async fn start_oauth_login(
 
     let mut account = service.start_oauth_login(oauth_client_key).await?;
 
-    // 自动触发刷新额度
-    let _ = internal_refresh_account_quota(&app_handle, &mut account).await;
+    // 自动触发刷新额度 (异步后台执行，避免阻塞前端UI或导致网络超时)
+    let app_handle_quota = app_handle.clone();
+    let mut account_quota = account.clone();
+    tokio::spawn(async move {
+        let _ = internal_refresh_account_quota(&app_handle_quota, &mut account_quota).await;
+    });
 
     // Reload token pool
     let _ = crate::commands::proxy::reload_proxy_accounts(
@@ -506,8 +510,12 @@ pub async fn complete_oauth_login(app_handle: tauri::AppHandle) -> Result<Accoun
 
     let mut account = service.complete_oauth_login().await?;
 
-    // 自动触发刷新额度
-    let _ = internal_refresh_account_quota(&app_handle, &mut account).await;
+    // 自动触发刷新额度 (异步后台执行，避免阻塞前端UI或导致网络超时)
+    let app_handle_quota = app_handle.clone();
+    let mut account_quota = account.clone();
+    tokio::spawn(async move {
+        let _ = internal_refresh_account_quota(&app_handle_quota, &mut account_quota).await;
+    });
 
     // Reload token pool
     let _ = crate::commands::proxy::reload_proxy_accounts(
