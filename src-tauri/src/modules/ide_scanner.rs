@@ -232,8 +232,22 @@ fn detect_vscode() -> IdeInfo {
 
     #[cfg(target_os = "linux")]
     {
-        if let Ok(p) = which::which("code") {
-            exe_path = Some(p);
+        for candidate in &["/usr/bin/code", "/usr/local/bin/code", "/snap/bin/code"] {
+            let p = PathBuf::from(candidate);
+            if p.exists() {
+                exe_path = Some(p);
+                break;
+            }
+        }
+        if exe_path.is_none() {
+            if let Ok(output) = std::process::Command::new("which").arg("code").output() {
+                if output.status.success() {
+                    let path_str = String::from_utf8_lossy(&output.stdout).trim().to_string();
+                    if !path_str.is_empty() {
+                        exe_path = Some(PathBuf::from(path_str));
+                    }
+                }
+            }
         }
     }
 
