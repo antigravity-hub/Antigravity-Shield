@@ -1665,6 +1665,7 @@ fn mark_validation_blocked(account: &mut Account, reason: &str) {
 
     account.validation_blocked = true;
     account.validation_blocked_reason = Some(reason.to_string());
+    account.validation_blocked_until = Some(chrono::Utc::now().timestamp() + 7 * 86400);
     if let Err(e) = save_account(account) {
         crate::modules::logger::log_warn(&format!(
             "Failed to persist validation_blocked state for {}: {}",

@@ -185,7 +185,17 @@
       "remove_proxy_btn": "بازگشت به حالت مستقیم / TUN",
       "remove_proxy_tooltip": "حذف تنظیمات پروکسی محلی و استفاده از ترافیک مستقیم کارت شبکه TUN",
       "vpn_already_running": "{{name}} در حال حاضر فعال و در حال اجرا است."
-    }
+    },
+    "verification_required_title": "اکانت‌های نیازمند احراز هویت گوگل (Verification Required)",
+    "account_unit": "اکانت",
+    "verification_required_count": "{{count}} اکانت",
+    "verification_required_count_plural": "{{count}} اکانت",
+    "verification_required_desc": "اتصال این اکانت‌ها به دلیل نیاز به تایید هویت گوگل متوقف شده است. با آموزش زیر مشکل را برطرف نمایید.",
+    "open_full_guide": "آموزش جامع حل مشکل (PDF)",
+    "verify_in_google": "ورود مستقیم به صفحه تایید گوگل",
+    "google_link": "گوگل",
+    "view_guide_pdf": "مشاهده آموزش PDF",
+    "verify_account_prompt": "Verify your account to continue."
   },
   "accounts": {
     "sync_freshness": {
@@ -269,18 +279,26 @@
       "card_title": "آموزش حل لوپ احراز هویت گوگل (بای‌پس از طریق Cloud Shell)",
       "card_badge": "راهکار قطعی و تست‌شده",
       "card_desc": "گوگل در فرآیند لاگین Antigravity با پیام «Further action is required to use Antigravity IDE» دسترسی را متوقف می‌کند؛ چون این حساب ابتدا باید احراز هویت پیامکی را در Cloud Shell گوگل انجام دهد تا قفل IDE برداشته شود.",
-      "steps_title": "مراحل ۷ گانه حل سریع مشکل",
-      "step1": "وارد console.cloud.google.com/welcome شده و با همان ایمیل تیک پذیرش قوانین GCP را بزنید.",
-      "step2": "از منوی سمت چپ (☰) روی بخش IAM & Admin کلیک کنید.",
-      "step3": "از نوار بالای صفحه آیکون ترمینال Cloud Shell (>_) را اجرا کنید.",
-      "step4": "در پنجره باز شده دکمه آبی Continue را انتخاب کنید.",
+      "steps_title": "مراحل خلاصه:",
+      "step1": "ورود به GCP",
+      "step2": "اجرای Cloud Shell",
+      "step3": "تأیید شماره و کد SMS",
+      "step4": "ورود به Antigravity",
       "step5": "با مشاهده پیام Verify your account روی دکمه Verify کلیک کنید.",
       "step6": "گزینه Verify your phone number را زده و کد تأیید ۶ رقمی پیامک‌شده را وارد نمایید.",
       "step7": "به صفحه ورود در Antigravity IDE برگشته و روی Sign in کلیک کنید؛ اکانت فوراً متصل می‌شود!",
       "open_pdf": "مشاهده فایل PDF راهنمای تصویری",
       "open_gcp": "ورود به Google Cloud Console",
       "phone_note": "در صورت مشکل یا عدم تأیید شماره تماس، می‌توانید در تلگرام با آیدی DrGuidance@ در ارتباط باشید.",
-      "hint_banner": "به خطای «Further action is required» یا لوپ احراز هویت خورده‌اید؟"
+      "hint_banner": "به خطای «Further action is required» یا لوپ احراز هویت خورده‌اید؟",
+      "open_in_system_title": "باز کردن در نرم‌افزار پیش‌فرض PDF سیستم (Adobe Acrobat / Edge)",
+      "opening_in_system": "در حال باز شدن...",
+      "open_in_system": "باز کردن در برنامه سیستم",
+      "download_guide_title": "دانلود مستقیم فایل PDF راهنما",
+      "download_file": "دانلود فایل",
+      "exit_fullscreen": "خروج از تمام صفحه",
+      "fullscreen": "تمام صفحه",
+      "close": "بستن (ESC)"
     },
     "no_data": "بدون داده",
     "last_used": "آخرین استفاده",
@@ -415,7 +433,9 @@
     },
     "auto_sort": "مرتب‌سازی خودکار",
     "show_last_used": "نمایش آخرین استفاده",
-    "drag_column_to_reorder": "برای تغییر ترتیب، ستون را بکشید"
+    "drag_column_to_reorder": "برای تغییر ترتیب، ستون را بکشید",
+    "verification_required_table_msg": "نیازمند وریفیکیشن با آموزش روبرو",
+    "open_guide_btn": "مشاهده آموزش"
   },
   "settings": {
     "save": "Save Settings",

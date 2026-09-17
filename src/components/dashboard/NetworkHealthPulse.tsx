@@ -58,23 +58,42 @@ interface NetworkHealthPulseProps {
     onOpenProxySettings?: () => void;
 }
 
+// Module-scoped cache to prevent unnecessary re-probing on tab switches
+let cachedPulse: NetworkPulseResult | null = null;
+let lastPulseTime = 0;
+const PULSE_CACHE_TTL = 60_000; // 60 seconds
+
 export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenProxySettings }) => {
     const { t } = useTranslation();
 
-    const [pulse, setPulse] = useState<NetworkPulseResult | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [pulse, setPulse] = useState<NetworkPulseResult | null>(() => {
+        if (cachedPulse && Date.now() - lastPulseTime < PULSE_CACHE_TTL) {
+            return cachedPulse;
+        }
+        return null;
+    });
+    const [loading, setLoading] = useState<boolean>(() => {
+        return !(cachedPulse && Date.now() - lastPulseTime < PULSE_CACHE_TTL);
+    });
     const [isApplyingProxy, setIsApplyingProxy] = useState<boolean>(false);
     const [launchingVpnId, setLaunchingVpnId] = useState<string | null>(null);
     const [showWarpModal, setShowWarpModal] = useState<boolean>(false);
     const [copiedSnippet, setCopiedSnippet] = useState<boolean>(false);
 
     // اجرای پروب شبکه
-    const runNetworkProbe = async (customProxy?: string) => {
+    const runNetworkProbe = async (customProxy?: string, force = false) => {
+        if (!force && !customProxy && cachedPulse && Date.now() - lastPulseTime < PULSE_CACHE_TTL) {
+            setPulse(cachedPulse);
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         try {
             const res = await invoke<NetworkPulseResult>('check_gemini_network_pulse', {
                 customProxy: customProxy || null
             });
+            cachedPulse = res;
+            lastPulseTime = Date.now();
             setPulse(res);
         } catch (err) {
             console.error('Failed to probe network pulse:', err);
@@ -92,7 +111,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
     const handleLaunchVpn = async (vpn: InstalledVpnInfo) => {
         if (!vpn.executable_path) return;
         if (vpn.is_running) {
-            showToast(t('dashboard.health_pulse.vpn_already_running', `${vpn.name} در حال حاضر فعال و در حال اجرا است.`), 'info');
+            showToast(t('dashboard.health_pulse.vpn_already_running', `${vpn.name} is already running and active.`), 'info');
             return;
         }
         setLaunchingVpnId(vpn.id);
@@ -101,7 +120,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
             showToast(msg, 'success');
             // تأخیر کوتاه و تست مجدد وضعیت
             setTimeout(() => {
-                runNetworkProbe();
+                runNetworkProbe(undefined, true);
             }, 3000);
         } catch (err) {
             showToast(`${t('common.error')}: ${err}`, 'error');
@@ -227,7 +246,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         </button>
 
                         <button
-                            onClick={() => runNetworkProbe()}
+                            onClick={() => runNetworkProbe(undefined, true)}
                             disabled={loading}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-base-200 hover:bg-slate-100 dark:hover:bg-base-300 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all border border-slate-200 dark:border-slate-700 active:scale-95 shadow-xs disabled:opacity-50"
                         >

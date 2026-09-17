@@ -72,14 +72,14 @@ export const VerificationGuideModal: React.FC = () => {
                         <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                                 <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-100 truncate">
-                                    {t('accounts.verification_guide.card_title', 'آموزش حل لوپ احراز هویت گوگل (Cloud Shell Bypass)')}
+                                    {t('accounts.verification_guide.card_title', 'Google Verification Loop Fix (Cloud Shell Bypass)')}
                                 </h3>
                                 <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                                    {t('accounts.verification_guide.card_badge', 'راهکار قطعی')}
+                                    {t('accounts.verification_guide.card_badge', 'Proven Solution')}
                                 </span>
                             </div>
                             <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate hidden sm:block">
-                                {t('accounts.verification_guide.card_desc', 'رفع خطای Further action is required و فعال‌سازی فوری اتصال IDE')}
+                                {t('accounts.verification_guide.card_desc', 'Google blocks Antigravity OAuth with "Further action is required to use Antigravity IDE" because the account requires SMS verification in Cloud Shell.')}
                             </p>
                         </div>
                     </div>
@@ -92,11 +92,11 @@ export const VerificationGuideModal: React.FC = () => {
                             onClick={handleOpenInSystem}
                             disabled={isOpeningSystem}
                             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 rounded-lg transition-colors border border-amber-500/30 active:scale-95"
-                            title="باز کردن در نرم‌افزار پیش‌فرض PDF سیستم (Adobe Acrobat / Edge)"
+                            title={t('accounts.verification_guide.open_in_system_title', 'Open in system default PDF viewer (Adobe Acrobat / Edge)')}
                         >
                             <ExternalLink className="w-3.5 h-3.5" />
                             <span className="hidden md:inline">
-                                {isOpeningSystem ? 'در حال باز شدن...' : 'باز کردن در برنامه سیستم'}
+                                {isOpeningSystem ? t('accounts.verification_guide.opening_in_system', 'Opening...') : t('accounts.verification_guide.open_in_system', 'Open in Default App')}
                             </span>
                         </button>
 
@@ -105,10 +105,10 @@ export const VerificationGuideModal: React.FC = () => {
                             type="button"
                             onClick={downloadVerificationGuide}
                             className="p-1.5 sm:px-2.5 sm:py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors border border-gray-200 dark:border-gray-700/60 active:scale-95 flex items-center gap-1.5"
-                            title="دانلود مستقیم فایل PDF راهنما"
+                            title={t('accounts.verification_guide.download_guide_title', 'Download guide PDF file')}
                         >
                             <Download className="w-3.5 h-3.5" />
-                            <span className="hidden lg:inline">دانلود فایل</span>
+                            <span className="hidden lg:inline">{t('accounts.verification_guide.download_file', 'Download PDF')}</span>
                         </button>
 
                         {/* Toggle Fullscreen */}
@@ -116,7 +116,7 @@ export const VerificationGuideModal: React.FC = () => {
                             type="button"
                             onClick={() => setIsFullscreen(!isFullscreen)}
                             className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors active:scale-95"
-                            title={isFullscreen ? 'خروج از تمام صفحه' : 'تمام صفحه'}
+                            title={isFullscreen ? t('accounts.verification_guide.exit_fullscreen', 'Exit Fullscreen') : t('accounts.verification_guide.fullscreen', 'Fullscreen')}
                         >
                             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                         </button>
@@ -126,7 +126,7 @@ export const VerificationGuideModal: React.FC = () => {
                             type="button"
                             onClick={() => setIsOpen(false)}
                             className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors active:scale-95"
-                            title="بستن (ESC)"
+                            title={t('accounts.verification_guide.close', 'Close (ESC)')}
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -138,21 +138,21 @@ export const VerificationGuideModal: React.FC = () => {
                     <div className="flex items-center gap-2 overflow-x-auto py-0.5 no-scrollbar text-amber-900 dark:text-amber-200">
                         <span className="font-bold flex items-center gap-1 text-amber-700 dark:text-amber-300 whitespace-nowrap">
                             <Terminal className="w-3.5 h-3.5" />
-                            {t('accounts.verification_guide.steps_title', 'مراحل خلاصه:')}
+                            {t('accounts.verification_guide.steps_title', 'Quick Steps:')}
                         </span>
                         <div className="flex items-center gap-1.5 text-[11px] whitespace-nowrap font-medium text-gray-700 dark:text-gray-300">
-                            <span className="bg-amber-200/50 dark:bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200 font-bold">۱</span>
-                            <span>ورود به GCP</span>
+                            <span className="bg-amber-200/50 dark:bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200 font-bold">1</span>
+                            <span>{t('accounts.verification_guide.step1', 'Sign in to GCP')}</span>
                             <ArrowRight className="w-3 h-3 text-gray-400 rtl:rotate-180" />
-                            <span className="bg-amber-200/50 dark:bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200 font-bold">۲</span>
-                            <span>اجرای Cloud Shell</span>
+                            <span className="bg-amber-200/50 dark:bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200 font-bold">2</span>
+                            <span>{t('accounts.verification_guide.step2', 'Launch Cloud Shell')}</span>
                             <ArrowRight className="w-3 h-3 text-gray-400 rtl:rotate-180" />
-                            <span className="bg-amber-200/50 dark:bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200 font-bold">۳</span>
-                            <span>تأیید شماره و کد SMS</span>
+                            <span className="bg-amber-200/50 dark:bg-amber-900/40 px-1.5 py-0.5 rounded text-amber-900 dark:text-amber-200 font-bold">3</span>
+                            <span>{t('accounts.verification_guide.step3', 'Verify Phone & SMS')}</span>
                             <ArrowRight className="w-3 h-3 text-gray-400 rtl:rotate-180" />
                             <span className="bg-emerald-200/70 dark:bg-emerald-900/50 px-1.5 py-0.5 rounded text-emerald-800 dark:text-emerald-300 font-bold flex items-center gap-0.5">
                                 <CheckCircle2 className="w-3 h-3" />
-                                ورود به Antigravity
+                                {t('accounts.verification_guide.step4', 'Back to Antigravity')}
                             </span>
                         </div>
                     </div>
@@ -163,7 +163,7 @@ export const VerificationGuideModal: React.FC = () => {
                         className="inline-flex items-center justify-center gap-1 px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold text-[11px] transition-all shadow-sm active:scale-95 whitespace-nowrap self-start md:self-auto"
                     >
                         <ExternalLink className="w-3 h-3" />
-                        {t('accounts.verification_guide.open_gcp', 'ورود به Google Cloud Console')}
+                        {t('accounts.verification_guide.open_gcp', 'Open Google Cloud Console')}
                     </button>
                 </div>
 

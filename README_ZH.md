@@ -98,10 +98,15 @@
 
 ## 📸 界面导览 (GUI Overview)
 
-| 🎛️ 账号与配额监控大盘 | 📊 年度 Token 消耗热力图 | 📈 模型细分消耗与占比 |
-| :---: | :---: | :---: |
-| <a href="docs/images/dashboard-accounts-dark.png"><img src="docs/images/dashboard-accounts-dark.png" alt="多账号配额监控" width="280"></a> | <a href="docs/images/token-stats-heatmap.png"><img src="docs/images/token-stats-heatmap.png" alt="Token 消耗热力图" width="280"></a> | <a href="docs/images/token-stats-breakdown.png"><img src="docs/images/token-stats-breakdown.png" alt="模型消耗明细" width="280"></a> |
-| <sub>全模型配额、重置倒计时与独立目标切换</sub> | <sub>GitHub 风格 37 天活跃热力图与用量走势</sub> | <sub>模型请求量、输入/输出与 Token 占比统计</sub> |
+| 💓 系统与 AI 连接健康大盘 | 🎛️ 多账号配额网格与重置监控 |
+| :---: | :---: |
+| <a href="docs/images/dashboard-overview.png"><img src="docs/images/dashboard-overview.png" alt="仪表盘概览与健康雷达" width="460"></a> | <a href="docs/images/accounts-quota-grid.png"><img src="docs/images/accounts-quota-grid.png" alt="账号配额网格与重置监控" width="460"></a> |
+| <sub>上游网络探测、代理连接状态与配额池概览</sub> | <sub>Gemini 3.1 Pro、3.8 Flash 与 Claude 5小时/每周重置倒计时</sub> |
+
+| 📊 53周年度 Token 消耗热力图 | 🇮🇷 原生 RTL 与现代字体支持 |
+| :---: | :---: |
+| <a href="docs/images/token-stats-heatmap.png"><img src="docs/images/token-stats-heatmap.png" alt="Token 消耗热力图" width="460"></a> | <a href="docs/images/vazirmatn-rtl-patch.png"><img src="docs/images/vazirmatn-rtl-patch.png" alt="原生 RTL 与字体支持" width="460"></a> |
+| <sub>GitHub 风格年度活跃热力图与跨 IDE 消耗分析</sub> | <sub>无损一键注入 Antigravity 与 IDE 的双向排版引擎</sub> |
 
 <br>
 
@@ -110,9 +115,8 @@
 
 | | |
 | :---: | :---: |
-| ![仪表盘 - 全局配额监控与一键切换](docs/images/dashboard-light.png) <br> 仪表盘 | ![账号列表 - 高密度配额展示与 403 智能标注](docs/images/accounts-light.png) <br> 账号列表 |
-| ![关于页面 - 关于 Antigravity Tools](docs/images/about-dark.png) <br> 关于页面 | ![API 反代 - 服务控制](docs/images/v3/proxy-settings.png) <br> API 反代 |
-| ![系统设置 - 通用配置](docs/images/settings-dark.png) <br> 系统设置 | |
+| ![仪表盘 - 全局配额监控与一键切换](docs/images/dashboard-overview.png) <br> 仪表盘 | ![账号列表 - 高密度配额展示与 403 智能标注](docs/images/accounts-quota-grid.png) <br> 账号列表 |
+| ![关于页面 - 关于 Antigravity Shield](docs/images/about-dark.png) <br> 关于页面 | ![API 反代 - 服务控制](docs/images/v3/proxy-settings.png) <br> API 反代 |
 
 </details>
 

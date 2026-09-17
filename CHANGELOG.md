@@ -3,6 +3,19 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.1 (2026-09-17)**:
+        -   **[Auto-Updater & Asset Distribution Pipeline] Correct Repository Binding & Long-Timeout Streaming**:
+            -   **Authoritative Endpoint Alignment**: Realigned updater endpoint and direct asset fallback URLs to `antigravity-hub/Antigravity-Shield`, resolving 404 lookup failures during automated version discovery.
+            -   **Long-Timeout Streaming Client**: Implemented dedicated streaming HTTP client with 15-minute socket timeout and redirection support for installer package downloads, preventing stalled downloads and premature timeouts.
+            -   **Structured Platform Manifest Parsing**: Enriched `updater.json` client parser with dynamic platform asset resolution for Windows (`x64-setup.exe`), macOS (`.dmg`), and Linux (`.AppImage`).
+        -   **[Account Security & Verification Integrity] Verification State Persistence & Reusable Banners**:
+            -   **Persistent Challenge State**: Removed premature timer-based flag eviction in token manager, preserving the `validation_blocked` state until account re-authentication or successful upstream quota sync.
+            -   **Unified Verification Required Banner**: Modularized verification alert component across Dashboard and Account views with comprehensive multi-language support (English, Persian, Chinese) and zero hardcoding.
+            -   **Interactive Guide Viewer Localization**: Refined Verification Guide modal and PDF launcher with standard internationalization keys and clean English fallbacks.
+        -   **[Model Lineup & UI Optimization] Exact Model Configuration & Diagnostic Caching**:
+            -   **Model Catalog Cleanup**: Purged legacy placeholder models (`gemini-3.8-pro`, `gemini-3.8-pro-high`) in settings, retaining only verified upstream models (`gemini-3.1-pro-high`, `gemini-3.8-flash`, `gemini-3.1-flash-image`).
+            -   **Diagnostic Probe Caching**: Introduced 60-second module cache for Network Health Pulse to eliminate repetitive latency probes during tab navigation.
+            -   **Documentation Showcase Refresh**: Updated project READMEs and showcases with authentic high-resolution screenshots highlighting the latest Dashboard, Quotas, and RTL interface patches.
     *   **v5.11.0 (2026-09-16)**:
         -   **[IDE Toolkit Hub v2.3.0 & Real-Time Sync] Bi-Directional Bridge & Automated Extension Deployment**:
             -   **Embedded Antigravity Toolkit v2.3.0**: Embedded latest `antigravity-toolkit-2.3.0.vsix` with 1-click install and CLI verification for Antigravity IDE, Visual Studio Code, Cursor, and Windsurf.

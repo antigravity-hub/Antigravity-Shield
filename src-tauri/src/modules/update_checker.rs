@@ -4,11 +4,11 @@ use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 const GITHUB_API_URL: &str =
-    "https://api.github.com/repos/DoctorGuidance/Antigravity-Shield/releases/latest";
+    "https://api.github.com/repos/antigravity-hub/Antigravity-Shield/releases/latest";
 const GITHUB_RAW_URL: &str =
-    "https://raw.githubusercontent.com/DoctorGuidance/Antigravity-Shield/main/package.json";
+    "https://raw.githubusercontent.com/antigravity-hub/Antigravity-Shield/main/package.json";
 const JSDELIVR_URL: &str =
-    "https://cdn.jsdelivr.net/gh/DoctorGuidance/Antigravity-Shield@main/package.json";
+    "https://cdn.jsdelivr.net/gh/antigravity-hub/Antigravity-Shield@main/package.json";
 const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 const DEFAULT_CHECK_INTERVAL_HOURS: u64 = 1;
 
@@ -55,7 +55,7 @@ struct GitHubRelease {
 }
 
 const UPDATER_JSON_URL: &str =
-    "https://github.com/DoctorGuidance/Antigravity-Shield/releases/latest/download/updater.json";
+    "https://github.com/antigravity-hub/Antigravity-Shield/releases/latest/download/updater.json";
 
 /// Check for updates with improved strategy:
 /// 1. Check updater.json (Source of Truth for Auto-Update)
@@ -121,10 +121,19 @@ pub async fn check_for_updates() -> Result<UpdateInfo, String> {
 }
 
 #[derive(Debug, Deserialize)]
+struct UpdaterPlatform {
+    #[serde(default)]
+    pub url: Option<String>,
+    #[serde(default)]
+    pub signature: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct UpdaterJson {
-    version: String,
-    notes: Option<String>,
-    pub_date: Option<String>,
+    pub version: String,
+    pub notes: Option<String>,
+    pub pub_date: Option<String>,
+    pub platforms: Option<std::collections::HashMap<String, UpdaterPlatform>>,
 }
 
 async fn check_updater_json() -> Result<UpdateInfo, String> {
@@ -165,10 +174,46 @@ async fn check_updater_json() -> Result<UpdateInfo, String> {
         ));
     }
 
-    let download_url = format!(
-        "https://github.com/DoctorGuidance/Antigravity-Shield/releases/tag/v{}",
-        latest_version
+    let mut download_url = format!(
+        "https://github.com/antigravity-hub/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_x64-setup.exe",
+        latest_version, latest_version
     );
+    #[cfg(target_os = "macos")]
+    {
+        download_url = format!(
+            "https://github.com/antigravity-hub/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_aarch64.dmg",
+            latest_version, latest_version
+        );
+    }
+    #[cfg(target_os = "linux")]
+    {
+        download_url = format!(
+            "https://github.com/antigravity-hub/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_amd64.AppImage",
+            latest_version, latest_version
+        );
+    }
+
+    if let Some(ref platforms) = updater_info.platforms {
+        let platform_key = if cfg!(target_os = "windows") {
+            "windows-x86_64"
+        } else if cfg!(target_os = "macos") {
+            if cfg!(target_arch = "aarch64") {
+                "darwin-aarch64"
+            } else {
+                "darwin-x86_64"
+            }
+        } else if cfg!(target_arch = "aarch64") {
+            "linux-aarch64"
+        } else {
+            "linux-x86_64"
+        };
+
+        if let Some(p) = platforms.get(platform_key).and_then(|p| p.url.clone()) {
+            if !p.is_empty() {
+                download_url = p;
+            }
+        }
+    }
 
     Ok(UpdateInfo {
         current_version,
@@ -183,6 +228,38 @@ async fn check_updater_json() -> Result<UpdateInfo, String> {
             .unwrap_or_else(|| Utc::now().to_rfc3339()),
         source: Some("updater.json".to_string()),
     })
+}
+
+async fn create_download_client() -> Result<reqwest::Client, String> {
+    let mut builder = reqwest::Client::builder()
+        .user_agent("Antigravity-Manager")
+        .connect_timeout(std::time::Duration::from_secs(30))
+        .timeout(std::time::Duration::from_secs(900));
+
+    // Load config to check for upstream proxy
+    if let Ok(config) = crate::modules::config::load_app_config() {
+        if config.proxy.upstream_proxy.enabled && !config.proxy.upstream_proxy.url.is_empty() {
+            logger::log_info(&format!(
+                "Direct installer downloader using upstream proxy: {}",
+                config.proxy.upstream_proxy.url
+            ));
+            match reqwest::Proxy::all(&config.proxy.upstream_proxy.url) {
+                Ok(proxy) => {
+                    builder = builder.proxy(proxy);
+                }
+                Err(e) => {
+                    logger::log_warn(&format!(
+                        "Failed to parse proxy URL '{}': {}",
+                        config.proxy.upstream_proxy.url, e
+                    ));
+                }
+            }
+        }
+    }
+
+    builder
+        .build()
+        .map_err(|e| format!("Failed to create download HTTP client: {}", e))
 }
 
 async fn create_client() -> Result<reqwest::Client, String> {
@@ -310,7 +387,7 @@ async fn check_static_url(url: &str, source_name: &str) -> Result<UpdateInfo, St
     }
 
     // fallback sources generally don't provide release notes or download specific URL, construct generic
-    let download_url = "https://github.com/DoctorGuidance/Antigravity-Shield/releases/latest".to_string();
+    let download_url = "https://github.com/antigravity-hub/Antigravity-Shield/releases/latest".to_string();
     let release_notes = format!(
         "New version detected via {}. Please check release page for details.",
         source_name
@@ -548,21 +625,21 @@ pub async fn download_and_run_installer(
         #[cfg(target_os = "windows")]
         {
             download_url = format!(
-                "https://github.com/DoctorGuidance/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_x64-setup.exe",
+                "https://github.com/antigravity-hub/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_x64-setup.exe",
                 clean_ver, clean_ver
             );
         }
         #[cfg(target_os = "macos")]
         {
             download_url = format!(
-                "https://github.com/DoctorGuidance/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_universal.dmg",
+                "https://github.com/antigravity-hub/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_aarch64.dmg",
                 clean_ver, clean_ver
             );
         }
         #[cfg(target_os = "linux")]
         {
             download_url = format!(
-                "https://github.com/DoctorGuidance/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_amd64.AppImage",
+                "https://github.com/antigravity-hub/Antigravity-Shield/releases/download/v{}/Antigravity.Shield_{}_amd64.AppImage",
                 clean_ver, clean_ver
             );
         }
@@ -573,7 +650,7 @@ pub async fn download_and_run_installer(
         download_url
     ));
 
-    let client = create_client().await?;
+    let client = create_download_client().await?;
     let mut response = client
         .get(&download_url)
         .send()
