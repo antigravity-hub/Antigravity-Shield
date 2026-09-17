@@ -252,7 +252,15 @@
       "open_pdf": "查看高清 PDF 图文教程",
       "open_gcp": "前往 Google Cloud 控制台",
       "phone_note": "若手机号提示不可用或被拒，可在 Telegram 联络 @DrGuidance 寻求协助。",
-      "hint_banner": "遇到 \"Further action is required\" 或账号验证死循环？"
+      "hint_banner": "遇到 \"Further action is required\" 或账号验证死循环？",
+      "open_in_system_title": "在系统默认 PDF 查看器中打开 (Adobe Acrobat / Edge)",
+      "opening_in_system": "正在打开...",
+      "open_in_system": "在系统程序中打开",
+      "download_guide_title": "下载高清 PDF 指南文件",
+      "download_file": "下载文件",
+      "exit_fullscreen": "退出全屏",
+      "fullscreen": "全屏",
+      "close": "关闭 (ESC)"
     },
     "no_data": "无数据",
     "last_used": "最后使用",

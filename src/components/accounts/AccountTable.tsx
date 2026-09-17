@@ -571,7 +571,7 @@ function AccountRowContent({
                             <Clock className="w-3.5 h-3.5" />
                         </div>
                         <span className="text-xs font-bold text-amber-800 dark:text-amber-300 truncate">
-                            {t('accounts.verification_required_table_msg', 'نیازمند وریفیکیشن با آموزش روبرو')}
+                            {t('accounts.verification_required_table_msg', 'Verification required — see guide')}
                         </span>
                     </div>
                     <button
@@ -583,7 +583,7 @@ function AccountRowContent({
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
                     >
                         <BookOpen className="w-3.5 h-3.5" />
-                        <span>{t('accounts.open_guide_btn', 'مشاهده آموزش')}</span>
+                        <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
                     </button>
                 </div>
             ) : (isDisabled || account.quota?.is_forbidden ? (

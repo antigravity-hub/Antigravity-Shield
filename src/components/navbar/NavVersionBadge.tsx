@@ -111,7 +111,7 @@ export const NavVersionBadge: React.FC = () => {
         } catch (backendErr) {
           console.warn('[NavVersionBadge] Backend check_for_updates failed, using direct GitHub fallback...', backendErr);
           // Fallback to direct GitHub release API (e.g. for pure web mode)
-          const resp = await fetch('https://api.github.com/repos/DoctorGuidance/Antigravity-Shield/releases/latest');
+          const resp = await fetch('https://api.github.com/repos/antigravity-hub/Antigravity-Shield/releases/latest');
           if (resp.ok) {
             const release = await resp.json();
             const tag = (release.tag_name || '').replace(/^v/i, '');

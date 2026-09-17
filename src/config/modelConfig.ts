@@ -28,16 +28,6 @@ export interface ModelConfig {
  */
 export const MODEL_CONFIG: Record<string, ModelConfig> = {
     // Gemini 3.x 系列
-    'gemini-3.8-pro-high': {
-        label: 'Gemini 3.8 Pro High',
-        shortLabel: 'G3.8 Pro',
-        protectedKey: 'gemini-pro',
-        Icon: Gemini.Color,
-        i18nKey: 'proxy.model.pro_high',
-        i18nDescKey: 'proxy.model.pro_high',
-        group: 'Gemini 3',
-        tags: ['pro', 'high'],
-    },
     'gemini-3.8-flash-tiered': {
         label: 'Gemini 3.8 Flash',
         shortLabel: 'G3.8 Flash',

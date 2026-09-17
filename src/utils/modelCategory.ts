@@ -21,8 +21,6 @@ export interface ModelDisplayNameInput {
 }
 
 const DEFAULT_MODEL_LABELS: Record<string, string> = {
-    'gemini-3.8-pro': 'Gemini 3.8 Pro',
-    'gemini-3.8-pro-high': 'Gemini 3.8 Pro High',
     'gemini-3.8-flash': 'Gemini 3.8 Flash',
     'gemini-3.8-flash-tiered': 'Gemini 3.8 Flash',
     'gemini-3.8-flash-thinking': 'Gemini 3.8 Flash (Thinking)',
@@ -99,7 +97,7 @@ export function getLatestModelForCategory(category: ModelCategory): string | und
 
 /**
  * 智能自动格式化模型显示名称：
- * 将未知或新发布的 Gemini/Claude 模型名称（如 gemini-3.8-pro）自动格式化为美观的标签（Gemini 3.8 Pro），无需手动录入。
+ * 将未知或新发布的 Gemini/Claude 模型名称（如 gemini-3.8-flash）自动格式化为美观的标签（Gemini 3.8 Flash），无需手动录入。
  */
 function autoFormatModelName(name: string): string {
     return name

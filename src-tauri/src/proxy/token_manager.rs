@@ -624,53 +624,21 @@ impl TokenManager {
             return Ok(None);
         }
 
-        // [NEW] Check for validation block (VALIDATION_REQUIRED temporary block)
+        // Check for validation block (VALIDATION_REQUIRED temporary block)
         if account
             .get("validation_blocked")
             .and_then(|v| v.as_bool())
             .unwrap_or(false)
         {
-            let block_until = account
-                .get("validation_blocked_until")
-                .and_then(|v| v.as_i64())
-                .unwrap_or(0);
-
-            let now = chrono::Utc::now().timestamp();
-
-            if now < block_until {
-                // Still blocked
-                tracing::debug!(
-                    "Skipping validation-blocked account: {:?} (email={}, blocked until {})",
-                    path,
-                    account
-                        .get("email")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("<unknown>"),
-                    chrono::DateTime::from_timestamp(block_until, 0)
-                        .map(|dt| dt.format("%H:%M:%S").to_string())
-                        .unwrap_or_else(|| block_until.to_string())
-                );
-                return Ok(None);
-            } else {
-                // Block expired - clear it
-                account["validation_blocked"] = serde_json::json!(false);
-                account["validation_blocked_until"] = serde_json::json!(0);
-                account["validation_blocked_reason"] = serde_json::Value::Null;
-
-                update_account_json(path, |latest| {
-                    latest["validation_blocked"] = serde_json::json!(false);
-                    latest["validation_blocked_until"] = serde_json::json!(0);
-                    latest["validation_blocked_reason"] = serde_json::Value::Null;
-                })
-                .await?;
-                tracing::info!(
-                    "Validation block expired and cleared for account: {}",
-                    account
-                        .get("email")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("<unknown>")
-                );
-            }
+            tracing::debug!(
+                "Skipping validation-blocked account: {:?} (email={})",
+                path,
+                account
+                    .get("email")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("<unknown>")
+            );
+            return Ok(None);
         }
 
         // 最终检查账号主开关
@@ -4324,7 +4292,7 @@ mod tests {
             updated["live_limited_models"]["gemini-3-pro-image"],
             live_limit
         );
-        assert_eq!(updated["validation_blocked"], false);
+        assert_eq!(updated["validation_blocked"], true);
         assert_eq!(
             updated["protected_models"],
             serde_json::json!(["gemini-3-flash"])

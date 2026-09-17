@@ -85,15 +85,15 @@ While the original upstream project (`lbjlaq/Antigravity-Manager`) provided a ba
 
 ## 📸 Interface Showcase
 
-| 🎛️ Multi-Target Account & Quota Monitor | 📊 53-Week Token Activity Heatmap | 💓 Network Health Pulse & Diagnostics |
-| :---: | :---: | :---: |
-| <a href="docs/images/dashboard-accounts-dark.png"><img src="docs/images/dashboard-accounts-dark.png" alt="Dashboard Accounts Quota Monitor" width="280"></a> | <a href="docs/images/token-stats-heatmap.png"><img src="docs/images/token-stats-heatmap.png" alt="Token Stats Heatmap" width="280"></a> | <a href="docs/images/dashboard-light.png"><img src="docs/images/dashboard-light.png" alt="Network Health Pulse" width="280"></a> |
-| <sub>Live quota gauges, 5H & weekly reset cycles</sub> | <sub>Annual activity calendar & model burn curves</sub> | <sub>Google API, Gemini & WARP status radar</sub> |
+| 💓 System & AI Health Pulse Radar | 🎛️ Multi-Account Quota Grid & Reset Windows |
+| :---: | :---: |
+| <a href="docs/images/dashboard-overview.png"><img src="docs/images/dashboard-overview.png" alt="Dashboard Overview & Health Pulse" width="460"></a> | <a href="docs/images/accounts-quota-grid.png"><img src="docs/images/accounts-quota-grid.png" alt="Account Quota Grid & Reset Monitor" width="460"></a> |
+| <sub>Real-time upstream probe, proxy status & pool summary</sub> | <sub>Side-by-side Gemini 3.1 Pro, 3.8 Flash & Claude 5H/weekly resets</sub> |
 
-| 📈 Model Consumption Breakdown | 🔌 Antigravity Toolkit Hub | ⚙️ Hardened Security & Proxy Routing |
-| :---: | :---: | :---: |
-| <a href="docs/images/token-stats-breakdown.png"><img src="docs/images/token-stats-breakdown.png" alt="Model Consumption Breakdown" width="280"></a> | <a href="docs/images/accounts-dark.png"><img src="docs/images/accounts-dark.png" alt="Toolkit Hub Modal" width="280"></a> | <a href="docs/images/settings-dark.png"><img src="docs/images/settings-dark.png" alt="Settings & Security" width="280"></a> |
-| <sub>Per-model requests, input/output & share</sub> | <sub>1-Click IDE extension installation & live bridge</sub> | <sub>IP filters, circuit breakers & proxy bindings</sub> |
+| 📊 53-Week Token Activity Heatmap | 🇮🇷 Native RTL & Vazirmatn Font Patch |
+| :---: | :---: |
+| <a href="docs/images/token-stats-heatmap.png"><img src="docs/images/token-stats-heatmap.png" alt="Token Stats Heatmap" width="460"></a> | <a href="docs/images/vazirmatn-rtl-patch.png"><img src="docs/images/vazirmatn-rtl-patch.png" alt="Native RTL & Vazirmatn Font Support" width="460"></a> |
+| <sub>Annual activity calendar & multi-IDE token burn telemetry</sub> | <sub>1-Click non-destructive Persian / Arabic typography patch for Antigravity & IDE</sub> |
 
 ---
 
