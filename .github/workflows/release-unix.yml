@@ -413,12 +413,28 @@ jobs:
           echo "Files to attach to release $VERSION:"
           find release-files -maxdepth 1 -type f -print
 
+      - name: Extract Release Notes
+        run: |
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
+          echo "Extracting release notes for version $TARGET_VER"
+          awk -v ver="$TARGET_VER" '
+            BEGIN { capture=0 }
+            $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*" ver { capture=1; next }
+            capture && $0 ~ "^[[:space:]]*[*+-][[:space:]]+\\*\\*v" { capture=0; exit }
+            capture { print }
+          ' CHANGELOG.md | sed 's/^[[:space:]]\{8\}//' > release_notes.md
+          if [ ! -s release_notes.md ]; then
+            echo "# Antigravity Shield $TARGET_VER" > release_notes.md
+            echo "" >> release_notes.md
+            echo "Official release for Antigravity Shield $TARGET_VER. Download installers below." >> release_notes.md
+          fi
+
       - name: Attach Artifacts to GitHub Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           tag: ${{ github.event.inputs.release_tag || github.ref_name }}
-          name: "${{ github.event.inputs.release_tag || github.ref_name }}"
+          bodyFile: "release_notes.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "release-files/*"
           artifactErrorsFailBuild: false
