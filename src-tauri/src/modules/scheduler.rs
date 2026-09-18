@@ -173,6 +173,65 @@ pub fn start_scheduler(
             run_warmup_cycle(app_handle_for_cycle.clone(), proxy_state_for_cycle.clone()).await;
         }
     });
+
+    // 3. Spawn Native Periodic Fleet Quota & Sync Daemon (Independent of WebView2 / Tray state)
+    let app_handle_for_daemon = app_handle.clone();
+    let proxy_state_for_daemon = proxy_state.clone();
+    tauri::async_runtime::spawn(async move {
+        logger::log_info("[Scheduler] Native Fleet Quota & Sync Daemon started (Independent of WebView2 window state).");
+
+        // Stagger initial check slightly on launch (10s)
+        time::sleep(Duration::from_secs(10)).await;
+
+        let mut last_quota_refresh = 0i64;
+        let mut last_db_sync = 0i64;
+
+        loop {
+            // Check every 15 seconds against configured intervals
+            time::sleep(Duration::from_secs(15)).await;
+
+            let Ok(cfg) = config::load_app_config() else {
+                continue;
+            };
+
+            let now = chrono::Utc::now().timestamp();
+
+            // A. Quota Auto-Refresh
+            if cfg.auto_refresh && cfg.refresh_interval > 0 {
+                let interval_secs = (cfg.refresh_interval as i64) * 60;
+                // Add randomized human jitter (15 to 35 seconds) to eliminate bot timing signatures
+                let jitter = 15 + (now % 21);
+                let target_interval = interval_secs + jitter;
+
+                if now - last_quota_refresh >= target_interval {
+                    logger::log_info(&format!(
+                        "[Scheduler] Native daemon executing scheduled quota refresh (interval: {}m + jitter: {}s)...",
+                        cfg.refresh_interval, jitter
+                    ));
+                    last_quota_refresh = now;
+
+                    let _ = crate::commands::refresh_all_quotas_internal(
+                        &proxy_state_for_daemon,
+                        app_handle_for_daemon.as_ref(),
+                    )
+                    .await;
+                }
+            }
+
+            // B. Account DB Auto-Sync
+            if cfg.auto_sync && cfg.sync_interval > 0 {
+                let sync_interval_secs = (cfg.sync_interval as i64) * 60;
+                if now - last_db_sync >= sync_interval_secs {
+                    last_db_sync = now;
+                    let _ = crate::commands::sync_account_from_db_internal(
+                        app_handle_for_daemon.as_ref(),
+                        &proxy_state_for_daemon,
+                    )
+                    .await;
+                }
+            }
+        }
+    });
 }
 
 /// Execute a single check-and-warmup cycle across all accounts

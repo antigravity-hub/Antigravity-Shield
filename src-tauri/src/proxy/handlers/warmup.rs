@@ -55,7 +55,9 @@ pub async fn handle_warmup(
     // ===== 步骤 1: 获取 Token =====
     let (access_token, project_id, account_id) =
         if let (Some(at), Some(pid)) = (&req.access_token, &req.project_id) {
-            (at.clone(), pid.clone(), String::new())
+            let resolved_acc_id = crate::modules::account::find_account_id_by_email(&req.email)
+                .unwrap_or_default();
+            (at.clone(), pid.clone(), resolved_acc_id)
         } else {
             match state.token_manager.get_token_by_email(&req.email).await {
                 Ok((at, pid, _, acc_id, _wait_ms)) => (at, pid, acc_id),
@@ -178,30 +180,45 @@ pub async fn handle_warmup(
         ) // [FIX] Added None for token param
     };
 
-    // ===== 步骤 3: 调用 UpstreamClient (优先非流式 generateContent 确保完整计费与重置) =====
+    // ===== 步骤 3: 调用 UpstreamClient (优先流式 streamGenerateContent 仿真官方行为) =====
     let mut result = state
         .upstream
         .call_v1_internal(
-            "generateContent",
+            "streamGenerateContent",
             &access_token,
             body.clone(),
-            None,
+            Some("alt=sse"),
             Some(account_id.as_str()),
         )
         .await;
 
-    // 如果非流式失败，回退到流式请求
-    if result.is_err() {
-        result = state
+    // 如果流式未成功（网络报错或 HTTP 非 2xx），回退尝试非流式请求
+    let need_fallback = match &result {
+        Ok(call_res) => !call_res.response.status().is_success(),
+        Err(_) => true,
+    };
+
+    if need_fallback {
+        tracing::info!(
+            "[Warmup-API] Stream attempt non-success, attempting generateContent fallback for {}",
+            req.model
+        );
+        let fallback_res = state
             .upstream
             .call_v1_internal(
-                "streamGenerateContent",
+                "generateContent",
                 &access_token,
                 body,
-                Some("alt=sse"),
+                None,
                 Some(account_id.as_str()),
             )
             .await;
+
+        if let Ok(ref fb) = fallback_res {
+            if fb.response.status().is_success() {
+                result = fallback_res;
+            }
+        }
     }
 
     let duration = start_time.elapsed().as_millis() as u64;
