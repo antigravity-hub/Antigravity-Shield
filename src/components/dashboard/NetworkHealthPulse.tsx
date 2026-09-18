@@ -37,7 +37,21 @@ export interface InstalledVpnInfo {
     is_running: boolean;
     executable_path?: string;
     default_port?: number;
+    candidate_ports?: number[];
+    active_port?: number;
+    active_url?: string;
     is_port_listening?: boolean;
+}
+
+export interface WarpStatus {
+    is_installed: boolean;
+    is_running: boolean;
+    is_port_listening: boolean;
+    is_connected: boolean;
+    mode: string;
+    is_downloading: boolean;
+    download_progress: number;
+    error?: string;
 }
 
 export interface NetworkPulseResult {
@@ -82,6 +96,8 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
     const [launchingVpnId, setLaunchingVpnId] = useState<string | null>(null);
     const [showWarpModal, setShowWarpModal] = useState<boolean>(false);
     const [copiedSnippet, setCopiedSnippet] = useState<boolean>(false);
+    const [warpStatus, setWarpStatus] = useState<WarpStatus | null>(null);
+    const [isWarpActionLoading, setIsWarpActionLoading] = useState<boolean>(false);
 
     // اجرای پروب شبکه
     const runNetworkProbe = async (customProxy?: string, force = false) => {
@@ -181,14 +197,122 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
         }
     };
 
+    // استعلام وضعیت ماژول وارپ
+    const fetchWarpStatus = async () => {
+        try {
+            const status = await invoke<WarpStatus>('get_warp_status');
+            setWarpStatus(status);
+            return status;
+        } catch (err) {
+            console.error('Failed to fetch WARP status:', err);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        fetchWarpStatus();
+    }, [showWarpModal]);
+
+    // رصد زنده پیشرفت دانلود سایلنت وارپ
+    useEffect(() => {
+        if (!warpStatus?.is_downloading) return;
+        const timer = setInterval(async () => {
+            const s = await fetchWarpStatus();
+            if (s && !s.is_downloading) {
+                clearInterval(timer);
+                showToast(t('dashboard.health_pulse.warp_installed_toast', 'Cloudflare WARP successfully installed in background!'), 'success');
+                runNetworkProbe(undefined, true);
+            }
+        }, 1200);
+        return () => clearInterval(timer);
+    }, [warpStatus?.is_downloading]);
+
+    // دانلود و نصب خودکار درونی وارپ
+    const handleStartWarpDownload = async () => {
+        setIsWarpActionLoading(true);
+        try {
+            await invoke('start_warp_download');
+            showToast(t('dashboard.health_pulse.warp_download_started', 'Cloudflare WARP background download started...'), 'info');
+            setWarpStatus(prev => prev ? { ...prev, is_downloading: true, download_progress: 5 } : {
+                is_installed: false,
+                is_running: false,
+                is_port_listening: false,
+                is_connected: false,
+                mode: 'unknown',
+                is_downloading: true,
+                download_progress: 5
+            });
+        } catch (err) {
+            showToast(`${t('common.error')}: ${err}`, 'error');
+        } finally {
+            setIsWarpActionLoading(false);
+        }
+    };
+
+    // اتصال تک‌کلیک وارپ در حالت Proxy Mode
+    const handleConnectWarp = async () => {
+        setIsWarpActionLoading(true);
+        try {
+            const msg = await invoke<string>('connect_warp_proxy');
+            showToast(msg, 'success');
+            setShowWarpModal(false);
+            await fetchWarpStatus();
+            await runNetworkProbe('socks5://127.0.0.1:40000', true);
+        } catch (err) {
+            showToast(`${t('common.error')}: ${err}`, 'error');
+        } finally {
+            setIsWarpActionLoading(false);
+        }
+    };
+
+    // قطع اتصال وارپ و بازگردانی تنظیمات
+    const handleDisconnectWarp = async () => {
+        setIsWarpActionLoading(true);
+        try {
+            const msg = await invoke<string>('disconnect_warp_proxy');
+            showToast(msg, 'success');
+            await fetchWarpStatus();
+            await runNetworkProbe(undefined, true);
+        } catch (err) {
+            showToast(`${t('common.error')}: ${err}`, 'error');
+        } finally {
+            setIsWarpActionLoading(false);
+        }
+    };
+
+    // تشخیص خودکار بهترین پروکسی فعال و اعمال فوری
+    const handleAutoDetectAndApply = async () => {
+        setIsApplyingProxy(true);
+        try {
+            const proxy = await invoke<DiscoveredProxy>('auto_detect_and_apply_proxy');
+            showToast(
+                t('dashboard.health_pulse.auto_proxy_success', {
+                    url: proxy.url,
+                    defaultValue: `Connected to active proxy: ${proxy.url}`
+                }),
+                'success'
+            );
+            await runNetworkProbe(proxy.url, true);
+        } catch (err) {
+            showToast(`${t('common.error')}: ${err}`, 'error');
+        } finally {
+            setIsApplyingProxy(false);
+        }
+    };
+
     const warpVpn = pulse?.installed_vpns.find(v => v.id === 'warp');
-    const isWarpInstalled = !!warpVpn;
-    const isWarpRunning = !!warpVpn?.is_running;
-    const isWarpPortListening = !!warpVpn?.is_port_listening || !!pulse?.discovered_proxies.some(p => p.port === 40000 && p.is_listening);
+    const isWarpInstalled = warpStatus ? warpStatus.is_installed : !!warpVpn;
+    const isWarpRunning = warpStatus ? warpStatus.is_running : !!warpVpn?.is_running;
+    const isWarpPortListening = warpStatus 
+        ? warpStatus.is_port_listening 
+        : (!!warpVpn?.is_port_listening || !!pulse?.discovered_proxies.some(p => p.port === 40000 && p.is_listening));
 
     // بهترین پروکسی محلی موجود
-    const bestLocalProxy = pulse?.discovered_proxies.find(p => p.is_working && p.gemini_supported) 
+    const bestLocalProxy = pulse?.discovered_proxies.find(p => p.is_working && p.gemini_supported && p.protocol === 'http')
+        || pulse?.discovered_proxies.find(p => p.is_working && p.gemini_supported) 
+        || pulse?.discovered_proxies.find(p => p.is_working && p.protocol === 'http')
         || pulse?.discovered_proxies.find(p => p.is_working)
+        || pulse?.discovered_proxies.find(p => p.is_listening && p.protocol === 'http' && p.port !== 40000)
         || pulse?.discovered_proxies.find(p => p.is_listening && p.port !== 40000);
 
     return (
@@ -449,23 +573,47 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
 
                                 {/* دکمه‌های اقدام هوشمند برای رفع مسدودیت (فیلترشکن / پروکسی محلی) */}
                                 <div className="flex flex-wrap items-center gap-2 pt-1">
+                                    {/* دکمه تشخیص خودکار و اتصال هوشمند بدون TUN */}
+                                    {(bestLocalProxy || pulse.discovered_proxies.some(p => p.is_working || p.is_listening)) && (
+                                        <button
+                                            onClick={handleAutoDetectAndApply}
+                                            disabled={isApplyingProxy}
+                                            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                                            title="Automatically detect open proxy ports (10810, 10809, 10808, 40000) and route Antigravity IDE traffic"
+                                        >
+                                            <Zap size={13} className="text-yellow-300 fill-current" />
+                                            <span>{t('dashboard.health_pulse.auto_detect_btn', '⚡ Auto-Detect & Connect Working Proxy')}</span>
+                                        </button>
+                                    )}
+
                                     {pulse.installed_vpns.map(vpn => {
-                                        const matchingProxy = pulse.discovered_proxies.find(p => p.port === vpn.default_port && p.is_listening);
-                                        if (vpn.is_running && matchingProxy) {
+                                        const matchingProxy = pulse.discovered_proxies.find(p => 
+                                            (vpn.active_port && p.port === vpn.active_port) ||
+                                            (vpn.candidate_ports?.includes(p.port) && p.is_working && p.protocol === 'http') ||
+                                            (vpn.candidate_ports?.includes(p.port) && p.is_working) ||
+                                            (vpn.candidate_ports?.includes(p.port) && p.is_listening && p.protocol === 'http') ||
+                                            (vpn.candidate_ports?.includes(p.port) && p.is_listening) ||
+                                            (vpn.default_port === p.port && p.is_listening)
+                                        );
+                                        const proxyToApply = vpn.active_url || matchingProxy?.url || (matchingProxy ? `${matchingProxy.protocol}://127.0.0.1:${matchingProxy.port}` : null);
+                                        const displayPort = vpn.active_port || matchingProxy?.port || vpn.default_port;
+                                        const isHttp = proxyToApply?.startsWith('http://');
+
+                                        if (vpn.is_running && proxyToApply) {
                                             return (
                                                 <button
                                                     key={vpn.id}
-                                                    onClick={() => handleApplyLocalProxy(matchingProxy.url)}
+                                                    onClick={() => handleApplyLocalProxy(proxyToApply)}
                                                     disabled={isApplyingProxy}
                                                     className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
-                                                    title={`Apply ${vpn.name} proxy (${matchingProxy.url}) to Antigravity IDE`}
+                                                    title={`Apply ${vpn.name} proxy (${proxyToApply}) to Antigravity IDE`}
                                                 >
                                                     <Zap size={13} className="text-yellow-300 fill-current" />
                                                     <span>
                                                         {t('dashboard.health_pulse.apply_vpn_proxy', {
                                                             name: vpn.name,
-                                                            port: matchingProxy.port,
-                                                            defaultValue: `Apply ${vpn.name} Proxy (${matchingProxy.port})`
+                                                            port: `${isHttp ? 'HTTP: ' : ''}${displayPort}`,
+                                                            defaultValue: `Apply ${vpn.name} Proxy (${isHttp ? 'HTTP: ' : ''}${displayPort})`
                                                         })}
                                                     </span>
                                                 </button>
@@ -490,7 +638,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                     })}
 
                                     {/* سایر پروکسی‌های فعال که متناظر با فیلترشکن‌های رندرشده بالا نیستند */}
-                                    {bestLocalProxy && !pulse.installed_vpns.some(v => v.is_running && v.default_port === bestLocalProxy.port) && (
+                                    {bestLocalProxy && !pulse.installed_vpns.some(v => v.is_running && (v.active_port === bestLocalProxy.port || v.default_port === bestLocalProxy.port)) && (
                                         <button
                                             onClick={() => handleApplyLocalProxy(bestLocalProxy.url)}
                                             disabled={isApplyingProxy}
@@ -607,18 +755,41 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                     {t('proxy.no_tun.warp_modal.method1_desc', 'Install the official Cloudflare WARP client and set it to Proxy Mode in settings (listens on default port 40000).')}
                                 </p>
 
-                                {/* Diagnostics hint based on detection */}
-                                {!isWarpInstalled && (
-                                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[11px] flex items-center justify-between gap-2">
+                                {/* Diagnostics & Actions based on detection */}
+                                {warpStatus?.is_downloading ? (
+                                    <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 space-y-2">
+                                        <div className="flex items-center justify-between text-xs font-bold">
+                                            <span className="flex items-center gap-2">
+                                                <RefreshCw size={13} className="animate-spin text-amber-600 dark:text-amber-400" />
+                                                <span>
+                                                    {t('dashboard.health_pulse.warp_downloading_progress', {
+                                                        percent: warpStatus.download_progress,
+                                                        defaultValue: `Downloading & silently installing WARP in background (${warpStatus.download_progress}%)...`
+                                                    })}
+                                                </span>
+                                            </span>
+                                            <span className="font-mono font-bold text-amber-700 dark:text-amber-400">{warpStatus.download_progress}%</span>
+                                        </div>
+                                        <div className="w-full h-2 bg-amber-200 dark:bg-amber-950/60 rounded-full overflow-hidden">
+                                            <div 
+                                                className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-300 rounded-full"
+                                                style={{ width: `${warpStatus.download_progress}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : !isWarpInstalled ? (
+                                    <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[11px] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                         <span>{t('dashboard.health_pulse.warp_not_installed_hint', 'Cloudflare WARP client is not detected on your PC.')}</span>
                                         <button
-                                            onClick={() => window.open('https://one.one.one.one/', '_blank')}
-                                            className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] transition-all shrink-0 cursor-pointer"
+                                            onClick={handleStartWarpDownload}
+                                            disabled={isWarpActionLoading}
+                                            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold text-xs transition-all shadow-sm shrink-0 flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
                                         >
-                                            {t('dashboard.health_pulse.download_warp_btn', 'Download WARP')}
+                                            <Zap size={13} className="text-yellow-300 fill-current" />
+                                            <span>{t('dashboard.health_pulse.warp_download_install_btn', 'Auto-Download & Install in Background')}</span>
                                         </button>
                                     </div>
-                                )}
+                                ) : null}
 
                                 {isWarpInstalled && !isWarpRunning && warpVpn && (
                                     <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-800 dark:text-blue-300 text-[11px] flex items-center justify-between gap-2">
@@ -634,26 +805,32 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                     </div>
                                 )}
 
-                                {isWarpRunning && !isWarpPortListening && (
+                                {isWarpRunning && !isWarpPortListening && !warpStatus?.is_connected && (
                                     <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[11px]">
-                                        {t('dashboard.health_pulse.warp_enable_proxy_mode_hint', 'WARP is running, but port 40000 is closed. Open WARP app -> Settings (Gear) -> Preferences -> Connection -> select "Proxy Mode" (SOCKS5).')}
+                                        {t('dashboard.health_pulse.warp_enable_proxy_mode_hint', 'WARP is running, but port 40000 is closed. Click 1-Click Connect below to automatically set Proxy Mode.')}
                                     </div>
                                 )}
 
                                 <div className="pt-1 flex flex-wrap items-center gap-2">
-                                    <button
-                                        onClick={() => {
-                                            if (!isWarpPortListening) {
-                                                showToast(t('dashboard.health_pulse.warp_port_not_listening_toast', 'Warning: Port 40000 is not listening. Ensure WARP is running in Proxy Mode.'), 'warning');
-                                            }
-                                            setShowWarpModal(false);
-                                            handleApplyLocalProxy('socks5://127.0.0.1:40000');
-                                        }}
-                                        className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
-                                    >
-                                        <Zap size={13} />
-                                        <span>{t('dashboard.health_pulse.warp_connect_btn', 'Set Port 40000 (WARP Local) & Connect')}</span>
-                                    </button>
+                                    {warpStatus?.is_connected ? (
+                                        <button
+                                            onClick={handleDisconnectWarp}
+                                            disabled={isWarpActionLoading}
+                                            className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                        >
+                                            <XCircle size={13} />
+                                            <span>{t('dashboard.health_pulse.warp_disconnect_btn', 'Disconnect WARP')}</span>
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={handleConnectWarp}
+                                            disabled={isWarpActionLoading || warpStatus?.is_downloading}
+                                            className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                        >
+                                            <Zap size={13} className="text-yellow-300 fill-current" />
+                                            <span>{t('dashboard.health_pulse.warp_connect_1click', '1-Click Connect WARP (Proxy Mode: 40000)')}</span>
+                                        </button>
+                                    )}
 
                                     {bestLocalProxy && bestLocalProxy.port !== 40000 && (
                                         <button

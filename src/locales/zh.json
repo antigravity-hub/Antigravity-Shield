@@ -160,9 +160,17 @@
       "warp_modal_hint": "Google 限制了部分 IP 访问 Gemini。Cloudflare WARP 提供干净的出口 IP，可彻底解决 HTTP 400 及不支持错误。",
       "warp_connect_btn": "填入 40000 端口 (WARP Local) 并连接",
       "tun_active": "TUN 模式已激活（直接路由）",
-      "remove_proxy_btn": "切换为 TUN / 直连",
-      "remove_proxy_tooltip": "清除本地代理设置并使用直接 TUN 适配器路由",
-      "vpn_already_running": "{{name}} 已在运行中。"
+      "vpn_already_running": "{{name}} 已在运行中。",
+      "apply_vpn_proxy": "连接 {{name}} 代理 (端口 {{port}})",
+      "egress_country": "出口国家: {{country}}",
+      "auto_detect_btn": "⚡ 自动检测并连接可用代理",
+      "auto_proxy_success": "已自动连接可用代理: {{url}}",
+      "warp_download_install_btn": "后台自动下载并安装 WARP",
+      "warp_downloading_progress": "正在后台静默下载并安装 WARP ({{percent}}%)...",
+      "warp_installed_toast": "Cloudflare WARP 已成功安装！",
+      "warp_connect_1click": "一键连接 WARP (Proxy 模式 40000 端口)",
+      "warp_disconnect_btn": "断开 WARP 连接",
+      "warp_download_started": "Cloudflare WARP 后台下载已启动..."
     }
   },
   "accounts": {

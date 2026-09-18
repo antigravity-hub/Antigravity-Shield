@@ -664,27 +664,29 @@ pub async fn download_and_run_installer(
         ));
     }
 
-    let total_size = response.content_length().unwrap_or(0);
-    let filename = if download_url.ends_with(".exe") {
-        format!("Antigravity-Shield-{}-setup.exe", clean_ver)
-    } else if download_url.ends_with(".dmg") {
-        format!("Antigravity-Shield-{}.dmg", clean_ver)
-    } else if download_url.ends_with(".AppImage") {
-        format!("Antigravity-Shield-{}.AppImage", clean_ver)
-    } else {
-        #[cfg(target_os = "windows")]
-        {
-            format!("Antigravity-Shield-{}-setup.exe", clean_ver)
-        }
-        #[cfg(target_os = "macos")]
-        {
-            format!("Antigravity-Shield-{}.dmg", clean_ver)
-        }
-        #[cfg(target_os = "linux")]
-        {
-            format!("Antigravity-Shield-{}.AppImage", clean_ver)
-        }
-    };
+    let mut total_size = response.content_length().unwrap_or(0);
+    let filename = download_url
+        .split('?')
+        .next()
+        .unwrap_or(&download_url)
+        .split('/')
+        .last()
+        .filter(|s| s.ends_with(".exe") || s.ends_with(".dmg") || s.ends_with(".AppImage"))
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| {
+            #[cfg(target_os = "windows")]
+            {
+                format!("Antigravity.Shield_{}_x64-setup.exe", clean_ver)
+            }
+            #[cfg(target_os = "macos")]
+            {
+                format!("Antigravity.Shield_{}_aarch64.dmg", clean_ver)
+            }
+            #[cfg(target_os = "linux")]
+            {
+                format!("Antigravity.Shield_{}_amd64.AppImage", clean_ver)
+            }
+        });
 
     let temp_dir = std::env::temp_dir();
     let file_path = temp_dir.join(&filename);
@@ -704,8 +706,11 @@ pub async fn download_and_run_installer(
                     total_size
                 ));
                 downloaded = meta.len();
-            } else if meta.len() < total_size {
+            } else if total_size > 0 && meta.len() < total_size {
                 downloaded = meta.len();
+            } else if total_size > 0 && meta.len() > total_size {
+                let _ = tokio::fs::remove_file(&file_path).await;
+                downloaded = 0;
             }
         }
     }
@@ -753,6 +758,15 @@ pub async fn download_and_run_installer(
                     continue;
                 }
             };
+
+            // If server returned 200 OK instead of 206 Partial Content, it sent full content from byte 0
+            if resp.status() == reqwest::StatusCode::OK && downloaded > 0 {
+                logger::log_info("Server does not support Range requests; restarting download from byte 0.");
+                downloaded = 0;
+                file = tokio::fs::File::create(&file_path)
+                    .await
+                    .map_err(|e| format!("Failed to recreate temp installer file: {}", e))?;
+            }
 
             if total_size == 0 {
                 if let Some(cl) = resp.content_length() {

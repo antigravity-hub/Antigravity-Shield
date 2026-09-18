@@ -203,7 +203,15 @@
       "warp_port_not_listening_toast": "Warning: Port 40000 is not listening. Ensure WARP is running in Proxy Mode.",
       "use_active_proxy_btn": "Or Use Active Proxy",
       "apply_vpn_proxy": "Apply {{name}} Proxy (Port {{port}})",
-      "egress_country": "Egress: {{country}}"
+      "egress_country": "Egress: {{country}}",
+      "auto_detect_btn": "Auto-Detect & Connect Working Proxy",
+      "auto_proxy_success": "Connected to active proxy: {{url}}",
+      "warp_download_install_btn": "Auto-Download & Install in Background",
+      "warp_downloading_progress": "Downloading & silently installing WARP in background ({{percent}}%)...",
+      "warp_installed_toast": "Cloudflare WARP successfully installed in background!",
+      "warp_connect_1click": "1-Click Connect WARP (Proxy Mode: 40000)",
+      "warp_disconnect_btn": "Disconnect WARP",
+      "warp_download_started": "Cloudflare WARP background download started..."
     },
     "verification_required_title": "Accounts Requiring Google Verification (Verification Required)",
     "account_unit": "accounts",
