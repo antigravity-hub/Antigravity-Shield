@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.4 (2026-09-18)**:
+        -   **UI & Notifications**: Simplified quota alert presentation and added desktop notification safeguards against alert stacking.
+        -   **Core Platform Stability**: Strengthened internal boundary validation and standardized runtime data handling.
+        -   **Dependencies**: Routine maintenance and security updates across core dependencies.
     *   **v5.11.3 (2026-09-18)**:
         -   **[Quota Resilience & Automated Account Rotation] Smart Alert Grouping & Auto-Switch**:
             -   **Exhaustion Detection & Rotation**: Implemented automated account rotation when token quotas are exhausted, seamlessly switching to the next available healthy account.

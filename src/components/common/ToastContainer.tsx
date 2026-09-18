@@ -25,7 +25,15 @@ const ToastContainer = () => {
 
     const addToast = useCallback((message: string, type: ToastType, duration?: number) => {
         const id = `toast-${Date.now()}-${toastCounter++}`;
-        setToasts(prev => [...prev, { id, message, type, duration }]);
+        setToasts(prev => {
+            // Prevent duplicate message stacking
+            if (prev.some(t => t.message === message)) {
+                return prev;
+            }
+            // Limit visible toasts to maximum 3 to prevent screen flooding
+            const trimmed = prev.length >= 3 ? prev.slice(prev.length - 2) : prev;
+            return [...trimmed, { id, message, type, duration }];
+        });
     }, []);
 
     const removeToast = useCallback((id: string) => {
