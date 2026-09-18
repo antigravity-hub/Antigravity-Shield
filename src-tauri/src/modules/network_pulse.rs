@@ -346,12 +346,12 @@ async fn execute_probe(client: rquest::Client) -> ProbeOutput {
     let cf_trace_future = {
         let c = client.clone();
         async move {
-            c.get("https://www.cloudflare.com/cdn-cgi/trace")
-                .send()
-                .await
-                .ok()
-                .and_then(|r| r.text().await.ok())
-                .map(|text| parse_cloudflare_trace(&text))
+            if let Ok(resp) = c.get("https://www.cloudflare.com/cdn-cgi/trace").send().await {
+                if let Ok(text) = resp.text().await {
+                    return Some(parse_cloudflare_trace(&text));
+                }
+            }
+            None
         }
     };
 
