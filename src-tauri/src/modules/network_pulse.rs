@@ -519,7 +519,7 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
                 .map(|c| c.proxy.upstream_proxy.url)
         })
         .or_else(|| {
-            crate::modules::proxy_scanner::check_antigravity_proxy_status().current_proxy
+            crate::modules::antigravity_network_patcher::check_antigravity_proxy_status().current_proxy
         });
 
     let timeout_duration = Duration::from_secs(6);
@@ -609,6 +609,11 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
 
     // اسکن پورت‌های لوکال در پس‌زمینه برای پیشنهاد دکمه
     let discovered_proxies = crate::modules::proxy_scanner::scan_local_proxies().await;
+    let best_working_proxy = discovered_proxies
+        .iter()
+        .find(|p| p.is_working && p.gemini_supported)
+        .cloned()
+        .or_else(|| discovered_proxies.iter().find(|p| p.is_working).cloned());
     let installed_vpns = detect_installed_vpns();
 
     NetworkPulseResult {
@@ -623,6 +628,7 @@ pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseR
         active_proxy_url: proxy_url_opt,
         is_tun_active,
         discovered_proxies,
+        best_working_proxy,
         installed_vpns,
         egress_country,
         is_warp_active,
