@@ -59,3 +59,14 @@ Downloads/
 dist_release/
 prebuilt_bindings.rs
 *.db
+
+# Internal Architecture & Diagnostic Audits (OpSec Protected)
+DIAGNOSTIC_AUDIT.md
+PROJECT.md
+TEST_INFRA.md
+TEST_READY.md
+UPSTREAM_INTELLIGENCE_ROADMAP.md
+UPSTREAM_ISSUES_RESOLVED.json
+request_transform.md
+diff_output.txt
+exe_build.txt
