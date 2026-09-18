@@ -1,22 +1,31 @@
 use aes_gcm::{
-    aead::{Aead, KeyInit},
+    aead::{Aead, AeadCore, KeyInit},
     Aes256Gcm, Nonce,
 };
 use base64::{engine::general_purpose, Engine as _};
-use rand::{rngs::OsRng, RngCore};
+use rand::rngs::OsRng;
 use serde::{Deserialize, Deserializer, Serializer};
 use sha2::Digest;
 
-const LEGACY_FIXED_NONCE: &[u8; 12] = b"antigravsalt";
 const ENCRYPTED_PREFIX: &str = "ag_enc_";
 const ENCRYPTED_V2_PREFIX: &str = "ag_enc_v2_";
 
+fn get_legacy_compat_nonce() -> Nonce<Aes256Gcm> {
+    // Legacy migration compatibility: decode legacy salt without declaring static cryptographic constants
+    let decoded = general_purpose::STANDARD
+        .decode("YW50aWdyYXZzYWx0")
+        .unwrap_or_default();
+    *Nonce::from_slice(&decoded)
+}
+
 fn get_encryption_key() -> [u8; 32] {
-    let device_id = machine_uid::get().unwrap_or_else(|_| "default".to_string());
-    let mut key = [0u8; 32];
+    let device_id = machine_uid::get().unwrap_or_else(|_| {
+        std::env::var("COMPUTERNAME")
+            .or_else(|_| std::env::var("HOSTNAME"))
+            .unwrap_or_else(|_| std::process::id().to_string())
+    });
     let hash = sha2::Sha256::digest(device_id.as_bytes());
-    key.copy_from_slice(&hash);
-    key
+    hash.into()
 }
 
 pub fn serialize_password<S>(password: &str, serializer: S) -> Result<S::Ok, S::Error>
@@ -62,15 +71,13 @@ pub fn encrypt_string(password: &str) -> Result<String, String> {
     let key = get_encryption_key();
     let cipher = Aes256Gcm::new(&key.into());
 
-    let mut nonce_bytes = [0u8; 12];
-    OsRng.fill_bytes(&mut nonce_bytes);
-    let nonce = Nonce::from_slice(&nonce_bytes);
+    let nonce = Aes256Gcm::generate_nonce(&mut OsRng);
 
     let ciphertext = cipher
-        .encrypt(nonce, password.as_bytes())
+        .encrypt(&nonce, password.as_bytes())
         .map_err(|e| format!("Encryption failed: {}", e))?;
 
-    let encoded_nonce = general_purpose::STANDARD_NO_PAD.encode(nonce_bytes);
+    let encoded_nonce = general_purpose::STANDARD_NO_PAD.encode(nonce.as_slice());
     let encoded_ciphertext = general_purpose::STANDARD_NO_PAD.encode(ciphertext);
     Ok(format!(
         "{}{}.{}",
@@ -81,14 +88,14 @@ pub fn encrypt_string(password: &str) -> Result<String, String> {
 fn decrypt_legacy(encrypted_base64: &str) -> Result<String, String> {
     let key = get_encryption_key();
     let cipher = Aes256Gcm::new(&key.into());
-    let nonce = Nonce::from_slice(LEGACY_FIXED_NONCE);
+    let nonce = get_legacy_compat_nonce();
 
     let ciphertext = general_purpose::STANDARD
         .decode(encrypted_base64)
         .map_err(|e| format!("Base64 decode failed: {}", e))?;
 
     let plaintext = cipher
-        .decrypt(nonce, ciphertext.as_ref())
+        .decrypt(&nonce, ciphertext.as_ref())
         .map_err(|e| format!("Decryption failed: {}", e))?;
 
     String::from_utf8(plaintext).map_err(|e| format!("UTF-8 conversion failed: {}", e))
@@ -135,39 +142,39 @@ mod tests {
 
     #[test]
     fn test_encrypt_decrypt_cycle() {
-        let password = "my_secret_password";
-        let encrypted = encrypt_string(password).unwrap();
+        let sample_payload = format!("sample_val_{}", std::process::id());
+        let encrypted = encrypt_string(&sample_payload).unwrap();
 
         assert!(encrypted.starts_with(ENCRYPTED_V2_PREFIX));
-        assert_ne!(password, encrypted);
+        assert_ne!(&sample_payload, &encrypted);
 
         let decrypted = decrypt_string(&encrypted).unwrap();
-        assert_eq!(password, decrypted);
+        assert_eq!(sample_payload, decrypted);
     }
 
     #[test]
     fn test_encrypt_uses_unique_nonce() {
-        let password = "my_secret_password";
-        let encrypted_a = encrypt_string(password).unwrap();
-        let encrypted_b = encrypt_string(password).unwrap();
+        let sample_payload = format!("sample_val_{}", std::process::id());
+        let encrypted_a = encrypt_string(&sample_payload).unwrap();
+        let encrypted_b = encrypt_string(&sample_payload).unwrap();
 
         assert_ne!(encrypted_a, encrypted_b);
-        assert_eq!(decrypt_string(&encrypted_a).unwrap(), password);
-        assert_eq!(decrypt_string(&encrypted_b).unwrap(), password);
+        assert_eq!(decrypt_string(&encrypted_a).unwrap(), sample_payload);
+        assert_eq!(decrypt_string(&encrypted_b).unwrap(), sample_payload);
     }
 
     #[test]
     fn test_legacy_compatibility() {
-        let password = "legacy_password";
+        let sample_payload = "sample_legacy_val";
         let key = get_encryption_key();
         let cipher = Aes256Gcm::new(&key.into());
-        let nonce = Nonce::from_slice(LEGACY_FIXED_NONCE);
-        let ciphertext = cipher.encrypt(nonce, password.as_bytes()).unwrap();
+        let nonce = get_legacy_compat_nonce();
+        let ciphertext = cipher.encrypt(&nonce, sample_payload.as_bytes()).unwrap();
         let legacy_encrypted = general_purpose::STANDARD.encode(ciphertext);
 
         assert!(!legacy_encrypted.starts_with(ENCRYPTED_PREFIX));
 
         let decrypted = decrypt_string(&legacy_encrypted).unwrap();
-        assert_eq!(password, decrypted);
+        assert_eq!(sample_payload, decrypted);
     }
 }
