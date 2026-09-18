@@ -596,6 +596,7 @@ pub fn run() {
             commands::open_data_folder,
             commands::open_verification_guide_doc,
             commands::get_data_dir_path,
+            commands::send_desktop_notification,
             commands::show_main_window,
             commands::set_window_theme,
             commands::get_antigravity_path,
