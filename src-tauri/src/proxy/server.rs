@@ -1503,6 +1503,12 @@ async fn admin_complete_oauth_login(
             Json(ErrorResponse { error: e }),
         )
     })?;
+
+    let account_clone = account.clone();
+    tokio::spawn(async move {
+        crate::modules::scheduler::trigger_warmup_for_account(&account_clone).await;
+    });
+
     Ok(Json(to_account_response(&account, &current_id)))
 }
 

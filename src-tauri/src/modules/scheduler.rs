@@ -157,217 +157,234 @@ pub fn start_scheduler(
     });
 
     // 2. Spawn Weekly Reset Warmup Scheduler
+    let app_handle_for_cycle = app_handle.clone();
+    let proxy_state_for_cycle = proxy_state.clone();
     tauri::async_runtime::spawn(async move {
         logger::log_info("[Scheduler] Weekly Reset Warmup Scheduler started. Monitoring 7-day quota windows...");
+
+        // Initial scan shortly after startup (15s delay to ensure proxy server is fully bound)
+        time::sleep(Duration::from_secs(15)).await;
+        run_warmup_cycle(app_handle_for_cycle.clone(), proxy_state_for_cycle.clone()).await;
 
         // [HARDENED] Scan with randomized jitter to eliminate mechanical bot timing signatures
         loop {
             let jitter_secs = 270 + (chrono::Utc::now().timestamp() as u64 % 90);
             time::sleep(Duration::from_secs(jitter_secs)).await;
-
-            // Load configuration
-            let Ok(app_config) = config::load_app_config() else {
-                continue;
-            };
-
-            // Must be enabled by user in Settings
-            if !app_config.scheduled_warmup.enabled {
-                continue;
-            }
-
-            let Ok(accounts) = account::list_accounts() else {
-                continue;
-            };
-
-            if accounts.is_empty() {
-                continue;
-            }
-
-            let now_ts = Utc::now().timestamp();
-            let mut tasks_to_run = Vec::new();
-
-            for acc in &accounts {
-                if acc.disabled || acc.proxy_disabled {
-                    continue;
-                }
-
-                let Ok((token, pid)) = quota::get_valid_token_for_warmup(acc).await else {
-                    continue;
-                };
-
-                let Ok((fresh_quota, _)) = quota::fetch_quota_with_cache(
-                    &token,
-                    &acc.email,
-                    Some(&pid),
-                    Some(&acc.id),
-                )
-                .await
-                else {
-                    continue;
-                };
-
-                if fresh_quota.is_forbidden {
-                    continue;
-                }
-
-                // Check quota_groups for WEEKLY buckets
-                if let Some(groups) = &fresh_quota.quota_groups {
-                    for group in groups {
-                        for bucket in &group.buckets {
-                            let is_weekly = bucket.window.to_lowercase().contains("week")
-                                || bucket.bucket_id.to_lowercase().contains("week");
-                            let is_5h = bucket.window.to_lowercase().contains("5h")
-                                || bucket.bucket_id.to_lowercase().contains("5h")
-                                || bucket.window.to_lowercase().contains("rolling");
-
-                            if !is_weekly && !is_5h {
-                                continue;
-                            }
-
-                            // If fraction is 1.0 (100% full)
-                            if bucket.remaining_fraction >= 0.999 {
-                                let (should_warm, history_key) = if is_weekly {
-                                    if let Some(reset_ts) = parse_reset_time_ts(&bucket.reset_time) {
-                                        // Weekly: check if reset_time reached (with 1 min buffer)
-                                        if now_ts >= reset_ts - 60 {
-                                            let key = format!(
-                                                "{}:{}:weekly:{}",
-                                                acc.email, bucket.bucket_id, reset_ts
-                                            );
-                                            (!check_cooldown(&key, 6 * 86400), key)
-                                        } else {
-                                            (false, String::new())
-                                        }
-                                    } else {
-                                        (false, String::new())
-                                    }
-                                } else {
-                                    // 5-hour rolling: recovered to 100%, trigger warm if 4.5h cooldown passed
-                                    let key = format!("{}:{}:5h", acc.email, bucket.bucket_id);
-                                    (!check_cooldown(&key, 16200), key)
-                                };
-
-                                if should_warm && !history_key.is_empty() {
-                                    let model_to_ping = if bucket
-                                        .bucket_id
-                                        .contains("3p")
-                                        || group.display_name.contains("Claude")
-                                    {
-                                        "claude-sonnet-4-6".to_string()
-                                    } else {
-                                        "gemini-3-flash".to_string()
-                                    };
-
-                                    tasks_to_run.push((
-                                        acc.id.clone(),
-                                        acc.email.clone(),
-                                        model_to_ping,
-                                        token.clone(),
-                                        pid.clone(),
-                                        history_key,
-                                    ));
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    // Fallback to models if quota_groups is not populated
-                    for model in &fresh_quota.models {
-                        if model.percentage == 100 {
-                            if !app_config
-                                .scheduled_warmup
-                                .monitored_models
-                                .contains(&model.name)
-                            {
-                                continue;
-                            }
-                            if let Some(reset_ts) = parse_reset_time_ts(&model.reset_time) {
-                                if now_ts >= reset_ts - 60 {
-                                    let history_key = format!(
-                                        "{}:{}:weekly:{}",
-                                        acc.email, model.name, reset_ts
-                                    );
-                                    if !check_cooldown(&history_key, 6 * 86400) {
-                                        tasks_to_run.push((
-                                            acc.id.clone(),
-                                            acc.email.clone(),
-                                            model.name.clone(),
-                                            token.clone(),
-                                            pid.clone(),
-                                            history_key,
-                                        ));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Execute weekly warmup tasks
-            if !tasks_to_run.is_empty() {
-                logger::log_info(&format!(
-                    "[Scheduler] 🎯 Reached weekly reset for {} account targets. Triggering warmup...",
-                    tasks_to_run.len()
-                ));
-
-                let handle_for_warmup = app_handle.clone();
-                let state_for_warmup = proxy_state.clone();
-
-                tokio::spawn(async move {
-                    for (acc_id, email, model, token, pid, history_key) in tasks_to_run {
-                        logger::log_info(&format!(
-                            "[WeeklyWarmup] 🚀 Triggering weekly warmup for {} @ {}",
-                            model, email
-                        ));
-
-                        let success = quota::warmup_model_directly(
-                            &token,
-                            &model,
-                            &pid,
-                            &email,
-                            100,
-                            Some(&acc_id),
-                        )
-                        .await;
-
-                        let now = Utc::now().timestamp();
-                        if success {
-                            record_warmup_history(&history_key, now);
-                            logger::log_info(&format!(
-                                "[WeeklyWarmup] ✅ Successfully started weekly timer for {} @ {}",
-                                model, email
-                            ));
-                        }
-                        tokio::time::sleep(tokio::time::Duration::from_millis(3000 + ((now as u64) % 2500))).await;
-                    }
-
-                    // Refresh UI
-                    tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
-                    let _ = crate::commands::refresh_all_quotas_internal(
-                        &state_for_warmup,
-                        handle_for_warmup,
-                    )
-                    .await;
-                });
-            }
-
-            // Regularly clean up history (keep last 30 days)
-            {
-                let now_ts = Utc::now().timestamp();
-                let cutoff = now_ts - 30 * 86400;
-                let pruned_snapshot = {
-                    let mut history = WARMUP_HISTORY.lock().unwrap();
-                    history.retain(|_, &mut ts| ts > cutoff);
-                    history.clone()
-                };
-                save_warmup_history(&pruned_snapshot);
-            }
+            run_warmup_cycle(app_handle_for_cycle.clone(), proxy_state_for_cycle.clone()).await;
         }
     });
 }
 
-/// Trigger immediate smart warmup check for a single account (e.g. on manual trigger / recovered event)
+/// Execute a single check-and-warmup cycle across all accounts
+async fn run_warmup_cycle(
+    app_handle: Option<tauri::AppHandle>,
+    proxy_state: crate::commands::proxy::ProxyServiceState,
+) {
+    // Load configuration
+    let Ok(app_config) = config::load_app_config() else {
+        return;
+    };
+
+    // Must be enabled by user in Settings
+    if !app_config.scheduled_warmup.enabled {
+        return;
+    }
+
+    let Ok(accounts) = account::list_accounts() else {
+        return;
+    };
+
+    if accounts.is_empty() {
+        return;
+    }
+
+    let now_ts = Utc::now().timestamp();
+    let mut tasks_to_run = Vec::new();
+
+    for acc in &accounts {
+        if acc.disabled || acc.proxy_disabled {
+            continue;
+        }
+
+        let Ok((token, pid)) = quota::get_valid_token_for_warmup(acc).await else {
+            continue;
+        };
+
+        let Ok((fresh_quota, _)) = quota::fetch_quota_with_cache(
+            &token,
+            &acc.email,
+            Some(&pid),
+            Some(&acc.id),
+        )
+        .await
+        else {
+            continue;
+        };
+
+        if fresh_quota.is_forbidden {
+            continue;
+        }
+
+        // Check quota_groups for WEEKLY and 5H buckets
+        if let Some(groups) = &fresh_quota.quota_groups {
+            for group in groups {
+                for bucket in &group.buckets {
+                    let is_weekly = bucket.window.to_lowercase().contains("week")
+                        || bucket.bucket_id.to_lowercase().contains("week");
+                    let is_5h = bucket.window.to_lowercase().contains("5h")
+                        || bucket.bucket_id.to_lowercase().contains("5h")
+                        || bucket.window.to_lowercase().contains("rolling");
+
+                    if !is_weekly && !is_5h {
+                        continue;
+                    }
+
+                    // If fraction is 1.0 (100% full)
+                    if bucket.remaining_fraction >= 0.999 {
+                        let (should_warm, history_key) = if is_weekly {
+                            if let Some(reset_ts) = parse_reset_time_ts(&bucket.reset_time) {
+                                // Weekly: check if reset_time reached (with 1 min buffer)
+                                if now_ts >= reset_ts - 60 {
+                                    let key = format!(
+                                        "{}:{}:weekly:{}",
+                                        acc.email, bucket.bucket_id, reset_ts
+                                    );
+                                    (!check_cooldown(&key, 6 * 86400), key)
+                                } else {
+                                    (false, String::new())
+                                }
+                            } else {
+                                (false, String::new())
+                            }
+                        } else {
+                            // 5-hour rolling: recovered to 100%, trigger warm if 4.5h cooldown passed
+                            let key = format!("{}:{}:5h", acc.email, bucket.bucket_id);
+                            (!check_cooldown(&key, 16200), key)
+                        };
+
+                        if should_warm && !history_key.is_empty() {
+                            let model_to_ping = if bucket
+                                .bucket_id
+                                .contains("3p")
+                                || group.display_name.contains("Claude")
+                            {
+                                "claude-sonnet-4-6".to_string()
+                            } else {
+                                "gemini-3-flash".to_string()
+                            };
+
+                            tasks_to_run.push((
+                                acc.id.clone(),
+                                acc.email.clone(),
+                                model_to_ping,
+                                token.clone(),
+                                pid.clone(),
+                                history_key,
+                            ));
+                        }
+                    }
+                }
+            }
+        } else {
+            // Fallback to models if quota_groups is not populated
+            for model in &fresh_quota.models {
+                if model.percentage == 100 {
+                    if !app_config
+                        .scheduled_warmup
+                        .monitored_models
+                        .contains(&model.name)
+                    {
+                        continue;
+                    }
+                    if let Some(reset_ts) = parse_reset_time_ts(&model.reset_time) {
+                        if now_ts >= reset_ts - 60 {
+                            let history_key = format!(
+                                "{}:{}:weekly:{}",
+                                acc.email, model.name, reset_ts
+                            );
+                            if !check_cooldown(&history_key, 6 * 86400) {
+                                tasks_to_run.push((
+                                    acc.id.clone(),
+                                    acc.email.clone(),
+                                    model.name.clone(),
+                                    token.clone(),
+                                    pid.clone(),
+                                    history_key,
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Execute warmup tasks
+    if !tasks_to_run.is_empty() {
+        logger::log_info(&format!(
+            "[Scheduler] 🎯 Reached reset threshold for {} account targets. Triggering warmup...",
+            tasks_to_run.len()
+        ));
+
+        let handle_for_warmup = app_handle.clone();
+        let state_for_warmup = proxy_state.clone();
+
+        tokio::spawn(async move {
+            let mut any_success = false;
+            for (acc_id, email, model, token, pid, history_key) in tasks_to_run {
+                logger::log_info(&format!(
+                    "[WeeklyWarmup] 🚀 Triggering warmup for {} @ {}",
+                    model, email
+                ));
+
+                let success = quota::warmup_model_directly(
+                    &token,
+                    &model,
+                    &pid,
+                    &email,
+                    100,
+                    Some(&acc_id),
+                )
+                .await;
+
+                let now = Utc::now().timestamp();
+                if success {
+                    any_success = true;
+                    record_warmup_history(&history_key, now);
+                    logger::log_info(&format!(
+                        "[WeeklyWarmup] ✅ Successfully warmed {} @ {}",
+                        model, email
+                    ));
+                }
+                tokio::time::sleep(tokio::time::Duration::from_millis(3000 + ((now as u64) % 2500))).await;
+            }
+
+            if any_success {
+                // Refresh UI and quotas
+                tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+                let _ = crate::commands::refresh_all_quotas_internal(
+                    &state_for_warmup,
+                    handle_for_warmup,
+                )
+                .await;
+            }
+        });
+    }
+
+    // Regularly clean up history (keep last 30 days)
+    {
+        let now_ts = Utc::now().timestamp();
+        let cutoff = now_ts - 30 * 86400;
+        let pruned_snapshot = {
+            let mut history = WARMUP_HISTORY.lock().unwrap();
+            history.retain(|_, &mut ts| ts > cutoff);
+            history.clone()
+        };
+        save_warmup_history(&pruned_snapshot);
+    }
+}
+
+/// Trigger immediate smart warmup check for a single account (e.g. on manual trigger / recovered event / after login)
 pub async fn trigger_warmup_for_account(account: &Account) {
     let Ok((token, pid)) = quota::get_valid_token_for_warmup(account).await else {
         return;
@@ -392,9 +409,11 @@ pub async fn trigger_warmup_for_account(account: &Account) {
     }
 
     let now_ts = Utc::now().timestamp();
-    if let Some(groups) = fresh_quota.quota_groups {
+    let mut any_warmed = false;
+
+    if let Some(groups) = &fresh_quota.quota_groups {
         for group in groups {
-            for bucket in group.buckets {
+            for bucket in &group.buckets {
                 let is_weekly = bucket.window.to_lowercase().contains("week")
                     || bucket.bucket_id.to_lowercase().contains("week");
                 let is_5h = bucket.window.to_lowercase().contains("5h")
@@ -447,6 +466,7 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                         .await;
 
                         if success {
+                            any_warmed = true;
                             record_warmup_history(&history_key, now_ts);
                             logger::log_info(&format!(
                                 "[AutoWarmup] ✅ Successfully auto-warmed {} ({} cycle) for {}",
@@ -456,6 +476,43 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                     }
                 }
             }
+        }
+    } else {
+        // Fallback to models list when quota_groups is not populated
+        let target_models = quota::select_target_warmup_models(&fresh_quota.models);
+        for m in target_models {
+            let history_key = format!("{}:{}:100", account.email, m.name);
+            if !check_cooldown(&history_key, 16200) {
+                let success = quota::warmup_model_directly(
+                    &token,
+                    &m.name,
+                    &pid,
+                    &account.email,
+                    100,
+                    Some(&account.id),
+                )
+                .await;
+                if success {
+                    any_warmed = true;
+                    record_warmup_history(&history_key, now_ts);
+                    logger::log_info(&format!(
+                        "[AutoWarmup] ✅ Successfully auto-warmed {} for {}",
+                        m.name, account.email
+                    ));
+                }
+            }
+        }
+    }
+
+    if any_warmed {
+        tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+        let mut acc_clone = account.clone();
+        if let Ok(quota) = crate::modules::account::fetch_quota_with_retry(&mut acc_clone).await {
+            let _ = crate::modules::account::update_account_quota(&account.id, quota);
+            logger::log_info(&format!(
+                "[AutoWarmup] 🔄 Quota refreshed after warmup for {}",
+                account.email
+            ));
         }
     }
 }
