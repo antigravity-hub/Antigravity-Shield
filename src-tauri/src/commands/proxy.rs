@@ -862,7 +862,7 @@ pub async fn apply_antigravity_proxy(
         }
     }
 
-    Ok(format!("پروکسی با موفقیت روی {} نسخه از Antigravity اعمال شد.", count))
+    Ok(format!("Proxy configuration applied to {} Antigravity instance(s).", count))
 }
 
 /// حذف تنظیمات پروکسی از Antigravity و بازگردانی به حالت عادی
@@ -888,7 +888,7 @@ pub async fn remove_antigravity_proxy(
         }
     }
 
-    Ok(format!("تنظیمات پروکسی از {} نسخه از Antigravity حذف شد.", count))
+    Ok(format!("Proxy settings removed from {} Antigravity instance(s).", count))
 }
 
 /// پروب پیشرفته سلامت اینترنت، گوگل و هوش مصنوعی جمینای

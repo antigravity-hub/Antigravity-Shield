@@ -263,31 +263,41 @@ pub async fn handle_warmup(
             } else {
                 let error_text = String::from_utf8_lossy(&resp_bytes).to_string();
 
-                // [FIX] 预热阶段检测到 403 时，标记账号为 forbidden，避免无效账号继续参与轮询
-                // 如果 account_id 为空（直接传入 access_token 的场景），通过 email 从索引中找到 ID
+                // [FIX] 预热阶段检测到 403 时，仅在核心模型（非可选第三方/Claude模型）被禁止时标记账号为 forbidden
+                // 免费层账号没有 Claude 权限返回 403 是正常的，不能将整个谷歌账号封禁
                 if status_code == 403 {
-                    let resolved_account_id = if !account_id.is_empty() {
-                        account_id.clone()
-                    } else {
-                        // 尝试通过 email 查找账号 ID
-                        crate::modules::account::find_account_id_by_email(&req.email)
-                            .unwrap_or_default()
-                    };
+                    let is_third_party = req.model.to_lowercase().contains("claude")
+                        || req.model.to_lowercase().contains("gpt");
 
-                    if !resolved_account_id.is_empty() {
+                    if is_third_party {
                         warn!(
-                            "[Warmup-API] 403 Forbidden detected for {}, marking account as forbidden",
-                            req.email
-                        );
-                        let _ = crate::modules::account::mark_account_forbidden(
-                            &resolved_account_id,
-                            &error_text,
+                            "[Warmup-API] 403 Forbidden on optional model {} for {}, skipping forbidden mark",
+                            req.model, req.email
                         );
                     } else {
-                        warn!(
-                            "[Warmup-API] 403 Forbidden detected for {} but could not resolve account_id, skipping mark",
-                            req.email
-                        );
+                        let resolved_account_id = if !account_id.is_empty() {
+                            account_id.clone()
+                        } else {
+                            // 尝试通过 email 查找账号 ID
+                            crate::modules::account::find_account_id_by_email(&req.email)
+                                .unwrap_or_default()
+                        };
+
+                        if !resolved_account_id.is_empty() {
+                            warn!(
+                                "[Warmup-API] 403 Forbidden detected for {}, marking account as forbidden",
+                                req.email
+                            );
+                            let _ = crate::modules::account::mark_account_forbidden(
+                                &resolved_account_id,
+                                &error_text,
+                            );
+                        } else {
+                            warn!(
+                                "[Warmup-API] 403 Forbidden detected for {} but could not resolve account_id, skipping mark",
+                                req.email
+                            );
+                        }
                     }
                 }
 

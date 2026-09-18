@@ -1873,10 +1873,9 @@ pub async fn handle_messages(
     if let Some(email) = last_email {
         // [FIX] Include X-Mapped-Model in exhaustion error
         let mut headers = HeaderMap::new();
-        headers.insert(
-            "X-Account-Email",
-            header::HeaderValue::from_str(&email).unwrap(),
-        );
+        if let Ok(val) = header::HeaderValue::from_str(&email) {
+            headers.insert("X-Account-Email", val);
+        }
         if let Some(model) = last_mapped_model {
             if let Ok(v) = header::HeaderValue::from_str(&model) {
                 headers.insert("X-Mapped-Model", v);

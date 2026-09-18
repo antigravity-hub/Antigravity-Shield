@@ -1026,7 +1026,7 @@ pub fn save_account_index(index: &AccountIndex) -> Result<(), String> {
 
 /// Platform-specific atomic file replacement
 #[cfg(target_os = "windows")]
-fn atomic_replace_file(src: &PathBuf, dst: &PathBuf) -> Result<(), String> {
+pub(crate) fn atomic_replace_file(src: &PathBuf, dst: &PathBuf) -> Result<(), String> {
     use std::os::windows::ffi::OsStrExt;
 
     type Bool = i32;
@@ -1071,7 +1071,7 @@ fn atomic_replace_file(src: &PathBuf, dst: &PathBuf) -> Result<(), String> {
 
 /// Non-Windows: use standard rename
 #[cfg(not(target_os = "windows"))]
-fn atomic_replace_file(src: &PathBuf, dst: &PathBuf) -> Result<(), String> {
+pub(crate) fn atomic_replace_file(src: &PathBuf, dst: &PathBuf) -> Result<(), String> {
     fs::rename(src, dst).map_err(|e| format!("rename failed: {}", e))
 }
 
