@@ -31,28 +31,19 @@
 
 ---
 
-> [!IMPORTANT]
-> **🛡️ Antigravity-Shield 深度加固说明 (对比原版解决 1800+ Issues 痛点):**
-> 本项目是针对原版 `lbjlaq/Antigravity-Manager` 在高并发 Agent 场景（Claude Code CLI、Cursor、OpenCode）下积累的 **1800+ 社区 Issues** 进行深度重构与安全加固的独立发行版。
+> ### 📊 企业级高可用架构对比
 > 
-> ### 📊 原版 vs. Antigravity-Shield 核心技术对比
-> 
-> | 故障类型与安全隐患 | 原版 `Antigravity-Manager` | 🛡️ `Antigravity-Shield` 加固版 | 彻底解决的原版 Issue |
-> | :--- | :--- | :--- | :--- |
-> | **Google 账号被封与 403 Forbidden** | ❌ **高风险：** 流量默认请求 Google 内部 Sandbox 节点 (`daily-cloudcode-pa.sandbox.googleapis.com`)，触发 SOC 入侵拦截。 | ✅ **100% 生产白名单：** 彻底剔除所有 Staging/Daily 域名，请求 100% 严格走官方生产端点 (`cloudcode-pa.googleapis.com`)。 | [#655](https://github.com/lbjlaq/Antigravity-Manager/issues/655), [#1822](https://github.com/lbjlaq/Antigravity-Manager/issues/1822), [#2228](https://github.com/lbjlaq/Antigravity-Manager/issues/2228), [#2261](https://github.com/lbjlaq/Antigravity-Manager/issues/2261) |
-> | **硬件指纹串号与批量封停** | ❌ **指纹泄露：** 所有轮换账号向谷歌发送宿主机相同的物理 `machine_uid`，极易被识别为多开群控。 | ✅ **单账号虚拟 DeviceProfile：** 采用加盐哈希为每个账号生成确定性、独立的 UUIDv4 (`x-machine-id`, `x-vscode-sessionid`)，绝不泄露物理 ID。 | [#655](https://github.com/lbjlaq/Antigravity-Manager/issues/655), [#1430](https://github.com/lbjlaq/Antigravity-Manager/issues/1430), [#3160](https://github.com/lbjlaq/Antigravity-Manager/issues/3160) |
-> | **403 连锁反应 (多米诺骨牌式封号)** | ❌ **池化烧号：** 一个账号报 403 后，旧版盲目换号重试，数分钟内烧尽并导致整个账号池全部被封。 | ✅ **3 级安全内存隔离：** 遇 403 立即在内存隔离 5~10 分钟，提取官方 `appeal_url`，严防请求向健康账号扩散。 | [#1822](https://github.com/lbjlaq/Antigravity-Manager/issues/1822), [#1883](https://github.com/lbjlaq/Antigravity-Manager/issues/1883), [#2261](https://github.com/lbjlaq/Antigravity-Manager/issues/2261) |
-> | **高并发 Token 获取超时 (5s Timeout)** | ❌ **死锁与线程饥饿：** 同步磁盘 I/O 阻塞 Tokio 工作线程，导致高并发或多 Agent 下频繁报 `Token acquisition timeout (5s)`。 | ✅ **异步非阻塞引擎：** 全面迁移至 `spawn_blocking`，单账号细粒度锁，超时窗口拓宽至 15s，彻底消除死锁。 | [#3348](https://github.com/lbjlaq/Antigravity-Manager/issues/3348), [#3245](https://github.com/lbjlaq/Antigravity-Manager/issues/3245), [#284](https://github.com/lbjlaq/Antigravity-Manager/issues/284) |
-> | **多轮对话上下文笛卡尔积爆炸** | ❌ **100 万 Token 撑爆：** Session Store 逻辑错误与 Thinking 未修剪导致 60K 上下文飙升至 400K~100W+ (`exceeds 1048576`)。 | ✅ **语义级去重与中间轮次保留：** 基于内容哈希对齐，无条件精简历史思考块 (`{"text": "..."}`)，彻底避免翻倍。 | [#3382](https://github.com/lbjlaq/Antigravity-Manager/issues/3382), [#3325](https://github.com/lbjlaq/Antigravity-Manager/issues/3325), [#3313](https://github.com/lbjlaq/Antigravity-Manager/issues/3313) |
-> | **Gemini 3.7 工具调用泄露中断** | ❌ **Agent 静默退出：** 模型偶尔以纯文本吐出 `call:default_api:Tool{...}`，客户端误认为普通文本而中断执行。 | ✅ **双向容错恢复网桥：** 自动捕获泄露文本并重新打包为合法的 Anthropic / OpenAI `tool_calls` 结构。 | [#3379](https://github.com/lbjlaq/Antigravity-Manager/issues/3379), [#3300](https://github.com/lbjlaq/Antigravity-Manager/issues/3300), [#1977](https://github.com/lbjlaq/Antigravity-Manager/issues/1977) |
-> | **地区限制 400 (User location not supported)** | ❌ **直接挂断：** 将地区 400 归类为不可重试 (`NoRetry`)，代理或出口稍有波动任务即刻崩溃。 | ✅ **动态代理故障转移：** 重分类为 `RetryStrategy::FixedDelay`，触发代理池健康检查并自动轮换可用节点。 | [#3301](https://github.com/lbjlaq/Antigravity-Manager/issues/3301), [#3377](https://github.com/lbjlaq/Antigravity-Manager/issues/3377), [#3323](https://github.com/lbjlaq/Antigravity-Manager/issues/3323) |
-> | **自动化回归测试与质量保证** | ❌ **零自动化：** 无协议级自动化回归测试套件。 | ✅ **64/64 自动化 E2E 测试全绿：** 覆盖全部 14 项加固特性的 4 层自动化黑盒测试套件 (`tests/e2e/runner.ts`)，通过率 100%。 | **Quality Gate** |
-> 
-> 📄 **权威技术白皮书与架构文档：**
-> - [DIAGNOSTIC_AUDIT.md](./DIAGNOSTIC_AUDIT.md) — 1800+ 社区 Issues 深度分类与代码级根因诊断
-> - [PROJECT.md](./PROJECT.md) — 14 项加固特性全景清单与子系统接口契约
-> - [TEST_INFRA.md](./TEST_INFRA.md) — 4 层 E2E 自动化测试架构规范 (64 组测试用例)
-> - [English Whitepaper & Guide](./README_EN.md) — 英文原版文档与架构说明
+> | 架构维度 | 原版社区发行版 | 🛡️ Antigravity-Shield 企业加固版 |
+> | :--- | :--- | :--- |
+> | **上游路由与账号安全** | ❌ 偶发请求未验证端点，极易触发安全风控。 | ✅ **严格生产环境白名单：** 100% 强制走官方验证生产端点，保障请求最高安全性。 |
+> | **硬件标识与多账号隔离** | ❌ 物理设备指纹在不同账号间复用，导致账号群控关联。 | ✅ **虚拟设备指纹隔离：** 账号级独立虚拟硬件标识，彻底隔绝多账号关联风险。 |
+> | **故障隔离与防烧号保护** | ❌ 遇风控异常盲目换号重试，导致整个账号池瞬间瘫痪。 | ✅ **多层熔断与安全冷却：** 异常账号即时隔离并进入安全冷却，有效保护其余健康账号。 |
+> | **高并发非阻塞引擎** | ❌ 同步线程阻塞与文件 I/O 竞争，高并发下频繁死锁超时。 | ✅ **全异步非阻塞架构：** 解耦配置缓存与细粒度锁机制，轻松承载多 Agent 密集并发。 |
+> | **上下文窗口优化** | ❌ 会话漂移与思考标记堆叠导致上下文异常膨胀超出上限。 | ✅ **会话流式对齐与精简：** 智能对齐历史轮次并规范思考预算，保持 Token 消耗平稳精准。 |
+> | **Agent 工具协议可靠性** | ❌ 复杂长推理下偶发格式异常导致下游客户端提前中断。 | ✅ **高容错协议中继网桥：** 双向自愈与协议转换，确保多步工具调用连贯执行。 |
+> | **跨区域网络弹性** | ❌ 区域网络限制直接报错中断，无自动容灾机制。 | ✅ **自适应故障转移：** 传输层重试策略与动态代理池切换，保障长周期任务不中断。 |
+> | **IDE 零重启热切换** | ❌ 切换账号强制重启编辑器，中断当前终端与任务。 | ✅ **零重启原生网桥：** 内存级无缝热切换账号，全面保留终端上下文与编辑缓存。 |
+> | **持续端到端自动化验证** | ❌ 人工验证，缺乏完备的协议级回归测试保障。 | ✅ **全自动化质量门禁：** 100% 覆盖核心加固特性的端到端自动化测试，保障极端场景稳定性。 |
 
 **Antigravity-Shield** 是一个专为开发者和 AI 爱好者设计的全功能桌面应用。它将多账号管理、协议转换和智能请求调度完美结合，为您提供一个稳定、极速且成本低廉的 **本地 AI 中转站**。
 
