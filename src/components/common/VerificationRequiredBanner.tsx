@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ShieldAlert, BookOpen, ExternalLink } from "lucide-react";
+import { ShieldAlert, BookOpen, ExternalLink, RefreshCw } from "lucide-react";
 import { Account } from "../../types/account";
 import { openVerificationGuide, openExternalUrl } from "../../utils/guideOpener";
+import { useAccountStore } from "../../stores/useAccountStore";
+import { showToast } from "./ToastContainer";
+import { cn } from "../../utils/cn";
 
 interface VerificationRequiredBannerProps {
     accounts: Account[];
@@ -14,6 +17,26 @@ export const VerificationRequiredBanner: React.FC<VerificationRequiredBannerProp
     className = "",
 }) => {
     const { t } = useTranslation();
+    const [recheckingIds, setRecheckingIds] = useState<Set<string>>(new Set());
+    const { clearAccountValidation, refreshQuota } = useAccountStore();
+
+    const handleRecheck = async (accountId: string) => {
+        setRecheckingIds(prev => new Set(prev).add(accountId));
+        try {
+            await clearAccountValidation(accountId);
+            await refreshQuota(accountId);
+            showToast(t("accounts.toast.validation_cleared", "Account validation block cleared and refreshed"), "success");
+        } catch (err) {
+            showToast(String(err), "error");
+        } finally {
+            setRecheckingIds(prev => {
+                const next = new Set(prev);
+                next.delete(accountId);
+                return next;
+            });
+        }
+    };
+
     const verificationRequiredAccounts = accounts.filter(
         (a) => a.validation_blocked === true
     );
@@ -80,6 +103,16 @@ export const VerificationRequiredBanner: React.FC<VerificationRequiredBannerProp
                             </div>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                                type="button"
+                                onClick={() => handleRecheck(acc.id)}
+                                disabled={recheckingIds.has(acc.id)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-colors cursor-pointer disabled:opacity-50"
+                                title={t("accounts.recheck_tooltip", "Clear block status and re-check account quota")}
+                            >
+                                <RefreshCw className={cn("w-3 h-3", recheckingIds.has(acc.id) && "animate-spin")} />
+                                <span>{t("accounts.recheck_btn", "Re-check")}</span>
+                            </button>
                             <button
                                 type="button"
                                 onClick={() => openExternalUrl("https://console.cloud.google.com/welcome")}

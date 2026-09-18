@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen } from 'lucide-react';
+import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
@@ -378,17 +378,31 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                 {t('accounts.verification_required_table_msg', 'Verification required — see guide')}
                             </span>
                         </div>
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                openVerificationGuide();
-                            }}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
-                        >
-                            <BookOpen className="w-3.5 h-3.5" />
-                            <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (onRefresh) onRefresh();
+                                }}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer"
+                                title={t('accounts.recheck_tooltip', 'Clear block status and re-check account quota')}
+                            >
+                                <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
+                                <span>{t('accounts.recheck_btn', 'Re-check')}</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    openVerificationGuide();
+                                }}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+                            >
+                                <BookOpen className="w-3.5 h-3.5" />
+                                <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
+                            </button>
+                        </div>
                     </div>
                 ) : (isDisabled || account.quota?.is_forbidden || account.proxy_disabled ? (
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 h-full py-4 text-center">

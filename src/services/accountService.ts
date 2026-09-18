@@ -48,6 +48,10 @@ export async function fetchAccountQuota(accountId: string): Promise<QuotaData> {
     return await invoke('fetch_account_quota', { accountId });
 }
 
+export async function clearAccountValidation(accountId: string): Promise<void> {
+    return await invoke('clear_account_validation', { accountId });
+}
+
 export interface RefreshStats {
     total: number;
     success: number;

@@ -463,7 +463,9 @@
     "show_last_used": "نمایش آخرین استفاده",
     "drag_column_to_reorder": "برای تغییر ترتیب، ستون را بکشید",
     "verification_required_table_msg": "نیازمند وریفیکیشن با آموزش روبرو",
-    "open_guide_btn": "مشاهده آموزش"
+    "open_guide_btn": "مشاهده آموزش",
+    "recheck_btn": "بررسی مجدد",
+    "recheck_tooltip": "پاک‌سازی وضعیت مسدودی و استعلام مجدد سهمیه"
   },
   "settings": {
     "save": "Save Settings",
