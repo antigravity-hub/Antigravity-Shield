@@ -140,8 +140,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Data Directory: {}", data_dir.display());
         println!("Configured Port: {}", config.proxy.port);
         println!("Active Accounts: {}", accounts.len());
-        for id in accounts {
-            println!("  - Account ID: {}", id);
+        for (idx, id) in accounts.iter().enumerate() {
+            let masked = if id.len() > 8 {
+                format!("{}...{}", &id[..4], &id[id.len() - 4..])
+            } else {
+                "***".to_string()
+            };
+            println!("  - Account #{}: {}", idx + 1, masked);
         }
         println!("========================================\n");
         return Ok(());

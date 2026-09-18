@@ -87,6 +87,10 @@ async fn update_account_json(
     path: &std::path::Path,
     update: impl FnOnce(&mut serde_json::Value) + Send + 'static,
 ) -> Result<(), String> {
+    let path_str = path.to_string_lossy();
+    if path_str.contains("..") {
+        return Err("Invalid path: path traversal detected".to_string());
+    }
     let path = path.to_path_buf();
     tokio::task::spawn_blocking(move || {
         let _account_write = crate::modules::account::lock_account_file_updates()?;
@@ -314,6 +318,17 @@ impl TokenManager {
         }
     }
 
+    /// 安全解析指定账号的文件路径，防止路径遍历漏洞
+    pub fn resolve_account_path(&self, account_id: &str) -> Option<PathBuf> {
+        if account_id.contains("..") || account_id.contains('/') || account_id.contains('\\') {
+            return None;
+        }
+        if account_id.trim().is_empty() {
+            return None;
+        }
+        Some(self.data_dir.join("accounts").join(format!("{}.json", account_id)))
+    }
+
     /// 获取配额保护是否启用（优先从内存缓存读取，TTL 为 10 秒，避免热路径频繁读盘）
     pub fn is_quota_protection_enabled(&self) -> bool {
         if let Ok(guard) = self.quota_protection_cache.read() {
@@ -414,7 +429,15 @@ impl TokenManager {
 
     /// 从主应用账号目录加载所有账号
     pub async fn load_accounts(&self) -> Result<usize, String> {
+        let data_dir_str = self.data_dir.to_string_lossy();
+        if data_dir_str.contains("..") {
+            return Err("Invalid data directory path: traversal detected".to_string());
+        }
         let accounts_dir = self.data_dir.join("accounts");
+        let accounts_dir_str = accounts_dir.to_string_lossy();
+        if accounts_dir_str.contains("..") {
+            return Err("Invalid accounts directory path: traversal detected".to_string());
+        }
 
         if !accounts_dir.exists() {
             return Err(format!("账号目录不存在: {:?}", accounts_dir));
@@ -468,10 +491,17 @@ impl TokenManager {
 
     /// 重新加载指定账号（用于配额更新后的实时同步）
     pub async fn reload_account(&self, account_id: &str) -> Result<(), String> {
-        let path = self
-            .data_dir
-            .join("accounts")
-            .join(format!("{}.json", account_id));
+        if account_id.contains("..") {
+            return Err("Invalid account ID: path traversal detected".to_string());
+        }
+        let path = match self.resolve_account_path(account_id) {
+            Some(p) => p,
+            None => return Err(format!("Invalid account ID format: {}", account_id)),
+        };
+        let path_str = path.to_string_lossy();
+        if path_str.contains("..") {
+            return Err("Invalid account path: path traversal detected".to_string());
+        }
         if !path.exists() {
             return Err(format!("账号文件不存在: {:?}", path));
         }
@@ -533,6 +563,11 @@ impl TokenManager {
     /// writes). Failures are reported as `Unknown` so callers can skip without purging the in-memory
     /// token pool.
     async fn get_account_state_on_disk(account_path: &std::path::PathBuf) -> OnDiskAccountState {
+        let path_str = account_path.to_string_lossy();
+        if path_str.contains("..") {
+            return OnDiskAccountState::Unknown;
+        }
+
         const MAX_RETRIES: usize = 2;
         const RETRY_DELAY_MS: u64 = 5;
 
@@ -594,6 +629,11 @@ impl TokenManager {
 
     /// 加载单个账号
     async fn load_single_account(&self, path: &PathBuf) -> Result<Option<ProxyToken>, String> {
+        let path_str = path.to_string_lossy();
+        if path_str.contains("..") {
+            return Err("Invalid account path: traversal detected".to_string());
+        }
+
         let content = std::fs::read_to_string(path).map_err(|e| format!("读取文件失败: {}", e))?;
 
         let mut account: serde_json::Value =
@@ -1039,6 +1079,10 @@ impl TokenManager {
     /// * `model_name` - 目标模型名称（已标准化）
     #[allow(dead_code)] // 预留给精确配额读取逻辑
     fn get_model_quota_from_json(account_path: &PathBuf, model_name: &str) -> Option<i32> {
+        let path_str = account_path.to_string_lossy();
+        if path_str.contains("..") {
+            return None;
+        }
         let content = std::fs::read_to_string(account_path).ok()?;
         let account: serde_json::Value = serde_json::from_str(&content).ok()?;
         let models = account.get("quota")?.get("models")?.as_array()?;
@@ -1060,6 +1104,10 @@ impl TokenManager {
     }
 
     fn get_available_models_from_json(account_path: &PathBuf) -> Option<HashSet<String>> {
+        let path_str = account_path.to_string_lossy();
+        if path_str.contains("..") {
+            return None;
+        }
         let content = std::fs::read_to_string(account_path).ok()?;
         let account: serde_json::Value = serde_json::from_str(&content).ok()?;
         let models = account.get("quota")?.get("models")?.as_array()?;
@@ -2493,17 +2541,24 @@ impl TokenManager {
                                     }
                                     // [FIX] 写盘后台化：project_id 已写入内存，磁盘持久化不阻塞热路径
                                     {
-                                        let write_path = self.tokens.get(&token.account_id)
-                                            .map(|e| e.account_path.clone())
-                                            .unwrap_or_else(|| self.data_dir.join("accounts").join(format!("{}.json", token.account_id)));
-                                        let pid_clone = pid.clone();
-                                        tokio::task::spawn_blocking(move || {
-                                            let Ok(_lk) = crate::modules::account::lock_account_file_updates() else { return; };
-                                            let Ok(raw) = std::fs::read_to_string(&write_path) else { return; };
-                                            let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&raw) else { return; };
-                                            val["token"]["project_id"] = pid_clone.into();
-                                            if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&write_path, s); }
-                                        });
+                                        if !token.account_id.contains("..") {
+                                            let write_path = self.tokens.get(&token.account_id)
+                                                .map(|e| e.account_path.clone())
+                                                .or_else(|| self.resolve_account_path(&token.account_id));
+                                            if let Some(write_path) = write_path {
+                                                let path_str = write_path.to_string_lossy();
+                                                if !path_str.contains("..") {
+                                                    let pid_clone = pid.clone();
+                                                    tokio::task::spawn_blocking(move || {
+                                                        let Ok(_lk) = crate::modules::account::lock_account_file_updates() else { return; };
+                                                        let Ok(raw) = std::fs::read_to_string(&write_path) else { return; };
+                                                        let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&raw) else { return; };
+                                                        val["token"]["project_id"] = pid_clone.into();
+                                                        if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&write_path, s); }
+                                                    });
+                                                }
+                                            }
+                                        }
                                     }
                                     pid
                                 }
@@ -2555,13 +2610,20 @@ impl TokenManager {
     }
 
     async fn disable_account(&self, account_id: &str, reason: &str) -> Result<(), String> {
+        if account_id.contains("..") {
+            return Err("Invalid account ID: path traversal detected".to_string());
+        }
         let path = if let Some(entry) = self.tokens.get(account_id) {
             entry.account_path.clone()
+        } else if let Some(p) = self.resolve_account_path(account_id) {
+            p
         } else {
-            self.data_dir
-                .join("accounts")
-                .join(format!("{}.json", account_id))
+            return Err(format!("Invalid account ID format: {}", account_id));
         };
+        let path_str = path.to_string_lossy();
+        if path_str.contains("..") {
+            return Err("Invalid account path: path traversal detected".to_string());
+        }
 
         let now = chrono::Utc::now().timestamp();
         let reason_owned = reason.to_string();
@@ -2808,13 +2870,19 @@ impl TokenManager {
     pub fn clear_all_rate_limits(&self) {
         self.rate_limit_tracker.clear_all();
         let accounts_dir = self.data_dir.join("accounts");
-        if let Ok(entries) = std::fs::read_dir(accounts_dir) {
+        let accounts_dir_str = accounts_dir.to_string_lossy();
+        if accounts_dir_str.contains("..") {
+            return;
+        }
+        if let Ok(entries) = std::fs::read_dir(&accounts_dir) {
             for entry in entries.flatten() {
                 if entry.path().extension().and_then(|value| value.to_str()) == Some("json") {
                     if let Some(account_id) =
                         entry.path().file_stem().and_then(|value| value.to_str())
                     {
-                        self.clear_all_persisted_live_limits(account_id);
+                        if !account_id.contains("..") {
+                            self.clear_all_persisted_live_limits(account_id);
+                        }
                     }
                 }
             }
@@ -2822,10 +2890,16 @@ impl TokenManager {
     }
 
     fn clear_all_persisted_live_limits(&self, account_id: &str) -> bool {
-        let path = self
-            .data_dir
-            .join("accounts")
-            .join(format!("{}.json", account_id));
+        if account_id.contains("..") {
+            return false;
+        }
+        let Some(path) = self.resolve_account_path(account_id) else {
+            return false;
+        };
+        let path_str = path.to_string_lossy();
+        if path_str.contains("..") {
+            return false;
+        }
         let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
             return false;
         };
@@ -2848,7 +2922,7 @@ impl TokenManager {
         let Ok(serialized) = serde_json::to_string_pretty(&content) else {
             return false;
         };
-        std::fs::write(path, serialized).is_ok()
+        std::fs::write(&path, serialized).is_ok()
     }
 
     /// 标记账号请求成功，重置连续失败计数
@@ -2930,11 +3004,14 @@ impl TokenManager {
     /// # 参数
     /// - `account_id`: 账号 ID（用于查找账号文件）
     pub fn get_quota_reset_time(&self, account_id: &str) -> Option<String> {
-        // 直接用 account_id 查找账号文件（文件名是 {account_id}.json）
-        let account_path = self
-            .data_dir
-            .join("accounts")
-            .join(format!("{}.json", account_id));
+        if account_id.contains("..") {
+            return None;
+        }
+        let account_path = self.resolve_account_path(account_id)?;
+        let path_str = account_path.to_string_lossy();
+        if path_str.contains("..") {
+            return None;
+        }
 
         let content = std::fs::read_to_string(&account_path).ok()?;
         let account: serde_json::Value = serde_json::from_str(&content).ok()?;
@@ -3400,13 +3477,22 @@ impl TokenManager {
             return;
         };
 
+        if account_id.contains("..") {
+            return;
+        }
+
         let path = if let Some(entry) = self.tokens.get(account_id) {
             entry.account_path.clone()
+        } else if let Some(p) = self.resolve_account_path(account_id) {
+            p
         } else {
-            self.data_dir
-                .join("accounts")
-                .join(format!("{}.json", account_id))
+            return;
         };
+
+        let path_str = path.to_string_lossy();
+        if path_str.contains("..") {
+            return;
+        }
 
         let Ok(raw) = std::fs::read_to_string(&path) else {
             return;
@@ -3445,6 +3531,9 @@ impl TokenManager {
     }
 
     pub fn clear_persisted_live_limit(&self, account_id: &str, model: Option<&str>) {
+        if account_id.contains("..") {
+            return;
+        }
         let Some(raw_model) = model.filter(|m| !m.is_empty()) else {
             return;
         };
@@ -3453,11 +3542,16 @@ impl TokenManager {
 
         let path = if let Some(entry) = self.tokens.get(account_id) {
             entry.account_path.clone()
+        } else if let Some(p) = self.resolve_account_path(account_id) {
+            p
         } else {
-            self.data_dir
-                .join("accounts")
-                .join(format!("{}.json", account_id))
+            return;
         };
+
+        let path_str = path.to_string_lossy();
+        if path_str.contains("..") {
+            return;
+        }
 
         let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
             return;
@@ -3776,6 +3870,10 @@ impl TokenManager {
         block_until: i64,
         reason: &str,
     ) -> Result<(), String> {
+        if account_id.contains("..") {
+            return Err("Invalid account ID: path traversal detected".to_string());
+        }
+
         // 1. Update memory
         if let Some(mut token) = self.tokens.get_mut(account_id) {
             token.validation_blocked = true;
@@ -3783,10 +3881,14 @@ impl TokenManager {
         }
 
         // 2. Persist to disk
-        let path = self
-            .data_dir
-            .join("accounts")
-            .join(format!("{}.json", account_id));
+        let path = match self.resolve_account_path(account_id) {
+            Some(p) => p,
+            None => return Err(format!("Invalid account ID format: {}", account_id)),
+        };
+        let path_str = path.to_string_lossy();
+        if path_str.contains("..") {
+            return Err("Invalid account path: path traversal detected".to_string());
+        }
         if !path.exists() {
             return Err(format!("Account file not found: {:?}", path));
         }

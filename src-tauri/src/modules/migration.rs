@@ -246,6 +246,10 @@ pub async fn import_from_v1() -> Result<Vec<Account>, String> {
 pub async fn import_from_custom_db_path(path_str: String) -> Result<Account, String> {
     use crate::modules::oauth;
 
+    if path_str.contains("..") {
+        return Err("Invalid database path: path traversal is prohibited".to_string());
+    }
+
     let path = PathBuf::from(path_str);
     if !path.exists() {
         return Err(format!("File does not exist: {:?}", path));
@@ -418,6 +422,11 @@ fn extract_enterprise_project_id_from_conn(
 
 fn extract_oauth_state_from_file(db_path: &PathBuf) -> Result<ImportedOAuthState, String> {
     use base64::{engine::general_purpose, Engine as _};
+
+    let path_str = db_path.to_string_lossy();
+    if path_str.contains("..") {
+        return Err("Invalid database path: path traversal is prohibited".to_string());
+    }
 
     if !db_path.exists() {
         return Err(format!("Database file not found: {:?}", db_path));
