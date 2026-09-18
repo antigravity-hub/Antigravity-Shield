@@ -203,7 +203,15 @@
       "warp_port_not_listening_toast": "هشدار: پورت ۴۰۰۰۰ در حال گوش‌دادن نیست. اطمینان حاصل کنید WARP روی Proxy Mode تنظیم شده باشد.",
       "use_active_proxy_btn": "یا اتصال به پروکسی فعال",
       "apply_vpn_proxy": "اتصال پروکسی {{name}} به برنامه (پورت {{port}})",
-      "egress_country": "کشور خروجی: {{country}}"
+      "egress_country": "کشور خروجی: {{country}}",
+      "auto_detect_btn": "تشخیص خودکار و اتصال سریع پروکسی",
+      "auto_proxy_success": "پروکسی فعال با موفقیت متصل شد: {{url}}",
+      "warp_download_install_btn": "دانلود و نصب خودکار WARP (در پس‌زمینه)",
+      "warp_downloading_progress": "در حال دانلود و نصب سایلنت WARP در پس‌زمینه ویندوز ({{percent}}%)...",
+      "warp_installed_toast": "نرم‌افزار Cloudflare WARP با موفقیت در پس‌زمینه نصب شد!",
+      "warp_connect_1click": "اتصال یک‌کلیک به وارپ (Proxy Mode پورت ۴۰۰۰۰)",
+      "warp_disconnect_btn": "قطع اتصال وارپ",
+      "warp_download_started": "دانلود خودکار Cloudflare WARP در پس‌زمینه شروع شد..."
     },
     "verification_required_title": "اکانت‌های نیازمند احراز هویت گوگل (Verification Required)",
     "account_unit": "اکانت",
