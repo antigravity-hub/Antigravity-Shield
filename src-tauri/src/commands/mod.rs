@@ -274,6 +274,7 @@ pub async fn fetch_account_quota(
                             (chrono::Utc::now().timestamp() + reset_secs as i64).to_string();
                     }
                 }
+            }
         }
     }
 
