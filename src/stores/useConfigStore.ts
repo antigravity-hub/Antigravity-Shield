@@ -14,6 +14,7 @@ interface ConfigState {
     updateLanguage: (language: string) => Promise<void>;
     toggleShowAllQuotas: () => void;
     showAllQuotas: boolean;
+    toggleAutoWarm: () => Promise<void>;
     toggleMenuItem: (path: string) => Promise<void>;
     isMenuItemHidden: (path: string) => boolean;
 }
@@ -72,6 +73,40 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
         const next = !current;
         localStorage.setItem('antigravity_show_all_quotas', String(next));
         set({ showAllQuotas: next });
+    },
+
+    toggleAutoWarm: async () => {
+        const { config } = get();
+        if (!config) return;
+
+        const currentWarmup = config.scheduled_warmup || {
+            enabled: false,
+            monitored_models: [
+                'gemini-3-flash',
+                'claude',
+                'gemini-3-pro-high',
+                'gemini-3.1-flash-image',
+            ],
+        };
+
+        const nextEnabled = !currentWarmup.enabled;
+        const newConfig = {
+            ...config,
+            scheduled_warmup: {
+                ...currentWarmup,
+                enabled: nextEnabled,
+                monitored_models: currentWarmup.monitored_models?.length
+                    ? currentWarmup.monitored_models
+                    : [
+                        'gemini-3-flash',
+                        'claude',
+                        'gemini-3-pro-high',
+                        'gemini-3.1-flash-image',
+                    ],
+            },
+        };
+
+        await get().saveConfig(newConfig, true);
     },
 
     toggleMenuItem: async (path: string) => {

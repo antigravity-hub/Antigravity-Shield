@@ -65,7 +65,8 @@ function Accounts() {
     updateAccountLabel,
     lastSyncedAt,
   } = useAccountStore();
-  const { config, showAllQuotas, toggleShowAllQuotas } = useConfigStore();
+  const { config, showAllQuotas, toggleShowAllQuotas, toggleAutoWarm } = useConfigStore();
+  const isAutoWarmEnabled = config?.scheduled_warmup?.enabled ?? true;
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -1282,6 +1283,31 @@ function Accounts() {
                     : t("accounts.warmup_all", "一键预热")}
               </span>
             </button>
+
+            <label className="flex items-center gap-1.5 cursor-pointer select-none px-2 py-1.5 border border-orange-500/20 bg-orange-500/5 hover:bg-orange-500/10 dark:hover:bg-orange-950/20 rounded-lg transition-colors" title={t('settings.warmup.title', 'Auto-Warm (100% Quota Recovery Warmup)')}>
+              <Sparkles className={cn("w-3.5 h-3.5", isAutoWarmEnabled ? "text-orange-500 fill-orange-500/20" : "text-gray-400")} />
+              <span className="text-xs font-semibold text-orange-700 dark:text-orange-400 hidden xl:inline">
+                Auto-Warm
+              </span>
+              <input
+                type="checkbox"
+                className="toggle toggle-xs toggle-warning"
+                checked={isAutoWarmEnabled}
+                onChange={async () => {
+                  try {
+                    await toggleAutoWarm();
+                    showToast(
+                      !isAutoWarmEnabled
+                        ? t('settings.warmup.enabled_toast', 'Auto-Warm enabled')
+                        : t('settings.warmup.disabled_toast', 'Auto-Warm disabled'),
+                      'info'
+                    );
+                  } catch (err) {
+                    showToast(String(err), 'error');
+                  }
+                }}
+              />
+            </label>
 
             <label className="flex items-center gap-2 cursor-pointer select-none px-2 py-2 border border-transparent hover:bg-gray-100 dark:hover:bg-base-200 rounded-lg transition-colors" title={t('accounts.show_all_quotas')}>
               <span className="text-xs font-medium text-gray-600 dark:text-gray-300 hidden xl:inline">

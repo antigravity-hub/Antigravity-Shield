@@ -22,6 +22,7 @@ import { listen } from '@tauri-apps/api/event';
 import { isTauri } from './utils/env';
 import { request as invoke } from './utils/request';
 import { AdminAuthGuard } from './components/common/AdminAuthGuard';
+import { useQuotaAlertWatcher } from './hooks/useQuotaAlertWatcher';
 
 const router = createHashRouter([
   {
@@ -65,6 +66,7 @@ const router = createHashRouter([
 ]);
 
 function App() {
+  useQuotaAlertWatcher();
   const { config, loadConfig } = useConfigStore();
   const { fetchCurrentAccount, fetchAccounts } = useAccountStore();
   const { i18n } = useTranslation();

@@ -85,6 +85,38 @@ pub fn load_app_config() -> Result<AppConfig, String> {
                 serde_json::Value::Object(custom_mapping),
             );
         }
+    // [AUTO-WARM DEFAULT ENABLED] Ensure scheduled_warmup is enabled by default across updates
+    if let Some(warmup) = v.get_mut("scheduled_warmup") {
+        if let Some(warmup_obj) = warmup.as_object_mut() {
+            if let Some(enabled_val) = warmup_obj.get("enabled") {
+                if !enabled_val.as_bool().unwrap_or(false) {
+                    warmup_obj.insert("enabled".to_string(), serde_json::Value::Bool(true));
+                    modified = true;
+                }
+            } else {
+                warmup_obj.insert("enabled".to_string(), serde_json::Value::Bool(true));
+                modified = true;
+            }
+        }
+    } else {
+        let mut default_warmup = serde_json::Map::new();
+        default_warmup.insert("enabled".to_string(), serde_json::Value::Bool(true));
+        default_warmup.insert(
+            "monitored_models".to_string(),
+            serde_json::json!([
+                "gemini-3-flash",
+                "claude",
+                "gemini-3-pro-high",
+                "gemini-3.1-flash-image"
+            ]),
+        );
+        if let Some(obj) = v.as_object_mut() {
+            obj.insert(
+                "scheduled_warmup".to_string(),
+                serde_json::Value::Object(default_warmup),
+            );
+            modified = true;
+        }
     }
 
     let config: AppConfig = serde_json::from_value(v)

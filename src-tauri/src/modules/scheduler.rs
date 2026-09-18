@@ -213,42 +213,56 @@ pub fn start_scheduler(
                         for bucket in &group.buckets {
                             let is_weekly = bucket.window.to_lowercase().contains("week")
                                 || bucket.bucket_id.to_lowercase().contains("week");
-                            if !is_weekly {
+                            let is_5h = bucket.window.to_lowercase().contains("5h")
+                                || bucket.bucket_id.to_lowercase().contains("5h")
+                                || bucket.window.to_lowercase().contains("rolling");
+
+                            if !is_weekly && !is_5h {
                                 continue;
                             }
 
                             // If fraction is 1.0 (100% full)
                             if bucket.remaining_fraction >= 0.999 {
-                                if let Some(reset_ts) = parse_reset_time_ts(&bucket.reset_time) {
-                                    // Check if current time has passed reset_time (with 1 minute buffer)
-                                    if now_ts >= reset_ts - 60 {
-                                        let history_key = format!(
-                                            "{}:{}:weekly:{}",
-                                            acc.email, bucket.bucket_id, reset_ts
-                                        );
-                                        // 6-day cooldown for the same weekly cycle
-                                        if !check_cooldown(&history_key, 6 * 86400) {
-                                            // Pick representative model for this group
-                                            let model_to_ping = if bucket
-                                                .bucket_id
-                                                .contains("3p")
-                                                || group.display_name.contains("Claude")
-                                            {
-                                                "claude-sonnet-4-6".to_string()
-                                            } else {
-                                                "gemini-3-flash".to_string()
-                                            };
-
-                                            tasks_to_run.push((
-                                                acc.id.clone(),
-                                                acc.email.clone(),
-                                                model_to_ping,
-                                                token.clone(),
-                                                pid.clone(),
-                                                history_key,
-                                            ));
+                                let (should_warm, history_key) = if is_weekly {
+                                    if let Some(reset_ts) = parse_reset_time_ts(&bucket.reset_time) {
+                                        // Weekly: check if reset_time reached (with 1 min buffer)
+                                        if now_ts >= reset_ts - 60 {
+                                            let key = format!(
+                                                "{}:{}:weekly:{}",
+                                                acc.email, bucket.bucket_id, reset_ts
+                                            );
+                                            (!check_cooldown(&key, 6 * 86400), key)
+                                        } else {
+                                            (false, String::new())
                                         }
+                                    } else {
+                                        (false, String::new())
                                     }
+                                } else {
+                                    // 5-hour rolling: recovered to 100%, trigger warm if 4.5h cooldown passed
+                                    let key = format!("{}:{}:5h", acc.email, bucket.bucket_id);
+                                    (!check_cooldown(&key, 16200), key)
+                                };
+
+                                if should_warm && !history_key.is_empty() {
+                                    let model_to_ping = if bucket
+                                        .bucket_id
+                                        .contains("3p")
+                                        || group.display_name.contains("Claude")
+                                    {
+                                        "claude-sonnet-4-6".to_string()
+                                    } else {
+                                        "gemini-3-flash".to_string()
+                                    };
+
+                                    tasks_to_run.push((
+                                        acc.id.clone(),
+                                        acc.email.clone(),
+                                        model_to_ping,
+                                        token.clone(),
+                                        pid.clone(),
+                                        history_key,
+                                    ));
                                 }
                             }
                         }
@@ -386,42 +400,51 @@ pub async fn trigger_warmup_for_account(account: &Account) {
 
                 // If quota is recovered to 100% (fraction >= 0.999)
                 if bucket.remaining_fraction >= 0.999 {
-                    if let Some(reset_ts) = parse_reset_time_ts(&bucket.reset_time) {
-                        if now_ts >= reset_ts - 60 {
-                            let cycle_type = if is_weekly { "weekly" } else { "5h" };
-                            let history_key = format!(
-                                "{}:{}:{}:{}",
-                                account.email, bucket.bucket_id, cycle_type, reset_ts
-                            );
-                            // Cooldown: 6 days for weekly, 4.5 hours for 5h
-                            let cooldown_secs = if is_weekly { 6 * 86400 } else { 16200 };
-                            if !check_cooldown(&history_key, cooldown_secs) {
-                                let model_to_ping = if bucket.bucket_id.contains("3p")
-                                    || group.display_name.contains("Claude")
-                                {
-                                    "claude-sonnet-4-6".to_string()
-                                } else {
-                                    "gemini-3-flash".to_string()
-                                };
-
-                                let success = quota::warmup_model_directly(
-                                    &token,
-                                    &model_to_ping,
-                                    &pid,
-                                    &account.email,
-                                    100,
-                                    Some(&account.id),
-                                )
-                                .await;
-
-                                if success {
-                                    record_warmup_history(&history_key, now_ts);
-                                    logger::log_info(&format!(
-                                        "[AutoWarmup] ✅ Successfully auto-warmed {} ({} cycle) for {}",
-                                        model_to_ping, cycle_type, account.email
-                                    ));
-                                }
+                    let (should_warm, history_key, cycle_type) = if is_weekly {
+                        if let Some(reset_ts) = parse_reset_time_ts(&bucket.reset_time) {
+                            if now_ts >= reset_ts - 60 {
+                                let key = format!(
+                                    "{}:{}:weekly:{}",
+                                    account.email, bucket.bucket_id, reset_ts
+                                );
+                                (!check_cooldown(&key, 6 * 86400), key, "weekly")
+                            } else {
+                                (false, String::new(), "weekly")
                             }
+                        } else {
+                            (false, String::new(), "weekly")
+                        }
+                    } else {
+                        // 5-hour rolling bucket: recovered to 100%, trigger warm if 4.5h cooldown passed
+                        let key = format!("{}:{}:5h", account.email, bucket.bucket_id);
+                        (!check_cooldown(&key, 16200), key, "5h")
+                    };
+
+                    if should_warm && !history_key.is_empty() {
+                        let model_to_ping = if bucket.bucket_id.contains("3p")
+                            || group.display_name.contains("Claude")
+                        {
+                            "claude-sonnet-4-6".to_string()
+                        } else {
+                            "gemini-3-flash".to_string()
+                        };
+
+                        let success = quota::warmup_model_directly(
+                            &token,
+                            &model_to_ping,
+                            &pid,
+                            &account.email,
+                            100,
+                            Some(&account.id),
+                        )
+                        .await;
+
+                        if success {
+                            record_warmup_history(&history_key, now_ts);
+                            logger::log_info(&format!(
+                                "[AutoWarmup] ✅ Successfully auto-warmed {} ({} cycle) for {}",
+                                model_to_ping, cycle_type, account.email
+                            ));
                         }
                     }
                 }

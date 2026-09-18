@@ -1737,5 +1737,16 @@
     "restore_tooltip": "Restore to default English/LTR layout",
     "reapply": "Reapply Patch",
     "one_click_apply": "1-Click Apply Patch"
+  },
+  "settings": {
+    "warmup": {
+      "title": "Auto-Warm (100% Quota Recovery Warmup)",
+      "desc": "Automatically sends a lightweight probe to activate 100% refreshed accounts so rolling quota windows start immediately.",
+      "enabled_toast": "Auto-Warm enabled",
+      "disabled_toast": "Auto-Warm disabled"
+    }
+  },
+  "notifications": {
+    "quota_critical_alert": "Critical Quota Alert: {{model}} is at {{percentage}}% on account {{email}}. Switch accounts or wait for quota reset."
   }
 }
