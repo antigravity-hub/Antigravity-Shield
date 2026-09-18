@@ -540,6 +540,9 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
     crate::modules::logger::log_info(&format!("Closing Antigravity ({:?})...", target_ide));
 
     #[cfg(target_os = "windows")]
+    let mut win_access_denied = false;
+
+    #[cfg(target_os = "windows")]
     {
         let pids = get_antigravity_pids(target_ide);
         if !pids.is_empty() {
@@ -584,7 +587,7 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
 
             for pid in &main_pids {
                 let _ = Command::new("taskkill")
-                    .args(["/PID", &pid.to_string()])
+                    .args(["/T", "/PID", &pid.to_string()])
                     .creation_flags(0x08000000) // CREATE_NO_WINDOW
                     .output();
             }
@@ -602,19 +605,49 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
                 thread::sleep(Duration::from_millis(500));
             }
 
-            // Phase 2: Force kill (taskkill /F) if graceful exit timed out
+            // Phase 2: Force kill tree (taskkill /F /T) if graceful exit timed out
             if is_antigravity_running(target_ide) {
                 let remaining_pids = get_antigravity_pids(target_ide);
                 if !remaining_pids.is_empty() {
                     crate::modules::logger::log_warn(&format!(
-                        "[Windows] Graceful exit timed out, force killing {} remaining processes (taskkill /F)...",
+                        "[Windows] Graceful exit timed out, force killing {} remaining processes (taskkill /F /T)...",
                         remaining_pids.len()
                     ));
                     for pid in &remaining_pids {
-                        let _ = Command::new("taskkill")
-                            .args(["/F", "/PID", &pid.to_string()])
+                        let output = Command::new("taskkill")
+                            .args(["/F", "/T", "/PID", &pid.to_string()])
                             .creation_flags(0x08000000) // CREATE_NO_WINDOW
                             .output();
+                        if let Ok(out) = output {
+                            if !out.status.success() {
+                                let stderr = String::from_utf8_lossy(&out.stderr);
+                                if !stderr.trim().is_empty() {
+                                    crate::modules::logger::log_warn(&format!(
+                                        "[Windows] taskkill /F /T for PID {} reported: {}",
+                                        pid,
+                                        stderr.trim()
+                                    ));
+                                    if stderr.to_lowercase().contains("access is denied") {
+                                        win_access_denied = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    thread::sleep(Duration::from_millis(600));
+                }
+            }
+
+            // Phase 3: Direct sysinfo TerminateProcess fallback for any lingering processes
+            if is_antigravity_running(target_ide) {
+                let remaining_pids = get_antigravity_pids(target_ide);
+                if !remaining_pids.is_empty() {
+                    let mut fresh_system = System::new();
+                    fresh_system.refresh_processes(sysinfo::ProcessesToUpdate::All);
+                    for pid_u32 in remaining_pids {
+                        if let Some(proc) = fresh_system.process(sysinfo::Pid::from_u32(pid_u32)) {
+                            let _ = proc.kill();
+                        }
                     }
                     thread::sleep(Duration::from_millis(500));
                 }
@@ -888,6 +921,13 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
 
     // Final check
     if is_antigravity_running(target_ide) {
+        #[cfg(target_os = "windows")]
+        if win_access_denied {
+            return Err(
+                "Unable to close Antigravity process (Access Denied). Please run Antigravity Shield as Administrator or close Antigravity manually.".to_string(),
+            );
+        }
+
         return Err(
             "Unable to close Antigravity process, please close manually and retry".to_string(),
         );
