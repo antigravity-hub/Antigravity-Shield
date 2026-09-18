@@ -114,7 +114,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
     const handleLaunchVpn = async (vpn: InstalledVpnInfo) => {
         if (!vpn.executable_path) return;
         if (vpn.is_running) {
-            showToast(t('dashboard.health_pulse.vpn_already_running', `${vpn.name} is already running and active.`), 'info');
+            showToast(t('dashboard.health_pulse.vpn_already_running', { name: vpn.name, defaultValue: `${vpn.name} is already active and running.` }), 'info');
             return;
         }
         setLaunchingVpnId(vpn.id);
@@ -447,29 +447,54 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                     </div>
                                 </div>
 
-                                {/* دکمه‌های اجرای فیلترشکن‌های شناخته‌شده در سیستم */}
+                                {/* دکمه‌های اقدام هوشمند برای رفع مسدودیت (فیلترشکن / پروکسی محلی) */}
                                 <div className="flex flex-wrap items-center gap-2 pt-1">
-                                    {pulse.installed_vpns.map(vpn => (
-                                        <button
-                                            key={vpn.id}
-                                            onClick={() => handleLaunchVpn(vpn)}
-                                            disabled={launchingVpnId === vpn.id}
-                                            className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
-                                        >
-                                            <Play size={13} className="fill-current" />
-                                            <span>
-                                                {vpn.is_running 
-                                                    ? `${t('dashboard.health_pulse.vpn_running', 'Switch to')} ${vpn.name}`
-                                                    : `${t('dashboard.health_pulse.vpn_launch', 'Launch')} ${vpn.name}`}
-                                            </span>
-                                        </button>
-                                    ))}
+                                    {pulse.installed_vpns.map(vpn => {
+                                        const matchingProxy = pulse.discovered_proxies.find(p => p.port === vpn.default_port && p.is_listening);
+                                        if (vpn.is_running && matchingProxy) {
+                                            return (
+                                                <button
+                                                    key={vpn.id}
+                                                    onClick={() => handleApplyLocalProxy(matchingProxy.url)}
+                                                    disabled={isApplyingProxy}
+                                                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                                                    title={`Apply ${vpn.name} proxy (${matchingProxy.url}) to Antigravity IDE`}
+                                                >
+                                                    <Zap size={13} className="text-yellow-300 fill-current" />
+                                                    <span>
+                                                        {t('dashboard.health_pulse.apply_vpn_proxy', {
+                                                            name: vpn.name,
+                                                            port: matchingProxy.port,
+                                                            defaultValue: `Apply ${vpn.name} Proxy (${matchingProxy.port})`
+                                                        })}
+                                                    </span>
+                                                </button>
+                                            );
+                                        }
 
-                                    {bestLocalProxy && (
+                                        if (!vpn.is_running) {
+                                            return (
+                                                <button
+                                                    key={vpn.id}
+                                                    onClick={() => handleLaunchVpn(vpn)}
+                                                    disabled={launchingVpnId === vpn.id}
+                                                    className="px-3.5 py-2 rounded-xl bg-slate-700 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                                                >
+                                                    <Play size={12} className="fill-current" />
+                                                    <span>{t('dashboard.health_pulse.vpn_launch', `Launch ${vpn.name}`)}</span>
+                                                </button>
+                                            );
+                                        }
+
+                                        return null;
+                                    })}
+
+                                    {/* سایر پروکسی‌های فعال که متناظر با فیلترشکن‌های رندرشده بالا نیستند */}
+                                    {bestLocalProxy && !pulse.installed_vpns.some(v => v.is_running && v.default_port === bestLocalProxy.port) && (
                                         <button
                                             onClick={() => handleApplyLocalProxy(bestLocalProxy.url)}
                                             disabled={isApplyingProxy}
-                                            className="px-3.5 py-2 rounded-xl bg-white dark:bg-base-100 hover:bg-slate-100 text-gray-800 dark:text-gray-200 border border-slate-300 dark:border-slate-700 font-bold text-xs transition-all shadow-xs active:scale-95 flex items-center gap-1.5"
+                                            className="px-3.5 py-2 rounded-xl bg-white dark:bg-base-100 hover:bg-slate-100 text-gray-800 dark:text-gray-200 border border-slate-300 dark:border-slate-700 font-bold text-xs transition-all shadow-xs active:scale-95 flex items-center gap-1.5 cursor-pointer"
                                         >
                                             <Zap size={14} className="text-blue-600" />
                                             <span>{t('dashboard.health_pulse.apply_found_proxy', 'Connect to active proxy')} ({bestLocalProxy.client_hint})</span>

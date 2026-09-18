@@ -202,6 +202,7 @@
       "warp_enable_proxy_mode_hint": "وارپ در حال اجراست اما پورت ۴۰۰۰۰ بسته است. در نرم‌افزار وارپ به منوی Settings (چرخ‌دنده) -> Preferences -> بخش Connection رفته و حالت را روی Proxy Mode (SOCKS5) قرار دهید.",
       "warp_port_not_listening_toast": "هشدار: پورت ۴۰۰۰۰ در حال گوش‌دادن نیست. اطمینان حاصل کنید WARP روی Proxy Mode تنظیم شده باشد.",
       "use_active_proxy_btn": "یا اتصال به پروکسی فعال",
+      "apply_vpn_proxy": "اتصال پروکسی {{name}} به برنامه (پورت {{port}})",
       "egress_country": "کشور خروجی: {{country}}"
     },
     "verification_required_title": "اکانت‌های نیازمند احراز هویت گوگل (Verification Required)",
