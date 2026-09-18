@@ -1457,7 +1457,8 @@
       "not_ready": "Update artifacts are not ready yet. Will retry later.",
       "failed": "Auto-update failed",
       "signature_invalid": "Automated verification unavailable. Switching to manual download.",
-      "switching_direct": "Cryptographic verification unavailable. Initiating direct auto-install..."
+      "switching_direct": "Cryptographic verification unavailable. Initiating direct auto-install...",
+      "launching_installer": "Download complete. Launching installer..."
     }
   },
   "login": {

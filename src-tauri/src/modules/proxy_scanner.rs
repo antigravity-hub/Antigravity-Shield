@@ -29,14 +29,19 @@ pub struct DiscoveredProxy {
 
 /// پورت‌های استاندارد و معروفی که فیلترشکن‌ها، WARP و کلاینت‌ها استفاده می‌کنند
 const CANDIDATE_PORTS: &[(u16, &str, &str)] = &[
-    (10808, "socks5", "V2Ray / Xray (SOCKS5)"),
+    (10810, "http", "V2Ray / Xray (HTTP)"),
     (10809, "http", "V2Ray / Xray (HTTP)"),
+    (10808, "socks5", "V2Ray / Xray (SOCKS5)"),
+    (10810, "socks5", "V2Ray / Xray (SOCKS5)"),
+    (10808, "http", "V2Ray / Xray (HTTP)"),
     (7890, "http", "Clash / Mihomo (Mixed HTTP/SOCKS)"),
-    (7891, "socks5", "Clash / Mihomo (SOCKS5)"),
     (7897, "http", "Clash Verge (HTTP/SOCKS)"),
+    (7891, "socks5", "Clash / Mihomo (SOCKS5)"),
     (40000, "socks5", "Cloudflare WARP (SOCKS5)"),
-    (2080, "socks5", "Sing-box / Nekoray (SOCKS5)"),
+    (40001, "http", "Cloudflare WARP (HTTP)"),
     (2081, "http", "Sing-box / Nekoray (HTTP)"),
+    (2080, "socks5", "Sing-box / Nekoray (SOCKS5)"),
+    (2080, "http", "Sing-box / Nekoray (HTTP)"),
     (1080, "socks5", "Shadowsocks / Standard SOCKS5"),
     (1081, "http", "Standard HTTP Proxy"),
     (8888, "http", "Fiddler / HTTP Proxy"),
@@ -45,32 +50,35 @@ const CANDIDATE_PORTS: &[(u16, &str, &str)] = &[
 
 /// اسکن پورت‌های لوکال و تست ارتباط فعال
 pub async fn scan_local_proxies() -> Vec<DiscoveredProxy> {
-    let mut results = Vec::new();
-    let timeout_duration = Duration::from_millis(150);
+    let timeout_duration = Duration::from_millis(120);
+    let mut listening_candidates = Vec::new();
 
+    // 1. بررسی سریع پورت‌های TCP باز روی لوکال‌هاست
     for &(port, protocol, hint) in CANDIDATE_PORTS {
         let addr: SocketAddr = match format!("127.0.0.1:{}", port).parse() {
             Ok(a) => a,
             Err(_) => continue,
         };
 
-        // 1. بررسی سریع اینکه آیا پورتی در 127.0.0.1 باز و در حال شنود (Listening) است
-        let is_listening = match timeout(timeout_duration, TcpStream::connect(&addr)).await {
-            Ok(Ok(_stream)) => true,
-            _ => false,
+        if timeout(timeout_duration, TcpStream::connect(&addr)).await.map(|r| r.is_ok()).unwrap_or(false) {
+            listening_candidates.push((port, protocol, hint));
+        }
+    }
+
+    if listening_candidates.is_empty() {
+        return Vec::new();
+    }
+
+    // 2. تست پروب اتصال و سازگاری با جمینای به صورت موازی (Parallel Join)
+    let probe_futures = listening_candidates.into_iter().map(|(port, protocol, hint)| {
+        let proxy_url = if protocol == "socks5" {
+            format!("socks5://127.0.0.1:{}", port)
+        } else {
+            format!("http://127.0.0.1:{}", port)
         };
-
-        if is_listening {
-            let proxy_url = if protocol == "socks5" {
-                format!("socks5://127.0.0.1:{}", port)
-            } else {
-                format!("http://127.0.0.1:{}", port)
-            };
-
-            // 2. تست پروب اتصال، تأخیر و سازگاری با جمینای
+        async move {
             let probe = probe_proxy_url(&proxy_url).await;
-
-            results.push(DiscoveredProxy {
+            DiscoveredProxy {
                 url: proxy_url,
                 protocol: protocol.to_string(),
                 port,
@@ -80,11 +88,17 @@ pub async fn scan_local_proxies() -> Vec<DiscoveredProxy> {
                 gemini_supported: probe.gemini_supported,
                 latency_ms: probe.latency_ms,
                 error: probe.error,
-            });
+            }
         }
-    }
+    });
 
-    // مرتب‌سازی نتایج: ابتدا پروکسی‌هایی که جمینای را ساپورت می‌کنند، سپس پروکسی‌های سالم، سپس بر اساس کمترین تأخیر
+    let mut results: Vec<DiscoveredProxy> = futures::future::join_all(probe_futures).await;
+
+    // مرتب‌سازی نتایج:
+    // ۱. پروکسی‌هایی که فعالند و تحریم ریجن گوگل ندارند (gemini_supported)
+    // ۲. پروکسی‌های سالم و متصل (is_working)
+    // ۳. اولویت به پروتکل HTTP نسبت به SOCKS5 (به دلیل سازگاری ۱۰۰٪ با Node/Chromium و جلوگیری از خطای چت)
+    // ۴. کمترین تأخیر میلی‌ثانیه
     results.sort_by(|a, b| {
         match (a.gemini_supported, b.gemini_supported) {
             (true, false) => std::cmp::Ordering::Less,
@@ -92,8 +106,24 @@ pub async fn scan_local_proxies() -> Vec<DiscoveredProxy> {
             _ => match (a.is_working, b.is_working) {
                 (true, false) => std::cmp::Ordering::Less,
                 (false, true) => std::cmp::Ordering::Greater,
-                _ => a.latency_ms.unwrap_or(99999).cmp(&b.latency_ms.unwrap_or(99999)),
+                _ => match (a.protocol == "http", b.protocol == "http") {
+                    (true, false) => std::cmp::Ordering::Less,
+                    (false, true) => std::cmp::Ordering::Greater,
+                    _ => a.latency_ms.unwrap_or(99999).cmp(&b.latency_ms.unwrap_or(99999)),
+                },
             },
+        }
+    });
+
+    // حذف آیتم‌های تکراری ناموفق روی یک پورت مشابه
+    let mut seen_ports = std::collections::HashSet::new();
+    results.retain(|p| {
+        let key = (p.port, p.is_working);
+        if seen_ports.contains(&key) {
+            false
+        } else {
+            seen_ports.insert(key);
+            true
         }
     });
 
@@ -188,22 +218,29 @@ pub async fn probe_proxy_url(proxy_url: &str) -> ProbeResult {
         }
         Err(err) => {
             let fallback_start = std::time::Instant::now();
-            match client.head("https://www.google.com/generate_204").send().await {
-                Ok(_) => {
-                    let latency = fallback_start.elapsed().as_millis() as u64;
-                    ProbeResult {
-                        is_working: true,
-                        gemini_supported: false,
-                        latency_ms: Some(latency),
-                        error: Some("Connected to Google, but CloudCode AI endpoint timed out or blocked".to_string()),
-                    }
+            if let Ok(_) = client.head("https://www.google.com/generate_204").send().await {
+                let latency = fallback_start.elapsed().as_millis() as u64;
+                ProbeResult {
+                    is_working: true,
+                    gemini_supported: false,
+                    latency_ms: Some(latency),
+                    error: Some("Connected to Google, but CloudCode AI endpoint timed out or blocked".to_string()),
                 }
-                Err(_) => ProbeResult {
+            } else if let Ok(_) = client.get("https://cp.cloudflare.com/generate_204").send().await {
+                let latency = fallback_start.elapsed().as_millis() as u64;
+                ProbeResult {
+                    is_working: true,
+                    gemini_supported: false,
+                    latency_ms: Some(latency),
+                    error: Some("Proxy is connected to the internet, but Google domains are blocked by your VPN routing rules".to_string()),
+                }
+            } else {
+                ProbeResult {
                     is_working: false,
                     gemini_supported: false,
                     latency_ms: None,
                     error: Some(format!("{}", err)),
-                },
+                }
             }
         }
     }

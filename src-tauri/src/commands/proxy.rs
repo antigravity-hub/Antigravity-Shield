@@ -911,3 +911,56 @@ pub fn launch_vpn_client(exe_path: String) -> Result<String, String> {
     crate::modules::network_pulse::launch_vpn_executable(&exe_path)
 }
 
+/// تشخیص خودکار بهترین پروکسی لوکال فعال و اعمال فوری به Antigravity IDE بدون نیاز به TUN
+#[tauri::command]
+pub async fn auto_detect_and_apply_proxy(
+    state: State<'_, ProxyServiceState>,
+) -> Result<crate::modules::proxy_scanner::DiscoveredProxy, String> {
+    let proxies = crate::modules::proxy_scanner::scan_local_proxies().await;
+    
+    // اولویت ۱: پروکسی HTTP که گوگل و جمینای را باز می‌کند
+    // اولویت ۲: هر پروکسی که گوگل و جمینای را باز می‌کند
+    // اولویت ۳: هر پروکسی فعال لوکال
+    let best = proxies
+        .iter()
+        .find(|p| p.is_working && p.gemini_supported && p.protocol == "http")
+        .or_else(|| proxies.iter().find(|p| p.is_working && p.gemini_supported))
+        .or_else(|| proxies.iter().find(|p| p.is_working))
+        .cloned();
+
+    match best {
+        Some(proxy) => {
+            apply_antigravity_proxy(proxy.url.clone(), Some(true), state).await?;
+            Ok(proxy)
+        }
+        None => Err("No working local proxy detected. Please ensure your VPN or proxy client is running.".to_string()),
+    }
+}
+
+/// استعلام وضعیت ماژول اختصاصی Cloudflare WARP در پس‌زمینه
+#[tauri::command]
+pub async fn get_warp_status() -> Result<crate::modules::warp_manager::WarpStatus, String> {
+    Ok(crate::modules::warp_manager::WARP_MANAGER.get_status().await)
+}
+
+/// دانلود و نصب بی‌صدا و درونی Cloudflare WARP در پس‌زمینه سیستم
+#[tauri::command]
+pub async fn start_warp_download() -> Result<String, String> {
+    tokio::spawn(async {
+        let _ = crate::modules::warp_manager::WARP_MANAGER.download_and_install().await;
+    });
+    Ok("WARP background download initiated.".to_string())
+}
+
+/// اتصال تک‌کلیک وارپ در حالت Proxy Mode (پورت 40000) و اتصال به Antigravity
+#[tauri::command]
+pub async fn connect_warp_proxy() -> Result<String, String> {
+    crate::modules::warp_manager::WARP_MANAGER.connect_proxy_mode().await
+}
+
+/// قطع اتصال وارپ و بازگردانی تنظیمات
+#[tauri::command]
+pub async fn disconnect_warp_proxy() -> Result<String, String> {
+    crate::modules::warp_manager::WARP_MANAGER.disconnect_warp().await
+}
+

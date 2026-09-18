@@ -86,39 +86,43 @@ jobs:
       - name: Configure updater signing key
         shell: bash
         env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_KEY_RAW: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         run: |
-          node -e "
-          const fs = require('fs');
-          const p = 'src-tauri/tauri.conf.json';
-          if (fs.existsSync(p)) {
-            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
-            const rawKey = process.env.TAURI_SIGNING_PRIVATE_KEY || '';
-            const cleanKey = rawKey.replace(/[\r\n\s]/g, '');
-            if (!cleanKey) {
-              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
-              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
-              console.log('No signing key: disabled createUpdaterArtifacts');
-            } else {
-              if (c.bundle) c.bundle.createUpdaterArtifacts = true;
-              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
-              console.log('Signing key detected: enabled createUpdaterArtifacts');
-            }
-          }
-          "
+          if [ -n "$TAURI_KEY_RAW" ] && [ "$TAURI_KEY_RAW" != "" ]; then
+            KEY_PATH="$RUNNER_TEMP/tauri.key"
+            printf "%s\n" "$TAURI_KEY_RAW" > "$KEY_PATH"
+            tr -d '\r' < "$KEY_PATH" > "$KEY_PATH.tmp" && mv "$KEY_PATH.tmp" "$KEY_PATH"
+            echo "TAURI_SIGNING_PRIVATE_KEY=$KEY_PATH" >> $GITHUB_ENV
+            echo "Signing key saved to file: $KEY_PATH"
+            node -e "
+              const fs = require('fs');
+              const p = 'src-tauri/tauri.conf.json';
+              if (fs.existsSync(p)) {
+                const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (c.bundle) c.bundle.createUpdaterArtifacts = true;
+                fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+                console.log('Signing key detected: enabled createUpdaterArtifacts');
+              }
+            "
+          else
+            node -e "
+              const fs = require('fs');
+              const p = 'src-tauri/tauri.conf.json';
+              if (fs.existsSync(p)) {
+                const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+                fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+                console.log('No signing key: disabled createUpdaterArtifacts');
+              }
+            "
+          fi
 
       - name: Build macOS bundles
         shell: bash
         env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ env.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: |
-          # Sanitize private key by removing all whitespace and newlines
-          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
-            CLEAN_KEY=$(echo "$TAURI_SIGNING_PRIVATE_KEY" | tr -d '\r\n[:space:]')
-            export TAURI_SIGNING_PRIVATE_KEY="$CLEAN_KEY"
-          fi
-
           if ! npx tauri build --bundles dmg,app --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-macos.log; then
             echo "::warning::Initial macOS build failed. Checking if caused by signing key issue..."
             tail -n 80 tauri-build-macos.log || true
@@ -247,39 +251,43 @@ jobs:
       - name: Configure updater signing key
         shell: bash
         env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_KEY_RAW: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         run: |
-          node -e "
-          const fs = require('fs');
-          const p = 'src-tauri/tauri.conf.json';
-          if (fs.existsSync(p)) {
-            const c = JSON.parse(fs.readFileSync(p, 'utf8'));
-            const rawKey = process.env.TAURI_SIGNING_PRIVATE_KEY || '';
-            const cleanKey = rawKey.replace(/[\r\n\s]/g, '');
-            if (!cleanKey) {
-              if (c.bundle) c.bundle.createUpdaterArtifacts = false;
-              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
-              console.log('No signing key: disabled createUpdaterArtifacts');
-            } else {
-              if (c.bundle) c.bundle.createUpdaterArtifacts = true;
-              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
-              console.log('Signing key detected: enabled createUpdaterArtifacts');
-            }
-          }
-          "
+          if [ -n "$TAURI_KEY_RAW" ] && [ "$TAURI_KEY_RAW" != "" ]; then
+            KEY_PATH="$RUNNER_TEMP/tauri.key"
+            printf "%s\n" "$TAURI_KEY_RAW" > "$KEY_PATH"
+            tr -d '\r' < "$KEY_PATH" > "$KEY_PATH.tmp" && mv "$KEY_PATH.tmp" "$KEY_PATH"
+            echo "TAURI_SIGNING_PRIVATE_KEY=$KEY_PATH" >> $GITHUB_ENV
+            echo "Signing key saved to file: $KEY_PATH"
+            node -e "
+              const fs = require('fs');
+              const p = 'src-tauri/tauri.conf.json';
+              if (fs.existsSync(p)) {
+                const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (c.bundle) c.bundle.createUpdaterArtifacts = true;
+                fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+                console.log('Signing key detected: enabled createUpdaterArtifacts');
+              }
+            "
+          else
+            node -e "
+              const fs = require('fs');
+              const p = 'src-tauri/tauri.conf.json';
+              if (fs.existsSync(p)) {
+                const c = JSON.parse(fs.readFileSync(p, 'utf8'));
+                if (c.bundle) c.bundle.createUpdaterArtifacts = false;
+                fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+                console.log('No signing key: disabled createUpdaterArtifacts');
+              }
+            "
+          fi
 
       - name: Build Linux packages
         shell: bash
         env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ env.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: |
-          # Sanitize private key by removing all whitespace and newlines
-          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
-            CLEAN_KEY=$(echo "$TAURI_SIGNING_PRIVATE_KEY" | tr -d '\r\n[:space:]')
-            export TAURI_SIGNING_PRIVATE_KEY="$CLEAN_KEY"
-          fi
-
           if ! npx tauri build --bundles deb,appimage --ignore-version-mismatches -- --bin antigravity-shield 2>&1 | tee tauri-build-linux.log; then
             echo "::warning::Initial Linux build failed. Checking if caused by signing key issue..."
             tail -n 80 tauri-build-linux.log || true

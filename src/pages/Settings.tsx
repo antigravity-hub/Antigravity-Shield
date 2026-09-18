@@ -425,6 +425,9 @@ function Settings() {
                     const { listen } = await import('@tauri-apps/api/event');
                     const unlisten = await listen<{ percent: number }>('updater://direct-progress', (event) => {
                         setUpdateProgress(event.payload.percent);
+                        if (event.payload.percent === 100) {
+                            showToast(t('update_notification.toast.launching_installer', 'Download complete. Launching installer...'), 'info');
+                        }
                     });
 
                     await invoke('download_and_install_direct', {

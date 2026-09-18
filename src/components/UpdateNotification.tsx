@@ -118,6 +118,9 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
       const { listen } = await import('@tauri-apps/api/event');
       const unlisten = await listen<{ percent: number }>('updater://direct-progress', (event) => {
         setDownloadProgress(event.payload.percent);
+        if (event.payload.percent === 100) {
+          showToast(t('update_notification.toast.launching_installer', 'Download complete. Launching installer...'), 'info');
+        }
       });
 
       await invoke('download_and_install_direct', {
