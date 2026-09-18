@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.5 (2026-09-18)**:
+        -   **Background Engine & Scheduling**: Migrated periodic quota and database sync tasks to the native background daemon, ensuring continuous execution during minimized and system tray operation.
+        -   **Quota State & Data Persistence**: Implemented immediate real-time database state persistence and UI event dispatch when quota depletion events occur.
+        -   **Frontend Runtime**: Streamlined background runner lifecycle by eliminating redundant timers in favor of reactive event-driven synchronization.
     *   **v5.11.4 (2026-09-18)**:
         -   **UI & Notifications**: Simplified quota alert presentation and added desktop notification safeguards against alert stacking.
         -   **Core Platform Stability**: Strengthened internal boundary validation and standardized runtime data handling.

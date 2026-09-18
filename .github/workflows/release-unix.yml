@@ -4,10 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release Tag to build and attach artifacts to (e.g. v5.11.4)'
+        description: 'Release Tag to build and attach artifacts to (e.g. v5.11.5)'
         required: false
         default: ''
         type: string
+  push:
+    tags:
+      - 'v*'
 
 concurrency:
   group: release-unix-${{ github.event.inputs.release_tag || github.ref_name }}
