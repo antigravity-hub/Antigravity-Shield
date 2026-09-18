@@ -80,17 +80,15 @@ export const VerificationRequiredBanner: React.FC<VerificationRequiredBannerProp
                             </div>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
-                            {acc.validation_url && (
-                                <button
-                                    type="button"
-                                    onClick={() => acc.validation_url && openExternalUrl(acc.validation_url)}
-                                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
-                                    title={t("dashboard.verify_in_google", "Direct Google Verification Page")}
-                                >
-                                    <ExternalLink className="w-3 h-3" />
-                                    <span className="hidden sm:inline">{t("dashboard.google_link", "Google")}</span>
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                onClick={() => openExternalUrl("https://console.cloud.google.com/welcome")}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
+                                title={t("dashboard.verify_in_google", "Direct Google Verification Page")}
+                            >
+                                <ExternalLink className="w-3 h-3" />
+                                <span className="hidden sm:inline">{t("dashboard.google_link", "Google")}</span>
+                            </button>
                             <button
                                 type="button"
                                 onClick={() => openVerificationGuide()}
