@@ -1689,7 +1689,7 @@
     "one_click_apply": "اعمال یک‌کلیکه پچ"
   },
   "notifications": {
-    "quota_critical_alert": "هشدار کاهش سهمیه: سهمیه {{model}} در حساب {{email}} به {{percentage}}٪ رسیده است.",
+    "quota_critical_alert": "هشدار کاهش سهمیه: سهمیه {{target}}{{model}} در حساب {{email}} به {{percentage}}٪ رسیده است.",
     "quota_alert_title": "آنتی‌گراویتی شیلد - هشدار سهمیه",
     "family_gemini": "جمینای",
     "family_claude": "کلود",
@@ -1697,9 +1697,13 @@
     "other_models": "سایر مدل‌ها",
     "auto_switch_title": "آنتی‌گراویتی شیلد - سوئیچ خودکار اکانت",
     "quota_exhausted_title": "آنتی‌گراویتی شیلد - اتمام سهمیه",
-    "auto_switch_claude_success": "⚡ سوئیچ خودکار: سهمیه کلود در {{from}} تمام شد. به صورت خودکار به {{to}} (دارای {{score}}٪ سهمیه کلود) تغییر یافت.",
-    "auto_switch_fallback_gemini": "⚡ سوئیچ خودکار: سهمیه تمام اکانت‌های کلود به پایان رسید. به صورت جایگزین روی {{to}} (دارای {{score}}٪ سهمیه جمینای) سوئیچ شد.",
-    "auto_switch_gemini_success": "⚡ سوئیچ خودکار: سهمیه جمینای در {{from}} تمام شد. به صورت خودکار به {{to}} (دارای {{score}}٪ سهمیه جمینای) تغییر یافت.",
-    "all_quotas_depleted": "⚠️ سهمیه تمام اکانت‌ها برای مدل‌های کلود و جمینای به پایان رسیده است."
+    "auto_switch_claude_success": "⚡ سوئیچ خودکار: سهمیه {{target}}کلود در {{from}} تمام شد. به صورت خودکار به {{to}} (دارای {{score}}٪ سهمیه کلود) تغییر یافت.",
+    "auto_switch_fallback_gemini": "⚡ سوئیچ خودکار: سهمیه {{target}}تمام اکانت‌های کلود به پایان رسید. به صورت جایگزین روی {{to}} (دارای {{score}}٪ سهمیه جمینای) سوئیچ شد.",
+    "auto_switch_gemini_success": "⚡ سوئیچ خودکار: سهمیه {{target}}جمینای در {{from}} تمام شد. به صورت خودکار به {{to}} (دارای {{score}}٪ سهمیه جمینای) تغییر یافت.",
+    "all_quotas_depleted": "⚠️ سهمیه تمام اکانت‌ها برای مدل‌های کلود و جمینای به پایان رسیده است.",
+    "target_platform": "پلتفرم (Harness)",
+    "target_ide": "محیط IDE",
+    "target_ide_and_platform": "IDE و پلتفرم",
+    "target_agy": "ترمینال AGY"
   }
 }
