@@ -533,8 +533,12 @@
       "sync_interval": "Sync Interval (minutes)"
     },
     "warmup": {
-      "title": "7-Day Weekly Reset Warmup",
-      "desc": "Automatically sends a minimal ping once when the 7-day weekly quota resets, starting the countdown with zero extra token waste."
+      "title": "Auto-Warm (100% Quota Recovery Warmup)",
+      "desc": "Automatically sends a lightweight probe to activate 100% refreshed accounts so rolling quota windows start immediately.",
+      "enabled_toast": "Auto-Warm enabled",
+      "disabled_toast": "Auto-Warm disabled",
+      "monitored_models_label": "Warmup Model Scope",
+      "monitored_models_desc": "Select models to warmup. When 5-hour rolling or weekly quota recovers to 100%, a minimal probe starts the new cycle."
     },
     "quota_protection": {
       "title": "Quota Protection",
@@ -1756,14 +1760,6 @@
     "restore_tooltip": "Restore to default English/LTR layout",
     "reapply": "Reapply Patch",
     "one_click_apply": "1-Click Apply Patch"
-  },
-  "settings": {
-    "warmup": {
-      "title": "Auto-Warm (100% Quota Recovery Warmup)",
-      "desc": "Automatically sends a lightweight probe to activate 100% refreshed accounts so rolling quota windows start immediately.",
-      "enabled_toast": "Auto-Warm enabled",
-      "disabled_toast": "Auto-Warm disabled"
-    }
   },
   "notifications": {
     "quota_critical_alert": "Critical Quota Alert: {{model}} is at {{percentage}}% on account {{email}}. Switch accounts or wait for quota reset."
