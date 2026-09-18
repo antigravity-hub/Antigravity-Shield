@@ -56,6 +56,30 @@ function formatGroupedModelNames(models: { name: string; display_name?: string }
     return familyLabels.join(andSeparator) || geminiLabel;
 }
 
+function getTargetEnvLabel(
+    targetId: string,
+    activeTargetAccounts?: { ide?: string | null; platform?: string | null; agy?: string | null } | null,
+    t?: (key: string, options?: Record<string, unknown>) => string
+): string {
+    const isIde = activeTargetAccounts?.ide === targetId;
+    const isPlatform = activeTargetAccounts?.platform === targetId;
+    const isAgy = activeTargetAccounts?.agy === targetId;
+
+    if (isIde && isPlatform) {
+        return t ? t('notifications.target_ide_and_platform', { defaultValue: 'IDE & Platform' }) : 'IDE & Platform';
+    }
+    if (isPlatform) {
+        return t ? t('notifications.target_platform', { defaultValue: 'Platform (Harness)' }) : 'Platform (Harness)';
+    }
+    if (isIde) {
+        return t ? t('notifications.target_ide', { defaultValue: 'IDE' }) : 'IDE';
+    }
+    if (isAgy) {
+        return t ? t('notifications.target_agy', { defaultValue: 'AGY CLI' }) : 'AGY CLI';
+    }
+    return '';
+}
+
 export function useQuotaAlertWatcher() {
     const { t } = useTranslation();
     const { config } = useConfigStore();
@@ -93,6 +117,9 @@ export function useQuotaAlertWatcher() {
             if (activeTargetAccounts?.ide === targetId) targetEnv = 'ide';
             else if (activeTargetAccounts?.platform === targetId) targetEnv = 'platform';
             else if (activeTargetAccounts?.agy === targetId) targetEnv = 'agy';
+
+            const targetLabel = getTargetEnvLabel(targetId, activeTargetAccounts, t);
+            const targetPrefix = targetLabel ? `[${targetLabel}] ` : '';
 
             // Collect all critically low models for this account
             const criticalModels: { name: string; display_name?: string; percentage: number }[] = [];
@@ -183,7 +210,8 @@ export function useQuotaAlertWatcher() {
                     defaultValue: 'Antigravity Shield - Low Quota Alert',
                 });
                 const alertMsg = t('notifications.quota_critical_alert', {
-                    defaultValue: `⚠️ Critical Quota Alert: ${combinedModelName} quota is at ${minPercentage}% on account ${targetAccount.email}. Switch accounts or wait for quota reset.`,
+                    defaultValue: `⚠️ Critical Quota Alert: ${targetPrefix}${combinedModelName} quota is at ${minPercentage}% on account ${targetAccount.email}.`,
+                    target: targetPrefix,
                     model: combinedModelName,
                     email: targetAccount.email,
                     percentage: minPercentage,
@@ -219,7 +247,8 @@ export function useQuotaAlertWatcher() {
                             defaultValue: 'Antigravity Shield - Auto Switched',
                         });
                         const switchMsg = t('notifications.auto_switch_claude_success', {
-                            defaultValue: `⚡ Auto-Switched: Claude quota exhausted on ${targetAccount.email}. Switched to ${nextAccount.email} (${bestClaude.claudeScore}% Claude quota).`,
+                            defaultValue: `⚡ Auto-Switched: ${targetPrefix}Claude quota exhausted on ${targetAccount.email}. Switched to ${nextAccount.email} (${bestClaude.claudeScore}% Claude quota).`,
+                            target: targetPrefix,
                             from: targetAccount.email,
                             to: nextAccount.email,
                             score: bestClaude.claudeScore,
@@ -255,7 +284,8 @@ export function useQuotaAlertWatcher() {
                                 defaultValue: 'Antigravity Shield - Auto Switched',
                             });
                             const switchMsg = t('notifications.auto_switch_fallback_gemini', {
-                                defaultValue: `⚡ Auto-Switched: All Claude quotas depleted. Fallback switched to ${nextAccount.email} (${bestGemini.geminiScore}% Gemini quota).`,
+                                defaultValue: `⚡ Auto-Switched: ${targetPrefix}All Claude quotas depleted. Fallback switched to ${nextAccount.email} (${bestGemini.geminiScore}% Gemini quota).`,
+                                target: targetPrefix,
                                 from: targetAccount.email,
                                 to: nextAccount.email,
                                 score: bestGemini.geminiScore,
@@ -303,7 +333,8 @@ export function useQuotaAlertWatcher() {
                             defaultValue: 'Antigravity Shield - Auto Switched',
                         });
                         const switchMsg = t('notifications.auto_switch_gemini_success', {
-                            defaultValue: `⚡ Auto-Switched: Gemini quota exhausted on ${targetAccount.email}. Switched to ${nextAccount.email} (${bestGemini.geminiScore}% Gemini quota).`,
+                            defaultValue: `⚡ Auto-Switched: ${targetPrefix}Gemini quota exhausted on ${targetAccount.email}. Switched to ${nextAccount.email} (${bestGemini.geminiScore}% Gemini quota).`,
+                            target: targetPrefix,
                             from: targetAccount.email,
                             to: nextAccount.email,
                             score: bestGemini.geminiScore,

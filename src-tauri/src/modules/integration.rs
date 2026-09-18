@@ -61,6 +61,42 @@ impl SystemIntegration for DesktopIntegration {
             return Ok(());
         }
 
+        if target_ide == Some("platform") {
+            write_to_system_keyring(account)?;
+
+            if let Ok(storage_path) = device::get_storage_path(target_ide) {
+                if let Some(ref profile) = account.device_profile {
+                    let _ = device::write_profile(&storage_path, profile);
+                }
+            }
+
+            if let Ok(db_path) = db::get_db_path(target_ide) {
+                let _ = db::inject_token(
+                    &db_path,
+                    &account.token.access_token,
+                    &account.token.refresh_token,
+                    account.token.expiry_timestamp,
+                    &account.email,
+                    account.token.is_gcp_tos,
+                    account.token.project_id.as_deref(),
+                    account.token.id_token.as_deref(),
+                    account.token.oauth_client_key.as_deref(),
+                    target_ide,
+                );
+                if let Some(ref profile) = account.device_profile {
+                    let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                }
+            }
+
+            self.show_notification(
+                "Antigravity Platform",
+                &format!("⚡ Platform (Harness) switched to {}", account.email),
+            );
+            self.update_tray();
+
+            return Ok(());
+        }
+
         // 0.5. [Two-Way Bridge] Check if IDE Toolkit extension is active & connected for Zero-Reload
         let is_target_ide = target_ide == Some("ide")
             || target_ide == Some("code")
@@ -121,8 +157,8 @@ impl SystemIntegration for DesktopIntegration {
             return Ok(());
         }
 
-        // 1. 先关闭外部正在运行的进程（无论是原生还是IDE，先安全关闭，避免文件或凭据冲突）
-        if process::is_antigravity_running(target_ide) {
+        // 1. Close external process only for IDE targets that require file injection
+        if target_ide != Some("platform") && process::is_antigravity_running(target_ide) {
             process::close_antigravity(20, target_ide)?;
         }
 

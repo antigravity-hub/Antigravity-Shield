@@ -1775,7 +1775,7 @@
     "one_click_apply": "1-Click Apply Patch"
   },
   "notifications": {
-    "quota_critical_alert": "Critical Quota Alert: {{model}} quota is at {{percentage}}% on account {{email}}. Switch accounts or wait for quota reset.",
+    "quota_critical_alert": "Critical Quota Alert: {{target}}{{model}} quota is at {{percentage}}% on account {{email}}.",
     "quota_alert_title": "Antigravity Shield - Low Quota Alert",
     "family_gemini": "Gemini",
     "family_claude": "Claude",
@@ -1783,9 +1783,13 @@
     "other_models": "Other models",
     "auto_switch_title": "Antigravity Shield - Account Switched",
     "quota_exhausted_title": "Antigravity Shield - Quota Depleted",
-    "auto_switch_claude_success": "⚡ Auto-Switched: Claude quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Claude quota).",
-    "auto_switch_fallback_gemini": "⚡ Auto-Switched: All Claude quotas depleted. Fallback switched to {{to}} ({{score}}% Gemini quota).",
-    "auto_switch_gemini_success": "⚡ Auto-Switched: Gemini quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Gemini quota).",
-    "all_quotas_depleted": "⚠️ All Claude and Gemini quotas exhausted across all available accounts."
+    "auto_switch_claude_success": "⚡ Auto-Switched: {{target}}Claude quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Claude quota).",
+    "auto_switch_fallback_gemini": "⚡ Auto-Switched: {{target}}All Claude quotas depleted. Fallback switched to {{to}} ({{score}}% Gemini quota).",
+    "auto_switch_gemini_success": "⚡ Auto-Switched: {{target}}Gemini quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Gemini quota).",
+    "all_quotas_depleted": "⚠️ All Claude and Gemini quotas exhausted across all available accounts.",
+    "target_platform": "Platform (Harness)",
+    "target_ide": "IDE",
+    "target_ide_and_platform": "IDE & Platform",
+    "target_agy": "AGY CLI"
   }
 }
