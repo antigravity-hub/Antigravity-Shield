@@ -506,11 +506,11 @@
       "silent_update_desc": "دانلود خودکار بروزرسانی‌ها بدون نمایش پیام مزاحم"
     },
     "account": {
-      "title": "Account Settings",
-      "auto_refresh": "Background Auto Refresh",
-      "auto_refresh_desc": "Automatically refresh all account quotas in the background. This is required for quota protection and smart warmup.",
-      "always_on": "Always On",
-      "refresh_interval": "Refresh Interval (minutes)",
+      "title": "تنظیمات حساب کاربری",
+      "auto_refresh": "بروزرسانی خودکار در پس‌زمینه",
+      "auto_refresh_desc": "بروزرسانی خودکار سهمیه تمام حساب‌ها در پس‌زمینه. این گزینه برای حفاظت از سهمیه و وارم‌آپ هوشمند ضروری است.",
+      "always_on": "همیشه فعال",
+      "refresh_interval": "بازه بروزرسانی (دقیقه)",
       "auto_sync": "همگام‌سازی خودکار حساب فعلی",
       "auto_sync_desc": "بررسی و همگام‌سازی دوره‌ای اطلاعات حساب فعال در شیلد",
       "sync_interval": "بازه همگام‌سازی (دقیقه)",
@@ -526,19 +526,19 @@
       "monitored_models_desc": "مدل‌های مورد نظر را انتخاب کنید. با بازگشت سهمیه به ۱۰۰٪، یک درخواست سبک برای شروع چرخه جدید ارسال می‌شود."
     },
     "quota_protection": {
-      "title": "Quota Protection",
-      "enable": "Enable Quota Protection",
-      "enable_desc": "Automatically disable proxy when account quota falls below threshold, and auto-restore when quota resets",
-      "threshold_label": "Reserved Quota Percentage",
-      "monitored_models_label": "Monitored Models (Trigger Conditions)",
-      "monitored_models_desc": "Select at least one. Protection triggers if ANY selected model falls below threshold",
-      "range": "Range",
-      "example": "Example: At {{percentage}}%, an account with {{total}} quota will be disabled when remaining ≤ {{threshold}}",
-      "auto_restore_info": "Account will be automatically re-enabled when quota resets"
+      "title": "محافظت از سهمیه (Quota Protection)",
+      "enable": "فعال‌سازی محافظت از سهمیه",
+      "enable_desc": "غیرفعال‌سازی خودکار پروکسی هنگام رسیدن سهمیه به زیر آستانه و بازگردانی خودکار پس از ریست سهمیه",
+      "threshold_label": "درصد سهمیه رزرو شده",
+      "monitored_models_label": "مدل‌های تحت نظارت (شرایط فعال‌سازی)",
+      "monitored_models_desc": "حداقل یک مدل را انتخاب کنید. با کاهش سهمیه هر یک از این مدل‌ها به زیر آستانه، محافظت فعال می‌شود",
+      "range": "محدوده",
+      "example": "مثال: در {{percentage}}٪، حسابی با مجموع {{total}} در صورت رسیدن باقیمانده به ≤ {{threshold}} غیرفعال می‌شود",
+      "auto_restore_info": "حساب پس از بازیابی سهمیه به صورت خودکار مجدداً فعال خواهد شد"
     },
     "pinned_quota_models": {
-      "title": "Pinned Quota Models",
-      "desc": "Choose which model quotas to display in the account list. Unselected models are only shown in the detail popup."
+      "title": "مدل‌های سهمیه پین‌شده",
+      "desc": "مدل‌هایی را که می‌خواهید در لیست اکانت‌ها نمایش داده شوند انتخاب کنید. مدل‌های انتخاب‌نشده فقط در پاپ‌آپ جزئیات نمایش داده می‌شوند."
     },
     "proxy": {
       "title": "تنظیمات پروکسی",
