@@ -2746,8 +2746,8 @@ impl TokenManager {
             .filter(|s| !s.is_empty())
             .unwrap_or_else(|| "bamboo-precept-lgxtn".to_string());
 
-        // 检查是否过期 (提前5分钟)
-        if now < timestamp + expires_in - 300 {
+        // 检查是否过期 (提前5分钟) - timestamp 已经是绝对过期时间戳 (expiry_timestamp)
+        if now < timestamp - 300 {
             return Ok((
                 current_access_token,
                 project_id,
@@ -2769,7 +2769,7 @@ impl TokenManager {
                 if let Some(mut entry) = self.tokens.get_mut(&account_id) {
                     entry.access_token = token_response.access_token.clone();
                     entry.expires_in = token_response.expires_in;
-                    entry.timestamp = new_now;
+                    entry.timestamp = new_now + token_response.expires_in;
                 }
 
                 // 保存到磁盘
@@ -3120,6 +3120,9 @@ impl TokenManager {
                     );
                     return false;
                 }
+
+                // [FIX] Save updated quota snapshot into database immediately so UI and storage reflect reality
+                let _ = crate::modules::account::update_account_quota(&account_id, quota_data.clone());
 
                 // 3. 从最新配额中提取 reset_time
                 let earliest_reset = quota_data

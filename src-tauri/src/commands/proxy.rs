@@ -475,9 +475,8 @@ pub fn generate_api_key() -> String {
     format!("sk-{}", uuid::Uuid::new_v4().simple())
 }
 
-/// 重新加载账号（当主应用添加/删除账号时调用）
-#[tauri::command]
-pub async fn reload_proxy_accounts(state: State<'_, ProxyServiceState>) -> Result<usize, String> {
+/// 重新加载账号逻辑（接受 &ProxyServiceState 引用）
+pub async fn reload_proxy_accounts_state(state: &ProxyServiceState) -> Result<usize, String> {
     let instance_lock = state.instance.read().await;
 
     if let Some(instance) = instance_lock.as_ref() {
@@ -496,6 +495,12 @@ pub async fn reload_proxy_accounts(state: State<'_, ProxyServiceState>) -> Resul
     } else {
         Err("服务未运行".to_string())
     }
+}
+
+/// 重新加载账号（当主应用添加/删除账号时调用）
+#[tauri::command]
+pub async fn reload_proxy_accounts(state: State<'_, ProxyServiceState>) -> Result<usize, String> {
+    reload_proxy_accounts_state(&state).await
 }
 
 /// 更新模型映射表 (热更新)

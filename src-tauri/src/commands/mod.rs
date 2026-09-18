@@ -212,8 +212,8 @@ pub async fn export_accounts(account_ids: Vec<String>) -> Result<AccountExportRe
 }
 
 /// 内部辅助功能：在添加或导入账号后自动刷新一次额度
-async fn internal_refresh_account_quota(
-    app: &tauri::AppHandle,
+pub async fn internal_refresh_account_quota(
+    app: Option<&tauri::AppHandle>,
     account: &mut Account,
 ) -> Result<QuotaData, String> {
     modules::logger::log_info(&format!("自动触发刷新配额: {}", account.email));
@@ -224,7 +224,11 @@ async fn internal_refresh_account_quota(
             // 更新账号配额
             let _ = modules::update_account_quota(&account.id, quota.clone());
             // 更新托盘菜单
-            crate::modules::tray::update_tray_menus(app);
+            if let Some(h) = app {
+                crate::modules::tray::update_tray_menus(h);
+                use tauri::Emitter;
+                let _ = h.emit("accounts://refreshed", ());
+            }
             Ok(quota)
         }
         Err(e) => {
@@ -642,7 +646,7 @@ pub async fn import_custom_db(
     modules::account::set_current_account_id(&account_id)?;
 
     // 自动触发刷新额度
-    let _ = internal_refresh_account_quota(&app, &mut account).await;
+    let _ = internal_refresh_account_quota(Some(&app), &mut account).await;
 
     // 刷新托盘图标展示
     crate::modules::tray::update_tray_menus(&app);
@@ -653,10 +657,10 @@ pub async fn import_custom_db(
     Ok(account)
 }
 
-#[tauri::command]
-pub async fn sync_account_from_db(
-    app: tauri::AppHandle,
-    proxy_state: tauri::State<'_, crate::commands::proxy::ProxyServiceState>,
+/// 核心同步逻辑（供 Tauri command 和后台 Native Scheduler 共用）
+pub async fn sync_account_from_db_internal(
+    app: Option<&tauri::AppHandle>,
+    proxy_state: &crate::commands::proxy::ProxyServiceState,
 ) -> Result<Option<Account>, String> {
     // Check if the current target is one we should not sync (like agy CLI)
     let index = modules::account::load_account_index()?;
@@ -681,8 +685,7 @@ pub async fn sync_account_from_db(
     // 3. 对比：如果 Refresh Token 相同，说明账号没变，无需导入
     if let Some(acc) = curr_account {
         if acc.token.refresh_token == db_refresh_token {
-            // 账号未变，由于已经是周期性任务，我们可以选择性刷新一下配额，或者直接返回
-            // 这里为了节省 API 流量，直接返回
+            // 账号未变，直接返回节省资源
             return Ok(None);
         }
         modules::logger::log_info(&format!(
@@ -700,16 +703,26 @@ pub async fn sync_account_from_db(
     let account_id = account.id.clone();
     modules::account::set_current_account_id_with_target(&account_id, current_target)?;
 
-    // 自动触发刷新额度
-    let _ = internal_refresh_account_quota(&app, &mut account).await;
+    // 自动触发刷新额度并通知 UI
+    let _ = internal_refresh_account_quota(app, &mut account).await;
 
     // 刷新托盘图标展示
-    crate::modules::tray::update_tray_menus(&app);
+    if let Some(h) = app {
+        crate::modules::tray::update_tray_menus(h);
+    }
 
     // Reload token pool
-    let _ = crate::commands::proxy::reload_proxy_accounts(proxy_state).await;
+    let _ = crate::commands::proxy::reload_proxy_accounts_state(proxy_state).await;
 
     Ok(Some(account))
+}
+
+#[tauri::command]
+pub async fn sync_account_from_db(
+    app: tauri::AppHandle,
+    proxy_state: tauri::State<'_, crate::commands::proxy::ProxyServiceState>,
+) -> Result<Option<Account>, String> {
+    sync_account_from_db_internal(Some(&app), &proxy_state).await
 }
 
 fn resolve_existing_or_parent(path: &Path) -> Result<PathBuf, String> {
