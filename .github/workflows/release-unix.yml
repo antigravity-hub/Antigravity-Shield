@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release Tag to build and attach artifacts to (e.g. v5.11.0)'
-        required: true
-        default: 'v5.11.0'
+        description: 'Release Tag to build and attach artifacts to (e.g. v5.11.2)'
+        required: false
+        default: 'v5.11.2'
         type: string
 
 concurrency:
-  group: release-unix-${{ github.event.inputs.release_tag }}
+  group: release-unix-${{ github.event.inputs.release_tag || github.ref_name }}
   cancel-in-progress: true
 
 env:
@@ -29,7 +29,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.release_tag }}
+          ref: ${{ github.event.inputs.release_tag || github.ref_name }}
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
@@ -51,7 +51,7 @@ jobs:
       - name: Sync version from release tag & optimize build speed
         shell: bash
         run: |
-          TARGET_VER="${{ github.event.inputs.release_tag }}"
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
           TARGET_VER="${TARGET_VER#v}"
           if [ -n "$TARGET_VER" ]; then
             echo "Synchronizing project versions to $TARGET_VER"
@@ -169,7 +169,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.release_tag }}
+          ref: ${{ github.event.inputs.release_tag || github.ref_name }}
 
       - name: Install Linux dependencies
         run: |
@@ -212,7 +212,7 @@ jobs:
       - name: Sync version from release tag & optimize build speed
         shell: bash
         run: |
-          TARGET_VER="${{ github.event.inputs.release_tag }}"
+          TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
           TARGET_VER="${TARGET_VER#v}"
           if [ -n "$TARGET_VER" ]; then
             echo "Synchronizing project versions to $TARGET_VER"
@@ -337,7 +337,7 @@ jobs:
 
       - name: Update updater.json and collect release files
         env:
-          VERSION: ${{ github.event.inputs.release_tag }}
+          VERSION: ${{ github.event.inputs.release_tag || github.ref_name }}
           REPO: ${{ github.repository }}
         run: |
           DOWNLOAD_BASE="https://github.com/${REPO}/releases/download/${VERSION}"
@@ -417,8 +417,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          tag: ${{ github.event.inputs.release_tag }}
-          name: "${{ github.event.inputs.release_tag }}"
+          tag: ${{ github.event.inputs.release_tag || github.ref_name }}
+          name: "${{ github.event.inputs.release_tag || github.ref_name }}"
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "release-files/*"
           artifactErrorsFailBuild: false
