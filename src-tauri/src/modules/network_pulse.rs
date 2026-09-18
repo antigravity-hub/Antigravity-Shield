@@ -29,6 +29,8 @@ pub struct NetworkPulseResult {
     pub is_tun_active: bool,
     /// پروکسی‌های محلی باز و در حال گوش‌دادن (مانند 10808 یا 7890)
     pub discovered_proxies: Vec<crate::modules::proxy_scanner::DiscoveredProxy>,
+    /// بهترین پروکسی فعال و تست‌شده محلی
+    pub best_working_proxy: Option<crate::modules::proxy_scanner::DiscoveredProxy>,
     /// لیست فیلترشکن‌های شناخته‌شده روی سیستم کاربر (وضعیت اجرا و مسیر فایل)
     pub installed_vpns: Vec<InstalledVpnInfo>,
     /// کشور خروجی کاربر بر اساس تریس کلودفلر (مانند IR, TR, US, DE)
@@ -46,6 +48,9 @@ pub struct InstalledVpnInfo {
     pub is_running: bool,
     pub executable_path: Option<String>,
     pub default_port: Option<u16>,
+    pub candidate_ports: Vec<u16>,
+    pub active_port: Option<u16>,
+    pub active_url: Option<String>,
     pub is_port_listening: Option<bool>,
 }
 
@@ -91,54 +96,54 @@ pub fn is_local_port_listening(port: u16) -> bool {
     std::net::TcpStream::connect_timeout(&addr, Duration::from_millis(60)).is_ok()
 }
 
-const KNOWN_VPNS: &[(&str, &str, &str, Option<u16>, &[&str])] = &[
+const KNOWN_VPNS: &[(&str, &str, &str, &[u16], &[&str])] = &[
     (
         "v2rayn",
         "v2rayN",
         "v2rayN.exe",
-        Some(10808),
+        &[10810, 10809, 10808],
         &["v2rayN", "v2rayN-Core", "v2rayN-With-Core"],
     ),
     (
         "clash-verge",
         "Clash Verge",
         "clash-verge.exe",
-        Some(7897),
+        &[7897, 7890],
         &["clash-verge", "Clash Verge", "Clash Verge Rev"],
     ),
     (
         "clash-nyanpasu",
         "Clash Nyanpasu",
         "clash-nyanpasu.exe",
-        Some(7890),
+        &[7890, 7891],
         &["Clash Nyanpasu", "clash-nyanpasu"],
     ),
     (
         "nekoray",
         "NekoRay",
         "nekoray.exe",
-        Some(2080),
+        &[2081, 2080],
         &["nekoray", "NekoBox"],
     ),
     (
         "sing-box",
         "Sing-Box",
         "sing-box.exe",
-        Some(2080),
+        &[2081, 2080],
         &["sing-box", "sing-box-windows"],
     ),
     (
         "hiddify",
         "Hiddify Next",
         "Hiddify.exe",
-        Some(2080),
+        &[2080, 2081],
         &["Hiddify", "HiddifyNext"],
     ),
     (
         "warp",
         "Cloudflare WARP",
         "Cloudflare WARP.exe",
-        Some(40000),
+        &[40000, 40001],
         &["Cloudflare\\Cloudflare WARP", "Cloudflare WARP"],
     ),
 ];
@@ -176,7 +181,7 @@ pub fn detect_installed_vpns() -> Vec<InstalledVpnInfo> {
     search_dirs.push(PathBuf::from(r"C:\Program Files"));
     search_dirs.push(PathBuf::from(r"C:\Program Files (x86)"));
 
-    for &(id, name, process_name, default_port, folder_hints) in KNOWN_VPNS {
+    for &(id, name, process_name, candidate_ports, folder_hints) in KNOWN_VPNS {
         // ۱. بررسی اجرای پروسه
         let running_proc = running_processes
             .iter()
@@ -204,7 +209,22 @@ pub fn detect_installed_vpns() -> Vec<InstalledVpnInfo> {
 
         // فقط در صورتی اضافه شود که در حال اجرا باشد یا فایل اجرایی آن پیدا شود
         if is_running || executable_path.is_some() {
-            let is_port_listening = default_port.map(is_local_port_listening);
+            let mut active_port = None;
+            let mut active_url = None;
+            let mut is_listening = false;
+
+            for &p in candidate_ports {
+                if is_local_port_listening(p) {
+                    is_listening = true;
+                    active_port = Some(p);
+                    let proto = if p == 10808 || p == 40000 || p == 7891 { "socks5" } else { "http" };
+                    active_url = Some(format!("{}://127.0.0.1:{}", proto, p));
+                    break;
+                }
+            }
+
+            let default_port = candidate_ports.first().copied();
+
             results.push(InstalledVpnInfo {
                 id: id.to_string(),
                 name: name.to_string(),
@@ -212,7 +232,10 @@ pub fn detect_installed_vpns() -> Vec<InstalledVpnInfo> {
                 is_running,
                 executable_path,
                 default_port,
-                is_port_listening,
+                candidate_ports: candidate_ports.to_vec(),
+                active_port,
+                active_url,
+                is_port_listening: Some(is_listening),
             });
         }
     }
@@ -486,14 +509,18 @@ async fn execute_probe(client: rquest::Client) -> ProbeOutput {
 
 /// پروب پیشرفته سلامت شبکه، فیلترینگ و تحریم ریجن هوش مصنوعی جمینای
 pub async fn probe_network_health(custom_proxy: Option<String>) -> NetworkPulseResult {
-    let proxy_url_opt = custom_proxy.or_else(|| {
-        crate::modules::config::load_app_config()
-            .ok()
-            .filter(|c| {
-                c.proxy.upstream_proxy.enabled && !c.proxy.upstream_proxy.url.trim().is_empty()
-            })
-            .map(|c| c.proxy.upstream_proxy.url)
-    });
+    let proxy_url_opt = custom_proxy
+        .or_else(|| {
+            crate::modules::config::load_app_config()
+                .ok()
+                .filter(|c| {
+                    c.proxy.upstream_proxy.enabled && !c.proxy.upstream_proxy.url.trim().is_empty()
+                })
+                .map(|c| c.proxy.upstream_proxy.url)
+        })
+        .or_else(|| {
+            crate::modules::proxy_scanner::check_antigravity_proxy_status().current_proxy
+        });
 
     let timeout_duration = Duration::from_secs(6);
 

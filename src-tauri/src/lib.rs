@@ -648,6 +648,11 @@ pub fn run() {
             commands::proxy::check_gemini_network_pulse,
             commands::proxy::detect_installed_vpns,
             commands::proxy::launch_vpn_client,
+            commands::proxy::auto_detect_and_apply_proxy,
+            commands::proxy::get_warp_status,
+            commands::proxy::start_warp_download,
+            commands::proxy::connect_warp_proxy,
+            commands::proxy::disconnect_warp_proxy,
             // Proxy Pool Binding commands
             commands::proxy_pool::bind_account_proxy,
             commands::proxy_pool::unbind_account_proxy,

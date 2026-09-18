@@ -688,50 +688,126 @@ pub async fn download_and_run_installer(
 
     let temp_dir = std::env::temp_dir();
     let file_path = temp_dir.join(&filename);
-    let mut file = tokio::fs::File::create(&file_path)
-        .await
-        .map_err(|e| format!("Failed to create temp installer file: {}", e))?;
 
     let mut downloaded: u64 = 0;
     let mut last_reported_percent = 0;
+    let mut attempts = 0;
+    const MAX_ATTEMPTS: u32 = 4;
 
-    while let Some(chunk) = response
-        .chunk()
-        .await
-        .map_err(|e| format!("Failed reading download chunk: {}", e))?
-    {
-        file.write_all(&chunk)
-            .await
-            .map_err(|e| format!("Failed writing chunk to disk: {}", e))?;
-        downloaded += chunk.len() as u64;
-
-        if total_size > 0 {
-            let percent = ((downloaded as f64 / total_size as f64) * 100.0).round() as u32;
-            if percent != last_reported_percent {
-                last_reported_percent = percent;
-                let _ = app.emit(
-                    "updater://direct-progress",
-                    DirectDownloadProgress {
-                        percent,
-                        downloaded,
-                        total: total_size,
-                    },
-                );
+    // Check if file already exists with full size
+    if file_path.exists() {
+        if let Ok(meta) = tokio::fs::metadata(&file_path).await {
+            if total_size > 0 && meta.len() == total_size {
+                logger::log_info(&format!(
+                    "Found fully downloaded installer cache ({}/{} bytes). Using existing file.",
+                    meta.len(),
+                    total_size
+                ));
+                downloaded = meta.len();
+            } else if meta.len() < total_size {
+                downloaded = meta.len();
             }
         }
     }
 
-    file.flush()
-        .await
-        .map_err(|e| format!("Failed to flush installer file: {}", e))?;
-    drop(file);
+    if total_size == 0 || downloaded < total_size {
+        let mut file = if downloaded > 0 {
+            tokio::fs::OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(&file_path)
+                .await
+                .map_err(|e| format!("Failed to open temp installer file for append: {}", e))?
+        } else {
+            tokio::fs::File::create(&file_path)
+                .await
+                .map_err(|e| format!("Failed to create temp installer file: {}", e))?
+        };
+
+        while attempts < MAX_ATTEMPTS && (total_size == 0 || downloaded < total_size) {
+            attempts += 1;
+
+            let mut req = client.get(&download_url);
+            if downloaded > 0 {
+                req = req.header("Range", format!("bytes={}-", downloaded));
+                logger::log_info(&format!(
+                    "Resuming download from byte {} (attempt {}/{})",
+                    downloaded, attempts, MAX_ATTEMPTS
+                ));
+            }
+
+            let mut resp = match req.send().await {
+                Ok(r) if r.status().is_success() || r.status().as_u16() == 206 => r,
+                Ok(r) => {
+                    logger::log_warn(&format!(
+                        "Download attempt {} failed with status {}",
+                        attempts,
+                        r.status()
+                    ));
+                    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+                    continue;
+                }
+                Err(e) => {
+                    logger::log_warn(&format!("Download attempt {} connection error: {}", attempts, e));
+                    tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+                    continue;
+                }
+            };
+
+            if total_size == 0 {
+                if let Some(cl) = resp.content_length() {
+                    total_size = cl;
+                }
+            }
+
+            let mut chunk_error = false;
+            while let Ok(Some(chunk)) = resp.chunk().await {
+                if let Err(e) = file.write_all(&chunk).await {
+                    logger::log_error(&format!("Failed writing chunk to disk: {}", e));
+                    chunk_error = true;
+                    break;
+                }
+                downloaded += chunk.len() as u64;
+
+                if total_size > 0 {
+                    let percent = ((downloaded as f64 / total_size as f64) * 100.0)
+                        .min(99.0)
+                        .round() as u32;
+                    if percent != last_reported_percent {
+                        last_reported_percent = percent;
+                        let _ = app.emit(
+                            "updater://direct-progress",
+                            DirectDownloadProgress {
+                                percent,
+                                downloaded,
+                                total: total_size,
+                            },
+                        );
+                    }
+                }
+            }
+
+            if chunk_error || (total_size > 0 && downloaded < total_size) {
+                logger::log_warn(&format!(
+                    "Download stream interrupted at {}/{} bytes. Retrying...",
+                    downloaded, total_size
+                ));
+                tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+            } else {
+                break;
+            }
+        }
+
+        let _ = file.flush().await;
+        drop(file);
+    }
 
     let _ = app.emit(
         "updater://direct-progress",
         DirectDownloadProgress {
             percent: 100,
             downloaded,
-            total: downloaded,
+            total: if total_size > 0 { total_size } else { downloaded },
         },
     );
 
@@ -743,17 +819,55 @@ pub async fn download_and_run_installer(
     #[cfg(target_os = "windows")]
     {
         use std::os::windows::process::CommandExt;
-        const CREATE_NEW_PROCESS_GROUP: u32 = 0x00000200;
         const DETACHED_PROCESS: u32 = 0x00000008;
+        const CREATE_NO_WINDOW: u32 = 0x08000000;
 
-        std::process::Command::new(&file_path)
-            .creation_flags(CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS)
-            .spawn()
-            .map_err(|e| format!("Failed to launch installer process: {}", e))?;
+        let path_str = file_path.to_string_lossy().replace('\'', "''");
+        // Launch via PowerShell with -Verb RunAs so Windows triggers UAC elevation properly.
+        // /UPDATE tells NSIS installer to update in-place without uninstallation prompts.
+        let ps_cmd = format!(
+            "Start-Process -FilePath '{}' -ArgumentList '/UPDATE' -Verb RunAs",
+            path_str
+        );
 
-        // Allow child process detached startup then exit gracefully
-        tokio::time::sleep(std::time::Duration::from_millis(500)).await;
-        std::process::exit(0);
+        logger::log_info(&format!(
+            "Launching Windows elevated installer via PowerShell: {}",
+            ps_cmd
+        ));
+
+        let spawn_res = std::process::Command::new("powershell")
+            .args([
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                &ps_cmd,
+            ])
+            .creation_flags(CREATE_NO_WINDOW | DETACHED_PROCESS)
+            .spawn();
+
+        match spawn_res {
+            Ok(_) => {
+                logger::log_info(
+                    "Elevated installer process spawned successfully. Exiting current app instance...",
+                );
+                tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+                std::process::exit(0);
+            }
+            Err(e) => {
+                logger::log_warn(&format!(
+                    "Failed to spawn elevated installer via PowerShell ({}). Attempting direct spawn fallback...",
+                    e
+                ));
+                let _ = std::process::Command::new(&file_path)
+                    .arg("/UPDATE")
+                    .creation_flags(CREATE_NO_WINDOW | DETACHED_PROCESS)
+                    .spawn();
+                tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+                std::process::exit(0);
+            }
+        }
     }
 
     #[cfg(target_os = "macos")]
