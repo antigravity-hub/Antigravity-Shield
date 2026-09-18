@@ -3,6 +3,19 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.2 (2026-09-18)**:
+        -   **[IDE Toolkit Integration & Bundled VSIX] Embedded Antigravity Toolkit v2.4.0**:
+            -   **Embedded Extension Upgrade**: Embedded the latest `antigravity-toolkit-2.4.0.vsix` into application resources, offering single-click installation and CLI verification across Antigravity IDE, VS Code, Cursor, and Windsurf.
+            -   **Real-Time Search & Multilingual RTL Support**: Bundled toolkit version features instant chat history filtering, deep transcript search, bidirectional (RTL) text rendering for Persian and Arabic prompts, and persistent webview tab state.
+        -   **[Network Health Pulse & Physical Connectivity] Multi-Probe Internet Redundancy & VPN Flow**:
+            -   **Redundant Connectivity Verification**: Enhanced physical internet health checks with multi-target probes (Cloudflare, Google DNS, and Root servers), eliminating false-negative offline alerts.
+            -   **Streamlined VPN Actions**: Optimized active TUN/VPN adapter detection and automated routing diagnostics for resilient developer access.
+        -   **[Account Integrity & Warmup Engine] Challenge Guards & Rolling Warmup Logic**:
+            -   **Pending Challenge Protection**: Safeguarded automated account rotation during unresolved security challenges, preventing spurious retry loops.
+            -   **Rolling Warmup Scheduler**: Refined 5-hour rolling warmup cycle to maintain session freshness while strictly conserving token quotas.
+        -   **[CI/CD & Release Pipeline] Dedicated OS Workflows & Architecture Optimization**:
+            -   **Decoupled Release Workflows**: Split release operations into dedicated, focused workflows—`Release Windows` for Windows installer and updater generation, and `Release Unix (macOS & Linux)` for Unix artifact packaging.
+            -   **Streamlined Actions Environment**: Decommissioned redundant CI and automated dependency scanning pipelines to optimize build speeds and eliminate runner bottlenecks.
     *   **v5.11.1 (2026-09-17)**:
         -   **[Auto-Updater & Asset Distribution Pipeline] Correct Repository Binding & Long-Timeout Streaming**:
             -   **Authoritative Endpoint Alignment**: Realigned updater endpoint and direct asset fallback URLs to `antigravity-hub/Antigravity-Shield`, resolving 404 lookup failures during automated version discovery.
