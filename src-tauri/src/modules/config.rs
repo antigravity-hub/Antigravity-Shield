@@ -85,6 +85,8 @@ pub fn load_app_config() -> Result<AppConfig, String> {
                 serde_json::Value::Object(custom_mapping),
             );
         }
+    }
+
     // [AUTO-WARM DEFAULT ENABLED] Ensure scheduled_warmup is enabled by default across updates
     if let Some(warmup) = v.get_mut("scheduled_warmup") {
         if let Some(warmup_obj) = warmup.as_object_mut() {
