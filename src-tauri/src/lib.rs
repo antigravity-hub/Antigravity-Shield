@@ -554,6 +554,7 @@ pub fn run() {
             commands::delete_accounts,
             commands::reorder_accounts,
             commands::switch_account,
+            commands::clear_account_validation,
             commands::export_accounts,
             // Device fingerprint
             commands::get_device_profiles,

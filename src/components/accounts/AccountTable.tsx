@@ -219,10 +219,12 @@ function SortableAccountRow({
             style={style as React.CSSProperties}
             className={cn(
                 "group transition-colors border-b border-gray-100 dark:border-base-200",
-                isAnyActive && "bg-emerald-50/40 dark:bg-emerald-950/20",
+                account.validation_blocked && "bg-amber-500/[0.06] dark:bg-amber-950/20 border-l-4 border-l-amber-500",
+                isAnyActive && !account.validation_blocked && "bg-emerald-50/40 dark:bg-emerald-950/20",
                 isDragging && "bg-emerald-100 dark:bg-emerald-900/30 shadow-lg",
-                !isDragging && !isAnyActive && "hover:bg-gray-50 dark:hover:bg-base-200",
-                !isDragging && isAnyActive && "hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30",
+                !isDragging && !isAnyActive && !account.validation_blocked && "hover:bg-gray-50 dark:hover:bg-base-200",
+                !isDragging && account.validation_blocked && "hover:bg-amber-500/10 dark:hover:bg-amber-950/30",
+                !isDragging && isAnyActive && !account.validation_blocked && "hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30",
                 isExhausted && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
             )}
         >

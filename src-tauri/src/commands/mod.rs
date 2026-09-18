@@ -1198,6 +1198,12 @@ pub async fn update_account_label(account_id: String, label: String) -> Result<(
     Ok(())
 }
 
+/// Clear account validation blocked status
+#[tauri::command]
+pub async fn clear_account_validation(account_id: String) -> Result<(), String> {
+    modules::account::set_account_validation_blocked(&account_id, false, None, None)
+}
+
 // ============================================================================
 // HTTP API 设置命令
 // ============================================================================

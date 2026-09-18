@@ -231,6 +231,7 @@
     "current_badge": "فعلی",
     "disabled": "غیرفعال",
     "disabled_tooltip": "حساب غیرفعال است (مثلاً refresh_token منقضی یا باطل شده است).",
+    "validation_blocked_switch_tooltip": "این حساب نیازمند تأیید هویت گوگل است. سوییچ به این حساب تا زمان رفع مسدودی غیرفعال می‌باشد.",
     "proxy_disabled": "پروکسی غیرفعال",
     "proxy_disabled_tooltip": "پروکسی برای این حساب به صورت دستی غیرفعال شده است.",
     "enable_proxy": "فعال‌سازی پروکسی",
