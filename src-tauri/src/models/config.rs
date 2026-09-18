@@ -32,6 +32,12 @@ pub struct AppConfig {
     pub hidden_menu_items: Vec<String>, // Hidden menu item path list
     #[serde(default)]
     pub cloudflared: CloudflaredConfig, // [NEW] Cloudflared configuration
+    #[serde(default = "default_true")]
+    pub auto_switch_on_quota: bool,     // Automatically switch to next account on quota exhaustion
+}
+
+fn default_true() -> bool {
+    true
 }
 
 /// Scheduled warmup configuration
@@ -192,6 +198,7 @@ impl AppConfig {
             circuit_breaker: CircuitBreakerConfig::default(),
             hidden_menu_items: Vec::new(),
             cloudflared: CloudflaredConfig::default(),
+            auto_switch_on_quota: true,
         }
     }
 }

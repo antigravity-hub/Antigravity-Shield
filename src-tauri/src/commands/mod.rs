@@ -908,6 +908,13 @@ pub async fn get_data_dir_path() -> Result<String, String> {
     Ok(path.to_string_lossy().to_string())
 }
 
+/// 发送系统原生桌面通知
+#[tauri::command]
+pub async fn send_desktop_notification(title: String, body: String) -> Result<(), String> {
+    crate::modules::integration::show_os_notification(&title, &body);
+    Ok(())
+}
+
 /// 显示主窗口
 #[tauri::command]
 pub async fn show_main_window(window: tauri::Window) -> Result<(), String> {

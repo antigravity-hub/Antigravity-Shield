@@ -258,8 +258,50 @@ impl SystemIntegration for DesktopIntegration {
     }
 
     fn show_notification(&self, title: &str, body: &str) {
-        // 使用 tauri-plugin-dialog 或原生通知（此处简化）
         crate::modules::logger::log_info(&format!("[Notification] {}: {}", title, body));
+        show_os_notification(title, body);
+    }
+}
+
+/// Trigger OS-level native desktop notification across Windows, macOS, and Linux
+pub fn show_os_notification(title: &str, body: &str) {
+    #[cfg(target_os = "windows")]
+    {
+        use crate::utils::command::CommandExtWrapper;
+        let script = format!(
+            "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null; \
+             $t = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); \
+             $n = $t.GetElementsByTagName('text'); \
+             $n.Item(0).AppendChild($t.CreateTextNode('{}')) | Out-Null; \
+             $n.Item(1).AppendChild($t.CreateTextNode('{}')) | Out-Null; \
+             $toast = [Windows.UI.Notifications.ToastNotification]::new($t); \
+             [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Antigravity Shield').Show($toast);",
+            title.replace('\'', "''").replace('"', "`\""),
+            body.replace('\'', "''").replace('"', "`\"")
+        );
+        let mut cmd = std::process::Command::new("powershell.exe");
+        cmd.args(["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", &script]);
+        cmd.creation_flags_windows();
+        let _ = cmd.spawn();
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        let script = format!(
+            "display notification \"{}\" with title \"{}\"",
+            body.replace('\\', "\\\\").replace('"', "\\\""),
+            title.replace('\\', "\\\\").replace('"', "\\\"")
+        );
+        let _ = std::process::Command::new("osascript")
+            .args(["-e", &script])
+            .spawn();
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        let _ = std::process::Command::new("notify-send")
+            .args([title, body])
+            .spawn();
     }
 }
 

@@ -540,7 +540,9 @@
       "refresh_interval": "Refresh Interval (minutes)",
       "auto_sync": "Auto Sync Current Account",
       "auto_sync_desc": "Automatically sync current active account information periodically",
-      "sync_interval": "Sync Interval (minutes)"
+      "sync_interval": "Sync Interval (minutes)",
+      "auto_switch_on_quota": "Auto-Switch on Quota Depletion",
+      "auto_switch_on_quota_desc": "Automatically switch to the next account with available quota when active account quota runs out (Claude -> Next Claude -> Gemini fallback)."
     },
     "warmup": {
       "title": "Auto-Warm (100% Quota Recovery Warmup)",
@@ -1773,6 +1775,13 @@
     "one_click_apply": "1-Click Apply Patch"
   },
   "notifications": {
-    "quota_critical_alert": "Critical Quota Alert: {{model}} is at {{percentage}}% on account {{email}}. Switch accounts or wait for quota reset."
+    "quota_critical_alert": "Critical Quota Alert: {{model}} is at {{percentage}}% on account {{email}}. Switch accounts or wait for quota reset.",
+    "quota_alert_title": "Antigravity Shield - Low Quota Alert",
+    "auto_switch_title": "Antigravity Shield - Account Switched",
+    "quota_exhausted_title": "Antigravity Shield - Quota Depleted",
+    "auto_switch_claude_success": "⚡ Auto-Switched: Claude quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Claude quota).",
+    "auto_switch_fallback_gemini": "⚡ Auto-Switched: All Claude quotas depleted. Fallback switched to {{to}} ({{score}}% Gemini quota).",
+    "auto_switch_gemini_success": "⚡ Auto-Switched: Gemini quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Gemini quota).",
+    "all_quotas_depleted": "⚠️ All Claude and Gemini quotas exhausted across all available accounts."
   }
 }

@@ -148,6 +148,7 @@ export interface AppConfig {
     circuit_breaker: CircuitBreakerConfig; // [NEW] 熔断器配置
     proxy: ProxyConfig;
     cloudflared: CloudflaredConfig; // [NEW] Cloudflared 配置
+    auto_switch_on_quota?: boolean; // [NEW] 配额耗尽时自动轮换账号
 }
 
 // ============================================================================

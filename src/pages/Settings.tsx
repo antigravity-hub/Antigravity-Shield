@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw } from 'lucide-react';
+import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw, Zap } from 'lucide-react';
 import { request as invoke } from '../utils/request';
 import { open } from '@tauri-apps/plugin-dialog';
 import { useConfigStore } from '../stores/useConfigStore';
@@ -40,6 +40,7 @@ function Settings() {
         refresh_interval: 10,
         auto_sync: false,
         sync_interval: 5,
+        auto_switch_on_quota: true,
         proxy: {
             enabled: false,
             port: 8080,
@@ -934,6 +935,39 @@ function Settings() {
                                         />
                                     </div>
                                 )}
+                            </div>
+
+                            {/* 配额耗尽时自动轮换 (Auto-Switch on Quota Depletion) */}
+                            <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-amber-200 transition-all duration-300 shadow-sm">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
+                                            <Zap size={20} />
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-gray-900 dark:text-gray-100">{t('settings.account.auto_switch_on_quota')}</div>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.account.auto_switch_on_quota_desc')}</p>
+                                        </div>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={formData.auto_switch_on_quota ?? true}
+                                            onChange={async (e) => {
+                                                const enabled = e.target.checked;
+                                                const newConfig = { ...formData, auto_switch_on_quota: enabled };
+                                                setFormData(newConfig);
+                                                try {
+                                                    await saveConfig(newConfig);
+                                                } catch (error) {
+                                                    showToast(`${t('common.error')}: ${error}`, 'error');
+                                                }
+                                            }}
+                                        />
+                                        <div className="w-11 h-6 bg-gray-200 dark:bg-base-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 shadow-inner"></div>
+                                    </label>
+                                </div>
                             </div>
 
                             {/* 7天周配额智能预热 (Smart Warmup) */}
