@@ -1691,8 +1691,7 @@ fn mark_validation_blocked(account: &mut Account, reason: &str) {
     }
 }
 
-#[allow(dead_code)]
-fn clear_validation_blocked(account: &mut Account) {
+pub fn clear_validation_blocked(account: &mut Account) {
     if !account.validation_blocked {
         return;
     }
@@ -1707,6 +1706,7 @@ fn clear_validation_blocked(account: &mut Account) {
             account.email, e
         ));
     }
+    crate::proxy::server::trigger_account_reload(&account.id);
 }
 
 /// Get device profile info: current storage.json + account bound profile
@@ -1952,6 +1952,13 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
 pub fn update_account_quota(account_id: &str, quota: QuotaData) -> Result<(), String> {
     let _account_write = lock_account_file_updates()?;
     let mut account = load_account(account_id)?;
+    if account.validation_blocked && !quota.is_forbidden && !quota.models.is_empty() {
+        account.validation_blocked = false;
+        account.validation_blocked_until = None;
+        account.validation_blocked_reason = None;
+        account.validation_url = None;
+        crate::proxy::server::trigger_account_reload(account_id);
+    }
     account.update_quota(quota);
 
     // --- Quota protection logic start ---
@@ -2423,6 +2430,13 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
 
                 match retry_result {
                     Ok((q, _)) => {
+                        if account.validation_blocked && !q.is_forbidden {
+                            crate::modules::logger::log_info(&format!(
+                                "Clearing validation_blocked for {} after successful retry quota fetch",
+                                account.email
+                            ));
+                            clear_validation_blocked(account);
+                        }
                         return Ok(q);
                     }
                     Err(e) => {
@@ -2447,6 +2461,13 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
     // fetch_quota already handles 403, with additional local fallback/validation handling.
     match result {
         Ok((q, _)) => {
+            if account.validation_blocked && !q.is_forbidden {
+                crate::modules::logger::log_info(&format!(
+                    "Clearing validation_blocked for {} after successful quota fetch",
+                    account.email
+                ));
+                clear_validation_blocked(account);
+            }
             Ok(q)
         }
         Err(e) => {

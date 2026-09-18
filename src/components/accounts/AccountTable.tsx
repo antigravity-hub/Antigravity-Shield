@@ -35,6 +35,7 @@ import {
     Bot,
     Tag,
     BookOpen,
+    RefreshCw,
 } from 'lucide-react';
 import type { Account, ModelQuota } from '../../types/account';
 import { useTranslation } from 'react-i18next';
@@ -576,17 +577,31 @@ function AccountRowContent({
                             {t('accounts.verification_required_table_msg', 'Verification required — see guide')}
                         </span>
                     </div>
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            openVerificationGuide();
-                        }}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
-                    >
-                        <BookOpen className="w-3.5 h-3.5" />
-                        <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
-                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (onRefresh) onRefresh();
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                            title={t('accounts.recheck_tooltip', 'Clear block status and re-check account quota')}
+                        >
+                            <RefreshCw className={cn("w-3 h-3", isRefreshing && "animate-spin")} />
+                            <span>{t('accounts.recheck_btn', 'Re-check')}</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openVerificationGuide();
+                            }}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                        >
+                            <BookOpen className="w-3.5 h-3.5" />
+                            <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
+                        </button>
+                    </div>
                 </div>
             ) : (isDisabled || account.quota?.is_forbidden ? (
                 <div className="flex items-center justify-center gap-3 py-1.5 px-4 rounded-xl border group/error bg-red-50/50 dark:bg-red-900/10 border-red-100/50 dark:border-red-900/20">

@@ -499,7 +499,9 @@
     "show_last_used": "Show Last Used",
     "drag_column_to_reorder": "Drag column header to reorder",
     "verification_required_table_msg": "Verification required — see guide",
-    "open_guide_btn": "View Guide"
+    "open_guide_btn": "View Guide",
+    "recheck_btn": "Re-check",
+    "recheck_tooltip": "Clear block status and re-check account quota"
   },
   "settings": {
     "save": "Save Settings",
