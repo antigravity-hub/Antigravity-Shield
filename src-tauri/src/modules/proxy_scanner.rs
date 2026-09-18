@@ -109,7 +109,7 @@ pub struct ProbeResult {
 
 /// تست تأخیر و صحت اتصال یک URL پروکسی دلخواه
 pub async fn probe_proxy_url(proxy_url: &str) -> ProbeResult {
-    let cloudcode_url = "https://cloudcode-pa.googleapis.com";
+    let cloudcode_url = "https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist";
     let start_time = std::time::Instant::now();
 
     // ایجاد یک rquest با پروکسی
@@ -141,35 +141,54 @@ pub async fn probe_proxy_url(proxy_url: &str) -> ProbeResult {
         }
     };
 
-    // تست اولیه به اندپوینت تخصصی گوگل کلود و جمینای
-    match client.get(cloudcode_url).send().await {
+    // تست اولیه به اندپوینت تخصصی گوگل کلود و جمینای با متد POST loadCodeAssist
+    let res = client.post(cloudcode_url)
+        .header("Content-Type", "application/json")
+        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36")
+        .body("{}")
+        .send()
+        .await;
+
+    match res {
         Ok(resp) => {
             let latency = start_time.elapsed().as_millis() as u64;
-            let status = resp.status();
+            let status = resp.status().as_u16();
             
-            // اگر استاتوس 400 باشد یعنی ریجن پشتیبانی نمی‌شود (User location is not supported)
-            if status.as_u16() == 400 {
-                let text = resp.text().await.unwrap_or_default();
-                if text.contains("User location is not supported") {
-                    return ProbeResult {
-                        is_working: true,
-                        gemini_supported: false,
-                        latency_ms: Some(latency),
-                        error: Some("Region blocked by Google (User location is not supported). Use WARP or clean proxy.".to_string()),
-                    };
+            // اگر استاتوس 200 یا 401 باشد یعنی اندپوینت پاسخ داده و گیت‌وی باز است
+            if status == 200 || status == 401 {
+                ProbeResult {
+                    is_working: true,
+                    gemini_supported: true,
+                    latency_ms: Some(latency),
+                    error: None,
                 }
-            }
-
-            ProbeResult {
-                is_working: true,
-                gemini_supported: true,
-                latency_ms: Some(latency),
-                error: None,
+            } else if status == 400 || status == 403 {
+                let text = resp.text().await.unwrap_or_default();
+                let is_region = text.contains("User location is not supported")
+                    || text.contains("FAILED_PRECONDITION")
+                    || status == 403;
+                ProbeResult {
+                    is_working: true,
+                    gemini_supported: !is_region,
+                    latency_ms: Some(latency),
+                    error: if is_region {
+                        Some("Region blocked by Google (User location is not supported). Use WARP or clean proxy.".to_string())
+                    } else {
+                        Some(format!("CloudCode API HTTP {}: {}", status, text))
+                    },
+                }
+            } else {
+                ProbeResult {
+                    is_working: true,
+                    gemini_supported: false,
+                    latency_ms: Some(latency),
+                    error: Some(format!("Unexpected HTTP status: {}", status)),
+                }
             }
         }
         Err(err) => {
             let fallback_start = std::time::Instant::now();
-            match client.head("https://www.google.com").send().await {
+            match client.head("https://www.google.com/generate_204").send().await {
                 Ok(_) => {
                     let latency = fallback_start.elapsed().as_millis() as u64;
                     ProbeResult {

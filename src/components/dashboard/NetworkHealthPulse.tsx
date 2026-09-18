@@ -37,6 +37,7 @@ export interface InstalledVpnInfo {
     is_running: boolean;
     executable_path?: string;
     default_port?: number;
+    is_port_listening?: boolean;
 }
 
 export interface NetworkPulseResult {
@@ -52,6 +53,8 @@ export interface NetworkPulseResult {
     is_tun_active?: boolean;
     discovered_proxies: DiscoveredProxy[];
     installed_vpns: InstalledVpnInfo[];
+    egress_country?: string;
+    is_warp_active?: boolean;
 }
 
 interface NetworkHealthPulseProps {
@@ -137,8 +140,16 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                 url: proxyUrl,
                 syncShieldUpstream: true
             });
-            showToast(msg, 'success');
-            await runNetworkProbe(proxyUrl);
+            const countMatch = msg.match(/(\d+)/);
+            const count = countMatch ? parseInt(countMatch[1], 10) : 1;
+            showToast(
+                t('dashboard.health_pulse.proxy_applied_toast', {
+                    count,
+                    defaultValue: `Proxy configuration applied to ${count} Antigravity instance(s).`
+                }),
+                'success'
+            );
+            await runNetworkProbe(proxyUrl, true);
         } catch (err) {
             showToast(`${t('common.error')}: ${err}`, 'error');
         } finally {
@@ -153,8 +164,16 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
             const msg = await invoke<string>('remove_antigravity_proxy', {
                 disableShieldUpstream: true
             });
-            showToast(msg, 'success');
-            await runNetworkProbe();
+            const countMatch = msg.match(/(\d+)/);
+            const count = countMatch ? parseInt(countMatch[1], 10) : 1;
+            showToast(
+                t('dashboard.health_pulse.proxy_removed_toast', {
+                    count,
+                    defaultValue: `Proxy settings removed from ${count} Antigravity instance(s).`
+                }),
+                'success'
+            );
+            await runNetworkProbe(undefined, true);
         } catch (err) {
             showToast(`${t('common.error')}: ${err}`, 'error');
         } finally {
@@ -162,10 +181,15 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
         }
     };
 
+    const warpVpn = pulse?.installed_vpns.find(v => v.id === 'warp');
+    const isWarpInstalled = !!warpVpn;
+    const isWarpRunning = !!warpVpn?.is_running;
+    const isWarpPortListening = !!warpVpn?.is_port_listening || !!pulse?.discovered_proxies.some(p => p.port === 40000 && p.is_listening);
+
     // بهترین پروکسی محلی موجود
     const bestLocalProxy = pulse?.discovered_proxies.find(p => p.is_working && p.gemini_supported) 
         || pulse?.discovered_proxies.find(p => p.is_working)
-        || pulse?.discovered_proxies[0];
+        || pulse?.discovered_proxies.find(p => p.is_listening && p.port !== 40000);
 
     return (
         <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-br from-white via-slate-50/50 to-blue-50/30 dark:from-base-100 dark:via-base-200/50 dark:to-blue-950/20 shadow-sm transition-all duration-300 mb-6">
@@ -219,10 +243,14 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                             {pulse.overall_status === 'offline' && t('dashboard.health_pulse.status_offline', 'Internet Disconnected')}
                                         </span>
 
-                                        {pulse.is_tun_active && (
-                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 flex items-center gap-1 border border-teal-200 dark:border-teal-800">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                                                TUN Mode
+                                        {pulse.egress_country && (
+                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700" title={t('dashboard.health_pulse.egress_country', { country: pulse.egress_country, defaultValue: `Egress: ${pulse.egress_country}` })}>
+                                                {pulse.egress_country}
+                                            </span>
+                                        )}
+                                        {pulse.is_warp_active && (
+                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800/40">
+                                                WARP
                                             </span>
                                         )}
                                     </div>
@@ -474,25 +502,25 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
-                                    {pulse.is_tun_active && (
-                                        <div className="text-[11px] text-teal-700 dark:text-teal-300 font-bold bg-teal-100/70 dark:bg-teal-900/40 px-2 py-0.5 rounded-md flex items-center gap-1 border border-teal-300/60 dark:border-teal-700/60">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
-                                            {t('dashboard.health_pulse.tun_active', 'TUN Mode (Direct Routing)')}
-                                        </div>
-                                    )}
-                                    {pulse.active_proxy_url && (
+                                    {pulse.active_proxy_url ? (
                                         <div className="flex items-center gap-1.5">
-                                            <span className="text-[11px] text-emerald-700 dark:text-emerald-300 font-mono bg-emerald-100/60 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">
-                                                Proxy: {pulse.active_proxy_url}
+                                            <span className="text-[11px] text-emerald-700 dark:text-emerald-300 font-mono bg-emerald-100/60 dark:bg-emerald-900/40 px-2.5 py-1 rounded-lg border border-emerald-300/50 dark:border-emerald-800/50 flex items-center gap-1.5">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                <span>{t('dashboard.health_pulse.ide_proxy_label', 'IDE Proxy')}: {pulse.active_proxy_url}</span>
                                             </span>
                                             <button
                                                 onClick={handleRemoveLocalProxy}
                                                 disabled={isApplyingProxy}
-                                                className="text-[11px] text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline font-semibold transition-all"
-                                                title={t('dashboard.health_pulse.remove_proxy_tooltip', 'Switch to Direct / TUN Mode (Remove local proxy settings)')}
+                                                className="text-[11px] text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline font-semibold transition-all cursor-pointer px-1 py-0.5"
+                                                title={t('dashboard.health_pulse.remove_proxy_tooltip', 'Remove IDE proxy settings so Antigravity connects directly (uses VPN TUN mode if active)')}
                                             >
-                                                [{t('dashboard.health_pulse.remove_proxy_btn', 'Switch to TUN / Direct')}]
+                                                [{t('dashboard.health_pulse.clear_proxy_btn', 'Clear Proxy / Use Direct VPN')}]
                                             </button>
+                                        </div>
+                                    ) : (
+                                        <div className="text-[11px] text-teal-700 dark:text-teal-300 font-bold bg-teal-100/70 dark:bg-teal-900/40 px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-teal-300/60 dark:border-teal-700/60" title={t('dashboard.health_pulse.direct_routing_tooltip', 'Antigravity connects directly without IDE proxy. If your VPN is active in TUN mode, traffic routes through it automatically.')}>
+                                            <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
+                                            {t('dashboard.health_pulse.direct_routing_label', 'IDE Routing: Direct (VPN TUN Mode)')}
                                         </div>
                                     )}
                                 </div>
@@ -518,7 +546,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             </div>
                             <button
                                 onClick={() => setShowWarpModal(false)}
-                                className="w-8 h-8 rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center justify-center text-gray-500 transition-all"
+                                className="w-8 h-8 rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center justify-center text-gray-500 transition-all cursor-pointer"
                             >
                                 <X size={16} />
                             </button>
@@ -531,27 +559,89 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                             </div>
 
                             {/* Method 1: Cloudflare WARP Official Client */}
-                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-slate-800 space-y-2.5 bg-gray-50/50 dark:bg-slate-800/40">
+                            <div className="p-4 rounded-2xl border border-gray-200 dark:border-slate-800 space-y-3 bg-gray-50/50 dark:bg-slate-800/40">
                                 <div className="font-bold text-gray-900 dark:text-gray-100 flex items-center justify-between text-xs">
                                     <span>{t('proxy.no_tun.warp_modal.method1_title', 'Method 1: Cloudflare WARP Official Client (Recommended)')}</span>
-                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
-                                        {t('proxy.no_tun.warp_modal.recommended', 'Recommended')}
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                        isWarpRunning && isWarpPortListening
+                                            ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
+                                            : isWarpRunning
+                                            ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
+                                            : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                                    }`}>
+                                        {isWarpRunning && isWarpPortListening 
+                                            ? t('dashboard.health_pulse.warp_active_port', 'Running (Port 40000 Ready)')
+                                            : isWarpRunning
+                                            ? t('dashboard.health_pulse.warp_port_closed', 'Running (Proxy Mode Off)')
+                                            : isWarpInstalled
+                                            ? t('dashboard.health_pulse.warp_installed_stopped', 'Installed (Not Running)')
+                                            : t('dashboard.health_pulse.warp_not_detected', 'Not Installed')}
                                     </span>
                                 </div>
                                 <p className="text-[11px] text-gray-600 dark:text-gray-400">
-                                    {t('proxy.no_tun.warp_modal.method1_desc', 'Install the official Cloudflare WARP client and set it to Proxy Mode in settings (listens on default port 40000). Then click below:')}
+                                    {t('proxy.no_tun.warp_modal.method1_desc', 'Install the official Cloudflare WARP client and set it to Proxy Mode in settings (listens on default port 40000).')}
                                 </p>
-                                <div className="pt-1 flex gap-2">
+
+                                {/* Diagnostics hint based on detection */}
+                                {!isWarpInstalled && (
+                                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[11px] flex items-center justify-between gap-2">
+                                        <span>{t('dashboard.health_pulse.warp_not_installed_hint', 'Cloudflare WARP client is not detected on your PC.')}</span>
+                                        <button
+                                            onClick={() => window.open('https://one.one.one.one/', '_blank')}
+                                            className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] transition-all shrink-0 cursor-pointer"
+                                        >
+                                            {t('dashboard.health_pulse.download_warp_btn', 'Download WARP')}
+                                        </button>
+                                    </div>
+                                )}
+
+                                {isWarpInstalled && !isWarpRunning && warpVpn && (
+                                    <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-800 dark:text-blue-300 text-[11px] flex items-center justify-between gap-2">
+                                        <span>{t('dashboard.health_pulse.warp_stopped_hint', 'Cloudflare WARP is installed but not currently running.')}</span>
+                                        <button
+                                            onClick={() => handleLaunchVpn(warpVpn)}
+                                            disabled={launchingVpnId === warpVpn.id}
+                                            className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] transition-all shrink-0 flex items-center gap-1 cursor-pointer"
+                                        >
+                                            <Play size={10} className="fill-current" />
+                                            <span>{t('dashboard.health_pulse.launch_warp_btn', 'Launch WARP Client')}</span>
+                                        </button>
+                                    </div>
+                                )}
+
+                                {isWarpRunning && !isWarpPortListening && (
+                                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-[11px]">
+                                        {t('dashboard.health_pulse.warp_enable_proxy_mode_hint', 'WARP is running, but port 40000 is closed. Open WARP app -> Settings (Gear) -> Preferences -> Connection -> select "Proxy Mode" (SOCKS5).')}
+                                    </div>
+                                )}
+
+                                <div className="pt-1 flex flex-wrap items-center gap-2">
                                     <button
                                         onClick={() => {
+                                            if (!isWarpPortListening) {
+                                                showToast(t('dashboard.health_pulse.warp_port_not_listening_toast', 'Warning: Port 40000 is not listening. Ensure WARP is running in Proxy Mode.'), 'warning');
+                                            }
                                             setShowWarpModal(false);
                                             handleApplyLocalProxy('socks5://127.0.0.1:40000');
                                         }}
-                                        className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
+                                        className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
                                     >
                                         <Zap size={13} />
                                         <span>{t('dashboard.health_pulse.warp_connect_btn', 'Set Port 40000 (WARP Local) & Connect')}</span>
                                     </button>
+
+                                    {bestLocalProxy && bestLocalProxy.port !== 40000 && (
+                                        <button
+                                            onClick={() => {
+                                                setShowWarpModal(false);
+                                                handleApplyLocalProxy(bestLocalProxy.url);
+                                            }}
+                                            className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                                        >
+                                            <Zap size={12} className="text-emerald-500" />
+                                            <span>{t('dashboard.health_pulse.use_active_proxy_btn', 'Or Use Active Proxy')} ({bestLocalProxy.client_hint} - {bestLocalProxy.port})</span>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 

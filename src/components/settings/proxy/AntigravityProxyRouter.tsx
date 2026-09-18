@@ -142,7 +142,15 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
                 url: proxyUrl.trim(),
                 syncShieldUpstream: true
             });
-            showMessage(msg, 'success');
+            const countMatch = msg.match(/(\d+)/);
+            const count = countMatch ? parseInt(countMatch[1], 10) : 1;
+            showMessage(
+                t('dashboard.health_pulse.proxy_applied_toast', {
+                    count,
+                    defaultValue: `Proxy configuration applied to ${count} Antigravity instance(s).`
+                }),
+                'success'
+            );
             await loadStatus();
             if (onProxyApplied) {
                 onProxyApplied(proxyUrl.trim());
@@ -161,7 +169,15 @@ export const AntigravityProxyRouter: React.FC<AntigravityProxyRouterProps> = ({ 
             const msg = await invoke<string>('remove_antigravity_proxy', { 
                 disableShieldUpstream: true 
             });
-            showMessage(msg, 'info');
+            const countMatch = msg.match(/(\d+)/);
+            const count = countMatch ? parseInt(countMatch[1], 10) : 1;
+            showMessage(
+                t('dashboard.health_pulse.proxy_removed_toast', {
+                    count,
+                    defaultValue: `Proxy settings removed from ${count} Antigravity instance(s).`
+                }),
+                'info'
+            );
             await loadStatus();
         } catch (err) {
             showMessage(`${t('common.error')}: ${err}`, 'error');
