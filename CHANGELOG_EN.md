@@ -8,22 +8,9 @@
         -   **Core Platform Stability**: Strengthened internal boundary validation and standardized runtime data handling.
         -   **Dependencies**: Routine maintenance and security updates across core dependencies.
     *   **v5.11.3 (2026-09-18)**:
-        -   **[Quota Resilience & Automated Account Rotation] Smart Alert Grouping & Auto-Switch**:
-            -   **Exhaustion Detection & Rotation**: Implemented automated account rotation when token quotas are exhausted, seamlessly switching to the next available healthy account.
-            -   **Grouped Notification System**: Added smart debounced alert grouping and native desktop OS notifications on quota exhaustion and automated failover.
-            -   **Account Verification State Management**: Resolved verification lockouts by automatically clearing `validation_blocked` state upon successful quota synchronization and adding manual recheck triggers.
-        -   **[Warmup Engine & Core Reliability] Dynamic Port Resolution & Startup Automation**:
-            -   **Dynamic Port Handshake**: Solved TCP connect errors during model warmup by discovering active server port from bridge telemetry before falling back to application config.
-            -   **Startup & Login Warmup**: Triggered automatic background warmup upon user login and application boot, with improved toolbar status visibility.
-        -   **[Network Architecture & Diagnostic Fallback] Multi-Port Detection & Background Tunneling**:
-            -   **Intelligent Proxy Detection**: Added multi-port diagnostic probing and active fallback mechanisms for resilient local proxy routing.
-            -   **Background Tunnel Management**: Enhanced background tunnel lifecycle management and connection health watchdog.
-        -   **[Auto-Updater & Multi-Platform Release] Launch Resilience & Platform Distribution**:
-            -   **Updater Process Launch**: Fixed installer launch execution and signature parsing during automated in-app updates.
-            -   **Multi-Platform Release Integrity**: Enhanced Unix artifact packaging pipeline to preserve complete release notes and synchronize platform manifest assets for Windows (`.exe`), macOS (`.dmg`), and Linux (`.AppImage`, `.deb`).
-        -   **[Internationalization & UI Refinement] Comprehensive Persian Translations & Direct Cloud Links**:
-            -   **Full Persian Localization**: Translated all account settings, quota protection strings, and verification alerts into Persian (`fa.json`).
-            -   **Google Cloud Console Route**: Updated verification action button to navigate directly to Google Cloud Console security checkpoint.
+        -   **Account & Session Management**: Automated session failover, improved state synchronization, and enhanced desktop alert grouping.
+        -   **Network & Engine Stability**: Refined service port discovery, background connection handling, and startup automation.
+        -   **Multi-Platform Release & UI**: Streamlined cross-platform deployment assets and expanded internationalization coverage.
     *   **v5.11.2 (2026-09-18)**:
         -   **[IDE Toolkit Integration & Bundled VSIX] Embedded Antigravity Toolkit v2.4.0**:
             -   **Embedded Extension Upgrade**: Embedded the latest `antigravity-toolkit-2.4.0.vsix` into application resources, offering single-click installation and CLI verification across Antigravity IDE, VS Code, Cursor, and Windsurf.
