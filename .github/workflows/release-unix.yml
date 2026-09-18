@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Release Tag to build and attach artifacts to (e.g. v5.11.2)'
+        description: 'Release Tag to build and attach artifacts to (e.g. v5.11.3)'
         required: false
-        default: 'v5.11.2'
+        default: ''
         type: string
 
 concurrency:
