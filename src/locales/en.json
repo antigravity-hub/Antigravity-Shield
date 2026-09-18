@@ -231,6 +231,7 @@
     "current_badge": "Current",
     "disabled": "Disabled",
     "disabled_tooltip": "Account is disabled (e.g. refresh_token revoked/expired). Reauthorize or update token to re-enable.",
+    "validation_blocked_switch_tooltip": "Account requires Google identity verification. Switching is disabled until resolved.",
     "proxy_disabled": "Proxy Disabled",
     "proxy_disabled_tooltip": "This account has proxy disabled manually, it will not handle API requests but remains usable in the app.",
     "enable_proxy": "Enable Proxy",

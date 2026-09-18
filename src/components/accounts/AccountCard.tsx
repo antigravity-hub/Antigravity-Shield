@@ -214,9 +214,11 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
     return (
         <div className={cn(
             "flex flex-col p-3 rounded-xl border transition-all hover:shadow-md",
-            isAnyActive
-                ? "bg-emerald-50/20 border-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-700/60 ring-1 ring-emerald-500/20"
-                : "bg-white dark:bg-base-100 border-gray-200 dark:border-base-300",
+            account.validation_blocked
+                ? "bg-amber-500/[0.04] dark:bg-amber-950/20 border-amber-500/50 dark:border-amber-600/50 ring-1 ring-amber-500/30 shadow-sm shadow-amber-500/5"
+                : isAnyActive
+                    ? "bg-emerald-50/20 border-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-700/60 ring-1 ring-emerald-500/20"
+                    : "bg-white dark:bg-base-100 border-gray-200 dark:border-base-300",
             (isRefreshing || isDisabled) && "opacity-70",
             isExhausted && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:opacity-85 transition-opacity"
         )}>

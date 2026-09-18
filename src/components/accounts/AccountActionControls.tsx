@@ -68,7 +68,23 @@ export function AccountActionControls({
     const isIdeActive = isTargetActiveForAccount(account.id, 'ide');
     const isCliActive = isTargetActiveForAccount(account.id, 'agy');
     const isAnyActive = isPlatformActive || isIdeActive || isCliActive || isCurrent;
-    const isSwitchDisabled = isSwitching || isDisabled || isExhausted;
+    const isSwitchDisabled = isSwitching || isDisabled || isExhausted || Boolean(account.validation_blocked);
+
+    const getSwitchTooltip = (target: 'platform' | 'ide' | 'agy', isActive: boolean) => {
+        if (account.validation_blocked) {
+            return t('accounts.validation_blocked_switch_tooltip', 'Account requires Google identity verification. Switching is disabled until resolved.');
+        }
+        if (isDisabled) return t('accounts.disabled_tooltip');
+        if (isExhausted) return t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.');
+        if (isActive) {
+            if (target === 'platform') return t('accounts.platform_active', 'Antigravity Platform (Active)');
+            if (target === 'ide') return t('accounts.ide_active', 'Antigravity IDE (Active)');
+            return t('accounts.cli_active', 'Antigravity CLI (Active)');
+        }
+        if (target === 'platform') return t('accounts.switch_to_platform', 'Switch to Antigravity Platform');
+        if (target === 'ide') return t('accounts.switch_to_ide', 'Switch to Antigravity IDE');
+        return t('accounts.switch_to_agy', 'Switch to Antigravity CLI (agy)');
+    };
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -120,11 +136,13 @@ export function AccountActionControls({
             {/* Primary Target Switch Hub */}
             <div className={cn(
                 "flex items-center rounded-xl p-0.5 border shadow-sm transition-all gap-0.5",
-                isAnyActive
-                    ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/50 shadow-emerald-500/20"
-                    : isExhausted
-                        ? "bg-slate-200/50 dark:bg-slate-800/40 border-slate-300/60 dark:border-slate-700/40 opacity-70"
-                        : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
+                account.validation_blocked
+                    ? "bg-amber-500/10 dark:bg-amber-500/15 border-amber-500/40 shadow-amber-500/10"
+                    : isAnyActive
+                        ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/50 shadow-emerald-500/20"
+                        : isExhausted
+                            ? "bg-slate-200/50 dark:bg-slate-800/40 border-slate-300/60 dark:border-slate-700/40 opacity-70"
+                            : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
             )}>
                 {/* Switch Target 1: Antigravity Platform */}
                 <button
@@ -139,7 +157,7 @@ export function AccountActionControls({
                     )}
                     onClick={() => onSwitch('platform')}
                     disabled={isSwitchDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : isExhausted ? t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.') : isPlatformActive ? t('accounts.platform_active', 'Antigravity Platform (Active)') : t('accounts.switch_to_platform', 'Switch to Antigravity Platform')}
+                    title={getSwitchTooltip('platform', isPlatformActive)}
                 >
                     {isPlatformActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
@@ -167,7 +185,7 @@ export function AccountActionControls({
                     )}
                     onClick={() => onSwitch('ide')}
                     disabled={isSwitchDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : isExhausted ? t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.') : isIdeActive ? t('accounts.ide_active', 'Antigravity IDE (Active)') : t('accounts.switch_to_ide', 'Switch to Antigravity IDE')}
+                    title={getSwitchTooltip('ide', isIdeActive)}
                 >
                     {isIdeActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
@@ -195,7 +213,7 @@ export function AccountActionControls({
                     )}
                     onClick={() => onSwitch('agy')}
                     disabled={isSwitchDisabled}
-                    title={isDisabled ? t('accounts.disabled_tooltip') : isExhausted ? t('accounts.exhausted_tooltip', 'Weekly and 5-hour quotas are exhausted. Waiting for cycle reset.') : isCliActive ? t('accounts.cli_active', 'Antigravity CLI (Active)') : t('accounts.switch_to_agy', 'Switch to Antigravity CLI (agy)')}
+                    title={getSwitchTooltip('agy', isCliActive)}
                 >
                     {isCliActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">

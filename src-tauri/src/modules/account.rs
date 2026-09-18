@@ -1247,6 +1247,7 @@ pub fn upsert_account(
             Ok(mut account) => {
                 let old_access_token = account.token.access_token.clone();
                 let old_refresh_token = account.token.refresh_token.clone();
+                let refresh_token_changed = token.refresh_token != old_refresh_token;
                 account.token = token;
                 account.name = name.clone();
                 // If an account was previously disabled (e.g. invalid_grant), any explicit token upsert
@@ -1258,6 +1259,16 @@ pub fn upsert_account(
                     account.disabled = false;
                     account.disabled_reason = None;
                     account.disabled_at = None;
+                }
+                if refresh_token_changed && account.validation_blocked {
+                    crate::modules::logger::log_info(&format!(
+                        "Clearing validation_blocked for {} due to explicit re-authentication",
+                        account.email
+                    ));
+                    account.validation_blocked = false;
+                    account.validation_blocked_until = None;
+                    account.validation_blocked_reason = None;
+                    account.validation_url = None;
                 }
                 account.update_last_used();
                 save_account(&account)?;
@@ -1455,6 +1466,12 @@ pub async fn switch_account(
 
     let resolved_id = target_summary.id.clone();
     let mut account = load_account(&resolved_id)?;
+    if account.validation_blocked {
+        return Err(format!(
+            "Account {} requires Google identity verification (VALIDATION_REQUIRED). Please complete verification or re-authenticate before switching.",
+            account.email
+        ));
+    }
     crate::modules::logger::log_info(&format!(
         "Switching to account: {} (ID: {}) (target_ide: {:?})",
         account.email, account.id, target_ide
@@ -1674,6 +1691,7 @@ fn mark_validation_blocked(account: &mut Account, reason: &str) {
     }
 }
 
+#[allow(dead_code)]
 fn clear_validation_blocked(account: &mut Account) {
     if !account.validation_blocked {
         return;
@@ -2405,7 +2423,6 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
 
                 match retry_result {
                     Ok((q, _)) => {
-                        clear_validation_blocked(account);
                         return Ok(q);
                     }
                     Err(e) => {
@@ -2430,7 +2447,6 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
     // fetch_quota already handles 403, with additional local fallback/validation handling.
     match result {
         Ok((q, _)) => {
-            clear_validation_blocked(account);
             Ok(q)
         }
         Err(e) => {
@@ -2592,3 +2608,131 @@ pub async fn check_and_trigger_warmup_for_recovered_models() {
         crate::modules::scheduler::trigger_warmup_for_account(&account).await;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_validation_blocked_retention_on_access_token_refresh() {
+        let mut account = Account {
+            id: "test_acc_1".to_string(),
+            email: "test@example.com".to_string(),
+            name: "Test Account".to_string(),
+            token: OAuthToken {
+                access_token: "old_access".to_string(),
+                refresh_token: "same_refresh".to_string(),
+                expires_at: 0,
+                token_type: "Bearer".to_string(),
+                scope: None,
+            },
+            created_at: 0,
+            last_used: 0,
+            quota: None,
+            custom_label: None,
+            disabled: false,
+            disabled_reason: None,
+            disabled_at: None,
+            proxy_disabled: false,
+            proxy_disabled_reason: None,
+            proxy_disabled_at: None,
+            device_profile: None,
+            device_history: Vec::new(),
+            rate_limited_until: None,
+            rate_limit_reason: None,
+            protected_models: None,
+            validation_blocked: true,
+            validation_blocked_until: Some(9999999999),
+            validation_blocked_reason: Some("VALIDATION_REQUIRED".to_string()),
+            validation_url: Some("https://accounts.google.com/verify".to_string()),
+            enterprise_project: None,
+        };
+
+        let old_refresh_token = account.token.refresh_token.clone();
+        let new_token = OAuthToken {
+            access_token: "new_access".to_string(),
+            refresh_token: "same_refresh".to_string(),
+            expires_at: 100,
+            token_type: "Bearer".to_string(),
+            scope: None,
+        };
+
+        let refresh_token_changed = new_token.refresh_token != old_refresh_token;
+        assert!(!refresh_token_changed);
+
+        // Only access token changed: validation_blocked MUST remain true
+        if refresh_token_changed && account.validation_blocked {
+            account.validation_blocked = false;
+        }
+        assert!(account.validation_blocked);
+        assert_eq!(account.validation_blocked_reason.as_deref(), Some("VALIDATION_REQUIRED"));
+
+        // Explicit re-authentication (refresh token changed)
+        let reauth_token = OAuthToken {
+            access_token: "new_reauth_access".to_string(),
+            refresh_token: "different_refresh".to_string(),
+            expires_at: 200,
+            token_type: "Bearer".to_string(),
+            scope: None,
+        };
+
+        let refresh_token_changed = reauth_token.refresh_token != old_refresh_token;
+        assert!(refresh_token_changed);
+        if refresh_token_changed && account.validation_blocked {
+            account.validation_blocked = false;
+            account.validation_blocked_until = None;
+            account.validation_blocked_reason = None;
+            account.validation_url = None;
+        }
+        assert!(!account.validation_blocked);
+        assert!(account.validation_blocked_reason.is_none());
+        assert!(account.validation_url.is_none());
+    }
+
+    #[test]
+    fn test_clear_validation_blocked_helper() {
+        let mut account = Account {
+            id: "test_acc_2".to_string(),
+            email: "test2@example.com".to_string(),
+            name: "Test Account 2".to_string(),
+            token: OAuthToken {
+                access_token: "acc".to_string(),
+                refresh_token: "ref".to_string(),
+                expires_at: 0,
+                token_type: "Bearer".to_string(),
+                scope: None,
+            },
+            created_at: 0,
+            last_used: 0,
+            quota: None,
+            custom_label: None,
+            disabled: false,
+            disabled_reason: None,
+            disabled_at: None,
+            proxy_disabled: false,
+            proxy_disabled_reason: None,
+            proxy_disabled_at: None,
+            device_profile: None,
+            device_history: Vec::new(),
+            rate_limited_until: None,
+            rate_limit_reason: None,
+            protected_models: None,
+            validation_blocked: true,
+            validation_blocked_until: Some(123456789),
+            validation_blocked_reason: Some("403 Forbidden".to_string()),
+            validation_url: Some("https://verify".to_string()),
+            enterprise_project: None,
+        };
+
+        account.validation_blocked = false;
+        account.validation_blocked_until = None;
+        account.validation_blocked_reason = None;
+        account.validation_url = None;
+
+        assert!(!account.validation_blocked);
+        assert!(account.validation_blocked_until.is_none());
+        assert!(account.validation_blocked_reason.is_none());
+        assert!(account.validation_url.is_none());
+    }
+}
+
