@@ -27,19 +27,19 @@ pub struct WarpStatus {
     pub error: Option<String>,
 }
 
+use once_cell::sync::Lazy;
+
 pub struct WarpManager {
     is_downloading: AtomicBool,
     download_progress: AtomicU8,
     last_error: RwLock<Option<String>>,
 }
 
-lazy_static::lazy_static! {
-    pub static ref WARP_MANAGER: WarpManager = WarpManager {
-        is_downloading: AtomicBool::new(false),
-        download_progress: AtomicU8::new(0),
-        last_error: RwLock::new(None),
-    };
-}
+pub static WARP_MANAGER: Lazy<WarpManager> = Lazy::new(|| WarpManager {
+    is_downloading: AtomicBool::new(false),
+    download_progress: AtomicU8::new(0),
+    last_error: RwLock::new(None),
+});
 
 /// دریافت مسیر فایل‌های اجرایی رسمی Cloudflare WARP در ویندوز
 pub fn get_warp_executable_paths() -> (Option<PathBuf>, Option<PathBuf>) {

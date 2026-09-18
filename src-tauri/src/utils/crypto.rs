@@ -7,16 +7,9 @@ use rand::rngs::OsRng;
 use serde::{Deserialize, Deserializer, Serializer};
 use sha2::Digest;
 
+const LEGACY_FIXED_NONCE: &[u8; 12] = b"antigravsalt";
 const ENCRYPTED_PREFIX: &str = "ag_enc_";
 const ENCRYPTED_V2_PREFIX: &str = "ag_enc_v2_";
-
-fn get_legacy_compat_nonce() -> Nonce<Aes256Gcm> {
-    // Legacy migration compatibility: decode legacy salt without declaring static cryptographic constants
-    let decoded = general_purpose::STANDARD
-        .decode("YW50aWdyYXZzYWx0")
-        .unwrap_or_default();
-    *Nonce::from_slice(&decoded)
-}
 
 fn get_encryption_key() -> [u8; 32] {
     let device_id = machine_uid::get().unwrap_or_else(|_| {
@@ -88,14 +81,14 @@ pub fn encrypt_string(password: &str) -> Result<String, String> {
 fn decrypt_legacy(encrypted_base64: &str) -> Result<String, String> {
     let key = get_encryption_key();
     let cipher = Aes256Gcm::new(&key.into());
-    let nonce = get_legacy_compat_nonce();
+    let nonce = Nonce::from_slice(LEGACY_FIXED_NONCE);
 
     let ciphertext = general_purpose::STANDARD
         .decode(encrypted_base64)
         .map_err(|e| format!("Base64 decode failed: {}", e))?;
 
     let plaintext = cipher
-        .decrypt(&nonce, ciphertext.as_ref())
+        .decrypt(nonce, ciphertext.as_ref())
         .map_err(|e| format!("Decryption failed: {}", e))?;
 
     String::from_utf8(plaintext).map_err(|e| format!("UTF-8 conversion failed: {}", e))
@@ -168,8 +161,8 @@ mod tests {
         let sample_payload = "sample_legacy_val";
         let key = get_encryption_key();
         let cipher = Aes256Gcm::new(&key.into());
-        let nonce = get_legacy_compat_nonce();
-        let ciphertext = cipher.encrypt(&nonce, sample_payload.as_bytes()).unwrap();
+        let nonce = Nonce::from_slice(LEGACY_FIXED_NONCE);
+        let ciphertext = cipher.encrypt(nonce, sample_payload.as_bytes()).unwrap();
         let legacy_encrypted = general_purpose::STANDARD.encode(ciphertext);
 
         assert!(!legacy_encrypted.starts_with(ENCRYPTED_PREFIX));
