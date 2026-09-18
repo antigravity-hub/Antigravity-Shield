@@ -1,5 +1,5 @@
 
-import { AlertTriangle, Clock, Lock } from 'lucide-react';
+import { AlertTriangle, Check, Clock, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 import { getQuotaColor, formatTimeRemaining, getTimeRemainingColor } from '../../utils/format';
@@ -102,7 +102,12 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
 
                 {/* Reset Time */}
                 <div className="w-[58px] flex justify-start shrink-0">
-                    {resetTime ? (
+                    {percentage >= 100 ? (
+                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold scale-90 flex items-center gap-0.5">
+                            <Check className="w-2.5 h-2.5 shrink-0 text-emerald-500" strokeWidth={2.5} />
+                            Ready
+                        </span>
+                    ) : resetTime ? (
                         <span className={cn("flex items-center gap-0.5 font-medium transition-colors truncate", getTimeColorClass(resetTime))}>
                             <Clock className="w-2.5 h-2.5 shrink-0" />
                             {formatTimeRemaining(resetTime)}

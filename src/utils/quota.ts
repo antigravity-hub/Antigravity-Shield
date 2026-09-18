@@ -128,6 +128,40 @@ export function getAccountCycleReset(
         };
     }
 
+    // If 5h quota is 100% full (unused), it is fully ready!
+    // Google returns a sliding "now + 5h" dummy reset_time for unused accounts which causes misleading countdowns.
+    if (windowType === 'five_hour') {
+        const bucketPct = getBucketPercentage(account.quota?.quota_groups, category, '5h');
+        let isFullyFull = false;
+        if (bucketPct !== null && bucketPct >= 100) {
+            isFullyFull = true;
+        } else if (bucketPct === null && account.quota?.models) {
+            const targetModels = account.quota.models.filter(m => {
+                const mName = m.name.toLowerCase();
+                return category === 'claude'
+                    ? (mName.startsWith('claude') || mName.startsWith('gpt'))
+                    : (mName.startsWith('gemini') || !mName.startsWith('claude'));
+            });
+            if (targetModels.length > 0 && targetModels.every(m => (m.percentage ?? 0) >= 100)) {
+                isFullyFull = true;
+            }
+        }
+
+        if (isFullyFull) {
+            return {
+                resetTime,
+                totalHours: 0,
+                totalMinutes: 0,
+                exactDaysRemaining: 0,
+                daysRemaining: 0,
+                hoursInDay: 0,
+                minutesInHour: 0,
+                isReady: true,
+                isAvailable: true,
+            };
+        }
+    }
+
     const diffMs = new Date(resetTime).getTime() - now;
     if (diffMs <= 0) {
         return {
