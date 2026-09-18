@@ -202,6 +202,7 @@
       "warp_enable_proxy_mode_hint": "WARP is running, but port 40000 is closed. Open WARP app -> Settings (Gear) -> Preferences -> Connection -> select \"Proxy Mode\" (SOCKS5).",
       "warp_port_not_listening_toast": "Warning: Port 40000 is not listening. Ensure WARP is running in Proxy Mode.",
       "use_active_proxy_btn": "Or Use Active Proxy",
+      "apply_vpn_proxy": "Apply {{name}} Proxy (Port {{port}})",
       "egress_country": "Egress: {{country}}"
     },
     "verification_required_title": "Accounts Requiring Google Verification (Verification Required)",

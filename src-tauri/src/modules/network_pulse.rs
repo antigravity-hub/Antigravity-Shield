@@ -290,15 +290,43 @@ struct ProbeOutput {
 }
 
 async fn execute_probe(client: rquest::Client) -> ProbeOutput {
-    // ۱. تست اینترنت عمومی با اتصال فوق‌سریع 204
+    // ۱. تست اینترنت عمومی با اتصال چندگانه و مقاوم (Microsoft NCSI + Cloudflare + Firefox)
     let internet_future = {
         let c = client.clone();
         async move {
-            c.get("https://cp.cloudflare.com/generate_204")
-                .send()
-                .await
-                .map(|r| r.status().is_success() || r.status().as_u16() == 204)
-                .unwrap_or(false)
+            let cf = {
+                let cl = c.clone();
+                async move {
+                    cl.get("https://cp.cloudflare.com/generate_204")
+                        .send()
+                        .await
+                        .map(|r| r.status().is_success() || r.status().as_u16() == 204)
+                        .unwrap_or(false)
+                }
+            };
+            let ms = {
+                let cl = c.clone();
+                async move {
+                    cl.get("http://www.msftconnecttest.com/connecttest.txt")
+                        .send()
+                        .await
+                        .map(|r| r.status().is_success())
+                        .unwrap_or(false)
+                }
+            };
+            let ff = {
+                let cl = c.clone();
+                async move {
+                    cl.get("http://detectportal.firefox.com/success.txt")
+                        .send()
+                        .await
+                        .map(|r| r.status().is_success())
+                        .unwrap_or(false)
+                }
+            };
+
+            let (r_cf, r_ms, r_ff) = tokio::join!(cf, ms, ff);
+            r_cf || r_ms || r_ff
         }
     };
 
