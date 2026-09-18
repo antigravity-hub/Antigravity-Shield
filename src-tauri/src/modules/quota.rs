@@ -716,6 +716,26 @@ pub async fn get_valid_token_for_warmup(
 }
 
 /// Send warmup request via proxy internal API
+/// Read the actual running server port from bridge_info.json.
+/// The server writes this file after successfully binding a port,
+/// which may differ from config.proxy.port if the configured port was occupied.
+fn get_actual_server_port() -> u16 {
+    if let Ok(data_dir) = crate::modules::account::get_data_dir() {
+        let bridge_path = data_dir.join("bridge_info.json");
+        if let Ok(content) = std::fs::read_to_string(&bridge_path) {
+            if let Ok(json) = serde_json::from_str::<serde_json::Value>(&content) {
+                if let Some(port) = json.get("port").and_then(|v| v.as_u64()) {
+                    return port as u16;
+                }
+            }
+        }
+    }
+    // Fallback to config, then hardcoded default
+    config::load_app_config()
+        .map(|c| c.proxy.port)
+        .unwrap_or(8045)
+}
+
 pub async fn warmup_model_directly(
     access_token: &str,
     model_name: &str,
@@ -724,10 +744,10 @@ pub async fn warmup_model_directly(
     percentage: i32,
     _account_id: Option<&str>,
 ) -> bool {
-    // Get currently configured proxy port
-    let port = config::load_app_config()
-        .map(|c| c.proxy.port)
-        .unwrap_or(8045);
+    // Get the actual running port from bridge_info.json (written by the server
+    // after successful bind, which may differ from config if port fallback occurred).
+    // Fall back to config.proxy.port, then to 8045 as last resort.
+    let port = get_actual_server_port();
 
     let warmup_url = format!("http://127.0.0.1:{}/internal/warmup", port);
     let body = json!({
