@@ -1689,8 +1689,12 @@
     "one_click_apply": "اعمال یک‌کلیکه پچ"
   },
   "notifications": {
-    "quota_critical_alert": "هشدار کاهش سهمیه: سهمیه مدل‌های {{model}} روی حساب {{email}} به {{percentage}}٪ رسیده است.",
+    "quota_critical_alert": "هشدار کاهش سهمیه: سهمیه {{model}} در حساب {{email}} به {{percentage}}٪ رسیده است.",
     "quota_alert_title": "آنتی‌گراویتی شیلد - هشدار سهمیه",
+    "family_gemini": "جمینای",
+    "family_claude": "کلود",
+    "and_separator": " و ",
+    "other_models": "سایر مدل‌ها",
     "auto_switch_title": "آنتی‌گراویتی شیلد - سوئیچ خودکار اکانت",
     "quota_exhausted_title": "آنتی‌گراویتی شیلد - اتمام سهمیه",
     "auto_switch_claude_success": "⚡ سوئیچ خودکار: سهمیه کلود در {{from}} تمام شد. به صورت خودکار به {{to}} (دارای {{score}}٪ سهمیه کلود) تغییر یافت.",

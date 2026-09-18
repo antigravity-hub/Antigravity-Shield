@@ -12,47 +12,48 @@ const lastAutoSwitchMap = new Map<string, number>();
 const ALERT_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes cooldown
 const AUTO_SWITCH_COOLDOWN_MS = 60 * 1000; // 1 minute cooldown per account
 
-function isClaudeModel(name: string): boolean {
-    const lower = name.toLowerCase();
-    return lower.includes('claude') || lower.includes('opus') || lower.includes('sonnet') || lower.includes('haiku');
+function isClaudeModel(name: string, displayName?: string): boolean {
+    const lower = `${name || ''} ${displayName || ''}`.toLowerCase();
+    return lower.includes('claude') || lower.includes('opus') || lower.includes('sonnet') || lower.includes('haiku') || lower.includes('anthropic');
 }
 
-function isGeminiModel(name: string): boolean {
-    const lower = name.toLowerCase();
-    return lower.includes('gemini');
+function isGeminiModel(name: string, displayName?: string): boolean {
+    const lower = `${name || ''} ${displayName || ''}`.toLowerCase();
+    return lower.includes('gemini') || lower.includes('flash') || lower.includes('pro') || lower.includes('ultra') || lower.includes('bison') || lower.includes('gemma');
 }
 
-function formatGroupedModelNames(models: { name: string; display_name?: string }[]): string {
-    const hasClaude = models.some(m => isClaudeModel(m.name));
-    const hasGemini = models.some(m => isGeminiModel(m.name));
+function formatGroupedModelNames(models: { name: string; display_name?: string }[], t?: any): string {
+    const hasClaude = models.some(m => isClaudeModel(m.name, m.display_name));
+    const hasGemini = models.some(m => isGeminiModel(m.name, m.display_name));
 
     const familyLabels: string[] = [];
 
-    if (hasClaude) {
-        const claudeModels = models.filter(m => isClaudeModel(m.name));
-        if (claudeModels.length > 1) {
-            familyLabels.push('Claude');
-        } else {
-            familyLabels.push(claudeModels[0].display_name || 'Claude');
-        }
-    }
+    const geminiLabel = t ? t('notifications.family_gemini', { defaultValue: 'Gemini' }) : 'Gemini';
+    const claudeLabel = t ? t('notifications.family_claude', { defaultValue: 'Claude' }) : 'Claude';
+    const andSeparator = t ? t('notifications.and_separator', { defaultValue: ' & ' }) : ' & ';
 
+    // Always group all Gemini variants cleanly as "Gemini" / "جمینای", never listing 10-20 models individually
     if (hasGemini) {
-        const geminiModels = models.filter(m => isGeminiModel(m.name));
-        if (geminiModels.length > 1) {
-            familyLabels.push('Gemini');
+        familyLabels.push(geminiLabel);
+    }
+
+    // Always group all Claude variants cleanly as "Claude" / "کلود"
+    if (hasClaude) {
+        familyLabels.push(claudeLabel);
+    }
+
+    // Other third-party models
+    const otherModels = models.filter(m => !isClaudeModel(m.name, m.display_name) && !isGeminiModel(m.name, m.display_name));
+    if (otherModels.length > 0) {
+        const uniqueOther = Array.from(new Set(otherModels.map(om => om.display_name || om.name)));
+        if (uniqueOther.length > 1) {
+            familyLabels.push(t ? t('notifications.other_models', { defaultValue: 'Other models' }) : 'Other models');
         } else {
-            familyLabels.push(geminiModels[0].display_name || 'Gemini');
+            familyLabels.push(...uniqueOther);
         }
     }
 
-    // Other models (e.g. GPT-OSS)
-    const otherModels = models.filter(m => !isClaudeModel(m.name) && !isGeminiModel(m.name));
-    for (const om of otherModels) {
-        familyLabels.push(om.display_name || om.name);
-    }
-
-    return familyLabels.join(' & ') || 'Model';
+    return familyLabels.join(andSeparator) || geminiLabel;
 }
 
 export function useQuotaAlertWatcher() {
@@ -177,12 +178,12 @@ export function useQuotaAlertWatcher() {
             if (shouldAlert) {
                 lastAlertMap.set(accountAlertKey, now);
 
-                const combinedModelName = formatGroupedModelNames(criticalModels);
+                const combinedModelName = formatGroupedModelNames(criticalModels, t);
                 const alertTitle = t('notifications.quota_alert_title', {
                     defaultValue: 'Antigravity Shield - Low Quota Alert',
                 });
                 const alertMsg = t('notifications.quota_critical_alert', {
-                    defaultValue: `⚠️ Critical Quota Alert: ${combinedModelName} is at ${minPercentage}% on account ${targetAccount.email}. Switch accounts or wait for quota reset.`,
+                    defaultValue: `⚠️ Critical Quota Alert: ${combinedModelName} quota is at ${minPercentage}% on account ${targetAccount.email}. Switch accounts or wait for quota reset.`,
                     model: combinedModelName,
                     email: targetAccount.email,
                     percentage: minPercentage,
@@ -193,8 +194,8 @@ export function useQuotaAlertWatcher() {
             }
 
             // 2. Intelligent Auto-Switching on Quota Depletion (0%)
-            const claudeDepleted = weeklyClaudeDepleted || criticalModels.some(m => isClaudeModel(m.name) && m.percentage === 0);
-            const geminiDepleted = weeklyGeminiDepleted || criticalModels.some(m => isGeminiModel(m.name) && m.percentage === 0);
+            const claudeDepleted = weeklyClaudeDepleted || criticalModels.some(m => isClaudeModel(m.name, m.display_name) && m.percentage === 0);
+            const geminiDepleted = weeklyGeminiDepleted || criticalModels.some(m => isGeminiModel(m.name, m.display_name) && m.percentage === 0);
 
             if (autoSwitchEnabled && (claudeDepleted || geminiDepleted) && !isAutoSwitchingRef.current) {
                 const lastSwitch = lastAutoSwitchMap.get(targetAccount.id) || 0;
