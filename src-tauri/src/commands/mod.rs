@@ -70,7 +70,7 @@ pub async fn add_account(
     let mut account = service.add_account(&refresh_token).await?;
 
     // 自动刷新配额
-    let _ = internal_refresh_account_quota(&app, &mut account).await;
+    let _ = internal_refresh_account_quota(Some(&app), &mut account).await;
 
     // 检查并自动预热（若处于100%恢复状态）
     let account_for_warmup = account.clone();
@@ -504,7 +504,7 @@ pub async fn start_oauth_login(
     let app_handle_quota = app_handle.clone();
     let mut account_quota = account.clone();
     tokio::spawn(async move {
-        let _ = internal_refresh_account_quota(&app_handle_quota, &mut account_quota).await;
+        let _ = internal_refresh_account_quota(Some(&app_handle_quota), &mut account_quota).await;
     });
 
     // Reload token pool
@@ -530,7 +530,7 @@ pub async fn complete_oauth_login(app_handle: tauri::AppHandle) -> Result<Accoun
     let app_handle_quota = app_handle.clone();
     let mut account_quota = account.clone();
     tokio::spawn(async move {
-        let _ = internal_refresh_account_quota(&app_handle_quota, &mut account_quota).await;
+        let _ = internal_refresh_account_quota(Some(&app_handle_quota), &mut account_quota).await;
         crate::modules::scheduler::trigger_warmup_for_account(&account_quota).await;
     });
 
@@ -595,7 +595,7 @@ pub async fn import_v1_accounts(
 
     // 对导入的账号尝试刷新一波
     for mut account in accounts.clone() {
-        let _ = internal_refresh_account_quota(&app, &mut account).await;
+        let _ = internal_refresh_account_quota(Some(&app), &mut account).await;
     }
 
     // Reload token pool
@@ -622,7 +622,7 @@ pub async fn import_from_db(
     }
 
     for mut account in imported_accounts.clone() {
-        let _ = internal_refresh_account_quota(&app, &mut account).await;
+        let _ = internal_refresh_account_quota(Some(&app), &mut account).await;
     }
 
     crate::modules::tray::update_tray_menus(&app);

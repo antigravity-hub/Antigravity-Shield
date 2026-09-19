@@ -212,7 +212,7 @@ pub fn start_scheduler(
 
                     let _ = crate::commands::refresh_all_quotas_internal(
                         &proxy_state_for_daemon,
-                        app_handle_for_daemon.as_ref(),
+                        app_handle_for_daemon.clone(),
                     )
                     .await;
                 }
