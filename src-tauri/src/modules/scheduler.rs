@@ -232,6 +232,98 @@ pub fn start_scheduler(
             }
         }
     });
+
+    // 4. Spawn Active CLI Token Proactive Keep-Alive Daemon
+    tauri::async_runtime::spawn(async move {
+        logger::log_info("[Scheduler] Active CLI Session Keep-Alive Daemon started.");
+        // Delay slightly on startup (12s) to allow proxy and network init
+        time::sleep(Duration::from_secs(12)).await;
+
+        loop {
+            maintain_active_cli_session().await;
+            // Check every 2 minutes (120 seconds)
+            time::sleep(Duration::from_secs(120)).await;
+        }
+    });
+}
+
+/// Proactively monitors and refreshes the token of the currently active CLI account
+/// to ensure the system keyring and credentials files never carry an expired access token.
+/// This prevents Antigravity CLI (`agy`) from encountering network timeouts during internal token refreshes.
+pub async fn maintain_active_cli_session() {
+    let active_targets = match crate::modules::account::get_active_target_accounts() {
+        Ok(t) => t,
+        Err(e) => {
+            logger::log_warn(&format!("[Scheduler] CLI Keep-Alive failed to resolve active targets: {}", e));
+            return;
+        }
+    };
+
+    let target_account_id = active_targets.agy.or_else(|| {
+        crate::modules::account::get_current_account_id().ok().flatten()
+    });
+
+    let Some(account_id) = target_account_id else {
+        return;
+    };
+
+    let mut account = match crate::modules::account::load_account(&account_id) {
+        Ok(acc) => acc,
+        Err(_) => return,
+    };
+
+    if account.validation_blocked {
+        return;
+    }
+
+    let now = chrono::Utc::now().timestamp();
+    // Google tokens expire in 3600s. If within 15 minutes (900s) of expiry or already expired:
+    let needs_refresh = account.token.expiry_timestamp <= now + 900;
+
+    if needs_refresh {
+        let remaining_secs = account.token.expiry_timestamp - now;
+        logger::log_info(&format!(
+            "[Scheduler] Active CLI token for {} expiring soon (validity: {}s). Proactively refreshing...",
+            account.email, remaining_secs
+        ));
+
+        match crate::modules::oauth::ensure_fresh_token(&account.token, Some(&account.id)).await {
+            Ok(fresh_token) => {
+                let updated = fresh_token.access_token != account.token.access_token
+                    || fresh_token.expiry_timestamp != account.token.expiry_timestamp;
+
+                if updated {
+                    account.token = fresh_token;
+                    if let Err(e) = crate::modules::account::save_account(&account) {
+                        logger::log_warn(&format!(
+                            "[Scheduler] Failed to save proactively refreshed account {}: {}",
+                            account.email, e
+                        ));
+                    }
+
+                    if let Err(e) = crate::modules::integration::write_to_system_keyring(&account) {
+                        logger::log_warn(&format!(
+                            "[Scheduler] Failed to sync refreshed token to system keyring for {}: {}",
+                            account.email, e
+                        ));
+                    }
+
+                    let _ = crate::modules::integration::write_to_file_credentials(&account);
+
+                    logger::log_info(&format!(
+                        "[Scheduler] Proactive CLI token refresh succeeded for {}. Keyring and credentials updated.",
+                        account.email
+                    ));
+                }
+            }
+            Err(e) => {
+                logger::log_warn(&format!(
+                    "[Scheduler] Proactive CLI token refresh failed for {}: {}",
+                    account.email, e
+                ));
+            }
+        }
+    }
 }
 
 /// Execute a single check-and-warmup cycle across all accounts
