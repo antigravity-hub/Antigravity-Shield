@@ -419,8 +419,11 @@ async fn check_static_url(url: &str, source_name: &str) -> Result<UpdateInfo, St
 
 /// Compare two semantic versions (e.g., "3.3.30" vs "3.3.29")
 fn compare_versions(latest: &str, current: &str) -> bool {
-    let parse_version =
-        |v: &str| -> Vec<u32> { v.split('.').filter_map(|s| s.parse::<u32>().ok()).collect() };
+    let parse_version = |v: &str| -> Vec<u32> {
+        let clean = v.trim_start_matches('v');
+        let base = clean.split('-').next().unwrap_or(clean);
+        base.split('.').filter_map(|s| s.parse::<u32>().ok()).collect()
+    };
 
     let latest_parts = parse_version(latest);
     let current_parts = parse_version(current);
@@ -938,6 +941,9 @@ mod tests {
         assert!(compare_versions("4.0.3", "3.3.35"));
         assert!(!compare_versions("3.3.34", "3.3.35"));
         assert!(!compare_versions("3.3.35", "3.3.35"));
+        assert!(compare_versions("v5.11.6-pre.1", "5.11.5"));
+        assert!(compare_versions("5.11.6-rc.1", "5.11.5"));
+        assert!(!compare_versions("5.11.5-pre.1", "5.11.5"));
     }
 
     #[test]
