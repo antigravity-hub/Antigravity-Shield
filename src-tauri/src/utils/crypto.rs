@@ -18,20 +18,13 @@ fn get_encryption_key() -> [u8; 32] {
         }
     }
 
-    // Dynamic runtime fallback without hard-coded string literals
-    let mut fallback_bytes = [0u8; 32];
-    let process_entropy = std::process::id().to_le_bytes();
-    let time_entropy = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map(|d| d.as_nanos().to_le_bytes())
-        .unwrap_or([0u8; 16]);
-
+    // Dynamic runtime fallback without hard-coded literals
     let mut hasher = sha2::Sha256::new();
-    hasher.update(process_entropy);
-    hasher.update(time_entropy);
-    let hash = hasher.finalize();
-    fallback_bytes.copy_from_slice(&hash);
-    fallback_bytes
+    hasher.update(std::process::id().to_le_bytes());
+    if let Ok(duration) = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH) {
+        hasher.update(duration.as_nanos().to_le_bytes());
+    }
+    hasher.finalize().into()
 }
 
 pub fn serialize_password<S>(secret: &str, serializer: S) -> Result<S::Ok, S::Error>
