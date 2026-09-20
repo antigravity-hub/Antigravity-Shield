@@ -380,6 +380,10 @@ impl TokenManager {
             .collect()
     }
 
+    pub fn enabled_account_count(&self) -> usize {
+        self.tokens.len()
+    }
+
     fn sync_image_scheduler_accounts(&self) {
         let scheduler = self
             .image_scheduler
@@ -2862,18 +2866,20 @@ impl TokenManager {
     pub fn clear_all_rate_limits(&self) {
         self.rate_limit_tracker.clear_all();
         let accounts_dir = self.data_dir.join("accounts");
-        let accounts_dir_str = accounts_dir.to_string_lossy();
-        if accounts_dir_str.contains("..") {
+        let Ok(canonical_dir) = std::fs::canonicalize(&accounts_dir) else {
             return;
-        }
-        if let Ok(entries) = std::fs::read_dir(&accounts_dir) {
+        };
+        if let Ok(entries) = std::fs::read_dir(&canonical_dir) {
             for entry in entries.flatten() {
-                if entry.path().extension().and_then(|value| value.to_str()) == Some("json") {
-                    if let Some(account_id) =
-                        entry.path().file_stem().and_then(|value| value.to_str())
-                    {
-                        if !account_id.contains("..") {
-                            self.clear_all_persisted_live_limits(account_id);
+                let path = entry.path();
+                if path.extension().and_then(|value| value.to_str()) == Some("json") {
+                    if let Some(account_id) = path.file_stem().and_then(|value| value.to_str()) {
+                        let trimmed = account_id.trim();
+                        if !trimmed.is_empty()
+                            && trimmed.len() <= 128
+                            && trimmed.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+                        {
+                            self.clear_all_persisted_live_limits(trimmed);
                         }
                     }
                 }
