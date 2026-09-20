@@ -23,8 +23,13 @@ import { isTauri } from './utils/env';
 import { request as invoke } from './utils/request';
 import { AdminAuthGuard } from './components/common/AdminAuthGuard';
 import { useQuotaAlertWatcher } from './hooks/useQuotaAlertWatcher';
+import NotificationOverlay from './components/overlay/NotificationOverlay';
 
 const router = createHashRouter([
+  {
+    path: '/overlay-notification',
+    element: <NotificationOverlay />,
+  },
   {
     path: '/',
     element: <Layout />,

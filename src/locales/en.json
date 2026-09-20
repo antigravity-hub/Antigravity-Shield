@@ -544,6 +544,19 @@
       "auto_switch_on_quota": "Auto-Switch on Quota Depletion",
       "auto_switch_on_quota_desc": "Automatically switch to the next account with available quota when active account quota runs out (Claude -> Next Claude -> Gemini fallback)."
     },
+    "notifications": {
+      "overlay_title": "Floating HUD & Countdown Notification",
+      "overlay_desc": "Display an interactive always-on-top window over all apps with Switch Now, Snooze 5m, and Cancel actions",
+      "position": "Screen Position",
+      "pos_top_right": "Top Right (Recommended)",
+      "pos_bottom_right": "Bottom Right",
+      "pos_top_left": "Top Left",
+      "pos_bottom_left": "Bottom Left",
+      "countdown": "Countdown Duration",
+      "test_btn": "Test Floating HUD",
+      "test_title": "Antigravity Shield - Live Test",
+      "test_msg": "This is a sample HUD notification demonstrating layout and actions."
+    },
     "warmup": {
       "title": "Auto-Warm (100% Quota Recovery Warmup)",
       "desc": "Automatically sends a lightweight probe to activate 100% refreshed accounts so rolling quota windows start immediately.",

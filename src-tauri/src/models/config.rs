@@ -34,10 +34,24 @@ pub struct AppConfig {
     pub cloudflared: CloudflaredConfig, // [NEW] Cloudflared configuration
     #[serde(default = "default_true")]
     pub auto_switch_on_quota: bool,     // Automatically switch to next account on quota exhaustion
+    #[serde(default = "default_true")]
+    pub overlay_notifications_enabled: bool, // Display floating interactive HUD notification
+    #[serde(default = "default_overlay_position")]
+    pub overlay_position: String,       // "top-right", "bottom-right", "top-left", "bottom-left"
+    #[serde(default = "default_countdown_secs")]
+    pub auto_switch_countdown_secs: u32, // Countdown seconds before auto-switch
 }
 
 fn default_true() -> bool {
     true
+}
+
+fn default_overlay_position() -> String {
+    "top-right".to_string()
+}
+
+fn default_countdown_secs() -> u32 {
+    30
 }
 
 /// Scheduled warmup configuration
@@ -199,6 +213,9 @@ impl AppConfig {
             hidden_menu_items: Vec::new(),
             cloudflared: CloudflaredConfig::default(),
             auto_switch_on_quota: true,
+            overlay_notifications_enabled: true,
+            overlay_position: "top-right".to_string(),
+            auto_switch_countdown_secs: 30,
         }
     }
 }

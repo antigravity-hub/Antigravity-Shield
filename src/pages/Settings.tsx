@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw, Zap } from 'lucide-react';
+import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw, Zap, Bell } from 'lucide-react';
 import { request as invoke } from '../utils/request';
 import { open } from '@tauri-apps/plugin-dialog';
 import { useConfigStore } from '../stores/useConfigStore';
@@ -11,6 +11,7 @@ import SmartWarmup from '../components/settings/SmartWarmup';
 import PinnedQuotaModels from '../components/settings/PinnedQuotaModels';
 import { useDebugConsole } from '../stores/useDebugConsole';
 import { useSupportModalStore } from '../stores/useSupportModalStore';
+import { showFloatingOverlay } from '../services/overlayNotificationService';
 
 import { useTranslation } from 'react-i18next';
 import { isTauri } from '../utils/env';
@@ -1009,6 +1010,111 @@ function Settings() {
                                         <div className="w-11 h-6 bg-gray-200 dark:bg-base-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 shadow-inner"></div>
                                     </label>
                                 </div>
+                            </div>
+
+                            {/* اعلان و شمارش معکوس شناور (Floating HUD Notification) */}
+                            <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-cyan-200 dark:hover:border-cyan-900/50 transition-all duration-300 shadow-sm space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-500 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
+                                            <Bell size={20} />
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-gray-900 dark:text-gray-100">{t('settings.notifications.overlay_title', { defaultValue: 'Floating HUD Notification' })}</div>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.notifications.overlay_desc', { defaultValue: 'Display interactive always-on-top countdown window over all apps with Switch Now, Snooze, and Cancel actions' })}</p>
+                                        </div>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={formData.overlay_notifications_enabled ?? true}
+                                            onChange={async (e) => {
+                                                const enabled = e.target.checked;
+                                                const newConfig = { ...formData, overlay_notifications_enabled: enabled };
+                                                setFormData(newConfig);
+                                                try {
+                                                    await saveConfig(newConfig);
+                                                } catch (error) {
+                                                    showToast(`${t('common.error')}: ${error}`, 'error');
+                                                }
+                                            }}
+                                        />
+                                        <div className="w-11 h-6 bg-gray-200 dark:bg-base-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500 shadow-inner"></div>
+                                    </label>
+                                </div>
+
+                                {(formData.overlay_notifications_enabled ?? true) && (
+                                    <div className="pt-3 border-t border-gray-100 dark:border-base-200 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <div>
+                                            <label className="text-xs font-semibold text-gray-600 dark:text-gray-300 block mb-1">
+                                                {t('settings.notifications.position', { defaultValue: 'Screen Position' })}
+                                            </label>
+                                            <select
+                                                value={formData.overlay_position || 'top-right'}
+                                                onChange={async (e) => {
+                                                    const pos = e.target.value as any;
+                                                    const newConfig = { ...formData, overlay_position: pos };
+                                                    setFormData(newConfig);
+                                                    await saveConfig(newConfig);
+                                                }}
+                                                className="w-full text-xs rounded-lg border border-gray-200 dark:border-base-300 bg-gray-50 dark:bg-base-200 p-2 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                                            >
+                                                <option value="top-right">{t('settings.notifications.pos_top_right', { defaultValue: 'Top Right (Recommended)' })}</option>
+                                                <option value="bottom-right">{t('settings.notifications.pos_bottom_right', { defaultValue: 'Bottom Right' })}</option>
+                                                <option value="top-left">{t('settings.notifications.pos_top_left', { defaultValue: 'Top Left' })}</option>
+                                                <option value="bottom-left">{t('settings.notifications.pos_bottom_left', { defaultValue: 'Bottom Left' })}</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-xs font-semibold text-gray-600 dark:text-gray-300 block mb-1">
+                                                {t('settings.notifications.countdown', { defaultValue: 'Countdown Duration' })}
+                                            </label>
+                                            <select
+                                                value={formData.auto_switch_countdown_secs || 30}
+                                                onChange={async (e) => {
+                                                    const secs = parseInt(e.target.value, 10);
+                                                    const newConfig = { ...formData, auto_switch_countdown_secs: secs };
+                                                    setFormData(newConfig);
+                                                    await saveConfig(newConfig);
+                                                }}
+                                                className="w-full text-xs rounded-lg border border-gray-200 dark:border-base-300 bg-gray-50 dark:bg-base-200 p-2 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                                            >
+                                                <option value="10">10s</option>
+                                                <option value="15">15s</option>
+                                                <option value="30">30s (Default)</option>
+                                                <option value="60">60s</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="flex items-end">
+                                            <button
+                                                type="button"
+                                                onClick={async () => {
+                                                    try {
+                                                        await showFloatingOverlay({
+                                                            notification_type: 'countdown',
+                                                            title: t('settings.notifications.test_title', { defaultValue: 'Antigravity Shield - Live Test' }),
+                                                            message: t('settings.notifications.test_msg', { defaultValue: 'Testing floating HUD countdown overlay' }),
+                                                            model_name: 'Claude 3.5 Sonnet',
+                                                            current_email: 'test-source@gmail.com',
+                                                            target_email: 'drx9399@gmail.com',
+                                                            target_quota_score: 90,
+                                                            countdown_secs: formData.auto_switch_countdown_secs || 30,
+                                                        });
+                                                    } catch (e) {
+                                                        showToast(`Test failed: ${e}`, 'error');
+                                                    }
+                                                }}
+                                                className="w-full text-xs font-semibold py-2 px-3 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 flex items-center justify-center gap-1.5 transition-all"
+                                            >
+                                                <Sparkles size={14} />
+                                                <span>{t('settings.notifications.test_btn', { defaultValue: 'Test Floating HUD' })}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* 7天周配额智能预热 (Smart Warmup) */}

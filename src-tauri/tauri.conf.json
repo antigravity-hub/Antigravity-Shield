@@ -27,6 +27,20 @@
         "transparent": true,
         "visible": true,
         "devtools": true
+      },
+      {
+        "label": "notification-overlay",
+        "title": "Antigravity Notification",
+        "width": 420,
+        "height": 175,
+        "decorations": false,
+        "shadow": true,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "visible": false,
+        "resizable": false,
+        "url": "index.html#/overlay-notification"
       }
     ],
     "security": {
