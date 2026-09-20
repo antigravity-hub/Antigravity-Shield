@@ -246,16 +246,15 @@ pub async fn import_from_v1() -> Result<Vec<Account>, String> {
 pub async fn import_from_custom_db_path(path_str: String) -> Result<Account, String> {
     use crate::modules::oauth;
 
-    if path_str.contains("..") {
-        return Err("Invalid database path: path traversal is prohibited".to_string());
+    let path = PathBuf::from(&path_str);
+    let canonical = std::fs::canonicalize(&path)
+        .map_err(|e| format!("Invalid or inaccessible database path: {}", e))?;
+
+    if !canonical.is_file() {
+        return Err("Database path must point to an existing file".to_string());
     }
 
-    let path = PathBuf::from(path_str);
-    if !path.exists() {
-        return Err(format!("File does not exist: {:?}", path));
-    }
-
-    let oauth_state = extract_oauth_state_from_file(&path)?;
+    let oauth_state = extract_oauth_state_from_file(&canonical)?;
     let refresh_token = oauth_state.refresh_token.clone();
 
     // 3. Use Refresh Token to get latest Access Token and user info
@@ -423,17 +422,15 @@ fn extract_enterprise_project_id_from_conn(
 fn extract_oauth_state_from_file(db_path: &PathBuf) -> Result<ImportedOAuthState, String> {
     use base64::{engine::general_purpose, Engine as _};
 
-    let path_str = db_path.to_string_lossy();
-    if path_str.contains("..") {
-        return Err("Invalid database path: path traversal is prohibited".to_string());
-    }
+    let canonical = std::fs::canonicalize(db_path)
+        .map_err(|e| format!("Invalid database path: {}", e))?;
 
-    if !db_path.exists() {
-        return Err(format!("Database file not found: {:?}", db_path));
+    if !canonical.is_file() {
+        return Err(format!("Database file not found: {:?}", canonical));
     }
 
     // Connect to database
-    let conn = rusqlite::Connection::open(db_path)
+    let conn = rusqlite::Connection::open(&canonical)
         .map_err(|e| format!("Failed to open database: {}", e))?;
 
     // 1. 尝试新版格式 (>= 1.16.5)

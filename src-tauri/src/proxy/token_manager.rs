@@ -87,20 +87,17 @@ async fn update_account_json(
     path: &std::path::Path,
     update: impl FnOnce(&mut serde_json::Value) + Send + 'static,
 ) -> Result<(), String> {
-    let path_str = path.to_string_lossy();
-    if path_str.contains("..") {
-        return Err("Invalid path: path traversal detected".to_string());
-    }
-    let path = path.to_path_buf();
+    let canonical = std::fs::canonicalize(path)
+        .map_err(|e| format!("Invalid account file path: {}", e))?;
     tokio::task::spawn_blocking(move || {
         let _account_write = crate::modules::account::lock_account_file_updates()?;
-        let raw = std::fs::read_to_string(&path).map_err(|e| format!("读取文件失败: {}", e))?;
+        let raw = std::fs::read_to_string(&canonical).map_err(|e| format!("读取文件失败: {}", e))?;
         let mut content: serde_json::Value =
             serde_json::from_str(&raw).map_err(|e| format!("解析 JSON 失败: {}", e))?;
         update(&mut content);
         let serialized = serde_json::to_string_pretty(&content)
             .map_err(|e| format!("序列化 JSON 失败: {}", e))?;
-        std::fs::write(&path, serialized).map_err(|e| format!("写入文件失败: {}", e))
+        std::fs::write(&canonical, serialized).map_err(|e| format!("写入文件失败: {}", e))
     })
     .await
     .map_err(|e| format!("spawn_blocking panicked: {}", e))?
@@ -320,13 +317,32 @@ impl TokenManager {
 
     /// 安全解析指定账号的文件路径，防止路径遍历漏洞
     pub fn resolve_account_path(&self, account_id: &str) -> Option<PathBuf> {
-        if account_id.contains("..") || account_id.contains('/') || account_id.contains('\\') {
+        let trimmed = account_id.trim();
+        if trimmed.is_empty() || trimmed.len() > 128 {
             return None;
         }
-        if account_id.trim().is_empty() {
+        if !trimmed.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') {
             return None;
         }
-        Some(self.data_dir.join("accounts").join(format!("{}.json", account_id)))
+        let accounts_dir = std::fs::canonicalize(self.data_dir.join("accounts"))
+            .unwrap_or_else(|_| self.data_dir.join("accounts"));
+        let target = accounts_dir.join(format!("{}.json", trimmed));
+
+        if let Ok(canonical_target) = std::fs::canonicalize(&target) {
+            if canonical_target.starts_with(&accounts_dir) && canonical_target.is_file() {
+                return Some(canonical_target);
+            }
+            return None;
+        }
+
+        if let Some(parent) = target.parent() {
+            if let Ok(canonical_parent) = std::fs::canonicalize(parent) {
+                if canonical_parent == accounts_dir {
+                    return Some(target);
+                }
+            }
+        }
+        None
     }
 
     /// 获取配额保护是否启用（优先从内存缓存读取，TTL 为 10 秒，避免热路径频繁读盘）
@@ -429,19 +445,8 @@ impl TokenManager {
 
     /// 从主应用账号目录加载所有账号
     pub async fn load_accounts(&self) -> Result<usize, String> {
-        let data_dir_str = self.data_dir.to_string_lossy();
-        if data_dir_str.contains("..") {
-            return Err("Invalid data directory path: traversal detected".to_string());
-        }
-        let accounts_dir = self.data_dir.join("accounts");
-        let accounts_dir_str = accounts_dir.to_string_lossy();
-        if accounts_dir_str.contains("..") {
-            return Err("Invalid accounts directory path: traversal detected".to_string());
-        }
-
-        if !accounts_dir.exists() {
-            return Err(format!("账号目录不存在: {:?}", accounts_dir));
-        }
+        let accounts_dir = std::fs::canonicalize(self.data_dir.join("accounts"))
+            .map_err(|e| format!("账号目录不存在或无效: {}", e))?;
 
         // Reload should reflect current on-disk state (accounts can be added/removed/disabled).
         self.tokens.clear();
@@ -469,8 +474,13 @@ impl TokenManager {
                 continue;
             }
 
+            let canonical_account_path = match std::fs::canonicalize(&path) {
+                Ok(p) if p.starts_with(&accounts_dir) => p,
+                _ => continue,
+            };
+
             // 尝试加载账号
-            match self.load_single_account(&path).await {
+            match self.load_single_account(&canonical_account_path).await {
                 Ok(Some(token)) => {
                     let account_id = token.account_id.clone();
                     self.tokens.insert(account_id, token);
@@ -480,7 +490,7 @@ impl TokenManager {
                     // 跳过无效账号
                 }
                 Err(e) => {
-                    tracing::debug!("加载账号失败 {:?}: {}", path, e);
+                    tracing::debug!("加载账号失败 {:?}: {}", canonical_account_path, e);
                 }
             }
         }
@@ -491,22 +501,14 @@ impl TokenManager {
 
     /// 重新加载指定账号（用于配额更新后的实时同步）
     pub async fn reload_account(&self, account_id: &str) -> Result<(), String> {
-        if account_id.contains("..") {
-            return Err("Invalid account ID: path traversal detected".to_string());
-        }
         let path = match self.resolve_account_path(account_id) {
             Some(p) => p,
             None => return Err(format!("Invalid account ID format: {}", account_id)),
         };
-        let path_str = path.to_string_lossy();
-        if path_str.contains("..") {
-            return Err("Invalid account path: path traversal detected".to_string());
-        }
-        if !path.exists() {
-            return Err(format!("账号文件不存在: {:?}", path));
-        }
+        let canonical = std::fs::canonicalize(&path)
+            .map_err(|e| format!("账号文件不存在或无效: {:?}", e))?;
 
-        match self.load_single_account(&path).await {
+        match self.load_single_account(&canonical).await {
             Ok(Some(token)) => {
                 self.tokens.insert(account_id.to_string(), token);
                 self.sync_image_scheduler_accounts();
@@ -563,16 +565,15 @@ impl TokenManager {
     /// writes). Failures are reported as `Unknown` so callers can skip without purging the in-memory
     /// token pool.
     async fn get_account_state_on_disk(account_path: &std::path::PathBuf) -> OnDiskAccountState {
-        let path_str = account_path.to_string_lossy();
-        if path_str.contains("..") {
+        let Ok(canonical) = std::fs::canonicalize(account_path) else {
             return OnDiskAccountState::Unknown;
-        }
+        };
 
         const MAX_RETRIES: usize = 2;
         const RETRY_DELAY_MS: u64 = 5;
 
         for attempt in 0..=MAX_RETRIES {
-            let content = match tokio::fs::read_to_string(account_path).await {
+            let content = match tokio::fs::read_to_string(&canonical).await {
                 Ok(c) => c,
                 Err(e) => {
                     // If the file is gone, the in-memory token is definitely stale.
@@ -629,12 +630,15 @@ impl TokenManager {
 
     /// 加载单个账号
     async fn load_single_account(&self, path: &PathBuf) -> Result<Option<ProxyToken>, String> {
-        let path_str = path.to_string_lossy();
-        if path_str.contains("..") {
+        let canonical_path = std::fs::canonicalize(path)
+            .map_err(|e| format!("Invalid account path: {}", e))?;
+        let accounts_dir = std::fs::canonicalize(self.data_dir.join("accounts"))
+            .unwrap_or_else(|_| self.data_dir.join("accounts"));
+        if !canonical_path.starts_with(&accounts_dir) {
             return Err("Invalid account path: traversal detected".to_string());
         }
 
-        let content = std::fs::read_to_string(path).map_err(|e| format!("读取文件失败: {}", e))?;
+        let content = std::fs::read_to_string(&canonical_path).map_err(|e| format!("读取文件失败: {}", e))?;
 
         let mut account: serde_json::Value =
             serde_json::from_str(&content).map_err(|e| format!("解析 JSON 失败: {}", e))?;
@@ -1079,11 +1083,8 @@ impl TokenManager {
     /// * `model_name` - 目标模型名称（已标准化）
     #[allow(dead_code)] // 预留给精确配额读取逻辑
     fn get_model_quota_from_json(account_path: &PathBuf, model_name: &str) -> Option<i32> {
-        let path_str = account_path.to_string_lossy();
-        if path_str.contains("..") {
-            return None;
-        }
-        let content = std::fs::read_to_string(account_path).ok()?;
+        let canonical = std::fs::canonicalize(account_path).ok()?;
+        let content = std::fs::read_to_string(&canonical).ok()?;
         let account: serde_json::Value = serde_json::from_str(&content).ok()?;
         let models = account.get("quota")?.get("models")?.as_array()?;
 
@@ -1104,11 +1105,8 @@ impl TokenManager {
     }
 
     fn get_available_models_from_json(account_path: &PathBuf) -> Option<HashSet<String>> {
-        let path_str = account_path.to_string_lossy();
-        if path_str.contains("..") {
-            return None;
-        }
-        let content = std::fs::read_to_string(account_path).ok()?;
+        let canonical = std::fs::canonicalize(account_path).ok()?;
+        let content = std::fs::read_to_string(&canonical).ok()?;
         let account: serde_json::Value = serde_json::from_str(&content).ok()?;
         let models = account.get("quota")?.get("models")?.as_array()?;
         let mut result = HashSet::new();
@@ -2546,15 +2544,14 @@ impl TokenManager {
                                                 .map(|e| e.account_path.clone())
                                                 .or_else(|| self.resolve_account_path(&token.account_id));
                                             if let Some(write_path) = write_path {
-                                                let path_str = write_path.to_string_lossy();
-                                                if !path_str.contains("..") {
+                                                if let Ok(canonical_write) = std::fs::canonicalize(&write_path) {
                                                     let pid_clone = pid.clone();
                                                     tokio::task::spawn_blocking(move || {
                                                         let Ok(_lk) = crate::modules::account::lock_account_file_updates() else { return; };
-                                                        let Ok(raw) = std::fs::read_to_string(&write_path) else { return; };
+                                                        let Ok(raw) = std::fs::read_to_string(&canonical_write) else { return; };
                                                         let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&raw) else { return; };
                                                         val["token"]["project_id"] = pid_clone.into();
-                                                        if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&write_path, s); }
+                                                        if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&canonical_write, s); }
                                                     });
                                                 }
                                             }
@@ -2610,9 +2607,6 @@ impl TokenManager {
     }
 
     async fn disable_account(&self, account_id: &str, reason: &str) -> Result<(), String> {
-        if account_id.contains("..") {
-            return Err("Invalid account ID: path traversal detected".to_string());
-        }
         let path = if let Some(entry) = self.tokens.get(account_id) {
             entry.account_path.clone()
         } else if let Some(p) = self.resolve_account_path(account_id) {
@@ -2620,14 +2614,12 @@ impl TokenManager {
         } else {
             return Err(format!("Invalid account ID format: {}", account_id));
         };
-        let path_str = path.to_string_lossy();
-        if path_str.contains("..") {
-            return Err("Invalid account path: path traversal detected".to_string());
-        }
+        let canonical = std::fs::canonicalize(&path)
+            .map_err(|e| format!("Invalid account path: {}", e))?;
 
         let now = chrono::Utc::now().timestamp();
         let reason_owned = reason.to_string();
-        update_account_json(&path, move |content| {
+        update_account_json(&canonical, move |content| {
             content["disabled"] = serde_json::Value::Bool(true);
             content["disabled_at"] = serde_json::Value::Number(now.into());
             content["disabled_reason"] = serde_json::Value::String(truncate_reason(&reason_owned, 800));
@@ -2890,20 +2882,16 @@ impl TokenManager {
     }
 
     fn clear_all_persisted_live_limits(&self, account_id: &str) -> bool {
-        if account_id.contains("..") {
-            return false;
-        }
         let Some(path) = self.resolve_account_path(account_id) else {
             return false;
         };
-        let path_str = path.to_string_lossy();
-        if path_str.contains("..") {
+        let Ok(canonical) = std::fs::canonicalize(&path) else {
             return false;
-        }
+        };
         let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
             return false;
         };
-        let Ok(raw) = std::fs::read_to_string(&path) else {
+        let Ok(raw) = std::fs::read_to_string(&canonical) else {
             return false;
         };
         let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
@@ -2922,7 +2910,7 @@ impl TokenManager {
         let Ok(serialized) = serde_json::to_string_pretty(&content) else {
             return false;
         };
-        std::fs::write(&path, serialized).is_ok()
+        std::fs::write(&canonical, serialized).is_ok()
     }
 
     /// 标记账号请求成功，重置连续失败计数
@@ -3004,16 +2992,10 @@ impl TokenManager {
     /// # 参数
     /// - `account_id`: 账号 ID（用于查找账号文件）
     pub fn get_quota_reset_time(&self, account_id: &str) -> Option<String> {
-        if account_id.contains("..") {
-            return None;
-        }
         let account_path = self.resolve_account_path(account_id)?;
-        let path_str = account_path.to_string_lossy();
-        if path_str.contains("..") {
-            return None;
-        }
+        let canonical = std::fs::canonicalize(&account_path).ok()?;
 
-        let content = std::fs::read_to_string(&account_path).ok()?;
+        let content = std::fs::read_to_string(&canonical).ok()?;
         let account: serde_json::Value = serde_json::from_str(&content).ok()?;
 
         // 获取 quota.models 中最早的 reset_time（最保守的锁定策略）
@@ -3492,12 +3474,11 @@ impl TokenManager {
             return;
         };
 
-        let path_str = path.to_string_lossy();
-        if path_str.contains("..") {
+        let Ok(canonical) = std::fs::canonicalize(&path) else {
             return;
-        }
+        };
 
-        let Ok(raw) = std::fs::read_to_string(&path) else {
+        let Ok(raw) = std::fs::read_to_string(&canonical) else {
             return;
         };
         let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
@@ -3528,7 +3509,7 @@ impl TokenManager {
         let Ok(serialized) = serde_json::to_string_pretty(&content) else {
             return;
         };
-        if let Err(e) = std::fs::write(&path, serialized) {
+        if let Err(e) = std::fs::write(&canonical, serialized) {
             tracing::debug!("Failed to persist live limit for {}: {}", account_id, e);
         }
     }
@@ -3551,16 +3532,15 @@ impl TokenManager {
             return;
         };
 
-        let path_str = path.to_string_lossy();
-        if path_str.contains("..") {
+        let Ok(canonical) = std::fs::canonicalize(&path) else {
             return;
-        }
+        };
 
         let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
             return;
         };
 
-        let raw = match std::fs::read_to_string(&path) {
+        let raw = match std::fs::read_to_string(&canonical) {
             Ok(raw) => raw,
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
                 self.rate_limit_tracker.clear_model(account_id, &model_key);
@@ -3592,7 +3572,7 @@ impl TokenManager {
             let Ok(serialized) = serde_json::to_string_pretty(&content) else {
                 return;
             };
-            if let Err(error) = std::fs::write(&path, serialized) {
+            if let Err(error) = std::fs::write(&canonical, serialized) {
                 tracing::debug!("Failed to clear live limit for {}: {}", account_id, error);
                 return;
             }
@@ -3888,13 +3868,8 @@ impl TokenManager {
             Some(p) => p,
             None => return Err(format!("Invalid account ID format: {}", account_id)),
         };
-        let path_str = path.to_string_lossy();
-        if path_str.contains("..") {
-            return Err("Invalid account path: path traversal detected".to_string());
-        }
-        if !path.exists() {
-            return Err(format!("Account file not found: {:?}", path));
-        }
+        let canonical = std::fs::canonicalize(&path)
+            .map_err(|e| format!("Account file not found: {:?}", e))?;
 
         // [NEW] 尝试从消息中提取验证链接 (#1522)
         let extracted_url = if let Ok(parsed_json) =
