@@ -36,6 +36,7 @@ impl SystemIntegration for DesktopIntegration {
 
         if target_ide == Some("agy") {
             write_to_system_keyring(account)?;
+            let _ = write_to_file_credentials(account);
 
             if let Ok(storage_path) = device::get_storage_path(target_ide) {
                 if let Some(ref profile) = account.device_profile {
@@ -575,7 +576,7 @@ pub(crate) fn write_to_system_keyring(account: &crate::models::Account) -> Resul
 
 /// 辅助方法：同步写入本地文件凭据 (~/.gemini/oauth_creds.json 以及 ~/.gemini/google_accounts.json)
 /// 用于在 SSH 会话、容器环境或无系统 Keyring / D-Bus 的场景下保障 CLI/工具的凭据兼容性
-fn write_to_file_credentials(account: &crate::models::Account) -> Result<(), String> {
+pub(crate) fn write_to_file_credentials(account: &crate::models::Account) -> Result<(), String> {
     let home = match dirs::home_dir() {
         Some(h) => h,
         None => return Err("Failed to resolve user home directory".to_string()),
