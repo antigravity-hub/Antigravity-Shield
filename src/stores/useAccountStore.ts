@@ -236,25 +236,38 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     },
 
     refreshQuota: async (accountId: string) => {
-        set({ loading: true, error: null });
         try {
-            await accountService.fetchAccountQuota(accountId);
-            await get().fetchAccounts();
-            set({ loading: false, lastSyncedAt: Date.now() });
+            const freshQuota = await accountService.fetchAccountQuota(accountId);
+            set(state => ({
+                accounts: state.accounts.map(acc =>
+                    acc.id === accountId ? { ...acc, quota: freshQuota } : acc
+                ),
+                currentAccount: state.currentAccount?.id === accountId
+                    ? { ...state.currentAccount, quota: freshQuota }
+                    : state.currentAccount,
+                lastSyncedAt: Date.now()
+            }));
         } catch (error) {
-            set({ error: String(error), loading: false });
+            set({ error: String(error) });
             throw error;
         }
     },
 
     clearAccountValidation: async (accountId: string) => {
-        set({ loading: true, error: null });
         try {
             await accountService.clearAccountValidation(accountId);
-            await get().fetchAccounts();
-            set({ loading: false });
+            const freshQuota = await accountService.fetchAccountQuota(accountId);
+            set(state => ({
+                accounts: state.accounts.map(acc =>
+                    acc.id === accountId ? { ...acc, validation_blocked: false, validation_blocked_reason: undefined, quota: freshQuota } : acc
+                ),
+                currentAccount: state.currentAccount?.id === accountId
+                    ? { ...state.currentAccount, validation_blocked: false, validation_blocked_reason: undefined, quota: freshQuota }
+                    : state.currentAccount,
+                lastSyncedAt: Date.now()
+            }));
         } catch (error) {
-            set({ error: String(error), loading: false });
+            set({ error: String(error) });
             throw error;
         }
     },
@@ -443,16 +456,22 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     },
 
     warmUpAccount: async (accountId: string) => {
-        set({ loading: true, error: null });
         try {
             const result = await accountService.warmUpAccount(accountId);
-            set({ loading: false });
+            const freshQuota = await accountService.fetchAccountQuota(accountId);
+            set(state => ({
+                accounts: state.accounts.map(acc =>
+                    acc.id === accountId ? { ...acc, quota: freshQuota } : acc
+                ),
+                currentAccount: state.currentAccount?.id === accountId
+                    ? { ...state.currentAccount, quota: freshQuota }
+                    : state.currentAccount,
+                lastSyncedAt: Date.now()
+            }));
             return result;
         } catch (error) {
-            set({ error: String(error), loading: false });
+            set({ error: String(error) });
             throw error;
-        } finally {
-            await get().fetchAccounts();
         }
     },
 
