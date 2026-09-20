@@ -1103,26 +1103,26 @@ pub async fn warm_up_account(account_id: &str) -> Result<String, String> {
     let warmed_count = models_to_warm.len();
     let account_id_clone = account_id.to_string();
 
-    tokio::spawn(async move {
-        for (name, pct) in models_to_warm {
-            if warmup_model_directly(&token, &name, &pid, &email, pct, Some(&account_id_clone))
-                .await
-            {
-                let history_key = format!("{}:{}:100", email, name);
-                let now_ts = chrono::Utc::now().timestamp();
-                crate::modules::scheduler::record_warmup_history(&history_key, now_ts);
-            }
-            tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+    for (name, pct) in models_to_warm {
+        if warmup_model_directly(&token, &name, &pid, &email, pct, Some(&account_id_clone)).await {
+            let history_key = format!("{}:{}:100", email, name);
+            let now_ts = chrono::Utc::now().timestamp();
+            crate::modules::scheduler::record_warmup_history(&history_key, now_ts);
         }
-        if let Ok(mut acc) = crate::modules::account::load_account(&account_id_clone) {
-            if let Ok(quota) = crate::modules::account::fetch_quota_with_retry(&mut acc).await {
-                let _ = crate::modules::account::update_account_quota(&account_id_clone, quota);
-            }
+        tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+    }
+
+    // Brief delay to allow upstream quota provider to propagate token consumption
+    tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
+
+    if let Ok(mut acc) = crate::modules::account::load_account(&account_id_clone) {
+        if let Ok(quota) = crate::modules::account::fetch_quota_with_retry(&mut acc).await {
+            let _ = crate::modules::account::update_account_quota(&account_id_clone, quota);
         }
-    });
+    }
 
     Ok(format!(
-        "Successfully triggered warmup for {} model series",
+        "Successfully warmed {} model series",
         warmed_count
     ))
 }
