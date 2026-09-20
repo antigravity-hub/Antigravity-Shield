@@ -8,6 +8,11 @@ on:
         required: false
         default: ''
         type: string
+      prerelease:
+        description: 'Mark release as pre-release'
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
       - 'v*'
@@ -454,3 +459,5 @@ jobs:
           artifacts: "release-files/*"
           artifactErrorsFailBuild: false
           replacesArtifacts: true
+          prerelease: ${{ contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
+          makeLatest: ${{ (contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true') && 'false' || 'legacy' }}

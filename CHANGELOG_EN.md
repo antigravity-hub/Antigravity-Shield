@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.6-pre.1 (2026-09-20)**:
+        -   **IDE Toolkit & Bridge Automation**: Bundled Antigravity Toolkit v2.4.1 featuring automated multi-target port discovery, loopback validation for `/api/health` and `/toolkit/status`, and proactive bridge file watchers for seamless offline-to-online transitions without manual reloads.
+        -   **Service Proxy & Middleware Routing**: Excluded toolkit integration routes from proxy status gates to ensure continuous extension health monitoring even when proxy interception is disabled.
+        -   **Update Manager & Release Pipeline**: Hardened semantic pre-release version parsing across desktop client update checks and configured dual-channel workflow dispatch for GitHub pre-releases.
     *   **v5.11.5 (2026-09-18)**:
         -   **Background Engine & Scheduling**: Migrated periodic quota and database sync tasks to the native background daemon, ensuring continuous execution during minimized and system tray operation.
         -   **Quota State & Data Persistence**: Implemented immediate real-time database state persistence and UI event dispatch when quota depletion events occur.

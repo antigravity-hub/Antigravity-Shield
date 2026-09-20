@@ -8,6 +8,11 @@ on:
         required: false
         default: ''
         type: string
+      prerelease:
+        description: 'Mark release as pre-release'
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
       - 'v*'
@@ -315,13 +320,15 @@ jobs:
           artifacts: "release-files/*,updater.json"
           artifactErrorsFailBuild: false
           replacesArtifacts: true
-          makeLatest: legacy
+          prerelease: ${{ contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
+          makeLatest: ${{ (contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true') && 'false' || 'legacy' }}
 
       - name: Dispatch Release Unix Workflow
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.event.inputs.release_tag || github.ref_name }}
+          IS_PRE: ${{ contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
         run: |
-          echo "Dispatching Release Unix for tag $TAG..."
-          gh workflow run release-unix.yml -f release_tag="$TAG" || echo "Workflow dispatch completed or skipped"
+          echo "Dispatching Release Unix for tag $TAG (prerelease: $IS_PRE)..."
+          gh workflow run release-unix.yml -f release_tag="$TAG" -f prerelease="$IS_PRE" || echo "Workflow dispatch completed or skipped"
