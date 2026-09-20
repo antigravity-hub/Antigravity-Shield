@@ -108,6 +108,7 @@ function Settings() {
         currentVersion: string;
         downloadUrl: string;
         source?: string;
+        hasSignature?: boolean;
     } | null>(null);
     const [isAutoUpdating, setIsAutoUpdating] = useState(false);
     const [updateProgress, setUpdateProgress] = useState(0);
@@ -327,6 +328,7 @@ function Settings() {
                 current_version: string;
                 download_url: string;
                 source?: string;
+                has_signature?: boolean;
             }>('check_for_updates');
 
             setUpdateInfo({
@@ -335,6 +337,7 @@ function Settings() {
                 currentVersion: result.current_version,
                 downloadUrl: result.download_url,
                 source: result.source,
+                hasSignature: result.has_signature ?? false,
             });
 
             if (result.has_update) {
@@ -356,6 +359,44 @@ function Settings() {
                 window.open(updateInfo.downloadUrl, '_blank');
             }
             return;
+        }
+
+        // If the release has no cryptographic signature, bypass native updater directly to avoid
+        // downloading 26MB natively only to fail minisign check and then re-download from scratch.
+        if (updateInfo && !updateInfo.hasSignature) {
+            try {
+                showToast(t('update_notification.toast.downloading', 'Downloading update package...'), 'info');
+                setIsAutoUpdating(true);
+                setUpdateProgress(0);
+
+                const { listen } = await import('@tauri-apps/api/event');
+                const unlisten = await listen<{ percent: number }>('updater://direct-progress', (event) => {
+                    setUpdateProgress(event.payload.percent);
+                    if (event.payload.percent === 100) {
+                        showToast(t('update_notification.toast.launching_installer', 'Download complete. Launching installer...'), 'info');
+                    }
+                });
+
+                await invoke('download_and_install_direct', {
+                    downloadUrl: updateInfo.downloadUrl || '',
+                    version: updateInfo.latestVersion || ''
+                });
+                unlisten();
+                return;
+            } catch (directErr) {
+                console.error('Settings direct download fallback failed:', directErr);
+                setIsAutoUpdating(false);
+                showToast(t('update_notification.toast.signature_invalid', 'Automated verification unavailable. Switching to manual download.'), 'warning');
+                if (updateInfo?.downloadUrl) {
+                    try {
+                        const { openUrl } = await import('@tauri-apps/plugin-opener');
+                        await openUrl(updateInfo.downloadUrl);
+                    } catch {
+                        window.open(updateInfo.downloadUrl, '_blank');
+                    }
+                }
+                return;
+            }
         }
 
         try {

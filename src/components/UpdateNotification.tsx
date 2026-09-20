@@ -14,6 +14,7 @@ interface UpdateInfo {
   current_version: string;
   download_url: string;
   source?: string;
+  has_signature?: boolean;
 }
 
 interface UpdateNotificationProps {
@@ -113,7 +114,11 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
     try {
       setUpdateState('downloading');
       setDownloadProgress(0);
-      showToast(t('update_notification.toast.switching_direct', 'Cryptographic verification unavailable. Initiating direct auto-install...'), 'info');
+      if (updateInfo.has_signature === false) {
+        showToast(t('update_notification.toast.downloading', 'Downloading update package...'), 'info');
+      } else {
+        showToast(t('update_notification.toast.switching_direct', 'Cryptographic verification unavailable. Initiating direct auto-install...'), 'info');
+      }
 
       const { listen } = await import('@tauri-apps/api/event');
       const unlisten = await listen<{ percent: number }>('updater://direct-progress', (event) => {
@@ -137,7 +142,10 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
   };
 
   const handleStartDownload = async () => {
-    if (!nativeUpdateRef.current) {
+    // If native updater is unavailable OR the release lacks a cryptographic signature,
+    // immediately use our resilient direct auto-installer pipeline.
+    // This prevents downloading 26MB via native updater only to fail signature check and re-download from scratch.
+    if (!nativeUpdateRef.current || !updateInfo?.has_signature) {
       await handleDirectInstall();
       return;
     }
