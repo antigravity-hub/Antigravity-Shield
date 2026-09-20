@@ -1384,4 +1384,21 @@ pub async fn record_toolkit_heartbeat(
     Ok(())
 }
 
+// ============================================================================
+// Overlay Notification HUD Commands
+// ============================================================================
+
+#[tauri::command]
+pub async fn show_overlay_notification(
+    app: tauri::AppHandle,
+    payload: crate::modules::overlay::OverlayNotificationPayload,
+) -> Result<(), String> {
+    crate::modules::overlay::show_overlay_notification(&app, payload)
+}
+
+#[tauri::command]
+pub async fn hide_overlay_notification(app: tauri::AppHandle) -> Result<(), String> {
+    crate::modules::overlay::hide_overlay_notification(&app)
+}
+
 

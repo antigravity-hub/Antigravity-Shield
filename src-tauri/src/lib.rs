@@ -687,6 +687,9 @@ pub fn run() {
             commands::detect_installed_ides,
             commands::install_toolkit_to_ide,
             commands::record_toolkit_heartbeat,
+            // Overlay notification HUD commands
+            commands::show_overlay_notification,
+            commands::hide_overlay_notification,
             proxy::cli_sync::get_cli_sync_status,
             proxy::cli_sync::execute_cli_sync,
             proxy::cli_sync::execute_cli_restore,

@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useAccountStore } from '../stores/useAccountStore';
 import { useConfigStore } from '../stores/useConfigStore';
+import { Account } from '../types/account';
 import { showToast } from '../components/common/ToastContainer';
 import { sendDesktopNotification } from '../services/notificationService';
+import { showFloatingOverlay } from '../services/overlayNotificationService';
 import { getRecommendedBestAccount } from '../utils/bestAccount';
 import { useTranslation } from 'react-i18next';
 
@@ -231,6 +233,69 @@ export function useQuotaAlertWatcher() {
                     continue;
                 }
 
+                const triggerGracefulAutoSwitch = async (
+                    sourceAccount: typeof targetAccount,
+                    nextAccount: Account,
+                    modelFamily: string,
+                    quotaScore: number,
+                    switchTitle: string,
+                    switchMsg: string
+                ) => {
+                    const overlayEnabled = config?.overlay_notifications_enabled !== false;
+                    const countdownSecs = config?.auto_switch_countdown_secs || 30;
+
+                    isAutoSwitchingRef.current = true;
+                    lastAutoSwitchMap.set(sourceAccount.id, now);
+
+                    let shouldSwitch = true;
+
+                    if (overlayEnabled) {
+                        try {
+                            const action = await showFloatingOverlay({
+                                notification_type: 'countdown',
+                                title: t('notifications.auto_switch_title', {
+                                    defaultValue: 'Antigravity Shield - Auto Switched',
+                                }),
+                                message: switchMsg,
+                                model_name: modelFamily,
+                                current_email: sourceAccount.email,
+                                target_email: nextAccount.email,
+                                target_quota_score: quotaScore,
+                                countdown_secs: countdownSecs,
+                                target_account_id: nextAccount.id,
+                                target_env: targetEnv,
+                            });
+
+                            if (action === 'snooze') {
+                                console.log(`[QuotaAlertWatcher] Auto-switch snoozed for 5 minutes on ${sourceAccount.email}`);
+                                lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 5 * 60 * 1000);
+                                shouldSwitch = false;
+                            } else if (action === 'cancel') {
+                                console.log(`[QuotaAlertWatcher] Auto-switch cancelled for 30 minutes on ${sourceAccount.email}`);
+                                lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 30 * 60 * 1000);
+                                shouldSwitch = false;
+                            }
+                        } catch (e) {
+                            console.warn('[QuotaAlertWatcher] Overlay notification failed, falling back to direct switch:', e);
+                        }
+                    }
+
+                    if (shouldSwitch) {
+                        try {
+                            console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} from ${sourceAccount.email} to ${nextAccount.email} (${modelFamily} score: ${quotaScore}%)`);
+                            lastAutoSwitchMap.set(nextAccount.id, Date.now());
+                            await switchAccount(nextAccount.id, targetEnv);
+                            showToast(switchMsg, 'success', 8000);
+                            sendDesktopNotification(switchTitle, switchMsg);
+                            await fetchAccounts();
+                        } catch (err) {
+                            console.error('[QuotaAlertWatcher] Auto-switch failed:', err);
+                        }
+                    }
+
+                    isAutoSwitchingRef.current = false;
+                };
+
                 if (claudeDepleted) {
                     // Step 1: Find next Claude account
                     const bestClaude = getRecommendedBestAccount(accounts, targetAccount.id, {
@@ -239,10 +304,6 @@ export function useQuotaAlertWatcher() {
 
                     if (bestClaude.account && bestClaude.claudeScore > 0) {
                         const nextAccount = bestClaude.account;
-                        isAutoSwitchingRef.current = true;
-                        lastAutoSwitchMap.set(targetAccount.id, now);
-                        lastAutoSwitchMap.set(nextAccount.id, now);
-
                         const switchTitle = t('notifications.auto_switch_title', {
                             defaultValue: 'Antigravity Shield - Auto Switched',
                         });
@@ -255,17 +316,14 @@ export function useQuotaAlertWatcher() {
                         });
 
                         (async () => {
-                            try {
-                                console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} from ${targetAccount.email} to ${nextAccount.email} (Claude score: ${bestClaude.claudeScore}%)`);
-                                await switchAccount(nextAccount.id, targetEnv);
-                                showToast(switchMsg, 'success', 8000);
-                                sendDesktopNotification(switchTitle, switchMsg);
-                                await fetchAccounts();
-                            } catch (err) {
-                                console.error('[QuotaAlertWatcher] Auto-switch failed:', err);
-                            } finally {
-                                isAutoSwitchingRef.current = false;
-                            }
+                            await triggerGracefulAutoSwitch(
+                                targetAccount,
+                                nextAccount,
+                                'Claude',
+                                bestClaude.claudeScore,
+                                switchTitle,
+                                switchMsg
+                            );
                         })();
                         break;
                     } else {
@@ -276,10 +334,6 @@ export function useQuotaAlertWatcher() {
 
                         if (bestGemini.account && bestGemini.geminiScore > 0) {
                             const nextAccount = bestGemini.account;
-                            isAutoSwitchingRef.current = true;
-                            lastAutoSwitchMap.set(targetAccount.id, now);
-                            lastAutoSwitchMap.set(nextAccount.id, now);
-
                             const switchTitle = t('notifications.auto_switch_title', {
                                 defaultValue: 'Antigravity Shield - Auto Switched',
                             });
@@ -292,17 +346,14 @@ export function useQuotaAlertWatcher() {
                             });
 
                             (async () => {
-                                try {
-                                    console.log(`[QuotaAlertWatcher] All Claude depleted. Fallback auto-switching to ${nextAccount.email} (Gemini score: ${bestGemini.geminiScore}%)`);
-                                    await switchAccount(nextAccount.id, targetEnv);
-                                    showToast(switchMsg, 'info', 8000);
-                                    sendDesktopNotification(switchTitle, switchMsg);
-                                    await fetchAccounts();
-                                } catch (err) {
-                                    console.error('[QuotaAlertWatcher] Fallback auto-switch failed:', err);
-                                } finally {
-                                    isAutoSwitchingRef.current = false;
-                                }
+                                await triggerGracefulAutoSwitch(
+                                    targetAccount,
+                                    nextAccount,
+                                    'Gemini Fallback',
+                                    bestGemini.geminiScore,
+                                    switchTitle,
+                                    switchMsg
+                                );
                             })();
                             break;
                         } else {
@@ -325,10 +376,6 @@ export function useQuotaAlertWatcher() {
 
                     if (bestGemini.account && bestGemini.geminiScore > 0) {
                         const nextAccount = bestGemini.account;
-                        isAutoSwitchingRef.current = true;
-                        lastAutoSwitchMap.set(targetAccount.id, now);
-                        lastAutoSwitchMap.set(nextAccount.id, now);
-
                         const switchTitle = t('notifications.auto_switch_title', {
                             defaultValue: 'Antigravity Shield - Auto Switched',
                         });
@@ -341,22 +388,19 @@ export function useQuotaAlertWatcher() {
                         });
 
                         (async () => {
-                            try {
-                                console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} to ${nextAccount.email} (Gemini score: ${bestGemini.geminiScore}%)`);
-                                await switchAccount(nextAccount.id, targetEnv);
-                                showToast(switchMsg, 'success', 8000);
-                                sendDesktopNotification(switchTitle, switchMsg);
-                                await fetchAccounts();
-                            } catch (err) {
-                                console.error('[QuotaAlertWatcher] Auto-switch failed:', err);
-                            } finally {
-                                isAutoSwitchingRef.current = false;
-                            }
+                            await triggerGracefulAutoSwitch(
+                                targetAccount,
+                                nextAccount,
+                                'Gemini',
+                                bestGemini.geminiScore,
+                                switchTitle,
+                                switchMsg
+                            );
                         })();
                         break;
                     }
                 }
             }
         }
-    }, [accounts, currentAccount, activeTargetAccounts, config?.auto_switch_on_quota, t, switchAccount, fetchAccounts]);
+    }, [accounts, currentAccount, activeTargetAccounts, config?.auto_switch_on_quota, config?.overlay_notifications_enabled, config?.auto_switch_countdown_secs, t, switchAccount, fetchAccounts]);
 }

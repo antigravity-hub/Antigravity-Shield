@@ -592,8 +592,8 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
                     .output();
             }
 
-            // Wait for graceful exit (max 70% of timeout_secs, default ~14s)
-            let graceful_timeout = (timeout_secs * 7) / 10;
+            // Wait for graceful exit (max 5s instead of long freeze)
+            let graceful_timeout = std::cmp::min(timeout_secs, 5);
             let start = std::time::Instant::now();
             while start.elapsed() < Duration::from_secs(graceful_timeout) {
                 if !is_antigravity_running(target_ide) {
@@ -602,7 +602,7 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
                     );
                     return Ok(());
                 }
-                thread::sleep(Duration::from_millis(500));
+                thread::sleep(Duration::from_millis(400));
             }
 
             // Phase 2: Force kill tree (taskkill /F /T) if graceful exit timed out
@@ -610,21 +610,24 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
                 let remaining_pids = get_antigravity_pids(target_ide);
                 if !remaining_pids.is_empty() {
                     crate::modules::logger::log_warn(&format!(
-                        "[Windows] Graceful exit timed out, force killing {} remaining processes (taskkill /F /T)...",
+                        "[Windows] Graceful exit timed out, force killing {} remaining processes in batch (taskkill /F /T)...",
                         remaining_pids.len()
                     ));
-                    for pid in &remaining_pids {
-                        let output = Command::new("taskkill")
-                            .args(["/F", "/T", "/PID", &pid.to_string()])
-                            .creation_flags(0x08000000) // CREATE_NO_WINDOW
-                            .output();
-                        if let Ok(out) = output {
+                    
+                    // Batch PIDs in chunks of up to 16 to execute rapidly instead of sequential delays
+                    for chunk in remaining_pids.chunks(16) {
+                        let mut kill_cmd = Command::new("taskkill");
+                        kill_cmd.arg("/F").arg("/T");
+                        for pid in chunk {
+                            kill_cmd.arg("/PID").arg(pid.to_string());
+                        }
+                        kill_cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
+                        if let Ok(out) = kill_cmd.output() {
                             if !out.status.success() {
                                 let stderr = String::from_utf8_lossy(&out.stderr);
                                 if !stderr.trim().is_empty() {
                                     crate::modules::logger::log_warn(&format!(
-                                        "[Windows] taskkill /F /T for PID {} reported: {}",
-                                        pid,
+                                        "[Windows] Batch taskkill reported: {}",
                                         stderr.trim()
                                     ));
                                     if stderr.to_lowercase().contains("access is denied") {
@@ -634,7 +637,7 @@ pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<
                             }
                         }
                     }
-                    thread::sleep(Duration::from_millis(600));
+                    thread::sleep(Duration::from_millis(300));
                 }
             }
 
@@ -1054,8 +1057,8 @@ pub fn start_antigravity(target_ide: Option<&str>) -> Result<(), String> {
                 #[cfg(target_os = "linux")]
                 clean_appimage_env(&mut cmd);
 
-                #[cfg(target_os = "windows")]
-                cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
+                // Note: Do NOT set CREATE_NO_WINDOW for GUI application on Windows,
+                // so the application window can be properly displayed and focused.
 
                 cmd.spawn().map_err(|e| format!("Startup failed: {}", e))?;
             }
@@ -1119,8 +1122,8 @@ pub fn start_antigravity(target_ide: Option<&str>) -> Result<(), String> {
             #[cfg(target_os = "linux")]
             clean_appimage_env(&mut cmd);
 
-            #[cfg(target_os = "windows")]
-            cmd.creation_flags(0x08000000); // CREATE_NO_WINDOW
+            // Note: Do NOT set CREATE_NO_WINDOW for GUI application on Windows,
+            // so the application window can be properly displayed and focused.
 
             cmd.spawn().map_err(|e| {
                 format!("Startup failed (detected path {:?}): {}", detected_path, e)
