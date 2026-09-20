@@ -1465,7 +1465,20 @@ pub fn get_antigravity_cli_executable_path() -> Option<std::path::PathBuf> {
         }
     }
 
-    // 2. 检查标准用户本地目录 ~/.local/bin/agy 或 ~/.local/bin/agy.exe
+    // 2. 检查标准用户本地目录 (Windows: %LOCALAPPDATA%\agy\bin\agy.exe 或 ~/.local/bin/agy)
+    #[cfg(target_os = "windows")]
+    {
+        if let Ok(local_appdata) = std::env::var("LOCALAPPDATA") {
+            let path = std::path::PathBuf::from(local_appdata)
+                .join("agy")
+                .join("bin")
+                .join("agy.exe");
+            if path.exists() {
+                return Some(path);
+            }
+        }
+    }
+
     if let Some(home) = dirs::home_dir() {
         let local_bin = home.join(".local").join("bin");
         let path = if cfg!(target_os = "windows") {
