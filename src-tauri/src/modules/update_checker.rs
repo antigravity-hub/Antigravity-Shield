@@ -22,6 +22,8 @@ pub struct UpdateInfo {
     pub published_at: String,
     #[serde(default)]
     pub source: Option<String>,
+    #[serde(default)]
+    pub has_signature: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -193,6 +195,7 @@ async fn check_updater_json() -> Result<UpdateInfo, String> {
         );
     }
 
+    let mut has_signature = false;
     if let Some(ref platforms) = updater_info.platforms {
         let platform_key = if cfg!(target_os = "windows") {
             "windows-x86_64"
@@ -208,9 +211,16 @@ async fn check_updater_json() -> Result<UpdateInfo, String> {
             "linux-x86_64"
         };
 
-        if let Some(p) = platforms.get(platform_key).and_then(|p| p.url.clone()) {
-            if !p.is_empty() {
-                download_url = p;
+        if let Some(p) = platforms.get(platform_key) {
+            if let Some(ref u) = p.url {
+                if !u.trim().is_empty() {
+                    download_url = u.clone();
+                }
+            }
+            if let Some(ref s) = p.signature {
+                if !s.trim().is_empty() {
+                    has_signature = true;
+                }
             }
         }
     }
@@ -227,6 +237,7 @@ async fn check_updater_json() -> Result<UpdateInfo, String> {
             .pub_date
             .unwrap_or_else(|| Utc::now().to_rfc3339()),
         source: Some("updater.json".to_string()),
+        has_signature,
     })
 }
 
@@ -338,6 +349,7 @@ async fn check_github_api() -> Result<UpdateInfo, String> {
         release_notes: release.body,
         published_at: release.published_at,
         source: Some("GitHub API".to_string()),
+        has_signature: false,
     })
 }
 
@@ -401,6 +413,7 @@ async fn check_static_url(url: &str, source_name: &str) -> Result<UpdateInfo, St
         release_notes,
         published_at: Utc::now().to_rfc3339(), // Approximate time
         source: Some(source_name.to_string()),
+        has_signature: false,
     })
 }
 
@@ -832,51 +845,60 @@ pub async fn download_and_run_installer(
 
     #[cfg(target_os = "windows")]
     {
-        use std::os::windows::process::CommandExt;
-        const DETACHED_PROCESS: u32 = 0x00000008;
-        const CREATE_NO_WINDOW: u32 = 0x08000000;
+        let current_exe = std::env::current_exe()
+            .unwrap_or_else(|_| std::path::PathBuf::from("antigravity-shield.exe"));
+        let target_exe_str = current_exe.to_string_lossy().replace('\'', "''");
+        let installer_path_str = file_path.to_string_lossy().replace('\'', "''");
 
-        let path_str = file_path.to_string_lossy().replace('\'', "''");
-        // Launch via PowerShell with -Verb RunAs so Windows triggers UAC elevation properly.
-        // /UPDATE tells NSIS installer to update in-place without uninstallation prompts.
-        let ps_cmd = format!(
-            "Start-Process -FilePath '{}' -ArgumentList '/UPDATE' -Verb RunAs",
-            path_str
+        // The PowerShell update supervisor:
+        // 1. Brief pause to allow the current Tauri window and HTTP server to exit cleanly
+        // 2. Terminate any lingering daemon or shield processes so no files are locked
+        // 3. Launch the NSIS installer in passive mode (/P /UPDATE) with UAC elevation (RunAs) and wait for completion
+        // 4. Once installation exits successfully (ExitCode 0), automatically relaunch the updated Antigravity Shield!
+        let ps_script = format!(
+            "Start-Sleep -Milliseconds 800; \
+             Stop-Process -Name 'antigravity-shield' -Force -ErrorAction SilentlyContinue; \
+             Stop-Process -Name 'shield-daemon' -Force -ErrorAction SilentlyContinue; \
+             $proc = Start-Process -FilePath '{}' -ArgumentList '/P /UPDATE' -Verb RunAs -PassThru -Wait; \
+             if ($proc.ExitCode -eq 0) {{ \
+                 Start-Process -FilePath '{}' \
+             }}",
+            installer_path_str,
+            target_exe_str
         );
 
         logger::log_info(&format!(
-            "Launching Windows elevated installer via PowerShell: {}",
-            ps_cmd
+            "Spawning elevated installer update supervisor: installer='{}', restart='{}'",
+            installer_path_str, target_exe_str
         ));
 
         let spawn_res = std::process::Command::new("powershell")
             .args([
+                "-WindowStyle",
+                "Hidden",
                 "-NoProfile",
-                "-NonInteractive",
                 "-ExecutionPolicy",
                 "Bypass",
                 "-Command",
-                &ps_cmd,
+                &ps_script,
             ])
-            .creation_flags(CREATE_NO_WINDOW | DETACHED_PROCESS)
             .spawn();
 
         match spawn_res {
             Ok(_) => {
                 logger::log_info(
-                    "Elevated installer process spawned successfully. Exiting current app instance...",
+                    "Elevated update supervisor spawned successfully. Gracefully exiting current app instance...",
                 );
-                tokio::time::sleep(std::time::Duration::from_millis(1000)).await;
+                tokio::time::sleep(std::time::Duration::from_millis(500)).await;
                 std::process::exit(0);
             }
             Err(e) => {
                 logger::log_warn(&format!(
-                    "Failed to spawn elevated installer via PowerShell ({}). Attempting direct spawn fallback...",
+                    "Failed to spawn elevated update supervisor via PowerShell ({}). Attempting direct spawn fallback...",
                     e
                 ));
                 let _ = std::process::Command::new(&file_path)
-                    .arg("/UPDATE")
-                    .creation_flags(CREATE_NO_WINDOW | DETACHED_PROCESS)
+                    .args(["/P", "/UPDATE"])
                     .spawn();
                 tokio::time::sleep(std::time::Duration::from_millis(500)).await;
                 std::process::exit(0);

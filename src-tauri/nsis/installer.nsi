@@ -347,6 +347,7 @@ Function PageLeaveReinstall
   reinst_uninstall:
     ; Terminate running instances so files are not locked
     nsExec::Exec 'taskkill /F /IM ${MAINBINARYNAME}.exe /T'
+    nsExec::Exec 'taskkill /F /IM shield-daemon.exe /T'
 
     HideWindow
     ClearErrors
@@ -390,6 +391,7 @@ Function PageLeaveReinstall
   reinst_done:
     ; Terminate any lingering instance before proceeding with installation
     nsExec::Exec 'taskkill /F /IM ${MAINBINARYNAME}.exe /T'
+    nsExec::Exec 'taskkill /F /IM shield-daemon.exe /T'
 FunctionEnd
 
 ; 5. Choose install directory page
@@ -651,6 +653,7 @@ Section Install
   !endif
 
   !insertmacro CheckIfAppIsRunning "${MAINBINARYNAME}.exe" "${PRODUCTNAME}"
+  nsExec::Exec 'taskkill /F /IM shield-daemon.exe /T'
 
   ; Copy main executable
   File "${MAINBINARYSRCPATH}"
@@ -755,8 +758,13 @@ Function .onInstSuccess
   ${OrIf} ${Silent}
     ${GetOptions} $CMDLINE "/R" $R0
     ${IfNot} ${Errors}
-      ${GetOptions} $CMDLINE "/ARGS" $R0
-      nsis_tauri_utils::RunAsUser "$INSTDIR\${MAINBINARYNAME}.exe" "$R0"
+      StrCpy $R1 ""
+      ${GetOptions} $CMDLINE "/ARGS" $R1
+      ClearErrors
+      nsis_tauri_utils::RunAsUser "$INSTDIR\${MAINBINARYNAME}.exe" "$R1"
+      ${If} ${Errors}
+        ExecShell "" "$INSTDIR\${MAINBINARYNAME}.exe" "$R1"
+      ${EndIf}
     ${EndIf}
   ${EndIf}
 FunctionEnd
