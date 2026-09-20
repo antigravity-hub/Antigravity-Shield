@@ -61,42 +61,6 @@ impl SystemIntegration for DesktopIntegration {
             return Ok(());
         }
 
-        if target_ide == Some("platform") {
-            write_to_system_keyring(account)?;
-
-            if let Ok(storage_path) = device::get_storage_path(target_ide) {
-                if let Some(ref profile) = account.device_profile {
-                    let _ = device::write_profile(&storage_path, profile);
-                }
-            }
-
-            if let Ok(db_path) = db::get_db_path(target_ide) {
-                let _ = db::inject_token(
-                    &db_path,
-                    &account.token.access_token,
-                    &account.token.refresh_token,
-                    account.token.expiry_timestamp,
-                    &account.email,
-                    account.token.is_gcp_tos,
-                    account.token.project_id.as_deref(),
-                    account.token.id_token.as_deref(),
-                    account.token.oauth_client_key.as_deref(),
-                    target_ide,
-                );
-                if let Some(ref profile) = account.device_profile {
-                    let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
-                }
-            }
-
-            self.show_notification(
-                "Antigravity Platform",
-                &format!("⚡ Platform (Harness) switched to {}", account.email),
-            );
-            self.update_tray();
-
-            return Ok(());
-        }
-
         // 0.5. [Two-Way Bridge] Check if IDE Toolkit extension is active & connected for Zero-Reload
         let is_target_ide = target_ide == Some("ide")
             || target_ide == Some("code")
@@ -157,8 +121,13 @@ impl SystemIntegration for DesktopIntegration {
             return Ok(());
         }
 
-        // 1. Close external process only for IDE targets that require file injection
-        if target_ide != Some("platform") && process::is_antigravity_running(target_ide) {
+        // 1. Close external running process so file/keyring state can be reloaded cleanly
+        let was_running = process::is_antigravity_running(target_ide);
+        if was_running {
+            crate::modules::logger::log_info(&format!(
+                "[Desktop] Target ({:?}) is currently running. Closing before account injection...",
+                target_ide
+            ));
             process::close_antigravity(20, target_ide)?;
         }
 
@@ -280,10 +249,38 @@ impl SystemIntegration for DesktopIntegration {
             }
         }
 
-        // 3. 重启外部进程
-        process::start_antigravity(target_ide)?;
+        // 3. Restart or start external process
+        if was_running {
+            crate::modules::logger::log_info(&format!(
+                "[Desktop] Target ({:?}) was running before switch. Restarting now...",
+                target_ide
+            ));
+            process::start_antigravity(target_ide)?;
+        } else {
+            // If it was not running, try starting it or leave it ready
+            if let Err(e) = process::start_antigravity(target_ide) {
+                crate::modules::logger::log_info(&format!(
+                    "[Desktop] Target ({:?}) was not running and auto-start was skipped: {}",
+                    target_ide, e
+                ));
+            }
+        }
 
-        // 4. 更新托盘
+        // 4. Send desktop notification
+        let target_title = match target_ide {
+            Some("platform") => "Antigravity Platform",
+            Some("ide") => "Antigravity IDE",
+            Some(other) => other,
+            None => "Antigravity",
+        };
+        let notif_body = if was_running {
+            format!("⚡ Switched to {} (Restarted)", account.email)
+        } else {
+            format!("⚡ Switched to {}", account.email)
+        };
+        self.show_notification(target_title, &notif_body);
+
+        // 5. Update tray
         let _ = crate::modules::tray::update_tray_menus(&self.app_handle);
 
         Ok(())
