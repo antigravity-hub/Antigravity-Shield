@@ -24,6 +24,10 @@ concurrency:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+permissions:
+  contents: write
+  actions: write
+
 jobs:
   # --------------------------------------------------------------------------
   # macOS Build (.dmg and .tar.gz)

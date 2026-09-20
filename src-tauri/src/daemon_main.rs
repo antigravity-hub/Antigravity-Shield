@@ -135,19 +135,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cli.command == "status" || cli.command == "accounts" {
         let token_manager = Arc::new(antigravity_shield_lib::proxy::TokenManager::new(data_dir.clone()));
         token_manager.load_accounts().await?;
-        let accounts = token_manager.enabled_account_ids();
+        let active_count = token_manager.enabled_account_ids().len();
         println!("\n=== Antigravity Shield Daemon Status ===");
         println!("Data Directory: {}", data_dir.display());
         println!("Configured Port: {}", config.proxy.port);
-        println!("Active Accounts: {}", accounts.len());
-        for (idx, id) in accounts.iter().enumerate() {
-            let masked = if id.len() > 8 {
-                format!("{}...{}", &id[..4], &id[id.len() - 4..])
-            } else {
-                "***".to_string()
-            };
-            println!("  - Account #{}: {}", idx + 1, masked);
-        }
+        println!("Active Accounts Count: {}", active_count);
         println!("========================================\n");
         return Ok(());
     }

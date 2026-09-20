@@ -1075,10 +1075,41 @@ pub(crate) fn atomic_replace_file(src: &PathBuf, dst: &PathBuf) -> Result<(), St
     fs::rename(src, dst).map_err(|e| format!("rename failed: {}", e))
 }
 
+/// Resolve and validate account JSON file path safely within accounts directory
+pub fn resolve_account_file(account_id: &str) -> Result<PathBuf, String> {
+    let trimmed = account_id.trim();
+    if trimmed.is_empty() || trimmed.len() > 128 {
+        return Err("Invalid account ID: empty or too long".to_string());
+    }
+    if !trimmed.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') {
+        return Err("Invalid account ID: contains illegal characters".to_string());
+    }
+    let accounts_dir = get_accounts_dir()?;
+    let canonical_accounts_dir = fs::canonicalize(&accounts_dir)
+        .unwrap_or(accounts_dir);
+    let target = canonical_accounts_dir.join(format!("{}.json", trimmed));
+
+    if let Ok(canonical_target) = fs::canonicalize(&target) {
+        if !canonical_target.starts_with(&canonical_accounts_dir) {
+            return Err("Invalid account file path: path traversal detected".to_string());
+        }
+        return Ok(canonical_target);
+    }
+
+    if let Some(parent) = target.parent() {
+        if let Ok(canonical_parent) = fs::canonicalize(parent) {
+            if canonical_parent == canonical_accounts_dir {
+                return Ok(target);
+            }
+        }
+    }
+
+    Err("Invalid account file path: path boundary violation".to_string())
+}
+
 /// Load account data
 pub fn load_account(account_id: &str) -> Result<Account, String> {
-    let accounts_dir = get_accounts_dir()?;
-    let account_path = accounts_dir.join(format!("{}.json", account_id));
+    let account_path = resolve_account_file(account_id)?;
     load_account_at_path(&account_path)
 }
 
@@ -1113,8 +1144,7 @@ fn save_account_at_path(account_path: &PathBuf, account: &Account) -> Result<(),
 
 /// Save account data (thread-safe and atomic)
 pub fn save_account(account: &Account) -> Result<(), String> {
-    let accounts_dir = get_accounts_dir()?;
-    let account_path = accounts_dir.join(format!("{}.json", account.id));
+    let account_path = resolve_account_file(&account.id)?;
     save_account_at_path(&account_path, account)
 }
 
@@ -1343,12 +1373,11 @@ pub fn delete_account(account_id: &str) -> Result<(), String> {
     save_account_index(&index)?;
 
     // Delete account file
-    let accounts_dir = get_accounts_dir()?;
-    let account_path = accounts_dir.join(format!("{}.json", account_id));
-
-    if account_path.exists() {
-        fs::remove_file(&account_path)
-            .map_err(|e| format!("failed_to_delete_account_file: {}", e))?;
+    if let Ok(account_path) = resolve_account_file(account_id) {
+        if account_path.exists() {
+            fs::remove_file(&account_path)
+                .map_err(|e| format!("failed_to_delete_account_file: {}", e))?;
+        }
     }
 
     // [FIX #1477] Trigger TokenManager cache cleanup signal
@@ -1385,9 +1414,10 @@ pub fn delete_accounts(account_ids: &[String]) -> Result<(), String> {
         }
 
         // Delete account file
-        let account_path = accounts_dir.join(format!("{}.json", account_id));
-        if account_path.exists() {
-            let _ = fs::remove_file(&account_path);
+        if let Ok(account_path) = resolve_account_file(account_id) {
+            if account_path.exists() {
+                let _ = fs::remove_file(&account_path);
+            }
         }
 
         // [FIX #1477] Trigger TokenManager cache cleanup signal

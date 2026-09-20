@@ -1333,10 +1333,26 @@ async fn admin_add_account(
     Ok(Json(to_account_response(&account, &current_id)))
 }
 
+fn is_safe_account_id(id: &str) -> bool {
+    let trimmed = id.trim();
+    !trimmed.is_empty()
+        && trimmed.len() <= 128
+        && trimmed.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+}
+
 async fn admin_delete_account(
     State(state): State<AppState>,
     Path(account_id): Path<String>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    if !is_safe_account_id(&account_id) {
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(ErrorResponse {
+                error: "Invalid account ID format".to_string(),
+            }),
+        ));
+    }
+
     state
         .account_service
         .delete_account(&account_id)
@@ -2705,6 +2721,15 @@ async fn admin_toggle_proxy_status(
     Path(account_id): Path<String>,
     Json(payload): Json<ToggleProxyRequest>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    if !is_safe_account_id(&account_id) {
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(ErrorResponse {
+                error: "Invalid account ID format".to_string(),
+            }),
+        ));
+    }
+
     crate::modules::account::toggle_proxy_status(
         &account_id,
         payload.enable,
@@ -3249,17 +3274,26 @@ async fn admin_import_custom_db(
     State(state): State<AppState>,
     Json(payload): Json<CustomDbRequest>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
-    // [SECURITY] 禁止目录遍历
-    if payload.path.contains("..") {
+    let path_buf = std::path::PathBuf::from(&payload.path);
+    let canonical = std::fs::canonicalize(&path_buf).map_err(|e| {
+        (
+            StatusCode::BAD_REQUEST,
+            Json(ErrorResponse {
+                error: format!("非法或不可访问的数据库路径: {}", e),
+            }),
+        )
+    })?;
+
+    if !canonical.is_file() {
         return Err((
             StatusCode::BAD_REQUEST,
             Json(ErrorResponse {
-                error: "非法路径: 不允许目录遍历".to_string(),
+                error: "数据库路径必须指向有效文件".to_string(),
             }),
         ));
     }
 
-    let account = migration::import_from_custom_db_path(payload.path)
+    let account = migration::import_from_custom_db_path(canonical.to_string_lossy().to_string())
         .await
         .map_err(|e| {
             (
