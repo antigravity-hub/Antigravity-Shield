@@ -48,32 +48,28 @@ jobs:
         run: |
           TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
           TARGET_VER="${TARGET_VER#v}"
-          if [ -n "$TARGET_VER" ]; then
-            echo "Synchronizing project versions to $TARGET_VER"
+          # Validate semver pattern (e.g. 5.11.6 or 5.11.6-pre.1) and reject branch names like 'main'
+          if [[ "$TARGET_VER" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "Synchronizing project versions to $TARGET_VER via SSoT engine..."
             node -e "
               const fs = require('fs');
-              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
-                if (fs.existsSync(f)) {
-                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
-                  d.version = '$TARGET_VER';
-                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
-                }
-              });
+              const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+              pkg.version = '$TARGET_VER';
+              fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n', 'utf8');
             "
-            if [ -f src-tauri/Cargo.toml ]; then
-              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
-            fi
-            if [ -f src-tauri/Cargo.lock ]; then
-              sed -i.bak -E '/name = "antigravity-shield"/{n;s/version = "[0-9]+\.[0-9]+\.[0-9]+.*"/version = "'"$TARGET_VER"'"/;}' src-tauri/Cargo.lock && rm -f src-tauri/Cargo.lock.bak
-            fi
+            node scripts/sync_version.mjs
+          else
+            echo "Skipping version sync: '$TARGET_VER' is not a semver release tag."
           fi
+
+          # Speed up frontend build: bypass full tsc typecheck during release build
           node -e "
             const fs = require('fs');
             const p = 'src-tauri/tauri.conf.json';
             if (fs.existsSync(p)) {
               const c = JSON.parse(fs.readFileSync(p, 'utf8'));
               if (c.build) c.build.beforeBuildCommand = 'npx vite build';
-              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              fs.writeFileSync(p, JSON.stringify(c, null, 2) + '\n', 'utf8');
               console.log('Optimized beforeBuildCommand to npx vite build');
             }
           "
@@ -217,32 +213,28 @@ jobs:
         run: |
           TARGET_VER="${{ github.event.inputs.release_tag || github.ref_name }}"
           TARGET_VER="${TARGET_VER#v}"
-          if [ -n "$TARGET_VER" ]; then
-            echo "Synchronizing project versions to $TARGET_VER"
+          # Validate semver pattern (e.g. 5.11.6 or 5.11.6-pre.1) and reject branch names like 'main'
+          if [[ "$TARGET_VER" =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "Synchronizing project versions to $TARGET_VER via SSoT engine..."
             node -e "
               const fs = require('fs');
-              ['package.json', 'src-tauri/tauri.conf.json'].forEach(f => {
-                if (fs.existsSync(f)) {
-                  const d = JSON.parse(fs.readFileSync(f, 'utf8'));
-                  d.version = '$TARGET_VER';
-                  fs.writeFileSync(f, JSON.stringify(d, null, 2) + '\n');
-                }
-              });
+              const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+              pkg.version = '$TARGET_VER';
+              fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n', 'utf8');
             "
-            if [ -f src-tauri/Cargo.toml ]; then
-              sed -i.bak -E "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+.*\"/version = \"$TARGET_VER\"/" src-tauri/Cargo.toml && rm -f src-tauri/Cargo.toml.bak
-            fi
-            if [ -f src-tauri/Cargo.lock ]; then
-              sed -i.bak -E '/name = "antigravity-shield"/{n;s/version = "[0-9]+\.[0-9]+\.[0-9]+.*"/version = "'"$TARGET_VER"'"/;}' src-tauri/Cargo.lock && rm -f src-tauri/Cargo.lock.bak
-            fi
+            node scripts/sync_version.mjs
+          else
+            echo "Skipping version sync: '$TARGET_VER' is not a semver release tag."
           fi
+
+          # Speed up frontend build: bypass full tsc typecheck during release build
           node -e "
             const fs = require('fs');
             const p = 'src-tauri/tauri.conf.json';
             if (fs.existsSync(p)) {
               const c = JSON.parse(fs.readFileSync(p, 'utf8'));
               if (c.build) c.build.beforeBuildCommand = 'npx vite build';
-              fs.writeFileSync(p, JSON.stringify(c, null, 2), 'utf8');
+              fs.writeFileSync(p, JSON.stringify(c, null, 2) + '\n', 'utf8');
               console.log('Optimized beforeBuildCommand to npx vite build');
             }
           "
