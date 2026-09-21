@@ -9,11 +9,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-# The `_lib` suffix may seem redundant but it is necessary
-# to make the lib name unique and wouldn't conflict with the bin name.
-# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+# Optimized for desktop build throughput: rlib provides all symbols needed by bin targets
+# without triggering redundant standalone DLL (cdylib) and static archive (staticlib) linker passes.
 name = "antigravity_shield_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+crate-type = ["rlib"]
 
 [[bin]]
 name = "antigravity-shield"
@@ -100,7 +99,9 @@ tempfile = "3.10"
 
 [profile.release]
 opt-level = 3
-lto = "thin"
-codegen-units = 16
+lto = false
+codegen-units = 256
 panic = "abort"
 strip = true
+debug = false
+incremental = false
