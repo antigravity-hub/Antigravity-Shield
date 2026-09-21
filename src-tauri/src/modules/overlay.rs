@@ -1,5 +1,8 @@
 use serde::{Deserialize, Serialize};
+use std::sync::Mutex;
 use tauri::{Emitter, Manager, PhysicalPosition, Position};
+
+static CURRENT_OVERLAY_PAYLOAD: Mutex<Option<OverlayNotificationPayload>> = Mutex::new(None);
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OverlayNotificationPayload {
@@ -16,6 +19,11 @@ pub struct OverlayNotificationPayload {
     pub target_env: Option<String>,
 }
 
+/// Retrieve currently active overlay notification payload, if any
+pub fn get_overlay_payload() -> Option<OverlayNotificationPayload> {
+    CURRENT_OVERLAY_PAYLOAD.lock().ok().and_then(|lock| lock.clone())
+}
+
 /// Show the floating overlay notification HUD at the user's configured screen position
 pub fn show_overlay_notification(
     app: &tauri::AppHandle,
@@ -24,6 +32,11 @@ pub fn show_overlay_notification(
     let window = app
         .get_webview_window("notification-overlay")
         .ok_or_else(|| "Overlay window 'notification-overlay' not found".to_string())?;
+
+    // Cache latest payload for reliable instant hydration on frontend mount
+    if let Ok(mut lock) = CURRENT_OVERLAY_PAYLOAD.lock() {
+        *lock = Some(payload.clone());
+    }
 
     // Load configured position preference
     let config = crate::modules::config::load_app_config().unwrap_or_default();
@@ -41,8 +54,8 @@ pub fn show_overlay_notification(
         let mon_size = mon.size();
         let scale = mon.scale_factor();
 
-        let win_width = (420.0 * scale) as i32;
-        let win_height = (175.0 * scale) as i32;
+        let win_width = (440.0 * scale) as i32;
+        let win_height = (210.0 * scale) as i32;
         let margin_x = (24.0 * scale) as i32;
         let margin_y = (24.0 * scale) as i32;
 
@@ -68,8 +81,11 @@ pub fn show_overlay_notification(
         let _ = window.set_position(Position::Physical(PhysicalPosition { x, y }));
     }
 
-    // Emit payload data to the overlay webview component
-    let _ = app.emit("overlay-notification-show", &payload);
+    // Ensure dimensions are explicitly synchronized
+    let _ = window.set_size(tauri::Size::Logical(tauri::LogicalSize {
+        width: 440.0,
+        height: 210.0,
+    }));
 
     // Reveal and elevate on top
     window
@@ -77,6 +93,9 @@ pub fn show_overlay_notification(
         .map_err(|e| format!("Failed to show overlay: {}", e))?;
     let _ = window.set_always_on_top(true);
     let _ = window.set_focus();
+
+    // Emit payload data to the overlay webview component
+    let _ = app.emit("overlay-notification-show", &payload);
 
     crate::modules::logger::log_info(&format!(
         "[Overlay] Displayed floating HUD notification: {} (type: {})",
@@ -88,6 +107,10 @@ pub fn show_overlay_notification(
 
 /// Hide the floating overlay notification HUD
 pub fn hide_overlay_notification(app: &tauri::AppHandle) -> Result<(), String> {
+    if let Ok(mut lock) = CURRENT_OVERLAY_PAYLOAD.lock() {
+        *lock = None;
+    }
+
     if let Some(window) = app.get_webview_window("notification-overlay") {
         window
             .hide()

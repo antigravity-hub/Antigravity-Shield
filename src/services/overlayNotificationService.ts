@@ -72,3 +72,15 @@ export async function hideFloatingOverlay(): Promise<void> {
         console.error('[OverlayService] Failed to hide floating overlay:', err);
     }
 }
+
+/**
+ * Fetch current overlay notification payload cached in backend
+ */
+export async function getFloatingOverlayPayload(): Promise<OverlayNotificationOptions | null> {
+    try {
+        return await invoke<OverlayNotificationOptions | null>('get_overlay_payload');
+    } catch (err) {
+        console.error('[OverlayService] Failed to get overlay payload:', err);
+        return null;
+    }
+}

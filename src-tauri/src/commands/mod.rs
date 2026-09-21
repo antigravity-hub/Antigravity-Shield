@@ -1408,4 +1408,9 @@ pub async fn hide_overlay_notification(app: tauri::AppHandle) -> Result<(), Stri
     crate::modules::overlay::hide_overlay_notification(&app)
 }
 
+#[tauri::command]
+pub async fn get_overlay_payload() -> Option<crate::modules::overlay::OverlayNotificationPayload> {
+    crate::modules::overlay::get_overlay_payload()
+}
+
 

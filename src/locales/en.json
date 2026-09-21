@@ -1804,6 +1804,16 @@
     "target_platform": "Platform (Harness)",
     "target_ide": "IDE",
     "target_ide_and_platform": "IDE & Platform",
-    "target_agy": "AGY CLI"
+    "target_agy": "AGY CLI",
+    "overlay_title": "Antigravity Shield - Smart Switch",
+    "overlay_quota_for": "Quota depleted for",
+    "overlay_switch_to": "Switch to:",
+    "overlay_quota_badge": "quota",
+    "overlay_switch_now": "Switch Now",
+    "overlay_snooze": "Snooze 5m",
+    "overlay_cancel": "Cancel",
+    "overlay_dismiss": "Dismiss",
+    "overlay_waiting": "Receiving Shield telemetry...",
+    "overlay_default_model": "AI Model"
   }
 }

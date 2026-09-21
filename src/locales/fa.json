@@ -1718,6 +1718,16 @@
     "target_platform": "پلتفرم (Harness)",
     "target_ide": "محیط IDE",
     "target_ide_and_platform": "IDE و پلتفرم",
-    "target_agy": "ترمینال AGY"
+    "target_agy": "ترمینال AGY",
+    "overlay_title": "آنتی‌گراویتی شیلد - سوئیچ هوشمند",
+    "overlay_quota_for": "اتمام سهمیه مدل",
+    "overlay_switch_to": "انتقال خودکار به:",
+    "overlay_quota_badge": "سهمیه",
+    "overlay_switch_now": "سوئیچ فوری",
+    "overlay_snooze": "۵ دقیقه بعد",
+    "overlay_cancel": "لغو",
+    "overlay_dismiss": "بستن",
+    "overlay_waiting": "در حال دریافت اطلاعات شیلد...",
+    "overlay_default_model": "مدل هوش مصنوعی"
   }
 }
