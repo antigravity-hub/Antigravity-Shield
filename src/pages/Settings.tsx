@@ -11,6 +11,7 @@ import SmartWarmup from '../components/settings/SmartWarmup';
 import PinnedQuotaModels from '../components/settings/PinnedQuotaModels';
 import { useDebugConsole } from '../stores/useDebugConsole';
 import { useSupportModalStore } from '../stores/useSupportModalStore';
+import { useAccountStore } from '../stores/useAccountStore';
 import { showFloatingOverlay } from '../services/overlayNotificationService';
 
 import { useTranslation } from 'react-i18next';
@@ -32,6 +33,7 @@ function Settings() {
     const { config, loadConfig, saveConfig, updateLanguage, updateTheme } = useConfigStore();
     const { enable, disable, isEnabled } = useDebugConsole();
     const { openModal: openSupportModal } = useSupportModalStore();
+    const { accounts, currentAccount } = useAccountStore();
     const [activeTab, setActiveTab] = useState<'general' | 'account' | 'proxy' | 'advanced' | 'debug' | 'about'>('general');
     const [appVersion, setAppVersion] = useState<string>(APP_VERSION);
     const [formData, setFormData] = useState<AppConfig>({
@@ -1096,14 +1098,19 @@ function Settings() {
                                                 type="button"
                                                 onClick={async () => {
                                                     try {
+                                                        const srcEmail = currentAccount?.email || accounts[0]?.email || 'active-account@antigravity.ai';
+                                                        const altAccount = accounts.find(a => a.id !== currentAccount?.id && a.email !== srcEmail);
+                                                        const tgtEmail = altAccount?.email || 'backup-account@antigravity.ai';
+                                                        const tgtScore = 95;
+
                                                         await showFloatingOverlay({
                                                             notification_type: 'countdown',
                                                             title: t('settings.notifications.test_title', { defaultValue: 'Antigravity Shield - Live Test' }),
                                                             message: t('settings.notifications.test_msg', { defaultValue: 'Testing floating HUD countdown overlay' }),
-                                                            model_name: 'Claude 3.5 Sonnet',
-                                                            current_email: 'test-source@gmail.com',
-                                                            target_email: 'drx9399@gmail.com',
-                                                            target_quota_score: 90,
+                                                            model_name: 'Gemini / Claude',
+                                                            current_email: srcEmail,
+                                                            target_email: tgtEmail,
+                                                            target_quota_score: tgtScore,
                                                             countdown_secs: formData.auto_switch_countdown_secs || 30,
                                                         });
                                                     } catch (e) {

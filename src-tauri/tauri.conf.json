@@ -31,8 +31,8 @@
       {
         "label": "notification-overlay",
         "title": "Antigravity Notification",
-        "width": 420,
-        "height": 175,
+        "width": 440,
+        "height": 210,
         "decorations": false,
         "shadow": true,
         "transparent": true,
