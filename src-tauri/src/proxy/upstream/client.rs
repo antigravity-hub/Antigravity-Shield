@@ -69,8 +69,8 @@ pub const V1_INTERNAL_ALLOWED_HOST_DAILY: &str = "daily-cloudcode-pa.googleapis.
 pub const V1_INTERNAL_ALLOWED_PATH_PREFIX: &str = "/v1internal";
 
 pub const V1_INTERNAL_BASE_URL_FALLBACKS: [&str; 2] = [
-    V1_INTERNAL_BASE_URL_DAILY,
     V1_INTERNAL_BASE_URL_PROD,
+    V1_INTERNAL_BASE_URL_DAILY,
 ];
 
 /// Validates whether a given URL string is an authorized, official Google endpoint.
@@ -112,9 +112,9 @@ pub fn sanitize_v1_internal_base_url(raw_url: &str) -> &'static str {
         tracing::warn!(
             "Sanitizing unauthorized/non-production upstream URL '{}' -> enforcing official endpoint: {}",
             raw_url,
-            V1_INTERNAL_BASE_URL_DAILY
+            V1_INTERNAL_BASE_URL_PROD
         );
-        V1_INTERNAL_BASE_URL_DAILY
+        V1_INTERNAL_BASE_URL_PROD
     }
 }
 
@@ -730,7 +730,7 @@ mod tests {
             assert!(!is_whitelisted_production_url(url), "Should reject: {}", url);
             assert_eq!(
                 sanitize_v1_internal_base_url(url),
-                V1_INTERNAL_BASE_URL_DAILY,
+                V1_INTERNAL_BASE_URL_PROD,
                 "Should sanitize: {}",
                 url
             );
@@ -743,13 +743,13 @@ mod tests {
         let url = UpstreamClient::build_url(malicious_dev, "generateContent", None);
         assert_eq!(
             url,
-            "https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent"
+            "https://cloudcode-pa.googleapis.com/v1internal:generateContent"
         );
 
         let url_with_query = UpstreamClient::build_url(malicious_dev, "streamGenerateContent", Some("alt=sse"));
         assert_eq!(
             url_with_query,
-            "https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse"
+            "https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse"
         );
     }
 }

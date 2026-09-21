@@ -4,16 +4,16 @@ use rquest;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-// Quota API endpoints (Primary Antigravity IDE endpoint, fallback to standard Cloud Code)
+// Quota API endpoints (Production Cloud Code endpoint primary, fallback to daily)
 const QUOTA_API_ENDPOINTS: [&str; 2] = [
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
     "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
+    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
 ];
 
 // Quota Summary API endpoints (weekly + 5h grouped quota)
 const QUOTA_SUMMARY_ENDPOINTS: [&str; 2] = [
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
     "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
+    "https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
 ];
 
 /// Critical retry threshold: considered near recovery when quota reaches 95%
