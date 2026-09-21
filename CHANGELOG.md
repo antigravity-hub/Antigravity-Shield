@@ -3,6 +3,12 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.6 (2026-09-21)**:
+        -   **Account Failover & Visual Transition**: Added floating countdown overlay and desktop notifications during automated account failovers to provide real-time user feedback.
+        -   **Session Token Lifecycle**: Implemented proactive background keepalive routines for active IDE/CLI session tokens to maintain connection stability.
+        -   **Quota Synchronization & Warmup**: Optimized selective quota verification to eliminate redundant network traffic and synchronized manual warmup execution.
+        -   **Security & Path Validation**: Hardened path traversal boundaries, dynamic cryptographic key derivation, and runtime entropy generation.
+        -   **Bundled IDE Toolkit v2.4.1**: Integrated multi-target port discovery, loopback validation for health endpoints, and proactive bridge watchers for seamless offline-to-online recovery.
     *   **v5.11.6-pre.1 (2026-09-20)**:
         -   **IDE Toolkit & Bridge Automation**: Bundled Antigravity Toolkit v2.4.1 featuring automated multi-target port discovery, loopback validation for `/api/health` and `/toolkit/status`, and proactive bridge file watchers for seamless offline-to-online transitions without manual reloads.
         -   **Service Proxy & Middleware Routing**: Excluded toolkit integration routes from proxy status gates to ensure continuous extension health monitoring even when proxy interception is disabled.
