@@ -521,6 +521,16 @@ pub fn run() {
             // [PHASE 1] 已整合至 Axum 端口 (8045)，不再单独启动 19527 端口
             info!("Management API integrated into main proxy server (port 8045)");
 
+            // 确保开机自启状态与 Windows 注册表 / 系统保持一致并自动修复阻断项
+            if let Ok(cfg) = modules::config::load_app_config() {
+                if cfg.auto_launch {
+                    let _ = commands::autostart::set_system_autostart(app.handle(), true);
+                } else {
+                    #[cfg(target_os = "windows")]
+                    commands::autostart::sync_windows_startup_approved(false);
+                }
+            }
+
             Ok(())
         })
         .on_window_event(|window, event| {
