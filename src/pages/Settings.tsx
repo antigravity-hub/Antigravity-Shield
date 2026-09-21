@@ -163,7 +163,10 @@ function Settings() {
 
     useEffect(() => {
         if (config) {
-            setFormData(config);
+            setFormData(prev => ({
+                ...config,
+                auto_launch: prev.auto_launch !== undefined ? prev.auto_launch : (config.auto_launch ?? false),
+            }));
         }
     }, [config]);
 
@@ -714,7 +717,7 @@ function Settings() {
                                         const enabled = e.target.value === 'enabled';
                                         try {
                                             await invoke('toggle_auto_launch', { enable: enabled });
-                                            setFormData({ ...formData, auto_launch: enabled });
+                                            setFormData(prev => ({ ...prev, auto_launch: enabled }));
                                             showToast(enabled ? t('settings.general.auto_launch_enabled') : t('settings.general.auto_launch_disabled'), 'success');
                                         } catch (error) {
                                             showToast(`${t('common.error')}: ${error}`, 'error');

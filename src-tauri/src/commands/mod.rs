@@ -483,6 +483,13 @@ pub async fn save_config(
         tracing::debug!("已同步热更新反代服务配置");
     }
 
+    // 同步开机自启系统状态
+    if let Ok(current_enabled) = autostart::is_auto_launch_enabled(app.clone()).await {
+        if current_enabled != config.auto_launch {
+            let _ = autostart::set_system_autostart(&app, config.auto_launch);
+        }
+    }
+
     Ok(())
 }
 
