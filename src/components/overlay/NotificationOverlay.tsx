@@ -3,7 +3,7 @@ import { listen } from '@tauri-apps/api/event';
 import { emit } from '@tauri-apps/api/event';
 import { request as invoke } from '../../utils/request';
 import { useTranslation } from 'react-i18next';
-import { Zap, Clock, X, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
+import { Zap, Clock, X, AlertTriangle, CheckCircle2, Loader2, Shield, Sparkles, Cpu } from 'lucide-react';
 import { getFloatingOverlayPayload } from '../../services/overlayNotificationService';
 
 export interface OverlayPayload {
@@ -141,43 +141,70 @@ export const NotificationOverlay: React.FC = () => {
 
     return (
         <div
-            className={`w-screen h-screen select-none overflow-hidden p-1.5 flex items-center justify-center font-sans ${isRtl ? 'rtl' : 'ltr'}`}
+            className={`w-screen h-screen select-none overflow-hidden p-2 flex items-center justify-center font-sans ${isRtl ? 'rtl' : 'ltr'}`}
             style={{ background: 'transparent' }}
         >
+            {/* Main Cyber-Glass Card */}
             <div
-                className={`relative w-full h-full rounded-2xl flex flex-col justify-between p-3.5 shadow-2xl backdrop-blur-2xl transition-all duration-300 border ${
+                className={`relative w-full h-full rounded-2xl flex flex-col justify-between p-3.5 shadow-2xl backdrop-blur-2xl transition-all duration-300 overflow-hidden border ${
                     isUrgent
-                        ? 'bg-slate-950/95 border-rose-500/60 shadow-rose-950/60'
-                        : 'bg-slate-950/95 border-cyan-500/40 shadow-cyan-950/50'
+                        ? 'bg-slate-950/95 border-rose-500/50 shadow-[0_8px_30px_rgba(244,63,94,0.3)]'
+                        : 'bg-slate-950/95 border-cyan-500/30 shadow-[0_8px_30px_rgba(6,182,212,0.2)]'
                 }`}
             >
+                {/* Specular Ambient Glow Overlay */}
+                <div
+                    className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+                        isUrgent
+                            ? 'bg-gradient-to-b from-rose-500/[0.08] via-transparent to-transparent'
+                            : 'bg-gradient-to-b from-cyan-500/[0.07] via-transparent to-transparent'
+                    }`}
+                />
+
+                {/* Top Specular Edge Highlight (Physical Glass Effect) */}
+                <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+
                 {/* Drag Region & Header */}
                 <div
                     data-tauri-drag-region
-                    className="flex items-center justify-between cursor-move pb-2 border-b border-slate-800/80 flex-shrink-0"
+                    className="relative flex items-center justify-between cursor-move pb-2 border-b border-slate-800/80 flex-shrink-0 z-10"
                 >
                     <div className="flex items-center gap-2 min-w-0">
                         {payload?.notification_type === 'countdown' ? (
-                            <div className={`p-1.5 rounded-lg flex-shrink-0 ${isUrgent ? 'bg-rose-500/20 text-rose-400 animate-pulse' : 'bg-amber-500/20 text-amber-400'}`}>
-                                <AlertTriangle className="w-3.5 h-3.5" />
+                            <div className="relative flex items-center justify-center">
+                                <div
+                                    className={`p-1.5 rounded-xl flex-shrink-0 border ${
+                                        isUrgent
+                                            ? 'bg-rose-500/20 text-rose-400 border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.4)]'
+                                            : 'bg-amber-500/15 text-amber-400 border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                                    }`}
+                                >
+                                    <AlertTriangle className="w-3.5 h-3.5" />
+                                </div>
+                                {isUrgent && (
+                                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+                                )}
                             </div>
                         ) : (
-                            <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 flex-shrink-0">
+                            <div className="p-1.5 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.25)] flex-shrink-0">
                                 <CheckCircle2 className="w-3.5 h-3.5" />
                             </div>
                         )}
-                        <span className="text-xs font-semibold tracking-wide text-slate-100 truncate">
-                            {payload?.title || t('notifications.overlay_title', { defaultValue: 'Antigravity Shield' })}
-                        </span>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                            <Shield className="w-3 h-3 text-cyan-400 flex-shrink-0" />
+                            <span className="text-[12px] font-bold tracking-wide text-slate-100 uppercase truncate">
+                                {payload?.title || t('notifications.overlay_title', { defaultValue: 'Antigravity Shield' })}
+                            </span>
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
                         {payload?.notification_type === 'countdown' && (
                             <div
-                                className={`text-[11px] font-mono px-2 py-0.5 rounded-full flex items-center gap-1 font-bold ${
+                                className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1.5 font-bold shadow-sm transition-colors ${
                                     isUrgent
-                                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse'
-                                        : 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/30'
+                                        ? 'bg-rose-950/70 text-rose-300 border border-rose-500/50 shadow-[0_0_12px_rgba(244,63,94,0.35)] animate-pulse'
+                                        : 'bg-cyan-950/60 text-cyan-300 border border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)]'
                                 }`}
                             >
                                 <Clock className="w-3 h-3 flex-shrink-0" />
@@ -187,7 +214,7 @@ export const NotificationOverlay: React.FC = () => {
 
                         <button
                             onClick={() => handleAction('cancel')}
-                            className="p-1 text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 rounded-md transition-colors"
+                            className="p-1 text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 rounded-lg transition-colors cursor-pointer"
                             title={t('notifications.overlay_dismiss', { defaultValue: 'Dismiss (Esc)' })}
                         >
                             <X className="w-3.5 h-3.5" />
@@ -196,7 +223,7 @@ export const NotificationOverlay: React.FC = () => {
                 </div>
 
                 {/* Content Body */}
-                <div className="py-1.5 flex-1 flex flex-col justify-center min-h-0">
+                <div className="relative py-2 flex-1 flex flex-col justify-center min-h-0 z-10">
                     {!payload ? (
                         <div className="flex items-center justify-center gap-2 text-xs text-slate-400 py-3">
                             <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
@@ -205,16 +232,19 @@ export const NotificationOverlay: React.FC = () => {
                     ) : payload.notification_type === 'countdown' ? (
                         <div className="space-y-2">
                             {/* Row 1: Model Quota Depletion Notice */}
-                            <div className="text-[12px] text-slate-300 flex items-center gap-1.5 leading-normal overflow-hidden whitespace-nowrap">
-                                <span className="text-slate-400 font-medium whitespace-nowrap flex-shrink-0">
-                                    {t('notifications.overlay_quota_for', { defaultValue: 'Quota depleted for' })}
-                                </span>
-                                <span className="px-2 py-0.5 rounded bg-slate-800/90 text-amber-300 text-[11px] font-semibold border border-amber-500/25 whitespace-nowrap flex-shrink-0 shadow-sm">
-                                    {formatModelName(payload.model_name)}
-                                </span>
+                            <div className="text-[11px] text-slate-300 flex items-center justify-between gap-1.5 leading-normal overflow-hidden whitespace-nowrap">
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 text-[11px] font-semibold border border-amber-500/30 flex items-center gap-1 whitespace-nowrap flex-shrink-0 shadow-sm">
+                                        <Cpu className="w-3 h-3 text-amber-400" />
+                                        {formatModelName(payload.model_name)}
+                                    </span>
+                                    <span className="text-slate-400 font-medium whitespace-nowrap flex-shrink-0">
+                                        {t('notifications.overlay_quota_for', { defaultValue: 'Quota depleted for' })}
+                                    </span>
+                                </div>
                                 {payload.current_email && (
                                     <span
-                                        className="text-slate-400 truncate text-[11px] min-w-0"
+                                        className="text-slate-400 truncate text-[11px] font-mono min-w-0 max-w-[170px]"
                                         title={payload.current_email}
                                     >
                                         ({payload.current_email})
@@ -222,22 +252,28 @@ export const NotificationOverlay: React.FC = () => {
                                 )}
                             </div>
 
-                            {/* Row 2: Target Account & Quota Badge */}
-                            <div className="flex items-center justify-between gap-2 text-[11px] text-slate-300 bg-slate-900/70 rounded-xl px-2.5 py-1.5 border border-slate-800/70 shadow-inner">
-                                <div className="flex items-center gap-1.5 min-w-0 truncate">
-                                    <span className="text-slate-400 whitespace-nowrap flex-shrink-0">
-                                        {t('notifications.overlay_switch_to', { defaultValue: 'Switch to:' })}
-                                    </span>
-                                    <strong
-                                        className="text-emerald-400 font-medium truncate min-w-0"
-                                        title={payload.target_email}
-                                    >
-                                        {payload.target_email || '...'}
-                                    </strong>
+                            {/* Row 2: Inset Recommended Target Account Card */}
+                            <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/95 rounded-xl px-3 py-2 border border-emerald-500/25 shadow-inner">
+                                <div className="flex items-center gap-2 min-w-0 truncate">
+                                    <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                                    </div>
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium leading-none">
+                                            {t('notifications.overlay_switch_to', { defaultValue: 'Switch to:' })}
+                                        </span>
+                                        <span
+                                            className="text-emerald-300 font-semibold text-[12px] truncate min-w-0 leading-tight pt-0.5"
+                                            title={payload.target_email}
+                                        >
+                                            {payload.target_email || '...'}
+                                        </span>
+                                    </div>
                                 </div>
                                 {payload.target_quota_score !== undefined && (
-                                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 text-[10px] font-bold whitespace-nowrap flex-shrink-0">
-                                        {payload.target_quota_score}% {t('notifications.overlay_quota_badge', { defaultValue: 'quota' })}
+                                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono font-bold whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
+                                        <span>{payload.target_quota_score}% {t('notifications.overlay_quota_badge', { defaultValue: 'quota' })}</span>
                                     </span>
                                 )}
                             </div>
@@ -249,13 +285,13 @@ export const NotificationOverlay: React.FC = () => {
                     )}
                 </div>
 
-                {/* Live Progress Bar (Countdown Only) */}
+                {/* Laser Progress Bar (Countdown Only) */}
                 {payload?.notification_type === 'countdown' && (
-                    <div className="w-full bg-slate-800/60 rounded-full h-1 overflow-hidden my-1 flex-shrink-0">
+                    <div className="w-full bg-slate-900/90 rounded-full h-1.5 overflow-hidden my-1 flex-shrink-0 border border-slate-800/80 shadow-inner relative">
                         <div
-                            className={`h-full transition-all duration-300 ${
+                            className={`h-full transition-all duration-300 ease-linear rounded-full ${
                                 isUrgent
-                                    ? 'bg-gradient-to-r from-rose-500 to-amber-400 animate-pulse'
+                                    ? 'bg-gradient-to-r from-rose-500 via-amber-400 to-rose-400 animate-pulse'
                                     : 'bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400'
                             }`}
                             style={{ width: `${progressPercentage}%` }}
@@ -263,40 +299,49 @@ export const NotificationOverlay: React.FC = () => {
                     </div>
                 )}
 
-                {/* Action Buttons */}
+                {/* Action Buttons with Micro-Keyboard Hints */}
                 {payload?.notification_type === 'countdown' ? (
-                    <div className="flex items-center justify-between gap-2 pt-1 flex-shrink-0">
+                    <div className="flex items-center justify-between gap-2 pt-1 flex-shrink-0 z-10">
+                        {/* Primary Action */}
                         <button
                             onClick={() => handleAction('switch_now')}
-                            className="flex-1 py-1.5 px-3 rounded-xl text-[11px] font-semibold flex items-center justify-center gap-1.5 bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white shadow-md shadow-cyan-950/50 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap flex-shrink-0"
-                            title="Enter"
+                            className="flex-1 py-1.5 px-3 rounded-xl text-[12px] font-semibold flex items-center justify-center gap-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-[0_0_18px_rgba(6,182,212,0.35)] hover:shadow-[0_0_24px_rgba(6,182,212,0.55)] transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap flex-shrink-0 cursor-pointer"
                         >
                             <Zap className="w-3.5 h-3.5 flex-shrink-0" />
                             <span>{t('notifications.overlay_switch_now', { defaultValue: 'Switch Now' })}</span>
+                            <kbd className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/40 text-cyan-200 border border-cyan-300/30 ms-1 shadow-sm">
+                                ↵
+                            </kbd>
                         </button>
 
+                        {/* Secondary Action */}
                         <button
                             onClick={() => handleAction('snooze')}
-                            className="py-1.5 px-3 rounded-xl text-[11px] font-medium flex items-center justify-center gap-1 bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 border border-slate-700/60 hover:text-white transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap flex-shrink-0"
-                            title="Space"
+                            className="py-1.5 px-3 rounded-xl text-[11px] font-medium flex items-center justify-center gap-1.5 bg-slate-900/85 hover:bg-slate-800 text-slate-300 border border-slate-700/80 hover:text-white hover:border-slate-600 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap flex-shrink-0 cursor-pointer"
                         >
                             <Clock className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                             <span>{t('notifications.overlay_snooze', { defaultValue: 'Snooze 5m' })}</span>
+                            <kbd className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/40 text-slate-400 border border-slate-700 ms-1 shadow-sm">
+                                ␣
+                            </kbd>
                         </button>
 
+                        {/* Tertiary Action */}
                         <button
                             onClick={() => handleAction('cancel')}
-                            className="py-1.5 px-2.5 rounded-xl text-[11px] font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors whitespace-nowrap flex-shrink-0"
-                            title="Esc"
+                            className="py-1.5 px-2.5 rounded-xl text-[11px] font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors whitespace-nowrap flex-shrink-0 cursor-pointer"
                         >
                             <span>{t('notifications.overlay_cancel', { defaultValue: 'Cancel' })}</span>
+                            <kbd className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-900/60 text-slate-500 border border-slate-800 ms-1">
+                                Esc
+                            </kbd>
                         </button>
                     </div>
                 ) : (
-                    <div className="flex justify-end pt-1 flex-shrink-0">
+                    <div className="flex justify-end pt-1 flex-shrink-0 z-10">
                         <button
                             onClick={() => invoke('hide_overlay_notification')}
-                            className="py-1.5 px-4 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                            className="py-1.5 px-4 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
                         >
                             {t('notifications.overlay_dismiss', { defaultValue: 'OK' })}
                         </button>
