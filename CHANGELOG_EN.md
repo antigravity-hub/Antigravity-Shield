@@ -3,6 +3,12 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.11.7 (2026-09-21)**:
+        -   **Network Resilience & Latency**: Prioritized production upstream endpoints with intelligent fallback to ensure connection stability and lower request latency.
+        -   **Startup & Auto-Launch**: Hardened Windows registry approval and path sanitization for persistent auto-launch startup configuration.
+        -   **Build & Compilation Optimization**: Optimized build pipelines and compilation profile with parallel code generation and strip flags.
+        -   **Version Synchronization Engine**: Enhanced automated SemVer parsing and release version bumper with tag collision guard.
+        -   **Cross-Platform Release Automation**: Aligned Unix and Windows release workflows with single-source-of-truth version synchronization.
     *   **v5.11.6 (2026-09-21)**:
         -   **Account Failover & Visual Transition**: Added floating countdown overlay and desktop notifications during automated account failovers to provide real-time user feedback.
         -   **Session Token Lifecycle**: Implemented proactive background keepalive routines for active IDE/CLI session tokens to maintain connection stability.
