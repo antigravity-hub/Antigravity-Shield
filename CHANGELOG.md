@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.12.0 (2026-09-21)**:
+        -   **HUD Notification Design & Interaction Overhaul**: Upgraded floating overlay window with deep obsidian glassmorphism, specular top-edge lighting, dynamic laser countdown progress bar, and embedded micro-keyboard badges (`↵ Enter`, `Space`, `Esc`).
+        -   **Telemetry State Hydration & Live Sync**: Eliminated stale default placeholder state by implementing two-way background payload querying and event listener synchronization upon cold start.
+        -   **Window Geometry & DPI Resilience**: Adjusted overlay canvas geometry to 450x215px with non-shrinking action controls to prevent vertical clipping and text wrapping across multi-monitor setups.
+        -   **Compiler Throughput Optimization**: Streamlined desktop build throughput by eliminating redundant static and dynamic library linker passes.
     *   **v5.11.7 (2026-09-21)**:
         -   **Network Resilience & Latency**: Prioritized production upstream endpoints with intelligent fallback to ensure connection stability and lower request latency.
         -   **Startup & Auto-Launch**: Hardened Windows registry approval and path sanitization for persistent auto-launch startup configuration.
