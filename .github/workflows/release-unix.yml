@@ -43,23 +43,6 @@ jobs:
         with:
           ref: ${{ github.event.inputs.release_tag || github.ref_name }}
 
-      - name: Rust setup
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust Cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri -> target
-
-      - name: Node.js setup
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: "npm"
-
-      - name: Install frontend dependencies
-        run: npm install --legacy-peer-deps --prefer-offline
-
       - name: Sync version from release tag & optimize build speed
         shell: bash
         run: |
@@ -94,6 +77,25 @@ jobs:
               console.log('Optimized beforeBuildCommand to npx vite build');
             }
           "
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          cache-on-failure: true
+          shared-key: "tauri-shield-release"
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline --no-audit --no-fund
 
       - name: Configure updater signing key
         shell: bash
@@ -210,23 +212,6 @@ jobs:
             libnm-dev \
             xdg-utils
 
-      - name: Rust setup
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust Cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri -> target
-
-      - name: Node.js setup
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: "npm"
-
-      - name: Install frontend dependencies
-        run: npm install --legacy-peer-deps --prefer-offline
-
       - name: Sync version from release tag & optimize build speed
         shell: bash
         run: |
@@ -261,6 +246,25 @@ jobs:
               console.log('Optimized beforeBuildCommand to npx vite build');
             }
           "
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          cache-on-failure: true
+          shared-key: "tauri-shield-release"
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline --no-audit --no-fund
 
       - name: Configure updater signing key
         shell: bash

@@ -40,22 +40,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Rust setup
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust Cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri -> target
-
-      - name: Node.js setup
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: "npm"
-
-      - name: Install frontend dependencies
-        run: npm install --legacy-peer-deps --prefer-offline
+      - name: Disable Windows Defender for Build Performance
+        shell: pwsh
+        run: |
+          Set-MpPreference -DisableRealtimeMonitoring $true -ErrorAction SilentlyContinue
+          Add-MpPreference -ExclusionPath "$env:USERPROFILE\.cargo", "$env:GITHUB_WORKSPACE", "$env:RUNNER_TEMP", "C:\Users\runneradmin\.cargo" -ErrorAction SilentlyContinue
 
       - name: Sync version from release tag & optimize build speed
         shell: bash
@@ -80,7 +69,6 @@ jobs:
             if [ -f src-tauri/Cargo.lock ]; then
               sed -i.bak -E '/name = "antigravity-shield"/{n;s/version = "[0-9]+\.[0-9]+\.[0-9]+.*"/version = "'"$TARGET_VER"'"/;}' src-tauri/Cargo.lock && rm -f src-tauri/Cargo.lock.bak
             fi
-            cargo update -p antigravity-shield --manifest-path src-tauri/Cargo.toml || true
           fi
           # Speed up frontend build: bypass full tsc typecheck during release build
           node -e "
@@ -93,6 +81,25 @@ jobs:
               console.log('Optimized beforeBuildCommand to npx vite build');
             }
           "
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          cache-on-failure: true
+          shared-key: "tauri-shield-release"
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm install --legacy-peer-deps --prefer-offline --no-audit --no-fund
 
       - name: Configure updater signing key
         shell: bash
@@ -328,7 +335,7 @@ jobs:
           makeLatest: ${{ (contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true') && 'false' || 'legacy' }}
 
       - name: Dispatch Release Unix Workflow
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && !startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.event.inputs.release_tag || github.ref_name }}
