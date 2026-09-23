@@ -69,8 +69,8 @@ pub const V1_INTERNAL_ALLOWED_HOST_DAILY: &str = "daily-cloudcode-pa.googleapis.
 pub const V1_INTERNAL_ALLOWED_PATH_PREFIX: &str = "/v1internal";
 
 pub const V1_INTERNAL_BASE_URL_FALLBACKS: [&str; 2] = [
-    V1_INTERNAL_BASE_URL_PROD,
     V1_INTERNAL_BASE_URL_DAILY,
+    V1_INTERNAL_BASE_URL_PROD,
 ];
 
 /// Validates whether a given URL string is an authorized, official Google endpoint.
