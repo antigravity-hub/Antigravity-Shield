@@ -70,7 +70,34 @@ const router = createHashRouter([
   },
 ]);
 
-function App() {
+function OverlayApp() {
+  const { config, loadConfig } = useConfigStore();
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    loadConfig();
+  }, [loadConfig]);
+
+  useEffect(() => {
+    if (config?.language) {
+      i18n.changeLanguage(config.language);
+      if (config.language === 'ar' || config.language === 'fa' || config.language.startsWith('fa-')) {
+        document.documentElement.dir = 'rtl';
+      } else {
+        document.documentElement.dir = 'ltr';
+      }
+    }
+  }, [config?.language, i18n]);
+
+  return (
+    <ErrorBoundary>
+      <ThemeManager />
+      <RouterProvider router={router} />
+    </ErrorBoundary>
+  );
+}
+
+function MainApp() {
   useQuotaAlertWatcher();
   const { config, loadConfig } = useConfigStore();
   const { fetchCurrentAccount, fetchAccounts } = useAccountStore();
@@ -213,4 +240,10 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  const isOverlay = typeof window !== 'undefined' && window.location.hash.includes('/overlay-notification');
+  if (isOverlay) {
+    return <OverlayApp />;
+  }
+  return <MainApp />;
+}
