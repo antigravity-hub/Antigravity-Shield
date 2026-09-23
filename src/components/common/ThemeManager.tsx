@@ -16,8 +16,10 @@ export default function ThemeManager() {
             setTimeout(async () => {
                 try {
                     const win = getCurrentWindow();
-                    await win.show();
-                    await win.setFocus();
+                    if (win.label === 'main') {
+                        await win.show();
+                        await win.setFocus();
+                    }
                 } catch {
                     // Ignore if running in pure browser
                 }
@@ -38,17 +40,20 @@ export default function ThemeManager() {
             // Skip on Linux due to crash with transparent windows + softbuffer
             try {
                 if (!isLinux() && (window as any).__TAURI_INTERNALS__) {
-                    const bgColor = isDark ? '#1d232a' : '#FAFBFC';
-                    // Don't await this, let it happen in background to avoid blocking React render
-                    getCurrentWindow().setBackgroundColor(bgColor).catch(e =>
-                        console.error('Failed to set window background color:', e)
-                    );
+                    const win = getCurrentWindow();
+                    if (win.label === 'main') {
+                        const bgColor = isDark ? '#1d232a' : '#FAFBFC';
+                        // Don't await this, let it happen in background to avoid blocking React render
+                        win.setBackgroundColor(bgColor).catch(e =>
+                            console.error('Failed to set window background color:', e)
+                        );
 
-                    // Sync Windows title bar theme (for minimize/maximize/close button colors)
-                    const { invoke } = await import('@tauri-apps/api/core');
-                    invoke('set_window_theme', { theme }).catch(() => {
-                        // Ignore errors on non-Windows platforms
-                    });
+                        // Sync Windows title bar theme (for minimize/maximize/close button colors)
+                        const { invoke } = await import('@tauri-apps/api/core');
+                        invoke('set_window_theme', { theme }).catch(() => {
+                            // Ignore errors on non-Windows platforms
+                        });
+                    }
                 }
             } catch (e) {
                 console.error('Window background sync failed:', e);

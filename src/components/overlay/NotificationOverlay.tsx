@@ -95,8 +95,21 @@ export const NotificationOverlay: React.FC = () => {
             initTimer(data);
         });
 
+        // 3. Safety auto-dismiss: If no payload is received within 3.5 seconds of mount, hide the overlay window
+        const safetyTimer = setTimeout(() => {
+            if (isMounted) {
+                setPayload((current) => {
+                    if (!current) {
+                        invoke('hide_overlay_notification').catch(() => {});
+                    }
+                    return current;
+                });
+            }
+        }, 3500);
+
         return () => {
             isMounted = false;
+            clearTimeout(safetyTimer);
             unlistenPromise.then((unlisten) => unlisten());
             if (timerRef.current) clearInterval(timerRef.current);
         };
