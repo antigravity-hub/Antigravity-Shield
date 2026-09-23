@@ -4,14 +4,17 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuotaBucket {
     /// 桶 ID,如 "gemini-weekly" / "gemini-5h" / "3p-weekly" / "3p-5h"
+    #[serde(alias = "bucketId")]
     pub bucket_id: String,
     /// 窗口类型: "weekly" / "5h"
     pub window: String,
     /// 剩余比例 0.0-1.0
+    #[serde(alias = "remainingFraction")]
     pub remaining_fraction: f64,
     /// 重置时间 (RFC3339)
+    #[serde(alias = "resetTime")]
     pub reset_time: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "displayName")]
     pub display_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -20,6 +23,7 @@ pub struct QuotaBucket {
 /// 一个模型组 (如 Gemini Models / Claude and GPT models)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuotaGroup {
+    #[serde(alias = "displayName")]
     pub display_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -31,24 +35,25 @@ pub struct QuotaGroup {
 pub struct ModelQuota {
     pub name: String,
     pub percentage: i32, // 剩余百分比 0-100
+    #[serde(alias = "resetTime")]
     pub reset_time: String,
 
     // -- 动态参数解析与持久化 --
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "displayName")]
     pub display_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "supportsImages")]
     pub supports_images: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "supportsThinking")]
     pub supports_thinking: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "thinkingBudget")]
     pub thinking_budget: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recommended: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "maxTokens")]
     pub max_tokens: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "maxOutputTokens")]
     pub max_output_tokens: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none", alias = "supportedMimeTypes")]
     pub supported_mime_types: Option<std::collections::HashMap<String, bool>>,
 }
 
@@ -56,20 +61,21 @@ pub struct ModelQuota {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuotaData {
     pub models: Vec<ModelQuota>,
+    #[serde(alias = "lastUpdated")]
     pub last_updated: i64,
-    #[serde(default)]
+    #[serde(default, alias = "isForbidden")]
     pub is_forbidden: bool,
     /// 禁止访问的原因 (403 详细信息)
-    #[serde(default)]
+    #[serde(default, alias = "forbiddenReason")]
     pub forbidden_reason: Option<String>,
     /// 订阅等级 (FREE/PRO/ULTRA)
-    #[serde(default)]
+    #[serde(default, alias = "subscriptionTier")]
     pub subscription_tier: Option<String>,
     /// 模型淘汰重定向规则表 (old_model_id -> new_model_id)
-    #[serde(default)]
+    #[serde(default, alias = "modelForwardingRules")]
     pub model_forwarding_rules: std::collections::HashMap<String, String>,
     /// 按模型组的配额摘要 (weekly + 5h 双窗口),来自 retrieveUserQuotaSummary
-    #[serde(default)]
+    #[serde(default, alias = "quotaGroups")]
     pub quota_groups: Option<Vec<QuotaGroup>>,
 }
 
