@@ -58,6 +58,7 @@ function Accounts() {
     deleteAccounts,
     switchAccount,
     refreshQuota,
+    clearAccountValidation,
     toggleProxyStatus,
     reorderAccounts,
     warmUpAccounts,
@@ -510,8 +511,17 @@ function Accounts() {
       return next;
     });
     try {
-      await refreshQuota(accountId);
-      showToast(t("common.success"), "success");
+      const targetAcc = accounts.find((a) => a.id === accountId);
+      if (targetAcc?.validation_blocked) {
+        await clearAccountValidation(accountId);
+        showToast(
+          t("accounts.toast.validation_cleared", "Account validation block cleared and refreshed"),
+          "success"
+        );
+      } else {
+        await refreshQuota(accountId);
+        showToast(t("common.success"), "success");
+      }
     } catch (error) {
       showToast(`${t("common.error")}: ${error}`, "error");
     } finally {
