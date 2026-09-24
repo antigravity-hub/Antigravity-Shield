@@ -42,7 +42,8 @@
 
 | Feature | Description | Highlight |
 | :--- | :--- | :--- |
-| 🔌 **Zero-Restart IDE Hot-Switching** | Bundled **Antigravity Toolkit 2.2.0** extension enables 1-click account switching inside **Antigravity IDE, VS Code, JetBrains, Zed, and Xcode** without closing or reopening IDE windows. | Keeps running agent sessions, terminal state, and unsaved file buffers 100% intact via local loopback bridge (`127.0.0.1:8765`). |
+| 🛡️ **Crash-Resilient Session Recovery (Zero Data Loss)** | Bundled **Antigravity Toolkit 2.5.0** & Shield Brain Watcher feature autonomous state synchronization that detects and recovers interrupted agent conversations after sudden power outages, OS crashes, or abrupt IDE terminations. | Automatically reconciles disk-persisted transcripts (`~/.gemini/antigravity/brain/`) with IDE internal state databases (`state.vscdb`), injecting missing Protobuf trajectory summaries and guaranteeing 100% conversation continuity. |
+| 🔌 **Zero-Restart IDE Hot-Switching** | Bundled **Antigravity Toolkit 2.5.0** extension enables 1-click account switching inside **Antigravity IDE, VS Code, JetBrains, Zed, and Xcode** without closing or reopening IDE windows. | Keeps running agent sessions, terminal state, and unsaved file buffers 100% intact via local loopback bridge (`127.0.0.1:8765`). |
 | 🧠 **Autonomous Brain & Chat History Scanner** | Native Rust `brain_scanner` engine watches local transcript logs (`~/.gemini/antigravity/brain/`) in real-time every 3 seconds, recovering token usage and multi-turn chat statistics. | Automatically parses prompt/completion tokens, model identities, and conversation trees into local SQLite analytics. |
 | 💓 **Live Network Health Pulse & Region Radar** | Real-time connection pulse testing upstream latency to **Google Production APIs**, **Gemini Endpoints**, and **Global Internet**. | Built-in Cloudflare WARP detector and in-app step-by-step unblocking guide for geoblocked regions (HTTP 400 location errors). |
 | 📊 **53-Week Annual Token Heatmap** | Interactive GitHub-style contribution calendar mapping token burn across the entire year with 5 dynamic intensity levels. | Filter usage across **Antigravity IDE**, **Antigravity CLI (`agy`)**, and the **Gateway Proxy** with single-day click-to-inspect drilldowns. |
@@ -71,6 +72,7 @@ While the original upstream project (`lbjlaq/Antigravity-Manager`) provided a ba
 | **Agent Tool Protocol Reliability** | ❌ Agent execution aborts when downstream models output raw tool invocations in unstructured streams. | ✅ **Fault-Tolerant Protocol Translation:** Robust bi-directional protocol adaptation ensuring continuous, unbroken multi-step tool execution. |
 | **Regional Network Resilience** | ❌ Strict transport drops on region-specific upstream responses with zero retry capabilities. | ✅ **Adaptive Routing & Failover:** Automated transport-level retry strategies and resilient proxy failover maintaining active agent sessions. |
 | **IDE Account Switching** | ❌ Requires terminating and reopening IDE processes, destroying active agent loops, terminals, and buffers. | ✅ **Zero-Restart Live Toolkit Bridge:** Seamless in-memory account switching inside running IDEs with full session continuity. |
+| **Crash & Power-Outage Resilience** | ❌ Abrupt process terminations and sudden power outages drop uncommitted chat sessions from IDE history forever due to in-memory debounce loss. | ✅ **Autonomous State Reconciliation & Injection:** Scans disk logs, synthesizes Protobuf trajectory descriptors, and restores uncommitted sessions into IDE native history with zero data loss. |
 | **Continuous Automated Verification** | ❌ Manual verification with high risk of protocol regressions and unexpected behavior under load. | ✅ **Comprehensive Automated Verification:** 100% automated end-to-end regression validation guaranteeing system-wide protocol fidelity. |
 
 ---
@@ -96,8 +98,9 @@ While the original upstream project (`lbjlaq/Antigravity-Manager`) provided a ba
 * **1-Click Extension Installation:** Bundled `antigravity-toolkit.vsix` installs directly with one click from the UI.
 * **Bi-Directional Telemetry:** Live heartbeat badge in the header shows active editor connection, active account email, and port fallback status.
 
-### 2. 🧠 Conversation Telemetry & Brain Scanner
+### 2. 🧠 Conversation Telemetry, Brain Scanner & Crash Recovery
 * **Autonomous File Watcher:** Rust-powered watcher monitors `~/.gemini/antigravity/brain/` every 3 seconds for newly written prompt/response transcripts.
+* **Crash-Resilient Session Recovery (Power-Outage Defense):** When sudden power outages or abrupt OS shutdowns kill running IDE windows, Antigravity IDE's internal state database (`state.vscdb`) drops the uncommitted session from history because trajectory summaries are only flushed on graceful shutdown. Antigravity-Shield and the bundled Toolkit automatically detect unindexed brain transcripts, synthesize compliant Protobuf trajectory descriptors, and inject them back into the IDE's native conversation store so developers can pick up active agent tasks right where they left off with zero data loss.
 * **Full Context Extraction:** Reconstructs token consumption, model IDs, conversation branches, and error rates.
 * **Multi-Source Attribution:** Cleanly differentiates usage across **Antigravity IDE**, **Antigravity CLI (`agy`)**, and the **Local Gateway Proxy (`port 8045`)**.
 
