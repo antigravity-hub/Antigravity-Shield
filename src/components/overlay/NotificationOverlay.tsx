@@ -53,6 +53,7 @@ export const NotificationOverlay: React.FC = () => {
         setTimeLeft(initialSecs);
 
         if (timerRef.current) {
+            clearTimeout(timerRef.current);
             clearInterval(timerRef.current);
             timerRef.current = null;
         }
@@ -69,10 +70,10 @@ export const NotificationOverlay: React.FC = () => {
                 });
             }, 1000);
         } else {
-            // Auto dismiss toasts after 7 seconds
+            // Auto dismiss toasts after 6 seconds
             timerRef.current = setTimeout(() => {
                 invoke('hide_overlay_notification');
-            }, 7000);
+            }, 6000);
         }
     }, [handleAction]);
 
@@ -292,8 +293,17 @@ export const NotificationOverlay: React.FC = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="text-xs text-slate-200 py-1 leading-relaxed line-clamp-3">
-                            {payload.message}
+                        <div className="flex-1 flex flex-col justify-center py-1">
+                            <div className="flex items-center gap-3 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/95 rounded-xl px-3.5 py-3 border border-cyan-500/25 shadow-inner">
+                                <div className="w-8 h-8 rounded-lg bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center flex-shrink-0 text-cyan-400">
+                                    <Zap className="w-4 h-4" />
+                                </div>
+                                <div className="flex flex-col min-w-0 flex-1">
+                                    <span className="text-[13px] font-semibold text-slate-100 leading-snug line-clamp-2">
+                                        {payload.message}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -351,10 +361,13 @@ export const NotificationOverlay: React.FC = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="flex justify-end pt-1 flex-shrink-0 z-10">
+                    <div className="flex items-center justify-between pt-1 flex-shrink-0 z-10 border-t border-slate-800/60">
+                        <span className="text-[11px] text-slate-400 font-medium">
+                            {t('notifications.overlay_auto_dismiss', { defaultValue: 'Auto-closing in a few seconds' })}
+                        </span>
                         <button
                             onClick={() => invoke('hide_overlay_notification')}
-                            className="py-1.5 px-4 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
+                            className="py-1 px-4 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-200 transition-colors cursor-pointer"
                         >
                             {t('notifications.overlay_dismiss', { defaultValue: 'OK' })}
                         </button>
