@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.12.1 (2026-09-24)**:
+        -   **Crash-Resilient Session Recovery & Zero Data Loss**: Engineered autonomous state reconciliation between disk-persisted Brain transcripts (`~/.gemini/antigravity/brain/`) and IDE state storage (`state.vscdb`), recovering interrupted agent trajectories dropped during sudden power outages or abrupt OS shutdowns.
+        -   **Bundled Antigravity Toolkit v2.5.0**: Integrated upgraded Toolkit companion extension with native Protobuf trajectory synthesis, automated unindexed conversation healing, and one-click transcript inspection fallback.
+        -   **Autonomous Trajectory Injection Engine**: Added binary Protobuf descriptor serialization matching Antigravity IDE unifiedStateSync schemas, ensuring seamless restoration of uncommitted conversation histories.
     *   **v5.12.0 (2026-09-21)**:
         -   **HUD Notification Design & Interaction Overhaul**: Upgraded floating overlay window with deep obsidian glassmorphism, specular top-edge lighting, dynamic laser countdown progress bar, and embedded micro-keyboard badges (`↵ Enter`, `Space`, `Esc`).
         -   **Telemetry State Hydration & Live Sync**: Eliminated stale default placeholder state by implementing two-way background payload querying and event listener synchronization upon cold start.
