@@ -518,6 +518,10 @@ pub fn run() {
             modules::brain_scanner::start_live_watcher(Some(app.handle().clone()));
             info!("Real-time Brain transcript watcher initialized.");
 
+            // Start autonomous background updater for Antigravity Toolkit Extension (Startup + every 6h)
+            modules::ide_scanner::start_toolkit_auto_updater(Some(app.handle().clone()));
+            info!("Autonomous Toolkit Extension background updater initialized (Startup + 6h cycle).");
+
             // [PHASE 1] 已整合至 Axum 端口 (8045)，不再单独启动 19527 端口
             info!("Management API integrated into main proxy server (port 8045)");
 

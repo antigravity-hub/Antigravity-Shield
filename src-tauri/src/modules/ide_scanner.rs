@@ -422,7 +422,7 @@ pub fn get_bundled_vsix_path() -> Option<PathBuf> {
     }
 
     // 3. Development fallback
-    for v in &["2.4.1", "2.4.0", "2.3.0", "2.2.0", "2.1.1", "1.0.1", "1.0.0"] {
+    for v in &["2.4.2", "2.4.1", "2.4.0", "2.3.0", "2.2.0", "2.1.1", "1.0.1", "1.0.0"] {
         let cand = PathBuf::from(format!(
             r"d:\Ershad Zolfi\programming\coding with Gemini\antigravity-toolkit-extension\antigravity-toolkit-{}.vsix",
             v
@@ -515,3 +515,205 @@ pub fn install_toolkit_to_ide(ide_id: &str) -> Result<String, String> {
         _ => Err(format!("Automated 1-click install is not supported for '{}'. Please use the manual setup guide.", ide_id)),
     }
 }
+
+/// Helper to extract semver from a VSIX file or companion version file
+pub fn get_vsix_version(vsix_path: &Path) -> Option<String> {
+    // 1. Check companion toolkit_version.txt in same directory or parent
+    if let Some(parent) = vsix_path.parent() {
+        let companion = parent.join("toolkit_version.txt");
+        if companion.exists() {
+            if let Ok(s) = std::fs::read_to_string(companion) {
+                let trimmed = s.trim().to_string();
+                if !trimmed.is_empty() {
+                    return Some(trimmed);
+                }
+            }
+        }
+    }
+
+    // 2. Check filename semver (e.g. antigravity-toolkit-2.4.2.vsix)
+    if let Some(file_name) = vsix_path.file_name() {
+        let name_str = file_name.to_string_lossy();
+        if let Some(idx) = name_str.rfind('-') {
+            let after = &name_str[idx + 1..];
+            let cleaned = after.trim_end_matches(".vsix");
+            if cleaned.chars().all(|c| c.is_ascii_digit() || c == '.') && cleaned.contains('.') {
+                return Some(cleaned.to_string());
+            }
+        }
+    }
+
+    // 3. Scan first 128KB of VSIX for "version":"x.y.z"
+    if let Ok(mut f) = std::fs::File::open(vsix_path) {
+        use std::io::Read;
+        let mut buf = vec![0u8; 131072];
+        if let Ok(n) = f.read(&mut buf) {
+            let slice = &buf[..n];
+            let needle = b"\"version\":\"";
+            if let Some(pos) = slice.windows(needle.len()).position(|w| w == needle) {
+                let start = pos + needle.len();
+                let rest = &slice[start..];
+                if let Some(end) = rest.iter().position(|&b| b == b'"') {
+                    if let Ok(ver) = std::str::from_utf8(&rest[..end]) {
+                        return Some(ver.trim().to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    Some("2.4.2".to_string())
+}
+
+/// Returns the highest installed version of antigravity-toolkit extension in target directories
+pub fn get_installed_toolkit_version(subdirs: &[&str]) -> Option<String> {
+    let home = dirs::home_dir()?;
+    let mut highest_version: Option<String> = None;
+
+    for subdir in subdirs {
+        let ext_dir = home.join(subdir).join("extensions");
+        if !ext_dir.exists() {
+            continue;
+        }
+        if let Ok(entries) = std::fs::read_dir(ext_dir) {
+            for entry in entries.flatten() {
+                let name = entry.file_name().to_string_lossy().to_string();
+                let lower = name.to_lowercase();
+                if lower.contains("antigravity-toolkit") || lower.contains("antigravity_toolkit") {
+                    let entry_path = entry.path();
+                    let mut ver_str = None;
+
+                    // 1. Try reading package.json inside extension directory
+                    let pkg_json = entry_path.join("package.json");
+                    if pkg_json.exists() {
+                        if let Ok(content) = std::fs::read_to_string(&pkg_json) {
+                            if let Ok(val) = serde_json::from_str::<serde_json::Value>(&content) {
+                                if let Some(v) = val.get("version").and_then(|v| v.as_str()) {
+                                    ver_str = Some(v.to_string());
+                                }
+                            }
+                        }
+                    }
+
+                    // 2. Fallback: extract semver from directory name (e.g. antigravity-toolkit-2.4.2)
+                    if ver_str.is_none() {
+                        if let Some(idx) = name.rfind('-') {
+                            let candidate = &name[idx + 1..];
+                            if candidate.chars().all(|c| c.is_ascii_digit() || c == '.') && candidate.contains('.') {
+                                ver_str = Some(candidate.to_string());
+                            }
+                        }
+                    }
+
+                    if let Some(ver) = ver_str {
+                        match &highest_version {
+                            Some(current) => {
+                                if is_version_newer(&ver, current) {
+                                    highest_version = Some(ver);
+                                }
+                            }
+                            None => {
+                                highest_version = Some(ver);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    highest_version
+}
+
+/// Compares two semver strings: returns true if candidate is strictly newer than current
+pub fn is_version_newer(candidate: &str, current: &str) -> bool {
+    fn parse_parts(v: &str) -> Vec<u32> {
+        v.trim_start_matches('v')
+            .split('.')
+            .filter_map(|s| s.parse::<u32>().ok())
+            .collect()
+    }
+
+    let cand_parts = parse_parts(candidate);
+    let cur_parts = parse_parts(current);
+
+    let max_len = cand_parts.len().max(cur_parts.len());
+    for i in 0..max_len {
+        let c = cand_parts.get(i).copied().unwrap_or(0);
+        let cur = cur_parts.get(i).copied().unwrap_or(0);
+        if c > cur {
+            return true;
+        } else if c < cur {
+            return false;
+        }
+    }
+
+    false
+}
+
+/// Checks if the installed toolkit extension is missing or older than the available VSIX,
+/// and automatically performs an unattended background upgrade.
+pub fn check_and_auto_upgrade_toolkit() -> Result<bool, String> {
+    let vsix_path = match get_bundled_vsix_path() {
+        Some(p) => p,
+        None => return Ok(false),
+    };
+
+    let target_ver = get_vsix_version(&vsix_path).unwrap_or_else(|| "2.4.2".to_string());
+    let installed_ver = get_installed_toolkit_version(&[".antigravity-ide", ".antigravity"]);
+
+    let should_upgrade = match installed_ver.as_deref() {
+        None => true,
+        Some(inst) => is_version_newer(&target_ver, inst),
+    };
+
+    if should_upgrade {
+        tracing::info!(
+            "[ToolkitAutoUpdater] Extension auto-upgrade triggered: installed={:?}, target={}",
+            installed_ver,
+            target_ver
+        );
+
+        let res = install_toolkit_to_ide("antigravity");
+        match res {
+            Ok(msg) => {
+                tracing::info!("[ToolkitAutoUpdater] {}", msg);
+                Ok(true)
+            }
+            Err(e) => {
+                tracing::warn!("[ToolkitAutoUpdater] Auto-upgrade failed: {}", e);
+                Err(e)
+            }
+        }
+    } else {
+        tracing::debug!(
+            "[ToolkitAutoUpdater] Toolkit extension is already up to date ({:?})",
+            installed_ver
+        );
+        Ok(false)
+    }
+}
+
+/// Starts a persistent background task that:
+/// 1. Checks and auto-updates the toolkit extension on startup (after 8s warmup).
+/// 2. Periodically re-checks every 6 hours in the background.
+pub fn start_toolkit_auto_updater(_app_handle: Option<tauri::AppHandle>) {
+    tauri::async_runtime::spawn(async move {
+        // Initial warmup delay on app launch
+        tokio::time::sleep(Duration::from_secs(8)).await;
+
+        let _ = tokio::task::spawn_blocking(|| {
+            let _ = check_and_auto_upgrade_toolkit();
+        }).await;
+
+        // Recurring schedule: every 6 hours
+        let mut interval = tokio::time::interval(Duration::from_secs(6 * 3600));
+        loop {
+            interval.tick().await;
+            let _ = tokio::task::spawn_blocking(|| {
+                let _ = check_and_auto_upgrade_toolkit();
+            }).await;
+        }
+    });
+}
+
