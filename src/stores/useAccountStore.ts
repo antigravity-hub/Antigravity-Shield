@@ -256,16 +256,21 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     clearAccountValidation: async (accountId: string) => {
         try {
             await accountService.clearAccountValidation(accountId);
-            const freshQuota = await accountService.fetchAccountQuota(accountId);
-            set(state => ({
-                accounts: state.accounts.map(acc =>
-                    acc.id === accountId ? { ...acc, validation_blocked: false, validation_blocked_reason: undefined, quota: freshQuota } : acc
-                ),
-                currentAccount: state.currentAccount?.id === accountId
-                    ? { ...state.currentAccount, validation_blocked: false, validation_blocked_reason: undefined, quota: freshQuota }
-                    : state.currentAccount,
-                lastSyncedAt: Date.now()
-            }));
+            try {
+                const freshQuota = await accountService.fetchAccountQuota(accountId);
+                set(state => ({
+                    accounts: state.accounts.map(acc =>
+                        acc.id === accountId ? { ...acc, validation_blocked: false, validation_blocked_reason: undefined, quota: freshQuota } : acc
+                    ),
+                    currentAccount: state.currentAccount?.id === accountId
+                        ? { ...state.currentAccount, validation_blocked: false, validation_blocked_reason: undefined, quota: freshQuota }
+                        : state.currentAccount,
+                    lastSyncedAt: Date.now()
+                }));
+            } catch (quotaErr) {
+                await get().fetchAccounts();
+                throw quotaErr;
+            }
         } catch (error) {
             set({ error: String(error) });
             throw error;
