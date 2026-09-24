@@ -931,8 +931,35 @@ pub async fn get_data_dir_path() -> Result<String, String> {
 
 /// 发送系统原生桌面通知
 #[tauri::command]
-pub async fn send_desktop_notification(title: String, body: String) -> Result<(), String> {
-    crate::modules::integration::show_os_notification(&title, &body);
+pub async fn send_desktop_notification(
+    app: tauri::AppHandle,
+    title: String,
+    body: String,
+) -> Result<(), String> {
+    let config = crate::modules::config::load_app_config().unwrap_or_default();
+    if config.overlay_notifications_enabled {
+        let payload = crate::modules::overlay::OverlayNotificationPayload {
+            notification_type: "toast".to_string(),
+            title: title.clone(),
+            message: body.clone(),
+            model_name: None,
+            current_email: None,
+            target_email: None,
+            target_quota_score: None,
+            countdown_secs: None,
+            target_account_id: None,
+            target_env: None,
+        };
+        if let Err(e) = crate::modules::overlay::show_overlay_notification(&app, payload) {
+            crate::modules::logger::log_warn(&format!(
+                "[Notification] Overlay failed ({}), falling back to OS notification",
+                e
+            ));
+            crate::modules::integration::show_os_notification(&title, &body);
+        }
+    } else {
+        crate::modules::integration::show_os_notification(&title, &body);
+    }
     Ok(())
 }
 

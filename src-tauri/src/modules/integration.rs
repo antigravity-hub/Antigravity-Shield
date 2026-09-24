@@ -293,7 +293,31 @@ impl SystemIntegration for DesktopIntegration {
 
     fn show_notification(&self, title: &str, body: &str) {
         crate::modules::logger::log_info(&format!("[Notification] {}: {}", title, body));
-        show_os_notification(title, body);
+
+        let config = crate::modules::config::load_app_config().unwrap_or_default();
+        if config.overlay_notifications_enabled {
+            let payload = crate::modules::overlay::OverlayNotificationPayload {
+                notification_type: "toast".to_string(),
+                title: title.to_string(),
+                message: body.to_string(),
+                model_name: None,
+                current_email: None,
+                target_email: None,
+                target_quota_score: None,
+                countdown_secs: None,
+                target_account_id: None,
+                target_env: None,
+            };
+            if let Err(e) = crate::modules::overlay::show_overlay_notification(&self.app_handle, payload) {
+                crate::modules::logger::log_warn(&format!(
+                    "[Notification] Failed to show floating HUD toast: {}, falling back to OS notification",
+                    e
+                ));
+                show_os_notification(title, body);
+            }
+        } else {
+            show_os_notification(title, body);
+        }
     }
 }
 

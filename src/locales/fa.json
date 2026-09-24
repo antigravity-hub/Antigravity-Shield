@@ -1727,6 +1727,7 @@
     "overlay_snooze": "۵ دقیقه بعد",
     "overlay_cancel": "لغو",
     "overlay_dismiss": "بستن",
+    "overlay_auto_dismiss": "بسته‌شدن خودکار تا چند ثانیه دیگر",
     "overlay_waiting": "در حال دریافت اطلاعات شیلد...",
     "overlay_default_model": "مدل هوش مصنوعی"
   }

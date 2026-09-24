@@ -286,7 +286,9 @@ export function useQuotaAlertWatcher() {
                             lastAutoSwitchMap.set(nextAccount.id, Date.now());
                             await switchAccount(nextAccount.id, targetEnv);
                             showToast(switchMsg, 'success', 8000);
-                            sendDesktopNotification(switchTitle, switchMsg);
+                            if (!overlayEnabled) {
+                                sendDesktopNotification(switchTitle, switchMsg);
+                            }
                             await fetchAccounts();
                         } catch (err) {
                             console.error('[QuotaAlertWatcher] Auto-switch failed:', err);
