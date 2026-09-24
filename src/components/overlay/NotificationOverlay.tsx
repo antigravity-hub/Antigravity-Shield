@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { listen } from '@tauri-apps/api/event';
 import { emit } from '@tauri-apps/api/event';
-import { request as invoke } from '../../utils/request';
+import { invoke } from '@tauri-apps/api/core';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 import { useTranslation } from 'react-i18next';
 import { Zap, Clock, X, AlertTriangle, CheckCircle2, Loader2, Shield, Sparkles, Cpu } from 'lucide-react';
 import { getFloatingOverlayPayload } from '../../services/overlayNotificationService';
@@ -27,55 +28,112 @@ export const NotificationOverlay: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState<number>(30);
     const totalTimeRef = useRef<number>(30);
     const timerRef = useRef<any>(null);
+    const safetyTimerRef = useRef<any>(null);
+    const payloadRef = useRef<OverlayPayload | null>(null);
+    payloadRef.current = payload;
 
-    const handleAction = useCallback(async (action: 'switch_now' | 'snooze' | 'cancel') => {
+    // Guaranteed window hide function: backend invoke + direct client webview fallback
+    const closeOverlay = useCallback(async () => {
         if (timerRef.current) {
             clearInterval(timerRef.current);
+            clearTimeout(timerRef.current);
             timerRef.current = null;
+        }
+        if (safetyTimerRef.current) {
+            clearTimeout(safetyTimerRef.current);
+            safetyTimerRef.current = null;
+        }
+
+        try {
+            await invoke('hide_overlay_notification');
+        } catch (err) {
+            console.warn('[NotificationOverlay] Backend hide invoke failed:', err);
+        }
+
+        try {
+            const win = getCurrentWindow();
+            await win.hide();
+        } catch (err) {
+            console.warn('[NotificationOverlay] Direct window hide fallback failed:', err);
+        }
+
+        setPayload(null);
+    }, []);
+
+    const handleAction = useCallback(async (action: 'switch_now' | 'snooze' | 'cancel') => {
+        const currentPayload = payloadRef.current;
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+        if (safetyTimerRef.current) {
+            clearTimeout(safetyTimerRef.current);
+            safetyTimerRef.current = null;
         }
 
         try {
             await emit('overlay-user-action', {
                 action,
-                target_account_id: payload?.target_account_id,
-                target_env: payload?.target_env,
-                target_email: payload?.target_email,
+                target_account_id: currentPayload?.target_account_id,
+                target_env: currentPayload?.target_env,
+                target_email: currentPayload?.target_email,
             });
-            await invoke('hide_overlay_notification');
         } catch (err) {
             console.error('[NotificationOverlay] Error dispatching action:', err);
         }
-    }, [payload]);
+
+        await closeOverlay();
+    }, [closeOverlay]);
 
     const initTimer = useCallback((data: OverlayPayload) => {
-        const initialSecs = data.countdown_secs && data.countdown_secs > 0 ? data.countdown_secs : 30;
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+        if (safetyTimerRef.current) {
+            clearTimeout(safetyTimerRef.current);
+            safetyTimerRef.current = null;
+        }
+
+        const isCountdown = data.notification_type === 'countdown';
+        const initialSecs = isCountdown
+            ? (data.countdown_secs && data.countdown_secs > 0 ? data.countdown_secs : 30)
+            : 5; // Toasts auto-dismiss after 5 seconds
+
         totalTimeRef.current = initialSecs;
         setTimeLeft(initialSecs);
 
-        if (timerRef.current) {
-            clearTimeout(timerRef.current);
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-
-        if (data.notification_type === 'countdown') {
-            timerRef.current = setInterval(() => {
-                setTimeLeft((prev) => {
-                    if (prev <= 1) {
-                        if (timerRef.current) clearInterval(timerRef.current);
-                        handleAction('switch_now');
-                        return 0;
+        // 1. Live ticking interval for smooth real-time countdown & progress bar
+        timerRef.current = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    if (timerRef.current) {
+                        clearInterval(timerRef.current);
+                        clearTimeout(timerRef.current);
+                        timerRef.current = null;
                     }
-                    return prev - 1;
-                });
-            }, 1000);
-        } else {
-            // Auto dismiss toasts after 6 seconds
-            timerRef.current = setTimeout(() => {
-                invoke('hide_overlay_notification');
-            }, 6000);
-        }
-    }, [handleAction]);
+                    if (isCountdown) {
+                        handleAction('switch_now');
+                    } else {
+                        closeOverlay();
+                    }
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        // 2. Secondary hard safety timer to guarantee auto-closing even if background throttling occurs
+        safetyTimerRef.current = setTimeout(() => {
+            if (isCountdown) {
+                handleAction('switch_now');
+            } else {
+                closeOverlay();
+            }
+        }, (initialSecs * 1000) + 500);
+    }, [handleAction, closeOverlay]);
 
     useEffect(() => {
         let isMounted = true;
@@ -86,6 +144,8 @@ export const NotificationOverlay: React.FC = () => {
                 setPayload(cached as OverlayPayload);
                 initTimer(cached as OverlayPayload);
             }
+        }).catch((err) => {
+            console.warn('[NotificationOverlay] Failed to fetch cached payload:', err);
         });
 
         // 2. Listen for push notification events from Tauri
@@ -96,12 +156,12 @@ export const NotificationOverlay: React.FC = () => {
             initTimer(data);
         });
 
-        // 3. Safety auto-dismiss: If no payload is received within 3.5 seconds of mount, hide the overlay window
+        // 3. Safety auto-dismiss: If no payload is received within 3.5 seconds of initial mount, hide window
         const safetyTimer = setTimeout(() => {
             if (isMounted) {
                 setPayload((current) => {
                     if (!current) {
-                        invoke('hide_overlay_notification').catch(() => {});
+                        closeOverlay();
                     }
                     return current;
                 });
@@ -112,16 +172,25 @@ export const NotificationOverlay: React.FC = () => {
             isMounted = false;
             clearTimeout(safetyTimer);
             unlistenPromise.then((unlisten) => unlisten());
-            if (timerRef.current) clearInterval(timerRef.current);
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+                clearTimeout(timerRef.current);
+                timerRef.current = null;
+            }
+            if (safetyTimerRef.current) {
+                clearTimeout(safetyTimerRef.current);
+                safetyTimerRef.current = null;
+            }
         };
-    }, [initTimer]);
+    }, [initTimer, closeOverlay]);
 
-    // Keyboard navigation: Enter for Switch, Space for Snooze, Escape for Cancel
+    // Keyboard navigation: Enter for Switch, Space for Snooze, Escape for Cancel/Dismiss
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (!payload || payload.notification_type !== 'countdown') {
+            const current = payloadRef.current;
+            if (!current || current.notification_type !== 'countdown') {
                 if (e.key === 'Escape' || e.key === 'Enter') {
-                    invoke('hide_overlay_notification');
+                    closeOverlay();
                 }
                 return;
             }
@@ -140,10 +209,10 @@ export const NotificationOverlay: React.FC = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleAction, payload]);
+    }, [handleAction, closeOverlay]);
 
-    const progressPercentage = Math.max(0, Math.min(100, (timeLeft / (totalTimeRef.current || 30)) * 100));
-    const isUrgent = timeLeft <= 7;
+    const progressPercentage = Math.max(0, Math.min(100, (timeLeft / (totalTimeRef.current || 1)) * 100));
+    const isUrgent = payload?.notification_type === 'countdown' ? timeLeft <= 7 : timeLeft <= 2;
 
     const formatModelName = (name?: string) => {
         if (!name) return t('notifications.overlay_default_model', { defaultValue: 'AI Model' });
@@ -213,7 +282,7 @@ export const NotificationOverlay: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
-                        {payload?.notification_type === 'countdown' && (
+                        {payload?.notification_type === 'countdown' ? (
                             <div
                                 className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full flex items-center gap-1.5 font-bold shadow-sm transition-colors ${
                                     isUrgent
@@ -224,10 +293,15 @@ export const NotificationOverlay: React.FC = () => {
                                 <Clock className="w-3 h-3 flex-shrink-0" />
                                 <span>{timeLeft}s</span>
                             </div>
+                        ) : (
+                            <div className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900/80 text-cyan-300 border border-cyan-500/20 flex items-center gap-1">
+                                <Clock className="w-2.5 h-2.5 text-cyan-400" />
+                                <span>{timeLeft}s</span>
+                            </div>
                         )}
 
                         <button
-                            onClick={() => handleAction('cancel')}
+                            onClick={closeOverlay}
                             className="p-1 text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 rounded-lg transition-colors cursor-pointer"
                             title={t('notifications.overlay_dismiss', { defaultValue: 'Dismiss (Esc)' })}
                         >
@@ -308,8 +382,8 @@ export const NotificationOverlay: React.FC = () => {
                     )}
                 </div>
 
-                {/* Laser Progress Bar (Countdown Only) */}
-                {payload?.notification_type === 'countdown' && (
+                {/* Laser Progress Bar (Live countdown for both Countdown & Toast) */}
+                {payload && (
                     <div className="w-full bg-slate-900/90 rounded-full h-1.5 overflow-hidden my-1 flex-shrink-0 border border-slate-800/80 shadow-inner relative">
                         <div
                             className={`h-full transition-all duration-300 ease-linear rounded-full ${
@@ -363,13 +437,16 @@ export const NotificationOverlay: React.FC = () => {
                 ) : (
                     <div className="flex items-center justify-between pt-1 flex-shrink-0 z-10 border-t border-slate-800/60">
                         <span className="text-[11px] text-slate-400 font-medium">
-                            {t('notifications.overlay_auto_dismiss', { defaultValue: 'Auto-closing in a few seconds' })}
+                            {t('notifications.overlay_auto_dismiss_timer', {
+                                defaultValue: `Auto-closing in ${timeLeft}s`,
+                                seconds: timeLeft,
+                            })}
                         </span>
                         <button
-                            onClick={() => invoke('hide_overlay_notification')}
+                            onClick={closeOverlay}
                             className="py-1 px-4 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 hover:text-white text-slate-200 transition-colors cursor-pointer"
                         >
-                            {t('notifications.overlay_dismiss', { defaultValue: 'OK' })}
+                            {t('notifications.overlay_dismiss', { defaultValue: 'Dismiss' })}
                         </button>
                     </div>
                 )}

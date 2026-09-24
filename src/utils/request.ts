@@ -1,7 +1,5 @@
 import { decryptSensitiveData } from './secureStorage';
-
-// 探测环境
-const isTauri = typeof window !== 'undefined' && (!!(window as any).__TAURI_INTERNALS__ || !!(window as any).__TAURI__);
+import { isTauri } from './env';
 
 // 命令到 API 的映射
 const COMMAND_MAPPING: Record<string, { url: string; method: 'GET' | 'POST' | 'DELETE' | 'PATCH' }> = {
@@ -166,11 +164,16 @@ const COMMAND_MAPPING: Record<string, { url: string; method: 'GET' | 'POST' | 'D
   'bind_account_proxy': { url: '/api/proxy/pool/bind', method: 'POST' },
   'unbind_account_proxy': { url: '/api/proxy/pool/unbind', method: 'POST' },
   'get_account_proxy_binding': { url: '/api/proxy/pool/binding/:accountId', method: 'GET' },
+
+  // Overlay Notification (Web fallback)
+  'hide_overlay_notification': { url: '/api/system/overlay/hide', method: 'POST' },
+  'show_overlay_notification': { url: '/api/system/overlay/show', method: 'POST' },
+  'get_overlay_payload': { url: '/api/system/overlay/payload', method: 'GET' },
 };
 
 export async function request<T>(cmd: string, args?: any): Promise<T> {
   // 1. Tauri 环境：直接使用 invoke ...
-  if (isTauri) {
+  if (isTauri()) {
     try {
       const { invoke } = await import('@tauri-apps/api/core');
       return await invoke<T>(cmd, args);
@@ -239,7 +242,7 @@ export async function request<T>(cmd: string, args?: any): Promise<T> {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      if (!isTauri && response.status === 401) {
+      if (!isTauri() && response.status === 401) {
         // [FIX #1163] 增加防抖锁，避免重复事件导致 UI 抖动
         const now = Date.now();
         const lastAuthError = (window as any)._lastAuthErrorTime || 0;

@@ -1814,6 +1814,7 @@
     "overlay_cancel": "Cancel",
     "overlay_dismiss": "Dismiss",
     "overlay_auto_dismiss": "Auto-closing in a few seconds",
+    "overlay_auto_dismiss_timer": "Auto-closing in {{seconds}}s",
     "overlay_waiting": "Receiving Shield telemetry...",
     "overlay_default_model": "AI Model"
   }
