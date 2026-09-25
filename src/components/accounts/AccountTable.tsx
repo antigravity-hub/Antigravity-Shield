@@ -36,6 +36,8 @@ import {
     Tag,
     BookOpen,
     RefreshCw,
+    ExternalLink,
+    Copy,
 } from 'lucide-react';
 import type { Account, ModelQuota } from '../../types/account';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +53,9 @@ import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import HelpTooltip from '../common/HelpTooltip';
-import { openVerificationGuide } from '../../utils/guideOpener';
+import { openVerificationGuide, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
+import { copyToClipboard } from '../../utils/clipboard';
+import { showToast } from '../common/ToastContainer';
 
 
 // ============================================================================
@@ -226,7 +230,7 @@ function SortableAccountRow({
                 !isDragging && !isAnyActive && !account.validation_blocked && "hover:bg-gray-50 dark:hover:bg-base-200",
                 !isDragging && account.validation_blocked && "hover:bg-amber-500/10 dark:hover:bg-amber-950/30",
                 !isDragging && isAnyActive && !account.validation_blocked && "hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30",
-                isExhausted && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
+                (isExhausted || account.disabled || account.proxy_disabled) && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
             )}
         >
             {/* 拖拽手柄 */}
@@ -565,45 +569,80 @@ function AccountRowContent({
         </td>
     );
 
-    const renderModelsCell = () => (
-        <td key="models" className="px-2 py-1 align-middle min-w-[260px]">
-            {account.validation_blocked ? (
-                <div className="flex items-center justify-between gap-2.5 py-1.5 px-3 rounded-xl border bg-amber-500/10 dark:bg-amber-900/20 border-amber-500/30 dark:border-amber-500/30 shadow-sm animate-fadeIn">
-                    <div className="flex items-center gap-2 min-w-0">
-                        <div className="p-1 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 shrink-0">
-                            <Clock className="w-3.5 h-3.5" />
+    const renderModelsCell = () => {
+        const validationUrl = extractAccountValidationUrl(account);
+        const hasValidationUrl = Boolean(validationUrl);
+
+        return (
+            <td key="models" className="px-2 py-1 align-middle min-w-[260px]">
+                {account.validation_blocked ? (
+                    <div className="flex items-center justify-between gap-2.5 py-1.5 px-3 rounded-xl border bg-amber-500/10 dark:bg-amber-900/20 border-amber-500/30 dark:border-amber-500/30 shadow-sm animate-fadeIn">
+                        <div className="flex items-center gap-2 min-w-0">
+                            <div className="p-1 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 shrink-0">
+                                <Clock className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="text-xs font-bold text-amber-800 dark:text-amber-300 truncate">
+                                {hasValidationUrl
+                                    ? t('accounts.browser_verification_msg', 'Browser verification available')
+                                    : t('accounts.verification_required_table_msg', 'Verification required — see guide')}
+                            </span>
                         </div>
-                        <span className="text-xs font-bold text-amber-800 dark:text-amber-300 truncate">
-                            {t('accounts.verification_required_table_msg', 'Verification required — see guide')}
-                        </span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                            {hasValidationUrl ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openExternalUrl(validationUrl!);
+                                        }}
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm shadow-blue-500/20 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                                        title={t('accounts.verify_in_browser_tooltip', 'Open Google verification session in browser')}
+                                    >
+                                        <ExternalLink className="w-3.5 h-3.5" />
+                                        <span>{t('accounts.verify_in_browser_btn', 'Verify in Browser')}</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            copyToClipboard(validationUrl!);
+                                            showToast(t('accounts.validation_url_copied', 'Verification link copied to clipboard'), 'success');
+                                        }}
+                                        className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-amber-500/20 rounded-lg transition-colors cursor-pointer shrink-0"
+                                        title={t('accounts.copy_validation_url', 'Copy Verification Link')}
+                                    >
+                                        <Copy className="w-3.5 h-3.5" />
+                                    </button>
+                                </>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openVerificationGuide();
+                                    }}
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                                >
+                                    <BookOpen className="w-3.5 h-3.5" />
+                                    <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
+                                </button>
+                            )}
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (onRefresh) onRefresh();
+                                }}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                                title={t('accounts.recheck_tooltip', 'Clear block status and re-check account quota')}
+                            >
+                                <RefreshCw className={cn("w-3 h-3", isRefreshing && "animate-spin")} />
+                                <span>{t('accounts.recheck_btn', 'Re-check')}</span>
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (onRefresh) onRefresh();
-                            }}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
-                            title={t('accounts.recheck_tooltip', 'Clear block status and re-check account quota')}
-                        >
-                            <RefreshCw className={cn("w-3 h-3", isRefreshing && "animate-spin")} />
-                            <span>{t('accounts.recheck_btn', 'Re-check')}</span>
-                        </button>
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                openVerificationGuide();
-                            }}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
-                        >
-                            <BookOpen className="w-3.5 h-3.5" />
-                            <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
-                        </button>
-                    </div>
-                </div>
-            ) : (isDisabled || account.quota?.is_forbidden ? (
+                ) : (isDisabled || account.quota?.is_forbidden ? (
                 <div className="flex items-center justify-center gap-3 py-1.5 px-4 rounded-xl border group/error bg-red-50/50 dark:bg-red-900/10 border-red-100/50 dark:border-red-900/20">
                     <div className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
                         {account.quota?.is_forbidden ? <Lock className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />}
@@ -642,6 +681,7 @@ function AccountRowContent({
             ))}
         </td>
     );
+};
 
     const renderFiveHourCell = () => {
         if (account.validation_blocked) {

@@ -73,7 +73,8 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
         <tr className={cn(
             "group hover:bg-gray-50 dark:hover:bg-base-200 transition-colors border-b border-gray-100 dark:border-base-200",
             isCurrent && "bg-blue-50/50 dark:bg-blue-900/10",
-            (isRefreshing || isDisabled) && "opacity-70"
+            (isRefreshing || isDisabled) && "opacity-70",
+            (isDisabled || account.proxy_disabled) && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
         )}>
             {/* 序号 */}
             <td className="pl-6 py-1 w-12">

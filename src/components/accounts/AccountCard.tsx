@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw } from 'lucide-react';
+import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,9 @@ import { AccountActionControls } from './AccountActionControls';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { useAccountStore } from '../../stores/useAccountStore';
 import { getAccountFiveHourReset, isAccountQuotaExhausted, safeQuotaPercentage } from '../../utils/quota';
-import { openVerificationGuide } from '../../utils/guideOpener';
+import { openVerificationGuide, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
+import { copyToClipboard } from '../../utils/clipboard';
+import { showToast } from '../common/ToastContainer';
 
 interface AccountCardProps {
     account: Account;
@@ -220,7 +222,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     ? "bg-emerald-50/20 border-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-700/60 ring-1 ring-emerald-500/20"
                     : "bg-white dark:bg-base-100 border-gray-200 dark:border-base-300",
             (isRefreshing || isDisabled) && "opacity-70",
-            isExhausted && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:opacity-85 transition-opacity"
+            (isExhausted || isDisabled || account.proxy_disabled) && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:opacity-85 transition-opacity"
         )}>
 
             {/* Header: Checkbox + Email + Badges */}
@@ -370,41 +372,77 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
 
             {/* 配额展示 */}
             <div className="flex-1 px-2 mb-2 overflow-y-auto scrollbar-none">
-                {account.validation_blocked ? (
-                    <div className="flex flex-col items-center justify-center gap-2.5 h-full py-4 px-2 text-center bg-amber-500/10 dark:bg-amber-900/15 border border-amber-500/25 rounded-xl animate-fadeIn">
-                        <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                            <Clock className="w-4 h-4" />
-                            <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
-                                {t('accounts.verification_required_table_msg', 'Verification required — see guide')}
-                            </span>
+                {account.validation_blocked ? (() => {
+                    const validationUrl = extractAccountValidationUrl(account);
+                    const hasValidationUrl = Boolean(validationUrl);
+
+                    return (
+                        <div className="flex flex-col items-center justify-center gap-2.5 h-full py-4 px-2 text-center bg-amber-500/10 dark:bg-amber-900/15 border border-amber-500/25 rounded-xl animate-fadeIn">
+                            <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                                <Clock className="w-4 h-4" />
+                                <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
+                                    {hasValidationUrl
+                                        ? t('accounts.browser_verification_msg', 'Browser verification available')
+                                        : t('accounts.verification_required_table_msg', 'Verification required — see guide')}
+                                </span>
+                            </div>
+                            <div className="flex flex-wrap items-center justify-center gap-2">
+                                {hasValidationUrl ? (
+                                    <>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                openExternalUrl(validationUrl!);
+                                            }}
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm shadow-blue-500/20 transition-all duration-200 active:scale-95 cursor-pointer"
+                                            title={t('accounts.verify_in_browser_tooltip', 'Open Google verification session in browser')}
+                                        >
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                            <span>{t('accounts.verify_in_browser_btn', 'Verify in Browser')}</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                copyToClipboard(validationUrl!);
+                                                showToast(t('accounts.validation_url_copied', 'Verification link copied to clipboard'), 'success');
+                                            }}
+                                            className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-amber-500/20 rounded-lg transition-colors cursor-pointer"
+                                            title={t('accounts.copy_validation_url', 'Copy Verification Link')}
+                                        >
+                                            <Copy className="w-3.5 h-3.5" />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openVerificationGuide();
+                                        }}
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+                                    >
+                                        <BookOpen className="w-3.5 h-3.5" />
+                                        <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (onRefresh) onRefresh();
+                                    }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer"
+                                    title={t('accounts.recheck_tooltip', 'Clear block status and re-check account quota')}
+                                >
+                                    <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
+                                    <span>{t('accounts.recheck_btn', 'Re-check')}</span>
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (onRefresh) onRefresh();
-                                }}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer"
-                                title={t('accounts.recheck_tooltip', 'Clear block status and re-check account quota')}
-                            >
-                                <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
-                                <span>{t('accounts.recheck_btn', 'Re-check')}</span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    openVerificationGuide();
-                                }}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
-                            >
-                                <BookOpen className="w-3.5 h-3.5" />
-                                <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
-                            </button>
-                        </div>
-                    </div>
-                ) : (isDisabled || account.quota?.is_forbidden || account.proxy_disabled ? (
+                    );
+                })() : (isDisabled || account.quota?.is_forbidden || account.proxy_disabled ? (
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 h-full py-4 text-center">
                         <div className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
                             {isDisabled || account.proxy_disabled ? <Ban className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
