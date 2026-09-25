@@ -2451,7 +2451,13 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
 
                 match retry_result {
                     Ok((q, _)) => {
-                        if account.validation_blocked && !q.is_forbidden {
+                        let is_currently_blocked = load_account(&account.id)
+                            .map(|a| a.validation_blocked)
+                            .unwrap_or(account.validation_blocked);
+
+                        if is_currently_blocked {
+                            account.validation_blocked = true;
+                        } else if account.validation_blocked && !q.is_forbidden {
                             crate::modules::logger::log_info(&format!(
                                 "Clearing validation_blocked for {} after successful retry quota fetch",
                                 account.email
@@ -2481,7 +2487,15 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
     // fetch_quota already handles 403, with additional local fallback/validation handling.
     match result {
         Ok((q, _)) => {
-            if account.validation_blocked && !q.is_forbidden {
+            // Check if account was marked validation_blocked during this fetch (e.g. by fetch_quota_summary)
+            let is_currently_blocked = load_account(&account.id)
+                .map(|a| a.validation_blocked)
+                .unwrap_or(account.validation_blocked);
+
+            if is_currently_blocked {
+                // Keep in-memory reference synchronized with the block established during fetch
+                account.validation_blocked = true;
+            } else if account.validation_blocked && !q.is_forbidden {
                 crate::modules::logger::log_info(&format!(
                     "Clearing validation_blocked for {} after successful quota fetch",
                     account.email

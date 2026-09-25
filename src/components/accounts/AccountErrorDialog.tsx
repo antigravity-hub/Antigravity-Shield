@@ -1,4 +1,5 @@
-import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, ChevronRight, BookOpen, Sparkles, Send } from 'lucide-react';
+import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, ChevronRight, BookOpen, Sparkles, Send, QrCode } from 'lucide-react';
+import { QRCode } from 'antd';
 import { Account } from '../../types/account';
 import { formatDate } from '../../utils/format';
 import { copyToClipboard } from '../../utils/clipboard';
@@ -18,6 +19,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
     const [showRaw, setShowRaw] = useState(false);
     const [showGuide, setShowGuide] = useState(false);
     const [showPdfGuide, setShowPdfGuide] = useState(!directUrl);
+    const [showQrCode, setShowQrCode] = useState(false);
     const { t } = useTranslation();
     if (!account) return null;
 
@@ -225,31 +227,57 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                         <div className="mt-3 p-3.5 rounded-xl border border-blue-200 dark:border-blue-800/60 bg-blue-50/70 dark:bg-blue-950/30">
                             <div className="flex items-start gap-2.5">
                                 <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
-                                <div className="space-y-1.5 flex-1 min-w-0">
-                                    <div className="text-xs font-bold text-blue-900 dark:text-blue-200">
-                                        {t('accounts.direct_browser_verification_title', 'One-Click Browser Verification Available')}
+                                <div className="space-y-2 flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                                        <div className="text-xs font-bold text-blue-900 dark:text-blue-200">
+                                            {t('accounts.verification_method_1_title', 'Method 1 (Fastest & Recommended): Verify in Browser or Scan with Another Phone')}
+                                        </div>
+                                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200">
+                                            {t('accounts.verification_guide.card_badge', 'Proven Solution')}
+                                        </span>
                                     </div>
                                     <p className="text-[11px] text-blue-700 dark:text-blue-300 leading-relaxed">
-                                        {t('accounts.direct_browser_verification_desc', 'Google has provided a direct verification URL for this session. Click the button to authenticate in your browser, complete the sign-in check, and then re-check the account.')}
+                                        {t('accounts.verification_method_1_desc', 'Open this direct verification link in your browser. If desktop verification loops or fails, scan or open the link on another mobile phone (preferably on cellular data) — Google trusts second devices and usually validates instantly without phone SMS!')}
                                     </p>
-                                    <div className="pt-1 flex gap-2">
+                                    <div className="pt-1 flex flex-wrap gap-2">
                                         <button
                                             type="button"
                                             onClick={() => openExternalUrl(actionUrl)}
-                                            className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md shadow-blue-500/20 active:scale-[0.98] cursor-pointer"
+                                            className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md shadow-blue-500/20 active:scale-[0.98] cursor-pointer"
                                         >
                                             <ExternalLink className="w-3.5 h-3.5" />
                                             <span>{actionLabel || (isViolation ? t('accounts.go_to_appeal', '前往申诉') : t('accounts.verify_in_browser_btn', 'Verify in Browser'))}</span>
                                         </button>
                                         <button
                                             type="button"
+                                            onClick={() => setShowQrCode(!showQrCode)}
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/40 dark:hover:bg-blue-900/60 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-300 dark:border-blue-700 transition-all active:scale-[0.98] cursor-pointer"
+                                            title={t('accounts.scan_with_phone_tooltip', 'Show QR code to scan with another mobile phone')}
+                                        >
+                                            <QrCode className="w-3.5 h-3.5" />
+                                            <span>{showQrCode ? t('common.hide_qr', 'Hide QR') : t('accounts.scan_qr_btn', 'Scan with Phone')}</span>
+                                        </button>
+                                        <button
+                                            type="button"
                                             onClick={() => handleCopyUrl(actionUrl)}
-                                            className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold bg-white dark:bg-base-300 hover:bg-blue-100 dark:hover:bg-base-200 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 dark:border-blue-700 transition-all active:scale-[0.98] cursor-pointer"
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-white dark:bg-base-300 hover:bg-blue-100 dark:hover:bg-base-200 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 dark:border-blue-700 transition-all active:scale-[0.98] cursor-pointer"
                                         >
                                             <Copy className="w-3.5 h-3.5" />
                                             <span>{isViolation ? t('accounts.copy_appeal_url', '复制申诉链接') : t('accounts.copy_validation_url', '复制验证链接')}</span>
                                         </button>
                                     </div>
+
+                                    {/* QR Code view */}
+                                    {showQrCode && (
+                                        <div className="mt-3 p-4 bg-white dark:bg-base-100 rounded-xl border border-blue-200 dark:border-blue-800/60 flex flex-col items-center justify-center gap-2.5 shadow-sm">
+                                            <div className="p-2.5 bg-white rounded-lg shadow-inner border border-gray-100 dark:border-gray-800">
+                                                <QRCode value={actionUrl} size={150} bordered={false} />
+                                            </div>
+                                            <p className="text-[11px] text-gray-600 dark:text-gray-300 text-center max-w-xs font-medium">
+                                                {t('accounts.scan_with_phone_hint', 'Scan this QR code with the camera on another mobile phone to verify. Using mobile data (4G/5G) avoids desktop IP blocks.')}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -264,7 +292,11 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                             >
                                 <div className="flex items-center gap-2 text-amber-900 dark:text-amber-300 font-bold text-xs">
                                     <BookOpen className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                                    <span>{t('accounts.verification_guide.card_title')}</span>
+                                    <span>
+                                        {actionUrl
+                                            ? t('accounts.verification_method_2_title', 'Method 2 (Fallback): Google Cloud Shell SMS Verification Guide')
+                                            : t('accounts.verification_guide.card_title')}
+                                    </span>
                                     {actionUrl ? (
                                         <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                             {t('common.fallback', 'Fallback')}
