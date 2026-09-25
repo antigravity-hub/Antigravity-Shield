@@ -287,6 +287,13 @@
     "click_to_verify": "کلیک جهت احراز هویت",
     "copy_validation_url": "کپی لینک احراز هویت",
     "validation_url_copied": "لینک احراز هویت در کلیپ‌بورد کپی شد",
+    "browser_verification_msg": "تأیید در مرورگر در دسترس است",
+    "browser_verification_available": "لینک مستقیم تأیید در مرورگر در دسترس است. روی دکمه کلیک کنید و سپس بررسی مجدد را بزنید.",
+    "verify_in_browser_btn": "تأیید در مرورگر",
+    "verify_in_browser_tooltip": "باز کردن نشست احراز هویت گوگل در مرورگر",
+    "direct_browser_verification_title": "تأیید مستقیم نشست در مرورگر",
+    "direct_browser_verification_desc": "گوگل برای این حساب لینک مستقیم تأیید صادر کرده است. کافی است روی دکمه زیر کلیک کرده، در مرورگر تأیید را انجام دهید و سپس دکمه «بررسی مجدد» را بزنید.",
+    "fallback_guide_note": "اگر تأیید در مرورگر مشکل را حل نکرد یا نیاز به شماره تلفن داشت، از راهنمای جامع زیر استفاده کنید.",
     "fix_guide": {
       "title": "Terminal Quick Fix (Resolves internal 403s)",
       "step1_title": "🚀 Quickest Solution",

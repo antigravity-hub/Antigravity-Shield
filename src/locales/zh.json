@@ -227,6 +227,13 @@
     "click_to_verify": "点击去验证",
     "copy_validation_url": "复制验证链接",
     "validation_url_copied": "验证链接已复制到剪贴板",
+    "browser_verification_msg": "已有直接验证链接",
+    "browser_verification_available": "Google 已返回直接验证链接，点击在浏览器中完成验证后点击“重新检查”即可。",
+    "verify_in_browser_btn": "在浏览器中验证",
+    "verify_in_browser_tooltip": "在默认浏览器中打开 Google 验证会话",
+    "direct_browser_verification_title": "检测到一键网页验证链接",
+    "direct_browser_verification_desc": "Google 已为该会话生成专属验证链接。点击按钮在浏览器中完成身份确认后，点击“重新检查”即可恢复配额与使用。",
+    "fallback_guide_note": "若网页验证无法解决或仍提示需要手机验证，请参考下方的完整处理方案。",
     "go_to_appeal": "前往申诉",
     "copy_appeal_url": "复制申诉链接",
     "fix_guide": {

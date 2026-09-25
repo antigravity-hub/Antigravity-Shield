@@ -173,6 +173,13 @@
     "click_to_verify": "확인하려면 클릭",
     "copy_validation_url": "확인 링크 복사",
     "validation_url_copied": "확인 링크가 클립보드에 복사되었습니다",
+    "browser_verification_msg": "브라우저 확인 가능",
+    "browser_verification_available": "브라우저 직접 확인 링크가 제공되었습니다. 클릭하여 확인 후 재확인을 누르세요.",
+    "verify_in_browser_btn": "브라우저에서 확인",
+    "verify_in_browser_tooltip": "브라우저에서 Google 확인 세션 열기",
+    "direct_browser_verification_title": "원클릭 브라우저 확인 링크 감지됨",
+    "direct_browser_verification_desc": "Google에서 이 세션에 대한 직접 확인 URL을 발급했습니다. 버튼을 눌러 브라우저에서 인증을 완료한 후 '재확인'을 클릭하세요.",
+    "fallback_guide_note": "브라우저 확인으로 해결되지 않거나 전화번호 확인이 필요한 경우 아래 가이드를 참조하세요.",
     "fix_guide": {
       "title": "터미널 원클릭 해결 가이드 (일부 403 차단 해결)",
       "step1_title": "🚀 가장 빠른 해결책",
