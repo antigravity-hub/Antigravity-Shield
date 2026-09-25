@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy } from 'lucide-react';
+import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Flame, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
@@ -201,6 +201,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
         return {
             isAvailable: cycle.isAvailable !== false,
             isReady: cycle.isReady,
+            isWarmed: cycle.isWarmed,
             hours: cycle.hoursInDay,
             minutes: cycle.minutesInHour,
             resetTime: cycle.resetTime
@@ -538,18 +539,26 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     ) : (
                         <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 text-xs">
                             <div className="flex items-center gap-1.5">
-                                {fiveHourResetInfo?.isReady ? (
+                                {fiveHourResetInfo?.isWarmed ? (
+                                    <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                ) : fiveHourResetInfo?.isReady ? (
                                     <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
                                 ) : (
                                     <Clock className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
                                 )}
                                 <span className={cn(
                                     "font-mono font-bold",
-                                    fiveHourResetInfo?.isReady
-                                        ? "text-emerald-600 dark:text-emerald-400"
-                                        : "text-cyan-600 dark:text-cyan-400"
+                                    fiveHourResetInfo?.isWarmed
+                                        ? "text-amber-600 dark:text-amber-400"
+                                        : fiveHourResetInfo?.isReady
+                                            ? "text-emerald-600 dark:text-emerald-400"
+                                            : "text-cyan-600 dark:text-cyan-400"
                                 )}>
-                                    {fiveHourResetInfo?.isReady ? t('common.ready', 'Ready') : `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`}
+                                    {fiveHourResetInfo?.isWarmed
+                                        ? `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`
+                                        : fiveHourResetInfo?.isReady
+                                            ? t('common.ready', 'Ready')
+                                            : `${fiveHourResetInfo?.hours || 0}h ${fiveHourResetInfo?.minutes || 0}m`}
                                 </span>
                                 <span className="text-[10px] text-slate-400 dark:text-slate-500">
                                     {t('accounts.quota_5h', '5-Hour Rolling')}
@@ -557,11 +566,17 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                             </div>
                             <span className={cn(
                                 "text-[10px] font-bold px-1.5 py-0.5 rounded font-mono",
-                                fiveHourResetInfo?.isReady
-                                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                    : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                                fiveHourResetInfo?.isWarmed
+                                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                    : fiveHourResetInfo?.isReady
+                                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                        : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
                             )}>
-                                {fiveHourResetInfo?.isReady ? t('common.ready', 'Ready') : t('accounts.rolling_5h', '5H Rolling')}
+                                {fiveHourResetInfo?.isWarmed
+                                    ? t('accounts.warmed', '🔥 Warm')
+                                    : fiveHourResetInfo?.isReady
+                                        ? t('common.ready', 'Ready')
+                                        : t('accounts.rolling_5h', '5H Rolling')}
                             </span>
                         </div>
                     )

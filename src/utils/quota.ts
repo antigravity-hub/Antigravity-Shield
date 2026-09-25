@@ -10,6 +10,7 @@ export interface ResetCycleInfo {
     minutesInHour: number;
     isReady: boolean;
     isAvailable?: boolean;
+    isWarmed?: boolean;
 }
 
 /**
@@ -153,6 +154,29 @@ export function getAccountCycleReset(
         }
 
         if (isFullyFull) {
+            const diffMs = resetTime ? new Date(resetTime).getTime() - now : 0;
+            const isRollingActive = diffMs > 0 && diffMs <= 5.5 * 60 * 60 * 1000;
+
+            if (isRollingActive) {
+                const totalMinutes = Math.max(0, Math.ceil(diffMs / (1000 * 60)));
+                const totalHours = Math.floor(totalMinutes / 60);
+                const hoursInDay = totalHours % 24;
+                const minutesInHour = totalMinutes % 60;
+
+                return {
+                    resetTime,
+                    totalHours,
+                    totalMinutes,
+                    exactDaysRemaining: 0,
+                    daysRemaining: 0,
+                    hoursInDay,
+                    minutesInHour,
+                    isReady: true,
+                    isAvailable: true,
+                    isWarmed: true,
+                };
+            }
+
             return {
                 resetTime,
                 totalHours: 0,
@@ -163,6 +187,7 @@ export function getAccountCycleReset(
                 minutesInHour: 0,
                 isReady: true,
                 isAvailable: true,
+                isWarmed: false,
             };
         }
     }

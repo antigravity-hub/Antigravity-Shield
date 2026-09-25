@@ -412,6 +412,8 @@
     "refresh_stopping": "در حال توقف تازه‌سازی...",
     "refresh_stopped": "تازه‌سازی متوقف شد",
     "five_hour_ready_tooltip": "سهمیه ۵ ساعته کاملاً پر و آمادهٔ مصرف است (بدون زمان انتظار)",
+    "five_hour_warmed_tooltip": "وارم شده (۱۰۰٪ در دسترس) — ریست ۵ ساعته در {{time}}",
+    "warmed": "🔥 وارم",
     "details": {
       "title": "Quota Details",
       "model_quota": "Model Quota",

@@ -32,6 +32,7 @@ import {
     X,
     Check,
     Clock,
+    Flame,
     Bot,
     Tag,
     BookOpen,
@@ -726,15 +727,28 @@ function AccountRowContent({
             );
         }
         const isReady = fiveHour.isReady;
+        const isWarmed = fiveHour.isWarmed;
+        const formattedRemaining = `${fiveHour.hoursInDay}h ${fiveHour.minutesInHour}m`;
         const readyTooltip = `${quotaProvider.toUpperCase()} 5H: ${t('accounts.five_hour_ready_tooltip', 'Quota fully available (No waiting time)')}`;
+        const warmedTooltip = `${quotaProvider.toUpperCase()} 5H: ${t('accounts.five_hour_warmed_tooltip', {
+            time: formattedRemaining,
+            defaultValue: `Warm (100% Available) — 5H Reset in ${formattedRemaining}`,
+        })}`;
         const countdownTooltip = fiveHour.resetTime
             ? `${quotaProvider.toUpperCase()} 5H Reset: ${new Date(fiveHour.resetTime).toLocaleString()}`
             : readyTooltip;
 
         return (
             <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]">
-                <div className="flex items-center gap-1.5" title={isReady ? readyTooltip : countdownTooltip}>
-                    {isReady ? (
+                <div className="flex items-center gap-1.5" title={isWarmed ? warmedTooltip : (isReady ? readyTooltip : countdownTooltip)}>
+                    {isWarmed ? (
+                        <div className="flex items-center gap-1">
+                            <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                            <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                                {formattedRemaining}
+                            </span>
+                        </div>
+                    ) : isReady ? (
                         <div className="flex items-center gap-1">
                             <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
                             <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
@@ -745,7 +759,7 @@ function AccountRowContent({
                         <div className="flex items-center gap-1.5">
                             <Clock className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
                             <span className="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">
-                                {`${fiveHour.hoursInDay}h ${fiveHour.minutesInHour}m`}
+                                {formattedRemaining}
                             </span>
                         </div>
                     )}
