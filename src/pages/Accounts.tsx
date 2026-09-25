@@ -396,6 +396,11 @@ function Accounts() {
   const sortedAccounts = useMemo(() => {
     if (!autoSort) {
       return [...filteredAccounts].sort((a, b) => {
+        const isUsableA = !a.disabled && !a.proxy_disabled && !a.quota?.is_forbidden && !a.validation_blocked;
+        const isUsableB = !b.disabled && !b.proxy_disabled && !b.quota?.is_forbidden && !b.validation_blocked;
+        if (isUsableA !== isUsableB) {
+          return isUsableA ? -1 : 1;
+        }
         const exhA = isAccountQuotaExhausted(a);
         const exhB = isAccountQuotaExhausted(b);
         if (exhA !== exhB) return exhA ? 1 : -1;
