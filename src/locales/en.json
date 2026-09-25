@@ -412,6 +412,8 @@
     "refresh_stopping": "Stopping refresh...",
     "refresh_stopped": "Refresh stopped",
     "five_hour_ready_tooltip": "5H Quota fully available (No waiting time)",
+    "five_hour_warmed_tooltip": "Warm (100% Available) — 5H Reset in {{time}}",
+    "warmed": "🔥 Warm",
     "details": {
       "title": "Quota Details",
       "model_quota": "Model Quota",

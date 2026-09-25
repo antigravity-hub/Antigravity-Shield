@@ -1,5 +1,5 @@
 
-import { AlertTriangle, Check, Clock, Lock } from 'lucide-react';
+import { AlertTriangle, Check, Clock, Flame, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 import { getQuotaColor, formatTimeRemaining, getTimeRemainingColor } from '../../utils/format';
@@ -102,19 +102,43 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
 
                 {/* Reset Time */}
                 <div className="w-[58px] flex justify-start shrink-0">
-                    {percentage >= 100 ? (
-                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold scale-90 flex items-center gap-0.5">
-                            <Check className="w-2.5 h-2.5 shrink-0 text-emerald-500" strokeWidth={2.5} />
-                            Ready
-                        </span>
-                    ) : resetTime ? (
-                        <span className={cn("flex items-center gap-0.5 font-medium transition-colors truncate", getTimeColorClass(resetTime))}>
-                            <Clock className="w-2.5 h-2.5 shrink-0" />
-                            {formatTimeRemaining(resetTime)}
-                        </span>
-                    ) : (
-                        <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
-                    )}
+                    {(() => {
+                        const now = Date.now();
+                        const target = resetTime ? new Date(resetTime).getTime() : 0;
+                        const diffMs = target - now;
+                        const isRollingActive = diffMs > 0 && diffMs <= 5.5 * 60 * 60 * 1000;
+
+                        if (percentage >= 100) {
+                            if (isRollingActive) {
+                                return (
+                                    <span
+                                        className="text-amber-600 dark:text-amber-400 font-semibold scale-90 flex items-center gap-0.5 truncate"
+                                        title={`Warm (100% Available) — Resets in ${formatTimeRemaining(resetTime!)}`}
+                                    >
+                                        <Flame className="w-2.5 h-2.5 shrink-0 text-amber-500" />
+                                        {formatTimeRemaining(resetTime!)}
+                                    </span>
+                                );
+                            }
+                            return (
+                                <span className="text-emerald-600 dark:text-emerald-400 font-semibold scale-90 flex items-center gap-0.5">
+                                    <Check className="w-2.5 h-2.5 shrink-0 text-emerald-500" strokeWidth={2.5} />
+                                    Ready
+                                </span>
+                            );
+                        }
+                        if (resetTime) {
+                            return (
+                                <span className={cn("flex items-center gap-0.5 font-medium transition-colors truncate", getTimeColorClass(resetTime))}>
+                                    <Clock className="w-2.5 h-2.5 shrink-0" />
+                                    {formatTimeRemaining(resetTime)}
+                                </span>
+                            );
+                        }
+                        return (
+                            <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
+                        );
+                    })()}
                 </div>
 
                 {/* Percentage */}
