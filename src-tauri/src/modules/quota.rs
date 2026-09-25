@@ -687,19 +687,34 @@ pub async fn get_valid_token_for_warmup(
     let new_token =
         crate::modules::oauth::ensure_fresh_token(&account.token, Some(&account.id)).await?;
 
-    // If token changed (meant refreshed), save it
+    // If token changed (meant refreshed), save it without overwriting latest validation/state fields
     if new_token.access_token != account.token.access_token {
-        account.token = new_token;
-        if let Err(e) = crate::modules::account::save_account(&account) {
-            crate::modules::logger::log_warn(&format!(
-                "[Warmup] Failed to save refreshed token: {}",
-                e
-            ));
+        if let Ok(mut latest_account) = crate::modules::account::load_account(&account.id) {
+            latest_account.token = new_token;
+            if let Err(e) = crate::modules::account::save_account(&latest_account) {
+                crate::modules::logger::log_warn(&format!(
+                    "[Warmup] Failed to save refreshed token: {}",
+                    e
+                ));
+            } else {
+                crate::modules::logger::log_info(&format!(
+                    "[Warmup] Successfully refreshed and saved new token for {}",
+                    latest_account.email
+                ));
+            }
         } else {
-            crate::modules::logger::log_info(&format!(
-                "[Warmup] Successfully refreshed and saved new token for {}",
-                account.email
-            ));
+            account.token = new_token;
+            if let Err(e) = crate::modules::account::save_account(&account) {
+                crate::modules::logger::log_warn(&format!(
+                    "[Warmup] Failed to save refreshed token: {}",
+                    e
+                ));
+            } else {
+                crate::modules::logger::log_info(&format!(
+                    "[Warmup] Successfully refreshed and saved new token for {}",
+                    account.email
+                ));
+            }
         }
     }
 

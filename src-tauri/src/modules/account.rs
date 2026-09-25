@@ -269,6 +269,8 @@ mod tests {
                     name: Some("User One".to_string()),
                     disabled: false,
                     proxy_disabled: false,
+                    validation_blocked: false,
+                    validation_blocked_reason: None,
                     protected_models: HashSet::new(),
                     created_at: now,
                     last_used: now,
@@ -279,6 +281,8 @@ mod tests {
                     name: None,
                     disabled: true,
                     proxy_disabled: true,
+                    validation_blocked: false,
+                    validation_blocked_reason: None,
                     protected_models: HashSet::new(),
                     created_at: now - 100,
                     last_used: now - 50,
@@ -349,6 +353,8 @@ mod tests {
                 name: Some("User One".to_string()),
                 disabled: false,
                 proxy_disabled: false,
+                validation_blocked: false,
+                validation_blocked_reason: None,
                 protected_models: HashSet::new(),
                 created_at: now,
                 last_used: now,
@@ -876,6 +882,8 @@ fn rebuild_index_from_accounts_in_dir(data_dir: &PathBuf) -> Result<AccountIndex
                                     name: account.name,
                                     disabled: account.disabled,
                                     proxy_disabled: account.proxy_disabled,
+                                    validation_blocked: account.validation_blocked,
+                                    validation_blocked_reason: account.validation_blocked_reason,
                                     protected_models: account.protected_models,
                                     created_at: account.created_at,
                                     last_used: account.last_used,
@@ -1238,6 +1246,8 @@ pub fn add_account(
         name: account.name.clone(),
         disabled: account.disabled,
         proxy_disabled: account.proxy_disabled,
+        validation_blocked: account.validation_blocked,
+        validation_blocked_reason: account.validation_blocked_reason.clone(),
         protected_models: account.protected_models.clone(),
         created_at: account.created_at,
         last_used: account.last_used,
@@ -1727,6 +1737,15 @@ pub fn clear_validation_blocked(account: &mut Account) {
             account.email, e
         ));
     }
+
+    if let Ok(mut index) = load_account_index() {
+        if let Some(summary) = index.accounts.iter_mut().find(|a| a.id == account.id) {
+            summary.validation_blocked = false;
+            summary.validation_blocked_reason = None;
+            let _ = save_account_index(&index);
+        }
+    }
+
     crate::proxy::server::trigger_account_reload(&account.id);
 }
 
@@ -1973,13 +1992,6 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
 pub fn update_account_quota(account_id: &str, quota: QuotaData) -> Result<(), String> {
     let _account_write = lock_account_file_updates()?;
     let mut account = load_account(account_id)?;
-    if account.validation_blocked && !quota.is_forbidden && !quota.models.is_empty() {
-        account.validation_blocked = false;
-        account.validation_blocked_until = None;
-        account.validation_blocked_reason = None;
-        account.validation_url = None;
-        crate::proxy::server::trigger_account_reload(account_id);
-    }
     account.update_quota(quota);
 
     // --- Quota protection logic start ---
@@ -2117,6 +2129,15 @@ pub fn set_account_validation_blocked(
     }
 
     save_account(&account)?;
+
+    // Also update index summary
+    if let Ok(mut index) = load_account_index() {
+        if let Some(summary) = index.accounts.iter_mut().find(|a| a.id == account_id) {
+            summary.validation_blocked = blocked;
+            summary.validation_blocked_reason = if blocked { reason.map(|s| s.to_string()) } else { None };
+            let _ = save_account_index(&index);
+        }
+    }
 
     // Signal TokenManager to update in-memory state
     crate::proxy::server::trigger_account_reload(account_id);
@@ -2457,12 +2478,6 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
 
                         if is_currently_blocked {
                             account.validation_blocked = true;
-                        } else if account.validation_blocked && !q.is_forbidden {
-                            crate::modules::logger::log_info(&format!(
-                                "Clearing validation_blocked for {} after successful retry quota fetch",
-                                account.email
-                            ));
-                            clear_validation_blocked(account);
                         }
                         return Ok(q);
                     }
@@ -2495,12 +2510,6 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
             if is_currently_blocked {
                 // Keep in-memory reference synchronized with the block established during fetch
                 account.validation_blocked = true;
-            } else if account.validation_blocked && !q.is_forbidden {
-                crate::modules::logger::log_info(&format!(
-                    "Clearing validation_blocked for {} after successful quota fetch",
-                    account.email
-                ));
-                clear_validation_blocked(account);
             }
             Ok(q)
         }
