@@ -91,6 +91,11 @@ export function getAccountCycleReset(
             if (m.reset_time) {
                 const target = new Date(m.reset_time).getTime();
                 const diff = target - now;
+                // For weekly cycle, model reset_time should only be used if it actually represents a multi-day cycle (> 24 hours).
+                // Google model-level reset_times are 5-hour rolling windows (~0-5 hours).
+                if (windowType === 'weekly' && diff <= 24 * 60 * 60 * 1000) {
+                    continue;
+                }
                 if (diff > 0 && diff < minDiffMs) {
                     minDiffMs = diff;
                     resetTime = m.reset_time;
@@ -136,6 +141,39 @@ export function getAccountCycleReset(
         if (bucketPct !== null && bucketPct >= 100) {
             isFullyFull = true;
         } else if (bucketPct === null && account.quota?.models) {
+            const targetModels = account.quota.models.filter(m => {
+                const mName = m.name.toLowerCase();
+                return category === 'claude'
+                    ? (mName.startsWith('claude') || mName.startsWith('gpt'))
+                    : (mName.startsWith('gemini') || !mName.startsWith('claude'));
+            });
+            if (targetModels.length > 0 && targetModels.every(m => (m.percentage ?? 0) >= 100)) {
+                isFullyFull = true;
+            }
+        }
+
+        if (isFullyFull) {
+            return {
+                resetTime,
+                totalHours: 0,
+                totalMinutes: 0,
+                exactDaysRemaining: 0,
+                daysRemaining: 0,
+                hoursInDay: 0,
+                minutesInHour: 0,
+                isReady: true,
+                isAvailable: true,
+            };
+        }
+    }
+
+    // If weekly quota is 100% full (unused), it is fully ready!
+    if (windowType === 'weekly') {
+        const weeklyPct = getBucketPercentage(account.quota?.quota_groups, category, 'weekly');
+        let isFullyFull = false;
+        if (weeklyPct !== null && weeklyPct >= 100) {
+            isFullyFull = true;
+        } else if (weeklyPct === null && account.quota?.models) {
             const targetModels = account.quota.models.filter(m => {
                 const mName = m.name.toLowerCase();
                 return category === 'claude'

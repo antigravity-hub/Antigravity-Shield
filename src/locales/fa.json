@@ -276,6 +276,7 @@
       "disabled": "حساب غیرفعال",
       "proxy_disabled": "پروکسی غیرفعال",
       "validation_required": "نیاز به تأیید هویت",
+      "validation_blocked": "نیاز به تأیید هویت حساب گوگل",
       "risk_controlled": "محدودیت نرخ / ریسک",
       "oauth_reauth_required": "نیاز به ورود مجدد OAuth",
       "violation_blocked": "مسدود به علت نقض قوانین"
@@ -284,6 +285,8 @@
     "error_status": "وضعیت خطا",
     "error_time": "زمان تشخیص",
     "view_error": "مشاهده دلیل",
+    "view_error_details_tooltip": "مشاهده جزئیات کامل خطا",
+    "click_to_view_error": "کلیک جهت مشاهده جزئیات و لینک تأیید",
     "click_to_verify": "کلیک جهت احراز هویت",
     "copy_validation_url": "کپی لینک احراز هویت",
     "validation_url_copied": "لینک احراز هویت در کلیپ‌بورد کپی شد",

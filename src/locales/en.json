@@ -276,6 +276,7 @@
       "disabled": "Account Disabled",
       "proxy_disabled": "Proxy Disabled",
       "validation_required": "Verification Required",
+      "validation_blocked": "Verification Required",
       "risk_controlled": "Risk / Rate Limited",
       "oauth_reauth_required": "OAuth Re-auth Required",
       "violation_blocked": "Blocked due to Violation"
@@ -284,6 +285,8 @@
     "error_status": "Error Status",
     "error_time": "Detection Time",
     "view_error": "View Reason",
+    "view_error_details_tooltip": "View full error details",
+    "click_to_view_error": "Click to view details and link",
     "click_to_verify": "Click to Verify",
     "copy_validation_url": "Copy Verification Link",
     "validation_url_copied": "Verification link copied to clipboard",

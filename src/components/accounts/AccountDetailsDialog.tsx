@@ -1,21 +1,25 @@
 import { useState } from 'react';
-import { X, Clock, AlertCircle, Bot } from 'lucide-react';
+import { X, Clock, AlertCircle, Bot, Lock, ExternalLink } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { Account } from '../../types/account';
 import { formatDate } from '../../utils/format';
 import { useTranslation } from 'react-i18next';
 import { MODEL_CONFIG, sortModels } from '../../config/modelConfig';
 import { safeQuotaPercentage } from '../../utils/quota';
+import { extractAccountValidationUrl, openExternalUrl } from '../../utils/guideOpener';
 
 interface AccountDetailsDialogProps {
     account: Account | null;
     onClose: () => void;
+    onViewError?: () => void;
 }
 
-export default function AccountDetailsDialog({ account, onClose }: AccountDetailsDialogProps) {
+export default function AccountDetailsDialog({ account, onClose, onViewError }: AccountDetailsDialogProps) {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'basic' | 'detailed'>('basic');
     if (!account) return null;
+
+    const validationUrl = extractAccountValidationUrl(account);
 
     return createPortal(
         <div className="modal modal-open z-[100]">
@@ -47,18 +51,104 @@ export default function AccountDetailsDialog({ account, onClose }: AccountDetail
                 </div>
 
                 {/* Status Alerts */}
-                {(account.disabled || account.proxy_disabled) && (
-                    <div className="px-6 py-3 bg-red-50 dark:bg-red-950/20 border-b border-red-100 dark:border-red-900/30 flex flex-col gap-1">
-                        {account.disabled && (
-                            <div className="flex items-center gap-2 text-xs text-red-700 dark:text-red-400">
-                                <AlertCircle size={14} />
-                                <span className="font-semibold">{t('accounts.status.disabled')}:</span>
-                                <span>{account.disabled_reason || t('common.unknown')}</span>
+                {(account.validation_blocked || account.quota?.is_forbidden || account.disabled || account.proxy_disabled) && (
+                    <div className="px-6 py-3 border-b flex flex-col gap-2 bg-slate-50 dark:bg-base-200/60 border-gray-100 dark:border-base-200">
+                        {/* Validation Blocked Alert */}
+                        {account.validation_blocked && (
+                            <div className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-amber-500/10 dark:bg-amber-900/20 border border-amber-500/30 text-xs text-amber-800 dark:text-amber-300">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <Clock size={15} className="text-amber-600 dark:text-amber-400 shrink-0" />
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="font-bold text-amber-900 dark:text-amber-200">
+                                            {t('accounts.status.validation_blocked', 'Google Account Verification Required')}
+                                        </span>
+                                        <span className="text-[11px] text-amber-700/80 dark:text-amber-400 truncate">
+                                            {account.validation_blocked_reason || t('accounts.verify_prompt', 'Google account verification is required to continue.')}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                    {validationUrl && (
+                                        <button
+                                            type="button"
+                                            onClick={() => openExternalUrl(validationUrl)}
+                                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm shadow-blue-500/20 transition-all active:scale-95 cursor-pointer"
+                                            title={t('accounts.verify_in_browser_tooltip', 'Open Google verification session in browser')}
+                                        >
+                                            <ExternalLink size={12} />
+                                            <span>{t('accounts.verify_in_browser_btn', 'Verify in Browser')}</span>
+                                        </button>
+                                    )}
+                                    {onViewError && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                onClose();
+                                                onViewError();
+                                            }}
+                                            className="px-2.5 py-1 text-[11px] font-semibold text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 rounded-lg border border-amber-500/40 transition-colors cursor-pointer"
+                                        >
+                                            {t('accounts.view_error', 'View Error Details')}
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         )}
+
+                        {/* Forbidden Alert */}
+                        {account.quota?.is_forbidden && (
+                            <div className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs text-red-700 dark:text-red-400">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <Lock size={15} className="shrink-0" />
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="font-bold">{t('accounts.status.forbidden', 'Access Forbidden')}</span>
+                                        <span className="text-[11px] opacity-80 truncate">
+                                            {account.quota.forbidden_reason || t('accounts.forbidden_msg', 'Account access is restricted or suspended.')}
+                                        </span>
+                                    </div>
+                                </div>
+                                {onViewError && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            onClose();
+                                            onViewError();
+                                        }}
+                                        className="px-2.5 py-1 text-[11px] font-semibold text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg border border-red-300 dark:border-red-800/50 transition-colors shrink-0 cursor-pointer"
+                                    >
+                                        {t('accounts.view_error', 'View Error Details')}
+                                    </button>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Disabled Alert */}
+                        {account.disabled && (
+                            <div className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs text-red-700 dark:text-red-400">
+                                <div className="flex items-center gap-2">
+                                    <AlertCircle size={15} />
+                                    <span className="font-semibold">{t('accounts.status.disabled')}:</span>
+                                    <span>{account.disabled_reason || t('common.unknown')}</span>
+                                </div>
+                                {onViewError && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            onClose();
+                                            onViewError();
+                                        }}
+                                        className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline shrink-0 cursor-pointer"
+                                    >
+                                        {t('accounts.view_error', 'View Error Details')}
+                                    </button>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Proxy Disabled Alert */}
                         {account.proxy_disabled && (
-                            <div className="flex items-center gap-2 text-xs text-orange-700 dark:text-orange-400">
-                                <AlertCircle size={14} />
+                            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/30 text-xs text-orange-700 dark:text-orange-400">
+                                <AlertCircle size={15} />
                                 <span className="font-semibold">{t('accounts.status.proxy_disabled')}:</span>
                                 <span>{account.proxy_disabled_reason || t('common.unknown')}</span>
                             </div>
