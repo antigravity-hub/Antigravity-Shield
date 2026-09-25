@@ -2,7 +2,7 @@ import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, 
 import { Account } from '../../types/account';
 import { formatDate } from '../../utils/format';
 import { copyToClipboard } from '../../utils/clipboard';
-import { openVerificationGuide, openExternalUrl } from '../../utils/guideOpener';
+import { openVerificationGuide, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
 import { useTranslation, Trans } from 'react-i18next';
 import ModalDialog from '../common/ModalDialog';
 import { useState } from 'react';
@@ -14,9 +14,10 @@ interface AccountErrorDialogProps {
 }
 
 export default function AccountErrorDialog({ account, onClose }: AccountErrorDialogProps) {
+    const directUrl = account ? extractAccountValidationUrl(account) : null;
     const [showRaw, setShowRaw] = useState(false);
     const [showGuide, setShowGuide] = useState(false);
-    const [showPdfGuide, setShowPdfGuide] = useState(true);
+    const [showPdfGuide, setShowPdfGuide] = useState(!directUrl);
     const { t } = useTranslation();
     if (!account) return null;
 
@@ -92,7 +93,8 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
     };
 
     const message = extractErrorMessage(rawReason);
-    const { url: actionUrl, label: actionLabel } = extractActionInfo(rawReason);
+    const { url: rawExtractedUrl, label: actionLabel } = extractActionInfo(rawReason);
+    const actionUrl = directUrl || rawExtractedUrl;
 
     // 识别错误类型
     const isViolation = rawReason.toLowerCase().includes('terms of service') || rawReason.toLowerCase().includes('violation');
@@ -101,7 +103,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
         rawReason.toLowerCase().includes('verify your account') ||
         rawReason.toLowerCase().includes('further action') ||
         rawReason.toLowerCase().includes('validation required') ||
-        !!account.validation_url
+        Boolean(actionUrl)
     );
 
     // 复制功能
@@ -220,23 +222,36 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
 
                     {/* Action Buttons for Verification / Appeal */}
                     {actionUrl && !showRaw && (
-                        <div className="mt-3 flex gap-2">
-                            <a
-                                href={actionUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md shadow-blue-500/20 active:scale-[0.98]"
-                            >
-                                <ExternalLink className="w-3 h-3" />
-                                {actionLabel || (isViolation ? t('accounts.go_to_appeal', '前往申诉') : t('accounts.click_to_verify', '点击去验证'))}
-                            </a>
-                            <button
-                                onClick={() => handleCopyUrl(actionUrl)}
-                                className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold bg-gray-100 dark:bg-base-300 hover:bg-gray-200 dark:hover:bg-base-200 text-gray-700 dark:text-gray-300 rounded-lg transition-all active:scale-[0.98]"
-                            >
-                                <Copy className="w-3 h-3" />
-                                {isViolation ? t('accounts.copy_appeal_url', '复制申诉链接') : t('accounts.copy_validation_url', '复制验证链接')}
-                            </button>
+                        <div className="mt-3 p-3.5 rounded-xl border border-blue-200 dark:border-blue-800/60 bg-blue-50/70 dark:bg-blue-950/30">
+                            <div className="flex items-start gap-2.5">
+                                <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                                <div className="space-y-1.5 flex-1 min-w-0">
+                                    <div className="text-xs font-bold text-blue-900 dark:text-blue-200">
+                                        {t('accounts.direct_browser_verification_title', 'One-Click Browser Verification Available')}
+                                    </div>
+                                    <p className="text-[11px] text-blue-700 dark:text-blue-300 leading-relaxed">
+                                        {t('accounts.direct_browser_verification_desc', 'Google has provided a direct verification URL for this session. Click the button to authenticate in your browser, complete the sign-in check, and then re-check the account.')}
+                                    </p>
+                                    <div className="pt-1 flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => openExternalUrl(actionUrl)}
+                                            className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md shadow-blue-500/20 active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                            <span>{actionLabel || (isViolation ? t('accounts.go_to_appeal', '前往申诉') : t('accounts.verify_in_browser_btn', 'Verify in Browser'))}</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopyUrl(actionUrl)}
+                                            className="flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold bg-white dark:bg-base-300 hover:bg-blue-100 dark:hover:bg-base-200 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 dark:border-blue-700 transition-all active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <Copy className="w-3.5 h-3.5" />
+                                            <span>{isViolation ? t('accounts.copy_appeal_url', '复制申诉链接') : t('accounts.copy_validation_url', '复制验证链接')}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -248,17 +263,28 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                 className="w-full flex items-center justify-between p-3 bg-amber-100/60 dark:bg-amber-900/30 hover:bg-amber-100/90 dark:hover:bg-amber-900/50 transition-colors"
                             >
                                 <div className="flex items-center gap-2 text-amber-900 dark:text-amber-300 font-bold text-xs">
-                                    <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                                    <BookOpen className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                                     <span>{t('accounts.verification_guide.card_title')}</span>
-                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-200 dark:bg-amber-800/80 text-amber-900 dark:text-amber-100">
-                                        {t('accounts.verification_guide.card_badge')}
-                                    </span>
+                                    {actionUrl ? (
+                                        <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                                            {t('common.fallback', 'Fallback')}
+                                        </span>
+                                    ) : (
+                                        <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-200 dark:bg-amber-800/80 text-amber-900 dark:text-amber-100">
+                                            {t('accounts.verification_guide.card_badge')}
+                                        </span>
+                                    )}
                                 </div>
                                 {showPdfGuide ? <ChevronDown className="w-4 h-4 text-amber-600" /> : <ChevronRight className="w-4 h-4 text-amber-600" />}
                             </button>
 
                             {showPdfGuide && (
                                 <div className="p-4 text-xs space-y-3 bg-white dark:bg-base-200 text-gray-700 dark:text-gray-300">
+                                    {actionUrl && (
+                                        <p className="text-[11px] leading-relaxed text-amber-800 dark:text-amber-300 font-medium bg-amber-100/50 dark:bg-amber-900/30 p-2.5 rounded-lg border border-amber-200 dark:border-amber-800/40">
+                                            {t('accounts.fallback_guide_note', 'If browser verification does not resolve the issue or requests phone verification, refer to the solution guide below.')}
+                                        </p>
+                                    )}
                                     <p className="text-[11px] leading-relaxed text-gray-600 dark:text-gray-300">
                                         {t('accounts.verification_guide.card_desc')}
                                     </p>

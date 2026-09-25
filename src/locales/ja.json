@@ -173,6 +173,13 @@
     "click_to_verify": "クリックして確認",
     "copy_validation_url": "Copy Verification Link",
     "validation_url_copied": "Verification link copied to clipboard",
+    "browser_verification_msg": "ブラウザ認証が利用可能",
+    "browser_verification_available": "直接確認リンクが利用可能です。クリックしてブラウザで確認後、「再確認」をクリックしてください。",
+    "verify_in_browser_btn": "ブラウザで確認",
+    "verify_in_browser_tooltip": "ブラウザで Google 認証セッションを開く",
+    "direct_browser_verification_title": "直接ブラウザ認証リンクを検出",
+    "direct_browser_verification_desc": "Google がこのセッション専用の認証 URL を発行しました。ボタンをクリックしてブラウザで本人確認を完了し、「再確認」をクリックしてください。",
+    "fallback_guide_note": "ブラウザ認証で解決しない場合や電話番号確認が求められる場合は、以下のガイドを参照してください。",
     "fix_guide": {
       "title": "Terminal Quick Fix (Resolves internal 403s)",
       "step1_title": "🚀 Quickest Solution",

@@ -192,6 +192,13 @@
     "click_to_verify": "Clique para Verificar",
     "copy_validation_url": "Copiar Link de Validação",
     "validation_url_copied": "Link de validação copiado para a área de transferência",
+    "browser_verification_msg": "Verificação no navegador disponível",
+    "browser_verification_available": "Link de verificação no navegador disponível. Clique para verificar e depois clique em 'Verificar novamente'.",
+    "verify_in_browser_btn": "Verificar no Navegador",
+    "verify_in_browser_tooltip": "Abrir sessão de verificação do Google no navegador",
+    "direct_browser_verification_title": "Verificação Direta no Navegador Disponível",
+    "direct_browser_verification_desc": "O Google forneceu um link de verificação direta para esta sessão. Clique no botão para autenticar no seu navegador, conclua a confirmação e revalide a conta.",
+    "fallback_guide_note": "Se a verificação no navegador não resolver ou solicitar verificação por telefone, consulte o guia abaixo.",
     "fix_guide": {
       "title": "Guia de Resolução",
       "step1_title": "Passo 1: Desvincular Conta no Painel Oficial",

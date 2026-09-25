@@ -173,6 +173,13 @@
     "click_to_verify": "Haga clic para verificar",
     "copy_validation_url": "Copiar enlace de verificación",
     "validation_url_copied": "Enlace de verificación copiado al portapapeles",
+    "browser_verification_msg": "Verificación del navegador disponible",
+    "browser_verification_available": "Enlace de verificación en navegador disponible. Haga clic para verificar y luego reintente la comprobación.",
+    "verify_in_browser_btn": "Verificar en navegador",
+    "verify_in_browser_tooltip": "Abrir sesión de verificación de Google en el navegador",
+    "direct_browser_verification_title": "Verificación en navegador en un clic disponible",
+    "direct_browser_verification_desc": "Google proporcionó una URL directa de verificación para esta sesión. Haga clic en el botón para autenticarse en su navegador, complete la confirmación y vuelva a verificar la cuenta.",
+    "fallback_guide_note": "Si la verificación en el navegador no resuelve el problema o solicita verificación telefónica, consulte la guía a continuación.",
     "fix_guide": {
       "title": "Solución rápida en terminal (Resuelve errores 403 internos)",
       "step1_title": "🚀 Solución más rápida",
