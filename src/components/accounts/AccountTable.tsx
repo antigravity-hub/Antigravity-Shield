@@ -482,16 +482,26 @@ function AccountRowContent({
                     )}
 
                     {account.quota?.is_forbidden && (
-                        <span className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-red-200/50">
+                        <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); onViewError(); }}
+                            className="px-2 py-0.5 rounded-md bg-red-100 hover:bg-red-200 dark:bg-red-900/50 dark:hover:bg-red-900/80 text-red-600 dark:text-red-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-red-200/60 dark:border-red-800/60 cursor-pointer transition-colors"
+                            title={t('accounts.click_to_view_error', 'Click to view error details')}
+                        >
                             <Lock className="w-2.5 h-2.5" />
-                            <span>{t('accounts.forbidden')}</span>
-                        </span>
+                            <span className="underline decoration-dotted underline-offset-2">{t('accounts.forbidden')}</span>
+                        </button>
                     )}
                     {account.validation_blocked && (
-                        <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/50">
+                        <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); onViewError(); }}
+                            className="px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 dark:hover:bg-amber-900/80 text-amber-700 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/60 dark:border-amber-800/60 cursor-pointer transition-colors"
+                            title={t('accounts.click_to_view_error', 'Click to view verification details and link')}
+                        >
                             <Clock className="w-2.5 h-2.5" />
-                            <span>{validationBlockedLabel}</span>
-                        </span>
+                            <span className="underline decoration-dotted underline-offset-2">{validationBlockedLabel}</span>
+                        </button>
                     )}
 
                     {isExhausted && (
@@ -639,6 +649,17 @@ function AccountRowContent({
                             >
                                 <RefreshCw className={cn("w-3 h-3", isRefreshing && "animate-spin")} />
                                 <span>{t('accounts.recheck_btn', 'Re-check')}</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onViewError();
+                                }}
+                                className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:underline shrink-0 cursor-pointer"
+                                title={t('accounts.view_error_details_tooltip', 'View full error details')}
+                            >
+                                <span>{t('accounts.view_error', 'View Error')}</span>
                             </button>
                         </div>
                     </div>

@@ -308,16 +308,26 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                 </span>
                             )}
                             {account.quota?.is_forbidden && (
-                                <span className="px-1.5 py-0.5 rounded-md bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 text-[9px] font-bold flex items-center gap-1 shadow-sm border border-red-200/50">
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); onViewError(); }}
+                                    className="px-1.5 py-0.5 rounded-md bg-red-100 hover:bg-red-200 dark:bg-red-900/40 dark:hover:bg-red-900/70 text-red-600 dark:text-red-400 text-[9px] font-bold flex items-center gap-1 shadow-sm border border-red-200/50 cursor-pointer transition-colors"
+                                    title={t('accounts.click_to_view_error', 'Click to view error details')}
+                                >
                                     <Lock className="w-2.5 h-2.5" />
-                                    {t('accounts.forbidden').toUpperCase()}
-                                </span>
+                                    <span className="underline decoration-dotted underline-offset-1">{t('accounts.forbidden').toUpperCase()}</span>
+                                </button>
                             )}
                             {account.validation_blocked && (
-                                <span className="px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-[9px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/50">
+                                <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); onViewError(); }}
+                                    className="px-1.5 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/40 dark:hover:bg-amber-900/70 text-amber-700 dark:text-amber-400 text-[9px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/50 cursor-pointer transition-colors"
+                                    title={t('accounts.click_to_view_error', 'Click to view verification details and link')}
+                                >
                                     <Clock className="w-2.5 h-2.5" />
-                                    {validationBlockedLabel.toUpperCase()}
-                                </span>
+                                    <span className="underline decoration-dotted underline-offset-1">{validationBlockedLabel.toUpperCase()}</span>
+                                </button>
                             )}
                             {isExhausted && (
                                 <span
@@ -438,6 +448,17 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                 >
                                     <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
                                     <span>{t('accounts.recheck_btn', 'Re-check')}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onViewError();
+                                    }}
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:underline cursor-pointer"
+                                    title={t('accounts.view_error_details_tooltip', 'View full error details')}
+                                >
+                                    <span>{t('accounts.view_error', 'View Error')}</span>
                                 </button>
                             </div>
                         </div>

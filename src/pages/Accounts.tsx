@@ -1503,6 +1503,11 @@ function Accounts() {
       <AccountDetailsDialog
         account={detailsAccount}
         onClose={() => setDetailsAccount(null)}
+        onViewError={() => {
+          if (detailsAccount) {
+            setErrorAccountId(detailsAccount.id);
+          }
+        }}
       />
       <DeviceFingerprintDialog
         account={deviceAccount}
@@ -1596,11 +1601,6 @@ function Accounts() {
         onCancel={() => setIsWarmupConfirmOpen(false)}
       />
 
-      {/* 账号详情弹窗 */}
-      <AccountDetailsDialog
-        account={detailsAccount}
-        onClose={() => setDetailsAccount(null)}
-      />
 
       {/* 账号错误详情弹窗 */}
       <AccountErrorDialog
