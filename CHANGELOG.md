@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.13.1 (2026-09-25)**:
+        -   **Account Verification Lifecycle & Summary Synchronization**: Synchronized validation status lifecycle and index summary to prevent verification status oscillation, ensuring accounts requiring browser re-verification display clear actionable prompts in tables and cards while valid active accounts remain properly categorized.
+        -   **Portuguese Localization Completion**: Integrated complete Portuguese translation dictionary across all UI components, modals, status cards, and settings.
+        -   **Bundled Antigravity Toolkit v2.5.1**: Synchronized bundled IDE companion extension to v2.5.1 with live switchboard verification state propagation and real-time conversation title resolution.
     *   **v5.13.0 (2026-09-25)**:
         -   **Account Health & Rate-Limit Decoupling**: Completely decoupled transient HTTP 429 (`RESOURCE_EXHAUSTED`) from account identity verification blocks, eliminating false-positive status flapping (orange/green) and stabilizing multi-account rotation.
         -   **Accurate Quota Reset & Cycle Calculations**: Fixed an issue where 5-hour rolling model resets were erroneously applied to 7-day weekly cycles, eliminating collapsed steppers (<1 day) and ensuring full weekly allocations show as Ready.
