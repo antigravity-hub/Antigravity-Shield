@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.13.0 (2026-09-25)**:
+        -   **Account Health & Rate-Limit Decoupling**: Completely decoupled transient HTTP 429 (`RESOURCE_EXHAUSTED`) from account identity verification blocks, eliminating false-positive status flapping (orange/green) and stabilizing multi-account rotation.
+        -   **Accurate Quota Reset & Cycle Calculations**: Fixed an issue where 5-hour rolling model resets were erroneously applied to 7-day weekly cycles, eliminating collapsed steppers (<1 day) and ensuring full weekly allocations show as Ready.
+        -   **Enhanced Verification & Diagnostic Visibility**: Integrated direct error banners with one-click browser verification and error detail views inside the Quota Details dialog `(i)` and interactive account badges.
+        -   **Bundled Antigravity Toolkit v2.5.0**: Synchronized official embedded extension binary and manifest metadata to v2.5.0 with full support for crash-resilient session recovery.
     *   **v5.12.1 (2026-09-24)**:
         -   **Crash-Resilient Session Recovery & Zero Data Loss**: Engineered autonomous state reconciliation between disk-persisted Brain transcripts (`~/.gemini/antigravity/brain/`) and IDE state storage (`state.vscdb`), recovering interrupted agent trajectories dropped during sudden power outages or abrupt OS shutdowns.
         -   **Bundled Antigravity Toolkit v2.5.0**: Integrated upgraded Toolkit companion extension with native Protobuf trajectory synthesis, automated unindexed conversation healing, and one-click transcript inspection fallback.
