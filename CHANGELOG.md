@@ -3,6 +3,8 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.13.4 (2026-09-26)**:
+        -   **Bundled Antigravity Toolkit v2.5.3**: Synchronized bundled IDE companion extension to v2.5.3 featuring multi-tier official conversation title resolution, self-healing history synchronization, and localized autonomous account rotation notifications.
     *   **v5.13.3 (2026-09-26)**:
         -   **Bundled Antigravity Toolkit v2.5.2**: Synchronized bundled IDE companion extension to v2.5.2 featuring instant webview initialization skeleton, zero-copy buffer pre-filtering, and sub-100ms transcript search engine.
     *   **v5.13.2 (2026-09-25)**:
