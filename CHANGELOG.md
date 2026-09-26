@@ -3,6 +3,8 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.13.2 (2026-09-25)**:
+        -   **Active Warmup Rolling Cycle Visibility**: Added active rolling window detection for accounts at 100% capacity with an active countdown timer, displaying live countdown badges across account tables and cards so warmed account states remain clearly visible.
     *   **v5.13.1 (2026-09-25)**:
         -   **Account Verification Lifecycle & Summary Synchronization**: Synchronized validation status lifecycle and index summary to prevent verification status oscillation, ensuring accounts requiring browser re-verification display clear actionable prompts in tables and cards while valid active accounts remain properly categorized.
         -   **Portuguese Localization Completion**: Integrated complete Portuguese translation dictionary across all UI components, modals, status cards, and settings.
