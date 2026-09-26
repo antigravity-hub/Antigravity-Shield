@@ -32,7 +32,6 @@ import {
     X,
     Check,
     Clock,
-    Flame,
     Bot,
     Tag,
     BookOpen,
@@ -743,7 +742,7 @@ function AccountRowContent({
                 <div className="flex items-center gap-1.5" title={isWarmed ? warmedTooltip : (isReady ? readyTooltip : countdownTooltip)}>
                     {isWarmed ? (
                         <div className="flex items-center gap-1">
-                            <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                            <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                             <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
                                 {formattedRemaining}
                             </span>

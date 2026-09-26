@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Flame, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy } from 'lucide-react';
+import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
@@ -540,7 +540,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                         <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 text-xs">
                             <div className="flex items-center gap-1.5">
                                 {fiveHourResetInfo?.isWarmed ? (
-                                    <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                    <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                                 ) : fiveHourResetInfo?.isReady ? (
                                     <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
                                 ) : (
@@ -573,7 +573,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                         : "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
                             )}>
                                 {fiveHourResetInfo?.isWarmed
-                                    ? t('accounts.warmed', '🔥 Warm')
+                                    ? t('accounts.warmed', 'Ready (5H)')
                                     : fiveHourResetInfo?.isReady
                                         ? t('common.ready', 'Ready')
                                         : t('accounts.rolling_5h', '5H Rolling')}
