@@ -1,5 +1,5 @@
 
-import { AlertTriangle, Check, Clock, Flame, Lock } from 'lucide-react';
+import { AlertTriangle, Check, Clock, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
 import { getQuotaColor, formatTimeRemaining, getTimeRemainingColor } from '../../utils/format';
@@ -113,9 +113,9 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
                                 return (
                                     <span
                                         className="text-amber-600 dark:text-amber-400 font-semibold scale-90 flex items-center gap-0.5 truncate"
-                                        title={`Warm (100% Available) — Resets in ${formatTimeRemaining(resetTime!)}`}
+                                        title={`5H Rolling Window (100% Available) — Resets in ${formatTimeRemaining(resetTime!)}`}
                                     >
-                                        <Flame className="w-2.5 h-2.5 shrink-0 text-amber-500" />
+                                        <Clock className="w-2.5 h-2.5 shrink-0 text-amber-500" />
                                         {formatTimeRemaining(resetTime!)}
                                     </span>
                                 );
