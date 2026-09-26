@@ -3,6 +3,8 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.13.3 (2026-09-26)**:
+        -   **Bundled Antigravity Toolkit v2.5.2**: Synchronized bundled IDE companion extension to v2.5.2 featuring instant webview initialization skeleton, zero-copy buffer pre-filtering, and sub-100ms transcript search engine.
     *   **v5.13.2 (2026-09-25)**:
         -   **Active Warmup Rolling Cycle Visibility**: Added active rolling window detection for accounts at 100% capacity with an active countdown timer, displaying live countdown badges across account tables and cards so warmed account states remain clearly visible.
     *   **v5.13.1 (2026-09-25)**:
