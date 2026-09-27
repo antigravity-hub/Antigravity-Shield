@@ -1499,7 +1499,7 @@ async fn admin_refresh_account_by_id(
     let quota = account::fetch_quota_with_retry(&mut acc).await.map_err(|e| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            Json(ErrorResponse { error: e }),
+            Json(ErrorResponse { error: e.to_string() }),
         )
     })?;
 

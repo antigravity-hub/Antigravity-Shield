@@ -472,7 +472,7 @@ async fn refresh_account_by_id(
         }
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
-            Json(ErrorResponse { error: e }),
+            Json(ErrorResponse { error: e.to_string() }),
         )),
     }
 }
