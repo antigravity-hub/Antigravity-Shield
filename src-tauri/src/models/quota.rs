@@ -95,6 +95,33 @@ impl QuotaData {
     pub fn add_model(&mut self, model: ModelQuota) {
         self.models.push(model);
     }
+
+    /// Returns the minimum remaining quota percentage (0-100) across all active models and quota groups.
+    pub fn get_min_remaining_percentage(&self) -> i32 {
+        let mut min_pct = 100;
+        let mut has_entries = false;
+
+        for m in &self.models {
+            min_pct = min_pct.min(m.percentage);
+            has_entries = true;
+        }
+
+        if let Some(ref groups) = self.quota_groups {
+            for g in groups {
+                for b in &g.buckets {
+                    let pct = (b.remaining_fraction * 100.0).round() as i32;
+                    min_pct = min_pct.min(pct.clamp(0, 100));
+                    has_entries = true;
+                }
+            }
+        }
+
+        if has_entries {
+            min_pct
+        } else {
+            100
+        }
+    }
 }
 
 impl Default for QuotaData {

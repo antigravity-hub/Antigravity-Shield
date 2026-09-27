@@ -703,6 +703,7 @@ impl AxumServer {
             .route("/accounts/current", get(admin_get_current_account))
             .route("/accounts/switch", post(admin_switch_account))
             .route("/accounts/refresh", post(admin_refresh_all_quotas))
+            .route("/accounts/:accountId/refresh", post(admin_refresh_account_by_id))
             .route("/accounts/:accountId", delete(admin_delete_account))
             .route("/accounts/:accountId/bind-device", post(admin_bind_device))
             .route(
@@ -911,6 +912,10 @@ impl AxumServer {
             .route("/api/toolkit/accounts", get(admin_list_accounts))
             .route("/toolkit/switch", post(admin_switch_account))
             .route("/api/toolkit/switch", post(admin_switch_account))
+            .route("/toolkit/refresh", post(admin_refresh_all_quotas))
+            .route("/api/toolkit/refresh", post(admin_refresh_all_quotas))
+            .route("/toolkit/accounts/:accountId/refresh", post(admin_refresh_account_by_id))
+            .route("/api/toolkit/accounts/:accountId/refresh", post(admin_refresh_account_by_id))
             .route("/toolkit/sync-active", post(admin_toolkit_sync_active))
             .route("/api/toolkit/sync-active", post(admin_toolkit_sync_active))
             .route("/switch", post(admin_switch_account))
@@ -1458,6 +1463,55 @@ async fn admin_refresh_all_quotas() -> Result<impl IntoResponse, (StatusCode, Js
     })?;
 
     Ok(Json(stats))
+}
+
+async fn admin_refresh_account_by_id(
+    State(state): State<AppState>,
+    Path(account_id): Path<String>,
+) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    logger::log_info(&format!("[API] Targeted quota refresh requested for account: {}", account_id));
+
+    let resolved_id = if account_id.contains('@') {
+        account::list_accounts()
+            .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(ErrorResponse { error: e })))?
+            .into_iter()
+            .find(|a| a.email.eq_ignore_ascii_case(&account_id))
+            .map(|a| a.id)
+            .ok_or_else(|| {
+                (
+                    StatusCode::NOT_FOUND,
+                    Json(ErrorResponse {
+                        error: format!("Account with email {} not found", account_id),
+                    }),
+                )
+            })?
+    } else {
+        account_id
+    };
+
+    let mut acc = account::load_account(&resolved_id).map_err(|e| {
+        (
+            StatusCode::NOT_FOUND,
+            Json(ErrorResponse { error: e }),
+        )
+    })?;
+
+    let quota = account::fetch_quota_with_retry(&mut acc).await.map_err(|e| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse { error: e }),
+        )
+    })?;
+
+    let _ = account::update_account_quota(&resolved_id, quota.clone());
+    let _ = state.token_manager.reload_account(&resolved_id).await;
+
+    Ok(Json(serde_json::json!({
+        "success": true,
+        "account_id": resolved_id,
+        "email": acc.email,
+        "quota": quota
+    })))
 }
 
 // --- OAuth Handlers ---
