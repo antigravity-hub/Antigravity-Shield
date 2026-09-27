@@ -184,6 +184,7 @@ pub fn start_scheduler(
         time::sleep(Duration::from_secs(10)).await;
 
         let mut last_quota_refresh = 0i64;
+        let mut last_active_fast_refresh = 0i64;
         let mut last_db_sync = 0i64;
 
         loop {
@@ -196,7 +197,54 @@ pub fn start_scheduler(
 
             let now = chrono::Utc::now().timestamp();
 
-            // A. Quota Auto-Refresh
+            // A1. Adaptive Low-Quota Rapid Polling (Targeted active IDE account)
+            // When an active session is in the danger zone (<= 15% and > 0%), refresh every ~35-45s
+            // so 0% depletion is detected immediately before the IDE encounters connection drops.
+            if cfg.auto_refresh {
+                let mut active_target_account_id = None;
+                if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
+                    active_target_account_id = targets.ide.or(targets.agy);
+                }
+                if active_target_account_id.is_none() {
+                    active_target_account_id = crate::modules::account::get_current_account_id().ok().flatten();
+                }
+
+                if let Some(ref acc_id) = active_target_account_id {
+                    if let Ok(acc) = crate::modules::account::load_account(acc_id) {
+                        if !acc.disabled && !acc.proxy_disabled && !acc.validation_blocked {
+                            if let Some(ref q) = acc.quota {
+                                if !q.is_forbidden {
+                                    let min_pct = q.get_min_remaining_percentage();
+                                    if min_pct > 0 && min_pct <= 15 {
+                                        let fast_jitter = 5 + (now % 7);
+                                        let fast_interval = 35 + fast_jitter;
+                                        if now - last_active_fast_refresh >= fast_interval {
+                                            logger::log_info(&format!(
+                                                "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%). Performing rapid targeted refresh...",
+                                                acc.email, min_pct
+                                            ));
+                                            last_active_fast_refresh = now;
+                                            let mut acc_to_refresh = acc;
+                                            let _ = crate::commands::internal_refresh_account_quota(
+                                                app_handle_for_daemon.as_ref(),
+                                                &mut acc_to_refresh,
+                                            )
+                                            .await;
+
+                                            let instance_lock = proxy_state_for_daemon.instance.read().await;
+                                            if let Some(instance) = instance_lock.as_ref() {
+                                                let _ = instance.token_manager.reload_account(&acc_to_refresh.id).await;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // A2. Standard Fleet Quota Auto-Refresh
             if cfg.auto_refresh && cfg.refresh_interval > 0 {
                 let interval_secs = (cfg.refresh_interval as i64) * 60;
                 // Add randomized human jitter (15 to 35 seconds) to eliminate bot timing signatures

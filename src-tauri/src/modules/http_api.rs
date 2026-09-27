@@ -421,6 +421,62 @@ async fn refresh_all_quotas() -> Result<impl IntoResponse, (StatusCode, Json<Err
     ))
 }
 
+/// POST /accounts/{id}/refresh - Refresh single account quota
+async fn refresh_account_by_id(
+    Path(account_id): Path<String>,
+) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    logger::log_info(&format!(
+        "[HTTP API] Targeted quota refresh requested for account: {}",
+        account_id
+    ));
+
+    let resolved_id = if account_id.contains('@') {
+        account::list_accounts()
+            .map_err(|e| {
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(ErrorResponse { error: e }),
+                )
+            })?
+            .into_iter()
+            .find(|a| a.email.eq_ignore_ascii_case(&account_id))
+            .map(|a| a.id)
+            .ok_or_else(|| {
+                (
+                    StatusCode::NOT_FOUND,
+                    Json(ErrorResponse {
+                        error: format!("Account with email {} not found", account_id),
+                    }),
+                )
+            })?
+    } else {
+        account_id
+    };
+
+    let mut acc = account::load_account(&resolved_id).map_err(|e| {
+        (
+            StatusCode::NOT_FOUND,
+            Json(ErrorResponse { error: e }),
+        )
+    })?;
+
+    match account::fetch_quota_with_retry(&mut acc).await {
+        Ok(quota) => {
+            let _ = account::update_account_quota(&resolved_id, quota.clone());
+            Ok(Json(serde_json::json!({
+                "success": true,
+                "account_id": resolved_id,
+                "email": acc.email,
+                "quota": quota
+            })))
+        }
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(ErrorResponse { error: e }),
+        )),
+    }
+}
+
 /// POST /accounts/:id/bind-device - Bind device fingerprint
 async fn bind_device(
     Path(account_id): Path<String>,
@@ -499,6 +555,7 @@ pub async fn start_server(
         .route("/accounts/current", get(get_current_account))
         .route("/accounts/switch", post(switch_account))
         .route("/accounts/refresh", post(refresh_all_quotas))
+        .route("/accounts/{id}/refresh", post(refresh_account_by_id))
         .route("/accounts/{id}/bind-device", post(bind_device))
         .route("/logs", get(get_logs))
         .layer(cors)
