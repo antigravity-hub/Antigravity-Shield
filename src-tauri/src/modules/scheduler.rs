@@ -198,8 +198,8 @@ pub fn start_scheduler(
             let now = chrono::Utc::now().timestamp();
 
             // A1. Adaptive Low-Quota Rapid Polling (Targeted active IDE account)
-            // When an active session is in the danger zone (<= 15% and > 0%), refresh every ~35-45s
-            // so 0% depletion is detected immediately before the IDE encounters connection drops.
+            // When an active session enters the critical danger zone (<= 10% and > 0%), refresh every ~35-45s
+            // so depletion is detected immediately before the IDE encounters connection drops.
             if cfg.auto_refresh {
                 let mut active_target_account_id = None;
                 if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
@@ -215,7 +215,7 @@ pub fn start_scheduler(
                             if let Some(ref q) = acc.quota {
                                 if !q.is_forbidden {
                                     let min_pct = q.get_min_remaining_percentage();
-                                    if min_pct > 0 && min_pct <= 15 {
+                                    if min_pct > 0 && min_pct <= 10 {
                                         let fast_jitter = 5 + (now % 7);
                                         let fast_interval = 35 + fast_jitter;
                                         if now - last_active_fast_refresh >= fast_interval {
