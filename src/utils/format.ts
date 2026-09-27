@@ -37,7 +37,7 @@ export function formatTimeRemaining(dateStr: string): string {
     const now = new Date();
     const diffMs = targetDate.getTime() - now.getTime();
 
-    if (diffMs <= 0) return '0h 0m';
+    if (diffMs <= 0) return 'Ready';
 
     const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));

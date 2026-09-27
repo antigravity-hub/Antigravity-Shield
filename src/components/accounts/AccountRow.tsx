@@ -1,4 +1,4 @@
-import { ArrowRightLeft, RefreshCw, Trash2, Download, Info, Lock, Ban, Diamond, Gem, Circle, Clock, ToggleLeft, ToggleRight, Fingerprint } from 'lucide-react';
+import { ArrowRightLeft, RefreshCw, Trash2, Download, Info, Lock, Ban, Diamond, Gem, Circle, Clock, Check, ToggleLeft, ToggleRight, Fingerprint } from 'lucide-react';
 import { Account } from '../../types/account';
 import { getQuotaColor, formatTimeRemaining, getTimeRemainingColor } from '../../utils/format';
 import { cn } from '../../utils/cn';
@@ -188,12 +188,16 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                     <span className="truncate">{getModelShortDisplayName(geminiProModel, "G-Pro")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
-                                    {geminiProModel?.reset_time ? (
-                                        <span className={cn("flex items-center gap-0.5 font-medium transition-colors", getTimeColorClass(geminiProModel.reset_time))}>
-                                            <Clock className="w-2.5 h-2.5" />
-                                            {formatTimeRemaining(geminiProModel.reset_time)}
-                                        </span>
-                                    ) : (
+                                    {geminiProModel?.reset_time ? (() => {
+                                        const formatted = formatTimeRemaining(geminiProModel.reset_time);
+                                        const isReady = formatted === 'Ready';
+                                        return (
+                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(geminiProModel.reset_time))}>
+                                                {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
+                                                {formatted}
+                                            </span>
+                                        );
+                                    })() : (
                                         <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
                                     )}
                                 </div>
@@ -220,12 +224,16 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                     <span className="truncate">{getModelShortDisplayName(geminiFlashModel, "G-Flash")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
-                                    {geminiFlashModel?.reset_time ? (
-                                        <span className={cn("flex items-center gap-0.5 font-medium transition-colors", getTimeColorClass(geminiFlashModel.reset_time))}>
-                                            <Clock className="w-2.5 h-2.5" />
-                                            {formatTimeRemaining(geminiFlashModel.reset_time)}
-                                        </span>
-                                    ) : (
+                                    {geminiFlashModel?.reset_time ? (() => {
+                                        const formatted = formatTimeRemaining(geminiFlashModel.reset_time);
+                                        const isReady = formatted === 'Ready';
+                                        return (
+                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(geminiFlashModel.reset_time))}>
+                                                {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
+                                                {formatted}
+                                            </span>
+                                        );
+                                    })() : (
                                         <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
                                     )}
                                 </div>
@@ -253,12 +261,16 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                     <span className="truncate">{getModelShortDisplayName(geminiImageModel, "G-Image")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
-                                    {geminiImageModel?.reset_time ? (
-                                        <span className={cn("flex items-center gap-0.5 font-medium transition-colors", getTimeColorClass(geminiImageModel.reset_time))}>
-                                            <Clock className="w-2.5 h-2.5" />
-                                            {formatTimeRemaining(geminiImageModel.reset_time)}
-                                        </span>
-                                    ) : (
+                                    {geminiImageModel?.reset_time ? (() => {
+                                        const formatted = formatTimeRemaining(geminiImageModel.reset_time);
+                                        const isReady = formatted === 'Ready';
+                                        return (
+                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(geminiImageModel.reset_time))}>
+                                                {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
+                                                {formatted}
+                                            </span>
+                                        );
+                                    })() : (
                                         <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
                                     )}
                                 </div>
@@ -286,12 +298,16 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                     <span className="truncate">{getModelShortDisplayName(claudeModel, "Claude")}</span>
                                 </span>
                                 <div className="flex-1 flex justify-center">
-                                    {claudeModel?.reset_time ? (
-                                        <span className={cn("flex items-center gap-0.5 font-medium transition-colors", getTimeColorClass(claudeModel.reset_time))}>
-                                            <Clock className="w-2.5 h-2.5" />
-                                            {formatTimeRemaining(claudeModel.reset_time)}
-                                        </span>
-                                    ) : (
+                                    {claudeModel?.reset_time ? (() => {
+                                        const formatted = formatTimeRemaining(claudeModel.reset_time);
+                                        const isReady = formatted === 'Ready';
+                                        return (
+                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(claudeModel.reset_time))}>
+                                                {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
+                                                {formatted}
+                                            </span>
+                                        );
+                                    })() : (
                                         <span className="text-gray-300 dark:text-gray-600 italic scale-90">N/A</span>
                                     )}
                                 </div>

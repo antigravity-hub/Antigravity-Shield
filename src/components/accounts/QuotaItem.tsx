@@ -108,8 +108,8 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
                         const diffMs = target - now;
                         const isRollingActive = diffMs > 0 && diffMs <= 5.5 * 60 * 60 * 1000;
 
-                        if (percentage >= 100) {
-                            if (isRollingActive) {
+                        if (percentage >= 100 || diffMs <= 0) {
+                            if (isRollingActive && percentage >= 100) {
                                 return (
                                     <span
                                         className="text-amber-600 dark:text-amber-400 font-semibold scale-90 flex items-center gap-0.5 truncate"
