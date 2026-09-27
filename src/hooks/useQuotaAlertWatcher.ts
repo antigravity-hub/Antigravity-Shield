@@ -124,14 +124,15 @@ export function useQuotaAlertWatcher() {
             const targetPrefix = targetLabel ? `[${targetLabel}] ` : '';
 
             // Collect all critically low models for this account
+            const DEPLETED_THRESHOLD = 5;
             const criticalModels: { name: string; display_name?: string; percentage: number }[] = [];
-            let hasNewZero = false;
+            let hasNewDepleted = false;
 
             // A. Check individual rolling models
             if (targetAccount.quota?.models) {
                 for (const model of targetAccount.quota.models) {
                     const pct = model.percentage;
-                    if (pct !== undefined && pct !== null && pct <= 5 && pct >= 0) {
+                    if (pct !== undefined && pct !== null && pct <= DEPLETED_THRESHOLD && pct >= 0) {
                         criticalModels.push({
                             name: model.name,
                             display_name: model.display_name,
@@ -140,11 +141,11 @@ export function useQuotaAlertWatcher() {
 
                         const alertKey = `${targetAccount.email}:${model.name}`;
                         const prevPct = prevPercentageMap.current.get(alertKey);
-                        if (pct === 0 && prevPct !== 0) {
-                            hasNewZero = true;
+                        if (pct <= DEPLETED_THRESHOLD && (prevPct === undefined || prevPct > DEPLETED_THRESHOLD)) {
+                            hasNewDepleted = true;
                         }
                         prevPercentageMap.current.set(alertKey, pct);
-                    } else if (pct !== undefined && pct > 5) {
+                    } else if (pct !== undefined && pct > DEPLETED_THRESHOLD) {
                         const alertKey = `${targetAccount.email}:${model.name}`;
                         lastAlertMap.delete(alertKey);
                         prevPercentageMap.current.delete(alertKey);
@@ -165,7 +166,7 @@ export function useQuotaAlertWatcher() {
                             const bId = (bucket.bucket_id || '').toLowerCase();
                             const gName = (group.display_name || '').toLowerCase();
 
-                            if (pct === 0) {
+                            if (pct <= DEPLETED_THRESHOLD) {
                                 if (bId.includes('claude') || gName.includes('claude')) {
                                     weeklyClaudeDepleted = true;
                                 }
@@ -174,7 +175,7 @@ export function useQuotaAlertWatcher() {
                                 }
                             }
 
-                            if (pct <= 5 && pct >= 0) {
+                            if (pct <= DEPLETED_THRESHOLD && pct >= 0) {
                                 const groupLabel = group.display_name || bucket.display_name || 'Weekly';
                                 criticalModels.push({
                                     name: bucket.bucket_id || groupLabel,
@@ -184,8 +185,8 @@ export function useQuotaAlertWatcher() {
 
                                 const alertKey = `${targetAccount.email}:weekly:${bucket.bucket_id}`;
                                 const prevPct = prevPercentageMap.current.get(alertKey);
-                                if (pct === 0 && prevPct !== 0) {
-                                    hasNewZero = true;
+                                if (pct <= DEPLETED_THRESHOLD && (prevPct === undefined || prevPct > DEPLETED_THRESHOLD)) {
+                                    hasNewDepleted = true;
                                 }
                                 prevPercentageMap.current.set(alertKey, pct);
                             }
@@ -202,7 +203,7 @@ export function useQuotaAlertWatcher() {
             const accountAlertKey = `${targetAccount.email}:grouped`;
             const lastAlertTime = lastAlertMap.get(accountAlertKey) || 0;
             const minPercentage = Math.min(...criticalModels.map(m => m.percentage));
-            const shouldAlert = (now - lastAlertTime > ALERT_COOLDOWN_MS) || hasNewZero;
+            const shouldAlert = (now - lastAlertTime > ALERT_COOLDOWN_MS) || hasNewDepleted;
 
             if (shouldAlert) {
                 lastAlertMap.set(accountAlertKey, now);
@@ -223,9 +224,9 @@ export function useQuotaAlertWatcher() {
                 sendDesktopNotification(alertTitle, alertMsg);
             }
 
-            // 2. Intelligent Auto-Switching on Quota Depletion (0%)
-            const claudeDepleted = weeklyClaudeDepleted || criticalModels.some(m => isClaudeModel(m.name, m.display_name) && m.percentage === 0);
-            const geminiDepleted = weeklyGeminiDepleted || criticalModels.some(m => isGeminiModel(m.name, m.display_name) && m.percentage === 0);
+            // 2. Intelligent Auto-Switching on Quota Depletion (<= 5%)
+            const claudeDepleted = weeklyClaudeDepleted || criticalModels.some(m => isClaudeModel(m.name, m.display_name) && m.percentage <= DEPLETED_THRESHOLD);
+            const geminiDepleted = weeklyGeminiDepleted || criticalModels.some(m => isGeminiModel(m.name, m.display_name) && m.percentage <= DEPLETED_THRESHOLD);
 
             if (autoSwitchEnabled && (claudeDepleted || geminiDepleted) && !isAutoSwitchingRef.current) {
                 const lastSwitch = lastAutoSwitchMap.get(targetAccount.id) || 0;
