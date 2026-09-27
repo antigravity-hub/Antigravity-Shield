@@ -280,10 +280,10 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
     return clampedValue >= (min + max) / 2 ? 'up' : 'down';
   }, [trend, activeZone, clampedValue, min, max]);
 
-  // SVG Geometry Dimensions
+  // SVG Geometry Dimensions - Ultra-Compact & Low Profile
   const cx = 130;
-  const cy = 135;
-  const radius = 95;
+  const cy = 115;
+  const radius = 86;
 
   // Ticks at boundary between zones
   const tickAngles = useMemo(() => {
@@ -313,11 +313,11 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
     // If using the standard 5 zones, position identically to design
     if (zones === DEFAULT_GAUGE_ZONES || zones.length === 5) {
       return [
-        { label: zones[0].label, color: zones[0].color, x: 22, y: 122, anchor: 'middle' },
-        { label: zones[1].label, color: zones[1].color, x: 50, y: 62, anchor: 'middle' },
-        { label: zones[2].label, color: zones[2].color, x: 130, y: 24, anchor: 'middle' },
-        { label: zones[3].label, color: zones[3].color, x: 206, y: 62, anchor: 'middle' },
-        { label: zones[4].label, color: zones[4].color, x: 234, y: 122, anchor: 'middle' },
+        { label: zones[0].label, color: zones[0].color, x: 24, y: 106, anchor: 'middle' },
+        { label: zones[1].label, color: zones[1].color, x: 52, y: 52, anchor: 'middle' },
+        { label: zones[2].label, color: zones[2].color, x: 130, y: 16, anchor: 'middle' },
+        { label: zones[3].label, color: zones[3].color, x: 208, y: 52, anchor: 'middle' },
+        { label: zones[4].label, color: zones[4].color, x: 236, y: 106, anchor: 'middle' },
       ];
     }
 
@@ -328,7 +328,7 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
       const frac = span > 0 ? (midVal - min) / span : 0.5;
       const angle = frac * 180;
       // Label slightly above the arc radius
-      const pt = polarToCartesian(cx, cy, radius + 18, angle);
+      const pt = polarToCartesian(cx, cy, radius + 15, angle);
       return {
         label: z.label,
         color: z.color,
@@ -349,9 +349,9 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
       }}
     >
       {/* SVG Speedometer Gauge */}
-      <div className="relative w-full aspect-[240/145] flex items-center justify-center">
+      <div className="relative w-full aspect-[260/118] flex items-center justify-center">
         <svg
-          viewBox="0 0 260 150"
+          viewBox="0 0 260 118"
           className="w-full h-auto overflow-visible select-none drop-shadow-md"
         >
           <defs>
@@ -445,7 +445,7 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
           >
             {/* Needle Blade (Tapered) */}
             <polygon
-              points="-3.5,0 0,-85 3.5,0"
+              points="-3,0 0,-76 3,0"
               className="fill-slate-100 drop-shadow-md"
               filter={`url(#${glowFilterId})`}
             />
@@ -454,14 +454,14 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
             <circle
               cx="0"
               cy="0"
-              r="8"
+              r="7"
               className="fill-white dark:fill-slate-100 drop-shadow-sm"
             />
             {/* Glowing Active Center Dot */}
             <circle
               cx="0"
               cy="0"
-              r="4.5"
+              r="3.5"
               fill={currentColor}
               className="animate-pulse"
               style={{
