@@ -29,7 +29,12 @@ export interface BurnVelocityMetrics {
 }
 
 export interface AccountLike {
+  id?: string;
+  disabled?: boolean;
+  proxy_disabled?: boolean;
+  validation_blocked?: boolean;
   quota?: {
+    is_forbidden?: boolean;
     quota_groups?: Array<{
       display_name?: string;
       buckets?: Array<{
@@ -216,13 +221,25 @@ export function calculateFleetBurnVelocity(
     };
   }
 
+  // 1. Filter active eligible accounts (exclude disabled, banned, or blocked accounts)
+  const activeAccounts = accounts.filter(
+    (acc) =>
+      !acc.disabled &&
+      !acc.proxy_disabled &&
+      !acc.validation_blocked &&
+      !acc.quota?.is_forbidden
+  );
+
+  // Fallback to all accounts if every account is currently disabled/blocked
+  const targetAccounts = activeAccounts.length > 0 ? activeAccounts : accounts;
+
   let totalQuotaRem = 0;
   let totalTimeRemPct = 0;
   let totalTimeRemHours = 0;
   let totalBurnRate = 0;
   let validAccounts = 0;
 
-  for (const acc of accounts) {
+  for (const acc of targetAccounts) {
     const m = calculateAccountBurnVelocity(acc, now);
     totalQuotaRem += m.quotaRemainingPct;
     totalTimeRemPct += m.timeRemainingPct;
@@ -231,12 +248,48 @@ export function calculateFleetBurnVelocity(
     validAccounts++;
   }
 
+  if (validAccounts === 0) {
+    return {
+      sustainabilityRatio: 1.0,
+      hourlyBurnRatePct: 0,
+      runwayHoursRemaining: 168,
+      projectedDepletionDate: null,
+      isDepletedBeforeReset: false,
+      deficitHours: 0,
+      surplusHours: 168,
+      zone: 'balanced',
+      zoneLabel: 'Balanced Pace',
+      zoneTag: 'NEUTRAL',
+      zoneColor: '#38bdf8',
+      gaugeAngle: 90,
+      timeRemainingHours: 168,
+      quotaRemainingPct: 100,
+      timeRemainingPct: 100,
+    };
+  }
+
+  // Aggregate pool metrics across active accounts
   const avgQuotaRem = totalQuotaRem / validAccounts;
   const avgTimeRemPct = totalTimeRemPct / validAccounts;
   const avgTimeRemHours = totalTimeRemHours / validAccounts;
   const avgBurnRate = totalBurnRate / validAccounts;
 
-  const sustainabilityRatio = avgTimeRemPct > 0 ? avgQuotaRem / avgTimeRemPct : 1.0;
+  // Best Method: Pooled Aggregate Ratio (Ratio of Totals) with robust boundary safeguards
+  // S_fleet = (Total Quota Remaining) / (Total Time Remaining)
+  let sustainabilityRatio = 1.0;
+
+  if (avgQuotaRem <= 0.05) {
+    sustainabilityRatio = 0.0;
+  } else if (avgQuotaRem >= 99.5 && avgBurnRate <= 0.005) {
+    // Virtually untouched fleet quota
+    sustainabilityRatio = 2.0;
+  } else {
+    // Epsilon guard: remaining time guarded to at least 1.0% (~1.68 hours) to prevent division explosion
+    const safeTimeRemPct = Math.max(1.0, avgTimeRemPct);
+    const rawRatio = avgQuotaRem / safeTimeRemPct;
+    // Bound the ratio cleanly between 0.0 and 2.5
+    sustainabilityRatio = Math.max(0.0, Math.min(2.5, rawRatio));
+  }
 
   let runwayHoursRemaining = 999;
   if (avgBurnRate > 0.005) {
