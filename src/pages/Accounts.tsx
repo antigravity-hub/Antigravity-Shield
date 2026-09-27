@@ -27,6 +27,7 @@ import ModalDialog from "../components/common/ModalDialog";
 import Pagination from "../components/common/Pagination";
 import AccountErrorDialog from "../components/accounts/AccountErrorDialog";
 import VerificationRequiredBanner from "../components/common/VerificationRequiredBanner";
+import { FleetVelocityGauge } from "../components/dashboard/FleetVelocityGauge";
 import { showToast } from "../components/common/ToastContainer";
 import { exportAccounts } from "../services/accountService";
 import { useAccountStore } from "../stores/useAccountStore";
@@ -972,6 +973,9 @@ function Accounts() {
 
       {/* Verification Required Banner */}
       <VerificationRequiredBanner accounts={accounts} className="mb-1" />
+
+      {/* Fleet Velocity & Predictive Runway Speedometer Gauge */}
+      <FleetVelocityGauge accounts={accounts} currentAccount={currentAccount} className="mb-1" />
 
       {/* 顶部工具栏: 搜索、过滤和操作按钮 (自适应双行布局，防止溢出) */}
       <div className="flex-none flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-2.5">
