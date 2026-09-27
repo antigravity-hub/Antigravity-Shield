@@ -20,6 +20,7 @@ import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 import AntigravityRtlCard from '../components/settings/AntigravityRtlCard';
 import { isRtlRegionTimezone } from '../utils/timezone';
 import VerificationRequiredBanner from '../components/common/VerificationRequiredBanner';
+import FleetVelocityGauge from '../components/dashboard/FleetVelocityGauge';
 
 function Dashboard() {
     const { t } = useTranslation();
@@ -261,6 +262,9 @@ function Dashboard() {
 
                 {/* بخش ویژه اکانت‌های نیازمند احراز هویت گوگل (Verification Required) */}
                 <VerificationRequiredBanner accounts={accounts} />
+
+                {/* گیج سرعت مصرف و پیش‌بینی پایداری سهمیه کل ناوگان */}
+                <FleetVelocityGauge accounts={accounts} currentAccount={currentAccount} />
 
                 {/* 统计卡片 - 5 columns */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">

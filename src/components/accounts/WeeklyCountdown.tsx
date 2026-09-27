@@ -4,6 +4,7 @@ import { Clock, CheckCircle2, Sparkles, Bot } from 'lucide-react';
 import { Account } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { getAccountWeeklyReset, getWeeklyTokenQuota, ResetCycleInfo } from '../../utils/quota';
+import { calculateAccountBurnVelocity } from '../../utils/predictiveBurn';
 
 interface WeeklyCountdownProps {
     account: Account;
@@ -24,6 +25,7 @@ export function WeeklyCountdown({
     const { t } = useTranslation();
     const info = useMemo(() => getAccountWeeklyReset(account, provider), [account, provider]);
     const quota = useMemo(() => getWeeklyTokenQuota(account, provider), [account, provider]);
+    const velocity = useMemo(() => calculateAccountBurnVelocity(account), [account]);
 
     // 7-day stepper array: 1 to 7 (Left to Right, drains from right to left)
     const weekDays = [1, 2, 3, 4, 5, 6, 7];
@@ -58,7 +60,7 @@ export function WeeklyCountdown({
         );
     }
 
-    const tooltipText = `${provider.toUpperCase()} Reset: ${info.totalHours}h remaining (${info.daysRemaining}d ${info.hoursInDay}h left in 7-day cycle)\nWeekly Token Quota: ${quota.percentage !== null ? `${quota.percentage}%` : 'N/A'}\nReset: ${new Date(info.resetTime!).toLocaleString()}`;
+    const tooltipText = `${provider.toUpperCase()} Reset: ${info.totalHours}h remaining (${info.daysRemaining}d ${info.hoursInDay}h left in 7-day cycle)\nWeekly Token Quota: ${quota.percentage !== null ? `${quota.percentage}%` : 'N/A'}\nBurn Rate: ${velocity.hourlyBurnRatePct}%/hr (${velocity.sustainabilityRatio}x ${velocity.zoneLabel})\nForecast: ${velocity.isDepletedBeforeReset ? `⚠️ Runs out ~${velocity.deficitHours}h before reset` : `✓ Sustainable (+${velocity.surplusHours}h surplus)`}\nReset: ${new Date(info.resetTime!).toLocaleString()}`;
 
     // Exact fractional days remaining (0 to 7)
     const exactDays = info.exactDaysRemaining;
@@ -282,8 +284,18 @@ export function WeeklyCountdown({
                 </div>
             </div>
 
-            {/* Percentage text right below the bar, aligned to the right edge */}
-            <div className="flex justify-end items-center -mt-0.5">
+            {/* Percentage & Burn Velocity text below bar */}
+            <div className="flex justify-between items-center -mt-0.5">
+                <span
+                    className="text-[8px] font-mono font-bold px-1 py-0.2 rounded"
+                    style={{
+                        backgroundColor: `${velocity.zoneColor}20`,
+                        color: velocity.zoneColor,
+                    }}
+                    title={`Velocity: ${velocity.hourlyBurnRatePct}%/hr • ${velocity.isDepletedBeforeReset ? `⚠️ Deficit: ${velocity.deficitHours}h before reset` : '✓ Sustainable buffer'}`}
+                >
+                    {velocity.sustainabilityRatio}x {velocity.isDepletedBeforeReset ? '⚡' : '🛡️'}
+                </span>
                 <span
                     className="text-[9.5px] font-mono font-black shrink-0 leading-none"
                     style={{ color: '#93b93b' }}
