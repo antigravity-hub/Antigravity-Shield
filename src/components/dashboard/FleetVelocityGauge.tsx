@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
   Gauge,
-  TrendingDown,
-  TrendingUp,
   AlertTriangle,
   CheckCircle2,
   Clock,
@@ -17,6 +15,7 @@ import {
   calculateFleetBurnVelocity,
   BurnVelocityMetrics,
 } from '../../utils/predictiveBurn';
+import { SpeedometerGauge } from '../common/SpeedometerGauge';
 
 interface FleetVelocityGaugeProps {
   accounts: Account[];
@@ -55,9 +54,6 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
       return metrics.projectedDepletionDate.toLocaleString();
     }
   }, [metrics.projectedDepletionDate, i18n.language]);
-
-  // Gauge needle rotation: angle from 0 (far left, -90deg in SVG transform) to 180 (far right, +90deg)
-  const needleRotation = metrics.gaugeAngle - 90;
 
   return (
     <div className={`relative overflow-hidden rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-sm hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10 transition-all duration-300 group ${className}`}>
@@ -141,154 +137,17 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
         {/* Left Column: Speedometer SVG (5 cols) */}
         <div className="lg:col-span-5 flex flex-col items-center justify-center pt-2">
-          <div className="relative w-full max-w-[280px] aspect-[2/1.3] flex flex-col items-center justify-center">
-            {/* SVG Speedometer Gauge */}
-            <svg
-              viewBox="0 0 240 140"
-              className="w-full h-auto overflow-visible select-none drop-shadow-md"
-            >
-              <defs>
-                {/* 5 Segment Dynamic Gradients */}
-                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#f43f5e" /> {/* Strong Sell */}
-                  <stop offset="25%" stopColor="#f59e0b" /> {/* Sell */}
-                  <stop offset="50%" stopColor="#38bdf8" /> {/* Neutral */}
-                  <stop offset="75%" stopColor="#06b6d4" /> {/* Buy */}
-                  <stop offset="100%" stopColor="#10b981" /> {/* Strong Buy */}
-                </linearGradient>
-
-                <filter id="gaugeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
-
-              {/* Background Track Arc */}
-              <path
-                d="M 25 125 A 95 95 0 0 1 215 125"
-                fill="none"
-                stroke="currentColor"
-                className="text-slate-200/80 dark:text-slate-800/80"
-                strokeWidth="14"
-                strokeLinecap="round"
-              />
-
-              {/* Multi-Colored Gradient Progress Arc */}
-              <path
-                d="M 25 125 A 95 95 0 0 1 215 125"
-                fill="none"
-                stroke="url(#gaugeGradient)"
-                strokeWidth="12"
-                strokeLinecap="round"
-                filter="url(#gaugeGlow)"
-                className="opacity-95"
-              />
-
-              {/* 5 Indicator Zone Ticks */}
-              {/* Tick 1: Strong Sell / Sell border (36 deg) */}
-              <line
-                x1="48"
-                y1="75"
-                x2="43"
-                y2="71"
-                stroke="rgba(255,255,255,0.7)"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Tick 2: Sell / Neutral border (72 deg) */}
-              <line
-                x1="88"
-                y1="39"
-                x2="85"
-                y2="33"
-                stroke="rgba(255,255,255,0.7)"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Tick 3: Neutral / Buy border (108 deg) */}
-              <line
-                x1="152"
-                y1="39"
-                x2="155"
-                y2="33"
-                stroke="rgba(255,255,255,0.7)"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              {/* Tick 4: Buy / Strong Buy border (144 deg) */}
-              <line
-                x1="192"
-                y1="75"
-                x2="197"
-                y2="71"
-                stroke="rgba(255,255,255,0.7)"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-
-              {/* Zone Legend Labels along the Arc */}
-              <text x="14" y="115" className="text-[7.5px] font-black fill-rose-500 tracking-tighter uppercase">CRITICAL</text>
-              <text x="44" y="55" className="text-[7.5px] font-bold fill-amber-500 tracking-tighter uppercase">HIGH</text>
-              <text x="106" y="22" className="text-[7.5px] font-black fill-sky-400 tracking-tighter uppercase">BALANCED</text>
-              <text x="172" y="55" className="text-[7.5px] font-bold fill-cyan-400 tracking-tighter uppercase">SAFE</text>
-              <text x="194" y="115" className="text-[7.5px] font-black fill-emerald-500 tracking-tighter uppercase">SURPLUS</text>
-
-              {/* Needle Indicator with Dynamic Spring Physics */}
-              <g
-                transform={`translate(120, 125) rotate(${needleRotation})`}
-                style={{
-                  transition: 'transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  willChange: 'transform',
-                }}
-              >
-                {/* Needle Blade */}
-                <polygon
-                  points="-3.5,0 0,-85 3.5,0"
-                  className="fill-slate-800 dark:fill-white drop-shadow-md"
-                  filter="url(#gaugeGlow)"
-                />
-                {/* Needle Center Cap */}
-                <circle cx="0" cy="0" r="7.5" className="fill-slate-900 dark:fill-slate-100" />
-                <circle
-                  cx="0"
-                  cy="0"
-                  r="4"
-                  fill={metrics.zoneColor}
-                  className="animate-pulse"
-                />
-              </g>
-            </svg>
-          </div>
-
-          {/* Central Speed & Status Badge */}
-          <div className="flex flex-col items-center mt-1">
-            <div className="flex items-center gap-2">
-              <span
-                className="text-2xl font-black tracking-tight"
-                style={{ color: metrics.zoneColor }}
-              >
-                {metrics.sustainabilityRatio}x
-              </span>
-              <span
-                className="px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1"
-                style={{
-                  backgroundColor: `${metrics.zoneColor}18`,
-                  color: metrics.zoneColor,
-                  border: `1px solid ${metrics.zoneColor}35`,
-                }}
-              >
-                {metrics.sustainabilityRatio >= 1.0 ? (
-                  <TrendingUp className="w-3.5 h-3.5" />
-                ) : (
-                  <TrendingDown className="w-3.5 h-3.5" />
-                )}
-                {metrics.zoneLabel}
-              </span>
-            </div>
-            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 font-medium">
-              Ratio of remaining quota to remaining weekly window
-            </span>
-          </div>
+          <SpeedometerGauge
+            value={metrics.sustainabilityRatio}
+            unit="x"
+            statusBadgeText={metrics.zoneLabel}
+            caption={t(
+              'dashboard.velocity_gauge.caption',
+              'Ratio of remaining quota to remaining weekly window'
+            )}
+            trend={metrics.sustainabilityRatio >= 1.0 ? 'up' : 'down'}
+            maxWidth={280}
+          />
         </div>
 
         {/* Right Column: AI Predictive Runway & Forecasting Cards (7 cols) */}
