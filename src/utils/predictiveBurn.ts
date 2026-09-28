@@ -26,6 +26,13 @@ export interface BurnVelocityMetrics {
   timeRemainingHours: number;
   quotaRemainingPct: number;
   timeRemainingPct: number;
+  // Session (Rolling 5-Hour Limit) Horizon Prediction
+  sessionRemainingPct?: number;
+  sessionResetTimeMs?: number;
+  sessionRunwayMinutes?: number;
+  sessionDepletionDate?: Date | null;
+  sessionDepletionFormatted?: string;
+  isSessionAtRisk?: boolean;
 }
 
 export interface AccountLike {
@@ -95,6 +102,86 @@ export function calculateAccountBurnVelocity(
       if (!isNaN(parsed) && parsed > now) {
         resetTimeMs = parsed;
       }
+    }
+  }
+
+  // 1b. Extract 5-hour rolling session bucket (primary IDE session boundary)
+  const sessionBucket = account.quota?.quota_groups
+    ?.flatMap((g) => g.buckets || [])
+    ?.find(
+      (b) =>
+        b?.window?.toLowerCase().includes('5h') ||
+        b?.bucket_id?.toLowerCase().includes('5h')
+    );
+
+  let sessionRemainingPct: number | undefined;
+  let sessionResetTimeMs: number | undefined;
+  let sessionRunwayMinutes: number | undefined;
+  let sessionDepletionDate: Date | null = null;
+  let sessionDepletionFormatted: string | undefined;
+  let isSessionAtRisk = false;
+
+  if (sessionBucket) {
+    if (typeof sessionBucket.remaining_fraction === 'number') {
+      sessionRemainingPct = Math.max(0, Math.min(100, Math.round(sessionBucket.remaining_fraction * 100)));
+    }
+    if (sessionBucket.reset_time) {
+      const parsed = new Date(sessionBucket.reset_time).getTime();
+      if (!isNaN(parsed) && parsed > now) {
+        sessionResetTimeMs = parsed;
+      }
+    }
+  } else if (account.quota?.models && account.quota.models.length > 0) {
+    const flashModel = account.quota.models.find(
+      (m) => m.name?.toLowerCase().includes('flash') || m.name?.toLowerCase().includes('pro')
+    );
+    if (flashModel) {
+      if (typeof flashModel.percentage === 'number') {
+        sessionRemainingPct = flashModel.percentage;
+      }
+      if (flashModel.reset_time) {
+        const parsed = new Date(flashModel.reset_time).getTime();
+        if (!isNaN(parsed) && parsed > now) {
+          sessionResetTimeMs = parsed;
+        }
+      }
+    }
+  }
+
+  if (sessionRemainingPct !== undefined && sessionResetTimeMs !== undefined) {
+    const sessionTimeRemHours = Math.max(0.01, (sessionResetTimeMs - now) / (1000 * 3600));
+    const sessionTimeElapsedHours = Math.max(0.1, 5 - sessionTimeRemHours);
+    const sessionUsedPct = Math.max(0, 100 - sessionRemainingPct);
+    const sessionBurnRate = sessionUsedPct / sessionTimeElapsedHours;
+
+    if (sessionRemainingPct === 0) {
+      sessionRunwayMinutes = 0;
+      sessionDepletionDate = new Date(now);
+      isSessionAtRisk = true;
+      sessionDepletionFormatted = 'اتمام سهمیه سشن (0%)';
+    } else if (sessionBurnRate > 0.5) {
+      const remMins = Math.round((sessionRemainingPct / sessionBurnRate) * 60);
+      sessionRunwayMinutes = remMins;
+      const totalSessionRemMins = Math.round(sessionTimeRemHours * 60);
+
+      if (remMins < totalSessionRemMins) {
+        isSessionAtRisk = true;
+        sessionDepletionDate = new Date(now + remMins * 60 * 1000);
+        const hours = Math.floor(remMins / 60);
+        const mins = remMins % 60;
+        const timePart = sessionDepletionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const durPart = hours > 0 ? `${hours} ساعت و ${mins} دقیقه دیگر` : `${mins} دقیقه دیگر`;
+        sessionDepletionFormatted = `${durPart} (ساعت ${timePart})`;
+      } else {
+        const resetDate = new Date(sessionResetTimeMs);
+        const timePart = resetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        sessionDepletionFormatted = `پایدار تا ریست بعدی (ساعت ${timePart})`;
+      }
+    } else {
+      sessionRunwayMinutes = Math.round(sessionTimeRemHours * 60);
+      const resetDate = new Date(sessionResetTimeMs);
+      const timePart = resetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      sessionDepletionFormatted = `پایدار تا ریست بعدی (ساعت ${timePart})`;
     }
   }
 
@@ -191,6 +278,12 @@ export function calculateAccountBurnVelocity(
     timeRemainingHours: Math.round(timeRemainingHours),
     quotaRemainingPct: Math.round(quotaRemainingPct),
     timeRemainingPct: Math.round(timeRemainingPct),
+    sessionRemainingPct,
+    sessionResetTimeMs,
+    sessionRunwayMinutes,
+    sessionDepletionDate,
+    sessionDepletionFormatted,
+    isSessionAtRisk,
   };
 }
 

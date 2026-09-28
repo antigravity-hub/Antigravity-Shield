@@ -60,6 +60,11 @@ export interface SpeedometerGaugeProps {
   caption?: string;
 
   /**
+   * Optional secondary subtitle / highlighted session forecast pill
+   */
+  subCaption?: string;
+
+  /**
    * Custom value formatter function (e.g. (val) => val.toFixed(2)).
    */
   valueFormatter?: (value: number) => string;
@@ -198,6 +203,7 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
   statusBadgeText,
   trend,
   caption = 'Ratio of remaining quota to remaining weekly window',
+  subCaption,
   valueFormatter,
   showTicks = true,
   showZoneLabels = true,
@@ -551,10 +557,19 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
           </div>
 
           {/* Subtitle / Caption */}
-          {showCaption && caption && (
-            <p className="text-xs text-slate-400 dark:text-slate-400/90 mt-1 font-medium tracking-normal text-center">
-              {caption}
-            </p>
+          {showCaption && (caption || subCaption) && (
+            <div className="flex flex-col items-center mt-1 gap-1">
+              {caption && (
+                <p className="text-xs text-slate-400 dark:text-slate-400/90 font-medium tracking-normal text-center">
+                  {caption}
+                </p>
+              )}
+              {subCaption && (
+                <span className="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 text-center px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 shadow-xs">
+                  {subCaption}
+                </span>
+              )}
+            </div>
           )}
         </div>
       )}
