@@ -187,8 +187,10 @@ pub fn start_scheduler(
         let mut last_active_fast_refresh = 0i64;
         let mut last_db_sync = 0i64;
         let mut last_observed_pct: Option<i32> = None;
+        let mut last_observed_time: i64 = 0;
         let mut last_observed_acc_id: Option<String> = None;
         let mut stagnant_checks: u32 = 0;
+        let mut estimated_runway_mins: Option<f64> = None;
 
         loop {
             // Check every 15 seconds against configured intervals
@@ -200,10 +202,11 @@ pub fn start_scheduler(
 
             let now = chrono::Utc::now().timestamp();
 
-            // A1. Adaptive Low-Quota Rapid Polling (Targeted active IDE account)
-            // When an active session enters the critical danger zone (<= 15% and > 0%), refresh adaptively.
-            // Anti-Spam Guard: If consumption is stagnant (velocity = 0, no tokens consumed between checks),
-            // immediately back off exponentially (35s -> 120s -> 240s -> normal 10m) to avoid Google 429/ban.
+            // A1. Velocity & Runway-Aware Adaptive Polling (Targeted active IDE account)
+            // Polling interval is calculated as a function of Projected Runway (Time-To-Depletion TTD),
+            // NOT merely a blind static percentage.
+            // Example: If 4% was burned over 10m (0.4%/m) and 16% remains, runway is ~40 minutes -> No urgent polling!
+            // Rapid polling (35-45s) is strictly reserved for when runway drops below ~5 minutes.
             if cfg.auto_refresh {
                 let mut active_target_account_id = None;
                 if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
@@ -220,41 +223,56 @@ pub fn start_scheduler(
                                 if !q.is_forbidden {
                                     let min_pct = q.get_min_remaining_percentage();
 
-                                    // Reset stagnation tracking if active account switched
+                                    // Reset stagnation & runway tracking if active account switched
                                     if last_observed_acc_id.as_deref() != Some(&acc.id) {
                                         last_observed_acc_id = Some(acc.id.clone());
                                         last_observed_pct = Some(min_pct);
+                                        last_observed_time = now;
                                         stagnant_checks = 0;
+                                        estimated_runway_mins = None;
                                     }
 
-                                    let base_interval = if min_pct > 0 && min_pct <= 15 {
-                                        35 + (now % 7) // Tier 1: Critical danger zone (~35-41s)
-                                    } else if min_pct > 15 && min_pct <= 30 {
-                                        90 + (now % 15) // Tier 2: Active burn pattern zone (~90-104s)
+                                    // Calculate target interval based on Estimated Runway:
+                                    let base_interval = if min_pct <= 0 {
+                                        0 // Already depleted, let rotation handler manage it
+                                    } else if let Some(runway) = estimated_runway_mins {
+                                        if runway > 20.0 {
+                                            0 // Safe (>20 min runway) -> stick comfortably to standard fleet cycle
+                                        } else if runway > 10.0 {
+                                            240 + (now % 25) // Moderate burn (10-20 min runway) -> check ~4 minutes
+                                        } else if runway > 5.0 {
+                                            100 + (now % 15) // High burn (5-10 min runway) -> check ~1.5-2 minutes
+                                        } else {
+                                            35 + (now % 7) // Critical danger (<5 min runway) -> rapid ~35-41s check
+                                        }
                                     } else {
-                                        0
+                                        // Initial heuristic before burn velocity can be computed:
+                                        if min_pct <= 10 {
+                                            45 + (now % 10)
+                                        } else if min_pct <= 25 {
+                                            120 + (now % 15)
+                                        } else {
+                                            0
+                                        }
                                     };
 
                                     if base_interval > 0 {
-                                        // Smart Anti-Spam / Idle Backoff:
-                                        // If past consumption is zero / stagnant (quota didn't decrease between checks),
-                                        // do NOT spam Google's API repeatedly.
-                                        // Stagnant 0 (active burn): base interval (~35s or ~90s)
-                                        // Stagnant 1 (idle for 1 check): back off to ~2 minutes
-                                        // Stagnant 2 (idle for 2 checks): back off to ~4 minutes
-                                        // Stagnant >= 3 (prolonged idle / user stopped coding): disengage fast polling
-                                        //   and rely safely on the standard fleet scheduled refresh (e.g. 10m).
+                                        // Stagnation backoff guard: If no tokens consumed across checks, back off
                                         let effective_interval = match stagnant_checks {
                                             0 => base_interval,
-                                            1 => 120 + (now % 15),
-                                            2 => 240 + (now % 25),
-                                            _ => 0,
+                                            1 => base_interval.max(120) + (now % 15),
+                                            2 => base_interval.max(240) + (now % 25),
+                                            _ => 0, // Inactive / Idle: disengage rapid polling
                                         };
 
                                         if effective_interval > 0 && now - last_active_fast_refresh >= effective_interval {
+                                            let runway_str = estimated_runway_mins
+                                                .map(|r| format!("{:.1}m runway", r))
+                                                .unwrap_or_else(|| "calculating".to_string());
+
                                             logger::log_info(&format!(
-                                                "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%, Stagnant: {}, Interval: {}s). Performing targeted refresh...",
-                                                acc.email, min_pct, stagnant_checks, effective_interval
+                                                "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%, Est: {}, Interval: {}s). Performing refresh...",
+                                                acc.email, min_pct, runway_str, effective_interval
                                             ));
                                             last_active_fast_refresh = now;
                                             let mut acc_to_refresh = acc;
@@ -264,17 +282,36 @@ pub fn start_scheduler(
                                             )
                                             .await;
 
-                                            // Re-evaluate quota after refresh to detect active velocity vs idle stagnation
+                                            // Re-evaluate quota & update consumption velocity
                                             if let Ok(refreshed_acc) = crate::modules::account::load_account(&acc_to_refresh.id) {
                                                 if let Some(ref new_q) = refreshed_acc.quota {
                                                     let new_min = new_q.get_min_remaining_percentage();
                                                     if let Some(prev) = last_observed_pct {
-                                                        if new_min < prev {
-                                                            // Tokens consumed! Active burn -> reset stagnation
+                                                        let elapsed_secs = (now - last_observed_time).max(1);
+                                                        if new_min < prev && elapsed_secs >= 20 {
+                                                            let delta_pct = (prev - new_min) as f64;
+                                                            let burn_per_min = delta_pct / (elapsed_secs as f64 / 60.0);
+                                                            if burn_per_min > 0.001 {
+                                                                let runway = (new_min as f64) / burn_per_min;
+                                                                estimated_runway_mins = Some(runway);
+                                                                logger::log_info(&format!(
+                                                                    "[Scheduler] Velocity for {}: {:.2}%/min ({:.1}% burned in {}s). Estimated runway: {:.1} minutes.",
+                                                                    acc_to_refresh.email, burn_per_min, delta_pct, elapsed_secs, runway
+                                                                ));
+                                                            }
                                                             stagnant_checks = 0;
-                                                        } else {
-                                                            // No tokens consumed (stagnant) -> increment backoff
+                                                            last_observed_time = now;
+                                                        } else if new_min == prev {
                                                             stagnant_checks = stagnant_checks.saturating_add(1);
+                                                            // Stagnant consumption decays burn urgency
+                                                            if let Some(r) = estimated_runway_mins.as_mut() {
+                                                                *r += (elapsed_secs as f64 / 60.0) * 1.5;
+                                                            }
+                                                        } else {
+                                                            // Quota increased (window reset)
+                                                            stagnant_checks = 0;
+                                                            estimated_runway_mins = None;
+                                                            last_observed_time = now;
                                                         }
                                                     }
                                                     last_observed_pct = Some(new_min);
