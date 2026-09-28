@@ -561,7 +561,9 @@
       "auto_sync_desc": "Automatically sync current active account information periodically",
       "sync_interval": "Sync Interval (minutes)",
       "auto_switch_on_quota": "Auto-Switch on Quota Depletion",
-      "auto_switch_on_quota_desc": "Automatically switch to the next account with available quota when active account quota runs out (Claude -> Next Claude -> Gemini fallback)."
+      "auto_switch_on_quota_desc": "Automatically switch to the next account with available quota when active account quota runs out (Claude -> Next Claude -> Gemini fallback).",
+      "auto_switch_threshold": "Auto-Switch Threshold Percentage",
+      "auto_switch_threshold_desc": "Automatically switch accounts when remaining quota falls to or below this percentage (Default: 5%)."
     },
     "notifications": {
       "overlay_title": "Floating HUD & Countdown Notification",
