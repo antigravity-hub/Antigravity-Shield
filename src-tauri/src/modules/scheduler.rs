@@ -186,6 +186,9 @@ pub fn start_scheduler(
         let mut last_quota_refresh = 0i64;
         let mut last_active_fast_refresh = 0i64;
         let mut last_db_sync = 0i64;
+        let mut last_observed_pct: Option<i32> = None;
+        let mut last_observed_acc_id: Option<String> = None;
+        let mut stagnant_checks: u32 = 0;
 
         loop {
             // Check every 15 seconds against configured intervals
@@ -198,8 +201,9 @@ pub fn start_scheduler(
             let now = chrono::Utc::now().timestamp();
 
             // A1. Adaptive Low-Quota Rapid Polling (Targeted active IDE account)
-            // When an active session enters the critical danger zone (<= 10% and > 0%), refresh every ~35-45s
-            // so depletion is detected immediately before the IDE encounters connection drops.
+            // When an active session enters the critical danger zone (<= 15% and > 0%), refresh adaptively.
+            // Anti-Spam Guard: If consumption is stagnant (velocity = 0, no tokens consumed between checks),
+            // immediately back off exponentially (35s -> 120s -> 240s -> normal 10m) to avoid Google 429/ban.
             if cfg.auto_refresh {
                 let mut active_target_account_id = None;
                 if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
@@ -215,30 +219,72 @@ pub fn start_scheduler(
                             if let Some(ref q) = acc.quota {
                                 if !q.is_forbidden {
                                     let min_pct = q.get_min_remaining_percentage();
-                                    let fast_interval = if min_pct > 0 && min_pct <= 15 {
+
+                                    // Reset stagnation tracking if active account switched
+                                    if last_observed_acc_id.as_deref() != Some(&acc.id) {
+                                        last_observed_acc_id = Some(acc.id.clone());
+                                        last_observed_pct = Some(min_pct);
+                                        stagnant_checks = 0;
+                                    }
+
+                                    let base_interval = if min_pct > 0 && min_pct <= 15 {
                                         35 + (now % 7) // Tier 1: Critical danger zone (~35-41s)
-                                    } else if min_pct > 15 && min_pct <= 35 {
+                                    } else if min_pct > 15 && min_pct <= 30 {
                                         90 + (now % 15) // Tier 2: Active burn pattern zone (~90-104s)
                                     } else {
                                         0
                                     };
 
-                                    if fast_interval > 0 && now - last_active_fast_refresh >= fast_interval {
-                                        logger::log_info(&format!(
-                                            "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%, interval: {}s). Performing rapid targeted refresh...",
-                                            acc.email, min_pct, fast_interval
-                                        ));
-                                        last_active_fast_refresh = now;
-                                        let mut acc_to_refresh = acc;
-                                        let _ = crate::commands::internal_refresh_account_quota(
-                                            app_handle_for_daemon.as_ref(),
-                                            &mut acc_to_refresh,
-                                        )
-                                        .await;
+                                    if base_interval > 0 {
+                                        // Smart Anti-Spam / Idle Backoff:
+                                        // If past consumption is zero / stagnant (quota didn't decrease between checks),
+                                        // do NOT spam Google's API repeatedly.
+                                        // Stagnant 0 (active burn): base interval (~35s or ~90s)
+                                        // Stagnant 1 (idle for 1 check): back off to ~2 minutes
+                                        // Stagnant 2 (idle for 2 checks): back off to ~4 minutes
+                                        // Stagnant >= 3 (prolonged idle / user stopped coding): disengage fast polling
+                                        //   and rely safely on the standard fleet scheduled refresh (e.g. 10m).
+                                        let effective_interval = match stagnant_checks {
+                                            0 => base_interval,
+                                            1 => 120 + (now % 15),
+                                            2 => 240 + (now % 25),
+                                            _ => 0,
+                                        };
 
-                                        let instance_lock = proxy_state_for_daemon.instance.read().await;
-                                        if let Some(instance) = instance_lock.as_ref() {
-                                            let _ = instance.token_manager.reload_account(&acc_to_refresh.id).await;
+                                        if effective_interval > 0 && now - last_active_fast_refresh >= effective_interval {
+                                            logger::log_info(&format!(
+                                                "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%, Stagnant: {}, Interval: {}s). Performing targeted refresh...",
+                                                acc.email, min_pct, stagnant_checks, effective_interval
+                                            ));
+                                            last_active_fast_refresh = now;
+                                            let mut acc_to_refresh = acc;
+                                            let _ = crate::commands::internal_refresh_account_quota(
+                                                app_handle_for_daemon.as_ref(),
+                                                &mut acc_to_refresh,
+                                            )
+                                            .await;
+
+                                            // Re-evaluate quota after refresh to detect active velocity vs idle stagnation
+                                            if let Ok(refreshed_acc) = crate::modules::account::load_account(&acc_to_refresh.id) {
+                                                if let Some(ref new_q) = refreshed_acc.quota {
+                                                    let new_min = new_q.get_min_remaining_percentage();
+                                                    if let Some(prev) = last_observed_pct {
+                                                        if new_min < prev {
+                                                            // Tokens consumed! Active burn -> reset stagnation
+                                                            stagnant_checks = 0;
+                                                        } else {
+                                                            // No tokens consumed (stagnant) -> increment backoff
+                                                            stagnant_checks = stagnant_checks.saturating_add(1);
+                                                        }
+                                                    }
+                                                    last_observed_pct = Some(new_min);
+                                                }
+                                            }
+
+                                            let instance_lock = proxy_state_for_daemon.instance.read().await;
+                                            if let Some(instance) = instance_lock.as_ref() {
+                                                let _ = instance.token_manager.reload_account(&acc_to_refresh.id).await;
+                                            }
                                         }
                                     }
                                 }
