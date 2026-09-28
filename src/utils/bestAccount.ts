@@ -53,7 +53,7 @@ export function getRecommendedBestAccount(
     } = options;
 
     const candidates = accounts.filter(
-        a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled
+        a => a.id !== currentAccountId && !a.disabled && !a.validation_blocked && !a.quota?.is_forbidden
     );
 
     if (candidates.length === 0) {

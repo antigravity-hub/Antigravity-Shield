@@ -111,7 +111,7 @@ export function useQuotaAlertWatcher() {
 
         for (const targetId of targetIds) {
             const targetAccount = accounts.find(a => a.id === targetId);
-            if (!targetAccount || targetAccount.disabled || targetAccount.proxy_disabled) {
+            if (!targetAccount || targetAccount.disabled || targetAccount.validation_blocked || targetAccount.quota?.is_forbidden) {
                 continue;
             }
 
@@ -202,12 +202,16 @@ export function useQuotaAlertWatcher() {
             }
 
             // 1. Grouped Alert Handling (Never send multiple toasts for the same account!)
+            const claudeDepleted = weeklyClaudeDepleted || criticalModels.some(m => isClaudeModel(m.name, m.display_name) && m.percentage <= DEPLETED_THRESHOLD);
+            const geminiDepleted = weeklyGeminiDepleted || criticalModels.some(m => isGeminiModel(m.name, m.display_name) && m.percentage <= DEPLETED_THRESHOLD);
+            const willAutoSwitch = autoSwitchEnabled && (claudeDepleted || geminiDepleted) && !isAutoSwitchingRef.current;
+
             const accountAlertKey = `${targetAccount.email}:grouped`;
             const lastAlertTime = lastAlertMap.get(accountAlertKey) || 0;
             const minPercentage = Math.min(...criticalModels.map(m => m.percentage));
             const shouldAlert = (now - lastAlertTime > ALERT_COOLDOWN_MS) || hasNewDepleted;
 
-            if (shouldAlert) {
+            if (shouldAlert && !willAutoSwitch) {
                 lastAlertMap.set(accountAlertKey, now);
 
                 const combinedModelName = formatGroupedModelNames(criticalModels, t);
@@ -227,9 +231,6 @@ export function useQuotaAlertWatcher() {
             }
 
             // 2. Intelligent Auto-Switching on Quota Depletion (<= 5%)
-            const claudeDepleted = weeklyClaudeDepleted || criticalModels.some(m => isClaudeModel(m.name, m.display_name) && m.percentage <= DEPLETED_THRESHOLD);
-            const geminiDepleted = weeklyGeminiDepleted || criticalModels.some(m => isGeminiModel(m.name, m.display_name) && m.percentage <= DEPLETED_THRESHOLD);
-
             if (autoSwitchEnabled && (claudeDepleted || geminiDepleted) && !isAutoSwitchingRef.current) {
                 const lastSwitch = lastAutoSwitchMap.get(targetAccount.id) || 0;
                 if (now - lastSwitch < AUTO_SWITCH_COOLDOWN_MS) {
@@ -250,55 +251,57 @@ export function useQuotaAlertWatcher() {
                     isAutoSwitchingRef.current = true;
                     lastAutoSwitchMap.set(sourceAccount.id, now);
 
-                    let shouldSwitch = true;
+                    try {
+                        let shouldSwitch = true;
 
-                    if (overlayEnabled) {
-                        try {
-                            const action = await showFloatingOverlay({
-                                notification_type: 'countdown',
-                                title: t('notifications.auto_switch_title', {
-                                    defaultValue: 'Antigravity Shield - Auto Switched',
-                                }),
-                                message: switchMsg,
-                                model_name: modelFamily,
-                                current_email: sourceAccount.email,
-                                target_email: nextAccount.email,
-                                target_quota_score: quotaScore,
-                                countdown_secs: countdownSecs,
-                                target_account_id: nextAccount.id,
-                                target_env: targetEnv,
-                            });
+                        if (overlayEnabled) {
+                            try {
+                                const action = await showFloatingOverlay({
+                                    notification_type: 'countdown',
+                                    title: t('notifications.auto_switch_title', {
+                                        defaultValue: 'Antigravity Shield - Auto Switched',
+                                    }),
+                                    message: switchMsg,
+                                    model_name: modelFamily,
+                                    current_email: sourceAccount.email,
+                                    target_email: nextAccount.email,
+                                    target_quota_score: quotaScore,
+                                    countdown_secs: countdownSecs,
+                                    target_account_id: nextAccount.id,
+                                    target_env: targetEnv,
+                                });
 
-                            if (action === 'snooze') {
-                                console.log(`[QuotaAlertWatcher] Auto-switch snoozed for 5 minutes on ${sourceAccount.email}`);
-                                lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 5 * 60 * 1000);
-                                shouldSwitch = false;
-                            } else if (action === 'cancel') {
-                                console.log(`[QuotaAlertWatcher] Auto-switch cancelled for 30 minutes on ${sourceAccount.email}`);
-                                lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 30 * 60 * 1000);
-                                shouldSwitch = false;
+                                if (action === 'snooze') {
+                                    console.log(`[QuotaAlertWatcher] Auto-switch snoozed for 5 minutes on ${sourceAccount.email}`);
+                                    lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 5 * 60 * 1000);
+                                    shouldSwitch = false;
+                                } else if (action === 'cancel') {
+                                    console.log(`[QuotaAlertWatcher] Auto-switch cancelled for 30 minutes on ${sourceAccount.email}`);
+                                    lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 30 * 60 * 1000);
+                                    shouldSwitch = false;
+                                }
+                            } catch (e) {
+                                console.warn('[QuotaAlertWatcher] Overlay notification failed, falling back to direct switch:', e);
                             }
-                        } catch (e) {
-                            console.warn('[QuotaAlertWatcher] Overlay notification failed, falling back to direct switch:', e);
                         }
-                    }
 
-                    if (shouldSwitch) {
-                        try {
-                            console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} from ${sourceAccount.email} to ${nextAccount.email} (${modelFamily} score: ${quotaScore}%)`);
-                            lastAutoSwitchMap.set(nextAccount.id, Date.now());
-                            await switchAccount(nextAccount.id, targetEnv);
-                            showToast(switchMsg, 'success', 8000);
-                            if (!overlayEnabled) {
-                                sendDesktopNotification(switchTitle, switchMsg);
+                        if (shouldSwitch) {
+                            try {
+                                console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} from ${sourceAccount.email} to ${nextAccount.email} (${modelFamily} score: ${quotaScore}%)`);
+                                lastAutoSwitchMap.set(nextAccount.id, Date.now());
+                                await switchAccount(nextAccount.id, targetEnv);
+                                showToast(switchMsg, 'success', 8000);
+                                if (!overlayEnabled) {
+                                    sendDesktopNotification(switchTitle, switchMsg);
+                                }
+                                await fetchAccounts();
+                            } catch (err) {
+                                console.error('[QuotaAlertWatcher] Auto-switch failed:', err);
                             }
-                            await fetchAccounts();
-                        } catch (err) {
-                            console.error('[QuotaAlertWatcher] Auto-switch failed:', err);
                         }
+                    } finally {
+                        isAutoSwitchingRef.current = false;
                     }
-
-                    isAutoSwitchingRef.current = false;
                 };
 
                 if (claudeDepleted) {
