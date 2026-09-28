@@ -41,13 +41,25 @@ export async function showFloatingOverlay(
 
         return new Promise<OverlayUserAction>((resolve) => {
             let unlistenFn: (() => void) | null = null;
+            let timeoutId: any = null;
 
             const cleanup = () => {
                 if (unlistenFn) {
                     unlistenFn();
                     unlistenFn = null;
                 }
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
             };
+
+            const maxWaitMs = ((options.countdown_secs && options.countdown_secs > 0 ? options.countdown_secs : 30) + 3) * 1000;
+            timeoutId = setTimeout(() => {
+                cleanup();
+                console.warn('[OverlayService] Overlay response timed out, automatically proceeding with switch_now');
+                resolve('switch_now');
+            }, maxWaitMs);
 
             listen<OverlayActionEvent>('overlay-user-action', (event) => {
                 cleanup();
