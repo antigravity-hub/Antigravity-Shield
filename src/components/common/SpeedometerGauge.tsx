@@ -1,4 +1,5 @@
 import React, { useId, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface GaugeZone {
   id: string;
@@ -202,7 +203,7 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
   zones = DEFAULT_GAUGE_ZONES,
   statusBadgeText,
   trend,
-  caption = 'Ratio of remaining quota to remaining weekly window',
+  caption,
   subCaption,
   valueFormatter,
   showTicks = true,
@@ -215,6 +216,8 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
   accentColor,
   onClick,
 }) => {
+  const { t } = useTranslation();
+  const effectiveCaption = caption !== undefined ? caption : t('dashboard.velocity_gauge.caption', 'Ratio of remaining quota to remaining weekly window');
   // Generate unique IDs for SVG defs to avoid collisions when multiple gauges are rendered
   const uniqueId = useId().replace(/:/g, '_');
   const gradientId = `speedometer-gradient-${uniqueId}`;
@@ -277,7 +280,11 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
   }, [clampedValue, valueFormatter]);
 
   // Determine badge text
-  const badgeLabel = statusBadgeText || activeZone.statusLabel || activeZone.label;
+  const badgeLabel =
+    statusBadgeText ||
+    (activeZone.statusLabel
+      ? t(`dashboard.velocity_gauge.zone_${activeZone.id}`, activeZone.statusLabel)
+      : t(`dashboard.velocity_gauge.arc_${activeZone.id}`, activeZone.label));
 
   // Determine trend direction
   const effectiveTrend = useMemo(() => {
@@ -319,11 +326,11 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
     // If using the standard 5 zones, position identically to design
     if (zones === DEFAULT_GAUGE_ZONES || zones.length === 5) {
       return [
-        { label: zones[0].label, color: zones[0].color, x: 24, y: 106, anchor: 'middle' },
-        { label: zones[1].label, color: zones[1].color, x: 52, y: 52, anchor: 'middle' },
-        { label: zones[2].label, color: zones[2].color, x: 130, y: 16, anchor: 'middle' },
-        { label: zones[3].label, color: zones[3].color, x: 208, y: 52, anchor: 'middle' },
-        { label: zones[4].label, color: zones[4].color, x: 236, y: 106, anchor: 'middle' },
+        { label: t(`dashboard.velocity_gauge.arc_${zones[0].id || 'critical'}`, zones[0].label), color: zones[0].color, x: 24, y: 106, anchor: 'middle' },
+        { label: t(`dashboard.velocity_gauge.arc_${zones[1].id || 'high'}`, zones[1].label), color: zones[1].color, x: 52, y: 52, anchor: 'middle' },
+        { label: t(`dashboard.velocity_gauge.arc_${zones[2].id || 'balanced'}`, zones[2].label), color: zones[2].color, x: 130, y: 16, anchor: 'middle' },
+        { label: t(`dashboard.velocity_gauge.arc_${zones[3].id || 'safe'}`, zones[3].label), color: zones[3].color, x: 208, y: 52, anchor: 'middle' },
+        { label: t(`dashboard.velocity_gauge.arc_${zones[4].id || 'surplus'}`, zones[4].label), color: zones[4].color, x: 236, y: 106, anchor: 'middle' },
       ];
     }
 
@@ -336,14 +343,14 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
       // Label slightly above the arc radius
       const pt = polarToCartesian(cx, cy, radius + 15, angle);
       return {
-        label: z.label,
+        label: t(`dashboard.velocity_gauge.arc_${z.id}`, z.label),
         color: z.color,
         x: pt.x,
         y: pt.y,
         anchor: 'middle',
       };
     });
-  }, [showZoneLabels, zones, min, max, cx, cy, radius]);
+  }, [showZoneLabels, zones, min, max, cx, cy, radius, t]);
 
   return (
     <div
@@ -557,11 +564,11 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
           </div>
 
           {/* Subtitle / Caption */}
-          {showCaption && (caption || subCaption) && (
+          {showCaption && (effectiveCaption || subCaption) && (
             <div className="flex flex-col items-center mt-1 gap-1">
-              {caption && (
+              {effectiveCaption && (
                 <p className="text-xs text-slate-400 dark:text-slate-400/90 font-medium tracking-normal text-center">
-                  {caption}
+                  {effectiveCaption}
                 </p>
               )}
               {subCaption && (

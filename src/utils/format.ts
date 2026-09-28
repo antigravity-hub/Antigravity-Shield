@@ -32,12 +32,12 @@ export function getQuotaColor(percentage: number): string {
     return 'error';
 }
 
-export function formatTimeRemaining(dateStr: string): string {
+export function formatTimeRemaining(dateStr: string, readyLabel: string = 'Ready'): string {
     const targetDate = new Date(dateStr);
     const now = new Date();
     const diffMs = targetDate.getTime() - now.getTime();
 
-    if (diffMs <= 0) return 'Ready';
+    if (diffMs <= 0) return readyLabel;
 
     const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));

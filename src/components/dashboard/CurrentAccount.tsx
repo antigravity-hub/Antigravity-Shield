@@ -97,7 +97,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                             </span>
                             <div className="flex items-center gap-2">
                                 <span className="text-[10px] text-gray-400 dark:text-gray-500" title={`${t('accounts.reset_time')}: ${new Date(geminiProModel.reset_time).toLocaleString()}`}>
-                                    {geminiProModel.reset_time ? `R: ${formatTimeRemaining(geminiProModel.reset_time)}` : t('common.unknown')}
+                                    {geminiProModel.reset_time ? `R: ${formatTimeRemaining(geminiProModel.reset_time, t('common.ready', 'Ready'))}` : t('common.unknown')}
                                 </span>
                                 <span className={`text-xs font-bold ${geminiProModel.percentage >= 50 ? 'text-emerald-600 dark:text-emerald-400' :
                                     geminiProModel.percentage >= 20 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'
@@ -128,7 +128,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                             </span>
                             <div className="flex items-center gap-2">
                                 <span className="text-[10px] text-gray-400 dark:text-gray-500" title={`${t('accounts.reset_time')}: ${new Date(geminiImageModel.reset_time).toLocaleString()}`}>
-                                    {geminiImageModel.reset_time ? `R: ${formatTimeRemaining(geminiImageModel.reset_time)}` : t('common.unknown')}
+                                    {geminiImageModel.reset_time ? `R: ${formatTimeRemaining(geminiImageModel.reset_time, t('common.ready', 'Ready'))}` : t('common.unknown')}
                                 </span>
                                 <span className={`text-xs font-bold ${geminiImageModel.percentage >= 50 ? 'text-emerald-600 dark:text-emerald-400' :
                                     geminiImageModel.percentage >= 20 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'
@@ -159,7 +159,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                             </span>
                             <div className="flex items-center gap-2">
                                 <span className="text-[10px] text-gray-400 dark:text-gray-500" title={`${t('accounts.reset_time')}: ${new Date(geminiFlashModel.reset_time).toLocaleString()}`}>
-                                    {geminiFlashModel.reset_time ? `R: ${formatTimeRemaining(geminiFlashModel.reset_time)}` : t('common.unknown')}
+                                    {geminiFlashModel.reset_time ? `R: ${formatTimeRemaining(geminiFlashModel.reset_time, t('common.ready', 'Ready'))}` : t('common.unknown')}
                                 </span>
                                 <span className={`text-xs font-bold ${geminiFlashModel.percentage >= 50 ? 'text-emerald-600 dark:text-emerald-400' :
                                     geminiFlashModel.percentage >= 20 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'
@@ -190,7 +190,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                             </span>
                             <div className="flex items-center gap-2">
                                 <span className="text-[10px] text-gray-400 dark:text-gray-500" title={`${t('accounts.reset_time')}: ${new Date(claudeModel.reset_time).toLocaleString()}`}>
-                                    {claudeModel.reset_time ? `R: ${formatTimeRemaining(claudeModel.reset_time)}` : t('common.unknown')}
+                                    {claudeModel.reset_time ? `R: ${formatTimeRemaining(claudeModel.reset_time, t('common.ready', 'Ready'))}` : t('common.unknown')}
                                 </span>
                                 <span className={`text-xs font-bold ${claudeModel.percentage >= 50 ? 'text-cyan-600 dark:text-cyan-400' :
                                     claudeModel.percentage >= 20 ? 'text-orange-600 dark:text-orange-400' : 'text-rose-600 dark:text-rose-400'

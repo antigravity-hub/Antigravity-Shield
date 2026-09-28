@@ -158,7 +158,6 @@ export function calculateAccountBurnVelocity(
       sessionRunwayMinutes = 0;
       sessionDepletionDate = new Date(now);
       isSessionAtRisk = true;
-      sessionDepletionFormatted = 'اتمام سهمیه سشن (0%)';
     } else if (sessionBurnRate > 0.5) {
       const remMins = Math.round((sessionRemainingPct / sessionBurnRate) * 60);
       sessionRunwayMinutes = remMins;
@@ -167,21 +166,14 @@ export function calculateAccountBurnVelocity(
       if (remMins < totalSessionRemMins) {
         isSessionAtRisk = true;
         sessionDepletionDate = new Date(now + remMins * 60 * 1000);
-        const hours = Math.floor(remMins / 60);
-        const mins = remMins % 60;
-        const timePart = sessionDepletionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const durPart = hours > 0 ? `${hours} ساعت و ${mins} دقیقه دیگر` : `${mins} دقیقه دیگر`;
-        sessionDepletionFormatted = `${durPart} (ساعت ${timePart})`;
       } else {
-        const resetDate = new Date(sessionResetTimeMs);
-        const timePart = resetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        sessionDepletionFormatted = `پایدار تا ریست بعدی (ساعت ${timePart})`;
+        sessionDepletionDate = new Date(sessionResetTimeMs);
+        isSessionAtRisk = false;
       }
     } else {
       sessionRunwayMinutes = Math.round(sessionTimeRemHours * 60);
-      const resetDate = new Date(sessionResetTimeMs);
-      const timePart = resetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      sessionDepletionFormatted = `پایدار تا ریست بعدی (ساعت ${timePart})`;
+      sessionDepletionDate = new Date(sessionResetTimeMs);
+      isSessionAtRisk = false;
     }
   }
 
