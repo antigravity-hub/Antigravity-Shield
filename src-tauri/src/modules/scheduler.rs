@@ -215,26 +215,30 @@ pub fn start_scheduler(
                             if let Some(ref q) = acc.quota {
                                 if !q.is_forbidden {
                                     let min_pct = q.get_min_remaining_percentage();
-                                    if min_pct > 0 && min_pct <= 10 {
-                                        let fast_jitter = 5 + (now % 7);
-                                        let fast_interval = 35 + fast_jitter;
-                                        if now - last_active_fast_refresh >= fast_interval {
-                                            logger::log_info(&format!(
-                                                "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%). Performing rapid targeted refresh...",
-                                                acc.email, min_pct
-                                            ));
-                                            last_active_fast_refresh = now;
-                                            let mut acc_to_refresh = acc;
-                                            let _ = crate::commands::internal_refresh_account_quota(
-                                                app_handle_for_daemon.as_ref(),
-                                                &mut acc_to_refresh,
-                                            )
-                                            .await;
+                                    let fast_interval = if min_pct > 0 && min_pct <= 15 {
+                                        35 + (now % 7) // Tier 1: Critical danger zone (~35-41s)
+                                    } else if min_pct > 15 && min_pct <= 35 {
+                                        90 + (now % 15) // Tier 2: Active burn pattern zone (~90-104s)
+                                    } else {
+                                        0
+                                    };
 
-                                            let instance_lock = proxy_state_for_daemon.instance.read().await;
-                                            if let Some(instance) = instance_lock.as_ref() {
-                                                let _ = instance.token_manager.reload_account(&acc_to_refresh.id).await;
-                                            }
+                                    if fast_interval > 0 && now - last_active_fast_refresh >= fast_interval {
+                                        logger::log_info(&format!(
+                                            "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%, interval: {}s). Performing rapid targeted refresh...",
+                                            acc.email, min_pct, fast_interval
+                                        ));
+                                        last_active_fast_refresh = now;
+                                        let mut acc_to_refresh = acc;
+                                        let _ = crate::commands::internal_refresh_account_quota(
+                                            app_handle_for_daemon.as_ref(),
+                                            &mut acc_to_refresh,
+                                        )
+                                        .await;
+
+                                        let instance_lock = proxy_state_for_daemon.instance.read().await;
+                                        if let Some(instance) = instance_lock.as_ref() {
+                                            let _ = instance.token_manager.reload_account(&acc_to_refresh.id).await;
                                         }
                                     }
                                 }

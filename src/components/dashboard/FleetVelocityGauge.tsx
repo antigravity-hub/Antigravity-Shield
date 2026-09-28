@@ -157,6 +157,11 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                 'dashboard.velocity_gauge.caption',
                 'Ratio of remaining quota to remaining weekly window'
               )}
+              subCaption={
+                viewMode === 'active' && metrics.sessionDepletionFormatted
+                  ? `⏳ پیش‌بینی اتمام سشن: ${metrics.sessionDepletionFormatted}`
+                  : undefined
+              }
               trend={metrics.sustainabilityRatio >= 1.0 ? 'up' : 'down'}
               maxWidth={185}
             />
@@ -168,10 +173,10 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
             <div
               className="py-1.5 px-3 rounded-lg border transition-all duration-300 shadow-sm"
               style={{
-                backgroundColor: metrics.isDepletedBeforeReset
+                backgroundColor: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset)
                   ? 'rgba(244, 63, 94, 0.08)'
                   : 'rgba(16, 185, 129, 0.08)',
-                borderColor: metrics.isDepletedBeforeReset
+                borderColor: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset)
                   ? 'rgba(244, 63, 94, 0.25)'
                   : 'rgba(16, 185, 129, 0.25)',
               }}
@@ -180,13 +185,13 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                 <div
                   className="p-1.5 rounded-lg shrink-0"
                   style={{
-                    backgroundColor: metrics.isDepletedBeforeReset
+                    backgroundColor: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset)
                       ? 'rgba(244, 63, 94, 0.15)'
                       : 'rgba(16, 185, 129, 0.15)',
-                    color: metrics.isDepletedBeforeReset ? '#f43f5e' : '#10b981',
+                    color: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? '#f43f5e' : '#10b981',
                   }}
                 >
-                  {metrics.isDepletedBeforeReset ? (
+                  {(metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? (
                     <AlertTriangle className="w-4 h-4 animate-bounce" />
                   ) : (
                     <CheckCircle2 className="w-4 h-4" />
@@ -197,18 +202,26 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                     <h3
                       className="text-xs font-black tracking-tight"
                       style={{
-                        color: metrics.isDepletedBeforeReset ? '#f43f5e' : '#10b981',
+                        color: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? '#f43f5e' : '#10b981',
                       }}
                     >
-                      {metrics.isDepletedBeforeReset
-                        ? t(
-                            'dashboard.velocity_gauge.deficit_title',
-                            `Projected Quota Deficit: ~${metrics.deficitHours}h Shortfall`
-                          )
-                        : t(
-                            'dashboard.velocity_gauge.surplus_title',
-                            'Sustainable Consumption — Quota Safe'
-                          )}
+                      {viewMode === 'active' && metrics.sessionDepletionFormatted ? (
+                        metrics.sessionRemainingPct === 0
+                          ? 'اتمام سهمیه سشن ۵ ساعته (0% Remaining)'
+                          : metrics.isSessionAtRisk
+                          ? `پیش‌بینی اتمام سشن: ${metrics.sessionDepletionFormatted}`
+                          : `سهمیه سشن پایدار (${metrics.sessionDepletionFormatted})`
+                      ) : (
+                        metrics.isDepletedBeforeReset
+                          ? t(
+                              'dashboard.velocity_gauge.deficit_title',
+                              `Projected Quota Deficit: ~${metrics.deficitHours}h Shortfall`
+                            )
+                          : t(
+                              'dashboard.velocity_gauge.surplus_title',
+                              'Sustainable Consumption — Quota Safe'
+                            )
+                      )}
                     </h3>
                     {formattedProjectedDate && (
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50 flex items-center gap-1">
@@ -219,7 +232,17 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                   </div>
 
                   <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug mt-0.5">
-                    {metrics.isDepletedBeforeReset ? (
+                    {viewMode === 'active' && metrics.sessionDepletionFormatted ? (
+                      metrics.isSessionAtRisk ? (
+                        <>
+                          طبق مصرف و آهنگ توکن‌ها، سهمیه ۵ ساعته در <strong>{metrics.sessionDepletionFormatted}</strong> به پایان خواهد رسید.
+                        </>
+                      ) : (
+                        <>
+                          سرعت مصرف سشن متعادل است و سهمیه تا ریست بعدی (<strong>{metrics.sessionDepletionFormatted}</strong>) پاسخگوست.
+                        </>
+                      )
+                    ) : metrics.isDepletedBeforeReset ? (
                       <>
                         At velocity <strong>{metrics.hourlyBurnRatePct}% / hr</strong>, quota depletes on <strong>{formattedProjectedDate}</strong> — approximately{' '}
                         <span className="font-bold underline text-rose-500">
@@ -261,7 +284,11 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                   <span className="text-[9.5px] font-bold uppercase tracking-wider">Runway</span>
                 </div>
                 <div className="text-sm font-black text-slate-900 dark:text-white">
-                  {metrics.runwayHoursRemaining > 168 ? '> 7 Days' : `${metrics.runwayHoursRemaining}h`}
+                  {viewMode === 'active' && metrics.sessionRunwayMinutes !== undefined
+                    ? (metrics.sessionRunwayMinutes < 60
+                        ? `${metrics.sessionRunwayMinutes}m (Session)`
+                        : `${Math.floor(metrics.sessionRunwayMinutes / 60)}h ${metrics.sessionRunwayMinutes % 60}m (Session)`)
+                    : (metrics.runwayHoursRemaining > 168 ? '> 7 Days' : `${metrics.runwayHoursRemaining}h`)}
                 </div>
               </div>
 
