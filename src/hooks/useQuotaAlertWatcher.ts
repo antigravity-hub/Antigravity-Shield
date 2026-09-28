@@ -123,8 +123,10 @@ export function useQuotaAlertWatcher() {
             const targetLabel = getTargetEnvLabel(targetId, activeTargetAccounts, t);
             const targetPrefix = targetLabel ? `[${targetLabel}] ` : '';
 
-            // Collect all critically low models for this account
-            const DEPLETED_THRESHOLD = 5;
+            // Collect all critically low models for this account (configured threshold or default 5%)
+            const DEPLETED_THRESHOLD = typeof config?.auto_switch_threshold_percentage === 'number'
+                ? Math.max(1, Math.min(config.auto_switch_threshold_percentage, 90))
+                : 5;
             const criticalModels: { name: string; display_name?: string; percentage: number }[] = [];
             let hasNewDepleted = false;
 
@@ -405,5 +407,5 @@ export function useQuotaAlertWatcher() {
                 }
             }
         }
-    }, [accounts, currentAccount, activeTargetAccounts, config?.auto_switch_on_quota, config?.overlay_notifications_enabled, config?.auto_switch_countdown_secs, t, switchAccount, fetchAccounts]);
+    }, [accounts, currentAccount, activeTargetAccounts, config?.auto_switch_on_quota, config?.auto_switch_threshold_percentage, config?.overlay_notifications_enabled, config?.auto_switch_countdown_secs, t, switchAccount, fetchAccounts]);
 }

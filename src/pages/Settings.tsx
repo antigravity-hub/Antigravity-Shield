@@ -44,6 +44,7 @@ function Settings() {
         auto_sync: false,
         sync_interval: 5,
         auto_switch_on_quota: true,
+        auto_switch_threshold_percentage: 5,
         proxy: {
             enabled: false,
             port: 8080,
@@ -985,7 +986,7 @@ function Settings() {
                             </div>
 
                             {/* 配额耗尽时自动轮换 (Auto-Switch on Quota Depletion) */}
-                            <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-amber-200 transition-all duration-300 shadow-sm">
+                            <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-amber-200 transition-all duration-300 shadow-sm space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
@@ -1015,6 +1016,72 @@ function Settings() {
                                         <div className="w-11 h-6 bg-gray-200 dark:bg-base-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 shadow-inner"></div>
                                     </label>
                                 </div>
+
+                                {(formData.auto_switch_on_quota ?? true) && (
+                                    <div className="pt-3 border-t border-gray-100 dark:border-base-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-in slide-in-from-top-1 duration-200">
+                                        <div>
+                                            <label className="text-xs font-semibold text-gray-700 dark:text-gray-200 block mb-1">
+                                                {t('settings.account.auto_switch_threshold', { defaultValue: 'Auto-Switch Threshold Percentage' })}
+                                            </label>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                {t('settings.account.auto_switch_threshold_desc', { defaultValue: 'Automatically rotate account when quota drops to or below this percentage (Default: 5%)' })}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            {/* Quick preset chips */}
+                                            <div className="flex items-center gap-1.5 flex-wrap">
+                                                {[3, 5, 10, 15, 20].map((preset) => {
+                                                    const isSelected = (formData.auto_switch_threshold_percentage ?? 5) === preset;
+                                                    return (
+                                                        <button
+                                                            key={preset}
+                                                            type="button"
+                                                            onClick={async () => {
+                                                                const newConfig = { ...formData, auto_switch_threshold_percentage: preset };
+                                                                setFormData(newConfig);
+                                                                try {
+                                                                    await saveConfig(newConfig);
+                                                                } catch (error) {
+                                                                    showToast(`${t('common.error')}: ${error}`, 'error');
+                                                                }
+                                                            }}
+                                                            className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all ${
+                                                                isSelected
+                                                                    ? 'bg-amber-500 text-white font-bold shadow-sm'
+                                                                    : 'bg-gray-100 dark:bg-base-200 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-base-300'
+                                                            }`}
+                                                        >
+                                                            {preset}%{preset === 5 ? ` (${t('common.default', { defaultValue: 'Def' })})` : ''}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+
+                                            {/* Custom number input */}
+                                            <div className="relative flex items-center">
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    max="90"
+                                                    value={formData.auto_switch_threshold_percentage ?? 5}
+                                                    onChange={async (e) => {
+                                                        const val = parseInt(e.target.value, 10);
+                                                        const clamped = isNaN(val) ? 5 : Math.max(1, Math.min(val, 90));
+                                                        const newConfig = { ...formData, auto_switch_threshold_percentage: clamped };
+                                                        setFormData(newConfig);
+                                                        try {
+                                                            await saveConfig(newConfig);
+                                                        } catch (error) {
+                                                            showToast(`${t('common.error')}: ${error}`, 'error');
+                                                        }
+                                                    }}
+                                                    className="w-16 px-2 py-1 text-center font-bold text-xs bg-gray-50 dark:bg-base-200 border border-gray-200 dark:border-base-300 rounded-lg text-amber-600 dark:text-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                                                />
+                                                <span className="text-xs font-bold text-gray-400 dark:text-gray-500 ml-1">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* اعلان و شمارش معکوس شناور (Floating HUD Notification) */}

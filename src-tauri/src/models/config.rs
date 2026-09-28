@@ -40,6 +40,12 @@ pub struct AppConfig {
     pub overlay_position: String,       // "top-right", "bottom-right", "top-left", "bottom-left"
     #[serde(default = "default_countdown_secs")]
     pub auto_switch_countdown_secs: u32, // Countdown seconds before auto-switch
+    #[serde(default = "default_switch_threshold")]
+    pub auto_switch_threshold_percentage: u32, // [NEW] Threshold percentage to trigger auto-switch (default 5%)
+}
+
+fn default_switch_threshold() -> u32 {
+    5
 }
 
 fn default_true() -> bool {
@@ -216,6 +222,7 @@ impl AppConfig {
             overlay_notifications_enabled: true,
             overlay_position: "top-right".to_string(),
             auto_switch_countdown_secs: 30,
+            auto_switch_threshold_percentage: 5,
         }
     }
 }

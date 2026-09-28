@@ -149,6 +149,7 @@ export interface AppConfig {
     proxy: ProxyConfig;
     cloudflared: CloudflaredConfig;
     auto_switch_on_quota?: boolean; // 配额耗尽时自动轮换账号
+    auto_switch_threshold_percentage?: number; // 自动轮换阈值百分比 (默认 5%)
     overlay_notifications_enabled?: boolean; // 启用悬浮HUD倒计时通知
     overlay_position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'; // 悬浮窗位置
     auto_switch_countdown_secs?: number; // 自动轮换倒计时秒数
