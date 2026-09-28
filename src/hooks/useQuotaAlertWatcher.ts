@@ -304,109 +304,68 @@ export function useQuotaAlertWatcher() {
                     }
                 };
 
-                if (claudeDepleted) {
-                    // Step 1: Find next Claude account
-                    const bestClaude = getRecommendedBestAccount(accounts, targetAccount.id, {
-                        category: 'claude',
+                // Determine primary depleted model dynamically (sorted by lowest remaining quota)
+                const sortedCritical = [...criticalModels].sort((a, b) => a.percentage - b.percentage);
+                const mostCritical = sortedCritical[0];
+                const isClaude = isClaudeModel(mostCritical.name, mostCritical.display_name);
+                const primaryCategory: 'gemini' | 'claude' = isClaude ? 'claude' : 'gemini';
+                const modelLabel = mostCritical.display_name || mostCritical.name;
+
+                // Step 1: Find best standby account for the primary category
+                let targetCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {
+                    category: primaryCategory,
+                });
+                let candidateScore = primaryCategory === 'gemini' ? targetCandidate.geminiScore : targetCandidate.claudeScore;
+
+                // Step 2: Fallback to alternative category if primary category is fully depleted across all accounts
+                if (!targetCandidate.account || candidateScore <= 0) {
+                    const fallbackCategory = primaryCategory === 'gemini' ? 'claude' : 'gemini';
+                    const fallbackCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {
+                        category: fallbackCategory,
+                    });
+                    const fallbackScore = fallbackCategory === 'gemini' ? fallbackCandidate.geminiScore : fallbackCandidate.claudeScore;
+                    if (fallbackCandidate.account && fallbackScore > 0) {
+                        targetCandidate = fallbackCandidate;
+                        candidateScore = fallbackScore;
+                    }
+                }
+
+                if (targetCandidate.account && candidateScore > 0) {
+                    const nextAccount = targetCandidate.account;
+                    const switchTitle = t('notifications.auto_switch_title', {
+                        defaultValue: 'Antigravity Shield - Auto Switched',
+                    });
+                    const switchMsg = t('notifications.auto_switch_success', {
+                        defaultValue: `⚡ Auto-Switched: ${targetPrefix}${modelLabel} reached ${mostCritical.percentage}%. Switched to ${nextAccount.email} (${candidateScore}% quota).`,
+                        target: targetPrefix,
+                        model: modelLabel,
+                        from: targetAccount.email,
+                        to: nextAccount.email,
+                        percent: mostCritical.percentage,
+                        score: candidateScore,
                     });
 
-                    if (bestClaude.account && bestClaude.claudeScore > 0) {
-                        const nextAccount = bestClaude.account;
-                        const switchTitle = t('notifications.auto_switch_title', {
-                            defaultValue: 'Antigravity Shield - Auto Switched',
-                        });
-                        const switchMsg = t('notifications.auto_switch_claude_success', {
-                            defaultValue: `⚡ Auto-Switched: ${targetPrefix}Claude quota exhausted on ${targetAccount.email}. Switched to ${nextAccount.email} (${bestClaude.claudeScore}% Claude quota).`,
-                            target: targetPrefix,
-                            from: targetAccount.email,
-                            to: nextAccount.email,
-                            score: bestClaude.claudeScore,
-                        });
-
-                        (async () => {
-                            await triggerGracefulAutoSwitch(
-                                targetAccount,
-                                nextAccount,
-                                'Claude',
-                                bestClaude.claudeScore,
-                                switchTitle,
-                                switchMsg
-                            );
-                        })();
-                        break;
-                    } else {
-                        // Step 2: Fallback to Gemini if all Claude quotas exhausted!
-                        const bestGemini = getRecommendedBestAccount(accounts, targetAccount.id, {
-                            category: 'gemini',
-                        });
-
-                        if (bestGemini.account && bestGemini.geminiScore > 0) {
-                            const nextAccount = bestGemini.account;
-                            const switchTitle = t('notifications.auto_switch_title', {
-                                defaultValue: 'Antigravity Shield - Auto Switched',
-                            });
-                            const switchMsg = t('notifications.auto_switch_fallback_gemini', {
-                                defaultValue: `⚡ Auto-Switched: ${targetPrefix}All Claude quotas depleted. Fallback switched to ${nextAccount.email} (${bestGemini.geminiScore}% Gemini quota).`,
-                                target: targetPrefix,
-                                from: targetAccount.email,
-                                to: nextAccount.email,
-                                score: bestGemini.geminiScore,
-                            });
-
-                            (async () => {
-                                await triggerGracefulAutoSwitch(
-                                    targetAccount,
-                                    nextAccount,
-                                    'Gemini Fallback',
-                                    bestGemini.geminiScore,
-                                    switchTitle,
-                                    switchMsg
-                                );
-                            })();
-                            break;
-                        } else {
-                            // Step 3: All Claude and Gemini quotas depleted!
-                            const exhaustedTitle = t('notifications.quota_exhausted_title', {
-                                defaultValue: 'Antigravity Shield - Quota Depleted',
-                            });
-                            const exhaustedMsg = t('notifications.all_quotas_depleted', {
-                                defaultValue: '⚠️ All Claude and Gemini quotas exhausted across all available accounts.',
-                            });
-                            showToast(exhaustedMsg, 'error', 9000);
-                            sendDesktopNotification(exhaustedTitle, exhaustedMsg);
-                        }
-                    }
-                } else if (geminiDepleted) {
-                    // Gemini was depleted: Switch to next account with Gemini quota
-                    const bestGemini = getRecommendedBestAccount(accounts, targetAccount.id, {
-                        category: 'gemini',
+                    (async () => {
+                        await triggerGracefulAutoSwitch(
+                            targetAccount,
+                            nextAccount,
+                            modelLabel,
+                            candidateScore,
+                            switchTitle,
+                            switchMsg
+                        );
+                    })();
+                    break;
+                } else {
+                    // All quotas depleted across all accounts
+                    const exhaustedTitle = t('notifications.quota_exhausted_title', {
+                        defaultValue: 'Antigravity Shield - Quota Depleted',
                     });
-
-                    if (bestGemini.account && bestGemini.geminiScore > 0) {
-                        const nextAccount = bestGemini.account;
-                        const switchTitle = t('notifications.auto_switch_title', {
-                            defaultValue: 'Antigravity Shield - Auto Switched',
-                        });
-                        const switchMsg = t('notifications.auto_switch_gemini_success', {
-                            defaultValue: `⚡ Auto-Switched: ${targetPrefix}Gemini quota exhausted on ${targetAccount.email}. Switched to ${nextAccount.email} (${bestGemini.geminiScore}% Gemini quota).`,
-                            target: targetPrefix,
-                            from: targetAccount.email,
-                            to: nextAccount.email,
-                            score: bestGemini.geminiScore,
-                        });
-
-                        (async () => {
-                            await triggerGracefulAutoSwitch(
-                                targetAccount,
-                                nextAccount,
-                                'Gemini',
-                                bestGemini.geminiScore,
-                                switchTitle,
-                                switchMsg
-                            );
-                        })();
-                        break;
-                    }
+                    const exhaustedMsg = t('notifications.all_quotas_depleted', {
+                        defaultValue: '⚠️ Quotas exhausted across all available accounts.',
+                    });
+                    showToast(exhaustedMsg, 'error', 9000);
+                    sendDesktopNotification(exhaustedTitle, exhaustedMsg);
                 }
             }
         }
