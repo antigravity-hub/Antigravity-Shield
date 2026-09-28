@@ -7,9 +7,7 @@ import {
     ExternalLink,
     Copy,
     BookOpen,
-    Smartphone,
-    Sparkles,
-    CheckCircle2
+    Smartphone
 } from 'lucide-react';
 import { openVerificationGuide, openExternalUrl } from '../../utils/guideOpener';
 import { copyToClipboard } from '../../utils/clipboard';
