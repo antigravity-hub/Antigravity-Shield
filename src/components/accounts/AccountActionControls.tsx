@@ -88,9 +88,14 @@ export function AccountActionControls({
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuButtonRef = useRef<HTMLButtonElement>(null);
-    const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+    const [menuPos, setMenuPos] = useState<{
+        top?: number;
+        bottom?: number;
+        right: number;
+        openUpward: boolean;
+    }>({ right: 0, openUpward: false });
 
-    // Calculate fixed menu position on open
+    // Calculate fixed menu position on open (with smart vertical flip)
     const handleToggleMenu = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (isMenuOpen) {
@@ -100,9 +105,21 @@ export function AccountActionControls({
 
         if (menuButtonRef.current) {
             const rect = menuButtonRef.current.getBoundingClientRect();
-            const right = window.innerWidth - rect.right;
-            const top = rect.bottom + 6;
-            setMenuPos({ top, right });
+            const right = Math.max(8, window.innerWidth - rect.right);
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const spaceAbove = rect.top;
+            const ESTIMATED_MENU_HEIGHT = 300;
+
+            // Open upward if space below is insufficient and there is more room above
+            const openUpward = spaceBelow < ESTIMATED_MENU_HEIGHT && spaceAbove > spaceBelow;
+
+            if (openUpward) {
+                const bottom = Math.max(8, window.innerHeight - rect.top + 6);
+                setMenuPos({ bottom, right, openUpward: true });
+            } else {
+                const top = Math.max(8, rect.bottom + 6);
+                setMenuPos({ top, right, openUpward: false });
+            }
             setIsMenuOpen(true);
         }
     };
@@ -275,11 +292,18 @@ export function AccountActionControls({
                 <div
                     style={{
                         position: 'fixed',
-                        top: `${menuPos.top}px`,
+                        ...(menuPos.top !== undefined ? { top: `${menuPos.top}px` } : {}),
+                        ...(menuPos.bottom !== undefined ? { bottom: `${menuPos.bottom}px` } : {}),
                         right: `${menuPos.right}px`,
                         zIndex: 9999,
+                        maxHeight: 'calc(100vh - 24px)',
                     }}
-                    className="w-56 rounded-2xl bg-white/95 dark:bg-[#0c121e]/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl p-1.5 animate-in fade-in zoom-in-95 duration-150 select-none"
+                    className={cn(
+                        "w-56 rounded-2xl bg-white/95 dark:bg-[#0c121e]/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl p-1.5 duration-150 select-none overflow-y-auto",
+                        menuPos.openUpward
+                            ? "origin-bottom-right animate-in fade-in zoom-in-95"
+                            : "origin-top-right animate-in fade-in zoom-in-95"
+                    )}
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Header */}
