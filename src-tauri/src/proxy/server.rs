@@ -693,6 +693,25 @@ impl AxumServer {
                 ip_filter_middleware,
             ));
 
+        // 1.5 构建 Toolkit 专用双向通信路由 (支持 /toolkit/* 及 /api/toolkit/* 双路径)
+        let toolkit_routes = Router::new()
+            .route("/heartbeat", post(admin_toolkit_heartbeat))
+            .route(
+                "/commands/poll",
+                get(admin_toolkit_poll_commands).post(admin_toolkit_poll_commands),
+            )
+            .route("/status", get(admin_toolkit_status))
+            .route("/ides", get(admin_detect_installed_ides))
+            .route("/install", post(admin_install_toolkit_to_ide))
+            .route("/accounts", get(admin_list_accounts))
+            .route("/switch", post(admin_switch_account))
+            .route("/refresh", post(admin_refresh_all_quotas))
+            .route(
+                "/accounts/:accountId/refresh",
+                post(admin_refresh_account_by_id),
+            )
+            .route("/sync-active", post(admin_toolkit_sync_active));
+
         // 2. 构建管理 API (强制鉴权)
         let admin_routes = Router::new()
             .route("/health", get(health_check_handler))
@@ -897,27 +916,8 @@ impl AxumServer {
                 get(admin_get_antigravity_cache_paths),
             )
             .route("/system/logs/clear-cache", post(admin_clear_log_cache))
-            // Antigravity Toolkit & IDE Integration
-            .route("/toolkit/heartbeat", post(admin_toolkit_heartbeat))
-            .route("/api/toolkit/heartbeat", post(admin_toolkit_heartbeat))
-            .route("/toolkit/commands/poll", get(admin_toolkit_poll_commands).post(admin_toolkit_poll_commands))
-            .route("/api/toolkit/commands/poll", get(admin_toolkit_poll_commands).post(admin_toolkit_poll_commands))
-            .route("/toolkit/status", get(admin_toolkit_status))
-            .route("/api/toolkit/status", get(admin_toolkit_status))
-            .route("/toolkit/ides", get(admin_detect_installed_ides))
-            .route("/api/toolkit/ides", get(admin_detect_installed_ides))
-            .route("/toolkit/install", post(admin_install_toolkit_to_ide))
-            .route("/api/toolkit/install", post(admin_install_toolkit_to_ide))
-            .route("/toolkit/accounts", get(admin_list_accounts))
-            .route("/api/toolkit/accounts", get(admin_list_accounts))
-            .route("/toolkit/switch", post(admin_switch_account))
-            .route("/api/toolkit/switch", post(admin_switch_account))
-            .route("/toolkit/refresh", post(admin_refresh_all_quotas))
-            .route("/api/toolkit/refresh", post(admin_refresh_all_quotas))
-            .route("/toolkit/accounts/:accountId/refresh", post(admin_refresh_account_by_id))
-            .route("/api/toolkit/accounts/:accountId/refresh", post(admin_refresh_account_by_id))
-            .route("/toolkit/sync-active", post(admin_toolkit_sync_active))
-            .route("/api/toolkit/sync-active", post(admin_toolkit_sync_active))
+            // Antigravity Toolkit & IDE Integration (Mounted under /api/toolkit/*)
+            .nest("/toolkit", toolkit_routes.clone())
             .route("/switch", post(admin_switch_account))
             // Security / IP Monitoring
             .route("/security/logs", get(admin_get_ip_access_logs))
@@ -977,8 +977,17 @@ impl AxumServer {
             .unwrap_or(100 * 1024 * 1024); // 默认 100MB
         tracing::info!("请求体大小限制: {} MB", max_body_size / 1024 / 1024);
 
+        let toolkit_routes_with_auth = toolkit_routes
+            .clone()
+            .layer(axum::middleware::from_fn_with_state(
+                state.clone(),
+                admin_auth_middleware,
+            ));
+
         let app = Router::new()
             .nest("/api", admin_routes)
+            .nest("/toolkit", toolkit_routes_with_auth)
+            .route("/switch", post(admin_switch_account))
             .merge(proxy_routes)
             // 公开路由 (无需鉴权)
             .route("/auth/callback", get(handle_oauth_callback))
