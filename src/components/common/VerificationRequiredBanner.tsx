@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ShieldAlert, BookOpen, ExternalLink, RefreshCw, Copy } from "lucide-react";
+import { ShieldAlert, BookOpen, ExternalLink, RefreshCw, Copy, QrCode } from "lucide-react";
 import { Account } from "../../types/account";
-import { openVerificationGuide, openExternalUrl, extractAccountValidationUrl } from "../../utils/guideOpener";
+import { openVerificationGuide, openVerificationQrModal, openExternalUrl, extractAccountValidationUrl } from "../../utils/guideOpener";
 import { copyToClipboard } from "../../utils/clipboard";
 import { useAccountStore } from "../../stores/useAccountStore";
 import { showToast } from "./ToastContainer";
@@ -125,7 +125,7 @@ export const VerificationRequiredBanner: React.FC<VerificationRequiredBannerProp
                                         : (acc.validation_blocked_reason || t("dashboard.verify_account_prompt", "Verify your account to continue."))}
                                 </div>
                             </div>
-                            <div className="flex items-center gap-1.5 shrink-0">
+                            <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
                                 {hasValidationUrl ? (
                                     <>
                                         <button
@@ -139,6 +139,15 @@ export const VerificationRequiredBanner: React.FC<VerificationRequiredBannerProp
                                         </button>
                                         <button
                                             type="button"
+                                            onClick={() => openVerificationQrModal(acc.email, validationUrl!)}
+                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg border border-blue-300/60 dark:border-blue-700/60 transition-all duration-200 active:scale-95 cursor-pointer"
+                                            title={t("accounts.scan_with_phone_tooltip", "Show QR code to scan with another mobile phone")}
+                                        >
+                                            <QrCode className="w-3.5 h-3.5" />
+                                            <span>{t("accounts.scan_qr_btn", "Scan with Phone")}</span>
+                                        </button>
+                                        <button
+                                            type="button"
                                             onClick={() => handleCopyUrl(validationUrl!)}
                                             className="p-1.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-amber-500/20 rounded-lg transition-colors cursor-pointer"
                                             title={t("accounts.copy_validation_url", "Copy Verification Link")}
@@ -147,26 +156,25 @@ export const VerificationRequiredBanner: React.FC<VerificationRequiredBannerProp
                                         </button>
                                     </>
                                 ) : (
-                                    <>
-                                        <button
-                                            type="button"
-                                            onClick={() => openExternalUrl("https://console.cloud.google.com/welcome")}
-                                            className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
-                                            title={t("dashboard.verify_in_google", "Direct Google Verification Page")}
-                                        >
-                                            <ExternalLink className="w-3 h-3" />
-                                            <span className="hidden sm:inline">{t("dashboard.google_link", "Google")}</span>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => openVerificationGuide()}
-                                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 rounded-lg border border-amber-500/30 transition-all duration-200 active:scale-95 cursor-pointer shadow-sm"
-                                        >
-                                            <BookOpen className="w-3.5 h-3.5" />
-                                            <span>{t("dashboard.view_guide_pdf", "View PDF Guide")}</span>
-                                        </button>
-                                    </>
+                                    <button
+                                        type="button"
+                                        onClick={() => openExternalUrl("https://console.cloud.google.com/welcome")}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors cursor-pointer"
+                                        title={t("dashboard.verify_in_google", "Direct Google Verification Page")}
+                                    >
+                                        <ExternalLink className="w-3 h-3" />
+                                        <span className="hidden sm:inline">{t("dashboard.google_link", "Google")}</span>
+                                    </button>
                                 )}
+                                <button
+                                    type="button"
+                                    onClick={() => openVerificationGuide()}
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-300 rounded-lg border border-amber-500/30 transition-all duration-200 active:scale-95 cursor-pointer shadow-sm"
+                                    title={t("accounts.verification_method_2_title", "Method 2: Google Cloud Shell SMS Verification Guide")}
+                                >
+                                    <BookOpen className="w-3.5 h-3.5" />
+                                    <span>{t("dashboard.view_guide_pdf", "View PDF Guide")}</span>
+                                </button>
                                 <button
                                     type="button"
                                     onClick={() => handleRecheck(acc.id)}

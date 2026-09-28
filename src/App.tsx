@@ -13,6 +13,7 @@ import UserToken from './pages/UserToken';
 import { UpdateNotification } from './components/UpdateNotification';
 import DebugConsole from './components/debug/DebugConsole';
 import { VerificationGuideModal } from './components/common/VerificationGuideModal';
+import { VerificationQrModal } from './components/common/VerificationQrModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { useEffect, useState } from 'react';
 import { useConfigStore } from './stores/useConfigStore';
@@ -231,6 +232,7 @@ function MainApp() {
         <ThemeManager />
         <DebugConsole />
         <VerificationGuideModal />
+        <VerificationQrModal />
         {showUpdateNotification && (
           <UpdateNotification onClose={() => setShowUpdateNotification(false)} />
         )}

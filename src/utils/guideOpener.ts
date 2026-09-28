@@ -10,6 +10,13 @@ export function openVerificationGuide() {
 }
 
 /**
+ * Open the QR Code scanning modal for instant phone camera verification.
+ */
+export function openVerificationQrModal(email: string, url: string) {
+    window.dispatchEvent(new CustomEvent('open-verification-qr', { detail: { email, url } }));
+}
+
+/**
  * Open the guide directly using the operating system's native PDF reader (Adobe, Edge, etc.)
  * Extracts the bundled binary directly to the system temp directory without relying on tauri.localhost.
  */

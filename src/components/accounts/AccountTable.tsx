@@ -38,6 +38,7 @@ import {
     RefreshCw,
     ExternalLink,
     Copy,
+    QrCode,
 } from 'lucide-react';
 import type { Account, ModelQuota } from '../../types/account';
 import { useTranslation } from 'react-i18next';
@@ -53,7 +54,7 @@ import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import HelpTooltip from '../common/HelpTooltip';
-import { openVerificationGuide, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
+import { openVerificationGuide, openVerificationQrModal, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
 import { copyToClipboard } from '../../utils/clipboard';
 import { showToast } from '../common/ToastContainer';
 
@@ -597,7 +598,7 @@ function AccountRowContent({
                                     : t('accounts.verification_required_table_msg', 'Verification required — see guide')}
                             </span>
                         </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
                             {hasValidationUrl ? (
                                 <>
                                     <button
@@ -616,6 +617,18 @@ function AccountRowContent({
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            openVerificationQrModal(account.email, validationUrl!);
+                                        }}
+                                        className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg border border-blue-300/60 dark:border-blue-700/60 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                                        title={t('accounts.scan_with_phone_tooltip', 'Show QR code to scan with another mobile phone')}
+                                    >
+                                        <QrCode className="w-3.5 h-3.5" />
+                                        <span>{t('accounts.scan_qr_btn', 'Scan with Phone')}</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             copyToClipboard(validationUrl!);
                                             showToast(t('accounts.validation_url_copied', 'Verification link copied to clipboard'), 'success');
                                         }}
@@ -625,19 +638,19 @@ function AccountRowContent({
                                         <Copy className="w-3.5 h-3.5" />
                                     </button>
                                 </>
-                            ) : (
-                                <button
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        openVerificationGuide();
-                                    }}
-                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
-                                >
-                                    <BookOpen className="w-3.5 h-3.5" />
-                                    <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
-                                </button>
-                            )}
+                            ) : null}
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    openVerificationGuide();
+                                }}
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-800 dark:text-amber-300 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                                title={t('accounts.verification_method_2_title', 'Method 2: Google Cloud Shell SMS Verification Guide')}
+                            >
+                                <BookOpen className="w-3.5 h-3.5" />
+                                <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
+                            </button>
                             <button
                                 type="button"
                                 onClick={(e) => {

@@ -1731,6 +1731,8 @@ pub fn clear_validation_blocked(account: &mut Account) {
     account.validation_blocked_until = None;
     account.validation_blocked_reason = None;
     account.validation_url = None;
+    // Invalidate cached token expiry so that ensure_fresh_token fetches a brand new token from Google
+    account.token.expiry_timestamp = 0;
     if let Err(e) = save_account(account) {
         crate::modules::logger::log_warn(&format!(
             "Failed to clear validation_blocked state for {}: {}",
@@ -2126,6 +2128,8 @@ pub fn set_account_validation_blocked(
         account.validation_blocked_reason = None;
         account.validation_url = None;
         account.validation_blocked_until = None;
+        // Invalidate cached token expiry so that ensure_fresh_token fetches a brand new token from Google
+        account.token.expiry_timestamp = 0;
     }
 
     save_account(&account)?;
