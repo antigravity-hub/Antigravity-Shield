@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy } from 'lucide-react';
+import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy, QrCode } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { AccountActionControls } from './AccountActionControls';
 import { WeeklyCountdown } from './WeeklyCountdown';
 import { useAccountStore } from '../../stores/useAccountStore';
 import { getAccountFiveHourReset, isAccountQuotaExhausted, safeQuotaPercentage } from '../../utils/quota';
-import { openVerificationGuide, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
+import { openVerificationGuide, openVerificationQrModal, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
 import { copyToClipboard } from '../../utils/clipboard';
 import { showToast } from '../common/ToastContainer';
 
@@ -397,7 +397,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                         : t('accounts.verification_required_table_msg', 'Verification required — see guide')}
                                 </span>
                             </div>
-                            <div className="flex flex-wrap items-center justify-center gap-2">
+                            <div className="flex flex-wrap items-center justify-center gap-1.5">
                                 {hasValidationUrl ? (
                                     <>
                                         <button
@@ -406,7 +406,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                                 e.stopPropagation();
                                                 openExternalUrl(validationUrl!);
                                             }}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm shadow-blue-500/20 transition-all duration-200 active:scale-95 cursor-pointer"
+                                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm shadow-blue-500/20 transition-all duration-200 active:scale-95 cursor-pointer"
                                             title={t('accounts.verify_in_browser_tooltip', 'Open Google verification session in browser')}
                                         >
                                             <ExternalLink className="w-3.5 h-3.5" />
@@ -416,28 +416,40 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
+                                                openVerificationQrModal(account.email, validationUrl!);
+                                            }}
+                                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-bold bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg border border-blue-300/60 dark:border-blue-700/60 transition-all duration-200 active:scale-95 cursor-pointer"
+                                            title={t('accounts.scan_with_phone_tooltip', 'Show QR code to scan with another mobile phone')}
+                                        >
+                                            <QrCode className="w-3.5 h-3.5" />
+                                            <span>{t('accounts.scan_qr_btn', 'Scan with Phone')}</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
                                                 copyToClipboard(validationUrl!);
                                                 showToast(t('accounts.validation_url_copied', 'Verification link copied to clipboard'), 'success');
                                             }}
-                                            className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-amber-500/20 rounded-lg transition-colors cursor-pointer"
+                                            className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-amber-500/20 rounded-lg transition-colors cursor-pointer"
                                             title={t('accounts.copy_validation_url', 'Copy Verification Link')}
                                         >
                                             <Copy className="w-3.5 h-3.5" />
                                         </button>
                                     </>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            openVerificationGuide();
-                                        }}
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
-                                    >
-                                        <BookOpen className="w-3.5 h-3.5" />
-                                        <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
-                                    </button>
-                                )}
+                                ) : null}
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openVerificationGuide();
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-800 dark:text-amber-300 rounded-lg border border-amber-500/40 transition-all duration-200 active:scale-95 cursor-pointer"
+                                    title={t('accounts.verification_method_2_title', 'Method 2: Google Cloud Shell SMS Verification Guide')}
+                                >
+                                    <BookOpen className="w-3.5 h-3.5" />
+                                    <span>{t('accounts.open_guide_btn', 'View Guide')}</span>
+                                </button>
                                 <button
                                     type="button"
                                     onClick={(e) => {

@@ -514,6 +514,9 @@ impl TokenManager {
 
         match self.load_single_account(&canonical).await {
             Ok(Some(token)) => {
+                if !token.validation_blocked {
+                    self.quarantine_records.remove(account_id);
+                }
                 self.tokens.insert(account_id.to_string(), token);
                 self.sync_image_scheduler_accounts();
                 Ok(())

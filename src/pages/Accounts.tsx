@@ -520,6 +520,7 @@ function Accounts() {
       const targetAcc = accounts.find((a) => a.id === accountId);
       if (targetAcc?.validation_blocked) {
         await clearAccountValidation(accountId);
+        await refreshQuota(accountId);
         showToast(
           t("accounts.toast.validation_cleared", "Account validation block cleared and refreshed"),
           "success"
