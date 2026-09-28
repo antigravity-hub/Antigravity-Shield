@@ -113,17 +113,20 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
                                 return (
                                     <span
                                         className="text-amber-600 dark:text-amber-400 font-semibold scale-90 flex items-center gap-0.5 truncate"
-                                        title={`5H Rolling Window (100% Available) — Resets in ${formatTimeRemaining(resetTime!)}`}
+                                        title={t('accounts.five_hour_warmed_tooltip', {
+                                            time: formatTimeRemaining(resetTime!, t('common.ready', 'Ready')),
+                                            defaultValue: `5H Rolling Window (100% Available) — Resets in ${formatTimeRemaining(resetTime!, t('common.ready', 'Ready'))}`
+                                        })}
                                     >
                                         <Clock className="w-2.5 h-2.5 shrink-0 text-amber-500" />
-                                        {formatTimeRemaining(resetTime!)}
+                                        {formatTimeRemaining(resetTime!, t('common.ready', 'Ready'))}
                                     </span>
                                 );
                             }
                             return (
                                 <span className="text-emerald-600 dark:text-emerald-400 font-semibold scale-90 flex items-center gap-0.5">
                                     <Check className="w-2.5 h-2.5 shrink-0 text-emerald-500" strokeWidth={2.5} />
-                                    Ready
+                                    {t('common.ready', 'Ready')}
                                 </span>
                             );
                         }
@@ -131,7 +134,7 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
                             return (
                                 <span className={cn("flex items-center gap-0.5 font-medium transition-colors truncate", getTimeColorClass(resetTime))}>
                                     <Clock className="w-2.5 h-2.5 shrink-0" />
-                                    {formatTimeRemaining(resetTime)}
+                                    {formatTimeRemaining(resetTime, t('common.ready', 'Ready'))}
                                 </span>
                             );
                         }

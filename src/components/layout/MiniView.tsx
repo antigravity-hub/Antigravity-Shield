@@ -196,8 +196,8 @@ export default function MiniView() {
     // Reset cycle calculations for compact time display
     const geminiCycle = currentAccount ? getAccountFiveHourReset(currentAccount, 'gemini') : null;
     const claudeCycle = currentAccount ? getAccountFiveHourReset(currentAccount, 'claude') : null;
-    const geminiResetFormatted = geminiCycle?.resetTime ? formatTimeRemaining(geminiCycle.resetTime) : (geminiProModel?.reset_time ? formatTimeRemaining(geminiProModel.reset_time) : null);
-    const claudeResetFormatted = claudeCycle?.resetTime ? formatTimeRemaining(claudeCycle.resetTime) : (claudeModel?.reset_time ? formatTimeRemaining(claudeModel.reset_time) : null);
+    const geminiResetFormatted = geminiCycle?.resetTime ? formatTimeRemaining(geminiCycle.resetTime, t('common.ready', 'Ready')) : (geminiProModel?.reset_time ? formatTimeRemaining(geminiProModel.reset_time, t('common.ready', 'Ready')) : null);
+    const claudeResetFormatted = claudeCycle?.resetTime ? formatTimeRemaining(claudeCycle.resetTime, t('common.ready', 'Ready')) : (claudeModel?.reset_time ? formatTimeRemaining(claudeModel.reset_time, t('common.ready', 'Ready')) : null);
 
     // Adaptive Breakpoint calculations
     const isMicro = dimensions.width < 155 || dimensions.height < 115;
@@ -226,7 +226,7 @@ export default function MiniView() {
             : model.percentage;
         const resetDisplay = overrideResetTime !== undefined && overrideResetTime !== null
             ? overrideResetTime
-            : (model.reset_time ? `R: ${formatTimeRemaining(model.reset_time)}` : t('common.unknown'));
+            : (model.reset_time ? `R: ${formatTimeRemaining(model.reset_time, t('common.ready', 'Ready'))}` : t('common.unknown'));
 
         const getStatusColor = (p: number) => {
             if (p >= 50) return 'text-[#93B93B]';

@@ -9,7 +9,7 @@ import {
   Calendar,
   ChevronDown,
 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { Account } from '../../types/account';
 import {
   calculateAccountBurnVelocity,
@@ -42,7 +42,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
   // Format projected date nicely with day of week & time
   const formattedProjectedDate = useMemo(() => {
     if (!metrics.projectedDepletionDate) return null;
-    const locale = i18n.language.startsWith('fa') ? 'fa-IR' : 'en-US';
+    const locale = i18n.language.startsWith('fa') ? 'fa-IR' : (i18n.language.startsWith('zh') ? 'zh-CN' : 'en-US');
     try {
       return new Intl.DateTimeFormat(locale, {
         weekday: 'short',
@@ -55,6 +55,37 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
       return metrics.projectedDepletionDate.toLocaleString();
     }
   }, [metrics.projectedDepletionDate, i18n.language]);
+
+  const sessionDepletionTimeFormatted = useMemo(() => {
+    if (!metrics.sessionDepletionDate) return '';
+    const locale = i18n.language.startsWith('fa') ? 'fa-IR' : (i18n.language.startsWith('zh') ? 'zh-CN' : 'en-US');
+    try {
+      return metrics.sessionDepletionDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return metrics.sessionDepletionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }, [metrics.sessionDepletionDate, i18n.language]);
+
+  const sessionResetTimeFormatted = useMemo(() => {
+    if (!metrics.sessionResetTimeMs) return '';
+    const date = new Date(metrics.sessionResetTimeMs);
+    const locale = i18n.language.startsWith('fa') ? 'fa-IR' : (i18n.language.startsWith('zh') ? 'zh-CN' : 'en-US');
+    try {
+      return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }, [metrics.sessionResetTimeMs, i18n.language]);
+
+  const durationFormatted = useMemo(() => {
+    if (metrics.sessionRunwayMinutes === undefined) return '';
+    const hours = Math.floor(metrics.sessionRunwayMinutes / 60);
+    const mins = metrics.sessionRunwayMinutes % 60;
+    if (hours > 0) {
+      return t('dashboard.velocity_gauge.duration_hours_mins', { hours, mins, defaultValue: `${hours}h ${mins}m` });
+    }
+    return t('dashboard.velocity_gauge.duration_mins', { mins, defaultValue: `${mins}m` });
+  }, [metrics.sessionRunwayMinutes, t]);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -95,11 +126,11 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                 border: `1px solid ${metrics.zoneColor}40`,
               }}
             >
-              {metrics.zoneTag}
+              {t(`dashboard.velocity_gauge.tag_${metrics.zoneTag.toLowerCase().replace(/\s+/g, '_')}`, metrics.zoneTag)}
             </span>
             {isCollapsed && (
               <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-400 ml-2 hidden sm:inline">
-                ({metrics.sustainabilityRatio}x • Runway: {metrics.runwayHoursRemaining > 168 ? '>7d' : `${metrics.runwayHoursRemaining}h`} • Reset: {metrics.timeRemainingHours}h)
+                ({metrics.sustainabilityRatio}x • {t('dashboard.velocity_gauge.runway', 'Runway')}: {metrics.runwayHoursRemaining > 168 ? t('dashboard.velocity_gauge.more_than_7d', '>7d') : `${metrics.runwayHoursRemaining}h`} • {t('dashboard.velocity_gauge.reset_short', 'Reset')}: {metrics.timeRemainingHours}h)
               </span>
             )}
           </div>
@@ -137,7 +168,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:bg-slate-800/60 transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-            title={isCollapsed ? 'Expand Radar' : 'Collapse Radar'}
+            title={isCollapsed ? t('dashboard.velocity_gauge.expand', 'Expand Radar') : t('dashboard.velocity_gauge.collapse', 'Collapse Radar')}
           >
             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isCollapsed ? '' : 'rotate-180'}`} />
           </button>
@@ -152,14 +183,25 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
             <SpeedometerGauge
               value={metrics.sustainabilityRatio}
               unit="x"
-              statusBadgeText={metrics.zoneLabel}
+              statusBadgeText={t(`dashboard.velocity_gauge.zone_${metrics.zone}`, metrics.zoneLabel)}
               caption={t(
                 'dashboard.velocity_gauge.caption',
                 'Ratio of remaining quota to remaining weekly window'
               )}
               subCaption={
-                viewMode === 'active' && metrics.sessionDepletionFormatted
-                  ? `⏳ پیش‌بینی اتمام سشن: ${metrics.sessionDepletionFormatted}`
+                viewMode === 'active' && metrics.sessionResetTimeMs !== undefined
+                  ? metrics.sessionRemainingPct === 0
+                    ? t('dashboard.velocity_gauge.session_exhausted_badge', '⏳ 5H Quota Exhausted (0%)')
+                    : metrics.isSessionAtRisk
+                    ? t('dashboard.velocity_gauge.session_depletion_badge', {
+                        duration: durationFormatted,
+                        time: sessionDepletionTimeFormatted,
+                        defaultValue: `⏳ Depletion in ${durationFormatted} (${sessionDepletionTimeFormatted})`,
+                      })
+                    : t('dashboard.velocity_gauge.session_sustainable_badge', {
+                        time: sessionResetTimeFormatted,
+                        defaultValue: `⏳ Sustainable until Reset (${sessionResetTimeFormatted})`,
+                      })
                   : undefined
               }
               trend={metrics.sustainabilityRatio >= 1.0 ? 'up' : 'down'}
@@ -205,17 +247,26 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                         color: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? '#f43f5e' : '#10b981',
                       }}
                     >
-                      {viewMode === 'active' && metrics.sessionDepletionFormatted ? (
+                      {viewMode === 'active' && metrics.sessionResetTimeMs !== undefined ? (
                         metrics.sessionRemainingPct === 0
-                          ? 'اتمام سهمیه سشن ۵ ساعته (0% Remaining)'
+                          ? t('dashboard.velocity_gauge.session_exhausted_title', '5-Hour Session Quota Exhausted (0% Remaining)')
                           : metrics.isSessionAtRisk
-                          ? `پیش‌بینی اتمام سشن: ${metrics.sessionDepletionFormatted}`
-                          : `سهمیه سشن پایدار (${metrics.sessionDepletionFormatted})`
+                          ? t('dashboard.velocity_gauge.session_risk_title', {
+                              duration: durationFormatted,
+                              defaultValue: `Projected Session Depletion: ~${durationFormatted} Shortfall`,
+                            })
+                          : t('dashboard.velocity_gauge.session_safe_title', {
+                              time: sessionResetTimeFormatted,
+                              defaultValue: `Session Quota Sustainable until Reset (${sessionResetTimeFormatted})`,
+                            })
                       ) : (
                         metrics.isDepletedBeforeReset
                           ? t(
                               'dashboard.velocity_gauge.deficit_title',
-                              `Projected Quota Deficit: ~${metrics.deficitHours}h Shortfall`
+                              {
+                                hours: metrics.deficitHours,
+                                defaultValue: `Projected Quota Deficit: ~${metrics.deficitHours}h Shortfall`,
+                              }
                             )
                           : t(
                               'dashboard.velocity_gauge.surplus_title',
@@ -232,31 +283,49 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                   </div>
 
                   <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug mt-0.5">
-                    {viewMode === 'active' && metrics.sessionDepletionFormatted ? (
+                    {viewMode === 'active' && metrics.sessionResetTimeMs !== undefined ? (
                       metrics.isSessionAtRisk ? (
-                        <>
-                          طبق مصرف و آهنگ توکن‌ها، سهمیه ۵ ساعته در <strong>{metrics.sessionDepletionFormatted}</strong> به پایان خواهد رسید.
-                        </>
+                        <Trans
+                          i18nKey="dashboard.velocity_gauge.session_risk_desc"
+                          values={{ duration: durationFormatted, time: sessionDepletionTimeFormatted }}
+                          components={{ strong: <strong /> }}
+                          defaults="Based on current burn rate, the 5-hour quota will deplete in <strong>{{duration}}</strong> (around <strong>{{time}}</strong>)."
+                        />
                       ) : (
-                        <>
-                          سرعت مصرف سشن متعادل است و سهمیه تا ریست بعدی (<strong>{metrics.sessionDepletionFormatted}</strong>) پاسخگوست.
-                        </>
+                        <Trans
+                          i18nKey="dashboard.velocity_gauge.session_safe_desc"
+                          values={{ time: sessionResetTimeFormatted }}
+                          components={{ strong: <strong /> }}
+                          defaults="Session consumption is steady and will safely reach the next reset at <strong>{{time}}</strong>."
+                        />
                       )
                     ) : metrics.isDepletedBeforeReset ? (
-                      <>
-                        At velocity <strong>{metrics.hourlyBurnRatePct}% / hr</strong>, quota depletes on <strong>{formattedProjectedDate}</strong> — approximately{' '}
-                        <span className="font-bold underline text-rose-500">
-                          {metrics.deficitHours}h before reset
-                        </span>.
-                      </>
+                      <Trans
+                        i18nKey="dashboard.velocity_gauge.deficit_desc"
+                        values={{
+                          burnRate: metrics.hourlyBurnRatePct,
+                          date: formattedProjectedDate,
+                          hours: metrics.deficitHours,
+                        }}
+                        components={{
+                          strong: <strong />,
+                          span: <span className="font-bold underline text-rose-500" />,
+                        }}
+                        defaults="At velocity <strong>{{burnRate}}% / hr</strong>, quota depletes on <strong>{{date}}</strong> — approximately <span className='font-bold underline text-rose-500'>{{hours}}h before reset</span>."
+                      />
                     ) : (
-                      <>
-                        Current pace (<strong>{metrics.hourlyBurnRatePct}% / hr</strong>) is sustainable with{' '}
-                        <span className="font-bold text-emerald-500">
-                          +{metrics.surplusHours}h surplus runway
-                        </span>{' '}
-                        past reset.
-                      </>
+                      <Trans
+                        i18nKey="dashboard.velocity_gauge.surplus_desc"
+                        values={{
+                          burnRate: metrics.hourlyBurnRatePct,
+                          hours: metrics.surplusHours,
+                        }}
+                        components={{
+                          strong: <strong />,
+                          span: <span className="font-bold text-emerald-500" />,
+                        }}
+                        defaults="Current pace (<strong>{{burnRate}}% / hr</strong>) is sustainable with <span className='font-bold text-emerald-500'>+{{hours}}h surplus runway</span> past reset."
+                      />
                     )}
                   </p>
                 </div>
@@ -269,11 +338,15 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800/60">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
                   <Zap className="w-3 h-3 text-amber-500" />
-                  <span className="text-[9.5px] font-bold uppercase tracking-wider">Burn Rate</span>
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider">
+                    {t('dashboard.velocity_gauge.burn_rate', 'Burn Rate')}
+                  </span>
                 </div>
                 <div className="text-sm font-black text-slate-900 dark:text-white">
                   {metrics.hourlyBurnRatePct}%
-                  <span className="text-[9.5px] font-normal text-slate-500 dark:text-slate-400"> / hr</span>
+                  <span className="text-[9.5px] font-normal text-slate-500 dark:text-slate-400">
+                    {' '}{t('dashboard.velocity_gauge.per_hour', '/ hr')}
+                  </span>
                 </div>
               </div>
 
@@ -281,14 +354,16 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800/60">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
                   <Clock className="w-3 h-3 text-cyan-500" />
-                  <span className="text-[9.5px] font-bold uppercase tracking-wider">Runway</span>
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider">
+                    {t('dashboard.velocity_gauge.runway', 'Runway')}
+                  </span>
                 </div>
                 <div className="text-sm font-black text-slate-900 dark:text-white">
                   {viewMode === 'active' && metrics.sessionRunwayMinutes !== undefined
                     ? (metrics.sessionRunwayMinutes < 60
-                        ? `${metrics.sessionRunwayMinutes}m (Session)`
-                        : `${Math.floor(metrics.sessionRunwayMinutes / 60)}h ${metrics.sessionRunwayMinutes % 60}m (Session)`)
-                    : (metrics.runwayHoursRemaining > 168 ? '> 7 Days' : `${metrics.runwayHoursRemaining}h`)}
+                        ? `${metrics.sessionRunwayMinutes}m ${t('dashboard.velocity_gauge.session_suffix', '(Session)')}`
+                        : `${Math.floor(metrics.sessionRunwayMinutes / 60)}h ${metrics.sessionRunwayMinutes % 60}m ${t('dashboard.velocity_gauge.session_suffix', '(Session)')}`)
+                    : (metrics.runwayHoursRemaining > 168 ? t('dashboard.velocity_gauge.more_than_7_days', '> 7 Days') : `${metrics.runwayHoursRemaining}h`)}
                 </div>
               </div>
 
@@ -296,7 +371,9 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800/60">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
                   <Sparkles className="w-3 h-3 text-purple-500" />
-                  <span className="text-[9.5px] font-bold uppercase tracking-wider">Reset In</span>
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider">
+                    {t('dashboard.velocity_gauge.reset_in', 'Reset In')}
+                  </span>
                 </div>
                 <div className="text-sm font-black text-slate-900 dark:text-white">
                   {metrics.timeRemainingHours}h

@@ -189,8 +189,8 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {geminiProModel?.reset_time ? (() => {
-                                        const formatted = formatTimeRemaining(geminiProModel.reset_time);
-                                        const isReady = formatted === 'Ready';
+                                        const isReady = new Date(geminiProModel.reset_time).getTime() <= Date.now();
+                                        const formatted = isReady ? t('common.ready', 'Ready') : formatTimeRemaining(geminiProModel.reset_time, t('common.ready', 'Ready'));
                                         return (
                                             <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(geminiProModel.reset_time))}>
                                                 {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
@@ -225,8 +225,8 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {geminiFlashModel?.reset_time ? (() => {
-                                        const formatted = formatTimeRemaining(geminiFlashModel.reset_time);
-                                        const isReady = formatted === 'Ready';
+                                        const isReady = new Date(geminiFlashModel.reset_time).getTime() <= Date.now();
+                                        const formatted = isReady ? t('common.ready', 'Ready') : formatTimeRemaining(geminiFlashModel.reset_time, t('common.ready', 'Ready'));
                                         return (
                                             <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(geminiFlashModel.reset_time))}>
                                                 {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
@@ -262,8 +262,8 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {geminiImageModel?.reset_time ? (() => {
-                                        const formatted = formatTimeRemaining(geminiImageModel.reset_time);
-                                        const isReady = formatted === 'Ready';
+                                        const isReady = new Date(geminiImageModel.reset_time).getTime() <= Date.now();
+                                        const formatted = isReady ? t('common.ready', 'Ready') : formatTimeRemaining(geminiImageModel.reset_time, t('common.ready', 'Ready'));
                                         return (
                                             <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(geminiImageModel.reset_time))}>
                                                 {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
@@ -299,8 +299,8 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 </span>
                                 <div className="flex-1 flex justify-center">
                                     {claudeModel?.reset_time ? (() => {
-                                        const formatted = formatTimeRemaining(claudeModel.reset_time);
-                                        const isReady = formatted === 'Ready';
+                                        const isReady = new Date(claudeModel.reset_time).getTime() <= Date.now();
+                                        const formatted = isReady ? t('common.ready', 'Ready') : formatTimeRemaining(claudeModel.reset_time, t('common.ready', 'Ready'));
                                         return (
                                             <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(claudeModel.reset_time))}>
                                                 {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
