@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.18.0 (2026-09-29)**:
+        -   **Live Transcript & Multi-Chat Concurrency Adaptive Polling**: Connected LiveBrainWatcher real-time transcript streaming telemetry directly to the account quota scheduler. Intelligently accelerates polling to 20-30s during multi-chat bursts or high token velocity, eliminating delay-induced quota exhaustion.
+        -   **Shifted Critical Polling Floor to 25%**: Reduced the adaptive low-quota polling floor from 10% to 25% and disabled idle stagnation penalties whenever background IDE agents are actively generating code.
+        -   **Bundled Antigravity Toolkit v2.6.0**: Upgraded companion IDE extension to v2.6.0 with strict 5-hour rolling session quota telemetry in Sessions Switchboard, status bars, and auto-rotation heuristics.
     *   **v5.13.4 (2026-09-26)**:
         -   **Bundled Antigravity Toolkit v2.5.3**: Synchronized bundled IDE companion extension to v2.5.3 featuring multi-tier official conversation title resolution, self-healing history synchronization, and localized autonomous account rotation notifications.
     *   **v5.13.3 (2026-09-26)**:
