@@ -7,6 +7,7 @@ use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use tauri::Emitter;
 
+
 #[derive(serde::Serialize, Clone, Debug)]
 pub struct BrainScanResult {
     pub conversations_found: usize,
@@ -15,6 +16,65 @@ pub struct BrainScanResult {
     pub total_new_tokens: u64,
     pub errors: Vec<String>,
 }
+
+#[derive(Debug, Clone, Default, serde::Serialize)]
+pub struct LiveActivitySnapshot {
+    pub active_chats_count: usize,
+    pub tokens_burned_last_60s: u64,
+    pub last_activity_timestamp: i64,
+}
+
+static LIVE_ACTIVITY_HISTORY: std::sync::LazyLock<
+    std::sync::RwLock<std::collections::VecDeque<(i64, usize, u64)>>,
+> = std::sync::LazyLock::new(|| std::sync::RwLock::new(std::collections::VecDeque::new()));
+
+static LAST_ACTIVITY_TS: std::sync::atomic::AtomicI64 = std::sync::atomic::AtomicI64::new(0);
+
+pub fn record_live_activity(active_chats: usize, new_tokens: u64) {
+    let now = chrono::Utc::now().timestamp();
+    if new_tokens > 0 || active_chats > 0 {
+        LAST_ACTIVITY_TS.store(now, std::sync::atomic::Ordering::Relaxed);
+    }
+    if let Ok(mut hist) = LIVE_ACTIVITY_HISTORY.write() {
+        if new_tokens > 0 || active_chats > 0 {
+            hist.push_back((now, active_chats, new_tokens));
+        }
+        while let Some(front) = hist.front() {
+            if now - front.0 > 60 {
+                hist.pop_front();
+            } else {
+                break;
+            }
+        }
+    }
+}
+
+pub fn get_live_activity_snapshot() -> LiveActivitySnapshot {
+    let now = chrono::Utc::now().timestamp();
+    let mut total_tokens = 0u64;
+    let mut max_active_chats = 0usize;
+    if let Ok(mut hist) = LIVE_ACTIVITY_HISTORY.write() {
+        while let Some(front) = hist.front() {
+            if now - front.0 > 60 {
+                hist.pop_front();
+            } else {
+                break;
+            }
+        }
+        for item in hist.iter() {
+            total_tokens += item.2;
+            if item.1 > max_active_chats {
+                max_active_chats = item.1;
+            }
+        }
+    }
+    LiveActivitySnapshot {
+        active_chats_count: max_active_chats,
+        tokens_burned_last_60s: total_tokens,
+        last_activity_timestamp: LAST_ACTIVITY_TS.load(std::sync::atomic::Ordering::Relaxed),
+    }
+}
+
 
 fn get_gemini_antigravity_envs() -> Vec<PathBuf> {
     let home = dirs::home_dir().or_else(|| {
@@ -499,6 +559,14 @@ pub fn start_live_watcher(app_handle: Option<tauri::AppHandle>) {
             let scan_res = tokio::task::spawn_blocking(|| scan_brain_conversations()).await;
 
             if let Ok(Ok(res)) = scan_res {
+                record_live_activity(
+                    if res.total_new_tokens > 0 {
+                        res.conversations_scanned
+                    } else {
+                        0
+                    },
+                    res.total_new_tokens,
+                );
                 if res.total_new_tokens > 0 {
                     tracing::info!(
                         "[LiveBrainWatcher] 🚀 Live tokens captured: {} tokens across {} conversations",
@@ -508,6 +576,8 @@ pub fn start_live_watcher(app_handle: Option<tauri::AppHandle>) {
                         let _ = handle.emit("live_token_stats_update", &res);
                     }
                 }
+            } else {
+                record_live_activity(0, 0);
             }
         }
     });

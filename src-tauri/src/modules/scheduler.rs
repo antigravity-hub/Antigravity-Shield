@@ -223,6 +223,16 @@ pub fn start_scheduler(
                                 if !q.is_forbidden {
                                     let min_pct = q.get_min_remaining_percentage();
 
+                                    // Live token consumption & multi-chat concurrency telemetry from LiveBrainWatcher
+                                    let live_act = crate::modules::brain_scanner::get_live_activity_snapshot();
+                                    let is_heavy_burst = live_act.active_chats_count >= 2 || live_act.tokens_burned_last_60s >= 10_000;
+                                    let has_live_tokens = (now - live_act.last_activity_timestamp) <= 90;
+
+                                    if has_live_tokens {
+                                        // Zero-out stagnation penalties as long as tokens are being consumed by IDE / AI
+                                        stagnant_checks = 0;
+                                    }
+
                                     // Reset stagnation & runway tracking if active account switched
                                     if last_observed_acc_id.as_deref() != Some(&acc.id) {
                                         last_observed_acc_id = Some(acc.id.clone());
@@ -232,37 +242,62 @@ pub fn start_scheduler(
                                         estimated_runway_mins = None;
                                     }
 
-                                    // Calculate target interval based on Estimated Runway:
+                                    // Calculate target interval based on Estimated Runway & Live Concurrency Telemetry
                                     let base_interval = if min_pct <= 0 {
                                         0 // Already depleted, let rotation handler manage it
-                                    } else if let Some(runway) = estimated_runway_mins {
-                                        if runway > 20.0 {
-                                            0 // Safe (>20 min runway) -> stick comfortably to standard fleet cycle
-                                        } else if runway > 10.0 {
-                                            240 + (now % 25) // Moderate burn (10-20 min runway) -> check ~4 minutes
-                                        } else if runway > 5.0 {
-                                            100 + (now % 15) // High burn (5-10 min runway) -> check ~1.5-2 minutes
+                                    } else if min_pct <= 5 {
+                                        // Critical Danger Zone: Sub-5% remaining
+                                        if is_heavy_burst {
+                                            20 + (now % 6) // ~20-25s rapid check
                                         } else {
-                                            35 + (now % 7) // Critical danger (<5 min runway) -> rapid ~35-41s check
+                                            30 + (now % 6) // ~30-35s check
+                                        }
+                                    } else if min_pct <= 25 {
+                                        // High-Alert Zone: Floor set to 25%
+                                        if is_heavy_burst {
+                                            // Multi-chat or high token velocity detected from logs
+                                            25 + (now % 8) // ~25-32s check
+                                        } else if has_live_tokens {
+                                            // Single active session burning tokens
+                                            40 + (now % 10) // ~40-49s check
+                                        } else {
+                                            // No tokens detected in last 90s, check comfortably but safely
+                                            55 + (now % 15) // ~55-69s check (No more 120s+ delay!)
+                                        }
+                                    } else if let Some(runway) = estimated_runway_mins {
+                                        // Scale runway with active chat concurrency multiplier
+                                        let concurrency_factor = (live_act.active_chats_count as f64).max(1.0);
+                                        let effective_runway = runway / concurrency_factor;
+
+                                        if effective_runway < 8.0 || is_heavy_burst {
+                                            30 + (now % 8) // High burn
+                                        } else if effective_runway < 18.0 {
+                                            60 + (now % 15) // Moderate burn
+                                        } else if effective_runway > 30.0 && !has_live_tokens {
+                                            0 // Safe fleet cycle
+                                        } else {
+                                            120 + (now % 20)
                                         }
                                     } else {
-                                        // Initial heuristic before burn velocity can be computed:
-                                        if min_pct <= 10 {
-                                            45 + (now % 10)
-                                        } else if min_pct <= 25 {
-                                            120 + (now % 15)
+                                        // Quota > 25% without established velocity
+                                        if is_heavy_burst {
+                                            60 + (now % 15)
                                         } else {
                                             0
                                         }
                                     };
 
                                     if base_interval > 0 {
-                                        // Stagnation backoff guard: If no tokens consumed across checks, back off
-                                        let effective_interval = match stagnant_checks {
-                                            0 => base_interval,
-                                            1 => base_interval.max(120) + (now % 15),
-                                            2 => base_interval.max(240) + (now % 25),
-                                            _ => 0, // Inactive / Idle: disengage rapid polling
+                                        // Stagnation backoff guard: Only back off if no tokens are being burned at all
+                                        let effective_interval = if has_live_tokens {
+                                            base_interval
+                                        } else {
+                                            match stagnant_checks {
+                                                0 => base_interval,
+                                                1 => base_interval.max(90) + (now % 15),
+                                                2 => base_interval.max(180) + (now % 25),
+                                                _ => 0, // Inactive / Idle
+                                            }
                                         };
 
                                         if effective_interval > 0 && now - last_active_fast_refresh >= effective_interval {
@@ -270,9 +305,17 @@ pub fn start_scheduler(
                                                 .map(|r| format!("{:.1}m runway", r))
                                                 .unwrap_or_else(|| "calculating".to_string());
 
+                                            let mode_str = if is_heavy_burst {
+                                                format!("🔥 BURST ({} chats, {} tok/60s)", live_act.active_chats_count, live_act.tokens_burned_last_60s)
+                                            } else if has_live_tokens {
+                                                format!("⚡ ACTIVE ({} tok/60s)", live_act.tokens_burned_last_60s)
+                                            } else {
+                                                "IDLE".to_string()
+                                            };
+
                                             logger::log_info(&format!(
-                                                "[Scheduler] Adaptive Low-Quota Polling active for {} (Remaining: {}%, Est: {}, Interval: {}s). Performing refresh...",
-                                                acc.email, min_pct, runway_str, effective_interval
+                                                "[Scheduler] Concurrency-Aware Polling active for {} (Remaining: {}%, Est: {}, Mode: {}, Interval: {}s). Performing refresh...",
+                                                acc.email, min_pct, runway_str, mode_str, effective_interval
                                             ));
                                             last_active_fast_refresh = now;
                                             let mut acc_to_refresh = acc;
@@ -302,10 +345,13 @@ pub fn start_scheduler(
                                                             stagnant_checks = 0;
                                                             last_observed_time = now;
                                                         } else if new_min == prev {
-                                                            stagnant_checks = stagnant_checks.saturating_add(1);
-                                                            // Stagnant consumption decays burn urgency
-                                                            if let Some(r) = estimated_runway_mins.as_mut() {
-                                                                *r += (elapsed_secs as f64 / 60.0) * 1.5;
+                                                            if !has_live_tokens {
+                                                                stagnant_checks = stagnant_checks.saturating_add(1);
+                                                                if let Some(r) = estimated_runway_mins.as_mut() {
+                                                                    *r += (elapsed_secs as f64 / 60.0) * 1.5;
+                                                                }
+                                                            } else {
+                                                                stagnant_checks = 0;
                                                             }
                                                         } else {
                                                             // Quota increased (window reset)
