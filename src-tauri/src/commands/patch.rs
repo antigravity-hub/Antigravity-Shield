@@ -824,6 +824,7 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
                     let cleaned = &content[..pos];
                     let _ = fs::write(css_path, cleaned.trim_end());
                     restored_count += 1;
+                }
             }
         }
 
