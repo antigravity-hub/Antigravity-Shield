@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.18.1 (2026-09-30)**:
+        -   **Intelligent Auto-Switcher Effective Quota Bottleneck**: Fixed an issue where accounts with depleted weekly quotas were erroneously evaluated using raw 5-hour bucket fractions. Auto-switch and best-account rankings now compute the true usable bottleneck across 5-hour, weekly, and model limits (`min(5h, weekly, models)`), guaranteeing high-capacity accounts are chosen.
+        -   **Auto-Switch Flapping & Ping-Pong Elimination**: Added candidate threshold validation ensuring auto-switch never rotates into standby accounts that are already critically depleted (<= 5%).
+        -   **Proxy-Disabled Candidate Exclusion**: Fixed candidate filtering in `bestAccount.ts` and `BestAccounts.tsx` to strictly exclude accounts marked with `proxy_disabled: true`.
+        -   **Desktop RTL Styling Hardening**: Enhanced bidirectional RTL Vazirmatn injection for JetSki agent chat and workbench tables.
     *   **v5.18.0 (2026-09-29)**:
         -   **Live Transcript & Multi-Chat Concurrency Adaptive Polling**: Connected LiveBrainWatcher real-time transcript streaming telemetry directly to the account quota scheduler. Intelligently accelerates polling to 20-30s during multi-chat bursts or high token velocity, eliminating delay-induced quota exhaustion.
         -   **Shifted Critical Polling Floor to 25%**: Reduced the adaptive low-quota polling floor from 10% to 25% and disabled idle stagnation penalties whenever background IDE agents are actively generating code.
