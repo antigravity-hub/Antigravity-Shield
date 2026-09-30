@@ -29,9 +29,9 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
         localStorage.setItem('best_account_switch_mode', mode);
     };
 
-    // Candidates: exclude current active account and disabled accounts
+    // Candidates: exclude current active account, disabled, proxy_disabled, and blocked accounts
     const candidates = accounts.filter(
-        a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled
+        a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled && !a.validation_blocked && !a.quota?.is_forbidden
     );
 
     // ── 1. Gemini Ranking ──────────────────────────────────────────────────
@@ -45,11 +45,16 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             const weeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', 'weekly');
             const fiveHourGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', '5h');
 
-            let fiveHourScore = fiveHourGroup ?? pro5h ?? flash5h ?? weeklyGroup ?? 0;
+            const modelScore = pro5h ?? flash5h ?? fiveHourGroup ?? 0;
+            let fiveHourScore = Math.min(
+                fiveHourGroup ?? modelScore,
+                weeklyGroup ?? 100,
+                modelScore
+            );
             const weeklyScore = weeklyGroup ?? 0;
 
-            // Disqualify only if weekly quota is depleted (< 1%)
-            if (weeklyGroup !== null && weeklyGroup < 1) {
+            // Disqualify only if weekly quota is depleted (< 1%) or effective score is 0
+            if ((weeklyGroup !== null && weeklyGroup < 1) || fiveHourScore <= 0) {
                 fiveHourScore = 0;
             }
 
@@ -91,11 +96,16 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
             const weeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', 'weekly');
             const fiveHourGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', '5h');
 
-            let fiveHourScore = fiveHourGroup ?? claudeOpus ?? claudeGeneral ?? weeklyGroup ?? 0;
+            const claudeModelScore = claudeOpus ?? claudeGeneral ?? fiveHourGroup ?? 0;
+            let fiveHourScore = Math.min(
+                fiveHourGroup ?? claudeModelScore,
+                weeklyGroup ?? 100,
+                claudeModelScore
+            );
             const weeklyScore = weeklyGroup ?? 0;
 
-            // Disqualify only if Claude weekly quota is depleted (< 1%)
-            if (weeklyGroup !== null && weeklyGroup < 1) {
+            // Disqualify only if Claude weekly quota is depleted (< 1%) or effective score is 0
+            if ((weeklyGroup !== null && weeklyGroup < 1) || fiveHourScore <= 0) {
                 fiveHourScore = 0;
             }
 

@@ -53,7 +53,7 @@ export function getRecommendedBestAccount(
     } = options;
 
     const candidates = accounts.filter(
-        a => a.id !== currentAccountId && !a.disabled && !a.validation_blocked && !a.quota?.is_forbidden
+        a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled && !a.validation_blocked && !a.quota?.is_forbidden
     );
 
     if (candidates.length === 0) {
@@ -75,11 +75,16 @@ export function getRecommendedBestAccount(
         const weeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', 'weekly');
         const fiveHourGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', '5h');
 
-        let fiveHourScore = fiveHourGroup ?? pro5h ?? flash5h ?? weeklyGroup ?? 0;
+        const modelScore = pro5h ?? flash5h ?? fiveHourGroup ?? 0;
+        let fiveHourScore = Math.min(
+            fiveHourGroup ?? modelScore,
+            weeklyGroup ?? 100,
+            modelScore
+        );
         const weeklyScore = weeklyGroup ?? 0;
 
-        // Disqualify only if weekly quota is depleted (< 1%)
-        if (weeklyGroup !== null && weeklyGroup < 1) {
+        // Disqualify if weekly quota is depleted (< 1%) or effective score is 0
+        if ((weeklyGroup !== null && weeklyGroup < 1) || fiveHourScore <= 0) {
             fiveHourScore = 0;
         }
 
@@ -95,11 +100,16 @@ export function getRecommendedBestAccount(
         const claude5hGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', '5h');
         const claudeWeeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', 'weekly');
 
-        let claudeScore = claude5hGroup ?? claudeOpusModel ?? claudeGeneralModel ?? claudeWeeklyGroup ?? 0;
+        const claudeModelScore = claudeOpusModel ?? claudeGeneralModel ?? claude5hGroup ?? 0;
+        let claudeScore = Math.min(
+            claude5hGroup ?? claudeModelScore,
+            claudeWeeklyGroup ?? 100,
+            claudeModelScore
+        );
         const claudeWeeklyScore = claudeWeeklyGroup ?? 0;
 
-        // Disqualify Claude only if Claude weekly quota is depleted (< 1%)
-        if (claudeWeeklyGroup !== null && claudeWeeklyGroup < 1) {
+        // Disqualify Claude only if Claude weekly quota is depleted (< 1%) or effective score is 0
+        if ((claudeWeeklyGroup !== null && claudeWeeklyGroup < 1) || claudeScore <= 0) {
             claudeScore = 0;
         }
 

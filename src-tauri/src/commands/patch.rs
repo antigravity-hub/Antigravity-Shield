@@ -204,23 +204,400 @@ pub struct AntigravityRtlStatus {
 
 const VAZIRMATN_RTL_CSS: &str = r#"
 /* [Antigravity-Shield-RTL-Vazirmatn] */
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+/* RTL-PATCH-START */
 
-* {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+/* ── 1. Web Fonts (Vazirmatn) ─────────────────────────────────────── */
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local('Vazirmatn Light'), local('Vazirmatn-Light'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Light.woff2') format('woff2');
 }
 
-p, li, span, div, h1, h2, h3, h4, h5, h6, textarea, input {
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Vazirmatn'), local('Vazirmatn-Regular'), local('Vazir'), local('IRANSans'), local('Tahoma'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Vazirmatn Medium'), local('Vazirmatn-Medium'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Vazirmatn Bold'), local('Vazirmatn-Bold'), local('Vazir-Bold'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: local('Vazirmatn ExtraBold'), local('Vazirmatn-ExtraBold'),
+       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-ExtraBold.woff2') format('woff2');
+}
+
+/* ── 2. Base Typography & BiDi Direction ──────────────────────────── */
+.monaco-workbench .chat-widget,
+.monaco-workbench .interactive-session,
+.monaco-workbench .chat-container,
+.monaco-workbench .interactive-container,
+.monaco-workbench .part.auxiliarybar,
+.monaco-workbench .part.sidebar,
+.monaco-workbench .part.panel,
+.rendered-markdown,
+.antigravity-agent-side-panel,
+.antigravity-agent-manager,
+.animate-markdown {
+  font-family: 'Vazirmatn', 'Vazir', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Paragraphs & Text: Justified & Smooth Leading */
+.monaco-workbench .chat-widget p,
+.monaco-workbench .interactive-session p,
+.monaco-workbench .chat-container p,
+.monaco-workbench .interactive-container p,
+.monaco-workbench .part.auxiliarybar p,
+.monaco-workbench .part.sidebar p,
+.monaco-workbench .part.panel p,
+.rendered-markdown p,
+.antigravity-agent-side-panel p,
+.antigravity-agent-manager p,
+.animate-markdown p {
+  font-family: 'Vazirmatn', 'Vazir', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  line-height: 1.85 !important;
+  margin-bottom: 0.65em !important;
+  letter-spacing: -0.01em !important;
+}
+
+.monaco-workbench .chat-widget li,
+.monaco-workbench .interactive-session li,
+.monaco-workbench .chat-container li,
+.monaco-workbench .interactive-container li,
+.monaco-workbench .part.auxiliarybar li,
+.monaco-workbench .part.sidebar li,
+.monaco-workbench .part.panel li,
+.rendered-markdown li {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  line-height: 1.8 !important;
+}
+
+textarea, input, [contenteditable="true"] {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
 }
 
-code, pre, pre *, code *, kbd, .monospace {
+/* ── 3. Headings: Cyan/Teal Accents & Frosted Pill Background ─────── */
+.monaco-workbench .chat-widget h1,
+.monaco-workbench .interactive-session h1,
+.monaco-workbench .chat-container h1,
+.monaco-workbench .interactive-container h1,
+.monaco-workbench .part.auxiliarybar h1,
+.monaco-workbench .part.sidebar h1,
+.monaco-workbench .part.panel h1,
+.rendered-markdown h1,
+.antigravity-agent-side-panel h1,
+.antigravity-agent-manager h1,
+.animate-markdown h1 {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #22d3ee !important; /* Vibrant Cyan */
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(14, 165, 233, 0.06) 100%) !important;
+  border-inline-start: 4px solid #06b6d4 !important;
+  border-radius: 8px !important;
+  padding: 8px 14px !important;
+  margin: 18px 0 10px 0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+}
+
+.monaco-workbench .chat-widget h2,
+.monaco-workbench .interactive-session h2,
+.monaco-workbench .chat-container h2,
+.monaco-workbench .interactive-container h2,
+.monaco-workbench .part.auxiliarybar h2,
+.monaco-workbench .part.sidebar h2,
+.monaco-workbench .part.panel h2,
+.rendered-markdown h2,
+.antigravity-agent-side-panel h2,
+.antigravity-agent-manager h2,
+.animate-markdown h2 {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #38bdf8 !important; /* Sky/Cyan */
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.14) 0%, rgba(56, 189, 248, 0.04) 100%) !important;
+  border-inline-start: 4px solid #38bdf8 !important;
+  border-radius: 7px !important;
+  padding: 6px 12px !important;
+  margin: 16px 0 10px 0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12) !important;
+}
+
+.monaco-workbench .chat-widget h3,
+.monaco-workbench .interactive-session h3,
+.monaco-workbench .chat-container h3,
+.monaco-workbench .interactive-container h3,
+.monaco-workbench .part.auxiliarybar h3,
+.monaco-workbench .part.sidebar h3,
+.monaco-workbench .part.panel h3,
+.rendered-markdown h3,
+.antigravity-agent-side-panel h3,
+.antigravity-agent-manager h3,
+.animate-markdown h3 {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #67e8f9 !important; /* Light Cyan */
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  background: rgba(6, 182, 212, 0.08) !important;
+  border-inline-start: 3px solid #22d3ee !important;
+  border-radius: 6px !important;
+  padding: 5px 10px !important;
+  margin: 14px 0 8px 0 !important;
+}
+
+.monaco-workbench .chat-widget h4,
+.monaco-workbench .chat-widget h5,
+.monaco-workbench .chat-widget h6,
+.rendered-markdown h4,
+.rendered-markdown h5,
+.rendered-markdown h6 {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #a5f3fc !important;
+  font-weight: 600 !important;
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  margin: 12px 0 6px 0 !important;
+}
+
+/* ── 4. Elegant Separators (Dividers) ─────────────────────────────── */
+.monaco-workbench .chat-widget hr,
+.monaco-workbench .interactive-session hr,
+.monaco-workbench .chat-container hr,
+.monaco-workbench .interactive-container hr,
+.monaco-workbench .part.auxiliarybar hr,
+.monaco-workbench .part.sidebar hr,
+.monaco-workbench .part.panel hr,
+.rendered-markdown hr,
+.antigravity-agent-side-panel hr,
+.antigravity-agent-manager hr,
+.animate-markdown hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.45), rgba(56, 189, 248, 0.25), transparent) !important;
+  margin: 18px 0 !important;
+}
+
+/* ── 5. Lists & Counters ─────────────────────────────────────────── */
+.monaco-workbench .chat-widget ul, .monaco-workbench .chat-widget ol,
+.monaco-workbench .interactive-session ul, .monaco-workbench .interactive-session ol,
+.monaco-workbench .chat-container ul, .monaco-workbench .chat-container ol,
+.monaco-workbench .interactive-container ul, .monaco-workbench .interactive-container ol,
+.monaco-workbench .part.auxiliarybar ul, .monaco-workbench .part.auxiliarybar ol,
+.monaco-workbench .part.sidebar ul, .monaco-workbench .part.sidebar ol,
+.monaco-workbench .part.panel ul, .monaco-workbench .part.panel ol,
+.rendered-markdown ul, .rendered-markdown ol {
+  padding-inline-start: 1.6em !important;
+  padding-inline-end: 0.5em !important;
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+  list-style: none !important;
+}
+
+.monaco-workbench .chat-widget ol,
+.monaco-workbench .interactive-session ol,
+.monaco-workbench .chat-container ol,
+.monaco-workbench .interactive-container ol,
+.monaco-workbench .part.auxiliarybar ol,
+.monaco-workbench .part.sidebar ol,
+.monaco-workbench .part.panel ol,
+.rendered-markdown ol {
+  counter-reset: chat-list-counter;
+}
+
+.monaco-workbench .chat-widget ol > li,
+.monaco-workbench .interactive-session ol > li,
+.monaco-workbench .chat-container ol > li,
+.monaco-workbench .interactive-container ol > li,
+.monaco-workbench .part.auxiliarybar ol > li,
+.monaco-workbench .part.sidebar ol > li,
+.monaco-workbench .part.panel ol > li,
+.rendered-markdown ol > li {
+  counter-increment: chat-list-counter;
+  position: relative !important;
+}
+
+.monaco-workbench .chat-widget li,
+.monaco-workbench .interactive-session li,
+.monaco-workbench .chat-container li,
+.monaco-workbench .interactive-container li,
+.monaco-workbench .part.auxiliarybar li,
+.monaco-workbench .part.sidebar li,
+.monaco-workbench .part.panel li,
+.rendered-markdown li {
+  list-style: none !important;
+  margin-bottom: 0.4em !important;
+}
+
+/* Bullet styling: Cyan dot */
+.monaco-workbench .chat-widget ul > li::before,
+.monaco-workbench .interactive-session ul > li::before,
+.monaco-workbench .chat-container ul > li::before,
+.monaco-workbench .interactive-container ul > li::before,
+.monaco-workbench .part.auxiliarybar ul > li::before,
+.monaco-workbench .part.sidebar ul > li::before,
+.monaco-workbench .part.panel ul > li::before,
+.rendered-markdown ul > li::before {
+  content: "• " !important;
+  color: #06b6d4 !important;
+  font-weight: bold !important;
+  margin-inline-end: 0.45em !important;
+  display: inline-block !important;
+}
+
+.monaco-workbench .chat-widget ul > li:has(> p:first-child)::before,
+.rendered-markdown ul > li:has(> p:first-child)::before {
+  content: none !important;
+  margin: 0 !important;
+}
+
+.monaco-workbench .chat-widget ul > li > p:first-child::before,
+.rendered-markdown ul > li > p:first-child::before {
+  content: "• " !important;
+  color: #06b6d4 !important;
+  font-weight: bold !important;
+  margin-inline-end: 0.45em !important;
+  display: inline-block !important;
+}
+
+/* Numbered lists: Badge-like numbers */
+.monaco-workbench .chat-widget ol > li::before,
+.rendered-markdown ol > li::before {
+  content: counter(chat-list-counter) ". " !important;
+  color: #38bdf8 !important;
+  font-weight: bold !important;
+  margin-inline-end: 0.45em !important;
+  display: inline-block !important;
+  unicode-bidi: isolate !important;
+}
+
+.monaco-workbench .chat-widget ol > li:has(> p:first-child)::before,
+.rendered-markdown ol > li:has(> p:first-child)::before {
+  content: none !important;
+  margin: 0 !important;
+}
+
+.monaco-workbench .chat-widget ol > li > p:first-child::before,
+.rendered-markdown ol > li > p:first-child::before {
+  content: counter(chat-list-counter) ". " !important;
+  color: #38bdf8 !important;
+  font-weight: bold !important;
+  margin-inline-end: 0.45em !important;
+  display: inline-block !important;
+  unicode-bidi: isolate !important;
+}
+
+/* ── 6. Blockquotes: Glowing Cyan Border ──────────────────────────── */
+.monaco-workbench .chat-widget blockquote,
+.monaco-workbench .interactive-session blockquote,
+.monaco-workbench .chat-container blockquote,
+.monaco-workbench .interactive-container blockquote,
+.monaco-workbench .part.auxiliarybar blockquote,
+.monaco-workbench .part.sidebar blockquote,
+.monaco-workbench .part.panel blockquote,
+.rendered-markdown blockquote {
+  border-left: none !important;
+  border-inline-start: 4px solid #06b6d4 !important;
+  background: rgba(6, 182, 212, 0.07) !important;
+  padding: 8px 14px !important;
+  border-radius: 4px !important;
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+/* ── 7. Inline Code & Monospace Blocks ─────────────────────────────── */
+:not(pre) > code {
   font-family: Menlo, Monaco, Consolas, "Fira Code", monospace !important;
   direction: ltr !important;
-  unicode-bidi: normal !important;
+  unicode-bidi: isolate !important;
+  display: inline-block !important;
+  background: rgba(15, 23, 42, 0.55) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  color: #38bdf8 !important;
+  padding: 1px 6px !important;
+  border-radius: 4px !important;
+  font-size: 0.9em !important;
+  vertical-align: baseline !important;
+}
+
+pre, code, pre *, code *, .monaco-editor, .monaco-editor *, .monaco-editor .view-line, .monaco-editor .view-line *, .view-lines {
+  font-family: Menlo, Monaco, Consolas, "Fira Code", monospace !important;
+  direction: ltr !important;
+  unicode-bidi: embed !important;
   text-align: left !important;
 }
+
+/* ── 8. Tables ───────────────────────────────────────────────────── */
+.monaco-workbench .chat-widget table,
+.rendered-markdown table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  margin: 12px 0 !important;
+  width: 100% !important;
+}
+
+.monaco-workbench .chat-widget th,
+.rendered-markdown th {
+  background: rgba(6, 182, 212, 0.12) !important;
+  color: #38bdf8 !important;
+  font-weight: 700 !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+  text-align: start !important;
+}
+
+.monaco-workbench .chat-widget td,
+.rendered-markdown td {
+  padding: 8px 12px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  text-align: start !important;
+  unicode-bidi: plaintext !important;
+}
+
+/* RTL-PATCH-END */
 /* [/Antigravity-Shield-RTL-Vazirmatn] */
 "#;
 
@@ -246,6 +623,16 @@ pub async fn get_antigravity_rtl_status() -> Result<AntigravityRtlStatus, String
                 // Check if patched signature exists in binary/archive
                 let signature = b"Antigravity-Shield-RTL-Vazirmatn";
                 desktop_patched = content.windows(signature.len()).any(|w| w == signature);
+            }
+            if !desktop_patched {
+                if let Some(parent) = p.parent() {
+                    let preload_p = parent.join("app").join("dist").join("preload.js");
+                    if preload_p.exists() {
+                        if let Ok(c) = fs::read_to_string(&preload_p) {
+                            desktop_patched = c.contains("Antigravity-Shield-RTL-Vazirmatn");
+                        }
+                    }
+                }
             }
             break;
         }
@@ -304,6 +691,31 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                 content.push_str(VAZIRMATN_RTL_CSS);
                 fs::write(css_path, content).map_err(|e| e.to_string())?;
                 applied_count += 1;
+            }
+
+            // Also patch Jetski Agent Chat CSS (jetskiMain.tailwind.css)
+            if let Some(out_dir) = css_path.parent().and_then(|p| p.parent()).and_then(|p| p.parent()) {
+                let jetski_css = out_dir.join("jetskiMain.tailwind.css");
+                if jetski_css.exists() {
+                    let jetski_bak = out_dir.join("jetskiMain.tailwind.css.bak");
+                    if !jetski_bak.exists() {
+                        let _ = fs::copy(&jetski_css, &jetski_bak);
+                    }
+                    if let Ok(mut jc) = fs::read_to_string(&jetski_css) {
+                        if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
+                            jc.push_str("\n\n");
+                            jc.push_str(VAZIRMATN_RTL_CSS);
+                            let _ = fs::write(&jetski_css, &jc);
+                            applied_count += 1;
+                        }
+                    }
+                    if let Some(app_dir) = out_dir.parent() {
+                        update_product_checksum(app_dir, "jetskiMain.tailwind.css", &jetski_css);
+                    }
+                }
+                if let Some(app_dir) = out_dir.parent() {
+                    update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.css", css_path);
+                }
             }
         }
     }
@@ -408,17 +820,49 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
                     let cleaned = &content[..pos];
                     let _ = fs::write(css_path, cleaned.trim_end());
                     restored_count += 1;
+                } else if let Some(pos) = content.find("/* RTL-PATCH-START */") {
+                    let cleaned = &content[..pos];
+                    let _ = fs::write(css_path, cleaned.trim_end());
+                    restored_count += 1;
+            }
+        }
+
+        // Also restore Jetski Agent CSS
+        if let Some(out_dir) = css_path.parent().and_then(|p| p.parent()).and_then(|p| p.parent()) {
+            let jetski_css = out_dir.join("jetskiMain.tailwind.css");
+            let jetski_bak = out_dir.join("jetskiMain.tailwind.css.bak");
+            if jetski_bak.exists() {
+                let _ = fs::copy(&jetski_bak, &jetski_css);
+                restored_count += 1;
+            } else if jetski_css.exists() {
+                if let Ok(content) = fs::read_to_string(&jetski_css) {
+                    if let Some(pos) = content.find("/* [Antigravity-Shield-RTL-Vazirmatn] */") {
+                        let cleaned = &content[..pos];
+                        let _ = fs::write(&jetski_css, cleaned.trim_end());
+                        restored_count += 1;
+                    }
                 }
+            }
+            if let Some(app_dir) = out_dir.parent() {
+                update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.css", css_path);
+                update_product_checksum(app_dir, "jetskiMain.tailwind.css", &jetski_css);
             }
         }
     }
 
-    // 2. Restore Desktop app.asar
+    // 2. Restore Desktop app.asar and unpacked app directory
     if let Some(asar_path_str) = status.desktop_asar_path {
         let asar_path = Path::new(&asar_path_str);
+        if let Some(parent) = asar_path.parent() {
+            let app_dir = parent.join("app");
+            if app_dir.exists() {
+                let _ = fs::remove_dir_all(&app_dir);
+                restored_count += 1;
+            }
+        }
         let backup_path = format!("{}.bak", asar_path_str);
         if Path::new(&backup_path).exists() {
-            fs::copy(&backup_path, asar_path).map_err(|e| e.to_string())?;
+            let _ = fs::copy(&backup_path, asar_path);
             restored_count += 1;
         }
     }
@@ -427,6 +871,36 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
         Ok(format!("بازگردانی با موفقیت انجام شد. {} ماژول به حالت پیش‌فرض (LTR) بازگشتند.", restored_count))
     } else {
         Ok("فایل پشتیبانی برای بازگردانی یافت نشد.".into())
+    }
+}
+
+fn update_product_checksum(app_dir: &Path, rel_key: &str, file_path: &Path) {
+    use sha2::{Digest, Sha256};
+    use base64::{Engine as _, engine::general_purpose::STANDARD};
+
+    let product_path = app_dir.join("product.json");
+    if !product_path.exists() || !file_path.exists() {
+        return;
+    }
+    let file_bytes = match fs::read(file_path) {
+        Ok(b) => b,
+        Err(_) => return,
+    };
+    let mut hasher = Sha256::new();
+    hasher.update(&file_bytes);
+    let hash_result = hasher.finalize();
+    let hash_b64 = STANDARD.encode(hash_result);
+    let trimmed_hash = hash_b64.trim_end_matches('=');
+
+    if let Ok(content) = fs::read_to_string(&product_path) {
+        if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
+            if let Some(checksums) = json.get_mut("checksums").and_then(|c| c.as_object_mut()) {
+                checksums.insert(rel_key.to_string(), serde_json::Value::String(trimmed_hash.to_string()));
+                if let Ok(serialized) = serde_json::to_string_pretty(&json) {
+                    let _ = fs::write(&product_path, serialized);
+                }
+            }
+        }
     }
 }
 
