@@ -317,20 +317,20 @@ export function useQuotaAlertWatcher() {
                 });
                 let candidateScore = primaryCategory === 'gemini' ? targetCandidate.geminiScore : targetCandidate.claudeScore;
 
-                // Step 2: Fallback to alternative category if primary category is fully depleted across all accounts
-                if (!targetCandidate.account || candidateScore <= 0) {
+                // Step 2: Fallback to alternative category if primary category is fully depleted (<= DEPLETED_THRESHOLD) across candidate accounts
+                if (!targetCandidate.account || candidateScore <= DEPLETED_THRESHOLD) {
                     const fallbackCategory = primaryCategory === 'gemini' ? 'claude' : 'gemini';
                     const fallbackCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {
                         category: fallbackCategory,
                     });
                     const fallbackScore = fallbackCategory === 'gemini' ? fallbackCandidate.geminiScore : fallbackCandidate.claudeScore;
-                    if (fallbackCandidate.account && fallbackScore > 0) {
+                    if (fallbackCandidate.account && fallbackScore > DEPLETED_THRESHOLD) {
                         targetCandidate = fallbackCandidate;
                         candidateScore = fallbackScore;
                     }
                 }
 
-                if (targetCandidate.account && candidateScore > 0) {
+                if (targetCandidate.account && candidateScore > DEPLETED_THRESHOLD) {
                     const nextAccount = targetCandidate.account;
                     const switchTitle = t('notifications.auto_switch_title', {
                         defaultValue: 'Antigravity Shield - Auto Switched',
