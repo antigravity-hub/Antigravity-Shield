@@ -422,7 +422,7 @@ pub fn get_bundled_vsix_path() -> Option<PathBuf> {
     }
 
     // 3. Development fallback
-    for v in &["2.6.0", "2.5.9", "2.5.8", "2.5.7", "2.5.6", "2.5.5", "2.5.3", "2.5.2", "2.5.1", "2.5.0", "2.4.3", "2.4.2", "2.4.1", "2.4.0", "2.3.0", "2.2.0", "2.1.1", "1.0.1", "1.0.0"] {
+    for v in &["2.7.2", "2.7.1", "2.7.0", "2.6.1", "2.6.0", "2.5.9", "2.5.8", "2.5.7", "2.5.6", "2.5.5", "2.5.3", "2.5.2", "2.5.1", "2.5.0", "2.4.3", "2.4.2", "2.4.1", "2.4.0", "2.3.0", "2.2.0", "2.1.1", "1.0.1", "1.0.0"] {
         let cand = PathBuf::from(format!(
             r"d:\Ershad Zolfi\programming\coding with Gemini\antigravity-toolkit-extension\antigravity-toolkit-{}.vsix",
             v
