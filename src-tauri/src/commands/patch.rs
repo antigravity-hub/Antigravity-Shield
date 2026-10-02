@@ -567,34 +567,87 @@ pre, code, pre *, code *, .monaco-editor, .monaco-editor *, .monaco-editor .view
   text-align: left !important;
 }
 
-/* ── 8. Tables ───────────────────────────────────────────────────── */
+/* ── 8. Seafoam Green Luxury Markdown Tables ──────────────────────── */
 .monaco-workbench .chat-widget table,
-.rendered-markdown table {
+.rendered-markdown table,
+table {
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border-radius: 8px !important;
+  border-radius: 10px !important;
   overflow: hidden !important;
-  border: 1px solid rgba(56, 189, 248, 0.2) !important;
-  margin: 12px 0 !important;
+  border: 1px solid rgba(45, 212, 191, 0.35) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(20, 184, 166, 0.08) !important;
+  margin: 18px 0 !important;
   width: 100% !important;
+  direction: rtl !important;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .monaco-workbench .chat-widget th,
-.rendered-markdown th {
-  background: rgba(6, 182, 212, 0.12) !important;
-  color: #38bdf8 !important;
+.rendered-markdown th,
+th {
+  background: linear-gradient(180deg, rgba(20, 184, 166, 0.28) 0%, rgba(13, 148, 136, 0.16) 100%) !important;
+  color: #5eead4 !important;
+  font-family: 'Vazirmatn', sans-serif !important;
   font-weight: 700 !important;
-  padding: 8px 12px !important;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.2) !important;
+  font-size: 0.95rem !important;
+  padding: 12px 16px !important;
+  border-bottom: 2px solid rgba(45, 212, 191, 0.45) !important;
+  border-inline-end: 1px solid rgba(45, 212, 191, 0.12) !important;
   text-align: start !important;
+  letter-spacing: -0.01em !important;
+}
+
+th:last-child {
+  border-inline-end: none !important;
 }
 
 .monaco-workbench .chat-widget td,
-.rendered-markdown td {
-  padding: 8px 12px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+.rendered-markdown td,
+td {
+  padding: 10px 16px !important;
+  border-bottom: 1px solid rgba(45, 212, 191, 0.12) !important;
+  border-inline-end: 1px solid rgba(45, 212, 191, 0.08) !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+  font-size: 0.92rem !important;
+  line-height: 1.75 !important;
+  color: #e2e8f0 !important;
   text-align: start !important;
-  unicode-bidi: plaintext !important;
+  vertical-align: middle !important;
+}
+
+td:last-child {
+  border-inline-end: none !important;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(20, 184, 166, 0.04) !important;
+}
+
+tbody tr:hover {
+  background: rgba(45, 212, 191, 0.12) !important;
+  transition: background 0.18s ease-in-out !important;
+}
+
+tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+td:first-child {
+  font-weight: 700 !important;
+  color: #5eead4 !important;
+}
+
+td :not(pre) > code {
+  background: rgba(13, 148, 136, 0.22) !important;
+  border: 1px solid rgba(45, 212, 191, 0.35) !important;
+  color: #5eead4 !important;
+  font-size: 0.85em !important;
+  padding: 2px 7px !important;
+  border-radius: 4px !important;
+  word-break: break-word !important;
+  white-space: pre-wrap !important;
 }
 
 /* RTL-PATCH-END */
