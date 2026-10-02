@@ -991,6 +991,14 @@ impl AxumServer {
             .merge(proxy_routes)
             // 公开路由 (无需鉴权)
             .route("/auth/callback", get(handle_oauth_callback))
+            // Antigravity Remote Mobile View & Chat Endpoints
+            .route("/mobile-view", get(handle_mobile_view))
+            .route("/api/mobile-sessions", get(handle_get_mobile_sessions))
+            .route(
+                "/api/mobile-sessions/:sessionId",
+                get(handle_get_mobile_session_detail),
+            )
+            .route("/api/mobile-chat", post(handle_mobile_chat_submit))
             // 应用全局监控与状态层 (外层)
             .layer(axum::middleware::from_fn_with_state(
                 state.clone(),
@@ -3881,6 +3889,52 @@ async fn handle_oauth_callback(
             )))
         }
     }
+}
+
+// ── Antigravity Shield Live Remote Mobile Handlers ──
+
+#[derive(Deserialize, Default)]
+struct MobileViewQuery {
+    token: Option<String>,
+}
+
+async fn handle_mobile_view(
+    Query(params): Query<MobileViewQuery>,
+) -> impl IntoResponse {
+    let token = params.token.unwrap_or_default();
+    Html(crate::modules::remote_mobile::render_mobile_view_html(&token))
+}
+
+async fn handle_get_mobile_sessions() -> impl IntoResponse {
+    let sessions = crate::modules::remote_mobile::scan_mobile_sessions(30);
+    Json(sessions)
+}
+
+async fn handle_get_mobile_session_detail(
+    Path(session_id): Path<String>,
+) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    match crate::modules::remote_mobile::get_session_detail(&session_id) {
+        Some(detail) => Ok(Json(detail)),
+        None => Err((
+            StatusCode::NOT_FOUND,
+            Json(ErrorResponse {
+                error: "Session not found".to_string(),
+            }),
+        )),
+    }
+}
+
+async fn handle_mobile_chat_submit(
+    Json(payload): Json<crate::modules::remote_mobile::MobileChatInput>,
+) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    crate::modules::remote_mobile::append_mobile_message(&payload)
+        .map(|_| StatusCode::OK)
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(ErrorResponse { error: e }),
+            )
+        })
 }
 
 #[derive(Deserialize, Default)]
