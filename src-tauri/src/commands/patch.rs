@@ -206,14 +206,16 @@ const VAZIRMATN_RTL_CSS: &str = r#"
 /* [Antigravity-Shield-RTL-Vazirmatn] */
 /* RTL-PATCH-START */
 
-/* ── 1. Web Fonts (Vazirmatn) ─────────────────────────────────────── */
+/* ── 1. Web Fonts (Vazirmatn - Google Fonts CSP Compliant) ────────── */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
+
 @font-face {
   font-family: 'Vazirmatn';
   font-style: normal;
   font-weight: 300;
   font-display: swap;
-  src: local('Vazirmatn Light'), local('Vazirmatn-Light'),
-       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Light.woff2') format('woff2');
+  src: local('Vazirmatn Light'), local('Vazirmatn-Light'), local('Vazirmatn'), local('Vazir'),
+       url('https://fonts.gstatic.com/s/vazirmatn/v13/D7Y-3pVC1bc78m8mB03D51bO57zL0dyt.woff2') format('woff2');
 }
 
 @font-face {
@@ -221,17 +223,17 @@ const VAZIRMATN_RTL_CSS: &str = r#"
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: local('Vazirmatn'), local('Vazirmatn-Regular'), local('Vazir'), local('IRANSans'), local('Tahoma'),
-       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2');
+  src: local('Vazirmatn Regular'), local('Vazirmatn-Regular'), local('Vazirmatn'), local('Vazir'), local('IRANSans'),
+       url('https://fonts.gstatic.com/s/vazirmatn/v13/D7Y-3pVC1bc78m8mB03D51bO57zL0dyt.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Vazirmatn';
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   font-display: swap;
-  src: local('Vazirmatn Medium'), local('Vazirmatn-Medium'),
-       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Medium.woff2') format('woff2');
+  src: local('Vazirmatn SemiBold'), local('Vazirmatn-SemiBold'), local('Vazirmatn'), local('Vazir'), local('IRANSans'),
+       url('https://fonts.gstatic.com/s/vazirmatn/v13/D7Y-3pVC1bc78m8mB03D51bO57zL0dyt.woff2') format('woff2');
 }
 
 @font-face {
@@ -239,8 +241,8 @@ const VAZIRMATN_RTL_CSS: &str = r#"
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: local('Vazirmatn Bold'), local('Vazirmatn-Bold'), local('Vazir-Bold'),
-       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2');
+  src: local('Vazirmatn Bold'), local('Vazirmatn-Bold'), local('Vazirmatn'), local('Vazir-Bold'), local('IRANSans'),
+       url('https://fonts.gstatic.com/s/vazirmatn/v13/D7Y-3pVC1bc78m8mB03D51bO57zL0dyt.woff2') format('woff2');
 }
 
 @font-face {
@@ -248,8 +250,8 @@ const VAZIRMATN_RTL_CSS: &str = r#"
   font-style: normal;
   font-weight: 800;
   font-display: swap;
-  src: local('Vazirmatn ExtraBold'), local('Vazirmatn-ExtraBold'),
-       url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-ExtraBold.woff2') format('woff2');
+  src: local('Vazirmatn ExtraBold'), local('Vazirmatn-ExtraBold'), local('Vazirmatn'),
+       url('https://fonts.gstatic.com/s/vazirmatn/v13/D7Y-3pVC1bc78m8mB03D51bO57zL0dyt.woff2') format('woff2');
 }
 
 /* ── 2. Base Typography & BiDi Direction ──────────────────────────── */
@@ -264,10 +266,10 @@ const VAZIRMATN_RTL_CSS: &str = r#"
 .antigravity-agent-side-panel,
 .antigravity-agent-manager,
 .animate-markdown {
-  font-family: 'Vazirmatn', 'Vazir', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
 }
 
-/* Paragraphs & Text: Justified & Smooth Leading */
+/* Paragraphs & Text: Justified & Smooth Golden Ratio Leading */
 .monaco-workbench .chat-widget p,
 .monaco-workbench .interactive-session p,
 .monaco-workbench .chat-container p,
@@ -279,13 +281,15 @@ const VAZIRMATN_RTL_CSS: &str = r#"
 .antigravity-agent-side-panel p,
 .antigravity-agent-manager p,
 .animate-markdown p {
-  font-family: 'Vazirmatn', 'Vazir', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: justify !important;
   text-justify: inter-word !important;
-  line-height: 1.85 !important;
-  margin-bottom: 0.65em !important;
-  letter-spacing: -0.01em !important;
+  line-height: 2.15 !important;
+  margin-bottom: 1.1rem !important;
+  letter-spacing: 0 !important;
+  font-feature-settings: "kern" 1 !important;
+  text-rendering: optimizeLegibility !important;
 }
 
 .monaco-workbench .chat-widget li,
@@ -296,15 +300,17 @@ const VAZIRMATN_RTL_CSS: &str = r#"
 .monaco-workbench .part.sidebar li,
 .monaco-workbench .part.panel li,
 .rendered-markdown li {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: justify !important;
   text-justify: inter-word !important;
-  line-height: 1.8 !important;
+  line-height: 2.05 !important;
+  margin-bottom: 0.55rem !important;
+  letter-spacing: 0 !important;
 }
 
 textarea, input, [contenteditable="true"] {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
 }
@@ -321,17 +327,19 @@ textarea, input, [contenteditable="true"] {
 .antigravity-agent-side-panel h1,
 .antigravity-agent-manager h1,
 .animate-markdown h1 {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
   color: #22d3ee !important; /* Vibrant Cyan */
-  font-size: 1.25rem !important;
+  font-size: 1.3rem !important;
   font-weight: 800 !important;
+  line-height: 1.65 !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
+  letter-spacing: 0 !important;
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(14, 165, 233, 0.06) 100%) !important;
   border-inline-start: 4px solid #06b6d4 !important;
   border-radius: 8px !important;
-  padding: 8px 14px !important;
-  margin: 18px 0 10px 0 !important;
+  padding: 10px 16px !important;
+  margin: 24px 0 16px 0 !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
@@ -346,17 +354,19 @@ textarea, input, [contenteditable="true"] {
 .antigravity-agent-side-panel h2,
 .antigravity-agent-manager h2,
 .animate-markdown h2 {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
   color: #38bdf8 !important; /* Sky/Cyan */
-  font-size: 1.15rem !important;
+  font-size: 1.18rem !important;
   font-weight: 700 !important;
+  line-height: 1.6 !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
+  letter-spacing: 0 !important;
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.14) 0%, rgba(56, 189, 248, 0.04) 100%) !important;
   border-inline-start: 4px solid #38bdf8 !important;
   border-radius: 7px !important;
-  padding: 6px 12px !important;
-  margin: 16px 0 10px 0 !important;
+  padding: 8px 14px !important;
+  margin: 22px 0 14px 0 !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -371,17 +381,19 @@ textarea, input, [contenteditable="true"] {
 .antigravity-agent-side-panel h3,
 .antigravity-agent-manager h3,
 .animate-markdown h3 {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
   color: #67e8f9 !important; /* Light Cyan */
-  font-size: 1.05rem !important;
-  font-weight: 600 !important;
+  font-size: 1.08rem !important;
+  font-weight: 700 !important;
+  line-height: 1.6 !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
+  letter-spacing: 0 !important;
   background: rgba(6, 182, 212, 0.08) !important;
   border-inline-start: 3px solid #22d3ee !important;
   border-radius: 6px !important;
-  padding: 5px 10px !important;
-  margin: 14px 0 8px 0 !important;
+  padding: 6px 12px !important;
+  margin: 20px 0 12px 0 !important;
 }
 
 .monaco-workbench .chat-widget h4,
@@ -390,12 +402,14 @@ textarea, input, [contenteditable="true"] {
 .rendered-markdown h4,
 .rendered-markdown h5,
 .rendered-markdown h6 {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Vazirmatn', 'Vazir', 'IRANSans', system-ui, -apple-system, sans-serif !important;
   color: #a5f3fc !important;
   font-weight: 600 !important;
+  line-height: 1.55 !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
-  margin: 12px 0 6px 0 !important;
+  letter-spacing: 0 !important;
+  margin: 16px 0 10px 0 !important;
 }
 
 /* ── 4. Elegant Separators (Dividers) ─────────────────────────────── */
