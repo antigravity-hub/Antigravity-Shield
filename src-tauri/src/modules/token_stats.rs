@@ -59,6 +59,20 @@ pub struct AccountTrendPoint {
     pub account_data: std::collections::HashMap<String, u64>,
 }
 
+/// Token horizon & realistic capacity benchmark metrics
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TokenHorizonMetrics {
+    pub last_5h_tokens: u64,
+    pub last_5h_requests: u64,
+    pub avg_5h_tokens: u64,
+    pub last_24h_tokens: u64,
+    pub last_24h_requests: u64,
+    pub last_7d_tokens: u64,
+    pub last_7d_requests: u64,
+    pub daily_avg_tokens: u64,
+    pub hourly_burn_rate: u64,
+}
+
 /// Check if an identifier is a platform, application, file name, tool, or non-AI-model artifact.
 pub fn is_non_model_identifier(raw: &str) -> bool {
     let lower = raw.trim().to_lowercase();
@@ -690,6 +704,55 @@ pub fn get_summary_stats(hours: i64) -> Result<TokenStatsSummary, String> {
         total_tokens: total,
         total_requests: requests,
         unique_accounts,
+    })
+}
+
+/// Calculate token horizon and realistic consumption metrics (5-hour rolling, 24h, 7d weekly)
+pub fn get_token_horizon_metrics() -> Result<TokenHorizonMetrics, String> {
+    let conn = connect_db()?;
+    let now = chrono::Utc::now().timestamp();
+    let cutoff_5h = now - 5 * 3600;
+    let cutoff_24h = now - 24 * 3600;
+    let cutoff_7d = now - 7 * 86400;
+
+    let (t_5h, r_5h): (u64, u64) = conn
+        .query_row(
+            "SELECT COALESCE(SUM(total_tokens), 0), COUNT(*) FROM token_usage WHERE timestamp >= ?1",
+            params![cutoff_5h],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .unwrap_or((0, 0));
+
+    let (t_24h, r_24h): (u64, u64) = conn
+        .query_row(
+            "SELECT COALESCE(SUM(total_tokens), 0), COUNT(*) FROM token_usage WHERE timestamp >= ?1",
+            params![cutoff_24h],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .unwrap_or((0, 0));
+
+    let (t_7d, r_7d): (u64, u64) = conn
+        .query_row(
+            "SELECT COALESCE(SUM(total_tokens), 0), COUNT(*) FROM token_usage WHERE timestamp >= ?1",
+            params![cutoff_7d],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .unwrap_or((0, 0));
+
+    let daily_avg = if t_7d > 0 { t_7d / 7 } else { t_24h };
+    let avg_5h = (daily_avg * 5) / 24;
+    let hourly_rate = if t_24h > 0 { t_24h / 24 } else { 0 };
+
+    Ok(TokenHorizonMetrics {
+        last_5h_tokens: t_5h,
+        last_5h_requests: r_5h,
+        avg_5h_tokens: avg_5h,
+        last_24h_tokens: t_24h,
+        last_24h_requests: r_24h,
+        last_7d_tokens: t_7d,
+        last_7d_requests: r_7d,
+        daily_avg_tokens: daily_avg,
+        hourly_burn_rate: hourly_rate,
     })
 }
 

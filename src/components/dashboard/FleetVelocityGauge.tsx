@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Gauge,
   AlertTriangle,
@@ -17,6 +18,7 @@ import {
   BurnVelocityMetrics,
 } from '../../utils/predictiveBurn';
 import { SpeedometerGauge } from '../common/SpeedometerGauge';
+import { request as invoke } from '../../utils/request';
 
 interface FleetVelocityGaugeProps {
   accounts: Account[];
@@ -30,7 +32,27 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
   className = '',
 }) => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'fleet' | 'active'>('fleet');
+  const [horizon, setHorizon] = useState<{
+    last_5h_tokens: number;
+    last_7d_tokens: number;
+    daily_avg_tokens: number;
+  } | null>(null);
+
+  useEffect(() => {
+    invoke<any>('get_token_horizon_metrics')
+      .then((res) => {
+        if (res) {
+          setHorizon({
+            last_5h_tokens: res.last_5h_tokens,
+            last_7d_tokens: res.last_7d_tokens,
+            daily_avg_tokens: res.daily_avg_tokens,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const metrics: BurnVelocityMetrics = useMemo(() => {
     if (viewMode === 'active' && currentAccount) {
@@ -384,6 +406,36 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Horizon & Weekly Consumption Bar */}
+            {horizon && (
+              <div
+                onClick={() => navigate('/tokens')}
+                title={t('dashboard.view_token_stats_tooltip', 'مشاهده آمار تخصصی توکن و واقعیت سقف مصرف')}
+                className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-blue-500" />
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      {horizon.last_5h_tokens >= 1000000 ? `${(horizon.last_5h_tokens / 1000000).toFixed(1)}M` : (horizon.last_5h_tokens >= 1000 ? `${(horizon.last_5h_tokens / 1000).toFixed(0)}K` : horizon.last_5h_tokens)}
+                    </span>
+                    <span>{t('dashboard.horizon_5h', '۵س اخیر')}</span>
+                  </span>
+                  <span className="text-slate-300 dark:text-slate-700">•</span>
+                  <span className="flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-purple-500" />
+                    <span className="font-bold text-slate-800 dark:text-slate-200">
+                      {horizon.last_7d_tokens >= 1000000 ? `${(horizon.last_7d_tokens / 1000000).toFixed(1)}M` : `${(horizon.last_7d_tokens / 1000).toFixed(0)}K`}
+                    </span>
+                    <span>{t('dashboard.horizon_7d', '۷ روزه')}</span>
+                  </span>
+                </div>
+                <span className="text-[10px] font-semibold text-cyan-600 dark:text-cyan-400 flex items-center gap-0.5 hover:underline">
+                  {t('dashboard.view_token_stats', 'آمار توکن')} ➜
+                </span>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -191,6 +191,7 @@ pub fn start_scheduler(
         let mut last_observed_acc_id: Option<String> = None;
         let mut stagnant_checks: u32 = 0;
         let mut estimated_runway_mins: Option<f64> = None;
+        let mut last_auto_switch_time: i64 = 0;
 
         loop {
             // Check every 15 seconds against configured intervals
@@ -361,6 +362,87 @@ pub fn start_scheduler(
                                                         }
                                                     }
                                                     last_observed_pct = Some(new_min);
+
+                                                    // [PREEMPTIVE AUTO-SWITCH] Graceful handover based on Runway (Time-To-Depletion) & Safety Floor
+                                                    if cfg.auto_switch_on_quota {
+                                                        let switch_threshold = cfg.auto_switch_threshold_percentage.max(5) as i32;
+                                                        let is_critical_runway = estimated_runway_mins.map_or(false, |r| r <= 2.5 && r > 0.0);
+                                                        let is_hard_floor = new_min <= 5;
+                                                        let is_burst_danger = new_min <= 10 && is_heavy_burst;
+
+                                                        if new_min <= switch_threshold && (is_critical_runway || is_hard_floor || is_burst_danger) {
+                                                            if now - last_auto_switch_time >= 60 {
+                                                                if let Ok(all_accs) = crate::modules::account::list_accounts() {
+                                                                    let mut candidates: Vec<_> = all_accs
+                                                                        .into_iter()
+                                                                        .filter(|a| {
+                                                                            a.id != refreshed_acc.id
+                                                                                && !a.disabled
+                                                                                && !a.proxy_disabled
+                                                                                && !a.validation_blocked
+                                                                                && a.quota.as_ref().map_or(false, |q| !q.is_forbidden)
+                                                                        })
+                                                                        .collect();
+
+                                                                    candidates.sort_by(|a, b| {
+                                                                        let pct_b = b.quota.as_ref().map_or(0, |q| q.get_min_remaining_percentage());
+                                                                        let pct_a = a.quota.as_ref().map_or(0, |q| q.get_min_remaining_percentage());
+                                                                        pct_b.cmp(&pct_a)
+                                                                    });
+
+                                                                    if let Some(best_cand) = candidates.first() {
+                                                                        let cand_pct = best_cand.quota.as_ref().map_or(0, |q| q.get_min_remaining_percentage());
+                                                                        if cand_pct > new_min && cand_pct > 15 {
+                                                                            logger::log_info(&format!(
+                                                                                "[Scheduler] ⚡ PREEMPTIVE AUTO-SWITCH TRIGGERED: {} at {}% (runway: {:.1}m, heavy_burst: {}). Handing over to standby: {} at {}%.",
+                                                                                refreshed_acc.email, new_min, estimated_runway_mins.unwrap_or(0.0), is_heavy_burst, best_cand.email, cand_pct
+                                                                            ));
+                                                                            last_auto_switch_time = now;
+
+                                                                            let service = crate::modules::account_service::AccountService::new(
+                                                                                crate::modules::integration::SystemManager::Desktop(app_handle_for_daemon.as_ref().clone()),
+                                                                            );
+
+                                                                            if let Err(e) = service.switch_account(&best_cand.id, None).await {
+                                                                                logger::log_error(&format!("[Scheduler] Preemptive auto-switch execution failed: {}", e));
+                                                                            } else {
+                                                                                let _ = crate::modules::tray::update_tray_menus(app_handle_for_daemon.as_ref());
+
+                                                                                let inst_lock = proxy_state_for_daemon.instance.read().await;
+                                                                                if let Some(instance) = inst_lock.as_ref() {
+                                                                                    let _ = instance.token_manager.reload_account(&best_cand.id).await;
+                                                                                }
+                                                                                drop(inst_lock);
+
+                                                                                use tauri::Emitter;
+                                                                                let _ = app_handle_for_daemon.emit("auto-switch-executed", serde_json::json!({
+                                                                                    "from_id": refreshed_acc.id,
+                                                                                    "from_email": refreshed_acc.email,
+                                                                                    "from_pct": new_min,
+                                                                                    "to_id": best_cand.id,
+                                                                                    "to_email": best_cand.email,
+                                                                                    "to_pct": cand_pct,
+                                                                                    "runway_mins": estimated_runway_mins.unwrap_or(0.0),
+                                                                                    "reason": if is_critical_runway {
+                                                                                        format!("Estimated runway exhausted ({:.1} min remaining)", estimated_runway_mins.unwrap_or(0.0))
+                                                                                    } else if is_burst_danger {
+                                                                                        "High-concurrency token burst nearing exhaustion (<10%)".to_string()
+                                                                                    } else {
+                                                                                        format!("Quota reached critical safety floor ({}%)", new_min)
+                                                                                    }
+                                                                                }));
+                                                                            }
+                                                                        } else {
+                                                                            logger::log_warn(&format!(
+                                                                                "[Scheduler] Preemptive auto-switch desired for {}, but best candidate {} only has {}% quota.",
+                                                                                refreshed_acc.email, best_cand.email, cand_pct
+                                                                            ));
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
 

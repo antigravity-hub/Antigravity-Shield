@@ -694,6 +694,7 @@ pub fn run() {
             commands::get_token_stats_model_trend_daily,
             commands::get_token_stats_account_trend_hourly,
             commands::get_token_stats_account_trend_daily,
+            commands::get_token_horizon_metrics,
             // Brain scanner commands
             commands::scan_brain_conversations,
             // Antigravity Toolkit & IDE Integration commands

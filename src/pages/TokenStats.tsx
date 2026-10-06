@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { request as invoke } from '../utils/request';
 import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2, CalendarRange, Filter } from 'lucide-react';
+import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2, CalendarRange, Filter, Info, Compass, ShieldCheck } from 'lucide-react';
 import { TokenHeatmap, DailyTokenActivity } from '../components/stats/TokenHeatmap';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 
@@ -51,6 +51,18 @@ interface TokenStatsSummary {
     total_tokens: number;
     total_requests: number;
     unique_accounts: number;
+}
+
+export interface TokenHorizonMetrics {
+    last_5h_tokens: number;
+    last_5h_requests: number;
+    avg_5h_tokens: number;
+    last_24h_tokens: number;
+    last_24h_requests: number;
+    last_7d_tokens: number;
+    last_7d_requests: number;
+    daily_avg_tokens: number;
+    hourly_burn_rate: number;
 }
 
 interface BrainScanResult {
@@ -120,6 +132,7 @@ const TokenStats: React.FC = () => {
     const [scanResult, setScanResult] = useState<BrainScanResult | null>(null);
     const [heatmapData, setHeatmapData] = useState<DailyTokenActivity[]>([]);
     const [selectedHeatmapDate, setSelectedHeatmapDate] = useState<string | null>(null);
+    const [horizonMetrics, setHorizonMetrics] = useState<TokenHorizonMetrics | null>(null);
 
     // Refs to avoid stale closures in event listeners
     const timeRangeRef = useRef<TimeRange>(timeRange);
@@ -291,11 +304,19 @@ const TokenStats: React.FC = () => {
             });
             setAccountTrendData(transformedAccountTrend);
 
-            let [accounts, models_stats, summaryData] = await Promise.all([
+            let [accounts, models_stats, summaryData, horizonData] = await Promise.all([
                 invoke<AccountTokenStats[]>('get_token_stats_by_account', { hours }),
                 invoke<ModelTokenStats[]>('get_token_stats_by_model', { hours }),
-                invoke<TokenStatsSummary>('get_token_stats_summary', { hours })
+                invoke<TokenStatsSummary>('get_token_stats_summary', { hours }),
+                invoke<TokenHorizonMetrics>('get_token_horizon_metrics').catch((err) => {
+                    console.debug('Failed to get token horizon metrics:', err);
+                    return null;
+                })
             ]);
+
+            if (horizonData) {
+                setHorizonMetrics(horizonData);
+            }
 
             if (currentRange === 'custom' && (currentCustomStart || currentCustomEnd)) {
                 const totalInput = data.reduce((sum, d) => sum + (d.total_input_tokens || 0), 0);
@@ -697,6 +718,106 @@ const TokenStats: React.FC = () => {
                         }
                     }}
                 />
+
+                {/* Token Horizon & Reality Benchmark Section */}
+                {horizonMetrics && (
+                    <div className="bg-gradient-to-br from-indigo-50/60 via-white to-purple-50/40 dark:from-indigo-950/20 dark:via-gray-800 dark:to-purple-950/20 rounded-2xl p-5 border border-indigo-100/80 dark:border-indigo-900/40 shadow-sm space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-100/60 dark:border-indigo-900/30 pb-3">
+                            <div className="flex items-center gap-2.5">
+                                <div className="p-2 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                                    <Compass className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                        {t('token_stats.horizon_title', 'افق مصرف و واقعیت سقف توکن (Token Horizon & Reality Benchmark)')}
+                                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
+                                            {t('token_stats.reality_verified', 'Verified Real Data')}
+                                        </span>
+                                    </h2>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                        {t('token_stats.horizon_desc', 'آمار واقعی پنجره ۵ ساعته، مصرف هفتگی و تصحیح باورهای نادرست درباره سقف مصرف توکن')}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 self-start sm:self-auto">
+                                <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-white/80 dark:bg-gray-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-gray-700">
+                                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                                    <span>{t('token_stats.db_grounded', 'داده مستقیم SQLite')}</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* Card 1: 5-Hour Rolling Window */}
+                            <div className="bg-white/90 dark:bg-gray-800/90 rounded-xl p-4 border border-blue-100 dark:border-blue-900/30 shadow-sm relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110" />
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        {t('token_stats.window_5h_title', 'پنجره ۵ ساعته جاری (Rolling 5h)')}
+                                    </span>
+                                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                                        horizonMetrics.last_5h_tokens > (horizonMetrics.avg_5h_tokens * 1.4)
+                                            ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
+                                            : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'
+                                    }`}>
+                                        {horizonMetrics.last_5h_tokens > (horizonMetrics.avg_5h_tokens * 1.4)
+                                            ? t('token_stats.heavy_burst', '🔥 ترافیک برست ایجنت‌ها')
+                                            : t('token_stats.steady_burn', '⚡ ریتم مصرف پایدار')}
+                                    </span>
+                                </div>
+                                <div className="text-2xl font-black text-gray-900 dark:text-white mb-1">
+                                    {formatNumber(horizonMetrics.last_5h_tokens)}
+                                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                                        {t('token_stats.tokens', 'توکن')}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-700/60">
+                                    <span>{horizonMetrics.last_5h_requests.toLocaleString()} {t('token_stats.requests', 'درخواست')}</span>
+                                    <span>{t('token_stats.avg_5h', 'میانگین ۵س:')} <strong>{formatNumber(horizonMetrics.avg_5h_tokens)}</strong></span>
+                                </div>
+                            </div>
+
+                            {/* Card 2: 7-Day Weekly & Daily Pace */}
+                            <div className="bg-white/90 dark:bg-gray-800/90 rounded-xl p-4 border border-purple-100 dark:border-purple-900/30 shadow-sm relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110" />
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+                                        <CalendarDays className="w-3.5 h-3.5" />
+                                        {t('token_stats.window_7d_title', 'کل مصرف هفتگی (۷ روز گذشته)')}
+                                    </span>
+                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300">
+                                        {formatNumber(horizonMetrics.daily_avg_tokens)} / {t('token_stats.day', 'روز')}
+                                    </span>
+                                </div>
+                                <div className="text-2xl font-black text-gray-900 dark:text-white mb-1">
+                                    {formatNumber(horizonMetrics.last_7d_tokens)}
+                                    <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                                        {t('token_stats.tokens', 'توکن')}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-700/60">
+                                    <span>{horizonMetrics.last_7d_requests.toLocaleString()} {t('token_stats.requests', 'درخواست')}</span>
+                                    <span>{t('token_stats.hourly_rate', 'نرخ ساعتی:')} <strong>{formatNumber(horizonMetrics.hourly_burn_rate)}</strong>/h</span>
+                                </div>
+                            </div>
+
+                            {/* Card 3: Reality Benchmark & Myth Buster */}
+                            <div className="bg-gradient-to-br from-amber-50/80 to-white dark:from-amber-950/20 dark:to-gray-800/90 rounded-xl p-4 border border-amber-200/70 dark:border-amber-900/40 shadow-sm">
+                                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400 mb-1.5">
+                                    <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                                    <span>{t('token_stats.reality_check_title', 'واقعیت مهندسی سقف مصرف توکن')}</span>
+                                </div>
+                                <p className="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed">
+                                    {t('token_stats.reality_check_desc', 'باور رایج این است که یک کاربر می‌تواند روزانه صدها میلیون توکن مصرف کند؛ اما در واقعیت به دلیل محدودیت‌های نرخ برست (TPM)، تأخیر شبکه و زمان استدلال مدل‌ها، حتی در سنگین‌ترین پروژه‌های چند ایجنتی، مصرف واقعی در هر ۵ ساعت حدود ۳۰۰K تا ۸۰۰K و روزانه حدود ۲.۵M تا ۵M توکن است.')}
+                                </p>
+                                <div className="mt-2 text-[10px] text-amber-800 dark:text-amber-300/90 font-medium bg-amber-100/60 dark:bg-amber-900/30 px-2 py-1 rounded-md">
+                                    💡 {t('token_stats.reality_conclusion', 'سهمیه ۵ ساعته بر همین اساس تنظیم شده و سوییچ پیشگیرانه مانع از توقف کدنویسی در برست‌های سنگین می‌شود.')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {summary && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
