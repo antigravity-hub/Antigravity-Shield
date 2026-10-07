@@ -320,11 +320,14 @@ export const NotificationOverlay: React.FC = () => {
                     ) : payload.notification_type === 'countdown' ? (
                         <div className="space-y-2">
                             {/* Row 1: Model Quota Depletion Notice */}
-                            <div className="text-[11px] text-slate-300 flex items-center justify-between gap-1.5 leading-normal overflow-hidden whitespace-nowrap">
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                    <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 text-[11px] font-semibold border border-amber-500/30 flex items-center gap-1 whitespace-nowrap flex-shrink-0 shadow-sm">
-                                        <Cpu className="w-3 h-3 text-amber-400" />
-                                        {formatModelName(payload.model_name)}
+                            <div className="text-[11px] text-slate-300 flex items-center justify-between gap-2 leading-normal overflow-hidden whitespace-nowrap">
+                                <div className="flex items-center gap-1.5 min-w-0 flex-1 overflow-hidden">
+                                    <span
+                                        className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 text-[11px] font-semibold border border-amber-500/30 flex items-center gap-1 whitespace-nowrap flex-shrink-0 max-w-[170px] shadow-sm"
+                                        title={formatModelName(payload.model_name)}
+                                    >
+                                        <Cpu className="w-3 h-3 text-amber-400 flex-shrink-0" />
+                                        <span className="truncate">{formatModelName(payload.model_name)}</span>
                                     </span>
                                     <span className="text-slate-400 font-medium whitespace-nowrap flex-shrink-0">
                                         {t('notifications.overlay_quota_for', { defaultValue: 'Quota depleted for' })}
@@ -332,7 +335,7 @@ export const NotificationOverlay: React.FC = () => {
                                 </div>
                                 {payload.current_email && (
                                     <span
-                                        className="text-slate-400 truncate text-[11px] font-mono min-w-0 max-w-[170px]"
+                                        className="text-slate-400 truncate text-[11px] font-mono min-w-0 flex-shrink-0 max-w-[150px] text-end"
                                         title={payload.current_email}
                                     >
                                         ({payload.current_email})

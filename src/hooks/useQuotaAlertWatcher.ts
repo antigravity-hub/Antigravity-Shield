@@ -6,6 +6,7 @@ import { showToast } from '../components/common/ToastContainer';
 import { sendDesktopNotification } from '../services/notificationService';
 import { showFloatingOverlay } from '../services/overlayNotificationService';
 import { getRecommendedBestAccount } from '../utils/bestAccount';
+import { extractModelScore, getModelDisplayName } from '../utils/modelCategory';
 import { useTranslation } from 'react-i18next';
 
 // Cache last alert timestamp per (email:grouped_key) to prevent spamming
@@ -304,12 +305,19 @@ export function useQuotaAlertWatcher() {
                     }
                 };
 
-                // Determine primary depleted model dynamically (sorted by lowest remaining quota)
-                const sortedCritical = [...criticalModels].sort((a, b) => a.percentage - b.percentage);
+                // Determine primary depleted model dynamically:
+                // 1. Sort by lowest percentage first.
+                // 2. Tie-breaker: If percentages are equal, prioritize modern flagship models (higher score) over legacy/lite models.
+                const sortedCritical = [...criticalModels].sort((a, b) => {
+                    if (a.percentage !== b.percentage) {
+                        return a.percentage - b.percentage;
+                    }
+                    return extractModelScore(b.name) - extractModelScore(a.name);
+                });
                 const mostCritical = sortedCritical[0];
                 const isClaude = isClaudeModel(mostCritical.name, mostCritical.display_name);
                 const primaryCategory: 'gemini' | 'claude' = isClaude ? 'claude' : 'gemini';
-                const modelLabel = mostCritical.display_name || mostCritical.name;
+                const modelLabel = getModelDisplayName(mostCritical) || mostCritical.display_name || mostCritical.name;
 
                 // Step 1: Find best standby account for the primary category
                 let targetCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {

@@ -109,6 +109,23 @@ pub fn normalize_model_family(raw: &str) -> String {
         return "Non-Model Activity".to_string();
     }
 
+    // 0. Google Gemini 4.x Series
+    if lower.contains("4.0-flash") || lower.contains("4-flash") || lower.contains("4p0-flash") || lower.contains("gemini-4-flash") {
+        if lower.contains("agent") {
+            return "Gemini 4 Flash (Agent)".to_string();
+        }
+        return "Gemini 4 Flash".to_string();
+    }
+    if lower.contains("4.0-pro") || lower.contains("4-pro") || lower.contains("4p0-pro") || lower.contains("gemini-4-pro") {
+        if lower.contains("agent") {
+            return "Gemini 4 Pro (Agent)".to_string();
+        }
+        return "Gemini 4 Pro".to_string();
+    }
+    if lower.starts_with("gemini-4") {
+        return "Gemini 4".to_string();
+    }
+
     // 1. Google Gemini 3.x Series
     if lower.contains("3.8-flash") || lower.contains("3p8-flash") {
         if lower.contains("agent") {
@@ -1059,6 +1076,18 @@ mod tests {
         );
 
         // Gemini: Canonical tiers & versions
+        assert_eq!(
+            normalize_model_family("gemini-4-flash"),
+            "Gemini 4 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-4.0-flash"),
+            "Gemini 4 Flash"
+        );
+        assert_eq!(
+            normalize_model_family("gemini-4-pro"),
+            "Gemini 4 Pro"
+        );
         assert_eq!(
             normalize_model_family("gemini-3.8-flash"),
             "Gemini 3.8 Flash"

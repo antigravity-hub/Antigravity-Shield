@@ -21,6 +21,12 @@ export interface ModelDisplayNameInput {
 }
 
 const DEFAULT_MODEL_LABELS: Record<string, string> = {
+    'gemini-4-flash': 'Gemini 4 Flash',
+    'gemini-4-flash-thinking': 'Gemini 4 Flash (Thinking)',
+    'gemini-4-pro': 'Gemini 4 Pro',
+    'gemini-4-pro-thinking': 'Gemini 4 Pro (Thinking)',
+    'gemini-4.0-flash': 'Gemini 4 Flash',
+    'gemini-4.0-pro': 'Gemini 4 Pro',
     'gemini-3.8-flash': 'Gemini 3.8 Flash',
     'gemini-3.8-flash-tiered': 'Gemini 3.8 Flash',
     'gemini-3.8-flash-thinking': 'Gemini 3.8 Flash (Thinking)',
@@ -83,11 +89,18 @@ export function isBaseQuotaBucket(name: string): boolean {
 
 /**
  * 动态获取指定类别中版本最高、性能最强的旗舰代表模型标识
+ * 支持 majorVersion 参数限制在相同代际（如 Gemini 3 桶提升到 3.8，Gemini 4 桶提升到 4.x）
  */
-export function getLatestModelForCategory(category: ModelCategory): string | undefined {
+export function getLatestModelForCategory(category: ModelCategory, majorVersion?: number): string | undefined {
     const candidates: string[] = [];
     for (const name of dynamicKnownModels) {
         if (categorizeModel(name) === category) {
+            if (majorVersion !== undefined) {
+                const match = name.match(/gemini-(\d+)/);
+                if (match && parseInt(match[1], 10) !== majorVersion) {
+                    continue;
+                }
+            }
             candidates.push(name);
         }
     }
@@ -97,9 +110,9 @@ export function getLatestModelForCategory(category: ModelCategory): string | und
 
 /**
  * 智能自动格式化模型显示名称：
- * 将未知或新发布的 Gemini/Claude 模型名称（如 gemini-3.8-flash）自动格式化为美观的标签（Gemini 3.8 Flash），无需手动录入。
+ * 将未知或新发布的 Gemini/Claude 模型名称（如 gemini-3.8-flash, gemini-4-flash）自动格式化为美观的标签（Gemini 4 Flash），无需手动录入。
  */
-function autoFormatModelName(name: string): string {
+export function autoFormatModelName(name: string): string {
     return name
         .split('-')
         .filter(word => word.toLowerCase() !== 'tiered')
@@ -125,20 +138,24 @@ export function getModelDisplayName(
         const rawName = model.name ? model.name.trim().toLowerCase() : '';
         const explicitDisplayName = model.display_name?.trim();
 
-        // 如果显式传入了 display_name，并且不是陈旧的通用基础桶名称（例如 gemini-3-flash 上的 "Gemini 3 Flash"）
+        // 如果显式传入了 display_name，并且不是陈旧的通用基础桶名称或 Google API 的异常旧别名
         if (explicitDisplayName) {
             const isStaleBaseDisplayName =
                 rawName === 'gemini-3-flash' && explicitDisplayName.toLowerCase() === 'gemini 3 flash';
-            if (!isStaleBaseDisplayName) {
+            const isGoogleLegacyAnomaly =
+                rawName.startsWith('gemini-2') && explicitDisplayName.toLowerCase().includes('3.5');
+            if (!isStaleBaseDisplayName && !isGoogleLegacyAnomaly) {
                 return explicitDisplayName;
             }
         }
 
         if (rawName) {
-            // 如果是通用代际配额桶，动态探测并提升为该类别下已知最高版本的旗舰模型标签
+            // 如果是通用代际配额桶，动态探测并提升为同代际下已知最高版本的旗舰模型标签
             if (isBaseQuotaBucket(rawName)) {
                 const category = categorizeModel(rawName);
-                const latest = getLatestModelForCategory(category);
+                const genMatch = rawName.match(/gemini-(\d+)/);
+                const majorVersion = genMatch ? parseInt(genMatch[1], 10) : (rawName.includes('gemini') ? 3 : undefined);
+                const latest = getLatestModelForCategory(category, majorVersion);
                 if (latest && latest !== rawName) {
                     const latestScore = extractModelScore(latest);
                     const currentScore = extractModelScore(rawName);
@@ -172,9 +189,9 @@ export function getModelShortDisplayName(
 }
 
 /**
- * 提取模型版本号（如 gemini-3.8-flash -> 3.8, gemini-3-flash -> 3.0, gemini-pro-agent -> 3.1 等）
+ * 提取模型版本号（如 gemini-4-flash -> 4.0, gemini-3.8-flash -> 3.8, gemini-3-flash -> 3.0, gemini-pro-agent -> 3.1 等）
  */
-function extractModelScore(name: string): number {
+export function extractModelScore(name: string): number {
     const n = name.toLowerCase();
 
     // 预设或特定 agent 映射基准

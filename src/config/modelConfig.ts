@@ -27,7 +27,59 @@ export interface ModelConfig {
  * 键为模型 ID，值为模型配置
  */
 export const MODEL_CONFIG: Record<string, ModelConfig> = {
+    // Gemini 4.x 系列
+    'gemini-4-flash': {
+        label: 'Gemini 4 Flash',
+        shortLabel: 'G4 Flash',
+        protectedKey: 'gemini-flash',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.flash_preview',
+        i18nDescKey: 'proxy.model.flash_preview',
+        group: 'Gemini 4',
+        tags: ['flash'],
+    },
+    'gemini-4-pro': {
+        label: 'Gemini 4 Pro',
+        shortLabel: 'G4 Pro',
+        protectedKey: 'gemini-pro',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.pro_high',
+        i18nDescKey: 'proxy.model.pro_high',
+        group: 'Gemini 4',
+        tags: ['pro'],
+    },
+    'gemini-4.0-flash': {
+        label: 'Gemini 4 Flash',
+        shortLabel: 'G4 Flash',
+        protectedKey: 'gemini-flash',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.flash_preview',
+        i18nDescKey: 'proxy.model.flash_preview',
+        group: 'Gemini 4',
+        tags: ['flash'],
+    },
+    'gemini-4.0-pro': {
+        label: 'Gemini 4 Pro',
+        shortLabel: 'G4 Pro',
+        protectedKey: 'gemini-pro',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.pro_high',
+        i18nDescKey: 'proxy.model.pro_high',
+        group: 'Gemini 4',
+        tags: ['pro'],
+    },
+
     // Gemini 3.x 系列
+    'gemini-3.8-flash': {
+        label: 'Gemini 3.8 Flash',
+        shortLabel: 'G3.8 Flash',
+        protectedKey: 'gemini-flash',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.flash_preview',
+        i18nDescKey: 'proxy.model.flash_preview',
+        group: 'Gemini 3',
+        tags: ['flash'],
+    },
     'gemini-3.8-flash-tiered': {
         label: 'Gemini 3.8 Flash',
         shortLabel: 'G3.8 Flash',
@@ -288,6 +340,7 @@ export const getModelConfig = (modelId: string): ModelConfig | undefined => {
 const MODEL_SORT_WEIGHTS = {
     // 系列权重 (第一优先级)
     series: {
+        'gemini-4': 50,
         'gemini-3': 100,
         'gemini-2.5': 200,
         'gemini-2': 300,
@@ -318,7 +371,9 @@ function getModelSortWeight(modelId: string): number {
     let weight = 0;
 
     // 1. 系列权重 (x1000)
-    if (id.startsWith('gemini-3')) {
+    if (id.startsWith('gemini-4')) {
+        weight += MODEL_SORT_WEIGHTS.series['gemini-4'] * 1000;
+    } else if (id.startsWith('gemini-3')) {
         weight += MODEL_SORT_WEIGHTS.series['gemini-3'] * 1000;
     } else if (id.startsWith('gemini-2.5')) {
         weight += MODEL_SORT_WEIGHTS.series['gemini-2.5'] * 1000;

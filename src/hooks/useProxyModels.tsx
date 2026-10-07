@@ -11,7 +11,25 @@ export interface CanonicalFamilyDto {
 }
 
 const ALIAS_TO_CANONICAL: Record<string, { id: string; name: string; group: string }> = {
+    // Gemini 4
+    'gemini-4-flash': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },
+    'gemini-4.0-flash': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },
+    'gemini-4-flash-high': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },
+    'gemini-4-flash-medium': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },
+    'gemini-4-flash-low': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },
+    'gemini-4-flash-thinking': { id: 'gemini-4-flash', name: 'Gemini 4 Flash (Thinking)', group: 'Gemini 4' },
+    'gemini-4-pro': { id: 'gemini-4-pro', name: 'Gemini 4 Pro', group: 'Gemini 4' },
+    'gemini-4.0-pro': { id: 'gemini-4-pro', name: 'Gemini 4 Pro', group: 'Gemini 4' },
+    'gemini-4-pro-high': { id: 'gemini-4-pro', name: 'Gemini 4 Pro', group: 'Gemini 4' },
+    'gemini-4-pro-low': { id: 'gemini-4-pro', name: 'Gemini 4 Pro', group: 'Gemini 4' },
+    'gemini-4-pro-thinking': { id: 'gemini-4-pro', name: 'Gemini 4 Pro (Thinking)', group: 'Gemini 4' },
+
     // Gemini 3
+    'gemini-3.8-flash': { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', group: 'Gemini 3' },
+    'gemini-3.8-flash-high': { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', group: 'Gemini 3' },
+    'gemini-3.8-flash-medium': { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', group: 'Gemini 3' },
+    'gemini-3.8-flash-low': { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', group: 'Gemini 3' },
+    'gemini-3.8-flash-tiered': { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', group: 'Gemini 3' },
     'gemini-3.7-flash': { id: 'gemini-3.7-flash', name: 'Gemini 3.7 Flash', group: 'Gemini 3' },
     'gemini-3.7-flash-high': { id: 'gemini-3.7-flash', name: 'Gemini 3.7 Flash', group: 'Gemini 3' },
     'gemini-3.7-flash-medium': { id: 'gemini-3.7-flash', name: 'Gemini 3.7 Flash', group: 'Gemini 3' },
