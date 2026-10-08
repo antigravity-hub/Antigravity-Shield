@@ -688,18 +688,46 @@ pub fn render_mobile_view_html(auth_token: &str) -> String {
     var mediaRecorder = null;
     var audioChunks = [];
 
-    // Store token in localStorage
+    // Store token in localStorage and clean query string
     if (AUTH_TOKEN) {{
       localStorage.setItem('ag_mobile_token', AUTH_TOKEN);
+      try {{
+        var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({{ path: cleanUrl }}, '', cleanUrl);
+      }} catch(e) {{}}
     }} else {{
       AUTH_TOKEN = localStorage.getItem('ag_mobile_token') || '';
+    }}
+
+    function showUnauthorizedError() {{
+      localStorage.removeItem('ag_mobile_token');
+      var statusBadge = document.getElementById('conn-status');
+      if (statusBadge) statusBadge.innerText = 'Unauthorized';
+      var sel = document.getElementById('session-select');
+      if (sel) sel.innerHTML = '<option value="">🔒 Access Denied</option>';
+      var timeline = document.getElementById('timeline');
+      if (timeline) {{
+        timeline.innerHTML = '<div style="text-align: center; padding: 60px 16px; color: var(--text);">' +
+          '<div style="font-size: 40px; margin-bottom: 16px;">🔒</div>' +
+          '<div style="font-size: 17px; font-weight: 700; color: #f87171; margin-bottom: 8px;">دستگاه تأیید نشده است</div>' +
+          '<div style="font-size: 13px; color: #94a3b8; max-width: 320px; margin: 0 auto; line-height: 1.6;">' +
+            'تنها دستگاه‌هایی که بارکد امن QR را از نرم‌افزار دسکتاپ Antigravity Shield اسکن کرده باشند مجاز به دسترسی هستند.' +
+          '</div>' +
+        '</div>';
+      }}
     }}
 
     function apiFetch(url, options) {{
       options = options || {{}};
       options.headers = options.headers || {{}};
       options.headers['Authorization'] = 'Bearer ' + AUTH_TOKEN;
-      return fetch(url, options);
+      return fetch(url, options).then(function(res) {{
+        if (res.status === 401) {{
+          showUnauthorizedError();
+          throw new Error('Unauthorized');
+        }}
+        return res;
+      }});
     }}
 
     function loadSessions() {{

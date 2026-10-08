@@ -3898,21 +3898,113 @@ struct MobileViewQuery {
     token: Option<String>,
 }
 
+fn is_authorized_mobile_token(token: &str, sec: &crate::proxy::ProxySecurityConfig) -> bool {
+    let token = token.trim();
+    if token.is_empty() {
+        return false;
+    }
+    if !sec.api_key.is_empty() && token == sec.api_key {
+        return true;
+    }
+    if let Some(admin_pwd) = &sec.admin_password {
+        if !admin_pwd.is_empty() && token == admin_pwd {
+            return true;
+        }
+    }
+    if let Ok(Some(_)) = crate::modules::user_token_db::get_token_by_value(token) {
+        return true;
+    }
+    false
+}
+
+fn extract_mobile_auth_token(headers: &HeaderMap) -> Option<String> {
+    headers
+        .get(axum::http::header::AUTHORIZATION)
+        .and_then(|h| h.to_str().ok())
+        .and_then(|s| s.strip_prefix("Bearer ").or(Some(s)))
+        .or_else(|| {
+            headers
+                .get("x-api-key")
+                .and_then(|h| h.to_str().ok())
+        })
+        .map(|s| s.trim().to_string())
+}
+
 async fn handle_mobile_view(
+    State(state): State<AppState>,
     Query(params): Query<MobileViewQuery>,
 ) -> impl IntoResponse {
     let token = params.token.unwrap_or_default();
-    Html(crate::modules::remote_mobile::render_mobile_view_html(&token))
+    let sec = state.security.read().await.clone();
+
+    // If token provided in query params, validate strictly against secret config
+    if !token.is_empty() && !is_authorized_mobile_token(&token, &sec) {
+        return (
+            StatusCode::UNAUTHORIZED,
+            Html(r#"<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unauthorized • Antigravity Shield</title>
+  <style>
+    body { background: #070b14; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; text-align: center; }
+    .card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(239, 68, 68, 0.4); box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.2); padding: 32px 24px; border-radius: 20px; max-width: 380px; width: 100%; backdrop-filter: blur(16px); }
+    .icon { width: 52px; height: 52px; border-radius: 14px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px; }
+    h1 { color: #f87171; font-size: 19px; font-weight: 700; margin: 0 0 10px; }
+    p { color: #94a3b8; font-size: 13.5px; line-height: 1.6; margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🔒</div>
+    <h1>401 Unauthorized</h1>
+    <p>Invalid or expired pairing token.<br>Please scan the secure QR code from your Antigravity Shield desktop app.</p>
+  </div>
+</body>
+</html>"#.to_string()),
+        ).into_response();
+    }
+
+    (
+        StatusCode::OK,
+        Html(crate::modules::remote_mobile::render_mobile_view_html(&token)),
+    ).into_response()
 }
 
-async fn handle_get_mobile_sessions() -> impl IntoResponse {
+async fn handle_get_mobile_sessions(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    let sec = state.security.read().await.clone();
+    let token = extract_mobile_auth_token(&headers).unwrap_or_default();
+    if !is_authorized_mobile_token(&token, &sec) {
+        return Err((
+            StatusCode::UNAUTHORIZED,
+            Json(ErrorResponse {
+                error: "Unauthorized: Invalid or missing pairing token".to_string(),
+            }),
+        ));
+    }
     let sessions = crate::modules::remote_mobile::scan_mobile_sessions(30);
-    Json(sessions)
+    Ok(Json(sessions))
 }
 
 async fn handle_get_mobile_session_detail(
+    State(state): State<AppState>,
+    headers: HeaderMap,
     Path(session_id): Path<String>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    let sec = state.security.read().await.clone();
+    let token = extract_mobile_auth_token(&headers).unwrap_or_default();
+    if !is_authorized_mobile_token(&token, &sec) {
+        return Err((
+            StatusCode::UNAUTHORIZED,
+            Json(ErrorResponse {
+                error: "Unauthorized: Invalid or missing pairing token".to_string(),
+            }),
+        ));
+    }
     match crate::modules::remote_mobile::get_session_detail(&session_id) {
         Some(detail) => Ok(Json(detail)),
         None => Err((
@@ -3925,8 +4017,20 @@ async fn handle_get_mobile_session_detail(
 }
 
 async fn handle_mobile_chat_submit(
+    State(state): State<AppState>,
+    headers: HeaderMap,
     Json(payload): Json<crate::modules::remote_mobile::MobileChatInput>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<ErrorResponse>)> {
+    let sec = state.security.read().await.clone();
+    let token = extract_mobile_auth_token(&headers).unwrap_or_default();
+    if !is_authorized_mobile_token(&token, &sec) {
+        return Err((
+            StatusCode::UNAUTHORIZED,
+            Json(ErrorResponse {
+                error: "Unauthorized: Invalid or missing pairing token".to_string(),
+            }),
+        ));
+    }
     crate::modules::remote_mobile::append_mobile_message(&payload)
         .map(|_| StatusCode::OK)
         .map_err(|e| {

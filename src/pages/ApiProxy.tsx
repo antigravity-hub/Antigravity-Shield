@@ -23,8 +23,11 @@ import {
     Check,
     X,
     Edit2,
-    Save
+    Save,
+    QrCode,
+    Smartphone
 } from 'lucide-react';
+import { QRCode } from 'antd';
 import { AppConfig, ProxyConfig, StickySessionConfig, ExperimentalConfig } from '../types/config';
 import HelpTooltip from '../components/common/HelpTooltip';
 import ModalDialog from '../components/common/ModalDialog';
@@ -207,6 +210,12 @@ export default function ApiProxy() {
     const [cfMode, setCfMode] = useState<'quick' | 'auth'>('quick');
     const [cfToken, setCfToken] = useState('');
     const [cfUseHttp2, setCfUseHttp2] = useState(true); // 默认启用HTTP/2，更稳定
+    const [isMobileQrOpen, setIsMobileQrOpen] = useState(false);
+
+    const mobilePairingUrl = useMemo(() => {
+        if (!cfStatus.url || !appConfig?.proxy?.api_key) return '';
+        return `${cfStatus.url}/mobile-view?token=${encodeURIComponent(appConfig.proxy.api_key)}`;
+    }, [cfStatus.url, appConfig?.proxy?.api_key]);
 
     const zaiModelOptions = useMemo(() => {
         const unique = new Set(zaiAvailableModels);
@@ -2056,13 +2065,23 @@ print(response.choices[0].message.content)`;
                                         cfLoading ? (
                                             <span className="loading loading-spinner loading-xs"></span>
                                         ) : cfStatus.running && cfStatus.url ? (
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); handleCfCopyUrl(); }}
-                                                className="text-xs px-2 py-1 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors flex items-center gap-1"
-                                            >
-                                                {copied === 'cf-url' ? <CheckCircle size={12} /> : <Copy size={12} />}
-                                                {cfStatus.url.replace('https://', '').slice(0, 20)}...
-                                            </button>
+                                            <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); setIsMobileQrOpen(true); }}
+                                                    className="text-xs px-2.5 py-1 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium transition-all shadow-sm flex items-center gap-1.5 active:scale-95"
+                                                    title={t('proxy.cloudflared.scan_mobile_qr', { defaultValue: 'Scan QR with Mobile' })}
+                                                >
+                                                    <QrCode size={13} />
+                                                    <span>{t('proxy.cloudflared.mobile_pair', { defaultValue: 'Mobile Pair' })}</span>
+                                                </button>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleCfCopyUrl(); }}
+                                                    className="text-xs px-2 py-1 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors flex items-center gap-1"
+                                                >
+                                                    {copied === 'cf-url' ? <CheckCircle size={12} /> : <Copy size={12} />}
+                                                    {cfStatus.url.replace('https://', '').slice(0, 20)}...
+                                                </button>
+                                            </div>
                                         ) : null
                                     }
                                 >
@@ -2230,6 +2249,70 @@ print(response.choices[0].message.content)`;
                                                                 </button>
                                                             </div>
                                                         )}
+                                                    </div>
+                                                )}
+
+                                                {/* Mobile QR Quick Pairing Panel */}
+                                                {cfStatus.running && cfStatus.url && (
+                                                    <div className="p-4 bg-gradient-to-br from-orange-50/80 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/10 rounded-xl border border-orange-200/80 dark:border-orange-800/40 space-y-3">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold">
+                                                                    <Smartphone size={16} />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="text-xs font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
+                                                                        <span>{t('proxy.cloudflared.mobile_section_title', { defaultValue: 'اتصال امن موبایل (Zero-Trust Mobile Pairing)' })}</span>
+                                                                        <span className="px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 text-[9px] font-bold">
+                                                                            Token Protected
+                                                                        </span>
+                                                                    </div>
+                                                                    <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                                                                        {t('proxy.cloudflared.mobile_section_subtitle', { defaultValue: 'بارکد را با دوربین گوشی اسکن کنید تا اتصال امن و مستقیم بدون دسترسی دیگران برقرار شود' })}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => setIsMobileQrOpen(true)}
+                                                                className="btn btn-xs bg-orange-500 hover:bg-orange-600 text-white border-none gap-1 font-medium shadow-sm"
+                                                            >
+                                                                <QrCode size={12} />
+                                                                {t('proxy.cloudflared.view_large_qr', { defaultValue: 'مشاهده بارکد بزرگ' })}
+                                                            </button>
+                                                        </div>
+
+                                                        <div className="flex flex-col sm:flex-row items-center gap-4 bg-white/80 dark:bg-base-200/60 p-3 rounded-lg border border-orange-100 dark:border-orange-900/30">
+                                                            <div className="p-2 bg-white rounded-xl shadow-sm border border-gray-100 shrink-0">
+                                                                <QRCode
+                                                                    value={mobilePairingUrl}
+                                                                    size={110}
+                                                                    bordered={false}
+                                                                />
+                                                            </div>
+                                                            <div className="flex-1 space-y-2 w-full">
+                                                                <div className="text-[11px] text-gray-600 dark:text-gray-300 space-y-1">
+                                                                    <p className="flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400 text-[10px]">
+                                                                        <CheckCircle size={12} />
+                                                                        {t('proxy.cloudflared.security_guarantee', { defaultValue: 'فقط همین گوشی با توکن معتبر مجاز به مشاهده تاریخچه و ارسال چت خواهد بود.' })}
+                                                                    </p>
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="text"
+                                                                        readOnly
+                                                                        value={mobilePairingUrl}
+                                                                        className="flex-1 px-2.5 py-1 text-[10px] font-mono bg-gray-50 dark:bg-base-300 rounded border border-gray-200 dark:border-base-400 text-gray-600 dark:text-gray-400 truncate"
+                                                                    />
+                                                                    <button
+                                                                        onClick={() => copyToClipboardHandler(mobilePairingUrl, 'mobile-url-inline')}
+                                                                        className="btn btn-xs btn-ghost gap-1 text-[10px]"
+                                                                    >
+                                                                        {copied === 'mobile-url-inline' ? <CheckCircle size={12} className="text-green-500" /> : <Copy size={12} />}
+                                                                        {t('common.copy', { defaultValue: 'کپی لینک' })}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 )}
 
@@ -2860,6 +2943,75 @@ print(response.choices[0].message.content)`;
                         </div>
                     </div>
                 </ModalDialog>
+
+                {/* Mobile QR Pairing Modal */}
+                {isMobileQrOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
+                        <div className="bg-white dark:bg-base-100 border border-gray-200 dark:border-base-300 rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden animate-in zoom-in-95 duration-150">
+                            {/* Header */}
+                            <div className="px-5 py-4 border-b border-gray-100 dark:border-base-200 flex items-center justify-between bg-gray-50/50 dark:bg-base-200/50">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center">
+                                        <Smartphone size={18} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
+                                            {t('proxy.cloudflared.mobile_modal_title', { defaultValue: 'اتصال امن موبایل (Mobile Pair)' })}
+                                        </h3>
+                                        <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                                            Zero-Trust End-to-End Pairing
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setIsMobileQrOpen(false)}
+                                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-base-200 transition-colors"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+
+                            {/* Body */}
+                            <div className="p-5 flex flex-col items-center gap-4">
+                                <div className="p-3 bg-white rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                                    <QRCode
+                                        value={mobilePairingUrl}
+                                        size={210}
+                                        bordered={false}
+                                    />
+                                </div>
+
+                                <div className="bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 rounded-xl p-3 text-center space-y-1 w-full">
+                                    <div className="flex items-center justify-center gap-1.5 text-blue-800 dark:text-blue-300 font-bold text-xs">
+                                        <QrCode className="w-3.5 h-3.5" />
+                                        <span>{t('proxy.cloudflared.scan_hint_title', { defaultValue: 'اسکن مستقیم با دوربین گوشی' })}</span>
+                                    </div>
+                                    <p className="text-[11px] text-blue-700/90 dark:text-blue-300/90 leading-relaxed font-medium">
+                                        {t('proxy.cloudflared.scan_hint_desc', { defaultValue: 'این بارکد حاوی آدرس اختصاصی کلودفلیر و توکن احراز هویت شماست. فقط همین گوشی مجاز به اتصال و مشاهده سشن‌ها خواهد بود.' })}
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center gap-2 w-full">
+                                    <button
+                                        onClick={() => {
+                                            copyToClipboardHandler(mobilePairingUrl, 'mobile-url-modal');
+                                        }}
+                                        className="flex-1 btn btn-sm bg-orange-500 hover:bg-orange-600 text-white border-none gap-1.5 shadow-sm"
+                                    >
+                                        {copied === 'mobile-url-modal' ? <CheckCircle size={14} /> : <Copy size={14} />}
+                                        <span className="text-xs">{t('proxy.cloudflared.copy_mobile_link', { defaultValue: 'کپی لینک کامل موبایل' })}</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setIsMobileQrOpen(false)}
+                                        className="btn btn-sm btn-ghost text-xs"
+                                    >
+                                        {t('common.close', { defaultValue: 'بستن' })}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div >
         </div >
     );

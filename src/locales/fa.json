@@ -1213,7 +1213,17 @@
       "require_proxy_running": "Please start the local proxy service first",
       "connection_info": "Connection Info",
       "local_port": "Local Port",
-      "tunnel_protocol": "Tunnel Protocol"
+      "tunnel_protocol": "Tunnel Protocol",
+      "scan_mobile_qr": "اسکن بارکد با موبایل",
+      "mobile_pair": "اتصال موبایل",
+      "mobile_section_title": "اتصال امن موبایل (Zero-Trust Mobile Pairing)",
+      "mobile_section_subtitle": "بارکد را با دوربین گوشی اسکن کنید تا اتصال امن و مستقیم بدون دسترسی دیگران برقرار شود",
+      "view_large_qr": "مشاهده بارکد بزرگ",
+      "security_guarantee": "فقط همین گوشی با توکن معتبر مجاز به مشاهده تاریخچه و ارسال چت خواهد بود.",
+      "mobile_modal_title": "اتصال امن موبایل به Antigravity Shield",
+      "scan_hint_title": "اسکن مستقیم با دوربین گوشی",
+      "scan_hint_desc": "این بارکد حاوی آدرس اختصاصی کلودفلیر و توکن احراز هویت شماست. فقط همین گوشی مجاز به اتصال و مشاهده سشن‌ها خواهد بود.",
+      "copy_mobile_link": "کپی لینک کامل موبایل"
     },
     "example": {
       "title": "Usage Examples",
