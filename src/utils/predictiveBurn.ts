@@ -185,15 +185,6 @@ export function calculateAccountBurnVelocity(
   // Velocity in % per hour
   const hourlyBurnRatePct = quotaUsedPct > 0.5 ? quotaUsedPct / timeElapsedHours : 0;
 
-  // Sustainability Ratio S = Q_rem% / T_rem%
-  let sustainabilityRatio = 1.0;
-  if (quotaUsedPct <= 0.5) {
-    // Virtually untouched
-    sustainabilityRatio = 2.0;
-  } else {
-    sustainabilityRatio = quotaRemainingPct / timeRemainingPct;
-  }
-
   // Runway in hours
   let runwayHoursRemaining = 999;
   if (hourlyBurnRatePct > 0.005) {
@@ -211,6 +202,17 @@ export function calculateAccountBurnVelocity(
   const isDepletedBeforeReset = gapHours > 0.5 && quotaRemainingPct < 100;
   const deficitHours = isDepletedBeforeReset ? Math.round(gapHours) : 0;
   const surplusHours = !isDepletedBeforeReset ? Math.round(Math.max(0, -gapHours)) : 0;
+
+  // Unified Mathematical Sustainability Ratio: S = Runway / TimeToReset
+  // Invariant: S >= 1.0 <=> Runway >= TimeToReset <=> isDepletedBeforeReset is false
+  let sustainabilityRatio = 1.0;
+  if (quotaUsedPct <= 0.5 || hourlyBurnRatePct <= 0.005) {
+    // Virtually untouched
+    sustainabilityRatio = 2.0;
+  } else {
+    const rawRatio = runwayHoursRemaining / timeRemainingHours;
+    sustainabilityRatio = Math.max(0.0, Math.min(2.5, rawRatio));
+  }
 
   // Zones & Colors
   let zone: BurnVelocityMetrics['zone'] = 'balanced';
@@ -353,44 +355,159 @@ export function calculateFleetBurnVelocity(
     };
   }
 
-  // Aggregate pool metrics across active accounts
-  const avgQuotaRem = totalQuotaRem / validAccounts;
-  const avgTimeRemPct = totalTimeRemPct / validAccounts;
-  const avgTimeRemHours = totalTimeRemHours / validAccounts;
-  const avgBurnRate = totalBurnRate / validAccounts;
+  // 2. Extract baseline parameters for each account
+  interface AccountSimItem {
+    id: string;
+    quotaPct: number;
+    timeRemainingHours: number;
+    hourlyBurnRatePct: number;
+  }
 
-  // Best Method: Pooled Aggregate Ratio (Ratio of Totals) with robust boundary safeguards
-  // S_fleet = (Total Quota Remaining) / (Total Time Remaining)
+  const accountItems: AccountSimItem[] = [];
+  let totalQuotaRem = 0;
+  let totalTimeRemPct = 0;
+  let totalTimeRemHours = 0;
+  let totalBurnRate = 0;
+
+  for (const acc of targetAccounts) {
+    const m = calculateAccountBurnVelocity(acc, now);
+    totalQuotaRem += m.quotaRemainingPct;
+    totalTimeRemPct += m.timeRemainingPct;
+    totalTimeRemHours += m.timeRemainingHours;
+    totalBurnRate += m.hourlyBurnRatePct;
+
+    accountItems.push({
+      id: acc.id || String(accountItems.length),
+      quotaPct: m.quotaRemainingPct,
+      timeRemainingHours: Math.max(0.1, m.timeRemainingHours),
+      hourlyBurnRatePct: m.hourlyBurnRatePct,
+    });
+  }
+
+  const validCount = accountItems.length;
+  if (validCount === 0) {
+    return {
+      sustainabilityRatio: 1.0,
+      hourlyBurnRatePct: 0,
+      runwayHoursRemaining: 168,
+      projectedDepletionDate: null,
+      isDepletedBeforeReset: false,
+      deficitHours: 0,
+      surplusHours: 168,
+      zone: 'balanced',
+      zoneLabel: 'Balanced Fleet',
+      zoneTag: 'NEUTRAL',
+      zoneColor: '#38bdf8',
+      gaugeAngle: 90,
+      timeRemainingHours: 168,
+      quotaRemainingPct: 100,
+      timeRemainingPct: 100,
+    };
+  }
+
+  // Aggregate statistical averages across active accounts
+  const avgQuotaRem = totalQuotaRem / validCount;
+  const avgTimeRemPct = totalTimeRemPct / validCount;
+  const avgTimeRemHours = totalTimeRemHours / validCount;
+  const avgBurnRate = totalBurnRate / validCount;
+
+  // 3. Discrete-Event Rolling Renewal Simulation (Multi-Server Replenishment Horizon)
+  // Evaluates dynamic inventory over 336 hours (2 full 168-hour cycles) with dt = 0.5h.
+  // Staggered account renewals inject 100% fresh capacity at their exact scheduled timestamps.
+  const HORIZON_HOURS = 336;
+  const DT = 0.5;
+  const totalFleetBurnRatePerHour = totalBurnRate; // aggregate percentage points consumed per hour
+
+  const simQuota = accountItems.map((a) => a.quotaPct);
+  const simNextReset = accountItems.map((a) => a.timeRemainingHours);
+
+  let firstDepletionHour: number | null = null;
+  let shortfallDurationHours = 0;
+
+  if (totalFleetBurnRatePerHour > 0.005) {
+    for (let t = 0; t <= HORIZON_HOURS; t += DT) {
+      // Phase A: Replenishments (Discrete renewal impulse)
+      for (let i = 0; i < validCount; i++) {
+        if (t >= simNextReset[i]) {
+          simQuota[i] = 100; // Account reaches reset timestamp: full 100% capacity renewed
+          simNextReset[i] += 168; // Next weekly replenishment
+        }
+      }
+
+      // Phase B: Total available capacity in the fleet pool
+      let currentPoolQuota = 0;
+      for (let i = 0; i < validCount; i++) {
+        if (simQuota[i] > 0) {
+          currentPoolQuota += simQuota[i];
+        }
+      }
+
+      // Phase C: Detect simultaneous fleet exhaustion (outage)
+      if (currentPoolQuota <= 0.05) {
+        if (firstDepletionHour === null) {
+          firstDepletionHour = t;
+          const nextRecovery = Math.min(...simNextReset);
+          shortfallDurationHours = Math.max(0.5, nextRecovery - t);
+          break; // First outage found
+        }
+      }
+
+      // Phase D: Drain pool proportionally across active accounts
+      const drain = Math.min(currentPoolQuota, totalFleetBurnRatePerHour * DT);
+      if (currentPoolQuota > 0) {
+        for (let i = 0; i < validCount; i++) {
+          if (simQuota[i] > 0) {
+            const share = simQuota[i] / currentPoolQuota;
+            simQuota[i] = Math.max(0, simQuota[i] - drain * share);
+          }
+        }
+      }
+    }
+  }
+
+  // 4. Synthesize Fleet Runway, Sustainability & Deficit Metrics
+  let runwayHoursRemaining = 999;
+  let isDepletedBeforeReset = false;
+  let deficitHours = 0;
+  let surplusHours = 0;
+  let projectedDepletionDate: Date | null = null;
   let sustainabilityRatio = 1.0;
 
-  if (avgQuotaRem <= 0.05) {
-    sustainabilityRatio = 0.0;
-  } else if (avgQuotaRem >= 99.5 && avgBurnRate <= 0.005) {
-    // Virtually untouched fleet quota
+  if (avgBurnRate <= 0.005) {
+    // Virtually zero consumption activity
+    runwayHoursRemaining = 999;
+    isDepletedBeforeReset = false;
+    deficitHours = 0;
+    surplusHours = Math.round(avgTimeRemHours);
     sustainabilityRatio = 2.0;
-  } else {
-    // Epsilon guard: remaining time guarded to at least 1.0% (~1.68 hours) to prevent division explosion
-    const safeTimeRemPct = Math.max(1.0, avgTimeRemPct);
-    const rawRatio = avgQuotaRem / safeTimeRemPct;
-    // Bound the ratio cleanly between 0.0 and 2.5
-    sustainabilityRatio = Math.max(0.0, Math.min(2.5, rawRatio));
-  }
-
-  let runwayHoursRemaining = 999;
-  if (avgBurnRate > 0.005) {
-    runwayHoursRemaining = avgQuotaRem / avgBurnRate;
-  }
-
-  let projectedDepletionDate: Date | null = null;
-  if (runwayHoursRemaining < 999 && avgQuotaRem > 0) {
+  } else if (firstDepletionHour !== null) {
+    // Real fleet outage detected before subsequent renewal arrives
+    runwayHoursRemaining = Math.max(0, Math.round(firstDepletionHour));
+    isDepletedBeforeReset = true;
+    deficitHours = Math.max(1, Math.round(shortfallDurationHours));
+    surplusHours = 0;
     projectedDepletionDate = new Date(now + runwayHoursRemaining * 3600 * 1000);
+
+    // Guaranteed mathematical consistency: S < 1.0 <=> isDepletedBeforeReset is true
+    const recoveryHour = firstDepletionHour + shortfallDurationHours;
+    const rawRatio = recoveryHour > 0 ? firstDepletionHour / recoveryHour : 0;
+    sustainabilityRatio = Math.max(0.0, Math.min(0.99, rawRatio));
+  } else {
+    // Fleet is completely self-sustaining through staggered rolling renewals!
+    // No depletion occurs anywhere within the multi-cycle simulation horizon.
+    isDepletedBeforeReset = false;
+    deficitHours = 0;
+    runwayHoursRemaining = 999; // Perpetual runway past window
+    projectedDepletionDate = null;
+    surplusHours = Math.round(avgTimeRemHours);
+
+    // Sustainability Ratio: Fleet generation capacity (N * 100% / 168h) vs consumption demand
+    const renewalCapacityPerHour = validCount * (100 / 168);
+    const capacityRatio = renewalCapacityPerHour / Math.max(0.01, totalFleetBurnRatePerHour);
+    sustainabilityRatio = Math.max(1.05, Math.min(2.5, capacityRatio));
   }
 
-  const gapHours = avgTimeRemHours - runwayHoursRemaining;
-  const isDepletedBeforeReset = gapHours > 0.5 && avgQuotaRem < 100;
-  const deficitHours = isDepletedBeforeReset ? Math.round(gapHours) : 0;
-  const surplusHours = !isDepletedBeforeReset ? Math.round(Math.max(0, -gapHours)) : 0;
-
+  // Classification Zones & Speedometer Gauge Angle
   let zone: BurnVelocityMetrics['zone'] = 'balanced';
   let zoneLabel = 'Balanced Fleet';
   let zoneTag: BurnVelocityMetrics['zoneTag'] = 'NEUTRAL';
