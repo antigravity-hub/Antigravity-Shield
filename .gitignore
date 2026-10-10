@@ -70,3 +70,6 @@ UPSTREAM_ISSUES_RESOLVED.json
 request_transform.md
 diff_output.txt
 exe_build.txt
+.playwright-mcp/
+*BRAINSTORM*
+
