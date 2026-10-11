@@ -399,14 +399,18 @@ pub fn start_scheduler(
                                                                             ));
                                                                             last_auto_switch_time = now;
 
-                                                                            let service = crate::modules::account_service::AccountService::new(
-                                                                                crate::modules::integration::SystemManager::Desktop(app_handle_for_daemon.as_ref().clone()),
-                                                                            );
+                                                                            let sys_manager = match app_handle_for_daemon.as_ref() {
+                                                                                Some(app) => crate::modules::integration::SystemManager::Desktop(app.clone()),
+                                                                                None => crate::modules::integration::SystemManager::Headless,
+                                                                            };
+                                                                            let service = crate::modules::account_service::AccountService::new(sys_manager);
 
                                                                             if let Err(e) = service.switch_account(&best_cand.id, None).await {
                                                                                 logger::log_error(&format!("[Scheduler] Preemptive auto-switch execution failed: {}", e));
                                                                             } else {
-                                                                                let _ = crate::modules::tray::update_tray_menus(app_handle_for_daemon.as_ref());
+                                                                                if let Some(ref app) = app_handle_for_daemon {
+                                                                                    crate::modules::tray::update_tray_menus(app);
+                                                                                }
 
                                                                                 let inst_lock = proxy_state_for_daemon.instance.read().await;
                                                                                 if let Some(instance) = inst_lock.as_ref() {
@@ -414,23 +418,25 @@ pub fn start_scheduler(
                                                                                 }
                                                                                 drop(inst_lock);
 
-                                                                                use tauri::Emitter;
-                                                                                let _ = app_handle_for_daemon.emit("auto-switch-executed", serde_json::json!({
-                                                                                    "from_id": refreshed_acc.id,
-                                                                                    "from_email": refreshed_acc.email,
-                                                                                    "from_pct": new_min,
-                                                                                    "to_id": best_cand.id,
-                                                                                    "to_email": best_cand.email,
-                                                                                    "to_pct": cand_pct,
-                                                                                    "runway_mins": estimated_runway_mins.unwrap_or(0.0),
-                                                                                    "reason": if is_critical_runway {
-                                                                                        format!("Estimated runway exhausted ({:.1} min remaining)", estimated_runway_mins.unwrap_or(0.0))
-                                                                                    } else if is_burst_danger {
-                                                                                        "High-concurrency token burst nearing exhaustion (<10%)".to_string()
-                                                                                    } else {
-                                                                                        format!("Quota reached critical safety floor ({}%)", new_min)
-                                                                                    }
-                                                                                }));
+                                                                                if let Some(ref app) = app_handle_for_daemon {
+                                                                                    use tauri::Emitter;
+                                                                                    let _ = app.emit("auto-switch-executed", serde_json::json!({
+                                                                                        "from_id": refreshed_acc.id,
+                                                                                        "from_email": refreshed_acc.email,
+                                                                                        "from_pct": new_min,
+                                                                                        "to_id": best_cand.id,
+                                                                                        "to_email": best_cand.email,
+                                                                                        "to_pct": cand_pct,
+                                                                                        "runway_mins": estimated_runway_mins.unwrap_or(0.0),
+                                                                                        "reason": if is_critical_runway {
+                                                                                            format!("Estimated runway exhausted ({:.1} min remaining)", estimated_runway_mins.unwrap_or(0.0))
+                                                                                        } else if is_burst_danger {
+                                                                                            "High-concurrency token burst nearing exhaustion (<10%)".to_string()
+                                                                                        } else {
+                                                                                            format!("Quota reached critical safety floor ({}%)", new_min)
+                                                                                        }
+                                                                                    }));
+                                                                                }
                                                                             }
                                                                         } else {
                                                                             logger::log_warn(&format!(
