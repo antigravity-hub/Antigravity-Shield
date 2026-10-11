@@ -29,6 +29,11 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
         set({ loading: true, error: null });
         try {
             const config = await configService.loadConfig();
+            if (config?.language) {
+                try {
+                    localStorage.setItem('i18nextLng', config.language);
+                } catch {}
+            }
             set({ config, loading: false });
         } catch (error) {
             set({ error: String(error), loading: false });
@@ -38,6 +43,11 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
     saveConfig: async (config: AppConfig, silent: boolean = false) => {
         if (!silent) set({ loading: true, error: null });
         try {
+            if (config?.language) {
+                try {
+                    localStorage.setItem('i18nextLng', config.language);
+                } catch {}
+            }
             await configService.saveConfig(config);
             set({ config, loading: false });
             const { isTauri } = await import('../utils/env');
@@ -61,6 +71,9 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
     },
 
     updateLanguage: async (language: string) => {
+        try {
+            localStorage.setItem('i18nextLng', language);
+        } catch {}
         const { config } = get();
         if (!config || config.language === language) return;
 
