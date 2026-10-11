@@ -4,7 +4,7 @@ import { emit } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { useTranslation } from 'react-i18next';
-import { Zap, Clock, X, AlertTriangle, CheckCircle2, Loader2, Shield, Sparkles, Cpu } from 'lucide-react';
+import { Zap, Clock, X, AlertTriangle, CheckCircle2, Loader2, Shield, Sparkles, ArrowDown } from 'lucide-react';
 import { getFloatingOverlayPayload } from '../../services/overlayNotificationService';
 
 export interface OverlayPayload {
@@ -214,14 +214,6 @@ export const NotificationOverlay: React.FC = () => {
     const progressPercentage = Math.max(0, Math.min(100, (timeLeft / (totalTimeRef.current || 1)) * 100));
     const isUrgent = payload?.notification_type === 'countdown' ? timeLeft <= 7 : timeLeft <= 2;
 
-    const formatModelName = (name?: string) => {
-        if (!name) return t('notifications.overlay_default_model', { defaultValue: 'AI Model' });
-        const lower = name.toLowerCase().trim();
-        if (lower === 'claude') return t('notifications.family_claude', { defaultValue: 'Claude' });
-        if (lower === 'gemini') return t('notifications.family_gemini', { defaultValue: 'Gemini' });
-        return name;
-    };
-
     return (
         <div
             className={`w-screen h-screen select-none overflow-hidden p-2 flex items-center justify-center font-sans ${isRtl ? 'rtl' : 'ltr'}`}
@@ -328,45 +320,51 @@ export const NotificationOverlay: React.FC = () => {
                             <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
                             <span>{t('notifications.overlay_waiting', { defaultValue: 'Waiting for Shield data...' })}</span>
                         </div>
-                    ) : payload.notification_type === 'countdown' ? (
-                        <div className="space-y-2">
-                            {/* Row 1: Model Quota Depletion Notice */}
-                            <div className="text-[11px] text-slate-300 flex items-center justify-between gap-1.5 leading-normal min-w-0">
-                                <div className="flex items-center gap-1.5 min-w-0 flex-1">
-                                    <span
-                                        className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-300 text-[11px] font-semibold border border-amber-500/30 flex items-center gap-1 whitespace-nowrap flex-shrink-0 max-w-[150px] shadow-sm"
-                                        title={formatModelName(payload.model_name)}
-                                    >
-                                        <Cpu className="w-3 h-3 text-amber-400 flex-shrink-0" />
-                                        <span className="truncate">{formatModelName(payload.model_name)}</span>
-                                    </span>
-                                    <span className="text-slate-400 font-medium whitespace-nowrap truncate min-w-0">
-                                        {t('notifications.overlay_quota_for', { defaultValue: 'Quota depleted for' })}
-                                    </span>
-                                </div>
-                                {payload.current_email && (
-                                    <span
-                                        dir="ltr"
-                                        className="text-slate-400 truncate text-[11px] font-mono min-w-0 flex-shrink-0 max-w-[130px] text-end opacity-85"
-                                        title={payload.current_email}
-                                    >
-                                        ({payload.current_email})
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Row 2: Inset Recommended Target Account Card */}
-                            <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/95 rounded-xl px-3 py-2 border border-emerald-500/25 shadow-inner">
-                                <div className="flex items-center gap-2 min-w-0 truncate">
-                                    <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                        <div className="flex flex-col gap-1.5 py-0.5">
+                            {/* 1. Current Account (Depleted / From) */}
+                            <div className="flex items-center justify-between gap-2 bg-slate-900/70 rounded-xl px-3 py-1.5 border border-rose-500/25 shadow-inner">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <div className="w-5 h-5 rounded-md bg-rose-500/15 border border-rose-500/30 flex items-center justify-center flex-shrink-0">
+                                        <AlertTriangle className="w-3 h-3 text-rose-400" />
                                     </div>
                                     <div className="flex flex-col min-w-0">
-                                        <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium leading-none">
+                                        <span className="text-[9px] text-slate-400 uppercase tracking-wider font-medium leading-none">
+                                            {t('notifications.overlay_from_account', { defaultValue: 'Current Account' })}
+                                        </span>
+                                        <span
+                                            dir="ltr"
+                                            className="text-slate-200 font-mono text-[11px] truncate min-w-0 pt-0.5"
+                                            title={payload.current_email}
+                                        >
+                                            {payload.current_email || '...'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] font-mono whitespace-nowrap flex-shrink-0">
+                                    {t('notifications.overlay_depleted_badge', { defaultValue: 'Depleted' })}
+                                </span>
+                            </div>
+
+                            {/* Transition Indicator (Down Arrow) */}
+                            <div className="flex items-center justify-center -my-1 z-10">
+                                <div className="w-5 h-5 rounded-full bg-slate-900/90 border border-slate-700/80 flex items-center justify-center shadow-md">
+                                    <ArrowDown className="w-3 h-3 text-cyan-400 animate-bounce" />
+                                </div>
+                            </div>
+
+                            {/* 2. Target Account (Recommended / To) */}
+                            <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-slate-900/95 rounded-xl px-3 py-1.5 border border-emerald-500/30 shadow-inner">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <div className="w-5 h-5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                                        <Sparkles className="w-3 h-3 text-emerald-400" />
+                                    </div>
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-[9px] text-emerald-400/90 uppercase tracking-wider font-medium leading-none">
                                             {t('notifications.overlay_switch_to', { defaultValue: 'Switch to:' })}
                                         </span>
                                         <span
-                                            className="text-emerald-300 font-semibold text-[12px] truncate min-w-0 leading-tight pt-0.5"
+                                            dir="ltr"
+                                            className="text-emerald-300 font-mono font-semibold text-[11.5px] truncate min-w-0 pt-0.5"
                                             title={payload.target_email}
                                         >
                                             {payload.target_email || '...'}
@@ -374,9 +372,9 @@ export const NotificationOverlay: React.FC = () => {
                                     </div>
                                 </div>
                                 {payload.target_quota_score !== undefined && (
-                                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono font-bold whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10.5px] font-mono font-bold whitespace-nowrap flex-shrink-0 flex items-center gap-1 shadow-[0_0_8px_rgba(16,185,129,0.2)]">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
-                                        <span>{payload.target_quota_score}% {t('notifications.overlay_quota_badge', { defaultValue: 'quota' })}</span>
+                                        <span>{payload.target_quota_score}%</span>
                                     </span>
                                 )}
                             </div>
