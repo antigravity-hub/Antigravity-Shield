@@ -171,9 +171,9 @@ a {
   font-style: normal;
 }
 
-/* Apply Effra font ONLY when language direction is RTL (Arabic) */
+/* Apply Effra & Persian fonts when language direction is RTL */
 [dir="rtl"] body {
-  font-family: 'Effra', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Vazirmatn', 'Effra', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Tahoma', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
 }
