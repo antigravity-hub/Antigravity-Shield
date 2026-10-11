@@ -105,7 +105,10 @@
     "window_maximize": "Maximize",
     "window_restore": "Restore Down",
     "window_close": "Close",
-    "more": "More"
+    "more": "More",
+    "toolkit_active": "Toolkit Active",
+    "toolkit_waiting": "Toolkit Waiting",
+    "toolkit_install": "Install Toolkit"
   },
   "dashboard": {
     "hello": "Hello, User 👋",

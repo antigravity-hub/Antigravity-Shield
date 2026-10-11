@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { PlugZap, Wrench } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useToolkitStore } from '../../stores/useToolkitStore';
 
 export const NavToolkitBadge: React.FC = () => {
+  const { t } = useTranslation();
   const { status, fetchStatus, openModal } = useToolkitStore();
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export const NavToolkitBadge: React.FC = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
           <PlugZap className="w-3.5 h-3.5 text-emerald-500" />
-          <span className="font-semibold hidden sm:inline">Toolkit Active</span>
+          <span className="font-semibold hidden sm:inline">{t('nav.toolkit_active', 'Toolkit Active')}</span>
         </>
       ) : isInstalled ? (
         <>
@@ -58,13 +60,13 @@ export const NavToolkitBadge: React.FC = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
           <PlugZap className="w-3.5 h-3.5 text-amber-500" />
-          <span className="font-semibold hidden sm:inline">Toolkit Waiting</span>
+          <span className="font-semibold hidden sm:inline">{t('nav.toolkit_waiting', 'Toolkit Waiting')}</span>
         </>
       ) : (
         <>
           <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500"></span>
           <Wrench className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-          <span className="font-medium hidden sm:inline">Install Toolkit</span>
+          <span className="font-medium hidden sm:inline">{t('nav.toolkit_install', 'Install Toolkit')}</span>
         </>
       )}
     </button>
