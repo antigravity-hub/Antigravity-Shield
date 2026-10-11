@@ -93,7 +93,7 @@ export function NavSettings({
                     <button
                         onClick={handleLogout}
                         className="w-10 h-10 rounded-full bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 flex items-center justify-center transition-colors"
-                        title={t('nav.logout', '登出')}
+                        title={t('nav.logout', 'Logout')}
                     >
                         <LogOut className="w-5 h-5 text-red-600 dark:text-red-400" />
                     </button>

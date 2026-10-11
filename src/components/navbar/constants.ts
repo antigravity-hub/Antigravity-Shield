@@ -28,7 +28,7 @@ export const LANGUAGES: Language[] = [
     { code: 'ar', label: 'العربية', short: 'AR' },
     { code: 'es', label: 'Español', short: 'ES' },
     { code: 'my', label: 'Bahasa Melayu', short: 'MY' },
-    { code: 'fa', label: 'Persian', short: 'FA' },
+    { code: 'fa', label: 'فارسی', short: 'FA' },
 ];
 
 // 工具函数

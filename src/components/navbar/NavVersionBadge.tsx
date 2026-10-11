@@ -244,7 +244,7 @@ export const NavVersionBadge: React.FC = () => {
             className="flex items-center gap-1"
           >
             <RefreshCw className="w-2.5 h-2.5 animate-spin text-cyan-400" />
-            <span>Checking...</span>
+            <span>{t('settings.about.checking_update', 'Checking...')}</span>
           </motion.div>
         ) : status === 'has-update' ? (
           <motion.div

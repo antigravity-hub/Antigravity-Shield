@@ -147,7 +147,7 @@ export function NavigationDropdown({
                             to={item.path}
                             draggable="false"
                             onClick={handleNavItemClick}
-                            className={`w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-base-100 transition-colors ${isActive(item.path)
+                            className={`w-full px-4 py-2.5 text-left rtl:text-right text-sm flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-base-100 transition-colors ${isActive(item.path)
                                 ? 'text-blue-500 font-medium bg-blue-50 dark:bg-blue-900/10'
                                 : 'text-gray-700 dark:text-gray-300'
                                 }`}
@@ -245,7 +245,7 @@ export function MoreDropdown({
                     {/* 主题切换 */}
                     <button
                         onClick={handleThemeToggle}
-                        className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-base-100 transition-colors text-gray-700 dark:text-gray-300"
+                        className="w-full px-4 py-2.5 text-left rtl:text-right text-sm flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-base-100 transition-colors text-gray-700 dark:text-gray-300"
                     >
                         {theme === 'light' ? (
                             <Moon className="w-4 h-4" />
@@ -285,7 +285,7 @@ export function MoreDropdown({
                             <div className="my-1 border-t border-gray-100 dark:border-base-100"></div>
                             <button
                                 onClick={handleLogout}
-                                className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-red-600 dark:text-red-400"
+                                className="w-full px-4 py-2.5 text-left rtl:text-right text-sm flex items-center gap-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-red-600 dark:text-red-400"
                             >
                                 <LogOut className="w-4 h-4" />
                                 <span>{t('nav.logout', 'Logout')}</span>
