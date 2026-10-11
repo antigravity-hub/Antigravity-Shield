@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider, Navigate, useRouteError } from 'react-router-dom';
 
 import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
@@ -26,6 +26,32 @@ import { AdminAuthGuard } from './components/common/AdminAuthGuard';
 import { useQuotaAlertWatcher } from './hooks/useQuotaAlertWatcher';
 import NotificationOverlay from './components/overlay/NotificationOverlay';
 
+function RouteErrorBoundary() {
+  const error: any = useRouteError();
+  console.error('Route error caught:', error);
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4">
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+        {error?.status === 404 ? 'Page Not Found' : 'Something went wrong'}
+      </h2>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md">
+        {error?.statusText || error?.message || 'An unexpected error occurred while loading this view.'}
+      </p>
+      <a
+        href="#/"
+        className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-colors shadow-sm"
+      >
+        Return to Dashboard
+      </a>
+    </div>
+  );
+}
+
 const router = createHashRouter([
   {
     path: '/overlay-notification',
@@ -34,6 +60,7 @@ const router = createHashRouter([
   {
     path: '/',
     element: <Layout />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         index: true,
@@ -56,6 +83,10 @@ const router = createHashRouter([
         element: <TokenStats />,
       },
       {
+        path: 'tokens',
+        element: <Navigate to="/token-stats" replace />,
+      },
+      {
         path: 'user-token',
         element: <UserToken />,
       },
@@ -66,6 +97,10 @@ const router = createHashRouter([
       {
         path: 'settings',
         element: <Settings />,
+      },
+      {
+        path: '*',
+        element: <Navigate to="/" replace />,
       },
     ],
   },

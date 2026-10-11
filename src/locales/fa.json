@@ -137,6 +137,10 @@
     "mode_both": "همه مدل‌ها",
     "switch_to": "تغییر",
     "safe_window": "پنجره امن (>۲۰ دقیقه)",
+    "horizon_5h": "۵س اخیر",
+    "horizon_7d": "۷ روزه",
+    "view_token_stats": "آمار توکن",
+    "view_token_stats_tooltip": "مشاهده آمار تخصصی توکن و واقعیت سقف مصرف",
     "toast": {
       "switch_success": "تغییر حساب با موفقیت انجام شد!",
       "switch_error": "تغییر حساب ناموفق بود",

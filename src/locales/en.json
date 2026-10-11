@@ -137,6 +137,10 @@
     "mode_both": "All Models",
     "switch_to": "Switch",
     "safe_window": "Safe Window (>20m)",
+    "horizon_5h": "Past 5h",
+    "horizon_7d": "7-Day",
+    "view_token_stats": "Token Stats",
+    "view_token_stats_tooltip": "View Token Statistics & Consumption Limits",
     "toast": {
       "switch_success": "Switch successful!",
       "switch_error": "Switch account failed",

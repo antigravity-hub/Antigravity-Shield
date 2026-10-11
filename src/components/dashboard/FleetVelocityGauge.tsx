@@ -410,8 +410,8 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
             {/* Horizon & Weekly Consumption Bar */}
             {horizon && (
               <div
-                onClick={() => navigate('/tokens')}
-                title={t('dashboard.view_token_stats_tooltip', 'مشاهده آمار تخصصی توکن و واقعیت سقف مصرف')}
+                onClick={() => navigate('/token-stats')}
+                title={t('dashboard.view_token_stats_tooltip', 'View Token Statistics & Consumption Limits')}
                 className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer transition-colors"
               >
                 <div className="flex items-center gap-2.5">
@@ -420,7 +420,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                     <span className="font-bold text-slate-800 dark:text-slate-200">
                       {horizon.last_5h_tokens >= 1000000 ? `${(horizon.last_5h_tokens / 1000000).toFixed(1)}M` : (horizon.last_5h_tokens >= 1000 ? `${(horizon.last_5h_tokens / 1000).toFixed(0)}K` : horizon.last_5h_tokens)}
                     </span>
-                    <span>{t('dashboard.horizon_5h', '۵س اخیر')}</span>
+                    <span>{t('dashboard.horizon_5h', 'Past 5h')}</span>
                   </span>
                   <span className="text-slate-300 dark:text-slate-700">•</span>
                   <span className="flex items-center gap-1">
@@ -428,11 +428,11 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                     <span className="font-bold text-slate-800 dark:text-slate-200">
                       {horizon.last_7d_tokens >= 1000000 ? `${(horizon.last_7d_tokens / 1000000).toFixed(1)}M` : `${(horizon.last_7d_tokens / 1000).toFixed(0)}K`}
                     </span>
-                    <span>{t('dashboard.horizon_7d', '۷ روزه')}</span>
+                    <span>{t('dashboard.horizon_7d', '7-Day')}</span>
                   </span>
                 </div>
                 <span className="text-[10px] font-semibold text-cyan-600 dark:text-cyan-400 flex items-center gap-0.5 hover:underline">
-                  {t('dashboard.view_token_stats', 'آمار توکن')} ➜
+                  {t('dashboard.view_token_stats', 'Token Stats')} ➜
                 </span>
               </div>
             )}

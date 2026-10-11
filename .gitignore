@@ -73,3 +73,6 @@ exe_build.txt
 .playwright-mcp/
 *BRAINSTORM*
 
+
+# Perpetual Engine local cache & state
+.perpetual/
