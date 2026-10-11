@@ -111,7 +111,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
     // 复制功能
     const handleCopyUrl = (url: string) => {
         copyToClipboard(url);
-        showToast(t('accounts.validation_url_copied', '验证链接已复制到剪贴板'), 'success');
+        showToast(t('accounts.validation_url_copied', 'Validation link copied to clipboard'), 'success');
     };
 
     const handleCopyText = (text: string, msg: string) => {
@@ -133,7 +133,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                         className="text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300 break-all inline-flex items-center gap-1"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {t('accounts.click_to_verify', '点击去验证')}
+                        {t('accounts.click_to_verify', 'Click to verify')}
                         <ExternalLink className="w-3 h-3" />
                     </a>
                 );
@@ -176,7 +176,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                         {isViolation && (
                             <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold ring-1 ring-red-200/50 dark:ring-red-900/20">
                                 <Lock className="w-3 h-3" />
-                                {t('accounts.status.violation_blocked', '由于违规被禁用')}
+                                {t('accounts.status.violation_blocked', 'Disabled due to policy violation')}
                             </span>
                         )}
                         {isDisabled && (
@@ -194,7 +194,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                         {(isValidationBlocked || isVerificationNeeded) && (
                             <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-bold ring-1 ring-amber-200/50 dark:ring-amber-900/20">
                                 <Clock className="w-3 h-3" />
-                                {t('accounts.status.validation_required', '账号需验证')}
+                                {t('accounts.status.validation_required', 'Account validation required')}
                             </span>
                         )}
                     </div>
@@ -204,14 +204,14 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                 <div>
                     <div className="flex items-center justify-between mb-1.5 ml-1">
                         <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">
-                            {t('common.reason', '原因')}
+                            {t('common.reason', 'Reason')}
                         </label>
                         <button
                             onClick={() => setShowRaw(!showRaw)}
                             className="text-[10px] flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors font-medium"
                         >
                             <FileText className="w-2.5 h-2.5" />
-                            {showRaw ? t('common.show_parsed', '显示解析后') : t('common.show_raw', '显示原始报文')}
+                            {showRaw ? t('common.show_parsed', 'Show Parsed') : t('common.show_raw', 'Show Raw')}
                         </button>
                     </div>
                     <div className="text-xs text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/20 break-all leading-relaxed font-mono shadow-inner min-h-[80px] max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-red-200 dark:scrollbar-thumb-red-800">
@@ -246,7 +246,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                             className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md shadow-blue-500/20 active:scale-[0.98] cursor-pointer"
                                         >
                                             <ExternalLink className="w-3.5 h-3.5" />
-                                            <span>{actionLabel || (isViolation ? t('accounts.go_to_appeal', '前往申诉') : t('accounts.verify_in_browser_btn', 'Verify in Browser'))}</span>
+                                            <span>{actionLabel || (isViolation ? t('accounts.go_to_appeal', 'Go to Appeal') : t('accounts.verify_in_browser_btn', 'Verify in Browser'))}</span>
                                         </button>
                                         <button
                                             type="button"
@@ -263,7 +263,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                             className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-white dark:bg-base-300 hover:bg-blue-100 dark:hover:bg-base-200 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 dark:border-blue-700 transition-all active:scale-[0.98] cursor-pointer"
                                         >
                                             <Copy className="w-3.5 h-3.5" />
-                                            <span>{isViolation ? t('accounts.copy_appeal_url', '复制申诉链接') : t('accounts.copy_validation_url', '复制验证链接')}</span>
+                                            <span>{isViolation ? t('accounts.copy_appeal_url', 'Copy Appeal URL') : t('accounts.copy_validation_url', 'Copy Validation URL')}</span>
                                         </button>
                                     </div>
 
@@ -384,7 +384,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                             >
                                 <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-bold text-xs">
                                     <Terminal className="w-4 h-4" />
-                                    <span>{t('accounts.fix_guide.title', '终端一键自救指南 (解决部分 403 拦截)')}</span>
+                                    <span>{t('accounts.fix_guide.title', 'Terminal Self-Fix Guide (Fix 403 Forbidden)')}</span>
                                 </div>
                                 {showGuide ? <ChevronDown className="w-4 h-4 text-blue-500" /> : <ChevronRight className="w-4 h-4 text-blue-500" />}
                             </button>
@@ -392,37 +392,37 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                 <div className="p-4 text-xs space-y-4 bg-white dark:bg-base-200 text-gray-700 dark:text-gray-300 max-h-[35vh] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-200 dark:scrollbar-thumb-blue-800">
                                     <div>
                                         <p className="mb-2 text-[11px] leading-relaxed">
-                                            {t('accounts.fix_guide.step1_desc', '打开终端（Terminal），执行以下命令告诉 Google "是我本人"，可解决部分 403 拦截：')}
+                                            {t('accounts.fix_guide.step1_desc', 'Open Terminal and execute the following command to verify ownership with Google (fixes some 403 blocks):')}
                                         </p>
                                         <div className="bg-gray-900 dark:bg-[#1e1e1e] text-green-400 p-2.5 rounded-lg font-mono text-[11px] flex justify-between items-center ring-1 ring-inset ring-gray-800">
                                             <code>gcloud auth login --update-adc</code>
                                             <button
-                                                onClick={() => handleCopyText('gcloud auth login --update-adc', t('common.copied', '成功复制命令'))}
+                                                onClick={() => handleCopyText('gcloud auth login --update-adc', t('common.copied', 'Command copied'))}
                                                 className="text-gray-400 hover:text-white transition-colors p-1"
-                                                title={t('common.copy', '复制')}
+                                                title={t('common.copy', 'Copy')}
                                             >
                                                 <Copy className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
                                         <ul className="mt-2 text-[11px] text-gray-500 dark:text-gray-400 list-disc pl-4 marker:text-gray-300 dark:marker:text-gray-600">
-                                            <li><Trans i18nKey="accounts.fix_guide.step1_li1" components={{ 1: <code /> }}>按回车执行，提示继续时输入 <code />。</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.step1_li1" components={{ 1: <code /> }}>Press Enter to execute, enter Y when prompted to continue.</Trans></li>
                                             <li>{t('accounts.fix_guide.step1_li2')}</li>
-                                            <li><Trans i18nKey="accounts.fix_guide.step1_li3" components={{ 1: <code /> }}>看到 <code /> 即大功告成！</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.step1_li3" components={{ 1: <code /> }}>Done once you see success message!</Trans></li>
                                         </ul>
                                     </div>
 
                                     <div className="border-t border-gray-100 dark:border-base-300/50 pt-3">
                                         <h4 className="font-bold text-gray-800 dark:text-gray-200 mb-1.5 flex items-center gap-1.5">
-                                            {t('accounts.fix_guide.step2_title', '🧹 如果无效（清除缓存重来）')}
+                                            {t('accounts.fix_guide.step2_title', '🧹 If Ineffective (Clear Cache & Retry)')}
                                         </h4>
                                         <ol className="list-decimal pl-4 space-y-2 text-[11px] text-gray-600 dark:text-gray-400 marker:text-gray-400 font-medium">
                                             <li>
-                                                {t('accounts.fix_guide.step2_li1_prefix', '先执行清除命令退出旧认证：')}
+                                                {t('accounts.fix_guide.step2_li1_prefix', 'First execute revoke command to log out old credentials:')}
                                                 <div className="bg-gray-100 dark:bg-base-300/50 mt-1 px-2 py-1.5 rounded text-red-600 dark:text-red-400 inline-block font-mono">
                                                     gcloud auth revoke {account.email || 'your-email@gmail.com'}
                                                 </div>
                                             </li>
-                                            <li>{t('accounts.fix_guide.step2_li2_prefix', '再执行登录：')}<code className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-1 rounded ml-1">gcloud auth login --update-adc</code></li>
+                                            <li>{t('accounts.fix_guide.step2_li2_prefix', 'Then login again:')}<code className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-1 rounded ml-1">gcloud auth login --update-adc</code></li>
                                         </ol>
                                     </div>
 

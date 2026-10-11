@@ -139,7 +139,7 @@ export default function DeviceFingerprintDialog({ account, onClose }: DeviceFing
     };
 
     const renderProfile = (profile?: DeviceProfile) => {
-        if (!profile) return <span className="text-xs text-gray-400">{t('common.empty') || '空'}</span>;
+        if (!profile) return <span className="text-xs text-gray-400">{t('common.empty', 'Empty')}</span>;
         return (
             <div className="grid grid-cols-1 gap-2 text-xs font-mono text-gray-600 dark:text-gray-300">
                 <div><span className="font-semibold">machineId:</span> {profile.machine_id}</div>

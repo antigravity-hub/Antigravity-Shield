@@ -497,7 +497,14 @@
       "token_placeholder": "Refresh token را اینجا جای‌گذاری کنید...",
       "btn_submit": "افزودن حساب",
       "btn_submitting": "در حال اتصال...",
-      "btn_cancel": "انصراف"
+      "btn_cancel": "انصراف",
+      "oauth": {
+        "error_no_url": "دریافت آدرس اینترنتی OAuth ناموفق بود",
+        "manual_submitting": "در حال ارسال کد احراز هویت...",
+        "manual_submitted": "کد احراز هویت ارسال شد. در حال پردازش در پس‌زمینه...",
+        "web_hint": "صفحه ورود به گوگل در پنجره‌ای جدید باز خواهد شد",
+        "popup_blocked": "پنجره پاپ‌آپ توسط مرورگر مسدود شد. لطفاً اجازه باز شدن پنجره‌ها را به این سایت بدهید."
+      }
     },
     "table": {
       "email": "ایمیل",
@@ -545,7 +552,9 @@
     "verification_required_table_msg": "نیازمند وریفیکیشن با آموزش روبرو",
     "open_guide_btn": "مشاهده آموزش",
     "recheck_btn": "بررسی مجدد",
-    "recheck_tooltip": "پاک‌سازی وضعیت مسدودی و استعلام مجدد سهمیه"
+    "recheck_tooltip": "پاک‌سازی وضعیت مسدودی و استعلام مجدد سهمیه",
+    "go_to_appeal": "ثبت درخواست فرجام‌خواهی",
+    "copy_appeal_url": "کپی لینک فرجام‌خواهی"
   },
   "settings": {
     "save": "Save Settings",

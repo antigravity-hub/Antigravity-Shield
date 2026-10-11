@@ -492,23 +492,11 @@
         "import": "Import DB"
       },
       "oauth": {
-        "recommend": "Recommended",
-        "desc": "Opens default browser for Google login to auto-fetch and save Token.",
-        "btn_start": "Start OAuth",
-        "btn_waiting": "Waiting for auth...",
-        "btn_finish": "I already authorized",
-        "copy_link": "Copy Auth Link",
-        "copied": "Copied",
-        "link_label": "Authorization URL",
-        "link_click_to_copy": "Click to copy",
-        "manual_hint": "Browser didn't redirect? Paste the full callback URL or raw Code here:",
-        "manual_placeholder": "Paste callback URL or code...",
-        "error_no_flow": "Please click 'Start OAuth' first",
-        "web_hint": "Google login page will open in a new window",
-        "error_no_url": "Could not obtain OAuth URL",
-        "popup_blocked": "Popup blocked",
+        "error_no_url": "Failed to get OAuth URL",
         "manual_submitting": "Submitting authorization code...",
-        "manual_submitted": "Authorization code submitted. Backend is processing..."
+        "manual_submitted": "Authorization code submitted. Processing in background...",
+        "web_hint": "Google login page will open in a new window",
+        "popup_blocked": "Popup was blocked by your browser. Please allow popups for this site."
       },
       "token": {
         "label": "Refresh Token",
@@ -581,7 +569,9 @@
     "verification_required_table_msg": "Verification required — see guide",
     "open_guide_btn": "View Guide",
     "recheck_btn": "Re-check",
-    "recheck_tooltip": "Clear block status and re-check account quota"
+    "recheck_tooltip": "Clear block status and re-check account quota",
+    "go_to_appeal": "Go to Appeal",
+    "copy_appeal_url": "Copy Appeal URL"
   },
   "settings": {
     "save": "Save Settings",
