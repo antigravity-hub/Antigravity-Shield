@@ -325,7 +325,7 @@ const UserToken: React.FC = () => {
                             <th className="bg-transparent text-gray-500 font-medium py-4">{t('user_token.usage', { defaultValue: 'Usage' })}</th>
                             <th className="bg-transparent text-gray-500 font-medium py-4">{t('user_token.ip_limit', { defaultValue: 'IP Limit' })}</th>
                             <th className="bg-transparent text-gray-500 font-medium py-4">{t('user_token.created', { defaultValue: 'Created' })}</th>
-                            <th className="bg-transparent text-gray-500 font-medium py-4 text-right">{t('common.actions', { defaultValue: 'Actions' })}</th>
+                            <th className="bg-transparent text-gray-500 font-medium py-4 text-right rtl:text-left">{t('common.actions', { defaultValue: 'Actions' })}</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50 dark:divide-base-200">
@@ -402,8 +402,8 @@ const UserToken: React.FC = () => {
                                     <td className="text-[10px] text-gray-400 italic">
                                         {formatTime(token.created_at)}
                                     </td>
-                                    <td className="text-right">
-                                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <td className="text-right rtl:text-left">
+                                        <div className="flex justify-end rtl:justify-start gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
                                                 onClick={() => handleEdit(token)}
                                                 className="p-1.5 hover:bg-gray-100 dark:hover:bg-base-200 rounded-lg text-gray-500 hover:text-blue-500 transition-colors"
