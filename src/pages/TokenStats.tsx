@@ -465,10 +465,10 @@ const TokenStats: React.FC = () => {
         if (!active || !payload || !payload.length) return null;
         const row = payload[0]?.payload || {};
         const items = [
-            { label: t('token_stats.total', '合计'), value: row.total_tokens || 0, color: '#111827' },
-            { label: t('token_stats.input', '输入'), value: row.total_input_tokens || 0, color: '#3b82f6' },
-            { label: t('token_stats.cached_token', '缓存命中'), value: row.total_cached_tokens || 0, color: '#93c5fd' },
-            { label: t('token_stats.output', '输出'), value: row.total_output_tokens || 0, color: '#8b5cf6' },
+            { label: t('token_stats.total', 'Total'), value: row.total_tokens || 0, color: '#111827' },
+            { label: t('token_stats.input', 'Input'), value: row.total_input_tokens || 0, color: '#3b82f6' },
+            { label: t('token_stats.cached_token', 'Cached Tokens'), value: row.total_cached_tokens || 0, color: '#93c5fd' },
+            { label: t('token_stats.output', 'Output'), value: row.total_output_tokens || 0, color: '#8b5cf6' },
         ];
         return (
             <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm p-2.5 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 text-xs z-[100] pointer-events-none min-w-[170px]">
@@ -489,7 +489,7 @@ const TokenStats: React.FC = () => {
                     ))}
                     <div className="flex items-center justify-between gap-4 pt-1 border-t border-gray-100 dark:border-gray-700">
                         <span className="text-gray-500 dark:text-gray-400">
-                            {t('token_stats.requests', '请求数')}:
+                            {t('token_stats.requests', 'Requests')}:
                         </span>
                         <span className="font-mono font-medium text-gray-700 dark:text-gray-200">
                             {(row.request_count || 0).toLocaleString()}
@@ -526,7 +526,7 @@ const TokenStats: React.FC = () => {
                     <div className="flex items-center gap-3 flex-wrap">
                         <h1 className="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                             <Zap className="w-6 h-6 text-blue-500" />
-                            {t('token_stats.title', 'Token 消费统计')}
+                            {t('token_stats.title', 'Token Consumption Statistics')}
                         </h1>
                         <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs font-medium text-emerald-700 dark:text-emerald-300">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -827,7 +827,7 @@ const TokenStats: React.FC = () => {
                                 <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
                                     <Zap className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                                 </div>
-                                {t('token_stats.total_tokens', '总 Token')}
+                                {t('token_stats.total_tokens', 'Total Tokens')}
                             </div>
                             <div className="text-2xl font-bold text-gray-800 dark:text-white">
                                 {formatNumber(summary.total_tokens)}
@@ -838,7 +838,7 @@ const TokenStats: React.FC = () => {
                                 <div className="p-1.5 rounded-lg bg-blue-100/50 dark:bg-blue-900/30">
                                     <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                 </div>
-                                {t('token_stats.input_tokens', '输入 Token')}
+                                {t('token_stats.input_tokens', 'Input Tokens')}
                             </div>
                             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                                 {formatNumber(summary.total_input_tokens)}
@@ -849,7 +849,7 @@ const TokenStats: React.FC = () => {
                                 <div className="p-1.5 rounded-lg bg-purple-100/50 dark:bg-purple-900/30">
                                     <TrendingUp className="w-4 h-4 rotate-180 text-purple-600 dark:text-purple-400" />
                                 </div>
-                                {t('token_stats.output_tokens', '输出 Token')}
+                                {t('token_stats.output_tokens', 'Output Tokens')}
                             </div>
                             <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                                 {formatNumber(summary.total_output_tokens)}
@@ -860,7 +860,7 @@ const TokenStats: React.FC = () => {
                                 <div className="p-1.5 rounded-lg bg-sky-100/50 dark:bg-sky-900/30">
                                     <Zap className="w-4 h-4 text-sky-600 dark:text-sky-400" />
                                 </div>
-                                {t('token_stats.cached_token', '缓存命中')}
+                                {t('token_stats.cached_token', 'Cached Tokens')}
                             </div>
                             <div className="text-2xl font-bold text-sky-600 dark:text-sky-400">
                                 {formatNumber(summary.total_cached_tokens)}
@@ -871,7 +871,7 @@ const TokenStats: React.FC = () => {
                                 <div className="p-1.5 rounded-lg bg-green-100/50 dark:bg-green-900/30">
                                     <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
                                 </div>
-                                {t('token_stats.accounts_used', '活跃账号')}
+                                {t('token_stats.accounts_used', 'Active Accounts')}
                             </div>
                             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                                 {summary.unique_accounts}
@@ -882,7 +882,7 @@ const TokenStats: React.FC = () => {
                                 <div className="p-1.5 rounded-lg bg-orange-100/50 dark:bg-orange-900/30">
                                     <Cpu className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                                 </div>
-                                {t('token_stats.models_used', '使用模型')}
+                                {t('token_stats.models_used', 'Models Used')}
                             </div>
                             <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
                                 {modelData.length}
@@ -900,8 +900,8 @@ const TokenStats: React.FC = () => {
                                 <Users className="w-5 h-5 text-green-500" />
                             )}
                             {viewMode === 'model'
-                                ? t('token_stats.model_trend', '分模型使用趋势')
-                                : t('token_stats.account_trend', '分账号使用趋势')
+                                ? t('token_stats.model_trend', 'Model Usage Trend')
+                                : t('token_stats.account_trend', 'Account Usage Trend')
                             }
                         </h2>
                         <div className="flex bg-gray-100/80 dark:bg-gray-700/50 rounded-lg p-1">
@@ -912,7 +912,7 @@ const TokenStats: React.FC = () => {
                                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                                     }`}
                             >
-                                {t('token_stats.by_model', '按模型')}
+                                {t('token_stats.by_model', 'By Model')}
                             </button>
                             <button
                                 onClick={() => setViewMode('account')}
@@ -921,7 +921,7 @@ const TokenStats: React.FC = () => {
                                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                                     }`}
                             >
-                                {t('token_stats.by_account_view', '按账号')}
+                                {t('token_stats.by_account_view', 'By Account')}
                             </button>
                         </div>
                     </div>
@@ -987,7 +987,7 @@ const TokenStats: React.FC = () => {
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-full flex items-center justify-center text-gray-400">
-                                {loading ? t('common.loading', '加载中...') : t('token_stats.no_data', '暂无数据')}
+                                {loading ? t('common.loading', 'Loading...') : t('token_stats.no_data', 'No data available')}
                             </div>
                         )}
                     </div>
@@ -996,7 +996,7 @@ const TokenStats: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col">
                         <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            {t('token_stats.usage_trend', 'Token 使用趋势')}
+                            {t('token_stats.usage_trend', 'Token Usage Trend')}
                         </h2>
                         <div className="flex-1 min-h-[16rem]">
                             {chartData.length > 0 ? (
@@ -1030,14 +1030,14 @@ const TokenStats: React.FC = () => {
                                             allowEscapeViewBox={{ x: true, y: true }}
                                             wrapperStyle={{ zIndex: 100 }}
                                         />
-                                        <Bar dataKey="total_cached_tokens" name={t('token_stats.cached_token', '缓存命中')} stackId="input" fill="#93c5fd" radius={[0, 0, 4, 4]} maxBarSize={50} />
-                                        <Bar dataKey="uncached_input_tokens" name={t('token_stats.input', '输入')} stackId="input" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={50} />
-                                        <Bar dataKey="total_output_tokens" name={t('token_stats.output', '输出')} fill="#8b5cf6" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                                        <Bar dataKey="total_cached_tokens" name={t('token_stats.cached_token', 'Cached Tokens')} stackId="input" fill="#93c5fd" radius={[0, 0, 4, 4]} maxBarSize={50} />
+                                        <Bar dataKey="uncached_input_tokens" name={t('token_stats.input', 'Input')} stackId="input" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                                        <Bar dataKey="total_output_tokens" name={t('token_stats.output', 'Output')} fill="#8b5cf6" radius={[4, 4, 0, 0]} maxBarSize={50} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             ) : (
                                 <div className="h-full flex items-center justify-center text-gray-400">
-                                    {loading ? t('common.loading', '加载中...') : t('token_stats.no_data', '暂无数据')}
+                                    {loading ? t('common.loading', 'Loading...') : t('token_stats.no_data', 'No data available')}
                                 </div>
                             )}
                         </div>
@@ -1045,7 +1045,7 @@ const TokenStats: React.FC = () => {
 
                     <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                         <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                            {t('token_stats.by_account', '分账号统计')}
+                            {t('token_stats.by_account', 'Account Statistics')}
                         </h2>
                         <div className="h-48" ref={pieChartContainerRef}>
                             {pieData.length > 0 ? (
@@ -1077,7 +1077,7 @@ const TokenStats: React.FC = () => {
                                 </ResponsiveContainer>
                             ) : (
                                 <div className="h-full flex items-center justify-center text-gray-400">
-                                    {loading ? t('common.loading', '加载中...') : t('token_stats.no_data', '暂无数据')}
+                                    {loading ? t('common.loading', 'Loading...') : t('token_stats.no_data', 'No data available')}
                                 </div>
                             )}
                         </div>
@@ -1108,32 +1108,32 @@ const TokenStats: React.FC = () => {
                         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                 <Cpu className="w-5 h-5 text-blue-500" />
-                                {t('token_stats.model_details', '分模型详细统计')}
+                                {t('token_stats.model_details', 'Model Detailed Statistics')}
                             </h2>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead>
                                         <tr className="border-b border-gray-200 dark:border-gray-700">
                                             <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.model', '模型')}
+                                                {t('token_stats.model', 'Model')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.requests', '请求数')}
+                                                {t('token_stats.requests', 'Requests')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.input', '输入')}
+                                                {t('token_stats.input', 'Input')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.output', '输出')}
+                                                {t('token_stats.output', 'Output')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.cached_token', '缓存命中')}
+                                                {t('token_stats.cached_token', 'Cached Tokens')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.total', '合计')}
+                                                {t('token_stats.total', 'Total')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.percentage', '占比')}
+                                                {t('token_stats.percentage', 'Percentage')}
                                             </th>
                                         </tr>
                                     </thead>
@@ -1203,29 +1203,29 @@ const TokenStats: React.FC = () => {
                     accountData.length > 0 && viewMode === 'account' && (
                         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-                                {t('token_stats.account_details', '账号详细统计')}
+                                {t('token_stats.account_details', 'Account Detailed Statistics')}
                             </h2>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead>
                                         <tr className="border-b border-gray-200 dark:border-gray-700">
                                             <th className="text-left py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.account', '账号')}
+                                                {t('token_stats.account', 'Account')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.requests', '请求数')}
+                                                {t('token_stats.requests', 'Requests')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.input', '输入')}
+                                                {t('token_stats.input', 'Input')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.output', '输出')}
+                                                {t('token_stats.output', 'Output')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.cached_token', '缓存命中')}
+                                                {t('token_stats.cached_token', 'Cached Tokens')}
                                             </th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-500 dark:text-gray-400">
-                                                {t('token_stats.total', '合计')}
+                                                {t('token_stats.total', 'Total')}
                                             </th>
                                         </tr>
                                     </thead>
