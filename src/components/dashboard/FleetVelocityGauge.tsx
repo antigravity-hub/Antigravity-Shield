@@ -418,7 +418,10 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3 text-blue-500" />
                     <span className="font-bold text-slate-800 dark:text-slate-200">
-                      {horizon.last_5h_tokens >= 1000000 ? `${(horizon.last_5h_tokens / 1000000).toFixed(1)}M` : (horizon.last_5h_tokens >= 1000 ? `${(horizon.last_5h_tokens / 1000).toFixed(0)}K` : horizon.last_5h_tokens)}
+                      {(() => {
+                        const n = Number(horizon.last_5h_tokens) || 0;
+                        return n >= 1000000 ? `${(n / 1000000).toFixed(1)}M` : (n >= 1000 ? `${(n / 1000).toFixed(0)}K` : String(n));
+                      })()}
                     </span>
                     <span>{t('dashboard.horizon_5h', 'Past 5h')}</span>
                   </span>
@@ -426,7 +429,10 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                   <span className="flex items-center gap-1">
                     <Sparkles className="w-3 h-3 text-purple-500" />
                     <span className="font-bold text-slate-800 dark:text-slate-200">
-                      {horizon.last_7d_tokens >= 1000000 ? `${(horizon.last_7d_tokens / 1000000).toFixed(1)}M` : `${(horizon.last_7d_tokens / 1000).toFixed(0)}K`}
+                      {(() => {
+                        const n = Number(horizon.last_7d_tokens) || 0;
+                        return n >= 1000000 ? `${(n / 1000000).toFixed(1)}M` : `${(n / 1000).toFixed(0)}K`;
+                      })()}
                     </span>
                     <span>{t('dashboard.horizon_7d', '7-Day')}</span>
                   </span>
