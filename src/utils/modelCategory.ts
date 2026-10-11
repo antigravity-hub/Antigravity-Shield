@@ -194,22 +194,24 @@ export function getModelShortDisplayName(
 export function extractModelScore(name: string): number {
     const n = name.toLowerCase();
 
-    // 预设或特定 agent 映射基准
+    // 预设或特定 agent 映射基准（优先绑定已知旗舰主力映射）
     let baseVersion = 0;
-    const match = n.match(/gemini-(\d+(?:\.\d+)?)/);
-    const claudeMatch = n.match(/claude-.*?-(\d+)(?:[.-](\d+))?/);
-
-    if (match) {
-        baseVersion = parseFloat(match[1]);
-    } else if (claudeMatch) {
-        baseVersion = parseFloat(claudeMatch[2] ? `${claudeMatch[1]}.${claudeMatch[2]}` : claudeMatch[1]);
-    } else if (n === 'gemini-pro-agent') {
+    if (n === 'gemini-3-flash' || n === 'gemini-3.8-flash' || n === 'gemini-3.8-flash-tiered' || n === 'gemini-flash' || n === 'gemini-flash-agent') {
+        baseVersion = 3.8;
+    } else if (n === 'gemini-3-pro' || n === 'gemini-3-pro-high' || n === 'gemini-3.1-pro' || n === 'gemini-3.1-pro-high' || n === 'gemini-pro-agent' || n === 'gemini-pro') {
         baseVersion = 3.1;
-    } else if (n === 'gemini-flash-agent') {
-        baseVersion = 3.0;
+    } else {
+        const match = n.match(/gemini-(\d+(?:\.\d+)?)/);
+        const claudeMatch = n.match(/claude-.*?-(\d+)(?:[.-](\d+))?/);
+
+        if (match) {
+            baseVersion = parseFloat(match[1]);
+        } else if (claudeMatch) {
+            baseVersion = parseFloat(claudeMatch[2] ? `${claudeMatch[1]}.${claudeMatch[2]}` : claudeMatch[1]);
+        }
     }
 
-    // 质量/规格梯度加权 (High / Tiered > Medium > Normal > Agent > Low)
+    // 质量/规格梯度加权 (High / Tiered > Medium > Normal > Agent > Low/Lite)
     let tierBonus = 0.05;
     if (n.includes('high') || n.includes('tiered')) {
         tierBonus = 0.08;
@@ -218,9 +220,9 @@ export function extractModelScore(name: string): number {
     } else if (n.includes('agent')) {
         tierBonus = 0.05;
     } else if (n.includes('extra-low')) {
-        tierBonus = 0.01;
+        tierBonus = -0.5; // 严厉降低辅助微弱模型的优先级
     } else if (n.includes('low') || n.includes('lite')) {
-        tierBonus = 0.02;
+        tierBonus = -0.4; // 严厉降低 Lite/Low 辅助模型的权重，确保主力旗舰绝不被篡位
     }
 
     // 优先选择标准主力模型，降低 thinking 衍生后缀的优先级，避免在卡片/列表中被 thinking 过滤器误杀

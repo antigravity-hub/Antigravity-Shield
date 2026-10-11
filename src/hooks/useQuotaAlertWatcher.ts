@@ -246,7 +246,8 @@ export function useQuotaAlertWatcher() {
                     switchTitle: string,
                     switchMsg: string
                 ) => {
-                    const overlayEnabled = config?.overlay_notifications_enabled !== false;
+                    // Do not show intrusive floating countdown overlay for IDE environment (IDE handles hot-swap silently or via extension)
+                    const overlayEnabled = config?.overlay_notifications_enabled !== false && targetEnv !== 'ide';
                     const countdownSecs = config?.auto_switch_countdown_secs || 30;
 
                     isAutoSwitchingRef.current = true;

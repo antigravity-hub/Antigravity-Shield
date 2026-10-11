@@ -320,40 +320,6 @@ export function calculateFleetBurnVelocity(
   // Fallback to all accounts if every account is currently disabled/blocked
   const targetAccounts = activeAccounts.length > 0 ? activeAccounts : accounts;
 
-  let totalQuotaRem = 0;
-  let totalTimeRemPct = 0;
-  let totalTimeRemHours = 0;
-  let totalBurnRate = 0;
-  let validAccounts = 0;
-
-  for (const acc of targetAccounts) {
-    const m = calculateAccountBurnVelocity(acc, now);
-    totalQuotaRem += m.quotaRemainingPct;
-    totalTimeRemPct += m.timeRemainingPct;
-    totalTimeRemHours += m.timeRemainingHours;
-    totalBurnRate += m.hourlyBurnRatePct;
-    validAccounts++;
-  }
-
-  if (validAccounts === 0) {
-    return {
-      sustainabilityRatio: 1.0,
-      hourlyBurnRatePct: 0,
-      runwayHoursRemaining: 168,
-      projectedDepletionDate: null,
-      isDepletedBeforeReset: false,
-      deficitHours: 0,
-      surplusHours: 168,
-      zone: 'balanced',
-      zoneLabel: 'Balanced Pace',
-      zoneTag: 'NEUTRAL',
-      zoneColor: '#38bdf8',
-      gaugeAngle: 90,
-      timeRemainingHours: 168,
-      quotaRemainingPct: 100,
-      timeRemainingPct: 100,
-    };
-  }
 
   // 2. Extract baseline parameters for each account
   interface AccountSimItem {
