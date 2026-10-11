@@ -195,18 +195,21 @@ function Dashboard() {
                         <div className="flex items-center gap-2.5 mb-1 flex-wrap">
                             <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
                                 {currentAccount
-                                    ? t('dashboard.hello').replace('用户', currentAccount.name || currentAccount.email.split('@')[0])
-                                    : t('dashboard.hello')
+                                    ? t('dashboard.hello_user', {
+                                        name: currentAccount.name || currentAccount.email.split('@')[0],
+                                        defaultValue: `Hello, ${currentAccount.name || currentAccount.email.split('@')[0]} 👋`
+                                    })
+                                    : t('dashboard.hello', 'Hello 👋')
                                 }
                             </h1>
                             <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.15)]">
                                 <ShieldCheck className="w-3.5 h-3.5" />
-                                Shield Active
+                                {t('dashboard.shield_active', 'Shield Active')}
                             </span>
                         </div>
                         <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                             <Zap className="w-3.5 h-3.5 text-cyan-500" />
-                            Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard
+                            {t('dashboard.shield_subtitle', 'Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard')}
                         </p>
                     </div>
                     <div className="flex items-center gap-2.5 shrink-0">
@@ -233,7 +236,7 @@ function Dashboard() {
                             title={t('settings.warmup.title', 'Auto-Warm (100% Quota Recovery Warmup)')}
                         >
                             <Sparkles className={cn("w-3.5 h-3.5", isAutoWarmEnabled ? "text-orange-500 fill-orange-500/20" : "text-slate-400")} />
-                            <span className="hidden sm:inline font-bold">Auto-Warm</span>
+                            <span className="hidden sm:inline font-bold">{t('dashboard.auto_warm', 'Auto-Warm')}</span>
                             <span className={cn(
                                 "w-2 h-2 rounded-full",
                                 isAutoWarmEnabled ? "bg-orange-500 animate-pulse shadow-[0_0_6px_rgba(249,115,22,0.8)]" : "bg-slate-400"
@@ -384,12 +387,12 @@ function Dashboard() {
                             <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-500 group-hover:bg-cyan-500/20 transition-colors">
                                 <Users className="w-5 h-5" />
                             </div>
-                            <div className="text-left">
+                            <div className="text-left rtl:text-right">
                                 <span className="text-slate-800 dark:text-slate-200 font-bold text-sm block">{t('dashboard.view_all_accounts')}</span>
-                                <span className="text-xs text-slate-500 dark:text-slate-400">Manage, rotate and inspect accounts</span>
+                                <span className="text-xs text-slate-500 dark:text-slate-400">{t('dashboard.manage_accounts_desc', 'Manage, rotate and inspect accounts')}</span>
                             </div>
                         </div>
-                        <ArrowRight className="w-5 h-5 text-cyan-500 group-hover:translate-x-1.5 transition-transform" />
+                        <ArrowRight className="w-5 h-5 text-cyan-500 group-hover:translate-x-1.5 rtl:rotate-180 rtl:group-hover:-translate-x-1.5 transition-transform" />
                     </button>
                     <button
                         className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-200 flex items-center justify-between group cursor-pointer"
@@ -399,9 +402,9 @@ function Dashboard() {
                             <div className="p-2 rounded-xl bg-purple-500/10 text-purple-500 group-hover:bg-purple-500/20 transition-colors">
                                 <Download className="w-5 h-5" />
                             </div>
-                            <div className="text-left">
+                            <div className="text-left rtl:text-right">
                                 <span className="text-slate-800 dark:text-slate-200 font-bold text-sm block">{t('dashboard.export_data')}</span>
-                                <span className="text-xs text-slate-500 dark:text-slate-400">Export encrypted backup of active accounts</span>
+                                <span className="text-xs text-slate-500 dark:text-slate-400">{t('dashboard.export_accounts_desc', 'Export encrypted backup of active accounts')}</span>
                             </div>
                         </div>
                         <Download className="w-5 h-5 text-purple-500 group-hover:translate-y-0.5 transition-transform" />

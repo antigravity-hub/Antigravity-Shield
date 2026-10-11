@@ -60,7 +60,8 @@
     "switch_confirm_prompt": "Do you want to switch to the best recommended account?",
     "confirm_proceed": "Yes, Continue",
     "select_target_desc": "Select the target environment where quota should be activated:",
-    "switch_success": "Switch completed successfully"
+    "switch_success": "Switch completed successfully",
+    "claude_series": "Claude Series"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -140,7 +141,7 @@
     "mode_claude": "Claude (Opus)",
     "mode_both": "All Models",
     "switch_to": "Switch",
-    "safe_window": "Safe Window (>20m)",
+    "safe_window": "Safe window > 20 min",
     "horizon_5h": "Past 5h",
     "horizon_7d": "7-Day",
     "view_token_stats": "Token Stats",
@@ -277,7 +278,13 @@
     "verify_in_google": "Direct Google Verification Page",
     "google_link": "Google",
     "view_guide_pdf": "View PDF Guide",
-    "verify_account_prompt": "Verify your account to continue."
+    "verify_account_prompt": "Verify your account to continue.",
+    "hello_user": "Hello, {{name}} 👋",
+    "shield_active": "Shield Active",
+    "shield_subtitle": "Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard",
+    "auto_warm": "Auto-Warm",
+    "manage_accounts_desc": "Manage, rotate and inspect accounts",
+    "export_accounts_desc": "Export encrypted backup of active accounts"
   },
   "accounts": {
     "sync_freshness": {

@@ -60,7 +60,8 @@
     "switch_confirm_prompt": "آیا می‌خواهید به بهترین حساب پیشنهادی سوییچ کنید؟",
     "confirm_proceed": "بله، ادامه",
     "select_target_desc": "محیطی که می‌خواهید سهمیه در آن فعال شود را انتخاب کنید:",
-    "switch_success": "سوییچ با موفقیت انجام شد"
+    "switch_success": "سوییچ با موفقیت انجام شد",
+    "claude_series": "سری کلود"
   },
   "nav": {
     "dashboard": "داشبورد",
@@ -133,14 +134,14 @@
     "export_data": "خروجی داده‌ها",
     "for_gemini": "برای Gemini",
     "for_claude": "برای Claude",
-    "view_in_accounts": "مشاهده در حساب‌ها",
+    "view_in_accounts": "مشاهده در لیست حساب‌ها",
     "quota_5h": "سهمیه ۵ ساعته",
     "quota_weekly": "هفتگی",
     "mode_gemini": "فقط Gemini (پیش‌فرض)",
     "mode_claude": "Claude (Opus)",
     "mode_both": "همه مدل‌ها",
     "switch_to": "تغییر",
-    "safe_window": "پنجره امن (>۲۰ دقیقه)",
+    "safe_window": "بازه امن بیش از ۲۰ دقیقه",
     "horizon_5h": "۵س اخیر",
     "horizon_7d": "۷ روزه",
     "view_token_stats": "آمار توکن",
@@ -277,7 +278,13 @@
     "verify_in_google": "ورود مستقیم به صفحه تایید گوگل",
     "google_link": "گوگل",
     "view_guide_pdf": "مشاهده آموزش PDF",
-    "verify_account_prompt": "Verify your account to continue."
+    "verify_account_prompt": "Verify your account to continue.",
+    "hello_user": "سلام، {{name}} عزیز 👋",
+    "shield_active": "سپر فعال است",
+    "shield_subtitle": "گذرگاه شیلد آنتی‌گرویتی • چرخش سازمانی هوش مصنوعی و محافظت از سهمیه",
+    "auto_warm": "گرم‌سازی خودکار",
+    "manage_accounts_desc": "مدیریت، چرخش و بررسی حساب‌ها",
+    "export_accounts_desc": "خروجی پشتیبان رمزنگاری‌شده از حساب‌های فعال"
   },
   "accounts": {
     "sync_freshness": {

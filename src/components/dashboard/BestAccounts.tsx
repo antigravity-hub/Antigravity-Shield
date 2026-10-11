@@ -242,7 +242,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                 {/* Gemini Recommendation */}
                 {showGemini && (
                     <div className="flex items-center justify-between p-2.5 bg-green-50/70 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-900/30 transition-all hover:shadow-xs">
-                        <div className="flex-1 min-w-0 pr-2">
+                        <div className="flex-1 min-w-0 pe-2">
                             <div className="flex items-center gap-1.5 mb-0.5">
                                 <span className="text-[10px] text-green-700 dark:text-green-400 font-semibold uppercase tracking-wider">
                                     {t('dashboard.for_gemini')}
@@ -306,7 +306,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                         e.stopPropagation();
                                         onSwitch(bestGeminiRender.id);
                                     }}
-                                    className="p-1.5 ml-0.5 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors cursor-pointer shadow-xs"
+                                    className="p-1.5 ms-0.5 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors cursor-pointer shadow-xs"
                                     title={`${t('dashboard.switch_to', 'Switch')} (${bestGeminiRender.email})`}
                                 >
                                     <ArrowRightLeft className="w-3.5 h-3.5" />
@@ -319,7 +319,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                 {/* Claude Recommendation */}
                 {showClaude && (
                     <div className="flex items-center justify-between p-2.5 bg-cyan-50/70 dark:bg-cyan-900/20 rounded-lg border border-cyan-100 dark:border-cyan-900/30 transition-all hover:shadow-xs">
-                        <div className="flex-1 min-w-0 pr-2">
+                        <div className="flex-1 min-w-0 pe-2">
                             <div className="flex items-center gap-1.5 mb-0.5">
                                 <span className="text-[10px] text-cyan-700 dark:text-cyan-400 font-semibold uppercase tracking-wider">
                                     {t('dashboard.for_claude')}
@@ -383,7 +383,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                         e.stopPropagation();
                                         onSwitch(bestClaudeRender.id);
                                     }}
-                                    className="p-1.5 ml-0.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md transition-colors cursor-pointer shadow-xs"
+                                    className="p-1.5 ms-0.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-md transition-colors cursor-pointer shadow-xs"
                                     title={`${t('dashboard.switch_to', 'Switch')} (${bestClaudeRender.email})`}
                                 >
                                     <ArrowRightLeft className="w-3.5 h-3.5" />
