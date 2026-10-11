@@ -320,6 +320,7 @@ export const NotificationOverlay: React.FC = () => {
                             <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
                             <span>{t('notifications.overlay_waiting', { defaultValue: 'Waiting for Shield data...' })}</span>
                         </div>
+                    ) : payload.notification_type === 'countdown' ? (
                         <div className="flex flex-col gap-1.5 py-0.5">
                             {/* 1. Current Account (Depleted / From) */}
                             <div className="flex items-center justify-between gap-2 bg-slate-900/70 rounded-xl px-3 py-1.5 border border-rose-500/25 shadow-inner">
