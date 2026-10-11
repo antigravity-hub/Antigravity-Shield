@@ -25,7 +25,7 @@ function Navbar() {
         { path: '/accounts', label: t('nav.accounts'), icon: Users, priority: 'high' },
         { path: '/api-proxy', label: t('nav.proxy'), icon: Network, priority: 'high' },
         { path: '/monitor', label: t('nav.call_records'), icon: Activity, priority: 'medium' },
-        { path: '/token-stats', label: t('nav.token_stats', 'Token 统计'), icon: BarChart3, priority: 'low' },
+        { path: '/token-stats', label: t('nav.token_stats', 'Token Stats'), icon: BarChart3, priority: 'low' },
         { path: '/user-token', label: t('nav.user_token', 'User Tokens'), icon: Users, priority: 'low' },
         { path: '/security', label: t('nav.security'), icon: Lock, priority: 'low' },
         { path: '/settings', label: t('nav.settings'), icon: Settings, priority: 'high' },

@@ -104,7 +104,8 @@
     "window_minimize": "Minimize",
     "window_maximize": "Maximize",
     "window_restore": "Restore Down",
-    "window_close": "Close"
+    "window_close": "Close",
+    "more": "More"
   },
   "dashboard": {
     "hello": "Hello, User 👋",

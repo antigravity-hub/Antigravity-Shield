@@ -104,7 +104,8 @@
     "window_minimize": "کوچک‌کردن (Minimize)",
     "window_maximize": "تمام‌صفحه (Maximize)",
     "window_restore": "بازیابی اندازه (Restore)",
-    "window_close": "بستن (Close)"
+    "window_close": "بستن (Close)",
+    "more": "بیشتر"
   },
   "dashboard": {
     "hello": "سلام کاربر عزیز 👋",

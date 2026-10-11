@@ -209,7 +209,7 @@ export function MoreDropdown({
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100 flex items-center justify-center transition-colors"
-                title={t('nav.more', '更多')}
+                title={t('nav.more', 'More')}
             >
                 <MoreVertical className="w-5 h-5 text-gray-700 dark:text-gray-300" />
             </button>
@@ -288,7 +288,7 @@ export function MoreDropdown({
                                 className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-red-600 dark:text-red-400"
                             >
                                 <LogOut className="w-4 h-4" />
-                                <span>{t('nav.logout', '登出')}</span>
+                                <span>{t('nav.logout', 'Logout')}</span>
                             </button>
                         </>
                     )}
