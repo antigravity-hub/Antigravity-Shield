@@ -131,7 +131,7 @@ const LogTable: React.FC<LogTableProps> = ({
             {/* Empty state */}
             {!loading && logs.length === 0 && (
                 <div className="flex items-center justify-center p-8 text-gray-400">
-                    {t('monitor.table.empty') || '暂无请求记录'}
+                    {t('monitor.table.empty', 'No request records')}
                 </div>
             )}
         </div>

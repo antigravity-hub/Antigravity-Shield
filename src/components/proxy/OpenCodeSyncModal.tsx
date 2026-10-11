@@ -165,7 +165,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                 syncAccounts,
                 models
             });
-            showToast(t('proxy.opencode_sync.toast.sync_success', { defaultValue: 'OpenCode 同步成功' }), 'success');
+            showToast(t('proxy.opencode_sync.toast.sync_success', { defaultValue: 'OpenCode synced successfully' }), 'success');
             onSyncDone();
             onClose();
         } catch (error: any) {
@@ -189,7 +189,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                             </div>
                             <div>
                                 <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
-                                    {t('proxy.config.opencode_sync.modal_title', { defaultValue: '选择 OpenCode 模型' })}
+                                    {t('proxy.config.opencode_sync.modal_title', { defaultValue: 'Select OpenCode Models' })}
                                 </h3>
                                 <p className="text-[10px] text-gray-400 mt-0.5">~/.config/opencode/opencode.json (or .jsonc)</p>
                             </div>
@@ -237,11 +237,11 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                 <div className="px-5 pb-3 shrink-0 border-b border-gray-100 dark:border-base-200">
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                            {t('proxy.config.opencode_sync.select_models', { defaultValue: '选择要同步的模型' })}
+                            {t('proxy.config.opencode_sync.select_models', { defaultValue: 'Select Models to Sync' })}
                             <span className="ml-2 text-gray-300">{selectedModels.size}/{antigravityModels.length}</span>
                         </span>
                         <button type="button" onClick={toggleAll} className="text-[10px] text-blue-500 hover:text-blue-600 font-medium transition-colors">
-                            {allSelected ? t('common.deselect_all', { defaultValue: '取消全选' }) : t('common.select_all', { defaultValue: '全选' })}
+                            {allSelected ? t('common.deselect_all', { defaultValue: 'Deselect All' }) : t('common.select_all', { defaultValue: 'Select All' })}
                         </button>
                     </div>
                     <div className="space-y-2 max-h-[25vh] overflow-auto">
@@ -317,7 +317,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                 {/* Footer */}
                 <div className="px-5 py-3 border-t border-gray-100 dark:border-base-200 flex items-center justify-end gap-2 shrink-0">
                     <button type="button" className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-base-300 transition-colors" onClick={onClose}>
-                        {t('common.cancel', { defaultValue: '取消' })}
+                        {t('common.cancel', { defaultValue: 'Cancel' })}
                     </button>
                     <button
                         type="button"
@@ -331,7 +331,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                         onClick={executeOpenCodeSync}
                     >
                         <RefreshCw size={12} className={syncing ? 'animate-spin' : ''} />
-                        {t('proxy.config.opencode_sync.btn_confirm_sync', { defaultValue: '确认同步' })}
+                        {t('proxy.config.opencode_sync.btn_confirm_sync', { defaultValue: 'Confirm Sync' })}
                     </button>
                 </div>
             </div>

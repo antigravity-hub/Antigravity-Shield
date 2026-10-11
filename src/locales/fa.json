@@ -61,7 +61,9 @@
     "confirm_proceed": "بله، ادامه",
     "select_target_desc": "محیطی که می‌خواهید سهمیه در آن فعال شود را انتخاب کنید:",
     "switch_success": "سوییچ با موفقیت انجام شد",
-    "claude_series": "سری کلود"
+    "claude_series": "سری کلود",
+    "select_all": "انتخاب همه",
+    "deselect_all": "لغو انتخاب همه"
   },
   "nav": {
     "dashboard": "داشبورد",
@@ -1448,11 +1450,26 @@
         "copy_success": "Config content copied"
       },
       "toast": {
-        "sync_success": "Sync successful! {{name}} is ready.",
-        "sync_error": "Sync failed: {{error}}"
+        "config_missing": "لطفاً ابتدا یک کلید API تولید کرده و سرویس پروکسی را راه‌اندازی کنید"
       },
       "sync_confirm_title": "Sync Confirmation",
       "sync_confirm_message": "Ready to sync {{name}} configuration. ⚠️ Warning: This will overwrite your existing local configuration files (e.g. login tokens, API Keys). Are you sure you want to continue?"
+    },
+    "droid_sync": {
+      "modal_title": "افزودن مدل‌ها به دروید",
+      "select_models": "مدل‌های مدنظر برای افزودن را انتخاب کنید",
+      "no_models": "لطفاً از بخش بالا مدل‌های موردنظر را انتخاب نمایید",
+      "btn_confirm_sync": "اعمال در پیکربندی",
+      "toast": {
+        "no_models_selected": "لطفاً حداقل یک مدل را انتخاب کنید",
+        "sync_success_count": "{{count}} مدل به دروید اضافه شد",
+        "sync_error": "همگام‌سازی ناموفق بود: {{error}}"
+      }
+    },
+    "opencode_sync": {
+      "toast": {
+        "sync_success": "همگام‌سازی اوپن‌کد با موفقیت انجام شد"
+      }
     }
   },
   "monitor": {

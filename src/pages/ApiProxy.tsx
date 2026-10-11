@@ -2835,8 +2835,8 @@ print(response.choices[0].message.content)`;
                 {/* 各种对话框 */}
                 <ModalDialog
                     isOpen={isResetConfirmOpen}
-                    title={t('proxy.dialog.reset_mapping_title') || '重置映射'}
-                    message={t('proxy.dialog.reset_mapping_msg') || '确定要重置所有模型映射为系统默认吗？'}
+                    title={t('proxy.dialog.reset_mapping_title', 'Reset Mappings')}
+                    message={t('proxy.dialog.reset_mapping_msg', 'Are you sure you want to reset all model mappings to system defaults?')}
                     type="confirm"
                     isDestructive={true}
                     onConfirm={executeResetMapping}
@@ -2845,8 +2845,8 @@ print(response.choices[0].message.content)`;
 
                 <ModalDialog
                     isOpen={isRegenerateKeyConfirmOpen}
-                    title={t('proxy.dialog.regenerate_key_title') || t('proxy.dialog.confirm_regenerate')}
-                    message={t('proxy.dialog.regenerate_key_msg') || t('proxy.dialog.confirm_regenerate')}
+                    title={t('proxy.dialog.regenerate_key_title', 'Regenerate API Key')}
+                    message={t('proxy.dialog.regenerate_key_msg', 'Are you sure you want to regenerate the API key? The old key will become invalid immediately.')}
                     type="confirm"
                     isDestructive={true}
                     onConfirm={executeGenerateApiKey}
@@ -2855,8 +2855,8 @@ print(response.choices[0].message.content)`;
 
                 <ModalDialog
                     isOpen={isClearBindingsConfirmOpen}
-                    title={t('proxy.dialog.clear_bindings_title') || '清除会话绑定'}
-                    message={t('proxy.dialog.clear_bindings_msg') || '确定要清除所有会话与账号的绑定映射吗？'}
+                    title={t('proxy.dialog.clear_bindings_title', 'Clear Session Bindings')}
+                    message={t('proxy.dialog.clear_bindings_msg', 'Are you sure you want to clear all session-to-account bindings?')}
                     type="confirm"
                     isDestructive={true}
                     onConfirm={executeClearSessionBindings}
@@ -2865,8 +2865,8 @@ print(response.choices[0].message.content)`;
 
                 <ModalDialog
                     isOpen={isClearRateLimitsConfirmOpen}
-                    title={t('proxy.dialog.clear_rate_limits_title') || '清除限流记录'}
-                    message={t('proxy.dialog.clear_rate_limits_confirm') || '确定要清除所有本地限流记录吗？'}
+                    title={t('proxy.dialog.clear_rate_limits_title', 'Clear Rate Limits')}
+                    message={t('proxy.dialog.clear_rate_limits_confirm', 'Are you sure you want to clear all local rate limit records?')}
                     type="confirm"
                     isDestructive={true}
                     onConfirm={executeClearRateLimits}

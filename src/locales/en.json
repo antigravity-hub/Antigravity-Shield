@@ -61,7 +61,9 @@
     "confirm_proceed": "Yes, Continue",
     "select_target_desc": "Select the target environment where quota should be activated:",
     "switch_success": "Switch completed successfully",
-    "claude_series": "Claude Series"
+    "claude_series": "Claude Series",
+    "select_all": "Select All",
+    "deselect_all": "Deselect All"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -1436,11 +1438,26 @@
         "copy_success": "Config content copied"
       },
       "toast": {
-        "sync_success": "Sync successful! {{name}} is ready.",
-        "sync_error": "Sync failed: {{error}}"
+        "config_missing": "Please generate an API Key and start the proxy service first"
       },
       "sync_confirm_title": "Sync Confirmation",
       "sync_confirm_message": "Ready to sync {{name}} configuration. ⚠️ Warning: This will overwrite your existing local configuration files (e.g. login tokens, API Keys). Are you sure you want to continue?"
+    },
+    "droid_sync": {
+      "modal_title": "Add Models to Droid",
+      "select_models": "Select Models to Add",
+      "no_models": "Please select models above to add",
+      "btn_confirm_sync": "Write to Config",
+      "toast": {
+        "no_models_selected": "Please select at least one model",
+        "sync_success_count": "Added {{count}} models to Droid",
+        "sync_error": "Sync failed: {{error}}"
+      }
+    },
+    "opencode_sync": {
+      "toast": {
+        "sync_success": "OpenCode synced successfully"
+      }
     }
   },
   "monitor": {

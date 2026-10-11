@@ -151,7 +151,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
         setSyncConfirmApp(null);
 
         if (!proxyUrl || !apiKey) {
-            showToast(t('proxy.cli_sync.toast.config_missing', { defaultValue: '请先生成 API Key 并启动服务' }), 'error');
+            showToast(t('proxy.cli_sync.toast.config_missing', { defaultValue: 'Please generate an API Key and start the proxy service first' }), 'error');
             return;
         }
 
@@ -300,9 +300,9 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
                                 : "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-500 border border-amber-200/50 dark:border-amber-800/30"
                         )}>
                             {status.is_synced ? (
-                                <><CheckCircle2 size={12} className="shrink-0" /> {t('proxy.cli_sync.status.synced', { defaultValue: '已同步' })}</>
+                                <><CheckCircle2 size={12} className="shrink-0" /> {t('proxy.cli_sync.status.synced', { defaultValue: 'Synced' })}</>
                             ) : (
-                                <><AlertCircle size={12} className="shrink-0" /> {t('proxy.cli_sync.status.not_synced', { defaultValue: '未同步' })}</>
+                                <><AlertCircle size={12} className="shrink-0" /> {t('proxy.cli_sync.status.not_synced', { defaultValue: 'Not Synced' })}</>
                             )}
                         </div>
                     )}
