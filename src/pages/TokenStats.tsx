@@ -85,10 +85,11 @@ const MODEL_COLORS = [
 
 const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#6366f1', '#f43f5e'];
 
-const formatNumber = (num: number): string => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-    return num.toString();
+const formatNumber = (num: number | undefined | null): string => {
+    const val = Number(num) || 0;
+    if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+    if (val >= 1000) return `${(val / 1000).toFixed(1)}K`;
+    return val.toString();
 };
 
 const shortenModelName = (model: string): string => {
@@ -228,19 +229,19 @@ const TokenStats: React.FC = () => {
 
                     if (currentCustomStart || currentCustomEnd) {
                         data = data.filter((d) => {
-                            const p = d.period.slice(0, 10);
+                            const p = (d?.period || '').slice(0, 10);
                             if (currentCustomStart && p < currentCustomStart) return false;
                             if (currentCustomEnd && p > currentCustomEnd) return false;
                             return true;
                         });
                         modelTrend = modelTrend.filter((d) => {
-                            const p = d.period.slice(0, 10);
+                            const p = (d?.period || '').slice(0, 10);
                             if (currentCustomStart && p < currentCustomStart) return false;
                             if (currentCustomEnd && p > currentCustomEnd) return false;
                             return true;
                         });
                         accountTrend = accountTrend.filter((d) => {
-                            const p = d.period.slice(0, 10);
+                            const p = (d?.period || '').slice(0, 10);
                             if (currentCustomStart && p < currentCustomStart) return false;
                             if (currentCustomEnd && p > currentCustomEnd) return false;
                             return true;
