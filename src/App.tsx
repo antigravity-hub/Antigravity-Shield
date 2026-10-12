@@ -117,6 +117,7 @@ function OverlayApp() {
   useEffect(() => {
     if (config?.language) {
       i18n.changeLanguage(config.language);
+      document.documentElement.lang = config.language;
       if (config.language === 'ar' || config.language === 'fa' || config.language.startsWith('fa-')) {
         document.documentElement.dir = 'rtl';
       } else {
@@ -147,6 +148,7 @@ function MainApp() {
   useEffect(() => {
     if (config?.language) {
       i18n.changeLanguage(config.language);
+      document.documentElement.lang = config.language;
       // Support RTL
       if (config.language === 'ar' || config.language === 'fa' || config.language.startsWith('fa-')) {
         document.documentElement.dir = 'rtl';
