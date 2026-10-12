@@ -562,7 +562,9 @@ impl RateLimitTracker {
             || body_lower.contains("quota reset")
             || body_lower.contains("quota limit")
             || body_lower.contains("per day")
-            || body_lower.contains("daily quota");
+            || body_lower.contains("daily quota")
+            || body_lower.contains("individual quota")
+            || body_lower.contains("individual quota reached");
 
         if body_lower.contains("per minute")
             || body_lower.contains("rate limit")

@@ -11,6 +11,8 @@ static DURATION_RE: Lazy<Regex> = Lazy::new(|| {
 
 static RE_TEXT_DELAY_PATTERNS: Lazy<Vec<Regex>> = Lazy::new(|| {
     vec![
+        Regex::new(r"(?i)resets in ([^.,;\]\n>]+)").unwrap(),
+        Regex::new(r"(?i)reset in ([^.,;\]\n>]+)").unwrap(),
         Regex::new(r"(?i)quota will reset after ([^.,;\]\n]+)").unwrap(),
         Regex::new(r"(?i)quota will reset in ([^.,;\]\n]+)").unwrap(),
         Regex::new(r"(?i)retry after ([^.,;\]\n]+)").unwrap(),

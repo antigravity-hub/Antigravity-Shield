@@ -245,7 +245,8 @@ pub fn start_scheduler(
 
                                     // Calculate target interval based on Estimated Runway & Live Concurrency Telemetry
                                     let base_interval = if min_pct <= 0 {
-                                        0 // Already depleted, let rotation handler manage it
+                                        // Depleted account: fast poll (15-20s) to maintain rotation pressure until switched
+                                        15 + (now % 6)
                                     } else if min_pct <= 5 {
                                         // Critical Danger Zone: Sub-5% remaining
                                         if is_heavy_burst {
@@ -263,7 +264,7 @@ pub fn start_scheduler(
                                             40 + (now % 10) // ~40-49s check
                                         } else {
                                             // No tokens detected in last 90s, check comfortably but safely
-                                            55 + (now % 15) // ~55-69s check (No more 120s+ delay!)
+                                            55 + (now % 15) // ~55-69s check
                                         }
                                     } else if let Some(runway) = estimated_runway_mins {
                                         // Scale runway with active chat concurrency multiplier
@@ -273,18 +274,21 @@ pub fn start_scheduler(
                                         if effective_runway < 8.0 || is_heavy_burst {
                                             30 + (now % 8) // High burn
                                         } else if effective_runway < 18.0 {
-                                            60 + (now % 15) // Moderate burn
+                                            50 + (now % 10) // Moderate burn
                                         } else if effective_runway > 30.0 && !has_live_tokens {
-                                            0 // Safe fleet cycle
+                                            150 + (now % 25) // Safe fleet cycle (~2.5m)
                                         } else {
-                                            120 + (now % 20)
+                                            90 + (now % 15) // Active steady burn (~1.5m)
                                         }
                                     } else {
-                                        // Quota > 25% without established velocity
+                                        // Quota > 25% without established velocity:
+                                        // NEVER set 0! We must poll periodically to establish velocity trajectory.
                                         if is_heavy_burst {
-                                            60 + (now % 15)
+                                            45 + (now % 10) // Burst active (~45-55s)
+                                        } else if has_live_tokens {
+                                            60 + (now % 15) // Active IDE coding session (~60-75s)
                                         } else {
-                                            0
+                                            150 + (now % 25) // Idle baseline heartbeat (~2.5m)
                                         }
                                     };
 
@@ -296,8 +300,8 @@ pub fn start_scheduler(
                                             match stagnant_checks {
                                                 0 => base_interval,
                                                 1 => base_interval.max(90) + (now % 15),
-                                                2 => base_interval.max(180) + (now % 25),
-                                                _ => 0, // Inactive / Idle
+                                                2 => base_interval.max(150) + (now % 20),
+                                                _ => base_interval.max(210) + (now % 30), // Max ~4m idle floor, NEVER 0!
                                             }
                                         };
 
