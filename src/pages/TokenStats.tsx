@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { request as invoke } from '../utils/request';
 import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2, CalendarRange, Filter, Info, Compass, ShieldCheck } from 'lucide-react';
+import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2, CalendarRange, Filter, Compass, ShieldCheck } from 'lucide-react';
 import { TokenHeatmap, DailyTokenActivity } from '../components/stats/TokenHeatmap';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 
@@ -519,6 +519,36 @@ const TokenStats: React.FC = () => {
         );
     };
 
+    const getActivePeriodLabel = (): string => {
+        if (selectedHeatmapDate) {
+            return `${t('token_stats.period_selected_day', 'Filtered Day')}: ${selectedHeatmapDate}`;
+        }
+        if (timeRange === 'custom') {
+            if (customStartDate && customEndDate) {
+                return customStartDate === customEndDate 
+                    ? `${t('token_stats.period_selected_day', 'Filtered Day')}: ${customStartDate}`
+                    : `${customStartDate} → ${customEndDate}`;
+            }
+            if (customStartDate) return `≥ ${customStartDate}`;
+            if (customEndDate) return `≤ ${customEndDate}`;
+            return t('token_stats.custom_range', 'Custom Range');
+        }
+        switch (timeRange) {
+            case 'hourly':
+                return t('token_stats.period_hourly', 'Past 1 Hour');
+            case 'daily':
+                return t('token_stats.period_daily', 'Past 24 Hours');
+            case 'weekly':
+                return t('token_stats.period_weekly', 'Past 7 Days');
+            case 'monthly':
+                return t('token_stats.period_monthly', 'Past 30 Days');
+            case 'yearly':
+                return t('token_stats.period_yearly', 'Past 1 Year');
+            default:
+                return t('token_stats.period_daily', 'Past 24 Hours');
+        }
+    };
+
     return (
         <div className="h-full w-full overflow-y-auto">
             <div className={`p-5 space-y-4 ${CONTAINER_MAX_WIDTH}`}>
@@ -730,7 +760,7 @@ const TokenStats: React.FC = () => {
                                 </div>
                                 <div>
                                     <h2 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                        {t('token_stats.horizon_title', 'Token Horizon & Reality Benchmark')}
+                                        {t('token_stats.horizon_title', 'Token Horizon')}
                                         <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
                                             {t('token_stats.reality_verified', 'Verified Real Data')}
                                         </span>
@@ -748,7 +778,7 @@ const TokenStats: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Card 1: 5-Hour Rolling Window */}
                             <div className="bg-white/90 dark:bg-gray-800/90 rounded-xl p-4 border border-blue-100 dark:border-blue-900/30 shadow-sm relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full pointer-events-none transition-transform group-hover:scale-110" />
@@ -802,37 +832,36 @@ const TokenStats: React.FC = () => {
                                     <span>{t('token_stats.hourly_rate', 'Hourly Rate:')} <strong>{formatNumber(horizonMetrics.hourly_burn_rate)}</strong>/h</span>
                                 </div>
                             </div>
-
-                            {/* Card 3: Reality Benchmark & Myth Buster */}
-                            <div className="bg-gradient-to-br from-amber-50/80 to-white dark:from-amber-950/20 dark:to-gray-800/90 rounded-xl p-4 border border-amber-200/70 dark:border-amber-900/40 shadow-sm">
-                                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400 mb-1.5">
-                                    <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-                                    <span>{t('token_stats.reality_check_title', 'Token Ceiling Engineering Reality')}</span>
-                                </div>
-                                <p className="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed">
-                                    {t('token_stats.reality_check_desc', 'Common belief assumes a user can consume hundreds of millions of tokens daily. In reality, due to TPM limits, network latency, and model reasoning times, even intensive multi-agent workflows burn ~300K-800K per 5 hours and ~2.5M-5M daily.')}
-                                </p>
-                                <div className="mt-2 text-[10px] text-amber-800 dark:text-amber-300/90 font-medium bg-amber-100/60 dark:bg-amber-900/30 px-2 py-1 rounded-md">
-                                    💡 {t('token_stats.reality_conclusion', 'The 5-hour quota window is engineered around this reality, with proactive switching preventing workflow stalls during heavy bursts.')}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 )}
 
                 {summary && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                        <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-800/50 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
-                            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-2">
-                                <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
-                                    <Zap className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                                </div>
-                                {t('token_stats.total_tokens', 'Total Tokens')}
-                            </div>
-                            <div className="text-2xl font-bold text-gray-800 dark:text-white">
-                                {formatNumber(summary.total_tokens)}
-                            </div>
+                    <div className="space-y-2.5">
+                        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1">
+                            <span className="flex items-center gap-1.5 font-medium">
+                                <CalendarDays className="w-3.5 h-3.5 text-blue-500" />
+                                <span>{t('token_stats.active_range_summary', 'Aggregated Metrics For')}:</span>
+                                <span className="text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/40 px-2 py-0.5 rounded-md">
+                                    {getActivePeriodLabel()}
+                                </span>
+                            </span>
                         </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                            <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-800/50 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+                                <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-2">
+                                    <div className="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
+                                        <Zap className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                                    </div>
+                                    {t('token_stats.total_tokens', 'Total Tokens')}
+                                </div>
+                                <div className="text-2xl font-bold text-gray-800 dark:text-white">
+                                    {formatNumber(summary.total_tokens)}
+                                </div>
+                                <div className="mt-1.5 text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                                    {t('token_stats.active_period', 'Period')}: <span className="font-semibold text-blue-600 dark:text-blue-400">{getActivePeriodLabel()}</span>
+                                </div>
+                            </div>
                         <div className="bg-gradient-to-br from-blue-50/50 to-white dark:from-blue-900/10 dark:to-gray-800 rounded-xl p-4 shadow-sm border border-blue-100 dark:border-blue-900/30 hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-2 text-blue-600/80 dark:text-blue-400/80 text-sm mb-2">
                                 <div className="p-1.5 rounded-lg bg-blue-100/50 dark:bg-blue-900/30">
@@ -889,7 +918,8 @@ const TokenStats: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
 
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center justify-between mb-4">

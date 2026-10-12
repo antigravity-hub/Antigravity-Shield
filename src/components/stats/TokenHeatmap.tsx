@@ -85,13 +85,13 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
         }
         switch (level) {
             case 1:
-                return 'bg-emerald-200 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800/60 hover:ring-1 hover:ring-emerald-400';
+                return 'bg-[#d1fae5] dark:bg-emerald-300/25 border border-emerald-200 dark:border-emerald-400/30 hover:ring-1 hover:ring-emerald-400';
             case 2:
-                return 'bg-emerald-350 bg-[#6ee7b7] dark:bg-emerald-800 border border-emerald-400 dark:border-emerald-700 hover:ring-1 hover:ring-emerald-400';
+                return 'bg-[#6ee7b7] dark:bg-emerald-400/50 border border-emerald-400 dark:border-emerald-400/60 hover:ring-1 hover:ring-emerald-400';
             case 3:
-                return 'bg-emerald-500 dark:bg-emerald-600 hover:ring-1 hover:ring-emerald-300 shadow-xs';
+                return 'bg-[#10b981] dark:bg-emerald-500 border border-emerald-600 dark:border-emerald-400 hover:ring-1 hover:ring-emerald-300 shadow-xs';
             case 4:
-                return 'bg-emerald-700 dark:bg-emerald-400 text-white shadow-sm hover:ring-1 hover:ring-emerald-200';
+                return 'bg-[#065f46] dark:bg-[#15803d] border border-emerald-800 dark:border-emerald-500 text-white shadow-sm hover:ring-1 hover:ring-emerald-200';
             default:
                 return 'bg-gray-100 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/40 hover:border-gray-400 dark:hover:border-gray-600';
         }
@@ -403,11 +403,11 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                 {/* GitHub Level Legend */}
                 <div className="flex items-center gap-1.5">
                     <span className="text-[10px]">{t('token_stats.heatmap_less', 'Less')}</span>
-                    <div className="w-2.5 h-2.5 rounded-xs bg-gray-100 dark:bg-gray-800 border border-gray-200/50 dark:border-gray-700/50" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-emerald-200 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800/60" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-[#6ee7b7] dark:bg-emerald-800 border border-emerald-400 dark:border-emerald-700" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-emerald-500 dark:bg-emerald-600" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-emerald-700 dark:bg-emerald-400" />
+                    <div className="w-2.5 h-2.5 rounded-xs bg-gray-100 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/50" />
+                    <div className="w-2.5 h-2.5 rounded-xs bg-[#d1fae5] dark:bg-emerald-300/25 border border-emerald-200 dark:border-emerald-400/30" />
+                    <div className="w-2.5 h-2.5 rounded-xs bg-[#6ee7b7] dark:bg-emerald-400/50 border border-emerald-400 dark:border-emerald-400/60" />
+                    <div className="w-2.5 h-2.5 rounded-xs bg-[#10b981] dark:bg-emerald-500 border border-emerald-600 dark:border-emerald-400" />
+                    <div className="w-2.5 h-2.5 rounded-xs bg-[#065f46] dark:bg-[#15803d] border border-emerald-800 dark:border-emerald-500" />
                     <span className="text-[10px]">{t('token_stats.heatmap_more', 'More')}</span>
                 </div>
             </div>

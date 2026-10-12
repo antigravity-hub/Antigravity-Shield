@@ -1705,7 +1705,7 @@
     "heatmap_daily_view": "Daily (365)",
     "heatmap_weekly_view": "Weekly",
     "heatmap_no_activity": "No token activity on",
-    "horizon_title": "Token Horizon & Reality Benchmark",
+    "horizon_title": "Token Horizon",
     "reality_verified": "Verified Real Data",
     "horizon_desc": "Real rolling 5-hour and 7-day usage metrics grounded in actual engineering limits",
     "db_grounded": "SQLite Direct Data",
@@ -1717,9 +1717,14 @@
     "window_7d_title": "Weekly Total (Last 7 Days)",
     "day": "Day",
     "hourly_rate": "Hourly Rate:",
-    "reality_check_title": "Token Ceiling Engineering Reality",
-    "reality_check_desc": "Common belief assumes a user can consume hundreds of millions of tokens daily. In reality, due to TPM limits, network latency, and model reasoning times, even intensive multi-agent workflows burn ~300K-800K per 5 hours and ~2.5M-5M daily.",
-    "reality_conclusion": "The 5-hour quota window is engineered around this reality, with proactive switching preventing workflow stalls during heavy bursts."
+    "period_hourly": "過去 1 小時",
+    "period_daily": "過去 24 小時",
+    "period_weekly": "過去 7 天",
+    "period_monthly": "過去 30 天",
+    "period_yearly": "過去 1 年",
+    "period_selected_day": "熱力圖選取日期",
+    "active_period": "統計週期",
+    "active_range_summary": "當前統計週期"
   },
   "security": {
     "title": "安全監控",
