@@ -1937,6 +1937,8 @@
     "overlay_dismiss": "بستن",
     "overlay_auto_dismiss": "بسته‌شدن خودکار تا چند ثانیه دیگر",
     "overlay_auto_dismiss_timer": "بسته‌شدن خودکار تا {{seconds}} ثانیه دیگر",
+    "overlay_from_account": "حساب فعلی",
+    "overlay_depleted_badge": "به‌پایان‌رسیده",
     "overlay_waiting": "در حال دریافت اطلاعات شیلد...",
     "overlay_default_model": "مدل هوش مصنوعی"
   }
