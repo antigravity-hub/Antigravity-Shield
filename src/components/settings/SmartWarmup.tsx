@@ -85,7 +85,7 @@ const SmartWarmup: React.FC<SmartWarmupProps> = ({ config, onChange }) => {
                     <div className="space-y-3">
                         <div>
                             <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-2">
-                                {t('settings.warmup.monitored_models_label', '预热模型范围')}
+                                {t('settings.warmup.monitored_models_label', 'Warmup Model Scope')}
                             </label>
                             <div className="grid grid-cols-4 gap-2">
                                 {warmupModelsOptions.map((model) => {
@@ -115,7 +115,7 @@ const SmartWarmup: React.FC<SmartWarmupProps> = ({ config, onChange }) => {
                                 })}
                             </div>
                             <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-2 leading-relaxed">
-                                {t('settings.warmup.monitored_models_desc', '勾选需要预热的模型。在周配额到达重置时间后将自动唤醒 1 次启动新周期。')}
+                                {t('settings.warmup.monitored_models_desc', 'Select models to warm up. Automatically wakes once when quota resets to start new period.')}
                             </p>
                         </div>
                     </div>

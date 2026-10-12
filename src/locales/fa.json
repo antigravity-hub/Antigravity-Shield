@@ -779,7 +779,8 @@
       "http_api_port_placeholder": "Default port 19527",
       "http_api_port_invalid": "Invalid port number (range: 1024-65535)",
       "http_api_settings_saved": "HTTP API settings saved, restart required to apply",
-      "http_api_restart_required": "⚠️ Restart required to apply"
+      "http_api_restart_required": "⚠️ Restart required to apply",
+      "need_cli_path": "ابتدا باید مسیر فایل خط فرمان در بالا تعیین یا شناسایی شود"
     },
     "debug": {
       "title": "Debug Console",
@@ -847,20 +848,20 @@
       "support_copied": "آدرس کپی شد!"
     },
     "advanced_thinking": {
-      "title": "Advanced Thinking & Global Config",
-      "description": "Manage thinking capabilities, image modes, and global instructions."
+      "title": "تفکر پیشرفته و تنظیمات سراسری",
+      "description": "مدیریت متمرکز قابلیت‌های تفکر، حالت‌های تصویر و دستورالعمل‌های سراسری."
     },
     "thinking_budget": {
-      "title": "Thinking Budget",
+      "title": "بودجه تفکر",
       "description": "Controls the token budget for AI deep thinking. Some models (e.g., Flash, -thinking suffix models) are limited to 24576 by upstream API.",
-      "mode_label": "Processing Mode",
+      "mode_label": "حالت پردازش",
       "mode": {
         "auto": "Auto Limit",
         "passthrough": "Passthrough",
         "custom": "Custom",
         "adaptive": "Adaptive"
       },
-      "effort_label": "Thinking Effort",
+      "effort_label": "میزان تفکر",
       "effort": {
         "low": "Low",
         "medium": "Medium",
@@ -873,8 +874,8 @@
       "tokens": "tokens"
     },
     "image_thinking_mode": {
-      "title": "Image Thinking Mode",
-      "hint": "Affects quality and generation flow",
+      "title": "حالت تفکر تصویر",
+      "hint": "بر کیفیت و روند تولید تصاویر تاثیر می‌گذارد",
       "options": {
         "enabled": "Enabled",
         "disabled": "Disabled",
@@ -883,8 +884,8 @@
       }
     },
     "global_system_prompt": {
-      "title": "Global System Prompt",
-      "hint": "Automatically injected into all systemInstructions",
+      "title": "پرامپت سراسری سیستم",
+      "hint": "تزریق خودکار به systemInstruction در کلیه درخواست‌ها",
       "placeholder": "Enter global system prompt...\nExample: You are a senior full-stack developer. Please respond in English.",
       "char_count": "{{count}} characters",
       "long_prompt_warning": "Prompt is quite long (over 2000 chars) and may consume significant context space."
@@ -892,7 +893,9 @@
     "branding": {
       "title": "Antigravity Shield",
       "subtitle": "Enterprise AI Gateway & Account Manager"
-    }
+    },
+    "save_failed_reverted": "ذخیره‌سازی ناموفق بود، تنظیمات بازیابی شدند",
+    "web_mode_limitation": "(در حالت وب پشتیبانی نمی‌شود)"
   },
   "tray": {
     "current": "حساب فعلی: {{account}}",

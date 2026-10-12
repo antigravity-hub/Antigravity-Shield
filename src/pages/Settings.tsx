@@ -681,7 +681,7 @@ function Settings() {
                                     <option value="ar">العربية</option>
                                     <option value="es">Español</option>
                                     <option value="my">Bahasa Melayu</option>
-                                    <option value="fa">Persian</option>
+                                    <option value="fa">فارسی</option>
                                 </select>
                             </div>
 
@@ -709,7 +709,7 @@ function Settings() {
                                     <label className="block text-sm font-medium text-gray-900 dark:text-base-content">{t('settings.general.auto_launch')}</label>
                                     {!isTauri() && (
                                         <span className="text-xs text-orange-500 dark:text-orange-400">
-                                            {t('settings.web_mode_limitation', '(Web 模式不支持)')}
+                                            {t('settings.web_mode_limitation', '(Not supported in Web mode)')}
                                         </span>
                                     )}
                                 </div>
@@ -842,7 +842,7 @@ function Settings() {
                                                             } catch (error) {
                                                                 // 保存失败，回滚到原始快照
                                                                 setFormData(originalConfig);
-                                                                showToast(`保存失败，已恢复设置: ${error}`, 'error');
+                                                                showToast(`${t('settings.save_failed_reverted', 'Failed to save, reverted settings')}: ${error}`, 'error');
                                                             }
                                                         }
                                                     }}
@@ -1287,7 +1287,7 @@ function Settings() {
                                             </button>
                                         ) : (
                                             <span className="self-center text-xs text-gray-400 dark:text-gray-500 italic px-2">
-                                                {t('settings.web_mode_limitation', '(Web 模式不支持)')}
+                                                {t('settings.web_mode_limitation', '(Not supported in Web mode)')}
                                             </span>
                                         )}
                                     </div>
@@ -1313,7 +1313,7 @@ function Settings() {
                                             </button>
                                         ) : (
                                             <span className="self-center text-xs text-gray-400 dark:text-gray-500 italic px-2">
-                                                {t('settings.web_mode_limitation', '(Web 模式不支持)')}
+                                                {t('settings.web_mode_limitation', '(Not supported in Web mode)')}
                                             </span>
                                         )}
                                     </div>
@@ -1356,7 +1356,7 @@ function Settings() {
                                             </button>
                                         ) : (
                                             <span className="self-center text-xs text-gray-400 dark:text-gray-500 italic px-2">
-                                                {t('settings.web_mode_limitation', '(Web 模式不支持)')}
+                                                {t('settings.web_mode_limitation', '(Not supported in Web mode)')}
                                             </span>
                                         )}
                                     </div>
@@ -1375,7 +1375,7 @@ function Settings() {
                                             type="text"
                                             className="flex-1 px-4 py-4 border border-gray-200 dark:border-base-300 rounded-lg bg-gray-50 dark:bg-base-200 text-gray-900 dark:text-base-content font-medium"
                                             value={formData.antigravity_cli_executable || ''}
-                                            placeholder={t('settings.advanced.antigravity_cli_path_placeholder', '未设置 (将使用自动探测)')}
+                                            placeholder={t('settings.advanced.antigravity_cli_path_placeholder', 'Not set (will use auto-detection)')}
                                             onChange={(e) => setFormData({ ...formData, antigravity_cli_executable: e.target.value })}
                                         />
                                         {formData.antigravity_cli_executable && (
@@ -1401,23 +1401,23 @@ function Settings() {
                                             </button>
                                         ) : (
                                             <span className="self-center text-xs text-gray-400 dark:text-gray-500 italic px-2">
-                                                {t('settings.web_mode_limitation', '(Web 模式不支持)')}
+                                                {t('settings.web_mode_limitation', '(Not supported in Web mode)')}
                                             </span>
                                         )}
                                     </div>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                        {t('settings.advanced.antigravity_cli_path_desc', '设置您的命令行客户端 (agy) 的可执行文件路径，用于一键解除账号限制。')}
+                                        {t('settings.advanced.antigravity_cli_path_desc', 'Set CLI client (agy) executable path to unlock account restrictions.')}
                                     </p>
                                     
                                     {/* 新增：解密/修补准入限制一键修补按钮 */}
                                     <div className={`mt-3 flex items-center gap-4 p-3 rounded-lg border ${formData.antigravity_cli_executable ? 'bg-blue-50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/30' : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'}`}>
                                         <div className="flex-1">
                                             <h4 className={`text-sm font-semibold ${formData.antigravity_cli_executable ? 'text-blue-900 dark:text-blue-200' : 'text-gray-500 dark:text-gray-400'}`}>
-                                                {t('settings.advanced.patch_eligibility_title', '账号准入限制解除')}
+                                                {t('settings.advanced.patch_eligibility_title', 'Unlock Account Eligibility Restrictions')}
                                             </h4>
                                             <p className={`text-xs mt-0.5 ${formData.antigravity_cli_executable ? 'text-blue-700 dark:text-blue-300/80' : 'text-gray-400 dark:text-gray-500'}`}>
-                                                {t('settings.advanced.patch_eligibility_desc', '新版 agy 二进制强制拦截未授权账号，此操作一键跳过本地准入拦截检查。')}
-                                                {!formData.antigravity_cli_executable && " (需先在上方设置或探测路径)"}
+                                                {t('settings.advanced.patch_eligibility_desc', 'Newer agy binaries block unauthorized accounts; this bypasses local admission checks.')}
+                                                {!formData.antigravity_cli_executable && ` (${t('settings.advanced.need_cli_path', 'Need to set or detect CLI path above first')})`}
                                             </p>
                                         </div>
                                         <button
@@ -1433,7 +1433,7 @@ function Settings() {
                                                 }
                                             }}
                                         >
-                                            {t('settings.advanced.patch_btn', '一键解除')}
+                                            {t('settings.advanced.patch_btn', 'One-Click Unlock')}
                                         </button>
                                     </div>
 
@@ -1473,7 +1473,7 @@ function Settings() {
                                             </button>
                                         ) : (
                                             <span className="self-center text-xs text-gray-400 dark:text-gray-500 italic px-2">
-                                                {t('settings.web_mode_limitation', '(Web 模式不支持)')}
+                                                {t('settings.web_mode_limitation', '(Not supported in Web mode)')}
                                             </span>
                                         )}
                                     </div>

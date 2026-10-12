@@ -61,10 +61,10 @@ export default function ThinkingBudget({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-blue-50/30 dark:bg-blue-900/5 border border-blue-100/50 dark:border-blue-800/20 rounded-lg px-4 py-3">
                 <div className="space-y-0.5">
                     <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100">
-                        {t("settings.thinking_budget.title", { defaultValue: "思考预算 (Thinking Budget)" })}
+                        {t("settings.thinking_budget.title", { defaultValue: "Thinking Budget" })}
                     </h4>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                        {t("settings.thinking_budget.mode_label", { defaultValue: "处理模式" })}
+                        {t("settings.thinking_budget.mode_label", { defaultValue: "Processing Mode" })}
                     </p>
                 </div>
 
@@ -89,7 +89,7 @@ export default function ThinkingBudget({
                 {config.mode === 'auto' && (
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 italic">
                         {t("settings.thinking_budget.auto_hint", {
-                            defaultValue: "自动模式：对 Gemini/Thinking 及联网请求自动限制在 24576 以避免错误。",
+                            defaultValue: "Auto: Automatically limits Gemini/Thinking requests to 24576 to prevent errors.",
                         })}
                     </p>
                 )}
@@ -97,7 +97,7 @@ export default function ThinkingBudget({
                 {config.mode === 'passthrough' && (
                     <p className="text-[10px] text-amber-600 dark:text-amber-500/80">
                         {t("settings.thinking_budget.passthrough_warning", {
-                            defaultValue: "透传：直接使用调用方原始值，不支持高值可能导致失败。",
+                            defaultValue: "Passthrough: Directly uses caller original value.",
                         })}
                     </p>
                 )}
@@ -106,7 +106,7 @@ export default function ThinkingBudget({
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-3">
                             <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {t("settings.thinking_budget.effort_label", { defaultValue: "思考强度" })}:
+                                {t("settings.thinking_budget.effort_label", { defaultValue: "Thinking Effort" })}:
                             </span>
                             <div className="flex bg-gray-100 dark:bg-gray-800 p-0.5 rounded-lg">
                                 {efforts.map((effort) => (
@@ -125,7 +125,7 @@ export default function ThinkingBudget({
                         </div>
                         <p className="text-[10px] text-purple-600 dark:text-purple-400/80">
                             {t("settings.thinking_budget.adaptive_hint", {
-                                defaultValue: "自适应模式：由模型根据任务复杂度自动调整思考量。Claude 4.6+ 推荐使用此模式。",
+                                defaultValue: "Adaptive: Model automatically adjusts thinking based on task complexity.",
                             })}
                         </p>
                     </div>
@@ -149,7 +149,7 @@ export default function ThinkingBudget({
                         </div>
                         <p className="text-[10px] text-gray-500 dark:text-gray-500">
                             {t("settings.thinking_budget.custom_value_hint", {
-                                defaultValue: "推荐：24576 (Flash) 或 51200 (扩展)",
+                                defaultValue: "Recommended: 24576 (Flash) or 51200 (Extended)",
                             })}
                         </p>
                     </div>

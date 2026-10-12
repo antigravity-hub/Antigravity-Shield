@@ -25,10 +25,10 @@ export default function AdvancedThinking({
                     </div>
                     <div>
                         <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 leading-none">
-                            {t("settings.advanced_thinking.title", { defaultValue: "高级思维与全局配置" })}
+                            {t("settings.advanced_thinking.title", { defaultValue: "Advanced Thinking & Global Config" })}
                         </h3>
                         <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
-                            {t("settings.advanced_thinking.description", { defaultValue: "集中管理思考能力、图像模式及全局指令。" })}
+                            {t("settings.advanced_thinking.description", { defaultValue: "Centrally manage thinking capabilities, image modes, and global instructions." })}
                         </p>
                     </div>
                 </div>

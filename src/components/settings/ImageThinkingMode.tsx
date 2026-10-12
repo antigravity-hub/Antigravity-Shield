@@ -26,10 +26,10 @@ export default function ImageThinkingMode({
                     </div>
                     <div className="space-y-0.5">
                         <h4 className="font-bold text-sm text-gray-900 dark:text-gray-100">
-                            {t("settings.image_thinking_mode.title", { defaultValue: "图像思维模式 (Image Thinking Mode)" })}
+                            {t("settings.image_thinking_mode.title", { defaultValue: "Image Thinking Mode" })}
                         </h4>
                         <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                            {t("settings.image_thinking_mode.hint", { defaultValue: "影响画质与生成流程" })}
+                            {t("settings.image_thinking_mode.hint", { defaultValue: "Affects image quality and generation flow" })}
                         </p>
                     </div>
                 </div>
@@ -45,7 +45,7 @@ export default function ImageThinkingMode({
                                 }`}
                         >
                             {t(`settings.image_thinking_mode.options.${option.label}`, {
-                                defaultValue: option.value === 'enabled' ? "开启" : "关闭"
+                                defaultValue: option.value === 'enabled' ? "Enabled" : "Disabled"
                             })}
                         </button>
                     ))}
@@ -55,8 +55,8 @@ export default function ImageThinkingMode({
             <div className="px-1">
                 <p className="text-[10px] text-gray-400 dark:text-gray-500 italic leading-relaxed">
                     {value === 'enabled'
-                        ? t("settings.image_thinking_mode.options.enabled_desc", { defaultValue: "开启：保留思维链，返回草图 + 成品双图。" })
-                        : t("settings.image_thinking_mode.options.disabled_desc", { defaultValue: "关闭：禁用思维链，直接生成单张超清图片（画质优先）。" })
+                        ? t("settings.image_thinking_mode.options.enabled_desc", { defaultValue: "Enabled: Preserve thought chain, return draft and final images." })
+                        : t("settings.image_thinking_mode.options.disabled_desc", { defaultValue: "Disabled: Disable thought chain, directly generate high-res image." })
                     }
                 </p>
             </div>

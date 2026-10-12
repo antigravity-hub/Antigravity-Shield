@@ -777,7 +777,8 @@
       "http_api_port_placeholder": "Default port 19527",
       "http_api_port_invalid": "Invalid port number (range: 1024-65535)",
       "http_api_settings_saved": "HTTP API settings saved, restart required to apply",
-      "http_api_restart_required": "⚠️ Restart required to apply"
+      "http_api_restart_required": "⚠️ Restart required to apply",
+      "need_cli_path": "Need to set or detect CLI path above first"
     },
     "debug": {
       "title": "Debug Console",
@@ -846,7 +847,7 @@
     },
     "advanced_thinking": {
       "title": "Advanced Thinking & Global Config",
-      "description": "Manage thinking capabilities, image modes, and global instructions."
+      "description": "Centrally manage thinking capabilities, image modes, and global instructions."
     },
     "thinking_budget": {
       "title": "Thinking Budget",
@@ -872,7 +873,7 @@
     },
     "image_thinking_mode": {
       "title": "Image Thinking Mode",
-      "hint": "Affects quality and generation flow",
+      "hint": "Affects image quality and generation flow",
       "options": {
         "enabled": "Enabled",
         "disabled": "Disabled",
@@ -882,7 +883,7 @@
     },
     "global_system_prompt": {
       "title": "Global System Prompt",
-      "hint": "Automatically injected into all systemInstructions",
+      "hint": "Automatically inject into systemInstruction for all requests",
       "placeholder": "Enter global system prompt...\nExample: You are a senior full-stack developer. Please respond in English.",
       "char_count": "{{count}} characters",
       "long_prompt_warning": "Prompt is quite long (over 2000 chars) and may consume significant context space."
@@ -890,7 +891,9 @@
     "branding": {
       "title": "Antigravity Shield",
       "subtitle": "Enterprise AI Gateway & Account Manager"
-    }
+    },
+    "save_failed_reverted": "Failed to save, reverted settings",
+    "web_mode_limitation": "(Not supported in Web mode)"
   },
   "tray": {
     "current": "Current",
