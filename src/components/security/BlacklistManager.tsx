@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { request as invoke } from '../../utils/request';
 import { Trash2, AlertCircle, Plus, Search, X } from 'lucide-react';
+import { showToast } from '../common/ToastContainer';
 
 interface IpBlacklistEntry {
     ip_pattern: string;
@@ -71,11 +72,11 @@ export const BlacklistManager: React.FC<Props> = ({ refreshKey }) => {
             console.error('Failed to add to blacklist', e);
             const errorMsg = String(e);
             if (errorMsg.includes('UNIQUE constraint')) {
-                alert(t('security.blacklist.error_duplicate') || 'This IP is already in the blacklist');
+                showToast(t('security.blacklist.error_duplicate') || 'This IP is already in the blacklist', 'error');
             } else if (errorMsg.includes('Invalid IP pattern')) {
-                alert(t('security.blacklist.error_invalid_ip') || 'Invalid IP format. Please use IP address or CIDR notation (e.g., 192.168.1.0/24)');
+                showToast(t('security.blacklist.error_invalid_ip') || 'Invalid IP format. Please use IP address or CIDR notation (e.g., 192.168.1.0/24)', 'error');
             } else {
-                alert(t('security.blacklist.error_add_failed') || 'Failed to add IP: ' + e);
+                showToast((t('security.blacklist.error_add_failed') || 'Failed to add IP: ') + e, 'error');
             }
         }
     };

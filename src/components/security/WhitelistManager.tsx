@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { request as invoke } from '../../utils/request';
 import { Trash2, Check, Plus, Search, X, ShieldCheck } from 'lucide-react';
+import { showToast } from '../common/ToastContainer';
 
 interface IpWhitelistEntry {
     ip_pattern: string;
@@ -55,7 +56,7 @@ export const WhitelistManager: React.FC<Props> = ({ refreshKey }) => {
             loadWhitelist();
         } catch (e) {
             console.error('Failed to add to whitelist', e);
-            alert('Failed to add IP: ' + e);
+            showToast(`${t('security.whitelist.error_add_failed', 'Failed to add IP to whitelist')}: ${e}`, 'error');
         }
     };
 

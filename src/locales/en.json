@@ -1712,7 +1712,10 @@
       "expires_placeholder": "Leave empty for permanent",
       "cancel": "Cancel",
       "confirm": "Add",
-      "add_btn": "Add"
+      "add_btn": "Add",
+      "error_add_failed": "Failed to add IP to blacklist",
+      "error_duplicate": "IP already exists in blacklist",
+      "error_invalid_ip": "Invalid IP address or CIDR range"
     },
     "whitelist": {
       "add_ip": "Add Trusted IP",
@@ -1722,7 +1725,8 @@
       "description_placeholder": "e.g. Internal Server",
       "cancel": "Cancel",
       "confirm": "Add",
-      "add_btn": "Add"
+      "add_btn": "Add",
+      "error_add_failed": "Failed to add IP to whitelist"
     },
     "config": {
       "title": "Security Settings",
