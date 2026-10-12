@@ -51,7 +51,7 @@ const Toast = ({ id, message, type, duration = 3000, onClose }: ToastProps) => {
             style={{ minWidth: '300px' }}
         >
             {getIcon()}
-            <p className="flex-1 text-sm font-medium text-gray-700 dark:text-base-content">{message}</p>
+            <p className="flex-1 text-sm font-medium text-gray-700 dark:text-base-content rtl:text-right">{message}</p>
             <button
                 onClick={() => { setIsVisible(false); setTimeout(() => onClose(id), 300); }}
                 className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
