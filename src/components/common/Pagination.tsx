@@ -57,7 +57,7 @@ function Pagination({
                 <button
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium ${currentPage === totalPages
+                    className={`relative ms-3 inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium ${currentPage === totalPages
                         ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
                         : 'bg-white dark:bg-base-100 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-base-200'
                         }`}
@@ -94,11 +94,11 @@ function Pagination({
                         <button
                             onClick={() => onPageChange(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className={`relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-base-200 focus:z-20 focus:outline-offset-0 ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : ''
+                            className={`relative inline-flex items-center rounded-s-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-base-200 focus:z-20 focus:outline-offset-0 ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : ''
                                 }`}
                         >
                             <span className="sr-only">{t('common.prev_page')}</span>
-                            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                            <ChevronLeft className="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
                         </button>
 
                         {/* First Page Link if needed */}
@@ -152,11 +152,11 @@ function Pagination({
                         <button
                             onClick={() => onPageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className={`relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-base-200 focus:z-20 focus:outline-offset-0 ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : ''
+                            className={`relative inline-flex items-center rounded-e-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-base-200 focus:z-20 focus:outline-offset-0 ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : ''
                                 }`}
                         >
                             <span className="sr-only">{t('common.next_page')}</span>
-                            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                            <ChevronRight className="h-4 w-4 rtl:rotate-180" aria-hidden="true" />
                         </button>
                     </nav>
                 </div>
