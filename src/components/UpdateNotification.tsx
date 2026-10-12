@@ -587,7 +587,7 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
               {updateState === 'error' && `${t('update_notification.toast.failed')}`}
               {updateState === 'manual' && (
                 navigator.language.startsWith('zh')
-                  ? '检测到有新版本可供下载。请点击下方按钮前往下载页面。'
+                  ? (t('settings.about.new_version_available', 'A new version is available. Click below to go to the download page.'))
                   : 'A new version is available. Please click below to download the update.'
               )}
             </p>
@@ -732,7 +732,7 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
                   active:scale-[0.98]
                 "
               >
-                <span>{navigator.language.startsWith('zh') ? '前往下载' : 'Download Page'}</span>
+                <span>{t('settings.about.download_page', 'Download Page')}</span>
               </button>
               <button
                 onClick={handleClose}

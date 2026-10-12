@@ -428,13 +428,13 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
 
                                     <div className="border-t border-gray-100 dark:border-base-300/50 pt-3">
                                         <h4 className="font-bold text-gray-800 dark:text-gray-200 mb-1.5 flex items-center gap-1.5">
-                                            {t('accounts.fix_guide.tips_title', '💡 常见建议')}
+                                            {t('accounts.fix_guide.tips_title', '💡 Common Recommendations')}
                                         </h4>
                                         <ul className="list-disc pl-4 space-y-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium marker:text-gray-300">
-                                            <li><Trans i18nKey="accounts.fix_guide.tip1" components={{ 1: <code /> }}>若仍 403，尝试先在终端执行 <code /> 重置环境变量。</Trans></li>
-                                            <li><Trans i18nKey="accounts.fix_guide.tip2" components={{ 1: <strong /> }}>生产环境强烈建议改用 <strong /> 的 JSON 密钥，更稳定且免交互。</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.tip1" components={{ 1: <code /> }}>If still 403, run <code /> in terminal to reset environment variables.</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.tip2" components={{ 1: <strong /> }}>In production, using a <strong /> JSON key is recommended for headless stability.</Trans></li>
                                             <li><Trans i18nKey="accounts.fix_guide.tip3" components={{ 1: <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 hover:underline" /> }}>若操作失败，请前往 <a /> 中的 Generative Language API 查看是否被冻结权限。若是，说明账号触发了风控，建议让账号冷却 72 小时后再次尝试。</Trans></li>
-                                            <li><Trans i18nKey="accounts.fix_guide.tip4" components={{ 1: <code /> }}>你也可以尝试执行 <code />，只要不弹出错误，大概率在软件内删除账号重新授权即可。</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.tip4" components={{ 1: <code /> }}>You can also test with <code />; re-authorizing in-app will usually resolve issues.</Trans></li>
                                         </ul>
                                     </div>
                                 </div>

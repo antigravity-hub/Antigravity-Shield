@@ -214,7 +214,7 @@ export default function GroupedSelect({
                                             handleCustomInputSubmit();
                                         }
                                     }}
-                                    placeholder="输入自定义模型 ID..."
+                                    placeholder={t('common.custom_model_placeholder', 'Enter custom model ID...')}
                                     className={cn(
                                         'flex-1 px-2 py-1 text-[10px] font-mono',
                                         'bg-white dark:bg-gray-800',
@@ -236,7 +236,7 @@ export default function GroupedSelect({
                                             : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                                     )}
                                 >
-                                    确定
+                                    {t('common.confirm', 'Confirm')}
                                 </button>
                             </div>
                         </div>

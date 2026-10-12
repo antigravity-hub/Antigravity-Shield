@@ -140,11 +140,11 @@ export const ApiKeyFun: React.FC = () => {
                 } else if (Array.isArray(modelsData)) {
                     fetchedModels = modelsData.map((m: any) => typeof m === 'string' ? m : m.id).filter(Boolean);
                 } else {
-                    setModelsError(t('apiKeyFun.errors.parseFormat', { defaultValue: '解析格式异常: {{err}}', err: Object.keys(modelsData).join(',') }));
+                    setModelsError(t('apiKeyFun.errors.parseFormat', { defaultValue: 'Failed to parse response format: {{err}}', err: Object.keys(modelsData).join(',') }));
                 }
             } catch (err: any) {
                 console.warn('Failed to fetch models list', err);
-                setModelsError(t('apiKeyFun.errors.fetchFailed', { defaultValue: '获取失败: {{err}}', err: err.message || String(err) }));
+                setModelsError(t('apiKeyFun.errors.fetchFailed', { defaultValue: 'Failed to fetch: {{err}}', err: err.message || String(err) }));
             }
             setModels(fetchedModels);
 
@@ -245,7 +245,7 @@ export const ApiKeyFun: React.FC = () => {
                     }
                 });
             } else {
-                throw new Error(t('apiKeyFun.errors.queryFailed', { defaultValue: '无法获取有效的额度数据或模型列表，请确认 API Key 是否有效，以及接口地址是否正确。' }));
+                throw new Error(t('apiKeyFun.errors.queryFailed', { defaultValue: 'Unable to retrieve valid quota or model data. Verify API key and endpoint address.' }));
             }
 
         } catch (error: any) {
@@ -376,14 +376,14 @@ export const ApiKeyFun: React.FC = () => {
                     <div className="flex flex-col gap-1.5 max-w-4xl">
                         <div className="flex flex-col md:flex-row items-center md:items-end gap-3">
                             <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-wide leading-none">
-                                {t('apiKeyFun.title', { defaultValue: 'APIKEY.FUN 中转站' })}
+                                {t('apiKeyFun.title', { defaultValue: 'APIKEY.FUN Hub' })}
                             </h1>
                             <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase">
-                                {t('apiKeyFun.eyebrow', { defaultValue: '中转站' })}
+                                {t('apiKeyFun.eyebrow', { defaultValue: 'Relay Hub' })}
                             </span>
                         </div>
                         <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300/90 leading-relaxed font-normal mt-1">
-                            {t('apiKeyFun.description', { defaultValue: 'Antigravity Shield API Hub，为用户提供稳定、开放、高性价比的大模型 API 接入服务。支持 Claude、OpenAI、Gemini 等主流模型，适合在 Codex、Gemini CLI、Claude Code 及其他开发工具中统一配置使用。' })}
+                            {t('apiKeyFun.description', { defaultValue: 'Antigravity Shield API Hub provides resilient, high-speed LLM access for Claude, OpenAI, and Gemini across CLI, IDE, and tool chains.' })}
                         </p>
                     </div>
                 </div>
@@ -395,7 +395,7 @@ export const ApiKeyFun: React.FC = () => {
                     className="bg-white hover:bg-blue-50 dark:bg-base-200 dark:hover:bg-base-300 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-md shadow-blue-500/10 dark:shadow-none flex-shrink-0 hover:scale-[1.02] active:scale-[0.98] duration-200 z-10"
                 >
                     <ExternalLink size={16} className="text-blue-500 dark:text-blue-400" />
-                    <span>{t('apiKeyFun.viewNow', { defaultValue: '立即查看' })}</span>
+                    <span>{t('apiKeyFun.viewNow', { defaultValue: 'View Now' })}</span>
                 </a>
             </div>
 
@@ -411,7 +411,7 @@ export const ApiKeyFun: React.FC = () => {
                     </div>
                     <div className="flex flex-col min-w-0">
                         <span className="text-xs font-medium text-gray-400 dark:text-gray-500 truncate">
-                            {t('apiKeyFun.usage.remainingAmount', { defaultValue: '剩余额度' })}
+                            {t('apiKeyFun.usage.remainingAmount', { defaultValue: 'Remaining Quota' })}
                         </span>
                         <span className="text-xl font-bold text-gray-900 dark:text-white mt-0.5 tracking-tight truncate">
                             {usage ? usage.remaining : '$0.00'}
@@ -429,7 +429,7 @@ export const ApiKeyFun: React.FC = () => {
                     </div>
                     <div className="flex flex-col min-w-0">
                         <span className="text-xs font-medium text-gray-400 dark:text-gray-500 truncate">
-                            {t('apiKeyFun.usage.usedAmount', { defaultValue: '已用额度' })}
+                            {t('apiKeyFun.usage.usedAmount', { defaultValue: 'Used Quota' })}
                         </span>
                         <span className="text-xl font-bold text-gray-900 dark:text-white mt-0.5 tracking-tight truncate">
                             {usage ? usage.used : '--'}
@@ -558,7 +558,7 @@ export const ApiKeyFun: React.FC = () => {
                                         
                                         <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-gray-400 font-medium">
                                             <span>
-                                                {t('apiKeyFun.keyManager.lastRemainingLabel', { defaultValue: '上次余额' })} {item.lastRemaining ? item.lastRemaining : '--'}
+                                                {t('apiKeyFun.keyManager.lastRemainingLabel', { defaultValue: 'Last Balance' })} {item.lastRemaining ? item.lastRemaining : '--'}
                                             </span>
                                             {item.lastStatus && (
                                                 <span className={`w-1.5 h-1.5 rounded-full ${item.lastStatus === 'ok' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'}`} />
@@ -566,7 +566,7 @@ export const ApiKeyFun: React.FC = () => {
                                         </div>
                                         
                                         <span className="text-[10px] text-slate-400 dark:text-gray-500 font-normal">
-                                            {t('apiKeyFun.keyManager.addedAt', { defaultValue: '添加于' })} {formatDate(item.createdAt)}
+                                            {t('apiKeyFun.keyManager.addedAt', { defaultValue: 'Added at' })} {formatDate(item.createdAt)}
                                         </span>
                                     </div>
 
@@ -691,10 +691,10 @@ export const ApiKeyFun: React.FC = () => {
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-base-content">
-                                            {t('apiKeyFun.cli.quickConfig', { defaultValue: '一键配置本地开发环境' })}
+                                            {t('apiKeyFun.cli.quickConfig', { defaultValue: 'Configure Local Environment' })}
                                         </span>
                                         <span className="text-[10px] text-base-content/60 font-medium">
-                                            {t('apiKeyFun.cli.syncDesc', { defaultValue: '同步至官方标准配置' })}
+                                            {t('apiKeyFun.cli.syncDesc', { defaultValue: 'Sync to Official Config' })}
                                         </span>
                                     </div>
                                 </div>

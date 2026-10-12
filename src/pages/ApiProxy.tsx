@@ -1958,15 +1958,15 @@ print(response.choices[0].message.content)`;
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm font-bold text-gray-900 dark:text-base-content">
-                                                    {t('proxy.config.experimental.compression_level_label', { defaultValue: '智能上下文压缩等级' })}
+                                                    {t('proxy.config.experimental.compression_level_label', { defaultValue: 'Smart Context Compression Level' })}
                                                 </span>
-                                                <HelpTooltip text={t('proxy.config.experimental.compression_level_tooltip', { defaultValue: '选择您希望启用的压缩等级。静态降噪与口语提纯不需要达到 30k 即可常驻生效。' })} />
+                                                <HelpTooltip text={t('proxy.config.experimental.compression_level_tooltip', { defaultValue: 'Select desired compression level. Static noise filtering takes effect immediately.' })} />
                                                 <span className="px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/30 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-200 dark:border-indigo-800">
                                                     All Protocols
                                                 </span>
                                             </div>
                                             <p className="text-[10px] text-gray-500 dark:text-gray-400 max-w-lg">
-                                                {t('proxy.config.experimental.compression_level_desc', { defaultValue: '选择不同的压缩方案：Low 仅终端日志降噪；Medium 在此基础上增加口语净化；High 额外开启大上下文分阶段防御重置。' })}
+                                                {t('proxy.config.experimental.compression_level_desc', { defaultValue: 'Select compression scheme: Low filters logs; Medium purifies output; High adds phased context guard.' })}
                                             </p>
                                         </div>
                                         <select
@@ -1980,10 +1980,10 @@ print(response.choices[0].message.content)`;
                                                 });
                                             }}
                                         >
-                                            <option value="disabled" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_disabled', { defaultValue: '关闭 (Disabled)' })}</option>
-                                            <option value="low" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_low', { defaultValue: '低度 (Low - 日志降噪)' })}</option>
-                                            <option value="medium" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_medium', { defaultValue: '中度 (Medium - 日志+口语)' })}</option>
-                                            <option value="high" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_high', { defaultValue: '高度 (High - 动态防暴)' })}</option>
+                                            <option value="disabled" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_disabled', { defaultValue: 'Disabled' })}</option>
+                                            <option value="low" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_low', { defaultValue: 'Low (Log Denoise)' })}</option>
+                                            <option value="medium" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_medium', { defaultValue: 'Medium (Log + Text)' })}</option>
+                                            <option value="high" className="text-xs dark:bg-base-300">{t('proxy.config.experimental.level_high', { defaultValue: 'High (Dynamic Defense)' })}</option>
                                         </select>
                                     </div>
 

@@ -188,7 +188,7 @@ function Accounts() {
           showToast(msg, "success");
         } else {
           showToast(
-            t("accounts.warmup_all_triggered", "全量预热任务已触发"),
+            t("accounts.warmup_all_triggered", "Full warmup task triggered"),
             "success",
           );
         }
@@ -1304,7 +1304,7 @@ function Accounts() {
               title={
                 selectedIds.size > 0
                   ? t("accounts.warmup_selected", { count: selectedIds.size })
-                  : t("accounts.warmup_all", "一键预热所有账号")
+                  : t("accounts.warmup_all", "Warm Up All Accounts")
               }
             >
               <Sparkles
@@ -1315,7 +1315,7 @@ function Accounts() {
                   ? t("common.loading")
                   : selectedIds.size > 0
                     ? t("accounts.warmup_selected", { count: selectedIds.size })
-                    : t("accounts.warmup_all", "一键预热")}
+                    : t("accounts.warmup_all", "Warm Up All")}
               </span>
             </button>
 
@@ -1584,23 +1584,23 @@ function Accounts() {
         isOpen={isWarmupConfirmOpen}
         title={
           selectedIds.size > 0
-            ? t("accounts.dialog.batch_warmup_title", "批量手动预热")
-            : t("accounts.dialog.warmup_all_title", "全量手动预热")
+            ? t("accounts.dialog.batch_warmup_title", "Batch Manual Warmup")
+            : t("accounts.dialog.warmup_all_title", "Full Manual Warmup")
         }
         message={
           selectedIds.size > 0
             ? t(
               "accounts.dialog.batch_warmup_msg",
-              "确定要为选中的 {{count}} 个账号立即触发预热吗？",
+              t("accounts.dialog.batch_warmup_confirm", "Are you sure you want to trigger warmup for {{count}} selected accounts?"),
               { count: selectedIds.size },
             )
             : t(
               "accounts.dialog.warmup_all_msg",
-              "确定要立即为所有符合条件的账号触发预热任务吗？这将向 Google 服务发送极小流量。",
+              t("accounts.dialog.warmup_all_confirm", "Trigger warmup for all eligible accounts? This sends minimal traffic to Google services."),
             )
         }
         type="confirm"
-        confirmText={t("accounts.warmup_now", "立即预热")}
+        confirmText={t("accounts.warmup_now", "Warm Up Now")}
         isDestructive={false}
         onConfirm={handleWarmupAll}
         onCancel={() => setIsWarmupConfirmOpen(false)}
