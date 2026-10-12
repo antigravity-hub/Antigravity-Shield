@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, Check, Edit3 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
@@ -28,6 +29,7 @@ export default function GroupedSelect({
     disabled = false,
     allowCustomInput = false // 新增: 默认不允许自定义输入
 }: GroupedSelectProps) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
     const [customInput, setCustomInput] = useState(''); // 新增: 自定义输入值
