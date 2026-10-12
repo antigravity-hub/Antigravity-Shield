@@ -46,7 +46,24 @@
     "none": "无",
     "reason": "原因",
     "show_raw": "显示原始报文",
-    "show_parsed": "显示解析后"
+    "show_parsed": "显示解析后",
+    "ready": "Ready",
+    "empty": "Empty",
+    "retry": "Retry",
+    "back": "Back",
+    "hide_qr": "Hide QR",
+    "switch": "Switch",
+    "switch_best": "Switch to Best Account",
+    "switch_best_title": "Switch to Best Account",
+    "select_target_title": "Select Target Environment",
+    "no_alternative_account": "No active alternative account with sufficient quota found.",
+    "switch_confirm_prompt": "Do you want to switch to the best recommended account?",
+    "confirm_proceed": "Yes, Continue",
+    "select_target_desc": "Select the target environment where quota should be activated:",
+    "switch_success": "Switch completed successfully",
+    "claude_series": "Claude Series",
+    "select_all": "Select All",
+    "deselect_all": "Deselect All"
   },
   "nav": {
     "dashboard": "仪表盘",
@@ -85,7 +102,16 @@
     "switch_to_persian_short": "FA",
     "user_token": "用户 Token",
     "apikey_fun": "中转站",
-    "logout": "登出"
+    "logout": "登出",
+    "mini_view": "Mini View (Floating Widget)",
+    "window_minimize": "Minimize",
+    "window_maximize": "Maximize",
+    "window_restore": "Restore Down",
+    "window_close": "Close",
+    "more": "More",
+    "toolkit_active": "Toolkit Active",
+    "toolkit_waiting": "Toolkit Waiting",
+    "toolkit_install": "Install Toolkit"
   },
   "dashboard": {
     "hello": "你好, 用户 👋",
@@ -170,8 +196,97 @@
       "warp_installed_toast": "Cloudflare WARP 已成功安装！",
       "warp_connect_1click": "一键连接 WARP (Proxy 模式 40000 端口)",
       "warp_disconnect_btn": "断开 WARP 连接",
-      "warp_download_started": "Cloudflare WARP 后台下载已启动..."
-    }
+      "warp_download_started": "Cloudflare WARP 后台下载已启动...",
+      "remove_proxy_btn": "Switch to TUN / Direct",
+      "remove_proxy_tooltip": "Remove local proxy settings and route via direct TUN adapter",
+      "proxy_applied_toast": "Proxy configuration applied to {{count}} Antigravity instance(s).",
+      "proxy_removed_toast": "Proxy settings removed from {{count}} Antigravity instance(s).",
+      "ide_proxy_label": "IDE Routing: Local Proxy",
+      "direct_routing_label": "IDE Routing: Direct (VPN TUN Mode)",
+      "direct_routing_tooltip": "Antigravity connects directly without IDE proxy. If your VPN is active in TUN mode, traffic routes through it automatically.",
+      "clear_proxy_btn": "Clear Proxy / Use Direct VPN",
+      "warp_active_port": "Running (Port 40000 Ready)",
+      "warp_port_closed": "Running (Proxy Mode Off)",
+      "warp_installed_stopped": "Installed (Not Running)",
+      "warp_not_detected": "Not Installed",
+      "warp_not_installed_hint": "Cloudflare WARP client is not detected on your PC.",
+      "download_warp_btn": "Download WARP",
+      "warp_stopped_hint": "Cloudflare WARP is installed but not currently running.",
+      "launch_warp_btn": "Launch WARP Client",
+      "warp_enable_proxy_mode_hint": "WARP is running, but port 40000 is closed. Open WARP app -> Settings (Gear) -> Preferences -> Connection -> select \"Proxy Mode\" (SOCKS5).",
+      "warp_port_not_listening_toast": "Warning: Port 40000 is not listening. Ensure WARP is running in Proxy Mode.",
+      "use_active_proxy_btn": "Or Use Active Proxy"
+    },
+    "mode_gemini": "Gemini (Default)",
+    "mode_claude": "Claude (Opus)",
+    "mode_both": "All Models",
+    "switch_to": "Switch",
+    "safe_window": "Safe window > 20 min",
+    "horizon_5h": "Past 5h",
+    "horizon_7d": "7-Day",
+    "view_token_stats": "Token Stats",
+    "view_token_stats_tooltip": "View Token Statistics & Consumption Limits",
+    "velocity_gauge": {
+      "title": "Quota Consumption & Runway Forecast",
+      "fleet_view": "Entire Fleet",
+      "active_view": "Active Account",
+      "expand": "Expand Radar",
+      "collapse": "Collapse Radar",
+      "caption": "Ratio of remaining quota to remaining weekly window",
+      "runway": "Runway",
+      "reset_in": "Reset In",
+      "reset_short": "Reset",
+      "burn_rate": "Burn Rate",
+      "per_hour": "/ hr",
+      "more_than_7_days": "> 7 Days",
+      "more_than_7d": "> 7d",
+      "session_suffix": "(Session)",
+      "deficit_title": "Projected Quota Deficit: ~{{hours}}h Shortfall",
+      "surplus_title": "Sustainable Consumption — Quota Safe",
+      "deficit_desc": "At velocity <strong>{{burnRate}}% / hr</strong>, quota depletes on <strong>{{date}}</strong> — approximately <span className=\"font-bold underline text-rose-500\">{{hours}}h before reset</span>.",
+      "surplus_desc": "Current pace (<strong>{{burnRate}}% / hr</strong>) is sustainable with <span className=\"font-bold text-emerald-500\">+{{hours}}h surplus runway</span> past reset.",
+      "session_exhausted_title": "5-Hour Session Quota Exhausted (0% Remaining)",
+      "session_risk_title": "Projected Session Depletion: ~{{duration}} Shortfall",
+      "session_safe_title": "Session Quota Sustainable until Reset ({{time}})",
+      "session_exhausted_badge": "⏳ 5H Quota Exhausted (0%)",
+      "session_depletion_badge": "⏳ Depletion in {{duration}} ({{time}})",
+      "session_sustainable_badge": "⏳ Sustainable until Reset ({{time}})",
+      "session_risk_desc": "Based on current burn rate, the 5-hour quota will deplete in <strong>{{duration}}</strong> (around <strong>{{time}}</strong>).",
+      "session_safe_desc": "Session consumption is steady and will safely reach the next reset at <strong>{{time}}</strong>.",
+      "duration_hours_mins": "{{hours}}h {{mins}}m",
+      "duration_mins": "{{mins}}m",
+      "tag_strong_sell": "STRONG SELL",
+      "tag_sell": "SELL",
+      "tag_neutral": "NEUTRAL",
+      "tag_buy": "BUY",
+      "tag_strong_buy": "STRONG BUY",
+      "zone_critical": "Critical Deficit",
+      "zone_high_burn": "Over-Burning",
+      "zone_balanced": "Balanced Sustainability",
+      "zone_safe": "Safe Reserve",
+      "zone_surplus": "Full Surplus",
+      "arc_critical": "CRITICAL",
+      "arc_high": "HIGH",
+      "arc_balanced": "BALANCED",
+      "arc_safe": "SAFE",
+      "arc_surplus": "SURPLUS"
+    },
+    "verification_required_title": "Accounts Requiring Google Verification (Verification Required)",
+    "account_unit": "accounts",
+    "verification_required_count": "{{count}} account",
+    "verification_required_count_plural": "{{count}} accounts",
+    "verification_required_desc": "Connection for these accounts is paused because Google requires identity verification. Follow the guide to resolve the issue.",
+    "open_full_guide": "Comprehensive Solution Guide (PDF)",
+    "verify_in_google": "Direct Google Verification Page",
+    "google_link": "Google",
+    "view_guide_pdf": "View PDF Guide",
+    "verify_account_prompt": "Verify your account to continue.",
+    "hello_user": "Hello, {{name}} 👋",
+    "shield_active": "Shield Active",
+    "shield_subtitle": "Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard",
+    "auto_warm": "Auto-Warm",
+    "manage_accounts_desc": "Manage, rotate and inspect accounts",
+    "export_accounts_desc": "Export encrypted backup of active accounts"
   },
   "accounts": {
     "account": "账号",
@@ -218,7 +333,8 @@
       "validation_required": "账号需验证",
       "risk_controlled": "风控/限流",
       "oauth_reauth_required": "授权异常",
-      "violation_blocked": "由于违规被禁用"
+      "violation_blocked": "由于违规被禁用",
+      "validation_blocked": "Verification Required"
     },
     "error_details": "错误详情",
     "error_status": "错误状态",
@@ -407,7 +523,8 @@
       "quota": "模型配额",
       "last_used": "最后使用",
       "actions": "操作",
-      "weekly_info_tooltip": "1-7方块：每周周期天数\n百分比进度条：本周可用Token配额"
+      "weekly_info_tooltip": "1-7方块：每周周期天数\n百分比进度条：本周可用Token配额",
+      "weekly_countdown": "Weekly Reset"
     },
     "drag_to_reorder": "拖拽排序",
     "empty": {
@@ -435,9 +552,40 @@
       "warmup_all_title": "全量手动预热",
       "warmup_all_msg": "确定要立即为所有符合条件的账号触发预热任务吗？这将向 Google 服务发送极小流量以重置配额配额周期。",
       "batch_warmup_title": "批量手动预热",
-      "batch_warmup_msg": "确定要为选中的 {{count}} 个账号立即触发预热吗？"
+      "batch_warmup_msg": "确定要为选中的 {{count}} 个账号立即触发预热吗？",
+      "refresh_all_title": "Refresh All Accounts",
+      "refresh_all_msg": "Are you sure you want to refresh quotas for all accounts? This may take some time."
     },
-    "drag_column_to_reorder": "拖动表头调整列顺序"
+    "drag_column_to_reorder": "拖动表头调整列顺序",
+    "sync_freshness": {
+      "never": "Not synced yet",
+      "just_now": "Synced: Just now",
+      "minutes_ago": "Synced: {{count}}m ago",
+      "hours_ago": "Synced: {{count}}h ago",
+      "cooldown_active": "Cooldown: {{seconds}}s",
+      "tooltip": "Live status verified against Google Cloud Code upstream"
+    },
+    "validation_blocked_switch_tooltip": "Account requires Google identity verification. Switching is disabled until resolved.",
+    "view_error_details_tooltip": "View full error details",
+    "click_to_view_error": "Click to view details and link",
+    "verification_method_1_title": "Method 1 (Fastest & Recommended): Verify in Browser or Scan with Another Phone",
+    "verification_method_1_desc": "Open this direct verification link in your browser. If desktop verification loops or fails, scan or open the link on another mobile phone (preferably on cellular data) — Google trusts second devices and usually validates instantly without phone SMS!",
+    "scan_qr_btn": "Scan with Phone",
+    "scan_with_phone_tooltip": "Show QR code to scan with another mobile phone",
+    "scan_with_phone_hint": "Scan this QR code with the camera on another mobile phone to verify. Using mobile data (4G/5G) avoids desktop IP blocks.",
+    "verification_method_2_title": "Method 2 (Fallback): Google Cloud Shell SMS Verification Guide",
+    "provider_gemini_tooltip": "Gemini Quota & Reset Timers",
+    "provider_claude_tooltip": "Claude Quota & Reset Timers",
+    "provider_not_available": "Claude quota is not available on Free tier",
+    "weekly_token_remaining": "Weekly Quota Remaining",
+    "five_hour_warmed_tooltip": "5-Hour Rolling Ready (100% Available) — Sliding window resets in {{time}}",
+    "warmed": "Ready (5H)",
+    "auto_sort": "Auto Sort",
+    "show_last_used": "Show Last Used",
+    "verification_required_table_msg": "Verification required — see guide",
+    "open_guide_btn": "View Guide",
+    "recheck_btn": "Re-check",
+    "recheck_tooltip": "Clear block status and re-check account quota"
   },
   "settings": {
     "save": "保存设置",
@@ -484,7 +632,11 @@
     },
     "warmup": {
       "title": "7天周配额智能预热",
-      "desc": "在各账号的 7 天周配额到达重置时间后自动唤醒 1 次，启动当周计时器，零多余消耗。"
+      "desc": "在各账号的 7 天周配额到达重置时间后自动唤醒 1 次，启动当周计时器，零多余消耗。",
+      "enabled_toast": "Auto-Warm enabled",
+      "disabled_toast": "Auto-Warm disabled",
+      "monitored_models_label": "Warmup Model Scope",
+      "monitored_models_desc": "Select models to warmup. When 5-hour rolling or weekly quota recovers to 100%, a minimal probe starts the new cycle."
     },
     "quota_protection": {
       "title": "配额保护",
@@ -625,7 +777,8 @@
       "http_api_port_placeholder": "默认端口 19527",
       "http_api_port_invalid": "端口号无效（范围：1024-65535）",
       "http_api_settings_saved": "HTTP API 设置已保存，重启应用后生效",
-      "http_api_restart_required": "⚠️ 需要重启应用后生效"
+      "http_api_restart_required": "⚠️ 需要重启应用后生效",
+      "need_cli_path": "Need to set or detect CLI path above first"
     },
     "debug": {
       "title": "调试控制台",
@@ -689,7 +842,8 @@
       "support_gram": "GRAM (TON)",
       "support_tron": "Tron (TRX / USDT)",
       "support_copy_address": "复制地址",
-      "support_copied": "地址已复制到剪贴板！"
+      "support_copied": "地址已复制到剪贴板！",
+      "check_cooldown": "Please wait {{seconds}}s before checking again"
     },
     "advanced_thinking": {
       "title": "高级思维与全局配置",
@@ -737,7 +891,22 @@
     "branding": {
       "title": "Antigravity Shield",
       "subtitle": "企业级 AI 网关与账号管理器"
-    }
+    },
+    "notifications": {
+      "overlay_title": "Floating HUD & Countdown Notification",
+      "overlay_desc": "Display an interactive always-on-top window over all apps with Switch Now, Snooze 5m, and Cancel actions",
+      "position": "Screen Position",
+      "pos_top_right": "Top Right (Recommended)",
+      "pos_bottom_right": "Bottom Right",
+      "pos_top_left": "Top Left",
+      "pos_bottom_left": "Bottom Left",
+      "countdown": "Countdown Duration",
+      "test_btn": "Test Floating HUD",
+      "test_title": "Antigravity Shield - Live Test",
+      "test_msg": "This is a sample HUD notification demonstrating layout and actions."
+    },
+    "save_failed_reverted": "Failed to save, reverted settings",
+    "web_mode_limitation": "(Not supported in Web mode)"
   },
   "tray": {
     "current": "当前",
@@ -1283,10 +1452,30 @@
       },
       "toast": {
         "sync_success": "同步成功！{{name}} 已准备就绪。",
-        "sync_error": "同步失败：{{error}}"
+        "sync_error": "同步失败：{{error}}",
+        "config_missing": "Please generate an API Key and start the proxy service first"
       },
       "sync_confirm_title": "同步确认",
       "sync_confirm_message": "即将为您同步 {{name}} 的配置。⚠️ 注意：此操作将覆盖您本地已有的配置文件（如登录状态、API Key 等）。确定要继续吗？"
+    },
+    "error": {
+      "load_failed": "Failed to load configuration"
+    },
+    "droid_sync": {
+      "modal_title": "Add Models to Droid",
+      "select_models": "Select Models to Add",
+      "no_models": "Please select models above to add",
+      "btn_confirm_sync": "Write to Config",
+      "toast": {
+        "no_models_selected": "Please select at least one model",
+        "sync_success_count": "Added {{count}} models to Droid",
+        "sync_error": "Sync failed: {{error}}"
+      }
+    },
+    "opencode_sync": {
+      "toast": {
+        "sync_success": "OpenCode synced successfully"
+      }
     }
   },
   "monitor": {
@@ -1346,6 +1535,34 @@
     "dialog": {
       "clear_title": "清除监控日志",
       "clear_msg": "确定要清除所有监控记录吗？此操作无法撤销。"
+    },
+    "network": {
+      "title": "Network Monitor",
+      "open": "Open Network Monitor",
+      "requests_count": "{{count}} requests",
+      "start_recording": "Start Recording",
+      "stop_recording": "Stop Recording",
+      "clear_requests": "Clear Requests",
+      "empty": "No requests recorded",
+      "waiting": "Waiting for response...",
+      "badge_error": "Error",
+      "table": {
+        "status": "Status",
+        "command": "Command",
+        "time": "Time",
+        "duration": "Duration"
+      },
+      "sections": {
+        "general": "General",
+        "request_args": "Request Args",
+        "error_details": "Error Details",
+        "response": "Response"
+      },
+      "fields": {
+        "status": "Status",
+        "start_time": "Start Time",
+        "duration": "Duration"
+      }
     }
   },
   "update_notification": {
@@ -1368,8 +1585,14 @@
     "grace_period_activated": "已激活 30 分钟临时宽限期，请尽快完成更新。",
     "toast": {
       "not_ready": "自动更新包尚未就绪，为您跳转到下载页面...",
-      "failed": "自动更新失败，请手动下载更新"
-    }
+      "failed": "自动更新失败，请手动下载更新",
+      "signature_invalid": "Automated verification unavailable. Switching to manual download.",
+      "downloading": "Downloading update package...",
+      "switching_direct": "Cryptographic verification unavailable. Initiating direct auto-install...",
+      "launching_installer": "Download complete. Launching installer..."
+    },
+    "btn_direct_install": "Direct Auto-Install (Automatic)",
+    "btn_manual_browser": "Open Release Page in Browser"
   },
   "login": {
     "title": "安全访问控制",
@@ -1520,7 +1743,8 @@
       "description_placeholder": "例如：内部服务器",
       "cancel": "取消",
       "confirm": "添加",
-      "add_btn": "添加"
+      "add_btn": "添加",
+      "error_add_failed": "Failed to add IP to whitelist"
     },
     "config": {
       "title": "安全设置",
@@ -1574,7 +1798,9 @@
     "placeholder_desc": "选填备注",
     "placeholder_max_ips": "0 = 不限制",
     "hint_max_ips": "0 表示不限制",
-    "hint_curfew": "留空则禁用。基于服务器时间。"
+    "hint_curfew": "留空则禁用。基于服务器时间。",
+    "expires_custom": "Custom",
+    "custom_expires_required": "Please select a custom expiration time"
   },
   "apiKeyFun": {
     "title": "APIKEY.FUN 中转站",
@@ -1674,5 +1900,38 @@
     "restore_tooltip": "恢复为默认的英文/从左至右排版",
     "reapply": "重新应用补丁",
     "one_click_apply": "一键应用补丁"
+  },
+  "notifications": {
+    "quota_critical_alert": "Critical Quota Alert: {{target}}{{model}} quota is at {{percentage}}% on account {{email}}.",
+    "quota_alert_title": "Antigravity Shield - Low Quota Alert",
+    "family_gemini": "Gemini",
+    "family_claude": "Claude",
+    "and_separator": " & ",
+    "other_models": "Other models",
+    "auto_switch_title": "Antigravity Shield - Account Switched",
+    "quota_exhausted_title": "Antigravity Shield - Quota Depleted",
+    "auto_switch_success": "⚡ Auto-Switched: {{target}}{{model}} reached {{percent}}%. Switched to {{to}} ({{score}}% quota).",
+    "auto_switch_claude_success": "⚡ Auto-Switched: {{target}}Claude quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Claude quota).",
+    "auto_switch_fallback_gemini": "⚡ Auto-Switched: Fallback switched to {{to}} ({{score}}% Gemini quota).",
+    "auto_switch_gemini_success": "⚡ Auto-Switched: {{target}}Gemini quota exhausted on {{from}}. Switched to {{to}} ({{score}}% Gemini quota).",
+    "all_quotas_depleted": "⚠️ Quotas exhausted across all available accounts.",
+    "target_platform": "Platform (Harness)",
+    "target_ide": "IDE",
+    "target_ide_and_platform": "IDE & Platform",
+    "target_agy": "AGY CLI",
+    "overlay_title": "Antigravity Shield - Smart Switch",
+    "overlay_quota_for": "Quota depleted for",
+    "overlay_switch_to": "Switch to:",
+    "overlay_quota_badge": "quota",
+    "overlay_switch_now": "Switch Now",
+    "overlay_snooze": "Snooze 5m",
+    "overlay_cancel": "Cancel",
+    "overlay_dismiss": "Dismiss",
+    "overlay_auto_dismiss": "Auto-closing in a few seconds",
+    "overlay_auto_dismiss_timer": "Auto-closing in {{seconds}}s",
+    "overlay_from_account": "Current Account",
+    "overlay_depleted_badge": "Depleted",
+    "overlay_waiting": "Receiving Shield telemetry...",
+    "overlay_default_model": "AI Model"
   }
 }
