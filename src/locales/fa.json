@@ -69,6 +69,7 @@
     "dashboard": "داشبورد",
     "accounts": "حساب‌ها",
     "proxy": "پروکسی API",
+    "ecosystem": "مهارت‌ها و MCP",
     "call_records": "گزارش‌های ترافیک",
     "token_stats": "آمار توکن‌ها",
     "security": "مدیریت IP",
@@ -1962,5 +1963,58 @@
     "overlay_depleted_badge": "به‌پایان‌رسیده",
     "overlay_waiting": "در حال دریافت اطلاعات شیلد...",
     "overlay_default_model": "مدل هوش مصنوعی"
+  },
+  "sidebar": {
+    "sections": {
+      "core": "بخش‌های اصلی",
+      "ecosystem": "اکوسیستم ابزارها",
+      "monitoring": "پایش و تله‌متری",
+      "system": "تنظیمات سیستم"
+    }
+  },
+  "ecosystem": {
+    "title": "مرکز اکوسیستم ایجنت‌ها",
+    "subtitle": "مدیریت، پیکربندی و نظارت بر مهارت‌های ایجنت، سرورهای پروتکل MCP و قوانین رفتاری",
+    "search_placeholder": "جستجوی ابزارها، تریگرها، سرورها...",
+    "tabs": {
+      "skills": "مهارت‌های هوش مصنوعی",
+      "mcp": "سرورهای MCP",
+      "rules": "دستورالعمل‌ها و پرامپت‌ها"
+    },
+    "skills": {
+      "create": "ساخت مهارت جدید",
+      "create_modal_title": "تعریف مهارت سفارشی ایجنت"
+    },
+    "mcp": {
+      "add_server": "افزودن سرور MCP",
+      "add_modal_title": "ثبت سرور جدید MCP",
+      "test": "تست اتصال سرور",
+      "test_all": "بررسی سلامت همه سرورها",
+      "testing_all": "در حال بررسی سلامت...",
+      "configure": "تنظیم متغیرها و آرگومان‌ها",
+      "diagnostics": "عیب‌یابی و ابزارها",
+      "active": "فعال",
+      "inactive": "غیرفعال",
+      "status_connected": "آماده و متصل",
+      "status_needs_config": "نیازمند تنظیمات",
+      "status_disabled": "غیرفعال",
+      "status_error": "خطا در اتصال",
+      "status_testing": "در حال تست...",
+      "summary_healthy": "سرور فعال و آماده به‌کار",
+      "summary_inactive": "سرور غیرفعال یا نیازمند تنظیم",
+      "tools_count": "{{count}} ابزار آماده",
+      "exposed_tools": "ابزارهای ارائه‌شده برای هوش مصنوعی",
+      "requirements": "پیش‌نیازها و بستر اجرا",
+      "health_overview": "نمای کلی سلامت و دسترس‌پذیری ابزارهای MCP",
+      "filter_all": "همه سرورها",
+      "filter_healthy": "سالم و متصل",
+      "filter_needs_config": "نیازمند راه‌اندازی",
+      "filter_disabled": "غیرفعال"
+    },
+    "rules": {
+      "create": "افزودن قانون یا دستورالعمل"
+    },
+    "no_skills": "هیچ مهارتی با عبارت جستجو یافت نشد",
+    "inspect": "مشاهده فایل SKILL.md"
   }
 }

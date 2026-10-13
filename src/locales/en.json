@@ -69,6 +69,7 @@
     "dashboard": "Dashboard",
     "accounts": "Accounts",
     "proxy": "API Proxy",
+    "ecosystem": "Skills & MCP",
     "call_records": "Traffic Logs",
     "token_stats": "Token Stats",
     "security": "IP Management",
@@ -1939,5 +1940,58 @@
     "overlay_depleted_badge": "Depleted",
     "overlay_waiting": "Receiving Shield telemetry...",
     "overlay_default_model": "AI Model"
+  },
+  "sidebar": {
+    "sections": {
+      "core": "Core",
+      "ecosystem": "Ecosystem",
+      "monitoring": "Telemetry",
+      "system": "System"
+    }
+  },
+  "ecosystem": {
+    "title": "Agent Ecosystem Hub",
+    "subtitle": "Curate, configure, and monitor agent skills, Model Context Protocol servers, and behavioral rules",
+    "search_placeholder": "Search tools, triggers, servers...",
+    "tabs": {
+      "skills": "Agent Skills",
+      "mcp": "MCP Servers",
+      "rules": "Rules & Prompts"
+    },
+    "skills": {
+      "create": "Create Skill",
+      "create_modal_title": "Create New Agent Skill"
+    },
+    "mcp": {
+      "add_server": "Add MCP Server",
+      "add_modal_title": "Register New MCP Server",
+      "test": "Test Server Connection",
+      "test_all": "Check All Servers Health",
+      "testing_all": "Checking servers health...",
+      "configure": "Configure Env & Args",
+      "diagnostics": "Diagnostics & Tools",
+      "active": "Active",
+      "inactive": "Disabled",
+      "status_connected": "Ready & Connected",
+      "status_needs_config": "Needs Configuration",
+      "status_disabled": "Disabled",
+      "status_error": "Connection Error",
+      "status_testing": "Testing...",
+      "summary_healthy": "servers operational & connected",
+      "summary_inactive": "servers disabled or require setup",
+      "tools_count": "{{count}} tools available",
+      "exposed_tools": "Tools exposed to AI agents",
+      "requirements": "Prerequisites & Runtime",
+      "health_overview": "MCP Servers Health & Capability Overview",
+      "filter_all": "All Servers",
+      "filter_healthy": "Healthy & Ready",
+      "filter_needs_config": "Setup Required",
+      "filter_disabled": "Disabled"
+    },
+    "rules": {
+      "create": "Add Instruction Rule"
+    },
+    "no_skills": "No skills match your search",
+    "inspect": "View SKILL.md"
   }
 }

@@ -51,3 +51,4 @@ pub mod network_pulse;
 pub mod warp_manager;
 pub mod overlay;
 pub mod remote_mobile;
+pub mod skills;

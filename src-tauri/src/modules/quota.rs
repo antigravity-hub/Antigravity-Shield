@@ -839,6 +839,109 @@ fn get_claude_rank(lower: &str) -> i32 {
     else { 100 }
 }
 
+/// Select target models for warmup based on full QuotaData (inspecting 5h buckets in quota_groups)
+pub fn select_target_warmup_models_for_quota(
+    quota: &crate::models::QuotaData,
+) -> Vec<crate::models::quota::ModelQuota> {
+    let mut result = Vec::new();
+
+    if let Some(ref groups) = quota.quota_groups {
+        let mut needs_gemini_warmup = false;
+        let mut needs_claude_warmup = false;
+
+        for group in groups {
+            let g_name = group.display_name.to_lowercase();
+            let is_claude = g_name.contains("claude") || g_name.contains("gpt");
+
+            let mut weekly_has_quota = false;
+            let mut h5_needs_warmup = false;
+
+            for bucket in &group.buckets {
+                let b_win = bucket.window.to_lowercase();
+                let b_id = bucket.bucket_id.to_lowercase();
+                let is_weekly = b_win.contains("week") || b_id.contains("week");
+                let is_5h = !is_weekly && (b_win.contains("5h") || b_id.contains("5h") || b_win.contains("rolling"));
+
+                if is_weekly {
+                    if bucket.remaining_fraction > 0.0 {
+                        weekly_has_quota = true;
+                    }
+                } else if is_5h {
+                    if bucket.remaining_fraction >= 0.999 {
+                        h5_needs_warmup = true;
+                    }
+                }
+            }
+
+            if weekly_has_quota && h5_needs_warmup {
+                if is_claude {
+                    needs_claude_warmup = true;
+                } else {
+                    needs_gemini_warmup = true;
+                }
+            }
+        }
+
+        if needs_gemini_warmup {
+            let flash_model = quota.models.iter()
+                .filter(|m| {
+                    let l = m.name.to_lowercase();
+                    l.contains("flash") && !l.contains("thinking") && !l.contains("image") && m.percentage > 0
+                })
+                .max_by_key(|m| get_flash_rank(&m.name.to_lowercase()))
+                .cloned()
+                .unwrap_or_else(|| {
+                    crate::models::quota::ModelQuota {
+                        name: "gemini-2.5-flash".to_string(),
+                        percentage: 100,
+                        reset_time: String::new(),
+                        display_name: Some("Gemini 2.5 Flash".to_string()),
+                        supports_images: None,
+                        supports_thinking: None,
+                        thinking_budget: None,
+                        recommended: None,
+                        max_tokens: None,
+                        max_output_tokens: None,
+                        supported_mime_types: None,
+                    }
+                });
+            result.push(flash_model);
+        }
+
+        if needs_claude_warmup {
+            let claude_model = quota.models.iter()
+                .filter(|m| {
+                    let l = m.name.to_lowercase();
+                    l.contains("claude") && m.percentage > 0
+                })
+                .max_by_key(|m| get_claude_rank(&m.name.to_lowercase()))
+                .cloned()
+                .unwrap_or_else(|| {
+                    crate::models::quota::ModelQuota {
+                        name: "claude-sonnet-4-6".to_string(),
+                        percentage: 100,
+                        reset_time: String::new(),
+                        display_name: Some("Claude Sonnet 4.6".to_string()),
+                        supports_images: None,
+                        supports_thinking: None,
+                        thinking_budget: None,
+                        recommended: None,
+                        max_tokens: None,
+                        max_output_tokens: None,
+                        supported_mime_types: None,
+                    }
+                });
+            result.push(claude_model);
+        }
+
+        if !result.is_empty() {
+            return result;
+        }
+    }
+
+    select_target_warmup_models(&quota.models)
+}
+
 /// Select at most 2 models for warmup:
 /// 1. The latest active Flash model (Gemini quota bucket)
 /// 2. The latest active Claude model (Claude quota bucket, if available)
@@ -875,7 +978,10 @@ pub fn select_target_warmup_models(
     }
 
     let mut result = Vec::new();
-    if let Some((_, flash)) = best_flash {
+    if let Some((_, mut flash)) = best_flash {
+        if flash.name == "gemini-3-flash" {
+            flash.name = "gemini-2.5-flash".to_string();
+        }
         result.push(flash);
     }
     if let Some((_, claude)) = best_claude {
@@ -942,7 +1048,7 @@ pub async fn warm_up_all_accounts() -> Result<String, String> {
                         ));
                         continue;
                     }
-                    let target_models = select_target_warmup_models(&fresh_quota.models);
+                    let target_models = select_target_warmup_models_for_quota(&fresh_quota);
                     for m in target_models {
                         warmup_items.push((
                             id.clone(),
@@ -966,7 +1072,11 @@ pub async fn warm_up_all_accounts() -> Result<String, String> {
             let total_before = warmup_items.len();
 
             // Filter out models warmed up within 5-hour rolling window (18000s)
-            warmup_items.retain(|(_, email, model, _, _, _)| {
+            // But if a model is at 100% (or represents a 5h bucket at 100%), manual trigger allows warming it up
+            warmup_items.retain(|(_, email, model, _, _, pct)| {
+                if *pct >= 100 {
+                    return true;
+                }
                 let history_key = format!("{}:{}:100", email, model);
                 !crate::modules::scheduler::check_cooldown(&history_key, 18000)
             });
@@ -1099,14 +1209,18 @@ pub async fn warm_up_account(account_id: &str) -> Result<String, String> {
         return Err("Account is forbidden (403), skipping warmup".to_string());
     }
 
-    let target_models = select_target_warmup_models(&fresh_quota.models);
+    let target_models = select_target_warmup_models_for_quota(&fresh_quota);
     let mut models_to_warm = Vec::new();
     for m in target_models {
         models_to_warm.push((m.name.clone(), m.percentage));
     }
 
     // Filter out models warmed up within 5-hour rolling window (18000s)
-    models_to_warm.retain(|(name, _)| {
+    // For single account manual warmup, if the model is at 100%, allow warming it up
+    models_to_warm.retain(|(name, pct)| {
+        if *pct >= 100 {
+            return true;
+        }
         let history_key = format!("{}:{}:100", email, name);
         !crate::modules::scheduler::check_cooldown(&history_key, 18000)
     });

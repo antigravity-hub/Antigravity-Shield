@@ -12,6 +12,7 @@ interface ConfigState {
     saveConfig: (config: AppConfig, silent?: boolean) => Promise<void>;
     updateTheme: (theme: string) => Promise<void>;
     updateLanguage: (language: string) => Promise<void>;
+    updateNavigationLayout: (layout: 'sidebar' | 'topbar') => Promise<void>;
     toggleShowAllQuotas: () => void;
     showAllQuotas: boolean;
     toggleAutoWarm: () => Promise<void>;
@@ -34,9 +35,42 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
                     localStorage.setItem('i18nextLng', config.language);
                 } catch {}
             }
-            set({ config, loading: false });
+            const savedLayout = (localStorage.getItem('antigravity_navigation_layout') as 'sidebar' | 'topbar') || config?.navigation_layout || 'sidebar';
+            set({
+                config: {
+                    ...config,
+                    navigation_layout: savedLayout,
+                },
+                loading: false,
+            });
         } catch (error) {
-            set({ error: String(error), loading: false });
+            const fallback: AppConfig = {
+                language: localStorage.getItem('i18nextLng') || 'fa',
+                theme: localStorage.getItem('app-theme-preference') || 'dark',
+                auto_refresh: false,
+                refresh_interval: 10,
+                auto_sync: false,
+                sync_interval: 5,
+                auto_switch_on_quota: true,
+                auto_switch_threshold_percentage: 5,
+                navigation_layout: 'sidebar',
+                proxy: {
+                    enabled: false,
+                    port: 8045,
+                    api_key: '',
+                    auto_start: false,
+                    request_timeout: 120,
+                    enable_logging: false,
+                    upstream_proxy: { enabled: false, url: '' }
+                },
+                scheduled_warmup: { enabled: false, monitored_models: [] },
+                quota_protection: { enabled: false, threshold_percentage: 10, monitored_models: [] },
+                pinned_quota_models: { models: [] },
+                circuit_breaker: { enabled: false, backoff_steps: [] },
+                cloudflared: { enabled: false, mode: 'quick', port: 7860, use_http2: true },
+                hidden_menu_items: []
+            };
+            set({ config: fallback, loading: false });
         }
     },
 
@@ -46,6 +80,11 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
             if (config?.language) {
                 try {
                     localStorage.setItem('i18nextLng', config.language);
+                } catch {}
+            }
+            if (config?.navigation_layout) {
+                try {
+                    localStorage.setItem('antigravity_navigation_layout', config.navigation_layout);
                 } catch {}
             }
             await configService.saveConfig(config);
@@ -59,6 +98,24 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
         } catch (error) {
             set({ error: String(error), loading: false });
             throw error;
+        }
+    },
+
+    updateNavigationLayout: async (layout: 'sidebar' | 'topbar') => {
+        try {
+            localStorage.setItem('antigravity_navigation_layout', layout);
+        } catch {}
+        const { config } = get();
+        if (config) {
+            const next = { ...config, navigation_layout: layout };
+            set({ config: next });
+            await get().saveConfig(next, true).catch(() => {});
+        } else {
+            set({
+                config: {
+                    navigation_layout: layout,
+                } as any,
+            });
         }
     },
 

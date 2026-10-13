@@ -144,9 +144,15 @@ pub async fn handle_warmup(
             &uuid::Uuid::new_v4().to_string()[..8]
         );
 
+        let effective_model = if req.model == "gemini-3-flash" {
+            "gemini-2.5-flash".to_string()
+        } else {
+            req.model.clone()
+        };
+
         let base_request = if is_image {
             json!({
-                "model": req.model,
+                "model": effective_model,
                 "contents": [{"role": "user", "parts": [{"text": "Hi"}]}],
                 "generationConfig": {
                     "maxOutputTokens": 5,
@@ -163,11 +169,11 @@ pub async fn handle_warmup(
                 trade-offs and concrete implementation recommendations.";
 
             json!({
-                "model": req.model,
+                "model": effective_model,
                 "contents": [{"role": "user", "parts": [{"text": warmup_prompt}]}],
                 "generationConfig": {
                     "temperature": 0.2,
-                    "maxOutputTokens": 512,
+                    "maxOutputTokens": 2048,
                     "thinkingConfig": {
                         "thinkingBudget": 0
                     }
@@ -179,7 +185,7 @@ pub async fn handle_warmup(
         wrap_request(
             &base_request,
             &project_id,
-            &req.model,
+            &effective_model,
             None,
             Some(&session_id),
             None,

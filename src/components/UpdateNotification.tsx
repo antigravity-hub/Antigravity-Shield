@@ -33,10 +33,96 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
   const [updateState, setUpdateState] = useState<UpdateState>('checking');
   const [downloadProgress, setDownloadProgress] = useState(0);
   const nativeUpdateRef = useRef<any>(null);
+  const [dynamicNotes, setDynamicNotes] = useState<string>('');
+  const [isLoadingNotes, setIsLoadingNotes] = useState<boolean>(false);
 
   useEffect(() => {
     checkUpdates();
   }, []);
+
+  // Dynamically evaluate and resolve release notes for target version from GitHub or CHANGELOG.md
+  useEffect(() => {
+    const raw = (nativeUpdateRef.current?.body || updateInfo?.release_notes || '').trim();
+    if (raw.length > 0 && !raw.includes('Release notes available on GitHub')) {
+      setDynamicNotes(raw);
+      return;
+    }
+
+    if (!updateInfo?.latest_version) return;
+
+    let isMounted = true;
+    setIsLoadingNotes(true);
+
+    const resolveDynamicChangelog = async () => {
+      try {
+        const cleanVer = updateInfo.latest_version.replace(/^v/, '');
+
+        // 1. Check GitHub Release API for this specific version tag
+        try {
+          const ghRes = await fetch(
+            `https://api.github.com/repos/antigravity-hub/Antigravity-Shield/releases/tags/v${cleanVer}`
+          );
+          if (ghRes.ok) {
+            const data = await ghRes.json();
+            if (data.body && data.body.trim().length > 0) {
+              if (isMounted) {
+                setDynamicNotes(data.body.trim());
+                setIsLoadingNotes(false);
+                return;
+              }
+            }
+          }
+        } catch (_) {}
+
+        // 2. Fallback: Parse section from upstream CHANGELOG.md (via CDN or raw GitHub)
+        const changelogUrls = [
+          'https://cdn.jsdelivr.net/gh/antigravity-hub/Antigravity-Shield@main/CHANGELOG.md',
+          'https://raw.githubusercontent.com/antigravity-hub/Antigravity-Shield/main/CHANGELOG.md'
+        ];
+
+        for (const url of changelogUrls) {
+          try {
+            const cRes = await fetch(url);
+            if (cRes.ok) {
+              const text = await cRes.text();
+              const lines = text.split('\n');
+              let capturing = false;
+              const collected: string[] = [];
+
+              for (const line of lines) {
+                const tr = line.trim();
+                if ((tr.startsWith('*') || tr.startsWith('-')) && tr.includes('**v')) {
+                  if (capturing) break;
+                  if (tr.includes(`**v${cleanVer}`) || tr.includes(`**${cleanVer}`)) {
+                    capturing = true;
+                    continue;
+                  }
+                }
+                if (capturing && (tr.startsWith('-') || tr.startsWith('*'))) {
+                  collected.push(tr);
+                }
+              }
+
+              if (collected.length > 0 && isMounted) {
+                setDynamicNotes(collected.join('\n'));
+                setIsLoadingNotes(false);
+                return;
+              }
+            }
+          } catch (_) {}
+        }
+      } catch (err) {
+        console.warn('[Updater] Could not evaluate dynamic changelog:', err);
+      } finally {
+        if (isMounted) setIsLoadingNotes(false);
+      }
+    };
+
+    resolveDynamicChangelog();
+    return () => {
+      isMounted = false;
+    };
+  }, [updateInfo?.latest_version, updateInfo?.release_notes]);
 
   const checkUpdates = async () => {
     try {
@@ -209,8 +295,8 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
   }
 
   const isMandatory = severity === 'major';
-  const releaseNotes = (nativeUpdateRef.current?.body || updateInfo?.release_notes || '').trim();
-  const hasRealNotes = releaseNotes.length > 0 && !releaseNotes.includes('Release notes available on GitHub');
+  const rawNotes = (dynamicNotes || nativeUpdateRef.current?.body || updateInfo?.release_notes || '').trim();
+  const hasRealNotes = rawNotes.length > 0 && !rawNotes.includes('Release notes available on GitHub');
 
   // --- 1. MANDATORY / MAJOR UPDATE MODAL (Centered, Blocking, No Dismiss) ---
   if (isMandatory) {
@@ -278,21 +364,57 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
             </div>
 
             {/* Description & Release Reason */}
-            {hasRealNotes ? (
-              <div className="mb-5">
-                <div className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>{t('update_notification.reason_title', 'Update Highlights & Changelog:')}</span>
-                </div>
-                <div className="p-3.5 rounded-xl bg-gray-50/90 dark:bg-slate-800/70 border border-gray-200/70 dark:border-slate-700/60 max-h-44 overflow-y-auto text-xs text-gray-700 dark:text-gray-200 whitespace-pre-line leading-relaxed font-sans select-text">
-                  {releaseNotes}
-                </div>
+            <div className="mb-5">
+              <div className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>{t('update_notification.reason_title', 'Update Highlights & Changelog:')}</span>
               </div>
-            ) : (
-              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-5">
-                {t('update_notification.mandatory_desc', 'This release introduces critical protocol upgrades and anti-403 security safeguards. Updating is mandatory to prevent account suspensions and service interruptions.')}
-              </p>
-            )}
+              <div className="p-3.5 rounded-xl bg-gray-50/90 dark:bg-slate-800/70 border border-gray-200/70 dark:border-slate-700/60 max-h-48 overflow-y-auto text-xs text-gray-700 dark:text-gray-200 leading-relaxed font-sans select-text scrollbar-thin">
+                {hasRealNotes ? (
+                  <div className="space-y-2">
+                    {rawNotes.split('\n').filter((line: string) => line.trim().length > 0).map((line: string, idx: number) => {
+                      const cleanLine = line.replace(/^[*\-+]\s+/, '').trim();
+                      const boldMatch = cleanLine.match(/^\*\*(.*?)\*\*:(.*)$/);
+                      if (boldMatch) {
+                        return (
+                          <div key={idx} className="flex items-start gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                            <div className="text-xs leading-relaxed text-gray-700 dark:text-gray-200">
+                              <span className="font-semibold text-gray-900 dark:text-white">{boldMatch[1]}:</span>
+                              <span className="ml-1 text-gray-600 dark:text-gray-300">{boldMatch[2].replace(/`([^`]+)`/g, '$1')}</span>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={idx} className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                          <span className="text-xs leading-relaxed text-gray-600 dark:text-gray-300">{cleanLine.replace(/\*\*/g, '')}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : isLoadingNotes ? (
+                  <div className="flex items-center gap-2 py-4 justify-center text-xs text-gray-500 dark:text-gray-400">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                    <span>Evaluating changelog for v{updateInfo?.latest_version}...</span>
+                  </div>
+                ) : (
+                  <div className="py-2 text-xs text-gray-600 dark:text-gray-300">
+                    <p className="mb-2">Version v{updateInfo?.latest_version} contains critical architecture and protocol upgrades.</p>
+                    <a
+                      href={`https://github.com/antigravity-hub/Antigravity-Shield/releases/tag/v${updateInfo?.latest_version}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                    >
+                      <span>View full release notes on GitHub</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Downloading State */}
             {updateState === 'downloading' && (
@@ -609,7 +731,7 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
 
             {updateState === 'available' && hasRealNotes && (
               <div className="p-2.5 rounded-xl bg-gray-50/80 dark:bg-slate-800/60 border border-gray-200/60 dark:border-slate-700/60 text-xs text-gray-700 dark:text-gray-300 max-h-28 overflow-y-auto whitespace-pre-line leading-relaxed select-text scrollbar-thin">
-                {releaseNotes}
+                {rawNotes}
               </div>
             )}
           </div>

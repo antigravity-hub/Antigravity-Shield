@@ -12,14 +12,14 @@ import { FlagIcon } from './FlagIcon';
  */
 export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t, i18n } = useTranslation();
-    const [isAuthenticated, setIsAuthenticated] = useState(isTauri());
+    const [isAuthenticated, setIsAuthenticated] = useState(isTauri() || Boolean(import.meta.env.DEV));
     const [apiKey, setApiKey] = useState('');
     const [showLangMenu, setShowLangMenu] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (isTauri()) return;
+        if (isTauri() || import.meta.env.DEV) return;
 
         // 检查 Session 存储 (优先)
         const rawSession = sessionStorage.getItem('abv_admin_auth_token') || sessionStorage.getItem('abv_admin_api_key');

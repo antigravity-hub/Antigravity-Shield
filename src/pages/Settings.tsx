@@ -30,7 +30,7 @@ import AntigravityRtlCard from '../components/settings/AntigravityRtlCard';
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { config, loadConfig, saveConfig, updateLanguage, updateTheme } = useConfigStore();
+    const { config, loadConfig, saveConfig, updateLanguage, updateTheme, updateNavigationLayout } = useConfigStore();
     const { enable, disable, isEnabled } = useDebugConsole();
     const { openModal: openSupportModal } = useSupportModalStore();
     const { accounts, currentAccount } = useAccountStore();
@@ -166,8 +166,10 @@ function Settings() {
 
     useEffect(() => {
         if (config) {
+            const savedLayout = (typeof window !== 'undefined' ? localStorage.getItem('antigravity_navigation_layout') : null) as 'sidebar' | 'topbar' | null;
             setFormData(prev => ({
                 ...config,
+                navigation_layout: config.navigation_layout || savedLayout || 'sidebar',
                 auto_launch: prev.auto_launch !== undefined ? prev.auto_launch : (config.auto_launch ?? false),
             }));
         }
@@ -700,6 +702,23 @@ function Settings() {
                                     <option value="light">{t('settings.general.theme_light')}</option>
                                     <option value="dark">{t('settings.general.theme_dark')}</option>
                                     <option value="system">{t('settings.general.theme_system')}</option>
+                                </select>
+                            </div>
+
+                            {/* 导航布局选择 */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-900 dark:text-base-content mb-2">{t('settings.general.navigation_layout', 'Navigation Layout Mode')}</label>
+                                <select
+                                    className="w-full px-4 py-4 border border-gray-200 dark:border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-base-content bg-gray-50 dark:bg-base-200"
+                                    value={formData.navigation_layout ?? (typeof window !== 'undefined' ? localStorage.getItem('antigravity_navigation_layout') : null) ?? 'sidebar'}
+                                    onChange={(e) => {
+                                        const layout = e.target.value as 'sidebar' | 'topbar';
+                                        setFormData({ ...formData, navigation_layout: layout });
+                                        updateNavigationLayout(layout);
+                                    }}
+                                >
+                                    <option value="sidebar">{t('settings.general.nav_sidebar', 'Apple macOS Glass Sidebar (Default)')}</option>
+                                    <option value="topbar">{t('settings.general.nav_topbar', 'Classic Top Navigation Bar')}</option>
                                 </select>
                             </div>
 

@@ -694,7 +694,7 @@ async fn run_warmup_cycle(
                             {
                                 "claude-sonnet-4-6".to_string()
                             } else {
-                                "gemini-3-flash".to_string()
+                                "gemini-2.5-flash".to_string()
                             };
 
                             tasks_to_run.push((
@@ -876,7 +876,7 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                         {
                             "claude-sonnet-4-6".to_string()
                         } else {
-                            "gemini-3-flash".to_string()
+                            "gemini-2.5-flash".to_string()
                         };
 
                         let success = quota::warmup_model_directly(

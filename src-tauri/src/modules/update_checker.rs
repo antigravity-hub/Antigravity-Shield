@@ -225,14 +225,24 @@ async fn check_updater_json() -> Result<UpdateInfo, String> {
         }
     }
 
+    let mut release_notes = updater_info
+        .notes
+        .unwrap_or_default();
+
+    if release_notes.trim().is_empty() || release_notes.contains("Release notes available on GitHub") {
+        if let Some(dyn_notes) = fetch_dynamic_release_notes(&latest_version).await {
+            release_notes = dyn_notes;
+        } else if release_notes.trim().is_empty() {
+            release_notes = "Release notes available on GitHub.".to_string();
+        }
+    }
+
     Ok(UpdateInfo {
         current_version,
         latest_version,
         has_update,
         download_url,
-        release_notes: updater_info
-            .notes
-            .unwrap_or_else(|| "Release notes available on GitHub.".to_string()),
+        release_notes,
         published_at: updater_info
             .pub_date
             .unwrap_or_else(|| Utc::now().to_rfc3339()),
@@ -356,6 +366,88 @@ async fn check_github_api() -> Result<UpdateInfo, String> {
 #[derive(Deserialize)]
 struct PackageJson {
     version: String,
+}
+
+/// Dynamically evaluate and fetch release notes for a target version from GitHub Releases or CHANGELOG.md
+async fn fetch_dynamic_release_notes(version: &str) -> Option<String> {
+    let client = match create_client().await {
+        Ok(c) => c,
+        Err(_) => return None,
+    };
+
+    let clean_ver = version.trim_start_matches('v');
+    let tag = format!("v{}", clean_ver);
+
+    // 1. Query GitHub Release API by tag
+    let release_url = format!(
+        "https://api.github.com/repos/antigravity-hub/Antigravity-Shield/releases/tags/{}",
+        tag
+    );
+    if let Ok(resp) = client.get(&release_url).send().await {
+        if resp.status().is_success() {
+            if let Ok(rel) = resp.json::<GitHubRelease>().await {
+                let body = rel.body.trim().to_string();
+                if !body.is_empty() && !body.contains("Release notes available on GitHub") {
+                    return Some(body);
+                }
+            }
+        }
+    }
+
+    // 2. Fallback: Parse section from upstream CHANGELOG.md (via CDN or raw GitHub)
+    let changelog_urls = [
+        "https://cdn.jsdelivr.net/gh/antigravity-hub/Antigravity-Shield@main/CHANGELOG.md",
+        "https://raw.githubusercontent.com/antigravity-hub/Antigravity-Shield/main/CHANGELOG.md",
+    ];
+
+    for url in changelog_urls {
+        if let Ok(resp) = client.get(url).send().await {
+            if resp.status().is_success() {
+                if let Ok(text) = resp.text().await {
+                    if let Some(parsed) = extract_changelog_for_version(&text, clean_ver) {
+                        if !parsed.trim().is_empty() {
+                            return Some(parsed);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
+/// Extracts bullets belonging specifically to the given version from CHANGELOG.md
+fn extract_changelog_for_version(content: &str, target_version: &str) -> Option<String> {
+    let clean_ver = target_version.trim_start_matches('v');
+    let mut capturing = false;
+    let mut collected = Vec::new();
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+        // Check if line is a version section header (e.g., "*   **v5.21.0" or "**v5.21.0")
+        if (trimmed.starts_with('*') || trimmed.starts_with('-')) && trimmed.contains("**v") {
+            if capturing {
+                break;
+            }
+            if trimmed.contains(&format!("**v{}", clean_ver)) || trimmed.contains(&format!("**{}", clean_ver)) {
+                capturing = true;
+                continue;
+            }
+        }
+
+        if capturing {
+            if trimmed.starts_with('-') || trimmed.starts_with('*') {
+                collected.push(trimmed.to_string());
+            }
+        }
+    }
+
+    if collected.is_empty() {
+        None
+    } else {
+        Some(collected.join("\n"))
+    }
 }
 
 async fn check_static_url(url: &str, source_name: &str) -> Result<UpdateInfo, String> {

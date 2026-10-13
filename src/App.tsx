@@ -8,6 +8,7 @@ import ApiProxy from './pages/ApiProxy';
 import Monitor from './pages/Monitor';
 import TokenStats from './pages/TokenStats';
 import Security from './pages/Security';
+import EcosystemHub from './pages/EcosystemHub';
 import ThemeManager from './components/common/ThemeManager';
 import UserToken from './pages/UserToken';
 import { UpdateNotification } from './components/UpdateNotification';
@@ -73,6 +74,10 @@ const router = createHashRouter([
       {
         path: 'api-proxy',
         element: <ApiProxy />,
+      },
+      {
+        path: 'ecosystem',
+        element: <EcosystemHub />,
       },
       {
         path: 'monitor',

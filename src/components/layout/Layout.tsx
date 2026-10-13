@@ -12,8 +12,14 @@ import { ensureFullViewState } from '../../utils/windowManager';
 
 import WindowControls from './WindowControls';
 
+import Sidebar from './Sidebar';
+import { useConfigStore } from '../../stores/useConfigStore';
+
 function Layout() {
     const { isMiniView } = useViewStore();
+    const { config } = useConfigStore();
+    const localLayout = typeof window !== 'undefined' ? localStorage.getItem('antigravity_navigation_layout') : null;
+    const isSidebarLayout = (config?.navigation_layout ?? localLayout ?? 'sidebar') === 'sidebar';
 
     // Ensure correct window state when in Full View (not Mini View)
     // This handles the case where the app was closed in Mini View (small size, no decorations)
@@ -35,7 +41,7 @@ function Layout() {
     }
 
     return (
-        <div className="h-screen flex flex-col bg-[#FAFBFC] dark:bg-[#090d16] text-slate-900 dark:text-slate-100">
+        <div className="h-screen flex bg-[#FAFBFC] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 overflow-hidden">
             {/* 全局窗口拖拽区域 - 使用 JS 手动触发拖拽，解决 HTML 属性失效问题 */}
             <div
                 className="fixed top-0 left-0 right-36 h-9"
@@ -66,10 +72,24 @@ function Layout() {
             <BackgroundTaskRunner />
             <ToastContainer />
             <SupportModal />
-            <Navbar />
-            <main className="flex-1 overflow-hidden flex flex-col relative">
-                <Outlet />
-            </main>
+
+            {isSidebarLayout ? (
+                <div className="flex w-full h-full">
+                    <Sidebar />
+                    <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
+                        <main className="flex-1 overflow-hidden flex flex-col relative pt-9">
+                            <Outlet />
+                        </main>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex flex-col w-full h-full">
+                    <Navbar />
+                    <main className="flex-1 overflow-hidden flex flex-col relative">
+                        <Outlet />
+                    </main>
+                </div>
+            )}
         </div>
     );
 }

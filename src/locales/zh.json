@@ -69,6 +69,7 @@
     "dashboard": "仪表盘",
     "accounts": "账号管理",
     "proxy": "API 反代",
+    "ecosystem": "技能与 MCP",
     "call_records": "流量日志",
     "token_stats": "Token 统计",
     "security": "IP 管理",
@@ -1953,5 +1954,38 @@
     "overlay_depleted_badge": "Depleted",
     "overlay_waiting": "Receiving Shield telemetry...",
     "overlay_default_model": "AI Model"
+  },
+  "sidebar": {
+    "sections": {
+      "core": "核心功能",
+      "ecosystem": "工具生态",
+      "monitoring": "运行遥测",
+      "system": "系统设置"
+    }
+  },
+  "ecosystem": {
+    "title": "Agent 生态枢纽",
+    "subtitle": "管理、配置并监控 Agent 技能、Model Context Protocol (MCP) 服务及行为规则",
+    "search_placeholder": "搜索工具、触发词、服务...",
+    "tabs": {
+      "skills": "Agent 技能",
+      "mcp": "MCP 服务",
+      "rules": "规则与 Prompt"
+    },
+    "skills": {
+      "create": "创建技能",
+      "create_modal_title": "定义自定义 Agent 技能"
+    },
+    "mcp": {
+      "add_server": "添加 MCP 服务",
+      "add_modal_title": "注册新 MCP 服务",
+      "test": "测试服务连接",
+      "configure": "配置环境变量与参数"
+    },
+    "rules": {
+      "create": "添加指导规则"
+    },
+    "no_skills": "没有找到匹配的技能",
+    "inspect": "查看 SKILL.md"
   }
 }

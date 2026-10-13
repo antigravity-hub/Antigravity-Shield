@@ -83,7 +83,7 @@ static CLAUDE_TO_GEMINI: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|
     m.insert("gemini-3-pro-preview", "gemini-3-pro-preview");
     m.insert("gemini-3-pro", "gemini-3-pro-preview");
     m.insert("gemini-2.5-flash", "gemini-2.5-flash");
-    m.insert("gemini-3-flash", "gemini-3-flash");
+    m.insert("gemini-3-flash", "gemini-2.5-flash");
     m.insert("gemini-3.5-flash", "gemini-3.5-flash");
     m.insert("gemini-3.6-flash", "gemini-3.6-flash");
     m.insert("gemini-3.7-flash", "gemini-3.7-flash");

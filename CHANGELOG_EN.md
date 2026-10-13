@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.22.0 (2026-10-13)**:
+        -   **Gemini 5-Hour Rolling Warmup Protocol & Canonical Model**: Fixed Google upstream `HTTP 400 Bad Request` by calibrating model ping to `gemini-2.5-flash` across all schedulers, decoupled 5-hour rolling warmup from weekly quota usage so active accounts are never skipped, and expanded warmup generation budget to 2048 tokens to decisively lock in the 5-hour countdown timer.
+        -   **Agent Ecosystem Hub (Skills, MCP & Rules)**: Integrated Skills.sh catalog, local filesystem scanner, single-click install/uninstall, and zero-leak privacy guard for path and credential redaction.
+        -   **Instant UI Navigation**: Transitioned sidebar layout switches to instantaneous DOM hydration with persistent localStorage.
     *   **v5.21.0 (2026-10-13)**:
         -   **Gemini 5-Hour Rolling Quota Warmup Calibration**: Upgraded warmup request payload from minimal 5-token ping to comprehensive technical prompt with `maxOutputTokens: 512`, ensuring sufficient quota deduction to lock in Google's fixed 5-hour countdown reset cycle instead of sliding dummy windows.
         -   **Dynamic In-App Update Changelog & Reasons**: Integrated dynamic release notes display in both mandatory blocking update modals and floating update toasts, allowing users to view real version highlights and upgrade rationales directly.
