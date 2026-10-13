@@ -156,12 +156,18 @@ pub async fn handle_warmup(
                 "session_id": session_id
             })
         } else {
+            let warmup_prompt = "Write a comprehensive and detailed technical analysis of modern distributed systems design. \
+                Compare event-driven architecture, CQRS, and saga patterns for managing distributed transactions across microservices. \
+                Detail failure modes, consensus algorithms (Raft and Paxos), idempotency strategies, and practical considerations \
+                for achieving high availability and fault tolerance in high-throughput enterprise platforms. Include architectural \
+                trade-offs and concrete implementation recommendations.";
+
             json!({
                 "model": req.model,
-                "contents": [{"role": "user", "parts": [{"text": "Hi"}]}],
+                "contents": [{"role": "user", "parts": [{"text": warmup_prompt}]}],
                 "generationConfig": {
-                    "temperature": 0,
-                    "maxOutputTokens": 5,
+                    "temperature": 0.2,
+                    "maxOutputTokens": 2048,
                     "thinkingConfig": {
                         "thinkingBudget": 0
                     }
