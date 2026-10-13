@@ -167,7 +167,7 @@ pub async fn handle_warmup(
                 "contents": [{"role": "user", "parts": [{"text": warmup_prompt}]}],
                 "generationConfig": {
                     "temperature": 0.2,
-                    "maxOutputTokens": 2048,
+                    "maxOutputTokens": 512,
                     "thinkingConfig": {
                         "thinkingBudget": 0
                     }

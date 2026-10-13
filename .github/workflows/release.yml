@@ -258,13 +258,21 @@ jobs:
             WIN_EXE_CLEAN="Antigravity.Shield_${VER}_x64-setup.exe"
           fi
 
+          RELEASE_NOTES_TEXT=""
+          if [ -f release_notes.md ] && [ -s release_notes.md ]; then
+            RELEASE_NOTES_TEXT=$(cat release_notes.md | head -n 40)
+          fi
+          if [ -z "$RELEASE_NOTES_TEXT" ]; then
+            RELEASE_NOTES_TEXT="Antigravity Shield $VERSION release"
+          fi
+
           # Preserve existing platforms from release updater.json if already uploaded
           if curl -fsSL "$DOWNLOAD_BASE/updater.json" -o existing_updater.json 2>/dev/null; then
             echo "Preserving existing updater.json platforms from release"
             UPDATER_JSON=$(cat existing_updater.json)
             UPDATER_JSON=$(echo "$UPDATER_JSON" | jq \
               --arg version "$VER" \
-              --arg notes "Antigravity Shield $VERSION release" \
+              --arg notes "$RELEASE_NOTES_TEXT" \
               --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
               --arg dl "$DOWNLOAD_BASE" \
               --arg win_nsis_sig "$WINDOWS_NSIS_SIG" \
@@ -274,7 +282,7 @@ jobs:
           else
             UPDATER_JSON=$(jq -n \
               --arg version "$VER" \
-              --arg notes "Antigravity Shield $VERSION release" \
+              --arg notes "$RELEASE_NOTES_TEXT" \
               --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
               --arg dl "$DOWNLOAD_BASE" \
               --arg win_nsis_sig "$WINDOWS_NSIS_SIG" \

@@ -1568,6 +1568,7 @@
     "mandatory_badge": "MANDATORY UPDATE",
     "mandatory_title": "Critical Update Required",
     "mandatory_desc": "This release introduces critical protocol upgrades and anti-403 security safeguards. Updating is mandatory to prevent account suspensions and service interruptions.",
+    "reason_title": "Update Highlights & Changelog:",
     "btn_grace_period": "30-Min Grace Period (Finish Task)",
     "grace_period_activated": "30-minute grace period activated. Please update your system soon.",
     "toast": {

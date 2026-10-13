@@ -3,6 +3,9 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v5.21.0 (2026-10-13)**:
+        -   **Gemini 5-Hour Rolling Quota Warmup Calibration**: Upgraded warmup request payload from minimal 5-token ping to comprehensive technical prompt with `maxOutputTokens: 512`, ensuring sufficient quota deduction to lock in Google's fixed 5-hour countdown reset cycle instead of sliding dummy windows.
+        -   **Dynamic In-App Update Changelog & Reasons**: Integrated dynamic release notes display in both mandatory blocking update modals and floating update toasts, allowing users to view real version highlights and upgrade rationales directly.
     *   **v5.18.1 (2026-09-30)**:
         -   **Intelligent Auto-Switcher Effective Quota Bottleneck**: Fixed an issue where accounts with depleted weekly quotas were erroneously evaluated using raw 5-hour bucket fractions. Auto-switch and best-account rankings now compute the true usable bottleneck across 5-hour, weekly, and model limits (`min(5h, weekly, models)`), guaranteeing high-capacity accounts are chosen.
         -   **Auto-Switch Flapping & Ping-Pong Elimination**: Added candidate threshold validation ensuring auto-switch never rotates into standby accounts that are already critically depleted (<= 5%).

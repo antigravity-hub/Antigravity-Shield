@@ -13,6 +13,7 @@ interface UpdateInfo {
   latest_version: string;
   current_version: string;
   download_url: string;
+  release_notes?: string;
   source?: string;
   has_signature?: boolean;
 }
@@ -208,6 +209,8 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
   }
 
   const isMandatory = severity === 'major';
+  const releaseNotes = (nativeUpdateRef.current?.body || updateInfo?.release_notes || '').trim();
+  const hasRealNotes = releaseNotes.length > 0 && !releaseNotes.includes('Release notes available on GitHub');
 
   // --- 1. MANDATORY / MAJOR UPDATE MODAL (Centered, Blocking, No Dismiss) ---
   if (isMandatory) {
@@ -274,10 +277,22 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
               </span>
             </div>
 
-            {/* Description */}
-            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-5">
-              {t('update_notification.mandatory_desc', 'This release introduces critical protocol upgrades and anti-403 security safeguards. Updating is mandatory to prevent account suspensions and service interruptions.')}
-            </p>
+            {/* Description & Release Reason */}
+            {hasRealNotes ? (
+              <div className="mb-5">
+                <div className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>{t('update_notification.reason_title', 'Update Highlights & Changelog:')}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-gray-50/90 dark:bg-slate-800/70 border border-gray-200/70 dark:border-slate-700/60 max-h-44 overflow-y-auto text-xs text-gray-700 dark:text-gray-200 whitespace-pre-line leading-relaxed font-sans select-text">
+                  {releaseNotes}
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-5">
+                {t('update_notification.mandatory_desc', 'This release introduces critical protocol upgrades and anti-403 security safeguards. Updating is mandatory to prevent account suspensions and service interruptions.')}
+              </p>
+            )}
 
             {/* Downloading State */}
             {updateState === 'downloading' && (
@@ -577,7 +592,7 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
 
           {/* Status message */}
           <div className="mb-4">
-            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-2">
               {updateState === 'available' && t('update_notification.available_desc', {
                 version: updateInfo?.latest_version,
                 defaultValue: `A new version (v${updateInfo?.latest_version}) is available. Would you like to update now?`
@@ -591,6 +606,12 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
                   : 'A new version is available. Please click below to download the update.'
               )}
             </p>
+
+            {updateState === 'available' && hasRealNotes && (
+              <div className="p-2.5 rounded-xl bg-gray-50/80 dark:bg-slate-800/60 border border-gray-200/60 dark:border-slate-700/60 text-xs text-gray-700 dark:text-gray-300 max-h-28 overflow-y-auto whitespace-pre-line leading-relaxed select-text scrollbar-thin">
+                {releaseNotes}
+              </div>
+            )}
           </div>
 
           {/* Action buttons when update is available */}
