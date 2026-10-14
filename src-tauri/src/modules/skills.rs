@@ -13,38 +13,69 @@ pub struct SkillItem {
     pub id: String,
     pub name: String,
     pub title: String,
+    #[serde(default)]
     pub description: String,
+    #[serde(default)]
     pub category: String, // "coding" | "design" | "devops" | "data" | "automation" | "science" | "architecture"
+    #[serde(default)]
     pub author: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
+    #[serde(default = "default_version")]
     pub version: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icon: Option<String>,
     #[serde(default)]
     pub triggers: Vec<String>,
     #[serde(default)]
     pub tags: Vec<String>,
+    #[serde(default = "default_scope")]
     pub scope: String, // "global" | "workspace"
+    #[serde(default)]
     pub is_installed: bool,
+    #[serde(default)]
     pub is_enabled: bool,
     /// Strict Local Confinement: Local skills MUST be tagged is_local: true
+    #[serde(default)]
     pub is_local: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_official: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub installs: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub installs: Option<serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stars: Option<serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub first_seen: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub install_path: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub local_path: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remote_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repository: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audits: Option<serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audit_status: Option<String>,
     #[serde(default)]
     pub dependencies: Vec<String>,
+    #[serde(default = "default_source_type")]
     pub source_type: String, // "local" | "skills_sh" | "github"
+}
+
+fn default_version() -> String {
+    "1.0.0".to_string()
+}
+fn default_scope() -> String {
+    "global".to_string()
+}
+fn default_source_type() -> String {
+    "local".to_string()
 }
 
 /// Discovered filesystem scan root with priority ranking.
@@ -946,6 +977,105 @@ pub fn read_skill_markdown(skill_id: &str, _is_local: bool) -> Result<String, St
 /// Public alias for read_skill_markdown.
 pub fn read_skill_content_safe(skill_id: &str, _install_path: Option<&str>) -> Result<String, String> {
     read_skill_markdown(skill_id, true)
+}
+
+/// Physically installs a skill to ~/.gemini/config/skills/<clean_name>/SKILL.md
+pub fn install_skill_physical(skill: &SkillItem) -> Result<String, String> {
+    let home = dirs::home_dir().ok_or_else(|| "Could not resolve user home directory".to_string())?;
+    let primary = home.join(".gemini").join("config").join("skills");
+    if !primary.exists() {
+        fs::create_dir_all(&primary).map_err(|e| format!("Failed to create skills root directory: {}", e))?;
+    }
+
+    // Determine clean directory name
+    let raw_name = if !skill.name.is_empty() {
+        &skill.name
+    } else {
+        skill.id.rsplit('/').next().unwrap_or(&skill.id)
+    };
+
+    let clean_name = raw_name
+        .replace('/', "-")
+        .replace('\\', "-")
+        .replace("..", "")
+        .replace('\0', "")
+        .trim()
+        .to_string();
+
+    if clean_name.is_empty() {
+        return Err("Invalid skill name for installation".to_string());
+    }
+
+    let target_dir = primary.join(&clean_name);
+    // Security check: ensure target_dir is strictly inside primary
+    if !target_dir.starts_with(&primary) {
+        return Err("Path traversal detected in target directory".to_string());
+    }
+
+    fs::create_dir_all(&target_dir).map_err(|e| format!("Failed to create skill directory: {}", e))?;
+
+    let skill_file = target_dir.join("SKILL.md");
+
+    // Compose SKILL.md content
+    let content = if let Some(ref c) = skill.content {
+        if !c.trim().is_empty() {
+            c.clone()
+        } else {
+            generate_canonical_skill_md(skill, &clean_name)
+        }
+    } else {
+        generate_canonical_skill_md(skill, &clean_name)
+    };
+
+    fs::write(&skill_file, content.as_bytes()).map_err(|e| format!("Failed to write SKILL.md: {}", e))?;
+
+    info!("Successfully installed skill '{}' to {:?}", clean_name, skill_file);
+    Ok(skill_file.to_string_lossy().to_string())
+}
+
+/// Physically uninstalls a skill by removing ~/.gemini/config/skills/<clean_name>
+pub fn uninstall_skill_physical(skill_id: &str) -> Result<(), String> {
+    let home = dirs::home_dir().ok_or_else(|| "Could not resolve user home directory".to_string())?;
+    let primary = home.join(".gemini").join("config").join("skills");
+
+    let raw_name = skill_id.rsplit('/').next().unwrap_or(skill_id);
+    let clean_name = raw_name
+        .replace('/', "-")
+        .replace('\\', "-")
+        .replace("..", "")
+        .replace('\0', "")
+        .trim()
+        .to_string();
+
+    if clean_name.is_empty() {
+        return Err("Invalid skill ID for uninstallation".to_string());
+    }
+
+    let target_dir = primary.join(&clean_name);
+    if !target_dir.starts_with(&primary) {
+        return Err("Path traversal detected in uninstallation path".to_string());
+    }
+
+    if target_dir.is_dir() {
+        fs::remove_dir_all(&target_dir).map_err(|e| format!("Failed to remove skill directory: {}", e))?;
+        info!("Successfully removed skill directory {:?}", target_dir);
+    }
+
+    Ok(())
+}
+
+fn generate_canonical_skill_md(skill: &SkillItem, clean_name: &str) -> String {
+    let triggers_str = skill.triggers.join(", ");
+    format!(
+        "---\nname: {}\ndescription: {}\ncategory: {}\nversion: {}\ntriggers: [{}]\n---\n\n# {}\n\n{}\n",
+        clean_name,
+        skill.description,
+        skill.category,
+        skill.version,
+        triggers_str,
+        skill.title,
+        skill.description
+    )
 }
 
 // ============================================================================

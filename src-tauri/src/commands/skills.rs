@@ -21,3 +21,23 @@ pub async fn read_skill_content(
     .await
     .map_err(|e| format!("Skill read task failed: {}", e))?
 }
+
+/// Physically installs a skill to ~/.gemini/config/skills/<name>/SKILL.md
+#[tauri::command]
+pub async fn install_skill(skill: SkillItem) -> Result<String, String> {
+    tokio::task::spawn_blocking(move || {
+        skills::install_skill_physical(&skill)
+    })
+    .await
+    .map_err(|e| format!("Install skill task failed: {}", e))?
+}
+
+/// Physically uninstalls a skill from ~/.gemini/config/skills/<name>
+#[tauri::command]
+pub async fn uninstall_skill(skill_id: String) -> Result<(), String> {
+    tokio::task::spawn_blocking(move || {
+        skills::uninstall_skill_physical(&skill_id)
+    })
+    .await
+    .map_err(|e| format!("Uninstall skill task failed: {}", e))?
+}

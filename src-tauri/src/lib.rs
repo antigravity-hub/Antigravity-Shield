@@ -766,6 +766,8 @@ pub fn run() {
             // Skills Ecosystem commands
             commands::skills::list_installed_skills,
             commands::skills::read_skill_content,
+            commands::skills::install_skill,
+            commands::skills::uninstall_skill,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

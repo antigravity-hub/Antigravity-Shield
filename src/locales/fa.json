@@ -2015,6 +2015,30 @@
       "create": "افزودن قانون یا دستورالعمل"
     },
     "no_skills": "هیچ مهارتی با عبارت جستجو یافت نشد",
-    "inspect": "مشاهده فایل SKILL.md"
+    "inspect": "مشاهده فایل SKILL.md",
+    "source": {
+      "all": "همه مهارت‌ها",
+      "local": "مهارت‌های محلی من (Local)",
+      "skills_sh": "مارکت‌پلیس Skills.sh"
+    },
+    "zero_leak_banner": "Zero-Leak Shield: کلیدها و اسکیل‌های محلی ۱۰۰٪ ایزوله هستند",
+    "status": {
+      "active": "فعال",
+      "inactive": "غیرفعال"
+    },
+    "preview_content": "پیش‌نمایش محتوای SKILL.md",
+    "read_only": "حالت فقط‌خواندنی (Read-Only)",
+    "install_instruction": "دستور نصب در ترمینال یا با ۱ کلیک:",
+    "one_click_install": "نصب با ۱ کلیک",
+    "installing": "در حال نصب...",
+    "view_on_skills_sh": "مشاهده در Skills.sh",
+    "github_repo": "مخزن GitHub",
+    "local_shield_title": "مهارت محلی ایزوله (Zero-Leak Local Shield)",
+    "file_path": "مسیر فایل:",
+    "private_and_local": "محرمانه & محلی",
+    "local_path": "مسیر محلی:",
+    "zero_leak_isolated": "ایزوله (Zero-Leak)",
+    "security_audits": "ممیزی‌های امنیتی (Security Audits)",
+    "official_maker": "سازنده رسمی (Official Maker)"
   }
 }

@@ -103,10 +103,11 @@ export async function saveSkillsToStorage(skills: SkillItem[]): Promise<void> {
 }
 
 export async function installSkill(skill: SkillItem): Promise<SkillItem> {
+  let installPath: string | undefined;
   if (isTauri()) {
     try {
       const { invoke } = await import('@tauri-apps/api/core');
-      await invoke('install_skill', { skill });
+      installPath = await invoke<string>('install_skill', { skill });
     } catch (err) {
       console.warn('[Ecosystem] Tauri install_skill invoke fallback:', err);
     }
@@ -117,6 +118,8 @@ export async function installSkill(skill: SkillItem): Promise<SkillItem> {
     ...skill,
     isInstalled: true,
     isEnabled: true,
+    isLocal: true,
+    installPath: installPath || skill.installPath,
   };
 
   let nextSkills: SkillItem[];

@@ -188,7 +188,7 @@ export const SkillsTab: React.FC = () => {
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
-            <span>{t('ecosystem.source.all', 'همه مهارت‌ها')}</span>
+            <span>{t('ecosystem.source.all', 'All Skills')}</span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-700/60 font-mono">
               {skills.length}
             </span>
@@ -203,7 +203,7 @@ export const SkillsTab: React.FC = () => {
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span>{t('ecosystem.source.local', 'مهارت‌های محلی من (Local)')}</span>
+            <span>{t('ecosystem.source.local', 'My Local Skills')}</span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono">
               {localCount}
             </span>
@@ -218,7 +218,7 @@ export const SkillsTab: React.FC = () => {
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-            <span>{t('ecosystem.source.skills_sh', 'مارکت‌پلیس Skills.sh')}</span>
+            <span>{t('ecosystem.source.skills_sh', 'Skills.sh Marketplace')}</span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono">
               {onlineCount}
             </span>
@@ -228,7 +228,7 @@ export const SkillsTab: React.FC = () => {
         {/* Zero-Leak Security Badge */}
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-medium self-start sm:self-auto">
           <CheckCircle2 className="w-3.5 h-3.5" />
-          <span>Zero-Leak Shield: کلیدها و اسکیل‌های محلی ۱۰۰٪ ایزوله هستند</span>
+          <span>{t('ecosystem.zero_leak_banner', 'Zero-Leak Shield: Local skills & keys are 100% isolated')}</span>
         </div>
       </div>
 
@@ -301,7 +301,7 @@ export const SkillsTab: React.FC = () => {
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
                     }`}>
                       <CheckCircle2 className={`w-3 h-3 ${skill.isEnabled ? 'text-emerald-500' : 'text-slate-400'}`} />
-                      <span>{skill.isEnabled ? 'فعال (Active)' : 'غیرفعال'}</span>
+                      <span>{skill.isEnabled ? t('ecosystem.status.active', 'Active') : t('ecosystem.status.inactive', 'Inactive')}</span>
                     </span>
                   )}
                 </div>
@@ -368,7 +368,7 @@ export const SkillsTab: React.FC = () => {
                   {skill.isInstalled && (
                     <div className="flex items-center gap-1.5">
                       <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 select-none">
-                        {skill.isEnabled ? 'فعال' : 'غیرفعال'}
+                        {skill.isEnabled ? t('ecosystem.status.active', 'Active') : t('ecosystem.status.inactive', 'Inactive')}
                       </span>
                       <button
                         type="button"
@@ -452,7 +452,7 @@ export const SkillsTab: React.FC = () => {
                       </span>
                       {inspectingSkill.isOfficial && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-sans">
-                          Official Maker
+                          {t('ecosystem.official_maker', 'Official Maker')}
                         </span>
                       )}
                     </div>
@@ -471,7 +471,7 @@ export const SkillsTab: React.FC = () => {
                       className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20 transition-colors"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
-                      <span>مشاهده در Skills.sh</span>
+                      <span>{t('ecosystem.view_on_skills_sh', 'View on Skills.sh')}</span>
                     </a>
                   )}
                   {inspectingSkill.repository && (
@@ -482,7 +482,7 @@ export const SkillsTab: React.FC = () => {
                       className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
                     >
                       <GitBranch className="w-3.5 h-3.5" />
-                      <span>مخزن GitHub</span>
+                      <span>{t('ecosystem.github_repo', 'GitHub Repo')}</span>
                     </a>
                   )}
                   <button
@@ -543,7 +543,7 @@ export const SkillsTab: React.FC = () => {
                 <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                   <div className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase text-slate-700 dark:text-slate-300 mb-2.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                    <span>Security Audits</span>
+                    <span>{t('ecosystem.security_audits', 'Security Audits')}</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -582,21 +582,21 @@ export const SkillsTab: React.FC = () => {
                     <div>
                       <div className="font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 mb-0.5">
                         <Lock className="w-3.5 h-3.5" />
-                        <span>مهارت محلی ایزوله (Zero-Leak Local Shield)</span>
+                        <span>{t('ecosystem.local_shield_title', 'Zero-Leak Isolated Local Skill')}</span>
                       </div>
                       <span className="text-[10px] text-slate-500 font-mono truncate block max-w-lg">
-                        مسیر فایل: {inspectingSkill.installPath}
+                        {t('ecosystem.file_path', 'File Path:')} {inspectingSkill.installPath}
                       </span>
                     </div>
                     <span className="text-[10px] px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-semibold">
-                      محرمانه & محلی
+                      {t('ecosystem.private_and_local', 'Private & Local')}
                     </span>
                   </div>
                 ) : (
                   <div className="p-3.5 rounded-xl bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent border border-sky-500/20 flex items-center justify-between">
                     <div>
                       <span className="text-xs font-semibold text-slate-900 dark:text-white block mb-0.5">
-                        دستور نصب در ترمینال یا با ۱ کلیک:
+                        {t('ecosystem.install_instruction', 'Install via Terminal or 1-Click:')}
                       </span>
                       <code className="text-[11px] font-mono text-sky-600 dark:text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-md">
                         npx skills add {inspectingSkill.id}
@@ -610,7 +610,7 @@ export const SkillsTab: React.FC = () => {
                         className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-semibold text-xs shadow-md shadow-sky-500/20 active:scale-95 transition-all"
                       >
                         <Download className="w-4 h-4" />
-                        <span>{installingId === inspectingSkill.id ? 'در حال نصب...' : 'نصب با ۱ کلیک'}</span>
+                        <span>{installingId === inspectingSkill.id ? t('ecosystem.installing', 'Installing...') : t('ecosystem.one_click_install', '1-Click Install')}</span>
                       </button>
                     )}
                   </div>
@@ -619,8 +619,8 @@ export const SkillsTab: React.FC = () => {
                 {/* 4. SKILL.md Content View */}
                 <div>
                   <div className="text-[11px] font-mono uppercase text-slate-500 mb-1.5 flex items-center justify-between">
-                    <span>پیش‌نمایش محتوای SKILL.md</span>
-                    <span className="text-[10px] text-slate-400">حالت فقط‌خواندنی (Read-Only)</span>
+                    <span>{t('ecosystem.preview_content', 'SKILL.md Content Preview')}</span>
+                    <span className="text-[10px] text-slate-400">{t('ecosystem.read_only', 'READ-ONLY MODE')}</span>
                   </div>
                   <div className="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 whitespace-pre-wrap leading-relaxed font-mono text-xs max-h-60 overflow-y-auto">
                     {inspectingContent || inspectingSkill.content || (
@@ -646,7 +646,7 @@ ${inspectingSkill.description}`
                   onClick={() => setInspectingSkill(null)}
                   className="px-4 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors"
                 >
-                  بستن (Close)
+                  {t('common.close', 'Close')}
                 </button>
               </div>
             </motion.div>

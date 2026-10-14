@@ -1992,6 +1992,30 @@
       "create": "Add Instruction Rule"
     },
     "no_skills": "No skills match your search",
-    "inspect": "View SKILL.md"
+    "inspect": "View SKILL.md",
+    "source": {
+      "all": "All Skills",
+      "local": "My Local Skills",
+      "skills_sh": "Skills.sh Marketplace"
+    },
+    "zero_leak_banner": "Zero-Leak Shield: Local skills & keys are 100% isolated",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "preview_content": "SKILL.md Content Preview",
+    "read_only": "Read-Only",
+    "install_instruction": "Install via Terminal or 1-Click:",
+    "one_click_install": "1-Click Install",
+    "installing": "Installing...",
+    "view_on_skills_sh": "View on Skills.sh",
+    "github_repo": "GitHub Repo",
+    "local_shield_title": "Zero-Leak Isolated Local Skill",
+    "file_path": "File Path:",
+    "private_and_local": "Private & Local",
+    "local_path": "Local Path:",
+    "zero_leak_isolated": "Zero-Leak Isolated",
+    "security_audits": "Security Audits",
+    "official_maker": "Official Maker"
   }
 }
