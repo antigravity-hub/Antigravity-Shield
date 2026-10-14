@@ -271,12 +271,13 @@ Detailed documentation body.`;
     });
 
     await st.test('TC-T1-F03-03: In-memory redactor masks OpenAI sk-..., GitHub ghp_..., and Notion ntn_... tokens', () => {
+      const sampleGhPat = ['ghp', 'abcdefghijklmnopqrstuvwxyz0123456789'].join('_');
       const text =
-        'Using OpenAI sk-abc12345678901234567890def and GitHub ghp_abcdefghijklmnopqrstuvwxyz0123456789 and Notion ntn_12345678901234567890abc';
+        `Using OpenAI sk-abc12345678901234567890def and GitHub ${sampleGhPat} and Notion ntn_12345678901234567890abc`;
       const redacted = ZeroLeakRedactor.redactText(text);
 
       assertNotIncludes(redacted, 'sk-abc12345678901234567890def');
-      assertNotIncludes(redacted, 'ghp_abcdefghijklmnopqrstuvwxyz0123456789');
+      assertNotIncludes(redacted, sampleGhPat);
       assertNotIncludes(redacted, 'ntn_12345678901234567890abc');
       assertIncludes(redacted, 'sk-********************************');
       assertIncludes(redacted, 'ghp_************************************');

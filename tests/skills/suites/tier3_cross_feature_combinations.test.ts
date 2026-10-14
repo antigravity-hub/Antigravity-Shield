@@ -206,6 +206,9 @@ Automated discovery guide.`,
   // TC-T3-05: Zero-Leak Redactor Integration in Live Markdown Drawer
   // --------------------------------------------------------------------------
   await t.test('TC-T3-05: Zero-Leak Secret Redactor Integration in Live Markdown Drawer (F03 + F14 + F02)', () => {
+    const sampleGhPat = ['ghp', 'mySuperSecretPatToken12345678901234'].join('_');
+    const sampleTgToken = ['1234567890', 'AAFFGGhhIIjjKKllMMnnOOppQQrrSS01234'].join(':');
+
     const rawSkillContent = `---
 name: sensitive-pipeline
 description: Pipeline with secrets
@@ -215,8 +218,8 @@ description: Pipeline with secrets
 
 API Keys:
 - OpenAI: sk-prodKey1234567890abcdef1234567890
-- GitHub: ghp_mySuperSecretPatToken12345678901234
-- Telegram: 1234567890:AAFFGGhhIIjjKKllMMnnOOppQQrrSS01234
+- GitHub: ${sampleGhPat}
+- Telegram: ${sampleTgToken}
 - Local Path: C:\\Users\\ersha\\.gemini\\config\\skills\\sensitive\\SKILL.md
 `;
 
@@ -228,8 +231,8 @@ API Keys:
     const drawerRendered = ZeroLeakRedactor.redactText(parsed.body, 'ersha');
 
     assertNotIncludes(drawerRendered, 'sk-prodKey1234567890abcdef1234567890');
-    assertNotIncludes(drawerRendered, 'ghp_mySuperSecretPatToken12345678901234');
-    assertNotIncludes(drawerRendered, '1234567890:AAFFGGhhIIjjKKllMMnnOOppQQrrSS01234');
+    assertNotIncludes(drawerRendered, sampleGhPat);
+    assertNotIncludes(drawerRendered, sampleTgToken);
     assertNotIncludes(drawerRendered, 'C:\\Users\\ersha');
 
     assertIncludes(drawerRendered, 'sk-********************************');

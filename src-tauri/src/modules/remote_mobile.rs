@@ -323,8 +323,25 @@ pub fn append_mobile_message(input: &MobileChatInput) -> Result<(), String> {
     let queue_dir = home_path.join(".gemini").join("remote_inbox");
     let _ = fs::create_dir_all(&queue_dir);
 
-    let filename = format!("msg_{}_{}.json", input.session_id, chrono::Utc::now().timestamp_millis());
-    let filepath = queue_dir.join(filename);
+    // Sanitize session_id to strictly alphanumeric + hyphens/underscores to prevent path traversal
+    let safe_session_id: String = input
+        .session_id
+        .chars()
+        .filter(|c| c.is_ascii_alphanumeric() || *c == '-' || *c == '_')
+        .take(64)
+        .collect();
+    let safe_session_id = if safe_session_id.is_empty() {
+        "session".to_string()
+    } else {
+        safe_session_id
+    };
+
+    let filename = format!("msg_{}_{}.json", safe_session_id, chrono::Utc::now().timestamp_millis());
+    let filepath = queue_dir.join(&filename);
+
+    if !filepath.starts_with(&queue_dir) {
+        return Err("Invalid file path generated".to_string());
+    }
 
     let payload = serde_json::json!({
         "sessionId": input.session_id,
@@ -334,7 +351,7 @@ pub fn append_mobile_message(input: &MobileChatInput) -> Result<(), String> {
         "receivedAt": chrono::Utc::now().to_rfc3339(),
     });
 
-    fs::write(filepath, serde_json::to_string_pretty(&payload).unwrap_or_default())
+    fs::write(&filepath, serde_json::to_string_pretty(&payload).unwrap_or_default())
         .map_err(|e| format!("Failed to queue message: {}", e))?;
 
     Ok(())

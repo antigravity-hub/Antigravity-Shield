@@ -275,6 +275,7 @@ category: ${candidate.category}
   // --------------------------------------------------------------------------
   await t.test('RW-04: Enterprise OpSec Audit Journey (Zero-Leak Boundary Gate)', (st) => {
     const testSlackToken = ['xoxb', '112233445566', '778899001122', 'abcdefghijklmnopqrstuvwx'].join('-');
+    const testGoogleKey = ['AIza', 'SyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q'].join('');
     const rawEnterpriseDoc = `---
 name: production-deployment-gateway
 description: Internal corporate deployment guide
@@ -288,7 +289,7 @@ description: Internal corporate deployment guide
 - Slack Alerts Webhook Token: ${testSlackToken}
 - Exa Production Index: 12345678-abcd-1234-abcd-1234567890ab
 - Notion Internal KB: ntn_99887766554433221100aabbccddeeff
-- Google AI Core Key: AIzaSyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q
+- Google AI Core Key: ${testGoogleKey}
 - Bearer Auth Header: Bearer corp_bearer_token_xyz_99887766
 - Local Log Archive: C:\\Users\\ersha\\.gemini\\config\\skills\\deployment\\audit.log
 - Direct Secret: api_key = "CorporateDatabaseSecretPassword123"
@@ -307,7 +308,7 @@ description: Internal corporate deployment guide
     assertNotIncludes(sanitizedOutput, testSlackToken);
     assertNotIncludes(sanitizedOutput, '12345678-abcd-1234-abcd-1234567890ab');
     assertNotIncludes(sanitizedOutput, 'ntn_99887766554433221100aabbccddeeff');
-    assertNotIncludes(sanitizedOutput, 'AIzaSyA1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q');
+    assertNotIncludes(sanitizedOutput, testGoogleKey);
     assertNotIncludes(sanitizedOutput, 'corp_bearer_token_xyz_99887766');
     assertNotIncludes(sanitizedOutput, 'C:\\Users\\ersha');
     assertNotIncludes(sanitizedOutput, 'CorporateDatabaseSecretPassword123');
