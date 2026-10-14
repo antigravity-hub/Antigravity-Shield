@@ -254,7 +254,7 @@ export const SkillsTab: React.FC = () => {
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-            <span>{t('ecosystem.source.skills_sh', 'Skills.sh Marketplace')}</span>
+            <span>{t('ecosystem.source.skills_sh', 'Marketplace')}</span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono">
               {onlineCount}
             </span>

@@ -99,4 +99,30 @@ i18n
         },
     });
 
+// Universal RTL and Language Sync Helper
+export const syncAppDirectionAndLanguage = (lng?: string) => {
+    if (typeof document === 'undefined') return;
+    const current = lng || i18n.language || 'en';
+    const isRtl = current === 'ar' || current === 'fa' || current?.startsWith('fa-') || current?.startsWith('ar-');
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = current;
+    if (isRtl) {
+        document.documentElement.classList.add('rtl-layout');
+        document.body?.classList.add('rtl-layout');
+    } else {
+        document.documentElement.classList.remove('rtl-layout');
+        document.body?.classList.remove('rtl-layout');
+    }
+};
+
+i18n.on('languageChanged', (lng) => {
+    syncAppDirectionAndLanguage(lng);
+});
+
+// Sync on boot
+if (typeof document !== 'undefined') {
+    syncAppDirectionAndLanguage(i18n.language || 'en');
+}
+
 export default i18n;
+

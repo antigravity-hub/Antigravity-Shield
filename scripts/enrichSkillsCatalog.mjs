@@ -128,16 +128,29 @@ function generateDocs(skill, role, criticality, cleanedDesc) {
 
   const roleBadgeEn = role.toUpperCase();
   const roleBadgeFa = {
-    frontend: 'فرانت‌اند (FRONTEND)',
-    backend: 'بک‌اند (BACKEND)',
-    fullstack: 'فول‌استک (FULLSTACK)',
-    devops: 'دوآپس و زیرساخت (DEVOPS)',
-    architecture: 'معماری و سیستم (ARCHITECTURE)',
-    data: 'پایگاه داده و دیتا (DATA)',
-    science: 'علمی و تحقیقاتی (SCIENCE)',
-    automation: 'اتوماسیون (AUTOMATION)',
-    general: 'عمومی (GENERAL)'
+    frontend: 'فرانت‌اند',
+    backend: 'بک‌اند',
+    fullstack: 'فول‌استک',
+    devops: 'دوآپس و زیرساخت',
+    architecture: 'معماری سیستم',
+    data: 'پایگاه داده و تحلیل دیتا',
+    science: 'علوم محاسباتی و زیستی',
+    automation: 'اتوماسیون و ابزارها',
+    general: 'مهندسی عمومی'
   }[role];
+
+  const domainDescriptionsFa = {
+    frontend: `مهارت رسمی و تخصصی **${skill.title}** برای توسعه پیشرفته فرانت‌اند، طراحی رابط‌های کاربری چشم‌نواز، اجرای میکرواینتراکشن‌های روان و بهینه‌سازی تجربه کاربری توسعه یافته است.`,
+    backend: `مهارت رسمی و تخصصی **${skill.title}** برای ساخت سرویس‌های مقیاس‌پذیر، معماری میکروسرویس‌ها، طراحی ایمن APIها و مدیریت تراکنش‌های پایدار توسعه یافته است.`,
+    fullstack: `مهارت رسمی و تخصصی **${skill.title}** برای توسعه یکپارچه فرانت‌اند و بک‌اند، جریان روان داده و پیاده‌سازی قابلیت‌های سرتاسری محصول توسعه یافته است.`,
+    data: `مهارت رسمی و تخصصی **${skill.title}** برای بهینه‌سازی پیشرفته پایگاه داده، نمایه‌گذاری هوشمند، ریشه‌کنی کوئری‌های پرهزینه و پردازش داده‌ها توسعه یافته است.`,
+    devops: `مهارت رسمی و تخصصی **${skill.title}** برای اتوماسیون خطوط CI/CD، زیرساخت‌های کلود، استقرار کانتینری و پایش سلامت سیستم توسعه یافته است.`,
+    architecture: `مهارت رسمی و راهبردی **${skill.title}** برای پیاده‌سازی اصول معماری کلین، الگوهای ضدگلوله مهندسی و بازبینی ساختاری کدهای پیچیده توسعه یافته است.`,
+    science: `مهارت رسمی و پژوهشی **${skill.title}** برای تحلیل داده‌های زیستی، بیوانفورماتیک محاسباتی و مدلسازی ساختارهای پیچیده علمی توسعه یافته است.`,
+    automation: `مهارت رسمی و تخصصی **${skill.title}** برای اتوماسیون فرآیندهای تکراری، وب اسکرپینگ هوشمند، ربات‌ها و کنترل وظایف زمان‌بندی‌شده توسعه یافته است.`,
+    general: `مهارت رسمی و کاربردی **${skill.title}** توسعه‌یافته توسط ${skill.author || 'جامعه مهندسی نرم‌افزار'}. این مهارت دستیار هوش مصنوعی را به رویه‌ها و استانداردسازی‌های روز مجهز می‌سازد.`
+  };
+  const pureDescFa = domainDescriptionsFa[role] || domainDescriptionsFa.general;
 
   // Specific domain details
   const triggersList = (skill.triggers || [`/${skill.name}`]).map(t => `\`${t.startsWith('/') ? t : '/' + t}\``).join(', ');
@@ -190,7 +203,8 @@ Activate via chat prompts or slash-commands: ${triggersList}
 > **حوزه تخصصی:** \`${roleBadgeFa}\` | **دسته‌بندی:** \`${skill.category.toUpperCase()}\` | **نسخه:** \`v${skill.version || '1.0.0'}\`
 
 ## ⚡ به زبان ساده چیست؟
-${cleanedDesc}
+${pureDescFa}
+
 این مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.
 
 ## 🎯 برای چه کسانی کاربرد دارد؟

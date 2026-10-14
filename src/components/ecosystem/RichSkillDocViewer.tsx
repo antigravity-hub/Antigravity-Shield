@@ -52,16 +52,64 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
       ? skill.docsMarkdown?.fa || skill.description
       : skill.docsMarkdown?.en || skill.description;
 
+  // Helper to parse markdown inline tokens (**bold**, `code`, *italic*) into React elements
+  const renderInlineMarkdown = (text: string): React.ReactNode => {
+    if (!text) return text;
+    const parts: React.ReactNode[] = [];
+    const regex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(text)) !== null) {
+      const matchIndex = match.index;
+      if (matchIndex > lastIndex) {
+        parts.push(text.slice(lastIndex, matchIndex));
+      }
+      const token = match[0];
+      if (token.startsWith('**') && token.endsWith('**') && token.length >= 4) {
+        parts.push(
+          <strong key={matchIndex} className="font-bold text-slate-900 dark:text-white">
+            {token.slice(2, -2)}
+          </strong>
+        );
+      } else if (token.startsWith('`') && token.endsWith('`') && token.length >= 2) {
+        parts.push(
+          <code
+            key={matchIndex}
+            className="px-1.5 py-0.5 mx-0.5 rounded font-mono text-[11px] bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 border border-slate-200/60 dark:border-slate-700/60"
+          >
+            {token.slice(1, -1)}
+          </code>
+        );
+      } else if (token.startsWith('*') && token.endsWith('*') && token.length >= 2) {
+        parts.push(
+          <em key={matchIndex} className="italic text-slate-800 dark:text-slate-200">
+            {token.slice(1, -1)}
+          </em>
+        );
+      } else {
+        parts.push(token);
+      }
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
+  };
+
   // Custom parser for rendering alerts and markdown sections cleanly with Tailwind
   const renderFormattedMarkdown = (content: string) => {
     const lines = content.split('\n');
     const elements: React.ReactNode[] = [];
     let alertBuffer: { type: string; lines: string[] } | null = null;
+    const isRtl = selectedLang === 'fa';
 
     const flushAlert = (idx: number) => {
       if (!alertBuffer) return;
       const alertType = alertBuffer.type.toUpperCase();
-      const alertText = alertBuffer.lines.join('\n');
       let style = 'bg-sky-500/10 border-sky-500/30 text-sky-700 dark:text-sky-300';
       let Icon = Info;
 
@@ -80,9 +128,13 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
       }
 
       elements.push(
-        <div key={`alert-${idx}`} className={`my-3 p-3.5 rounded-xl border flex items-start gap-3 ${style}`}>
+        <div key={`alert-${idx}`} className={`my-3 p-3.5 rounded-xl border flex items-start gap-3 ${style}`} dir={isRtl ? 'rtl' : 'ltr'}>
           <Icon className="w-5 h-5 shrink-0 mt-0.5" />
-          <div className="text-xs leading-relaxed whitespace-pre-wrap font-medium">{alertText}</div>
+          <div className="text-xs leading-relaxed font-medium space-y-1 flex-1">
+            {alertBuffer.lines.map((l, li) => (
+              <div key={li}>{renderInlineMarkdown(l)}</div>
+            ))}
+          </div>
         </div>
       );
       alertBuffer = null;
@@ -114,7 +166,7 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
       if (trimmed.startsWith('# ')) {
         elements.push(
           <h1 key={index} className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 flex items-center gap-2">
-            <span>{trimmed.replace(/^#\s*/, '')}</span>
+            <span>{renderInlineMarkdown(trimmed.replace(/^#\s*/, ''))}</span>
           </h1>
         );
       } else if (trimmed.startsWith('## ')) {
@@ -123,7 +175,7 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
             key={index}
             className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mt-4 mb-1.5 pb-1 border-b border-slate-200/60 dark:border-slate-800/60 flex items-center gap-1.5"
           >
-            <span>{trimmed.replace(/^##\s*/, '')}</span>
+            <span>{renderInlineMarkdown(trimmed.replace(/^##\s*/, ''))}</span>
           </h2>
         );
       } else if (trimmed.startsWith('- ')) {
@@ -131,7 +183,7 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
         elements.push(
           <div key={index} className="flex items-start gap-2 my-1 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
             <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-1.5 shrink-0" />
-            <span>{itemText}</span>
+            <span className="flex-1">{renderInlineMarkdown(itemText)}</span>
           </div>
         );
       } else if (trimmed === '') {
@@ -139,7 +191,7 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
       } else {
         elements.push(
           <p key={index} className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed my-1">
-            {trimmed}
+            {renderInlineMarkdown(trimmed)}
           </p>
         );
       }
@@ -227,23 +279,38 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
       </div>
 
       {/* Main Documentation Viewer Body */}
-      <div className="relative p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 max-h-[380px] overflow-y-auto leading-relaxed">
-        <button
-          onClick={() => handleCopy(markdownText)}
-          className="absolute top-3 ltr:right-3 rtl:left-3 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          title="Copy Markdown"
-        >
-          {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-        </button>
+      {(() => {
+        const isRtl = selectedLang === 'fa';
+        return (
+          <div
+            dir={isRtl ? 'rtl' : 'ltr'}
+            lang={isRtl ? 'fa' : 'en'}
+            data-font={isRtl ? 'vazir' : undefined}
+            className={`relative p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 max-h-[380px] overflow-y-auto leading-relaxed ${
+              isRtl ? 'text-right font-vazir' : 'text-left'
+            }`}
+            style={{
+              fontFamily: isRtl ? "'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif" : undefined,
+            }}
+          >
+            <button
+              onClick={() => handleCopy(markdownText)}
+              className={`absolute top-3 ${isRtl ? 'left-3' : 'right-3'} p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors z-10`}
+              title="Copy Markdown"
+            >
+              {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+            </button>
 
-        {selectedLang === 'raw' ? (
-          <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-slate-800 dark:text-slate-200">
-            {markdownText}
-          </pre>
-        ) : (
-          <div className="space-y-1">{renderFormattedMarkdown(markdownText)}</div>
-        )}
-      </div>
+            {selectedLang === 'raw' ? (
+              <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-slate-800 dark:text-slate-200" dir="ltr">
+                {markdownText}
+              </pre>
+            ) : (
+              <div className="space-y-1">{renderFormattedMarkdown(markdownText)}</div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 };
