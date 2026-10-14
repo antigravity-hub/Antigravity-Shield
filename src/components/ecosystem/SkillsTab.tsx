@@ -134,7 +134,7 @@ export const SkillsTab: React.FC = () => {
       item.description.toLowerCase().includes(q) ||
       (item.author && item.author.toLowerCase().includes(q)) ||
       (item.repo && item.repo.toLowerCase().includes(q)) ||
-      item.tags.some((tag) => tag.toLowerCase().includes(q)) ||
+      (item.tags && item.tags.some((tag) => tag.toLowerCase().includes(q))) ||
       (item.triggers && item.triggers.some((tr) => tr.toLowerCase().includes(q) || tr.toLowerCase().replace(/^\//, '').includes(q)));
 
     return matchesCategory && matchesQuery;
