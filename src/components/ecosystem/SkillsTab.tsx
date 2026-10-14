@@ -25,6 +25,7 @@ import {
   Calendar,
   GitBranch,
   Lock,
+} from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import { SkillItem, SkillCategory } from '../../types/ecosystem';
 import { RichSkillDocViewer } from './RichSkillDocViewer';
