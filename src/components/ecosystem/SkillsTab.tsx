@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -6,6 +6,7 @@ import {
   Download,
   Trash2,
   CheckCircle2,
+  Check,
   Plus,
   Eye,
   Code2,
@@ -19,7 +20,6 @@ import {
   Send,
   Boxes,
   Flame,
-  ExternalLink,
   Star,
   ShieldCheck,
   Calendar,
@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import { SkillItem, SkillCategory } from '../../types/ecosystem';
+import { RichSkillDocViewer } from './RichSkillDocViewer';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   all: Sliders,
@@ -51,6 +52,16 @@ const SKILL_ICONS: Record<string, React.ElementType> = {
   Boxes,
 };
 
+function parseInstalls(val?: number | string): number {
+  if (typeof val === 'number') return val;
+  if (!val) return 0;
+  const s = String(val).trim().toUpperCase();
+  if (s.endsWith('M')) return (parseFloat(s) || 0) * 1_000_000;
+  if (s.endsWith('K')) return (parseFloat(s) || 0) * 1_000;
+  const parsed = parseFloat(s.replace(/,/g, ''));
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 export const SkillsTab: React.FC = () => {
   const { t } = useTranslation();
   const {
@@ -66,6 +77,7 @@ export const SkillsTab: React.FC = () => {
     installingId,
   } = useEcosystemStore();
 
+  const [activeFirst, setActiveFirst] = useState(false);
   const [inspectingSkill, setInspectingSkill] = useState<SkillItem | null>(null);
   const [inspectingContent, setInspectingContent] = useState<string>('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -126,6 +138,30 @@ export const SkillsTab: React.FC = () => {
 
     return matchesCategory && matchesQuery;
   });
+
+  const sortedSkills = useMemo(() => {
+    return [...filteredSkills].sort((a, b) => {
+      if (activeFirst) {
+        const aActive = a.isEnabled ? 1 : 0;
+        const bActive = b.isEnabled ? 1 : 0;
+        if (aActive !== bActive) {
+          return bActive - aActive; // Active skills first
+        }
+      }
+      // Default: sort by installs count (downloads score) descending
+      const aInstalls = parseInstalls(a.installs);
+      const bInstalls = parseInstalls(b.installs);
+      if (bInstalls !== aInstalls) {
+        return bInstalls - aInstalls;
+      }
+      const aStars = parseInstalls(a.stars);
+      const bStars = parseInstalls(b.stars);
+      if (bStars !== aStars) {
+        return bStars - aStars;
+      }
+      return a.title.localeCompare(b.title);
+    });
+  }, [filteredSkills, activeFirst]);
 
   const handleOpenInspector = async (skill: SkillItem) => {
     setInspectingSkill(skill);
@@ -255,18 +291,41 @@ export const SkillsTab: React.FC = () => {
           })}
         </div>
 
-        <button
-          onClick={() => setIsCreateOpen(true)}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-xs shadow-md shadow-sky-500/20 active:scale-95 transition-all"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>{t('ecosystem.skills.create', 'Create Skill')}</span>
-        </button>
+        <div className="flex items-center gap-2.5">
+          {/* Active First Toggle */}
+          <button
+            type="button"
+            onClick={() => setActiveFirst(!activeFirst)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
+              activeFirst
+                ? 'bg-sky-500/10 border-sky-500/40 text-sky-600 dark:text-sky-400 font-semibold shadow-xs'
+                : 'bg-slate-100/80 dark:bg-slate-900/80 border-slate-200/60 dark:border-slate-800/60 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+            title="Sort skills to show active/enabled ones first"
+          >
+            <div
+              className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-colors ${
+                activeFirst ? 'bg-sky-500 border-sky-500 text-white' : 'border-slate-400'
+              }`}
+            >
+              {activeFirst && <Check className="w-2.5 h-2.5" />}
+            </div>
+            <span>{t('ecosystem.active_first', 'Active First')}</span>
+          </button>
+
+          <button
+            onClick={() => setIsCreateOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-xs shadow-md shadow-sky-500/20 active:scale-95 transition-all"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>{t('ecosystem.skills.create', 'Create Skill')}</span>
+          </button>
+        </div>
       </div>
 
       {/* Skills Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {filteredSkills.map((skill) => {
+        {sortedSkills.map((skill) => {
           const IconComponent = SKILL_ICONS[skill.icon || 'Sparkles'] || Sparkles;
           const isBusy = installingId === skill.id;
 
@@ -417,7 +476,7 @@ export const SkillsTab: React.FC = () => {
         })}
       </div>
 
-      {filteredSkills.length === 0 && (
+      {sortedSkills.length === 0 && (
         <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
           <Sparkles className="w-8 h-8 text-slate-400 mb-2" />
           <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -463,17 +522,6 @@ export const SkillsTab: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {inspectingSkill.remoteUrl && (
-                    <a
-                      href={inspectingSkill.remoteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20 transition-colors"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>{t('ecosystem.view_on_skills_sh', 'View on Skills.sh')}</span>
-                    </a>
-                  )}
                   {inspectingSkill.repository && (
                     <a
                       href={inspectingSkill.repository}
@@ -616,27 +664,13 @@ export const SkillsTab: React.FC = () => {
                   </div>
                 )}
 
-                {/* 4. SKILL.md Content View */}
+                {/* 4. Enriched Architecture & SKILL.md Content View */}
                 <div>
                   <div className="text-[11px] font-mono uppercase text-slate-500 mb-1.5 flex items-center justify-between">
-                    <span>{t('ecosystem.preview_content', 'SKILL.md Content Preview')}</span>
+                    <span>{t('ecosystem.architecture_docs', 'Architecture & Documentation')}</span>
                     <span className="text-[10px] text-slate-400">{t('ecosystem.read_only', 'READ-ONLY MODE')}</span>
                   </div>
-                  <div className="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 whitespace-pre-wrap leading-relaxed font-mono text-xs max-h-60 overflow-y-auto">
-                    {inspectingContent || inspectingSkill.content || (
-`---
-name: ${inspectingSkill.name}
-description: ${inspectingSkill.description}
-category: ${inspectingSkill.category}
-version: ${inspectingSkill.version}
-triggers: [${(inspectingSkill.triggers || []).join(', ')}]
----
-
-# ${inspectingSkill.title}
-
-${inspectingSkill.description}`
-                    )}
-                  </div>
+                  <RichSkillDocViewer skill={inspectingSkill} rawSkillContent={inspectingContent} />
                 </div>
               </div>
 

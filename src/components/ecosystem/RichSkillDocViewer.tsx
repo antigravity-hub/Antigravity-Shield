@@ -1,0 +1,251 @@
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  Sparkles,
+  CheckCircle2,
+  AlertTriangle,
+  Info,
+  ShieldAlert,
+  Flame,
+  Copy,
+  Check,
+  Layers,
+} from 'lucide-react';
+import { SkillItem } from '../../types/ecosystem';
+
+interface RichSkillDocViewerProps {
+  skill: SkillItem;
+  rawSkillContent?: string;
+}
+
+export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, rawSkillContent }) => {
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language?.startsWith('fa') ? 'fa' : 'en';
+  const [selectedLang, setSelectedLang] = useState<'fa' | 'en' | 'raw'>(currentLang);
+  const [copied, setCopied] = useState(false);
+
+  const roleLabels: Record<string, { en: string; fa: string; color: string }> = {
+    frontend: { en: 'Frontend UI/UX', fa: 'فرانت‌اند و رابط کاربری', color: 'from-pink-500/20 to-rose-500/10 text-pink-600 dark:text-pink-400 border-pink-500/30' },
+    backend: { en: 'Backend & APIs', fa: 'بک‌اند و سرویس‌ها', color: 'from-emerald-500/20 to-teal-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' },
+    fullstack: { en: 'Full-Stack Architecture', fa: 'فول‌استک و توسعه محصول', color: 'from-sky-500/20 to-blue-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30' },
+    devops: { en: 'DevOps & Cloud', fa: 'دوآپس و زیرساخت کلود', color: 'from-amber-500/20 to-orange-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30' },
+    architecture: { en: 'Core Architecture', fa: 'معماری هسته و مهندسی سیستم', color: 'from-purple-500/20 to-indigo-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30' },
+    data: { en: 'Data & Database', fa: 'داده‌ها و بهینه‌سازی دیتابیس', color: 'from-cyan-500/20 to-blue-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/30' },
+    science: { en: 'Science & Bio-Data', fa: 'علوم داده و بیوانفورماتیک', color: 'from-emerald-500/20 to-green-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' },
+    automation: { en: 'Automation & Bot', fa: 'اتوماسیون، بات و مرورگر', color: 'from-blue-500/20 to-indigo-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30' },
+    general: { en: 'Engineering Utility', fa: 'ابزار عمومی مهندسی', color: 'from-slate-500/20 to-gray-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30' },
+  };
+
+  const roleInfo = roleLabels[skill.targetRole || 'general'] || roleLabels.general;
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Content selection
+  const markdownText =
+    selectedLang === 'raw'
+      ? rawSkillContent || skill.content || skill.description
+      : selectedLang === 'fa'
+      ? skill.docsMarkdown?.fa || skill.description
+      : skill.docsMarkdown?.en || skill.description;
+
+  // Custom parser for rendering alerts and markdown sections cleanly with Tailwind
+  const renderFormattedMarkdown = (content: string) => {
+    const lines = content.split('\n');
+    const elements: React.ReactNode[] = [];
+    let alertBuffer: { type: string; lines: string[] } | null = null;
+
+    const flushAlert = (idx: number) => {
+      if (!alertBuffer) return;
+      const alertType = alertBuffer.type.toUpperCase();
+      const alertText = alertBuffer.lines.join('\n');
+      let style = 'bg-sky-500/10 border-sky-500/30 text-sky-700 dark:text-sky-300';
+      let Icon = Info;
+
+      if (alertType.includes('CAUTION') || alertType.includes('CRITICAL')) {
+        style = 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300';
+        Icon = ShieldAlert;
+      } else if (alertType.includes('WARNING')) {
+        style = 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300';
+        Icon = AlertTriangle;
+      } else if (alertType.includes('TIP')) {
+        style = 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300';
+        Icon = Sparkles;
+      } else if (alertType.includes('IMPORTANT')) {
+        style = 'bg-indigo-500/10 border-indigo-500/30 text-indigo-700 dark:text-indigo-300';
+        Icon = Flame;
+      }
+
+      elements.push(
+        <div key={`alert-${idx}`} className={`my-3 p-3.5 rounded-xl border flex items-start gap-3 ${style}`}>
+          <Icon className="w-5 h-5 shrink-0 mt-0.5" />
+          <div className="text-xs leading-relaxed whitespace-pre-wrap font-medium">{alertText}</div>
+        </div>
+      );
+      alertBuffer = null;
+    };
+
+    lines.forEach((line, index) => {
+      const trimmed = line.trim();
+
+      // Check alert start
+      const alertMatch = trimmed.match(/^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|CRITICAL)\]/i);
+      if (alertMatch) {
+        flushAlert(index);
+        alertBuffer = { type: alertMatch[1], lines: [] };
+        return;
+      }
+
+      // Check alert continuation
+      if (alertBuffer && trimmed.startsWith('>')) {
+        alertBuffer.lines.push(trimmed.replace(/^>\s?/, ''));
+        return;
+      }
+
+      // Flush if alert ended
+      if (alertBuffer) {
+        flushAlert(index);
+      }
+
+      // Headers
+      if (trimmed.startsWith('# ')) {
+        elements.push(
+          <h1 key={index} className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 flex items-center gap-2">
+            <span>{trimmed.replace(/^#\s*/, '')}</span>
+          </h1>
+        );
+      } else if (trimmed.startsWith('## ')) {
+        elements.push(
+          <h2
+            key={index}
+            className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mt-4 mb-1.5 pb-1 border-b border-slate-200/60 dark:border-slate-800/60 flex items-center gap-1.5"
+          >
+            <span>{trimmed.replace(/^##\s*/, '')}</span>
+          </h2>
+        );
+      } else if (trimmed.startsWith('- ')) {
+        const itemText = trimmed.replace(/^-\s*/, '');
+        elements.push(
+          <div key={index} className="flex items-start gap-2 my-1 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-1.5 shrink-0" />
+            <span>{itemText}</span>
+          </div>
+        );
+      } else if (trimmed === '') {
+        elements.push(<div key={index} className="h-1.5" />);
+      } else {
+        elements.push(
+          <p key={index} className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed my-1">
+            {trimmed}
+          </p>
+        );
+      }
+    });
+
+    flushAlert(lines.length);
+    return elements;
+  };
+
+  return (
+    <div className="space-y-3">
+      {/* Top Meta Header: Role, Criticality & Enriched Verified Badge */}
+      <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Target Role Pill */}
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border bg-gradient-to-r ${roleInfo.color}`}>
+            <Layers className="w-3.5 h-3.5" />
+            <span>{selectedLang === 'fa' ? roleInfo.fa : roleInfo.en}</span>
+          </div>
+
+          {/* Criticality Badge */}
+          {skill.criticality && (
+            <span
+              className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border ${
+                skill.criticality === 'critical'
+                  ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                  : skill.criticality === 'recommended'
+                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                  : 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30'
+              }`}
+            >
+              <Flame className="w-3 h-3" />
+              <span>
+                {skill.criticality === 'critical'
+                  ? selectedLang === 'fa' ? 'حیاتی (Critical)' : 'Critical Pillar'
+                  : skill.criticality === 'recommended'
+                  ? selectedLang === 'fa' ? 'توصیه شده (Recommended)' : 'Recommended'
+                  : selectedLang === 'fa' ? 'تخصصی (Specialized)' : 'Specialized Utility'}
+              </span>
+            </span>
+          )}
+
+          {/* Enriched Completed Tick */}
+          {skill.isEnriched && (
+            <span className="flex items-center gap-1 text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+              <span>{selectedLang === 'fa' ? 'مستندسازی شده' : 'Enriched'}</span>
+            </span>
+          )}
+        </div>
+
+        {/* Language Tabs */}
+        <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-800/80 text-xs">
+          <button
+            onClick={() => setSelectedLang('fa')}
+            className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+              selectedLang === 'fa'
+                ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            🇮🇷 فارسی
+          </button>
+          <button
+            onClick={() => setSelectedLang('en')}
+            className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+              selectedLang === 'en'
+                ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            🇬🇧 English
+          </button>
+          <button
+            onClick={() => setSelectedLang('raw')}
+            className={`px-2.5 py-1 rounded-md font-mono text-[11px] transition-all ${
+              selectedLang === 'raw'
+                ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+            }`}
+          >
+            Raw
+          </button>
+        </div>
+      </div>
+
+      {/* Main Documentation Viewer Body */}
+      <div className="relative p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 max-h-[380px] overflow-y-auto leading-relaxed">
+        <button
+          onClick={() => handleCopy(markdownText)}
+          className="absolute top-3 ltr:right-3 rtl:left-3 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          title="Copy Markdown"
+        >
+          {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+        </button>
+
+        {selectedLang === 'raw' ? (
+          <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-slate-800 dark:text-slate-200">
+            {markdownText}
+          </pre>
+        ) : (
+          <div className="space-y-1">{renderFormattedMarkdown(markdownText)}</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default RichSkillDocViewer;

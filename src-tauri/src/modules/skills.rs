@@ -66,6 +66,14 @@ pub struct SkillItem {
     pub dependencies: Vec<String>,
     #[serde(default = "default_source_type")]
     pub source_type: String, // "local" | "skills_sh" | "github"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub is_enriched: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_role: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub criticality: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub docs_markdown: Option<serde_json::Value>,
 }
 
 fn default_version() -> String {

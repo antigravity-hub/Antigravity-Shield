@@ -81,6 +81,15 @@ export interface SkillItem {
   dependencies?: string[];
   tags: string[];          // Search & taxonomy tags
   installedAt?: string;    // ISO timestamp of local install
+
+  // Rich Architectural Documentation & Multi-Language Enrichment
+  isEnriched?: boolean;    // Completion flag: true when comprehensive documentation is attached
+  targetRole?: 'frontend' | 'backend' | 'fullstack' | 'devops' | 'design' | 'data' | 'architecture' | 'science' | 'automation';
+  criticality?: 'critical' | 'recommended' | 'specialized';
+  docsMarkdown?: {
+    en: string;
+    fa: string;
+  };
 }
 
 export type McpTransport = 'stdio' | 'sse' | 'websocket';

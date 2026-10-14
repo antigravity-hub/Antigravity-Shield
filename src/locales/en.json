@@ -2016,6 +2016,8 @@
     "local_path": "Local Path:",
     "zero_leak_isolated": "Zero-Leak Isolated",
     "security_audits": "Security Audits",
-    "official_maker": "Official Maker"
+    "official_maker": "Official Maker",
+    "active_first": "Active First",
+    "architecture_docs": "Architecture & Documentation"
   }
 }

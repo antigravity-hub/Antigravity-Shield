@@ -19,7 +19,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "vercel-labs",
     "repo": "skills",
     "repository": "https://github.com/vercel-labs/skills",
-    "description": "Official trending agent skill find-skills by Vercel Labs. Ranked #1 on Skills.sh with 3.8M verified installs.",
+    "description": "Official agent skill for Find Skills developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "Vercel Labs",
     "version": "1.0.0",
@@ -70,7 +70,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "find-skills",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "critical",
+    "docsMarkdown": {
+      "en": "# Find Skills\n\n> [!IMPORTANT]\n> **Level:** 🔴 CRITICAL (Must-Have)  \n> **Domain:** `AUTOMATION` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Find Skills developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!CAUTION]\n> **Core Architectural Pillar:** This skill prevents fatal anti-patterns, memory leaks, security vulnerabilities, or performance bottlenecks in your AUTOMATION pipeline. Highly essential for mission-critical apps.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Find Skills**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Find Skills.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/find-skills`, `/find skills`\n",
+      "fa": "# Find Skills\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔴 حیاتی (الزامی برای پروژه)  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Find Skills developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!CAUTION]\n> **ستون حیاتی معماری:** استفاده از این مهارت برای جلوگیری از نشت حافظه، شکاف‌های امنیتی، افت شدید پرفورمنس یا باگ‌های پنهان در لایه اتوماسیون (AUTOMATION) الزامی است.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Find Skills**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/find-skills`, `/find skills`\n"
+    }
   },
   {
     "id": "mattpocock/skills/grill-me",
@@ -80,7 +87,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill grill-me by Matt Pocock. Ranked #2 on Skills.sh with 1.3M verified installs.",
+    "description": "Official agent skill for Grill Me developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -131,7 +138,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "grill-me",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "critical",
+    "docsMarkdown": {
+      "en": "# Grill Me\n\n> [!IMPORTANT]\n> **Level:** 🔴 CRITICAL (Must-Have)  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Grill Me developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!CAUTION]\n> **Core Architectural Pillar:** This skill prevents fatal anti-patterns, memory leaks, security vulnerabilities, or performance bottlenecks in your FULLSTACK pipeline. Highly essential for mission-critical apps.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Grill Me**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Grill Me.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/grill-me`, `/grill me`\n",
+      "fa": "# Grill Me\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔴 حیاتی (الزامی برای پروژه)  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Grill Me developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!CAUTION]\n> **ستون حیاتی معماری:** استفاده از این مهارت برای جلوگیری از نشت حافظه، شکاف‌های امنیتی، افت شدید پرفورمنس یا باگ‌های پنهان در لایه فول‌استک (FULLSTACK) الزامی است.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Grill Me**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/grill-me`, `/grill me`\n"
+    }
   },
   {
     "id": "mattpocock/skills/grill-with-docs",
@@ -141,7 +155,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill grill-with-docs by Matt Pocock. Ranked #3 on Skills.sh with 1.2M verified installs.",
+    "description": "Official agent skill for Grill With Docs developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -192,7 +206,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "grill-with-docs",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "data",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Grill With Docs\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DATA` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Grill With Docs developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Data Engineers & Database Administrators\n- **Architecture Layer:** DATA\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Grill With Docs**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Grill With Docs.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/grill-with-docs`, `/grill with docs`\n",
+      "fa": "# Grill With Docs\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `پایگاه داده و دیتا (DATA)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Grill With Docs developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان داده و مدیران پایگاه داده (DBA)\n- **لایه معماری:** پایگاه داده و دیتا (DATA)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Grill With Docs**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/grill-with-docs`, `/grill with docs`\n"
+    }
   },
   {
     "id": "vercel-labs/agent-browser/agent-browser",
@@ -202,7 +223,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "vercel-labs",
     "repo": "agent-browser",
     "repository": "https://github.com/vercel-labs/agent-browser",
-    "description": "Official trending agent skill agent-browser by Vercel Labs. Ranked #4 on Skills.sh with 1.1M verified installs.",
+    "description": "Official agent skill for Agent Browser developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "Vercel Labs",
     "version": "1.0.0",
@@ -253,7 +274,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "agent-browser",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "recommended",
+    "docsMarkdown": {
+      "en": "# Agent Browser\n\n> [!IMPORTANT]\n> **Level:** 🟡 HIGH PRIORITY (Recommended)  \n> **Domain:** `AUTOMATION` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Agent Browser developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Agent Browser**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Agent Browser.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/agent-browser`, `/agent browser`\n",
+      "fa": "# Agent Browser\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🟡 اولویت بالا (توصیه اکید)  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Agent Browser developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Agent Browser**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/agent-browser`, `/agent browser`\n"
+    }
   },
   {
     "id": "mattpocock/skills/improve-codebase-architecture",
@@ -263,7 +291,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill improve-codebase-architecture by Matt Pocock. Ranked #5 on Skills.sh with 1.1M verified installs.",
+    "description": "Official agent skill for Improve Codebase Architecture developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -314,7 +342,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "improve-codebase-architecture",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Improve Codebase Architecture\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Improve Codebase Architecture developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Improve Codebase Architecture**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Improve Codebase Architecture.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/improve-codebase-architecture`, `/improve codebase architecture`\n",
+      "fa": "# Improve Codebase Architecture\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Improve Codebase Architecture developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Improve Codebase Architecture**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/improve-codebase-architecture`, `/improve codebase architecture`\n"
+    }
   },
   {
     "id": "mattpocock/skills/tdd",
@@ -324,7 +359,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill tdd by Matt Pocock. Ranked #6 on Skills.sh with 1.1M verified installs.",
+    "description": "Official agent skill for Tdd developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -375,7 +410,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "tdd",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Tdd\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Tdd developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Tdd**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Tdd.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/tdd`, `/tdd`\n",
+      "fa": "# Tdd\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Tdd developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Tdd**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/tdd`, `/tdd`\n"
+    }
   },
   {
     "id": "mattpocock/skills/setup-matt-pocock-skills",
@@ -385,7 +427,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill setup-matt-pocock-skills by Matt Pocock. Ranked #7 on Skills.sh with 994.7K verified installs.",
+    "description": "Official agent skill for Setup Matt Pocock Skills developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -436,7 +478,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "setup-matt-pocock-skills",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Setup Matt Pocock Skills\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Setup Matt Pocock Skills developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Setup Matt Pocock Skills**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Setup Matt Pocock Skills.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/setup-matt-pocock-skills`, `/setup matt pocock skills`\n",
+      "fa": "# Setup Matt Pocock Skills\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Setup Matt Pocock Skills developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Setup Matt Pocock Skills**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/setup-matt-pocock-skills`, `/setup matt pocock skills`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-cli",
@@ -446,7 +495,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-cli by HeyGen Labs. Ranked #8 on Skills.sh with 987.9K verified installs.",
+    "description": "Official agent skill for Hyperframes Cli developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -497,7 +546,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-cli",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes Cli\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Cli developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Cli**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Cli.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-cli`, `/hyperframes cli`\n",
+      "fa": "# Hyperframes Cli\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Cli developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Cli**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-cli`, `/hyperframes cli`\n"
+    }
   },
   {
     "id": "anthropics/skills/frontend-design",
@@ -507,7 +563,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "anthropics",
     "repo": "skills",
     "repository": "https://github.com/anthropics/skills",
-    "description": "Official trending agent skill frontend-design by Anthropic. Ranked #9 on Skills.sh with 983.1K verified installs.",
+    "description": "Official agent skill for Frontend Design developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Anthropic",
     "version": "1.0.0",
@@ -558,7 +614,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "frontend-design",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Frontend Design\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Frontend Design developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Frontend Design**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Frontend Design.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/frontend-design`, `/frontend design`\n",
+      "fa": "# Frontend Design\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Frontend Design developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Frontend Design**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/frontend-design`, `/frontend design`\n"
+    }
   },
   {
     "id": "mattpocock/skills/handoff",
@@ -568,7 +631,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill handoff by Matt Pocock. Ranked #10 on Skills.sh with 976.1K verified installs.",
+    "description": "Official agent skill for Handoff developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -619,7 +682,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "handoff",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Handoff\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Handoff developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Handoff**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Handoff.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/handoff`, `/handoff`\n",
+      "fa": "# Handoff\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Handoff developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Handoff**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/handoff`, `/handoff`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes",
@@ -629,7 +699,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes by HeyGen Labs. Ranked #11 on Skills.sh with 946.1K verified installs.",
+    "description": "Official agent skill for Hyperframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -680,7 +750,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes`, `/hyperframes`\n",
+      "fa": "# Hyperframes\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes`, `/hyperframes`\n"
+    }
   },
   {
     "id": "mattpocock/skills/triage",
@@ -690,7 +767,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill triage by Matt Pocock. Ranked #12 on Skills.sh with 936.0K verified installs.",
+    "description": "Official agent skill for Triage developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -741,7 +818,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "triage",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Triage\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Triage developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Triage**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Triage.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/triage`, `/triage`\n",
+      "fa": "# Triage\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Triage developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Triage**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/triage`, `/triage`\n"
+    }
   },
   {
     "id": "mattpocock/skills/prototype",
@@ -751,7 +835,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill prototype by Matt Pocock. Ranked #13 on Skills.sh with 931.6K verified installs.",
+    "description": "Official agent skill for Prototype developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -802,7 +886,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prototype",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prototype\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prototype developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prototype**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prototype.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prototype`, `/prototype`\n",
+      "fa": "# Prototype\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prototype developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prototype**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prototype`, `/prototype`\n"
+    }
   },
   {
     "id": "flowkit-labs/skills/reddit-automation",
@@ -812,7 +903,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "flowkit-labs",
     "repo": "skills",
     "repository": "https://github.com/flowkit-labs/skills",
-    "description": "Official trending agent skill reddit-automation by FlowKit Labs. Ranked #14 on Skills.sh with 917.8K verified installs.",
+    "description": "Official agent skill for Reddit Automation developed by FlowKit Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "FlowKit Labs",
     "version": "1.0.0",
@@ -863,7 +954,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "reddit-automation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Reddit Automation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Reddit Automation developed by FlowKit Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Reddit Automation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Reddit Automation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/reddit-automation`, `/reddit automation`\n",
+      "fa": "# Reddit Automation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Reddit Automation developed by FlowKit Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Reddit Automation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/reddit-automation`, `/reddit automation`\n"
+    }
   },
   {
     "id": "mattpocock/skills/grilling",
@@ -873,7 +971,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill grilling by Matt Pocock. Ranked #15 on Skills.sh with 904.0K verified installs.",
+    "description": "Official agent skill for Grilling developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -924,7 +1022,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "grilling",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Grilling\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Grilling developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Grilling**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Grilling.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/grilling`, `/grilling`\n",
+      "fa": "# Grilling\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Grilling developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Grilling**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/grilling`, `/grilling`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/media-use",
@@ -934,7 +1039,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill media-use by HeyGen Labs. Ranked #16 on Skills.sh with 869.2K verified installs.",
+    "description": "Official agent skill for Media Use developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -985,7 +1090,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "media-use",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Media Use\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Media Use developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Media Use**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Media Use.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/media-use`, `/media use`\n",
+      "fa": "# Media Use\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Media Use developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Media Use**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/media-use`, `/media use`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-animation",
@@ -995,7 +1107,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-animation by HeyGen Labs. Ranked #17 on Skills.sh with 837.3K verified installs.",
+    "description": "Official agent skill for Hyperframes Animation developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -1046,7 +1158,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-animation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "recommended",
+    "docsMarkdown": {
+      "en": "# Hyperframes Animation\n\n> [!IMPORTANT]\n> **Level:** 🟡 HIGH PRIORITY (Recommended)  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Animation developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Animation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Animation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-animation`, `/hyperframes animation`\n",
+      "fa": "# Hyperframes Animation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🟡 اولویت بالا (توصیه اکید)  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Animation developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Animation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-animation`, `/hyperframes animation`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-registry",
@@ -1056,7 +1175,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-registry by HeyGen Labs. Ranked #18 on Skills.sh with 834.3K verified installs.",
+    "description": "Official agent skill for Hyperframes Registry developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -1107,7 +1226,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-registry",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes Registry\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Registry developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Registry**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Registry.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-registry`, `/hyperframes registry`\n",
+      "fa": "# Hyperframes Registry\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Registry developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Registry**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-registry`, `/hyperframes registry`\n"
+    }
   },
   {
     "id": "mattpocock/skills/domain-modeling",
@@ -1117,7 +1243,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill domain-modeling by Matt Pocock. Ranked #19 on Skills.sh with 813.4K verified installs.",
+    "description": "Official agent skill for Domain Modeling developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -1168,7 +1294,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "domain-modeling",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Domain Modeling\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Domain Modeling developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Domain Modeling**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Domain Modeling.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/domain-modeling`, `/domain modeling`\n",
+      "fa": "# Domain Modeling\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Domain Modeling developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Domain Modeling**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/domain-modeling`, `/domain modeling`\n"
+    }
   },
   {
     "id": "mattpocock/skills/teach",
@@ -1178,7 +1311,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill teach by Matt Pocock. Ranked #20 on Skills.sh with 805.3K verified installs.",
+    "description": "Official agent skill for Teach developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -1229,7 +1362,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "teach",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Teach\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Teach developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Teach**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Teach.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/teach`, `/teach`\n",
+      "fa": "# Teach\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Teach developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Teach**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/teach`, `/teach`\n"
+    }
   },
   {
     "id": "vercel-labs/agent-skills/vercel-react-best-practices",
@@ -1239,7 +1379,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "vercel-labs",
     "repo": "agent-skills",
     "repository": "https://github.com/vercel-labs/agent-skills",
-    "description": "Official trending agent skill vercel-react-best-practices by Vercel Labs. Ranked #21 on Skills.sh with 797.5K verified installs.",
+    "description": "Official agent skill for Vercel React Best Practices developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Vercel Labs",
     "version": "1.0.0",
@@ -1290,7 +1430,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "vercel-react-best-practices",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "critical",
+    "docsMarkdown": {
+      "en": "# Vercel React Best Practices\n\n> [!IMPORTANT]\n> **Level:** 🔴 CRITICAL (Must-Have)  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Vercel React Best Practices developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!CAUTION]\n> **Core Architectural Pillar:** This skill prevents fatal anti-patterns, memory leaks, security vulnerabilities, or performance bottlenecks in your FULLSTACK pipeline. Highly essential for mission-critical apps.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Vercel React Best Practices**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Vercel React Best Practices.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/vercel-react-best-practices`, `/vercel react best practices`\n",
+      "fa": "# Vercel React Best Practices\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔴 حیاتی (الزامی برای پروژه)  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Vercel React Best Practices developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!CAUTION]\n> **ستون حیاتی معماری:** استفاده از این مهارت برای جلوگیری از نشت حافظه، شکاف‌های امنیتی، افت شدید پرفورمنس یا باگ‌های پنهان در لایه فول‌استک (FULLSTACK) الزامی است.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Vercel React Best Practices**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/vercel-react-best-practices`, `/vercel react best practices`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-core",
@@ -1300,7 +1447,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-core by HeyGen Labs. Ranked #22 on Skills.sh with 795.0K verified installs.",
+    "description": "Official agent skill for Hyperframes Core developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -1351,7 +1498,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-core",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes Core\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Core developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Core**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Core.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-core`, `/hyperframes core`\n",
+      "fa": "# Hyperframes Core\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Core developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Core**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-core`, `/hyperframes core`\n"
+    }
   },
   {
     "id": "designed-by-ai/skills/design-mobile-apps",
@@ -1361,7 +1515,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "designed-by-ai",
     "repo": "skills",
     "repository": "https://github.com/designed-by-ai/skills",
-    "description": "Official trending agent skill design-mobile-apps by designed-by-ai. Ranked #23 on Skills.sh with 793.8K verified installs.",
+    "description": "Official agent skill for Design Mobile Apps developed by designed-by-ai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "designed-by-ai",
     "version": "1.0.0",
@@ -1412,7 +1566,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "design-mobile-apps",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Design Mobile Apps\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Design Mobile Apps developed by designed-by-ai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Design Mobile Apps**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Design Mobile Apps.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/design-mobile-apps`, `/design mobile apps`\n",
+      "fa": "# Design Mobile Apps\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Design Mobile Apps developed by designed-by-ai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Design Mobile Apps**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/design-mobile-apps`, `/design mobile apps`\n"
+    }
   },
   {
     "id": "mattpocock/skills/codebase-design",
@@ -1422,7 +1583,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill codebase-design by Matt Pocock. Ranked #24 on Skills.sh with 789.3K verified installs.",
+    "description": "Official agent skill for Codebase Design developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -1473,7 +1634,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "codebase-design",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Codebase Design\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Codebase Design developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Codebase Design**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Codebase Design.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/codebase-design`, `/codebase design`\n",
+      "fa": "# Codebase Design\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Codebase Design developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Codebase Design**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/codebase-design`, `/codebase design`\n"
+    }
   },
   {
     "id": "mattpocock/skills/diagnosing-bugs",
@@ -1483,7 +1651,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill diagnosing-bugs by Matt Pocock. Ranked #25 on Skills.sh with 774.6K verified installs.",
+    "description": "Official agent skill for Diagnosing Bugs developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -1534,7 +1702,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "diagnosing-bugs",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Diagnosing Bugs\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Diagnosing Bugs developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Diagnosing Bugs**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Diagnosing Bugs.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/diagnosing-bugs`, `/diagnosing bugs`\n",
+      "fa": "# Diagnosing Bugs\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Diagnosing Bugs developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Diagnosing Bugs**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/diagnosing-bugs`, `/diagnosing bugs`\n"
+    }
   },
   {
     "id": "site/open.feishu.cn/lark-doc",
@@ -1544,7 +1719,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "open.feishu.cn",
     "repo": "skills",
     "repository": "https://github.com/open.feishu.cn/skills",
-    "description": "Official trending agent skill lark-doc by Feishu / Lark Team. Ranked #26 on Skills.sh with 767.1K verified installs.",
+    "description": "Official agent skill for Lark Doc developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Feishu / Lark Team",
     "version": "1.0.0",
@@ -1595,7 +1770,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-doc",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Doc\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Doc developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Doc**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Doc.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-doc`, `/lark doc`\n",
+      "fa": "# Lark Doc\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Doc developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Doc**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-doc`, `/lark doc`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-creative",
@@ -1605,7 +1787,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-creative by HeyGen Labs. Ranked #27 on Skills.sh with 767.1K verified installs.",
+    "description": "Official agent skill for Hyperframes Creative developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -1656,7 +1838,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-creative",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes Creative\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Creative developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Creative**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Creative.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-creative`, `/hyperframes creative`\n",
+      "fa": "# Hyperframes Creative\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Creative developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Creative**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-creative`, `/hyperframes creative`\n"
+    }
   },
   {
     "id": "site/open.feishu.cn/lark-base",
@@ -1666,7 +1855,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "open.feishu.cn",
     "repo": "skills",
     "repository": "https://github.com/open.feishu.cn/skills",
-    "description": "Official trending agent skill lark-base by Feishu / Lark Team. Ranked #28 on Skills.sh with 766.7K verified installs.",
+    "description": "Official agent skill for Lark Base developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Feishu / Lark Team",
     "version": "1.0.0",
@@ -1717,7 +1906,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-base",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Base\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Base developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Base**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Base.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-base`, `/lark base`\n",
+      "fa": "# Lark Base\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Base developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Base**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-base`, `/lark base`\n"
+    }
   },
   {
     "id": "101-skills/superpowers/ai-video-generation",
@@ -1727,7 +1923,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "101-skills",
     "repo": "superpowers",
     "repository": "https://github.com/101-skills/superpowers",
-    "description": "Official trending agent skill ai-video-generation by 101-skills. Ranked #49 on Skills.sh with 752.5K verified installs.",
+    "description": "Official agent skill for Ai Video Generation developed by 101-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "101-skills",
     "version": "1.0.0",
@@ -1778,7 +1974,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-video-generation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Video Generation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Video Generation developed by 101-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Video Generation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Video Generation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-video-generation`, `/ai video generation`\n",
+      "fa": "# Ai Video Generation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Video Generation developed by 101-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Video Generation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-video-generation`, `/ai video generation`\n"
+    }
   },
   {
     "id": "site/open.feishu.cn/lark-okr",
@@ -1788,7 +1991,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "open.feishu.cn",
     "repo": "skills",
     "repository": "https://github.com/open.feishu.cn/skills",
-    "description": "Official trending agent skill lark-okr by Feishu / Lark Team. Ranked #53 on Skills.sh with 744.9K verified installs.",
+    "description": "Official agent skill for Lark Okr developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Feishu / Lark Team",
     "version": "1.0.0",
@@ -1839,7 +2042,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-okr",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Okr\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Okr developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Okr**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Okr.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-okr`, `/lark okr`\n",
+      "fa": "# Lark Okr\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Okr developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Okr**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-okr`, `/lark okr`\n"
+    }
   },
   {
     "id": "vercel-labs/agent-skills/web-design-guidelines",
@@ -1849,7 +2059,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "vercel-labs",
     "repo": "agent-skills",
     "repository": "https://github.com/vercel-labs/agent-skills",
-    "description": "Official trending agent skill web-design-guidelines by Vercel Labs. Ranked #54 on Skills.sh with 732.3K verified installs.",
+    "description": "Official agent skill for Web Design Guidelines developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Vercel Labs",
     "version": "1.0.0",
@@ -1900,7 +2110,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "web-design-guidelines",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Web Design Guidelines\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Web Design Guidelines developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Web Design Guidelines**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Web Design Guidelines.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/web-design-guidelines`, `/web design guidelines`\n",
+      "fa": "# Web Design Guidelines\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Web Design Guidelines developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Web Design Guidelines**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/web-design-guidelines`, `/web design guidelines`\n"
+    }
   },
   {
     "id": "site/open.feishu.cn/lark-markdown",
@@ -1910,7 +2127,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "open.feishu.cn",
     "repo": "skills",
     "repository": "https://github.com/open.feishu.cn/skills",
-    "description": "Official trending agent skill lark-markdown by Feishu / Lark Team. Ranked #55 on Skills.sh with 730.6K verified installs.",
+    "description": "Official agent skill for Lark Markdown developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Feishu / Lark Team",
     "version": "1.0.0",
@@ -1961,7 +2178,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-markdown",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Markdown\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Markdown developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Markdown**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Markdown.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-markdown`, `/lark markdown`\n",
+      "fa": "# Lark Markdown\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Markdown developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Markdown**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-markdown`, `/lark markdown`\n"
+    }
   },
   {
     "id": "mattpocock/skills/code-review",
@@ -1971,7 +2195,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill code-review by Matt Pocock. Ranked #56 on Skills.sh with 726.6K verified installs.",
+    "description": "Official agent skill for Code Review developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -2022,7 +2246,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "code-review",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "critical",
+    "docsMarkdown": {
+      "en": "# Code Review\n\n> [!IMPORTANT]\n> **Level:** 🔴 CRITICAL (Must-Have)  \n> **Domain:** `ARCHITECTURE` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Code Review developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!CAUTION]\n> **Core Architectural Pillar:** This skill prevents fatal anti-patterns, memory leaks, security vulnerabilities, or performance bottlenecks in your ARCHITECTURE pipeline. Highly essential for mission-critical apps.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Code Review**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Code Review.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/code-review`, `/code review`\n",
+      "fa": "# Code Review\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔴 حیاتی (الزامی برای پروژه)  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Code Review developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!CAUTION]\n> **ستون حیاتی معماری:** استفاده از این مهارت برای جلوگیری از نشت حافظه، شکاف‌های امنیتی، افت شدید پرفورمنس یا باگ‌های پنهان در لایه معماری و سیستم (ARCHITECTURE) الزامی است.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Code Review**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/code-review`, `/code review`\n"
+    }
   },
   {
     "id": "mattpocock/skills/implement",
@@ -2032,7 +2263,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill implement by Matt Pocock. Ranked #57 on Skills.sh with 715.6K verified installs.",
+    "description": "Official agent skill for Implement developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -2083,7 +2314,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "implement",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Implement\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Implement developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Implement**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Implement.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/implement`, `/implement`\n",
+      "fa": "# Implement\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Implement developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Implement**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/implement`, `/implement`\n"
+    }
   },
   {
     "id": "mattpocock/skills/ask-matt",
@@ -2093,7 +2331,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill ask-matt by Matt Pocock. Ranked #58 on Skills.sh with 713.0K verified installs.",
+    "description": "Official agent skill for Ask Matt developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -2144,7 +2382,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ask-matt",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ask Matt\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ask Matt developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ask Matt**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ask Matt.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ask-matt`, `/ask matt`\n",
+      "fa": "# Ask Matt\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ask Matt developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ask Matt**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ask-matt`, `/ask matt`\n"
+    }
   },
   {
     "id": "site/open.feishu.cn/lark-vc-agent",
@@ -2154,7 +2399,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "open.feishu.cn",
     "repo": "skills",
     "repository": "https://github.com/open.feishu.cn/skills",
-    "description": "Official trending agent skill lark-vc-agent by Feishu / Lark Team. Ranked #59 on Skills.sh with 707.7K verified installs.",
+    "description": "Official agent skill for Lark Vc Agent developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Feishu / Lark Team",
     "version": "1.0.0",
@@ -2205,7 +2450,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-vc-agent",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Vc Agent\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Vc Agent developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Vc Agent**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Vc Agent.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-vc-agent`, `/lark vc agent`\n",
+      "fa": "# Lark Vc Agent\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Vc Agent developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Vc Agent**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-vc-agent`, `/lark vc agent`\n"
+    }
   },
   {
     "id": "site/open.feishu.cn/lark-apps",
@@ -2215,7 +2467,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "open.feishu.cn",
     "repo": "skills",
     "repository": "https://github.com/open.feishu.cn/skills",
-    "description": "Official trending agent skill lark-apps by Feishu / Lark Team. Ranked #60 on Skills.sh with 675.5K verified installs.",
+    "description": "Official agent skill for Lark Apps developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Feishu / Lark Team",
     "version": "1.0.0",
@@ -2266,7 +2518,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-apps",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Apps\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Apps developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Apps**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Apps.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-apps`, `/lark apps`\n",
+      "fa": "# Lark Apps\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Apps developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Apps**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-apps`, `/lark apps`\n"
+    }
   },
   {
     "id": "mattpocock/skills/wayfinder",
@@ -2276,7 +2535,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill wayfinder by Matt Pocock. Ranked #61 on Skills.sh with 662.0K verified installs.",
+    "description": "Official agent skill for Wayfinder developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -2327,7 +2586,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "wayfinder",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Wayfinder\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Wayfinder developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Wayfinder**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Wayfinder.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/wayfinder`, `/wayfinder`\n",
+      "fa": "# Wayfinder\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Wayfinder developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Wayfinder**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/wayfinder`, `/wayfinder`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-keyframes",
@@ -2337,7 +2603,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-keyframes by HeyGen Labs. Ranked #65 on Skills.sh with 651.6K verified installs.",
+    "description": "Official agent skill for Hyperframes Keyframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -2388,7 +2654,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-keyframes",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes Keyframes\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Keyframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Keyframes**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Keyframes.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-keyframes`, `/hyperframes keyframes`\n",
+      "fa": "# Hyperframes Keyframes\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Keyframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Keyframes**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-keyframes`, `/hyperframes keyframes`\n"
+    }
   },
   {
     "id": "remotion-dev/skills/remotion-best-practices",
@@ -2398,7 +2671,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "remotion-dev",
     "repo": "skills",
     "repository": "https://github.com/remotion-dev/skills",
-    "description": "Official trending agent skill remotion-best-practices by Remotion Core Team. Ranked #66 on Skills.sh with 612.9K verified installs.",
+    "description": "Official agent skill for Remotion Best Practices developed by Remotion Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Remotion Core Team",
     "version": "1.0.0",
@@ -2449,7 +2722,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "remotion-best-practices",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Remotion Best Practices\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Remotion Best Practices developed by Remotion Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Remotion Best Practices**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Remotion Best Practices.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/remotion-best-practices`, `/remotion best practices`\n",
+      "fa": "# Remotion Best Practices\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Remotion Best Practices developed by Remotion Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Remotion Best Practices**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/remotion-best-practices`, `/remotion best practices`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/design-taste-frontend",
@@ -2459,7 +2739,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill design-taste-frontend by Leon Lin. Ranked #67 on Skills.sh with 604.1K verified installs.",
+    "description": "Official agent skill for Design Taste Frontend developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -2510,7 +2790,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "design-taste-frontend",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Design Taste Frontend\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Design Taste Frontend developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Design Taste Frontend**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Design Taste Frontend.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/design-taste-frontend`, `/design taste frontend`\n",
+      "fa": "# Design Taste Frontend\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Design Taste Frontend developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Design Taste Frontend**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/design-taste-frontend`, `/design taste frontend`\n"
+    }
   },
   {
     "id": "juliusbrussee/caveman/caveman",
@@ -2520,7 +2807,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "juliusbrussee",
     "repo": "caveman",
     "repository": "https://github.com/juliusbrussee/caveman",
-    "description": "Official trending agent skill caveman by Julius Brussee. Ranked #68 on Skills.sh with 571.6K verified installs.",
+    "description": "Official agent skill for Caveman developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Julius Brussee",
     "version": "1.0.0",
@@ -2571,7 +2858,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "caveman",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Caveman\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Caveman developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Caveman**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Caveman.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/caveman`, `/caveman`\n",
+      "fa": "# Caveman\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Caveman developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Caveman**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/caveman`, `/caveman`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/microsoft-foundry",
@@ -2581,7 +2875,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill microsoft-foundry by Microsoft Azure Team. Ranked #69 on Skills.sh with 563.6K verified installs.",
+    "description": "Official agent skill for Microsoft Foundry developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -2632,7 +2926,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "microsoft-foundry",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Microsoft Foundry\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Microsoft Foundry developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Microsoft Foundry**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Microsoft Foundry.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/microsoft-foundry`, `/microsoft foundry`\n",
+      "fa": "# Microsoft Foundry\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Microsoft Foundry developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Microsoft Foundry**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/microsoft-foundry`, `/microsoft foundry`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/general-video",
@@ -2642,7 +2943,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill general-video by HeyGen Labs. Ranked #70 on Skills.sh with 556.6K verified installs.",
+    "description": "Official agent skill for General Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -2693,7 +2994,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "general-video",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# General Video\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for General Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **General Video**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for General Video.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/general-video`, `/general video`\n",
+      "fa": "# General Video\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for General Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **General Video**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/general-video`, `/general video`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-diagnostics",
@@ -2703,7 +3011,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-diagnostics by Microsoft Azure Team. Ranked #71 on Skills.sh with 555.4K verified installs.",
+    "description": "Official agent skill for Azure Diagnostics developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -2754,7 +3062,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-diagnostics",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Diagnostics\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Diagnostics developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Diagnostics**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Diagnostics.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-diagnostics`, `/azure diagnostics`\n",
+      "fa": "# Azure Diagnostics\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Diagnostics developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Diagnostics**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-diagnostics`, `/azure diagnostics`\n"
+    }
   },
   {
     "id": "mattpocock/skills/resolving-merge-conflicts",
@@ -2764,7 +3079,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill resolving-merge-conflicts by Matt Pocock. Ranked #84 on Skills.sh with 551.0K verified installs.",
+    "description": "Official agent skill for Resolving Merge Conflicts developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -2815,7 +3130,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "resolving-merge-conflicts",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Resolving Merge Conflicts\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Resolving Merge Conflicts developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Resolving Merge Conflicts**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Resolving Merge Conflicts.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/resolving-merge-conflicts`, `/resolving merge conflicts`\n",
+      "fa": "# Resolving Merge Conflicts\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Resolving Merge Conflicts developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Resolving Merge Conflicts**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/resolving-merge-conflicts`, `/resolving merge conflicts`\n"
+    }
   },
   {
     "id": "site/open.feishu.cn/lark-note",
@@ -2825,7 +3147,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "open.feishu.cn",
     "repo": "skills",
     "repository": "https://github.com/open.feishu.cn/skills",
-    "description": "Official trending agent skill lark-note by Feishu / Lark Team. Ranked #85 on Skills.sh with 547.9K verified installs.",
+    "description": "Official agent skill for Lark Note developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Feishu / Lark Team",
     "version": "1.0.0",
@@ -2876,7 +3198,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-note",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Note\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Note developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Note**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Note.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-note`, `/lark note`\n",
+      "fa": "# Lark Note\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Note developed by Feishu / Lark Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Note**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-note`, `/lark note`\n"
+    }
   },
   {
     "id": "site/uizze.sh/ui-taste",
@@ -2886,7 +3215,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "uizze.sh",
     "repo": "skills",
     "repository": "https://github.com/uizze.sh/skills",
-    "description": "Official trending agent skill ui-taste by Uizze. Ranked #86 on Skills.sh with 547.8K verified installs.",
+    "description": "Official agent skill for Ui Taste developed by Uizze. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Uizze",
     "version": "1.0.0",
@@ -2937,7 +3266,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ui-taste",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ui Taste\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ui Taste developed by Uizze. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ui Taste**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ui Taste.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ui-taste`, `/ui taste`\n",
+      "fa": "# Ui Taste\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ui Taste developed by Uizze. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ui Taste**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ui-taste`, `/ui taste`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-messaging",
@@ -2947,7 +3283,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-messaging by Microsoft Azure Team. Ranked #87 on Skills.sh with 543.8K verified installs.",
+    "description": "Official agent skill for Azure Messaging developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -2998,7 +3334,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-messaging",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Messaging\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Messaging developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Messaging**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Messaging.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-messaging`, `/azure messaging`\n",
+      "fa": "# Azure Messaging\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Messaging developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Messaging**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-messaging`, `/azure messaging`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-audio",
@@ -3008,7 +3351,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-audio by HeyGen Labs. Ranked #88 on Skills.sh with 533.9K verified installs.",
+    "description": "Official agent skill for Hyperframes Audio developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -3059,7 +3402,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-audio",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes Audio\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Audio developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Audio**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Audio.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-audio`, `/hyperframes audio`\n",
+      "fa": "# Hyperframes Audio\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Audio developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Audio**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-audio`, `/hyperframes audio`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-compute",
@@ -3069,7 +3419,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-compute by Microsoft Azure Team. Ranked #89 on Skills.sh with 508.6K verified installs.",
+    "description": "Official agent skill for Azure Compute developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -3120,7 +3470,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-compute",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Compute\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Compute developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Compute**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Compute.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-compute`, `/azure compute`\n",
+      "fa": "# Azure Compute\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Compute developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Compute**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-compute`, `/azure compute`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-cloud-migrate",
@@ -3130,7 +3487,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-cloud-migrate by Microsoft Azure Team. Ranked #90 on Skills.sh with 501.4K verified installs.",
+    "description": "Official agent skill for Azure Cloud Migrate developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -3181,7 +3538,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-cloud-migrate",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Cloud Migrate\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Cloud Migrate developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Cloud Migrate**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Cloud Migrate.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-cloud-migrate`, `/azure cloud migrate`\n",
+      "fa": "# Azure Cloud Migrate\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Cloud Migrate developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Cloud Migrate**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-cloud-migrate`, `/azure cloud migrate`\n"
+    }
   },
   {
     "id": "mattpocock/skills/wizard",
@@ -3191,7 +3555,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill wizard by Matt Pocock. Ranked #91 on Skills.sh with 501.0K verified installs.",
+    "description": "Official agent skill for Wizard developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -3242,7 +3606,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "wizard",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Wizard\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Wizard developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Wizard**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Wizard.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/wizard`, `/wizard`\n",
+      "fa": "# Wizard\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Wizard developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Wizard**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/wizard`, `/wizard`\n"
+    }
   },
   {
     "id": "magentosh/superpowers/ai-image-generation",
@@ -3252,7 +3623,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "magentosh",
     "repo": "superpowers",
     "repository": "https://github.com/magentosh/superpowers",
-    "description": "Official trending agent skill ai-image-generation by magentosh. Ranked #92 on Skills.sh with 497.4K verified installs.",
+    "description": "Official agent skill for Ai Image Generation developed by magentosh. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "science",
     "author": "magentosh",
     "version": "1.0.0",
@@ -3303,7 +3674,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-image-generation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Image Generation developed by magentosh. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Image Generation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Image Generation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-image-generation`, `/ai image generation`\n",
+      "fa": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Image Generation developed by magentosh. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Image Generation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-image-generation`, `/ai image generation`\n"
+    }
   },
   {
     "id": "google/agents-cli/google-agents-cli-adk-code",
@@ -3313,7 +3691,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "google",
     "repo": "agents-cli",
     "repository": "https://github.com/google/agents-cli",
-    "description": "Official trending agent skill google-agents-cli-adk-code by google. Ranked #96 on Skills.sh with 493.7K verified installs.",
+    "description": "Official agent skill for Google Agents Cli Adk Code developed by google. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "google",
     "version": "1.0.0",
@@ -3364,7 +3742,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "google-agents-cli-adk-code",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Google Agents Cli Adk Code\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Google Agents Cli Adk Code developed by google. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Google Agents Cli Adk Code**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Google Agents Cli Adk Code.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/google-agents-cli-adk-code`, `/google agents cli adk code`\n",
+      "fa": "# Google Agents Cli Adk Code\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Google Agents Cli Adk Code developed by google. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Google Agents Cli Adk Code**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/google-agents-cli-adk-code`, `/google agents cli adk code`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-doc",
@@ -3374,7 +3759,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-doc by larksuite. Ranked #103 on Skills.sh with 469.1K verified installs.",
+    "description": "Official agent skill for Lark Doc developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -3425,7 +3810,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-doc",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Doc\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Doc developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Doc**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Doc.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-doc`, `/lark doc`\n",
+      "fa": "# Lark Doc\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Doc developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Doc**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-doc`, `/lark doc`\n"
+    }
   },
   {
     "id": "mattpocock/skills/git-guardrails-claude-code",
@@ -3435,7 +3827,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill git-guardrails-claude-code by Matt Pocock. Ranked #110 on Skills.sh with 461.9K verified installs.",
+    "description": "Official agent skill for Git Guardrails Claude Code developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -3486,7 +3878,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "git-guardrails-claude-code",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Git Guardrails Claude Code\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Git Guardrails Claude Code developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Git Guardrails Claude Code**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Git Guardrails Claude Code.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/git-guardrails-claude-code`, `/git guardrails claude code`\n",
+      "fa": "# Git Guardrails Claude Code\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Git Guardrails Claude Code developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Git Guardrails Claude Code**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/git-guardrails-claude-code`, `/git guardrails claude code`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-whiteboard",
@@ -3496,7 +3895,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-whiteboard by larksuite. Ranked #111 on Skills.sh with 461.0K verified installs.",
+    "description": "Official agent skill for Lark Whiteboard developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -3547,7 +3946,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-whiteboard",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Whiteboard\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Whiteboard developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Whiteboard**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Whiteboard.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-whiteboard`, `/lark whiteboard`\n",
+      "fa": "# Lark Whiteboard\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Whiteboard developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Whiteboard**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-whiteboard`, `/lark whiteboard`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/product-launch-video",
@@ -3557,7 +3963,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill product-launch-video by HeyGen Labs. Ranked #117 on Skills.sh with 457.8K verified installs.",
+    "description": "Official agent skill for Product Launch Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -3608,7 +4014,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "product-launch-video",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Product Launch Video\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Product Launch Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Product Launch Video**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Product Launch Video.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/product-launch-video`, `/product launch video`\n",
+      "fa": "# Product Launch Video\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Product Launch Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Product Launch Video**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/product-launch-video`, `/product launch video`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-event",
@@ -3618,7 +4031,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-event by larksuite. Ranked #118 on Skills.sh with 457.7K verified installs.",
+    "description": "Official agent skill for Lark Event developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -3669,7 +4082,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-event",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Event\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Event developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Event**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Event.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-event`, `/lark event`\n",
+      "fa": "# Lark Event\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Event developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Event**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-event`, `/lark event`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-contact",
@@ -3679,7 +4099,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-contact by larksuite. Ranked #119 on Skills.sh with 457.5K verified installs.",
+    "description": "Official agent skill for Lark Contact developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -3730,7 +4150,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-contact",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Contact\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Contact developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Contact**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Contact.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-contact`, `/lark contact`\n",
+      "fa": "# Lark Contact\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Contact developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Contact**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-contact`, `/lark contact`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-workflow-meeting-summary",
@@ -3740,7 +4167,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-workflow-meeting-summary by larksuite. Ranked #120 on Skills.sh with 456.8K verified installs.",
+    "description": "Official agent skill for Lark Workflow Meeting Summary developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -3791,7 +4218,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-workflow-meeting-summary",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Workflow Meeting Summary\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Workflow Meeting Summary developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Workflow Meeting Summary**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Workflow Meeting Summary.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-workflow-meeting-summary`, `/lark workflow meeting summary`\n",
+      "fa": "# Lark Workflow Meeting Summary\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Workflow Meeting Summary developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Workflow Meeting Summary**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-workflow-meeting-summary`, `/lark workflow meeting summary`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-quotas",
@@ -3801,7 +4235,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-quotas by Microsoft Azure Team. Ranked #121 on Skills.sh with 456.7K verified installs.",
+    "description": "Official agent skill for Azure Quotas developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -3852,7 +4286,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-quotas",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Quotas\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Quotas developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Quotas**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Quotas.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-quotas`, `/azure quotas`\n",
+      "fa": "# Azure Quotas\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Quotas developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Quotas**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-quotas`, `/azure quotas`\n"
+    }
   },
   {
     "id": "lllllllama/rigorpilot-skills/paper-context-resolver",
@@ -3862,7 +4303,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "lllllllama",
     "repo": "rigorpilot-skills",
     "repository": "https://github.com/lllllllama/rigorpilot-skills",
-    "description": "Official trending agent skill paper-context-resolver by lllllllama. Ranked #122 on Skills.sh with 456.3K verified installs.",
+    "description": "Official agent skill for Paper Context Resolver developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "lllllllama",
     "version": "1.0.0",
@@ -3913,7 +4354,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "paper-context-resolver",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Paper Context Resolver\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Paper Context Resolver developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Paper Context Resolver**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Paper Context Resolver.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/paper-context-resolver`, `/paper context resolver`\n",
+      "fa": "# Paper Context Resolver\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Paper Context Resolver developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Paper Context Resolver**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/paper-context-resolver`, `/paper context resolver`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-workflow-standup-report",
@@ -3923,7 +4371,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-workflow-standup-report by larksuite. Ranked #123 on Skills.sh with 456.0K verified installs.",
+    "description": "Official agent skill for Lark Workflow Standup Report developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -3974,7 +4422,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-workflow-standup-report",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Workflow Standup Report\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Workflow Standup Report developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Workflow Standup Report**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Workflow Standup Report.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-workflow-standup-report`, `/lark workflow standup report`\n",
+      "fa": "# Lark Workflow Standup Report\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Workflow Standup Report developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Workflow Standup Report**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-workflow-standup-report`, `/lark workflow standup report`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-openapi-explorer",
@@ -3984,7 +4439,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-openapi-explorer by larksuite. Ranked #124 on Skills.sh with 455.8K verified installs.",
+    "description": "Official agent skill for Lark Openapi Explorer developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -4035,7 +4490,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-openapi-explorer",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Openapi Explorer\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Openapi Explorer developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Openapi Explorer**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Openapi Explorer.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-openapi-explorer`, `/lark openapi explorer`\n",
+      "fa": "# Lark Openapi Explorer\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Openapi Explorer developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Openapi Explorer**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-openapi-explorer`, `/lark openapi explorer`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-skill-maker",
@@ -4045,7 +4507,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-skill-maker by larksuite. Ranked #125 on Skills.sh with 455.5K verified installs.",
+    "description": "Official agent skill for Lark Skill Maker developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -4096,7 +4558,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-skill-maker",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Skill Maker\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Skill Maker developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Skill Maker**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Skill Maker.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-skill-maker`, `/lark skill maker`\n",
+      "fa": "# Lark Skill Maker\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Skill Maker developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Skill Maker**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-skill-maker`, `/lark skill maker`\n"
+    }
   },
   {
     "id": "lllllllama/rigorpilot-skills/repo-intake-and-plan",
@@ -4106,7 +4575,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "lllllllama",
     "repo": "rigorpilot-skills",
     "repository": "https://github.com/lllllllama/rigorpilot-skills",
-    "description": "Official trending agent skill repo-intake-and-plan by lllllllama. Ranked #126 on Skills.sh with 455.5K verified installs.",
+    "description": "Official agent skill for Repo Intake And Plan developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "lllllllama",
     "version": "1.0.0",
@@ -4157,7 +4626,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "repo-intake-and-plan",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Repo Intake And Plan\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Repo Intake And Plan developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Repo Intake And Plan**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Repo Intake And Plan.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/repo-intake-and-plan`, `/repo intake and plan`\n",
+      "fa": "# Repo Intake And Plan\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Repo Intake And Plan developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Repo Intake And Plan**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/repo-intake-and-plan`, `/repo intake and plan`\n"
+    }
   },
   {
     "id": "lllllllama/rigorpilot-skills/minimal-run-and-audit",
@@ -4167,7 +4643,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "lllllllama",
     "repo": "rigorpilot-skills",
     "repository": "https://github.com/lllllllama/rigorpilot-skills",
-    "description": "Official trending agent skill minimal-run-and-audit by lllllllama. Ranked #127 on Skills.sh with 455.4K verified installs.",
+    "description": "Official agent skill for Minimal Run And Audit developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "lllllllama",
     "version": "1.0.0",
@@ -4218,7 +4694,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "minimal-run-and-audit",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Minimal Run And Audit\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Minimal Run And Audit developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Minimal Run And Audit**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Minimal Run And Audit.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/minimal-run-and-audit`, `/minimal run and audit`\n",
+      "fa": "# Minimal Run And Audit\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Minimal Run And Audit developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Minimal Run And Audit**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/minimal-run-and-audit`, `/minimal run and audit`\n"
+    }
   },
   {
     "id": "lllllllama/rigorpilot-skills/env-and-assets-bootstrap",
@@ -4228,7 +4711,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "lllllllama",
     "repo": "rigorpilot-skills",
     "repository": "https://github.com/lllllllama/rigorpilot-skills",
-    "description": "Official trending agent skill env-and-assets-bootstrap by lllllllama. Ranked #128 on Skills.sh with 455.3K verified installs.",
+    "description": "Official agent skill for Env And Assets Bootstrap developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "lllllllama",
     "version": "1.0.0",
@@ -4279,7 +4762,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "env-and-assets-bootstrap",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Env And Assets Bootstrap\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Env And Assets Bootstrap developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Env And Assets Bootstrap**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Env And Assets Bootstrap.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/env-and-assets-bootstrap`, `/env and assets bootstrap`\n",
+      "fa": "# Env And Assets Bootstrap\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Env And Assets Bootstrap developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Env And Assets Bootstrap**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/env-and-assets-bootstrap`, `/env and assets bootstrap`\n"
+    }
   },
   {
     "id": "mattpocock/skills/setup-pre-commit",
@@ -4289,7 +4779,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill setup-pre-commit by Matt Pocock. Ranked #129 on Skills.sh with 451.6K verified installs.",
+    "description": "Official agent skill for Setup Pre Commit developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -4340,7 +4830,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "setup-pre-commit",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Setup Pre Commit\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Setup Pre Commit developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Setup Pre Commit**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Setup Pre Commit.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/setup-pre-commit`, `/setup pre commit`\n",
+      "fa": "# Setup Pre Commit\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Setup Pre Commit developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Setup Pre Commit**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/setup-pre-commit`, `/setup pre commit`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-upgrade",
@@ -4350,7 +4847,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-upgrade by Microsoft Azure Team. Ranked #130 on Skills.sh with 449.5K verified installs.",
+    "description": "Official agent skill for Azure Upgrade developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -4401,7 +4898,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-upgrade",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Upgrade\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Upgrade developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Upgrade**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Upgrade.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-upgrade`, `/azure upgrade`\n",
+      "fa": "# Azure Upgrade\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Upgrade developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Upgrade**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-upgrade`, `/azure upgrade`\n"
+    }
   },
   {
     "id": "mattpocock/skills/to-questionnaire",
@@ -4411,7 +4915,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill to-questionnaire by Matt Pocock. Ranked #131 on Skills.sh with 447.7K verified installs.",
+    "description": "Official agent skill for To Questionnaire developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -4462,7 +4966,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "to-questionnaire",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# To Questionnaire\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for To Questionnaire developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **To Questionnaire**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for To Questionnaire.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/to-questionnaire`, `/to questionnaire`\n",
+      "fa": "# To Questionnaire\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for To Questionnaire developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **To Questionnaire**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/to-questionnaire`, `/to questionnaire`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/remotion-to-hyperframes",
@@ -4472,7 +4983,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill remotion-to-hyperframes by HeyGen Labs. Ranked #135 on Skills.sh with 444.0K verified installs.",
+    "description": "Official agent skill for Remotion To Hyperframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -4523,7 +5034,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "remotion-to-hyperframes",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Remotion To Hyperframes\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Remotion To Hyperframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Remotion To Hyperframes**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Remotion To Hyperframes.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/remotion-to-hyperframes`, `/remotion to hyperframes`\n",
+      "fa": "# Remotion To Hyperframes\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Remotion To Hyperframes developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Remotion To Hyperframes**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/remotion-to-hyperframes`, `/remotion to hyperframes`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/faceless-explainer",
@@ -4533,7 +5051,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill faceless-explainer by HeyGen Labs. Ranked #136 on Skills.sh with 443.3K verified installs.",
+    "description": "Official agent skill for Faceless Explainer developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -4584,7 +5102,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "faceless-explainer",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Faceless Explainer\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Faceless Explainer developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Faceless Explainer**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Faceless Explainer.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/faceless-explainer`, `/faceless explainer`\n",
+      "fa": "# Faceless Explainer\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Faceless Explainer developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Faceless Explainer**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/faceless-explainer`, `/faceless explainer`\n"
+    }
   },
   {
     "id": "supabase/agent-skills/supabase-postgres-best-practices",
@@ -4594,7 +5119,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "supabase",
     "repo": "agent-skills",
     "repository": "https://github.com/supabase/agent-skills",
-    "description": "Official trending agent skill supabase-postgres-best-practices by Supabase Team. Ranked #137 on Skills.sh with 443.2K verified installs.",
+    "description": "Official agent skill for Supabase Postgres Best Practices developed by Supabase Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Supabase Team",
     "version": "1.0.0",
@@ -4645,7 +5170,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "supabase-postgres-best-practices",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "critical",
+    "docsMarkdown": {
+      "en": "# Supabase Postgres Best Practices\n\n> [!IMPORTANT]\n> **Level:** 🔴 CRITICAL (Must-Have)  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Supabase Postgres Best Practices developed by Supabase Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!CAUTION]\n> **Core Architectural Pillar:** This skill prevents fatal anti-patterns, memory leaks, security vulnerabilities, or performance bottlenecks in your BACKEND pipeline. Highly essential for mission-critical apps.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Supabase Postgres Best Practices**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Supabase Postgres Best Practices.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/supabase-postgres-best-practices`, `/supabase postgres best practices`\n",
+      "fa": "# Supabase Postgres Best Practices\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔴 حیاتی (الزامی برای پروژه)  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Supabase Postgres Best Practices developed by Supabase Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!CAUTION]\n> **ستون حیاتی معماری:** استفاده از این مهارت برای جلوگیری از نشت حافظه، شکاف‌های امنیتی، افت شدید پرفورمنس یا باگ‌های پنهان در لایه بک‌اند (BACKEND) الزامی است.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Supabase Postgres Best Practices**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/supabase-postgres-best-practices`, `/supabase postgres best practices`\n"
+    }
   },
   {
     "id": "mattpocock/skills/scaffold-exercises",
@@ -4655,7 +5187,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill scaffold-exercises by Matt Pocock. Ranked #138 on Skills.sh with 443.2K verified installs.",
+    "description": "Official agent skill for Scaffold Exercises developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -4706,7 +5238,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "scaffold-exercises",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Scaffold Exercises\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Scaffold Exercises developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Scaffold Exercises**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Scaffold Exercises.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/scaffold-exercises`, `/scaffold exercises`\n",
+      "fa": "# Scaffold Exercises\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Scaffold Exercises developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Scaffold Exercises**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/scaffold-exercises`, `/scaffold exercises`\n"
+    }
   },
   {
     "id": "mattpocock/skills/migrate-to-shoehorn",
@@ -4716,7 +5255,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill migrate-to-shoehorn by Matt Pocock. Ranked #139 on Skills.sh with 439.4K verified installs.",
+    "description": "Official agent skill for Migrate To Shoehorn developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -4767,7 +5306,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "migrate-to-shoehorn",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Migrate To Shoehorn\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Migrate To Shoehorn developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Migrate To Shoehorn**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Migrate To Shoehorn.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/migrate-to-shoehorn`, `/migrate to shoehorn`\n",
+      "fa": "# Migrate To Shoehorn\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Migrate To Shoehorn developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Migrate To Shoehorn**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/migrate-to-shoehorn`, `/migrate to shoehorn`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/high-end-visual-design",
@@ -4777,7 +5323,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill high-end-visual-design by Leon Lin. Ranked #140 on Skills.sh with 436.7K verified installs.",
+    "description": "Official agent skill for High End Visual Design developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -4828,7 +5374,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "high-end-visual-design",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# High End Visual Design\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for High End Visual Design developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **High End Visual Design**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for High End Visual Design.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/high-end-visual-design`, `/high end visual design`\n",
+      "fa": "# High End Visual Design\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for High End Visual Design developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **High End Visual Design**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/high-end-visual-design`, `/high end visual design`\n"
+    }
   },
   {
     "id": "qu-skills/superpowers/ai-avatar-video",
@@ -4838,7 +5391,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "qu-skills",
     "repo": "superpowers",
     "repository": "https://github.com/qu-skills/superpowers",
-    "description": "Official trending agent skill ai-avatar-video by qu-skills. Ranked #141 on Skills.sh with 436.4K verified installs.",
+    "description": "Official agent skill for Ai Avatar Video developed by qu-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "qu-skills",
     "version": "1.0.0",
@@ -4889,7 +5442,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-avatar-video",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Avatar Video\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Avatar Video developed by qu-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Avatar Video**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Avatar Video.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-avatar-video`, `/ai avatar video`\n",
+      "fa": "# Ai Avatar Video\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Avatar Video developed by qu-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Avatar Video**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-avatar-video`, `/ai avatar video`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/redesign-existing-projects",
@@ -4899,7 +5459,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill redesign-existing-projects by Leon Lin. Ranked #145 on Skills.sh with 435.5K verified installs.",
+    "description": "Official agent skill for Redesign Existing Projects developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -4950,7 +5510,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "redesign-existing-projects",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Redesign Existing Projects\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Redesign Existing Projects developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Redesign Existing Projects**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Redesign Existing Projects.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/redesign-existing-projects`, `/redesign existing projects`\n",
+      "fa": "# Redesign Existing Projects\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Redesign Existing Projects developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Redesign Existing Projects**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/redesign-existing-projects`, `/redesign existing projects`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/motion-graphics",
@@ -4960,7 +5527,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill motion-graphics by HeyGen Labs. Ranked #146 on Skills.sh with 435.0K verified installs.",
+    "description": "Official agent skill for Motion Graphics developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -5011,7 +5578,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "motion-graphics",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Motion Graphics\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Motion Graphics developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Motion Graphics**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Motion Graphics.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/motion-graphics`, `/motion graphics`\n",
+      "fa": "# Motion Graphics\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Motion Graphics developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Motion Graphics**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/motion-graphics`, `/motion graphics`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/video-edit",
@@ -5021,7 +5595,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill video-edit by Prime Skills. Ranked #147 on Skills.sh with 433.9K verified installs.",
+    "description": "Official agent skill for Video Edit developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -5072,7 +5646,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "video-edit",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Video Edit\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Video Edit developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Video Edit**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Video Edit.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/video-edit`, `/video edit`\n",
+      "fa": "# Video Edit\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Video Edit developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Video Edit**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/video-edit`, `/video edit`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-approval",
@@ -5082,7 +5663,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-approval by larksuite. Ranked #152 on Skills.sh with 431.3K verified installs.",
+    "description": "Official agent skill for Lark Approval developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -5133,7 +5714,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-approval",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Approval\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Approval developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Approval**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Approval.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-approval`, `/lark approval`\n",
+      "fa": "# Lark Approval\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Approval developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Approval**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-approval`, `/lark approval`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/flux-kontext",
@@ -5143,7 +5731,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill flux-kontext by Prime Skills. Ranked #153 on Skills.sh with 431.1K verified installs.",
+    "description": "Official agent skill for Flux Kontext developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -5194,7 +5782,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "flux-kontext",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Flux Kontext\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Flux Kontext developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Flux Kontext**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Flux Kontext.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/flux-kontext`, `/flux kontext`\n",
+      "fa": "# Flux Kontext\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Flux Kontext developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Flux Kontext**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/flux-kontext`, `/flux kontext`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-enterprise-infra-planner",
@@ -5204,7 +5799,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-enterprise-infra-planner by Microsoft Azure Team. Ranked #159 on Skills.sh with 426.7K verified installs.",
+    "description": "Official agent skill for Azure Enterprise Infra Planner developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -5255,7 +5850,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-enterprise-infra-planner",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Enterprise Infra Planner\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Enterprise Infra Planner developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Enterprise Infra Planner**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Enterprise Infra Planner.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-enterprise-infra-planner`, `/azure enterprise infra planner`\n",
+      "fa": "# Azure Enterprise Infra Planner\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Enterprise Infra Planner developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Enterprise Infra Planner**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-enterprise-infra-planner`, `/azure enterprise infra planner`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-kubernetes",
@@ -5265,7 +5867,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-kubernetes by Microsoft Azure Team. Ranked #160 on Skills.sh with 420.3K verified installs.",
+    "description": "Official agent skill for Azure Kubernetes developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -5316,7 +5918,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-kubernetes",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Kubernetes\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Kubernetes developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Kubernetes**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Kubernetes.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-kubernetes`, `/azure kubernetes`\n",
+      "fa": "# Azure Kubernetes\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Kubernetes developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Kubernetes**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-kubernetes`, `/azure kubernetes`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-slides",
@@ -5326,7 +5935,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-slides by larksuite. Ranked #161 on Skills.sh with 411.8K verified installs.",
+    "description": "Official agent skill for Lark Slides developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -5377,7 +5986,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-slides",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Slides\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Slides developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Slides**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Slides.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-slides`, `/lark slides`\n",
+      "fa": "# Lark Slides\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Slides developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Slides**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-slides`, `/lark slides`\n"
+    }
   },
   {
     "id": "mattpocock/skills/writing-for-agents",
@@ -5387,7 +6003,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill writing-for-agents by Matt Pocock. Ranked #162 on Skills.sh with 411.6K verified installs.",
+    "description": "Official agent skill for Writing For Agents developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -5438,7 +6054,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "writing-for-agents",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Writing For Agents\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Writing For Agents developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Writing For Agents**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Writing For Agents.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/writing-for-agents`, `/writing for agents`\n",
+      "fa": "# Writing For Agents\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Writing For Agents developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Writing For Agents**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/writing-for-agents`, `/writing for agents`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-attendance",
@@ -5448,7 +6071,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-attendance by larksuite. Ranked #163 on Skills.sh with 408.9K verified installs.",
+    "description": "Official agent skill for Lark Attendance developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -5499,7 +6122,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-attendance",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Attendance\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Attendance developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Attendance**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Attendance.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-attendance`, `/lark attendance`\n",
+      "fa": "# Lark Attendance\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Attendance developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Attendance**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-attendance`, `/lark attendance`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/kling-3-0",
@@ -5509,7 +6139,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill kling-3-0 by Prime Skills. Ranked #164 on Skills.sh with 407.3K verified installs.",
+    "description": "Official agent skill for Kling 3 0 developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -5560,7 +6190,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "kling-3-0",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Kling 3 0\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Kling 3 0 developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Kling 3 0**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Kling 3 0.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/kling-3-0`, `/kling 3 0`\n",
+      "fa": "# Kling 3 0\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Kling 3 0 developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Kling 3 0**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/kling-3-0`, `/kling 3 0`\n"
+    }
   },
   {
     "id": "anthropics/skills/skill-creator",
@@ -5570,7 +6207,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "anthropics",
     "repo": "skills",
     "repository": "https://github.com/anthropics/skills",
-    "description": "Official trending agent skill skill-creator by Anthropic. Ranked #165 on Skills.sh with 404.7K verified installs.",
+    "description": "Official agent skill for Skill Creator developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Anthropic",
     "version": "1.0.0",
@@ -5621,7 +6258,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "skill-creator",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Skill Creator\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Skill Creator developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Skill Creator**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Skill Creator.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/skill-creator`, `/skill creator`\n",
+      "fa": "# Skill Creator\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Skill Creator developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Skill Creator**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/skill-creator`, `/skill creator`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/minimalist-ui",
@@ -5631,7 +6275,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill minimalist-ui by Leon Lin. Ranked #166 on Skills.sh with 403.6K verified installs.",
+    "description": "Official agent skill for Minimalist Ui developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -5682,7 +6326,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "minimalist-ui",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Minimalist Ui\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Minimalist Ui developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Minimalist Ui**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Minimalist Ui.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/minimalist-ui`, `/minimalist ui`\n",
+      "fa": "# Minimalist Ui\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Minimalist Ui developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Minimalist Ui**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/minimalist-ui`, `/minimalist ui`\n"
+    }
   },
   {
     "id": "mattpocock/skills/loop-me",
@@ -5692,7 +6343,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill loop-me by Matt Pocock. Ranked #167 on Skills.sh with 402.1K verified installs.",
+    "description": "Official agent skill for Loop Me developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -5743,7 +6394,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "loop-me",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Loop Me\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Loop Me developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Loop Me**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Loop Me.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/loop-me`, `/loop me`\n",
+      "fa": "# Loop Me\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Loop Me developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Loop Me**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/loop-me`, `/loop me`\n"
+    }
   },
   {
     "id": "juliusbrussee/caveman/caveman-commit",
@@ -5753,7 +6411,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "juliusbrussee",
     "repo": "caveman",
     "repository": "https://github.com/juliusbrussee/caveman",
-    "description": "Official trending agent skill caveman-commit by Julius Brussee. Ranked #168 on Skills.sh with 401.6K verified installs.",
+    "description": "Official agent skill for Caveman Commit developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Julius Brussee",
     "version": "1.0.0",
@@ -5804,7 +6462,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "caveman-commit",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Caveman Commit\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Caveman Commit developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Caveman Commit**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Caveman Commit.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/caveman-commit`, `/caveman commit`\n",
+      "fa": "# Caveman Commit\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Caveman Commit developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Caveman Commit**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/caveman-commit`, `/caveman commit`\n"
+    }
   },
   {
     "id": "juliusbrussee/caveman/caveman-review",
@@ -5814,7 +6479,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "juliusbrussee",
     "repo": "caveman",
     "repository": "https://github.com/juliusbrussee/caveman",
-    "description": "Official trending agent skill caveman-review by Julius Brussee. Ranked #169 on Skills.sh with 397.6K verified installs.",
+    "description": "Official agent skill for Caveman Review developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Julius Brussee",
     "version": "1.0.0",
@@ -5865,7 +6530,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "caveman-review",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Caveman Review\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Caveman Review developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Caveman Review**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Caveman Review.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/caveman-review`, `/caveman review`\n",
+      "fa": "# Caveman Review\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Caveman Review developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Caveman Review**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/caveman-review`, `/caveman review`\n"
+    }
   },
   {
     "id": "mattpocock/skills/wait-what",
@@ -5875,7 +6547,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill wait-what by Matt Pocock. Ranked #170 on Skills.sh with 396.9K verified installs.",
+    "description": "Official agent skill for Wait What developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -5926,7 +6598,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "wait-what",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Wait What\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Wait What developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Wait What**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Wait What.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/wait-what`, `/wait what`\n",
+      "fa": "# Wait What\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Wait What developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Wait What**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/wait-what`, `/wait what`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-rbac",
@@ -5936,7 +6615,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-rbac by Microsoft Azure Team. Ranked #171 on Skills.sh with 396.7K verified installs.",
+    "description": "Official agent skill for Azure Rbac developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -5987,7 +6666,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-rbac",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Rbac\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Rbac developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Rbac**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Rbac.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-rbac`, `/azure rbac`\n",
+      "fa": "# Azure Rbac\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Rbac developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Rbac**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-rbac`, `/azure rbac`\n"
+    }
   },
   {
     "id": "juliusbrussee/caveman/caveman-compress",
@@ -5997,7 +6683,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "juliusbrussee",
     "repo": "caveman",
     "repository": "https://github.com/juliusbrussee/caveman",
-    "description": "Official trending agent skill caveman-compress by Julius Brussee. Ranked #172 on Skills.sh with 396.4K verified installs.",
+    "description": "Official agent skill for Caveman Compress developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Julius Brussee",
     "version": "1.0.0",
@@ -6048,7 +6734,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "caveman-compress",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Caveman Compress\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Caveman Compress developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Caveman Compress**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Caveman Compress.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/caveman-compress`, `/caveman compress`\n",
+      "fa": "# Caveman Compress\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Caveman Compress developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Caveman Compress**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/caveman-compress`, `/caveman compress`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/codex-pet",
@@ -6058,7 +6751,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill codex-pet by Prime Skills. Ranked #173 on Skills.sh with 395.7K verified installs.",
+    "description": "Official agent skill for Codex Pet developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -6109,7 +6802,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "codex-pet",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Codex Pet\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Codex Pet developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Codex Pet**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Codex Pet.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/codex-pet`, `/codex pet`\n",
+      "fa": "# Codex Pet\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Codex Pet developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Codex Pet**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/codex-pet`, `/codex pet`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-okr",
@@ -6119,7 +6819,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-okr by larksuite. Ranked #174 on Skills.sh with 395.1K verified installs.",
+    "description": "Official agent skill for Lark Okr developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -6170,7 +6870,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-okr",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Okr\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Okr developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Okr**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Okr.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-okr`, `/lark okr`\n",
+      "fa": "# Lark Okr\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Okr developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Okr**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-okr`, `/lark okr`\n"
+    }
   },
   {
     "id": "nextlevelbuilder/ui-ux-pro-max-skill/ui-ux-pro-max",
@@ -6180,7 +6887,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "nextlevelbuilder",
     "repo": "ui-ux-pro-max-skill",
     "repository": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
-    "description": "Official trending agent skill ui-ux-pro-max by nextlevelbuilder. Ranked #175 on Skills.sh with 394.6K verified installs.",
+    "description": "Official agent skill for Ui Ux Pro Max developed by nextlevelbuilder. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "nextlevelbuilder",
     "version": "1.0.0",
@@ -6231,7 +6938,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ui-ux-pro-max",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ui Ux Pro Max\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ui Ux Pro Max developed by nextlevelbuilder. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ui Ux Pro Max**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ui Ux Pro Max.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ui-ux-pro-max`, `/ui ux pro max`\n",
+      "fa": "# Ui Ux Pro Max\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ui Ux Pro Max developed by nextlevelbuilder. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ui Ux Pro Max**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ui-ux-pro-max`, `/ui ux pro max`\n"
+    }
   },
   {
     "id": "vercel-labs/agent-skills/vercel-composition-patterns",
@@ -6241,7 +6955,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "vercel-labs",
     "repo": "agent-skills",
     "repository": "https://github.com/vercel-labs/agent-skills",
-    "description": "Official trending agent skill vercel-composition-patterns by Vercel Labs. Ranked #176 on Skills.sh with 391.3K verified installs.",
+    "description": "Official agent skill for Vercel Composition Patterns developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Vercel Labs",
     "version": "1.0.0",
@@ -6292,7 +7006,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "vercel-composition-patterns",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Vercel Composition Patterns\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Vercel Composition Patterns developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Vercel Composition Patterns**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Vercel Composition Patterns.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/vercel-composition-patterns`, `/vercel composition patterns`\n",
+      "fa": "# Vercel Composition Patterns\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Vercel Composition Patterns developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Vercel Composition Patterns**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/vercel-composition-patterns`, `/vercel composition patterns`\n"
+    }
   },
   {
     "id": "obra/superpowers/brainstorming",
@@ -6302,7 +7023,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill brainstorming by obra. Ranked #177 on Skills.sh with 390.5K verified installs.",
+    "description": "Official agent skill for Brainstorming developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -6353,7 +7074,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "brainstorming",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Brainstorming\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Brainstorming developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Brainstorming**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Brainstorming.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/brainstorming`, `/brainstorming`\n",
+      "fa": "# Brainstorming\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Brainstorming developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Brainstorming**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/brainstorming`, `/brainstorming`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/embedded-captions",
@@ -6363,7 +7091,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill embedded-captions by HeyGen Labs. Ranked #178 on Skills.sh with 389.5K verified installs.",
+    "description": "Official agent skill for Embedded Captions developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -6414,7 +7142,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "embedded-captions",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Embedded Captions\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Embedded Captions developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Embedded Captions**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Embedded Captions.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/embedded-captions`, `/embedded captions`\n",
+      "fa": "# Embedded Captions\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Embedded Captions developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Embedded Captions**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/embedded-captions`, `/embedded captions`\n"
+    }
   },
   {
     "id": "juliusbrussee/caveman/caveman-help",
@@ -6424,7 +7159,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "juliusbrussee",
     "repo": "caveman",
     "repository": "https://github.com/juliusbrussee/caveman",
-    "description": "Official trending agent skill caveman-help by Julius Brussee. Ranked #179 on Skills.sh with 388.8K verified installs.",
+    "description": "Official agent skill for Caveman Help developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Julius Brussee",
     "version": "1.0.0",
@@ -6475,7 +7210,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "caveman-help",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Caveman Help\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Caveman Help developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Caveman Help**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Caveman Help.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/caveman-help`, `/caveman help`\n",
+      "fa": "# Caveman Help\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Caveman Help developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Caveman Help**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/caveman-help`, `/caveman help`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/pr-to-video",
@@ -6485,7 +7227,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill pr-to-video by HeyGen Labs. Ranked #180 on Skills.sh with 384.9K verified installs.",
+    "description": "Official agent skill for Pr To Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -6536,7 +7278,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "pr-to-video",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Pr To Video\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Pr To Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Pr To Video**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Pr To Video.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/pr-to-video`, `/pr to video`\n",
+      "fa": "# Pr To Video\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Pr To Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Pr To Video**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/pr-to-video`, `/pr to video`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/full-output-enforcement",
@@ -6546,7 +7295,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill full-output-enforcement by Leon Lin. Ranked #181 on Skills.sh with 384.2K verified installs.",
+    "description": "Official agent skill for Full Output Enforcement developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -6597,7 +7346,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "full-output-enforcement",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Full Output Enforcement\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Full Output Enforcement developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Full Output Enforcement**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Full Output Enforcement.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/full-output-enforcement`, `/full output enforcement`\n",
+      "fa": "# Full Output Enforcement\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Full Output Enforcement developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Full Output Enforcement**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/full-output-enforcement`, `/full output enforcement`\n"
+    }
   },
   {
     "id": "mattpocock/skills/claude-handoff",
@@ -6607,7 +7363,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill claude-handoff by Matt Pocock. Ranked #182 on Skills.sh with 382.1K verified installs.",
+    "description": "Official agent skill for Claude Handoff developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -6658,7 +7414,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "claude-handoff",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Claude Handoff\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Claude Handoff developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Claude Handoff**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Claude Handoff.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/claude-handoff`, `/claude handoff`\n",
+      "fa": "# Claude Handoff\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Claude Handoff developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Claude Handoff**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/claude-handoff`, `/claude handoff`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/gpt-taste",
@@ -6668,7 +7431,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill gpt-taste by Leon Lin. Ranked #183 on Skills.sh with 379.1K verified installs.",
+    "description": "Official agent skill for Gpt Taste developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -6719,7 +7482,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "gpt-taste",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Gpt Taste\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Gpt Taste developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Gpt Taste**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Gpt Taste.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/gpt-taste`, `/gpt taste`\n",
+      "fa": "# Gpt Taste\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Gpt Taste developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Gpt Taste**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/gpt-taste`, `/gpt taste`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/industrial-brutalist-ui",
@@ -6729,7 +7499,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill industrial-brutalist-ui by Leon Lin. Ranked #184 on Skills.sh with 377.4K verified installs.",
+    "description": "Official agent skill for Industrial Brutalist Ui developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -6780,7 +7550,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "industrial-brutalist-ui",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Industrial Brutalist Ui\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Industrial Brutalist Ui developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Industrial Brutalist Ui**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Industrial Brutalist Ui.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/industrial-brutalist-ui`, `/industrial brutalist ui`\n",
+      "fa": "# Industrial Brutalist Ui\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Industrial Brutalist Ui developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Industrial Brutalist Ui**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/industrial-brutalist-ui`, `/industrial brutalist ui`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/ai-video-generation",
@@ -6790,7 +7567,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill ai-video-generation by Prime Skills. Ranked #185 on Skills.sh with 377.1K verified installs.",
+    "description": "Official agent skill for Ai Video Generation developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -6841,7 +7618,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-video-generation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Video Generation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Video Generation developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Video Generation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Video Generation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-video-generation`, `/ai video generation`\n",
+      "fa": "# Ai Video Generation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Video Generation developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Video Generation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-video-generation`, `/ai video generation`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/ai-image-generation",
@@ -6851,7 +7635,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill ai-image-generation by Prime Skills. Ranked #186 on Skills.sh with 377.1K verified installs.",
+    "description": "Official agent skill for Ai Image Generation developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "science",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -6902,7 +7686,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-image-generation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Image Generation developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Image Generation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Image Generation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-image-generation`, `/ai image generation`\n",
+      "fa": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Image Generation developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Image Generation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-image-generation`, `/ai image generation`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-markdown",
@@ -6912,7 +7703,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-markdown by larksuite. Ranked #187 on Skills.sh with 376.5K verified installs.",
+    "description": "Official agent skill for Lark Markdown developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -6963,7 +7754,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-markdown",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Markdown\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Markdown developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Markdown**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Markdown.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-markdown`, `/lark markdown`\n",
+      "fa": "# Lark Markdown\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Markdown developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Markdown**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-markdown`, `/lark markdown`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/stitch-design-taste",
@@ -6973,7 +7771,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill stitch-design-taste by Leon Lin. Ranked #188 on Skills.sh with 375.4K verified installs.",
+    "description": "Official agent skill for Stitch Design Taste developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -7024,7 +7822,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "stitch-design-taste",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Stitch Design Taste\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Stitch Design Taste developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Stitch Design Taste**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Stitch Design Taste.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/stitch-design-taste`, `/stitch design taste`\n",
+      "fa": "# Stitch Design Taste\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Stitch Design Taste developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Stitch Design Taste**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/stitch-design-taste`, `/stitch design taste`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/runcomfy-cli",
@@ -7034,7 +7839,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill runcomfy-cli by Prime Skills. Ranked #189 on Skills.sh with 374.3K verified installs.",
+    "description": "Official agent skill for Runcomfy Cli developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -7085,7 +7890,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "runcomfy-cli",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Runcomfy Cli\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Runcomfy Cli developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Runcomfy Cli**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Runcomfy Cli.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/runcomfy-cli`, `/runcomfy cli`\n",
+      "fa": "# Runcomfy Cli\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Runcomfy Cli developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Runcomfy Cli**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/runcomfy-cli`, `/runcomfy cli`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/brandkit",
@@ -7095,7 +7907,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill brandkit by Leon Lin. Ranked #201 on Skills.sh with 369.9K verified installs.",
+    "description": "Official agent skill for Brandkit developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -7146,7 +7958,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "brandkit",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Brandkit\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Brandkit developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Brandkit**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Brandkit.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/brandkit`, `/brandkit`\n",
+      "fa": "# Brandkit\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Brandkit developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Brandkit**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/brandkit`, `/brandkit`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/image-to-code",
@@ -7156,7 +7975,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill image-to-code by Leon Lin. Ranked #202 on Skills.sh with 365.6K verified installs.",
+    "description": "Official agent skill for Image To Code developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -7207,7 +8026,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "image-to-code",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Image To Code\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Image To Code developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Image To Code**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Image To Code.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/image-to-code`, `/image to code`\n",
+      "fa": "# Image To Code\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Image To Code developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Image To Code**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/image-to-code`, `/image to code`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/ai-music",
@@ -7217,7 +8043,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill ai-music by Prime Skills. Ranked #203 on Skills.sh with 363.1K verified installs.",
+    "description": "Official agent skill for Ai Music developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -7268,7 +8094,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-music",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Music\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Music developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Music**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Music.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-music`, `/ai music`\n",
+      "fa": "# Ai Music\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Music developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Music**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-music`, `/ai music`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-cost",
@@ -7278,7 +8111,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-cost by Microsoft Azure Team. Ranked #204 on Skills.sh with 362.6K verified installs.",
+    "description": "Official agent skill for Azure Cost developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -7329,7 +8162,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-cost",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Cost\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Cost developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Cost**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Cost.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-cost`, `/azure cost`\n",
+      "fa": "# Azure Cost\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Cost developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Cost**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-cost`, `/azure cost`\n"
+    }
   },
   {
     "id": "prime-skills/runcomfy-agent-skills/ace-step",
@@ -7339,7 +8179,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prime-skills",
     "repo": "runcomfy-agent-skills",
     "repository": "https://github.com/prime-skills/runcomfy-agent-skills",
-    "description": "Official trending agent skill ace-step by Prime Skills. Ranked #205 on Skills.sh with 362.6K verified installs.",
+    "description": "Official agent skill for Ace Step developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Prime Skills",
     "version": "1.0.0",
@@ -7390,7 +8230,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ace-step",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ace Step\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ace Step developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ace Step**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ace Step.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ace-step`, `/ace step`\n",
+      "fa": "# Ace Step\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ace Step developed by Prime Skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ace Step**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ace-step`, `/ace step`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/music-to-video",
@@ -7400,7 +8247,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill music-to-video by HeyGen Labs. Ranked #206 on Skills.sh with 362.5K verified installs.",
+    "description": "Official agent skill for Music To Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -7451,7 +8298,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "music-to-video",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Music To Video\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Music To Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Music To Video**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Music To Video.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/music-to-video`, `/music to video`\n",
+      "fa": "# Music To Video\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Music To Video developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Music To Video**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/music-to-video`, `/music to video`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/imagegen-frontend-web",
@@ -7461,7 +8315,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill imagegen-frontend-web by Leon Lin. Ranked #207 on Skills.sh with 360.6K verified installs.",
+    "description": "Official agent skill for Imagegen Frontend Web developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -7512,7 +8366,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "imagegen-frontend-web",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Imagegen Frontend Web\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Imagegen Frontend Web developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Imagegen Frontend Web**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Imagegen Frontend Web.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/imagegen-frontend-web`, `/imagegen frontend web`\n",
+      "fa": "# Imagegen Frontend Web\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Imagegen Frontend Web developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Imagegen Frontend Web**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/imagegen-frontend-web`, `/imagegen frontend web`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-client-api",
@@ -7522,7 +8383,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-client-api by Prisma Core Team. Ranked #208 on Skills.sh with 359.9K verified installs.",
+    "description": "Official agent skill for Prisma Client Api developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -7573,7 +8434,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-client-api",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Client Api\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Client Api developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Client Api**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Client Api.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-client-api`, `/prisma client api`\n",
+      "fa": "# Prisma Client Api\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Client Api developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Client Api**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-client-api`, `/prisma client api`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-database-setup",
@@ -7583,7 +8451,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-database-setup by Prisma Core Team. Ranked #209 on Skills.sh with 359.1K verified installs.",
+    "description": "Official agent skill for Prisma Database Setup developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -7634,7 +8502,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-database-setup",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Database Setup\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Database Setup developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Database Setup**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Database Setup.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-database-setup`, `/prisma database setup`\n",
+      "fa": "# Prisma Database Setup\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Database Setup developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Database Setup**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-database-setup`, `/prisma database setup`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-cli",
@@ -7644,7 +8519,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-cli by Prisma Core Team. Ranked #210 on Skills.sh with 357.3K verified installs.",
+    "description": "Official agent skill for Prisma Cli developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -7695,7 +8570,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-cli",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Cli\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Cli developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Cli**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Cli.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-cli`, `/prisma cli`\n",
+      "fa": "# Prisma Cli\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Cli developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Cli**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-cli`, `/prisma cli`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-hosted-copilot-sdk",
@@ -7705,7 +8587,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-hosted-copilot-sdk by Microsoft Azure Team. Ranked #211 on Skills.sh with 355.3K verified installs.",
+    "description": "Official agent skill for Azure Hosted Copilot Sdk developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -7756,7 +8638,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-hosted-copilot-sdk",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Hosted Copilot Sdk\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Hosted Copilot Sdk developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Hosted Copilot Sdk**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Hosted Copilot Sdk.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-hosted-copilot-sdk`, `/azure hosted copilot sdk`\n",
+      "fa": "# Azure Hosted Copilot Sdk\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Hosted Copilot Sdk developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Hosted Copilot Sdk**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-hosted-copilot-sdk`, `/azure hosted copilot sdk`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/imagegen-frontend-mobile",
@@ -7766,7 +8655,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill imagegen-frontend-mobile by Leon Lin. Ranked #212 on Skills.sh with 354.4K verified installs.",
+    "description": "Official agent skill for Imagegen Frontend Mobile developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -7817,7 +8706,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "imagegen-frontend-mobile",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Imagegen Frontend Mobile\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Imagegen Frontend Mobile developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Imagegen Frontend Mobile**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Imagegen Frontend Mobile.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/imagegen-frontend-mobile`, `/imagegen frontend mobile`\n",
+      "fa": "# Imagegen Frontend Mobile\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Imagegen Frontend Mobile developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Imagegen Frontend Mobile**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/imagegen-frontend-mobile`, `/imagegen frontend mobile`\n"
+    }
   },
   {
     "id": "mattpocock/skills/to-prd",
@@ -7827,7 +8723,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill to-prd by Matt Pocock. Ranked #213 on Skills.sh with 351.6K verified installs.",
+    "description": "Official agent skill for To Prd developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -7878,7 +8774,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "to-prd",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# To Prd\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for To Prd developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **To Prd**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for To Prd.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/to-prd`, `/to prd`\n",
+      "fa": "# To Prd\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for To Prd developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **To Prd**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/to-prd`, `/to prd`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-postgres",
@@ -7888,7 +8791,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-postgres by Prisma Core Team. Ranked #214 on Skills.sh with 351.5K verified installs.",
+    "description": "Official agent skill for Prisma Postgres developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -7939,7 +8842,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-postgres",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Postgres\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Postgres developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Postgres**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Postgres.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-postgres`, `/prisma postgres`\n",
+      "fa": "# Prisma Postgres\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Postgres developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Postgres**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-postgres`, `/prisma postgres`\n"
+    }
   },
   {
     "id": "emilkowalski/skills/emil-design-eng",
@@ -7949,7 +8859,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "emilkowalski",
     "repo": "skills",
     "repository": "https://github.com/emilkowalski/skills",
-    "description": "Official trending agent skill emil-design-eng by emilkowalski. Ranked #215 on Skills.sh with 349.5K verified installs.",
+    "description": "Official agent skill for Emil Design Eng developed by emilkowalski. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "emilkowalski",
     "version": "1.0.0",
@@ -8000,7 +8910,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "emil-design-eng",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Emil Design Eng\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Emil Design Eng developed by emilkowalski. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Emil Design Eng**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Emil Design Eng.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/emil-design-eng`, `/emil design eng`\n",
+      "fa": "# Emil Design Eng\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Emil Design Eng developed by emilkowalski. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Emil Design Eng**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/emil-design-eng`, `/emil design eng`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/talking-head-recut",
@@ -8010,7 +8927,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill talking-head-recut by HeyGen Labs. Ranked #216 on Skills.sh with 346.9K verified installs.",
+    "description": "Official agent skill for Talking Head Recut developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -8061,7 +8978,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "talking-head-recut",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Talking Head Recut\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Talking Head Recut developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Talking Head Recut**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Talking Head Recut.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/talking-head-recut`, `/talking head recut`\n",
+      "fa": "# Talking Head Recut\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Talking Head Recut developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Talking Head Recut**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/talking-head-recut`, `/talking head recut`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/airunway-aks-setup",
@@ -8071,7 +8995,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill airunway-aks-setup by Microsoft Azure Team. Ranked #217 on Skills.sh with 346.3K verified installs.",
+    "description": "Official agent skill for Airunway Aks Setup developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -8122,7 +9046,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "airunway-aks-setup",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Airunway Aks Setup\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Airunway Aks Setup developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Airunway Aks Setup**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Airunway Aks Setup.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/airunway-aks-setup`, `/airunway aks setup`\n",
+      "fa": "# Airunway Aks Setup\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Airunway Aks Setup developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Airunway Aks Setup**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/airunway-aks-setup`, `/airunway aks setup`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-driver-adapter-implementation",
@@ -8132,7 +9063,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-driver-adapter-implementation by Prisma Core Team. Ranked #218 on Skills.sh with 346.3K verified installs.",
+    "description": "Official agent skill for Prisma Driver Adapter Implementation developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -8183,7 +9114,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-driver-adapter-implementation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Driver Adapter Implementation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Driver Adapter Implementation developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Driver Adapter Implementation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Driver Adapter Implementation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-driver-adapter-implementation`, `/prisma driver adapter implementation`\n",
+      "fa": "# Prisma Driver Adapter Implementation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Driver Adapter Implementation developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Driver Adapter Implementation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-driver-adapter-implementation`, `/prisma driver adapter implementation`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-vc-agent",
@@ -8193,7 +9131,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-vc-agent by larksuite. Ranked #219 on Skills.sh with 346.2K verified installs.",
+    "description": "Official agent skill for Lark Vc Agent developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -8244,7 +9182,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-vc-agent",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Vc Agent\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Vc Agent developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Vc Agent**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Vc Agent.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-vc-agent`, `/lark vc agent`\n",
+      "fa": "# Lark Vc Agent\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Vc Agent developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Vc Agent**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-vc-agent`, `/lark vc agent`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-upgrade-v7",
@@ -8254,7 +9199,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-upgrade-v7 by Prisma Core Team. Ranked #220 on Skills.sh with 346.0K verified installs.",
+    "description": "Official agent skill for Prisma Upgrade V7 developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -8305,7 +9250,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-upgrade-v7",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Upgrade V7\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Upgrade V7 developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Upgrade V7**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Upgrade V7.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-upgrade-v7`, `/prisma upgrade v7`\n",
+      "fa": "# Prisma Upgrade V7\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Upgrade V7 developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Upgrade V7**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-upgrade-v7`, `/prisma upgrade v7`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-postgres-setup",
@@ -8315,7 +9267,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-postgres-setup by Prisma Core Team. Ranked #221 on Skills.sh with 345.9K verified installs.",
+    "description": "Official agent skill for Prisma Postgres Setup developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -8366,7 +9318,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-postgres-setup",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Postgres Setup\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Postgres Setup developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Postgres Setup**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Postgres Setup.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-postgres-setup`, `/prisma postgres setup`\n",
+      "fa": "# Prisma Postgres Setup\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Postgres Setup developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Postgres Setup**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-postgres-setup`, `/prisma postgres setup`\n"
+    }
   },
   {
     "id": "juliusbrussee/caveman/cavecrew",
@@ -8376,7 +9335,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "juliusbrussee",
     "repo": "caveman",
     "repository": "https://github.com/juliusbrussee/caveman",
-    "description": "Official trending agent skill cavecrew by Julius Brussee. Ranked #222 on Skills.sh with 345.1K verified installs.",
+    "description": "Official agent skill for Cavecrew developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Julius Brussee",
     "version": "1.0.0",
@@ -8427,7 +9386,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "cavecrew",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Cavecrew\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Cavecrew developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Cavecrew**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Cavecrew.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/cavecrew`, `/cavecrew`\n",
+      "fa": "# Cavecrew\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Cavecrew developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Cavecrew**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/cavecrew`, `/cavecrew`\n"
+    }
   },
   {
     "id": "juliusbrussee/caveman/caveman-stats",
@@ -8437,7 +9403,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "juliusbrussee",
     "repo": "caveman",
     "repository": "https://github.com/juliusbrussee/caveman",
-    "description": "Official trending agent skill caveman-stats by Julius Brussee. Ranked #223 on Skills.sh with 344.0K verified installs.",
+    "description": "Official agent skill for Caveman Stats developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "Julius Brussee",
     "version": "1.0.0",
@@ -8488,7 +9454,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "caveman-stats",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Caveman Stats\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Caveman Stats developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Caveman Stats**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Caveman Stats.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/caveman-stats`, `/caveman stats`\n",
+      "fa": "# Caveman Stats\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Caveman Stats developed by Julius Brussee. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Caveman Stats**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/caveman-stats`, `/caveman stats`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/slideshow",
@@ -8498,7 +9471,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill slideshow by HeyGen Labs. Ranked #224 on Skills.sh with 343.1K verified installs.",
+    "description": "Official agent skill for Slideshow developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -8549,7 +9522,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "slideshow",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Slideshow\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Slideshow developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Slideshow**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Slideshow.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/slideshow`, `/slideshow`\n",
+      "fa": "# Slideshow\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Slideshow developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Slideshow**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/slideshow`, `/slideshow`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-compute",
@@ -8559,7 +9539,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-compute by Prisma Core Team. Ranked #225 on Skills.sh with 341.3K verified installs.",
+    "description": "Official agent skill for Prisma Compute developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -8610,7 +9590,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-compute",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Compute\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Compute developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Compute**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Compute.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-compute`, `/prisma compute`\n",
+      "fa": "# Prisma Compute\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Compute developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Compute**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-compute`, `/prisma compute`\n"
+    }
   },
   {
     "id": "prisma/skills/prisma-mongodb-upgrade",
@@ -8620,7 +9607,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "prisma",
     "repo": "skills",
     "repository": "https://github.com/prisma/skills",
-    "description": "Official trending agent skill prisma-mongodb-upgrade by Prisma Core Team. Ranked #226 on Skills.sh with 339.8K verified installs.",
+    "description": "Official agent skill for Prisma Mongodb Upgrade developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Prisma Core Team",
     "version": "1.0.0",
@@ -8671,7 +9658,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "prisma-mongodb-upgrade",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Prisma Mongodb Upgrade\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Prisma Mongodb Upgrade developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Prisma Mongodb Upgrade**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Prisma Mongodb Upgrade.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/prisma-mongodb-upgrade`, `/prisma mongodb upgrade`\n",
+      "fa": "# Prisma Mongodb Upgrade\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Prisma Mongodb Upgrade developed by Prisma Core Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Prisma Mongodb Upgrade**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/prisma-mongodb-upgrade`, `/prisma mongodb upgrade`\n"
+    }
   },
   {
     "id": "mattpocock/skills/to-issues",
@@ -8681,7 +9675,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill to-issues by Matt Pocock. Ranked #227 on Skills.sh with 339.1K verified installs.",
+    "description": "Official agent skill for To Issues developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -8732,7 +9726,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "to-issues",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# To Issues\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for To Issues developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **To Issues**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for To Issues.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/to-issues`, `/to issues`\n",
+      "fa": "# To Issues\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for To Issues developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **To Issues**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/to-issues`, `/to issues`\n"
+    }
   },
   {
     "id": "mattpocock/skills/setup-ts-deep-modules",
@@ -8742,7 +9743,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill setup-ts-deep-modules by Matt Pocock. Ranked #228 on Skills.sh with 331.2K verified installs.",
+    "description": "Official agent skill for Setup Ts Deep Modules developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "automation",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -8793,7 +9794,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "setup-ts-deep-modules",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Setup Ts Deep Modules\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `AUTOMATION` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Setup Ts Deep Modules developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Setup Ts Deep Modules**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Setup Ts Deep Modules.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/setup-ts-deep-modules`, `/setup ts deep modules`\n",
+      "fa": "# Setup Ts Deep Modules\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `AUTOMATION` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Setup Ts Deep Modules developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Setup Ts Deep Modules**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/setup-ts-deep-modules`, `/setup ts deep modules`\n"
+    }
   },
   {
     "id": "pbakaus/impeccable/impeccable",
@@ -8803,7 +9811,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "pbakaus",
     "repo": "impeccable",
     "repository": "https://github.com/pbakaus/impeccable",
-    "description": "Official trending agent skill impeccable by pbakaus. Ranked #229 on Skills.sh with 330.5K verified installs.",
+    "description": "Official agent skill for Impeccable developed by pbakaus. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "pbakaus",
     "version": "1.0.0",
@@ -8854,7 +9862,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "impeccable",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Impeccable\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Impeccable developed by pbakaus. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Impeccable**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Impeccable.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/impeccable`, `/impeccable`\n",
+      "fa": "# Impeccable\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Impeccable developed by pbakaus. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Impeccable**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/impeccable`, `/impeccable`\n"
+    }
   },
   {
     "id": "supabase/agent-skills/supabase",
@@ -8864,7 +9879,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "supabase",
     "repo": "agent-skills",
     "repository": "https://github.com/supabase/agent-skills",
-    "description": "Official trending agent skill supabase by Supabase Team. Ranked #230 on Skills.sh with 323.8K verified installs.",
+    "description": "Official agent skill for Supabase developed by Supabase Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "Supabase Team",
     "version": "1.0.0",
@@ -8915,7 +9930,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "supabase",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "data",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Supabase\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DATA` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Supabase developed by Supabase Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Data Engineers & Database Administrators\n- **Architecture Layer:** DATA\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Supabase**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Supabase.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/supabase`, `/supabase`\n",
+      "fa": "# Supabase\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `پایگاه داده و دیتا (DATA)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Supabase developed by Supabase Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان داده و مدیران پایگاه داده (DBA)\n- **لایه معماری:** پایگاه داده و دیتا (DATA)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Supabase**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/supabase`, `/supabase`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/entra-agent-id",
@@ -8925,7 +9947,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill entra-agent-id by Microsoft Azure Team. Ranked #231 on Skills.sh with 322.6K verified installs.",
+    "description": "Official agent skill for Entra Agent Id developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -8976,7 +9998,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "entra-agent-id",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Entra Agent Id\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Entra Agent Id developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Entra Agent Id**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Entra Agent Id.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/entra-agent-id`, `/entra agent id`\n",
+      "fa": "# Entra Agent Id\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Entra Agent Id developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Entra Agent Id**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/entra-agent-id`, `/entra agent id`\n"
+    }
   },
   {
     "id": "lllllllama/rigorpilot-skills/ai-research-explore",
@@ -8986,7 +10015,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "lllllllama",
     "repo": "rigorpilot-skills",
     "repository": "https://github.com/lllllllama/rigorpilot-skills",
-    "description": "Official trending agent skill ai-research-explore by lllllllama. Ranked #232 on Skills.sh with 316.7K verified installs.",
+    "description": "Official agent skill for Ai Research Explore developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "lllllllama",
     "version": "1.0.0",
@@ -9037,7 +10066,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-research-explore",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Research Explore\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Research Explore developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Research Explore**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Research Explore.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-research-explore`, `/ai research explore`\n",
+      "fa": "# Ai Research Explore\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Research Explore developed by lllllllama. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Research Explore**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-research-explore`, `/ai research explore`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/hyperframes-studio",
@@ -9047,7 +10083,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill hyperframes-studio by HeyGen Labs. Ranked #239 on Skills.sh with 311.6K verified installs.",
+    "description": "Official agent skill for Hyperframes Studio developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -9098,7 +10134,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "hyperframes-studio",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Hyperframes Studio\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Hyperframes Studio developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Hyperframes Studio**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Hyperframes Studio.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/hyperframes-studio`, `/hyperframes studio`\n",
+      "fa": "# Hyperframes Studio\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Hyperframes Studio developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Hyperframes Studio**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/hyperframes-studio`, `/hyperframes studio`\n"
+    }
   },
   {
     "id": "leonxlnx/taste-skill/design-taste-frontend-v1",
@@ -9108,7 +10151,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "leonxlnx",
     "repo": "taste-skill",
     "repository": "https://github.com/leonxlnx/taste-skill",
-    "description": "Official trending agent skill design-taste-frontend-v1 by Leon Lin. Ranked #240 on Skills.sh with 310.8K verified installs.",
+    "description": "Official agent skill for Design Taste Frontend V1 developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Leon Lin",
     "version": "1.0.0",
@@ -9159,7 +10202,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "design-taste-frontend-v1",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Design Taste Frontend V1\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Design Taste Frontend V1 developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Design Taste Frontend V1**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Design Taste Frontend V1.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/design-taste-frontend-v1`, `/design taste frontend v1`\n",
+      "fa": "# Design Taste Frontend V1\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Design Taste Frontend V1 developed by Leon Lin. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Design Taste Frontend V1**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/design-taste-frontend-v1`, `/design taste frontend v1`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-apps",
@@ -9169,7 +10219,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-apps by larksuite. Ranked #241 on Skills.sh with 306.7K verified installs.",
+    "description": "Official agent skill for Lark Apps developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -9220,7 +10270,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-apps",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Apps\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Apps developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Apps**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Apps.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-apps`, `/lark apps`\n",
+      "fa": "# Lark Apps\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Apps developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Apps**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-apps`, `/lark apps`\n"
+    }
   },
   {
     "id": "mattpocock/skills/writing-great-skills",
@@ -9230,7 +10287,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill writing-great-skills by Matt Pocock. Ranked #242 on Skills.sh with 306.5K verified installs.",
+    "description": "Official agent skill for Writing Great Skills developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -9281,7 +10338,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "writing-great-skills",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Writing Great Skills\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Writing Great Skills developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Writing Great Skills**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Writing Great Skills.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/writing-great-skills`, `/writing great skills`\n",
+      "fa": "# Writing Great Skills\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Writing Great Skills developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Writing Great Skills**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/writing-great-skills`, `/writing great skills`\n"
+    }
   },
   {
     "id": "site/uizze.sh/ios-design",
@@ -9291,7 +10355,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "uizze.sh",
     "repo": "skills",
     "repository": "https://github.com/uizze.sh/skills",
-    "description": "Official trending agent skill ios-design by Uizze. Ranked #243 on Skills.sh with 303.7K verified installs.",
+    "description": "Official agent skill for Ios Design developed by Uizze. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "Uizze",
     "version": "1.0.0",
@@ -9342,7 +10406,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ios-design",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ios Design\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ios Design developed by Uizze. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ios Design**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ios Design.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ios-design`, `/ios design`\n",
+      "fa": "# Ios Design\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ios Design developed by Uizze. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ios Design**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ios-design`, `/ios design`\n"
+    }
   },
   {
     "id": "stablyai/orca/orca-cli",
@@ -9352,7 +10423,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "stablyai",
     "repo": "orca",
     "repository": "https://github.com/stablyai/orca",
-    "description": "Official trending agent skill orca-cli by stablyai. Ranked #244 on Skills.sh with 295.8K verified installs.",
+    "description": "Official agent skill for Orca Cli developed by stablyai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "stablyai",
     "version": "1.0.0",
@@ -9403,7 +10474,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "orca-cli",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Orca Cli\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Orca Cli developed by stablyai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Orca Cli**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Orca Cli.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/orca-cli`, `/orca cli`\n",
+      "fa": "# Orca Cli\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Orca Cli developed by stablyai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Orca Cli**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/orca-cli`, `/orca cli`\n"
+    }
   },
   {
     "id": "skills-shell/superpowers/ai-video-generation",
@@ -9413,7 +10491,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "skills-shell",
     "repo": "superpowers",
     "repository": "https://github.com/skills-shell/superpowers",
-    "description": "Official trending agent skill ai-video-generation by skills-shell. Ranked #245 on Skills.sh with 291.5K verified installs.",
+    "description": "Official agent skill for Ai Video Generation developed by skills-shell. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "skills-shell",
     "version": "1.0.0",
@@ -9464,7 +10542,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-video-generation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Video Generation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Video Generation developed by skills-shell. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Video Generation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Video Generation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-video-generation`, `/ai video generation`\n",
+      "fa": "# Ai Video Generation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Video Generation developed by skills-shell. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Video Generation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-video-generation`, `/ai video generation`\n"
+    }
   },
   {
     "id": "obra/superpowers/systematic-debugging",
@@ -9474,7 +10559,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill systematic-debugging by obra. Ranked #249 on Skills.sh with 291.1K verified installs.",
+    "description": "Official agent skill for Systematic Debugging developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "architecture",
     "author": "obra",
     "version": "1.0.0",
@@ -9525,7 +10610,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "systematic-debugging",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Systematic Debugging\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `ARCHITECTURE` | **Category:** `ARCHITECTURE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Systematic Debugging developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Systematic Debugging**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Systematic Debugging.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/systematic-debugging`, `/systematic debugging`\n",
+      "fa": "# Systematic Debugging\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `ARCHITECTURE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Systematic Debugging developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Systematic Debugging**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/systematic-debugging`, `/systematic debugging`\n"
+    }
   },
   {
     "id": "stablyai/orca/orchestration",
@@ -9535,7 +10627,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "stablyai",
     "repo": "orca",
     "repository": "https://github.com/stablyai/orca",
-    "description": "Official trending agent skill orchestration by stablyai. Ranked #250 on Skills.sh with 288.0K verified installs.",
+    "description": "Official agent skill for Orchestration developed by stablyai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "stablyai",
     "version": "1.0.0",
@@ -9586,7 +10678,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "orchestration",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Orchestration\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Orchestration developed by stablyai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Orchestration**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Orchestration.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/orchestration`, `/orchestration`\n",
+      "fa": "# Orchestration\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Orchestration developed by stablyai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Orchestration**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/orchestration`, `/orchestration`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/azure-reliability",
@@ -9596,7 +10695,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill azure-reliability by Microsoft Azure Team. Ranked #251 on Skills.sh with 285.8K verified installs.",
+    "description": "Official agent skill for Azure Reliability developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -9647,7 +10746,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "azure-reliability",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Azure Reliability\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Azure Reliability developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Azure Reliability**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Azure Reliability.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/azure-reliability`, `/azure reliability`\n",
+      "fa": "# Azure Reliability\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Azure Reliability developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Azure Reliability**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/azure-reliability`, `/azure reliability`\n"
+    }
   },
   {
     "id": "its-a-skill-issue/superpowers/ai-image-generation",
@@ -9657,7 +10763,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "its-a-skill-issue",
     "repo": "superpowers",
     "repository": "https://github.com/its-a-skill-issue/superpowers",
-    "description": "Official trending agent skill ai-image-generation by its-a-skill-issue. Ranked #252 on Skills.sh with 285.1K verified installs.",
+    "description": "Official agent skill for Ai Image Generation developed by its-a-skill-issue. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "science",
     "author": "its-a-skill-issue",
     "version": "1.0.0",
@@ -9708,7 +10814,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-image-generation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Image Generation developed by its-a-skill-issue. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Image Generation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Image Generation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-image-generation`, `/ai image generation`\n",
+      "fa": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Image Generation developed by its-a-skill-issue. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Image Generation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-image-generation`, `/ai image generation`\n"
+    }
   },
   {
     "id": "heygen-com/hyperframes/figma",
@@ -9718,7 +10831,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "heygen-com",
     "repo": "hyperframes",
     "repository": "https://github.com/heygen-com/hyperframes",
-    "description": "Official trending agent skill figma by HeyGen Labs. Ranked #256 on Skills.sh with 272.0K verified installs.",
+    "description": "Official agent skill for Figma developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "HeyGen Labs",
     "version": "1.0.0",
@@ -9769,7 +10882,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "figma",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Figma\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Figma developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Figma**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Figma.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/figma`, `/figma`\n",
+      "fa": "# Figma\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Figma developed by HeyGen Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Figma**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/figma`, `/figma`\n"
+    }
   },
   {
     "id": "obra/superpowers/writing-plans",
@@ -9779,7 +10899,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill writing-plans by obra. Ranked #257 on Skills.sh with 271.9K verified installs.",
+    "description": "Official agent skill for Writing Plans developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -9830,7 +10950,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "writing-plans",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Writing Plans\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Writing Plans developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Writing Plans**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Writing Plans.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/writing-plans`, `/writing plans`\n",
+      "fa": "# Writing Plans\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Writing Plans developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Writing Plans**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/writing-plans`, `/writing plans`\n"
+    }
   },
   {
     "id": "shadcn/ui/shadcn",
@@ -9840,7 +10967,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "shadcn",
     "repo": "ui",
     "repository": "https://github.com/shadcn/ui",
-    "description": "Official trending agent skill shadcn by shadcn. Ranked #258 on Skills.sh with 271.1K verified installs.",
+    "description": "Official agent skill for Shadcn developed by shadcn. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "shadcn",
     "version": "1.0.0",
@@ -9891,7 +11018,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "shadcn",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Shadcn\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Shadcn developed by shadcn. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Shadcn**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Shadcn.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/shadcn`, `/shadcn`\n",
+      "fa": "# Shadcn\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Shadcn developed by shadcn. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Shadcn**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/shadcn`, `/shadcn`\n"
+    }
   },
   {
     "id": "bankai-skills/superpowers/ai-image-generation",
@@ -9901,7 +11035,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "bankai-skills",
     "repo": "superpowers",
     "repository": "https://github.com/bankai-skills/superpowers",
-    "description": "Official trending agent skill ai-image-generation by bankai-skills. Ranked #259 on Skills.sh with 270.1K verified installs.",
+    "description": "Official agent skill for Ai Image Generation developed by bankai-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "science",
     "author": "bankai-skills",
     "version": "1.0.0",
@@ -9952,7 +11086,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "ai-image-generation",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Ai Image Generation developed by bankai-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Ai Image Generation**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Ai Image Generation.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/ai-image-generation`, `/ai image generation`\n",
+      "fa": "# Ai Image Generation\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Ai Image Generation developed by bankai-skills. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Ai Image Generation**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/ai-image-generation`, `/ai image generation`\n"
+    }
   },
   {
     "id": "obra/superpowers/using-superpowers",
@@ -9962,7 +11103,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill using-superpowers by obra. Ranked #263 on Skills.sh with 261.9K verified installs.",
+    "description": "Official agent skill for Using Superpowers developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -10013,7 +11154,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "using-superpowers",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Using Superpowers\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Using Superpowers developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Using Superpowers**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Using Superpowers.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/using-superpowers`, `/using superpowers`\n",
+      "fa": "# Using Superpowers\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Using Superpowers developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Using Superpowers**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/using-superpowers`, `/using superpowers`\n"
+    }
   },
   {
     "id": "obra/superpowers/requesting-code-review",
@@ -10023,7 +11171,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill requesting-code-review by obra. Ranked #264 on Skills.sh with 250.4K verified installs.",
+    "description": "Official agent skill for Requesting Code Review developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -10074,7 +11222,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "requesting-code-review",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "architecture",
+    "criticality": "critical",
+    "docsMarkdown": {
+      "en": "# Requesting Code Review\n\n> [!IMPORTANT]\n> **Level:** 🔴 CRITICAL (Must-Have)  \n> **Domain:** `ARCHITECTURE` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Requesting Code Review developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Principal Architects & Tech Leads\n- **Architecture Layer:** ARCHITECTURE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!CAUTION]\n> **Core Architectural Pillar:** This skill prevents fatal anti-patterns, memory leaks, security vulnerabilities, or performance bottlenecks in your ARCHITECTURE pipeline. Highly essential for mission-critical apps.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Requesting Code Review**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Requesting Code Review.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/requesting-code-review`, `/requesting code review`\n",
+      "fa": "# Requesting Code Review\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔴 حیاتی (الزامی برای پروژه)  \n> **حوزه تخصصی:** `معماری و سیستم (ARCHITECTURE)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Requesting Code Review developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** معماران ارشد نرم‌افزار و راهبران فنی\n- **لایه معماری:** معماری و سیستم (ARCHITECTURE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!CAUTION]\n> **ستون حیاتی معماری:** استفاده از این مهارت برای جلوگیری از نشت حافظه، شکاف‌های امنیتی، افت شدید پرفورمنس یا باگ‌های پنهان در لایه معماری و سیستم (ARCHITECTURE) الزامی است.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Requesting Code Review**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/requesting-code-review`, `/requesting code review`\n"
+    }
   },
   {
     "id": "obra/superpowers/test-driven-development",
@@ -10084,7 +11239,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill test-driven-development by obra. Ranked #265 on Skills.sh with 248.5K verified installs.",
+    "description": "Official agent skill for Test Driven Development developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -10135,7 +11290,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "test-driven-development",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Test Driven Development\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Test Driven Development developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Test Driven Development**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Test Driven Development.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/test-driven-development`, `/test driven development`\n",
+      "fa": "# Test Driven Development\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Test Driven Development developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Test Driven Development**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/test-driven-development`, `/test driven development`\n"
+    }
   },
   {
     "id": "scrapegraphai/just-scrape/just-scrape",
@@ -10145,7 +11307,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "scrapegraphai",
     "repo": "just-scrape",
     "repository": "https://github.com/scrapegraphai/just-scrape",
-    "description": "Official trending agent skill just-scrape by scrapegraphai. Ranked #266 on Skills.sh with 245.0K verified installs.",
+    "description": "Official agent skill for Just Scrape developed by scrapegraphai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "scrapegraphai",
     "version": "1.0.0",
@@ -10196,7 +11358,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "just-scrape",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Just Scrape\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Just Scrape developed by scrapegraphai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Just Scrape**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Just Scrape.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/just-scrape`, `/just scrape`\n",
+      "fa": "# Just Scrape\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Just Scrape developed by scrapegraphai. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Just Scrape**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/just-scrape`, `/just scrape`\n"
+    }
   },
   {
     "id": "neondatabase/agent-skills/neon-postgres",
@@ -10206,7 +11375,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "neondatabase",
     "repo": "agent-skills",
     "repository": "https://github.com/neondatabase/agent-skills",
-    "description": "Official trending agent skill neon-postgres by neondatabase. Ranked #267 on Skills.sh with 241.9K verified installs.",
+    "description": "Official agent skill for Neon Postgres developed by neondatabase. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "data",
     "author": "neondatabase",
     "version": "1.0.0",
@@ -10257,7 +11426,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "neon-postgres",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Neon Postgres\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `DATA` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Neon Postgres developed by neondatabase. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Neon Postgres**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Neon Postgres.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/neon-postgres`, `/neon postgres`\n",
+      "fa": "# Neon Postgres\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `DATA` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Neon Postgres developed by neondatabase. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Neon Postgres**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/neon-postgres`, `/neon postgres`\n"
+    }
   },
   {
     "id": "vercel-labs/agent-skills/vercel-react-native-skills",
@@ -10267,7 +11443,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "vercel-labs",
     "repo": "agent-skills",
     "repository": "https://github.com/vercel-labs/agent-skills",
-    "description": "Official trending agent skill vercel-react-native-skills by Vercel Labs. Ranked #268 on Skills.sh with 239.7K verified installs.",
+    "description": "Official agent skill for Vercel React Native Skills developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Vercel Labs",
     "version": "1.0.0",
@@ -10318,7 +11494,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "vercel-react-native-skills",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Vercel React Native Skills\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Vercel React Native Skills developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Vercel React Native Skills**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Vercel React Native Skills.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/vercel-react-native-skills`, `/vercel react native skills`\n",
+      "fa": "# Vercel React Native Skills\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Vercel React Native Skills developed by Vercel Labs. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Vercel React Native Skills**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/vercel-react-native-skills`, `/vercel react native skills`\n"
+    }
   },
   {
     "id": "obra/superpowers/verification-before-completion",
@@ -10328,7 +11511,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill verification-before-completion by obra. Ranked #269 on Skills.sh with 237.7K verified installs.",
+    "description": "Official agent skill for Verification Before Completion developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -10379,7 +11562,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "verification-before-completion",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Verification Before Completion\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Verification Before Completion developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Verification Before Completion**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Verification Before Completion.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/verification-before-completion`, `/verification before completion`\n",
+      "fa": "# Verification Before Completion\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Verification Before Completion developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Verification Before Completion**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/verification-before-completion`, `/verification before completion`\n"
+    }
   },
   {
     "id": "anthropics/skills/pptx",
@@ -10389,7 +11579,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "anthropics",
     "repo": "skills",
     "repository": "https://github.com/anthropics/skills",
-    "description": "Official trending agent skill pptx by Anthropic. Ranked #270 on Skills.sh with 235.2K verified installs.",
+    "description": "Official agent skill for Pptx developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Anthropic",
     "version": "1.0.0",
@@ -10440,7 +11630,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "pptx",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Pptx\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Pptx developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Pptx**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Pptx.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/pptx`, `/pptx`\n",
+      "fa": "# Pptx\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Pptx developed by Anthropic. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Pptx**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/pptx`, `/pptx`\n"
+    }
   },
   {
     "id": "larksuite/cli/lark-note",
@@ -10450,7 +11647,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "larksuite",
     "repo": "cli",
     "repository": "https://github.com/larksuite/cli",
-    "description": "Official trending agent skill lark-note by larksuite. Ranked #271 on Skills.sh with 233.3K verified installs.",
+    "description": "Official agent skill for Lark Note developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "larksuite",
     "version": "1.0.0",
@@ -10501,7 +11698,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "lark-note",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "automation",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Lark Note\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `AUTOMATION` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Lark Note developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Automation Specialists & Bot Developers\n- **Architecture Layer:** AUTOMATION\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Lark Note**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Lark Note.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/lark-note`, `/lark note`\n",
+      "fa": "# Lark Note\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `اتوماسیون (AUTOMATION)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Lark Note developed by larksuite. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** متخصصان اتوماسیون، وب اسکرپینگ و توسعه بات\n- **لایه معماری:** اتوماسیون (AUTOMATION)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Lark Note**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/lark-note`, `/lark note`\n"
+    }
   },
   {
     "id": "obra/superpowers/executing-plans",
@@ -10511,7 +11715,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill executing-plans by obra. Ranked #272 on Skills.sh with 232.8K verified installs.",
+    "description": "Official agent skill for Executing Plans developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -10562,7 +11766,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "executing-plans",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Executing Plans\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Executing Plans developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Executing Plans**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Executing Plans.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/executing-plans`, `/executing plans`\n",
+      "fa": "# Executing Plans\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Executing Plans developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Executing Plans**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/executing-plans`, `/executing plans`\n"
+    }
   },
   {
     "id": "mattpocock/skills/implement-spec",
@@ -10572,7 +11783,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill implement-spec by Matt Pocock. Ranked #273 on Skills.sh with 232.5K verified installs.",
+    "description": "Official agent skill for Implement Spec developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -10623,7 +11834,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "implement-spec",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Implement Spec\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Implement Spec developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Implement Spec**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Implement Spec.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/implement-spec`, `/implement spec`\n",
+      "fa": "# Implement Spec\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Implement Spec developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Implement Spec**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/implement-spec`, `/implement spec`\n"
+    }
   },
   {
     "id": "mattpocock/skills/diagnose",
@@ -10633,7 +11851,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill diagnose by Matt Pocock. Ranked #274 on Skills.sh with 227.6K verified installs.",
+    "description": "Official agent skill for Diagnose developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -10684,7 +11902,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "diagnose",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Diagnose\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Diagnose developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Diagnose**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Diagnose.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/diagnose`, `/diagnose`\n",
+      "fa": "# Diagnose\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Diagnose developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Diagnose**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/diagnose`, `/diagnose`\n"
+    }
   },
   {
     "id": "coreyhaines31/marketingskills/seo-audit",
@@ -10694,7 +11919,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "coreyhaines31",
     "repo": "marketingskills",
     "repository": "https://github.com/coreyhaines31/marketingskills",
-    "description": "Official trending agent skill seo-audit by coreyhaines31. Ranked #275 on Skills.sh with 226.9K verified installs.",
+    "description": "Official agent skill for Seo Audit developed by coreyhaines31. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "coreyhaines31",
     "version": "1.0.0",
@@ -10745,7 +11970,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "seo-audit",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "recommended",
+    "docsMarkdown": {
+      "en": "# Seo Audit\n\n> [!IMPORTANT]\n> **Level:** 🟡 HIGH PRIORITY (Recommended)  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Seo Audit developed by coreyhaines31. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Seo Audit**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Seo Audit.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/seo-audit`, `/seo audit`\n",
+      "fa": "# Seo Audit\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🟡 اولویت بالا (توصیه اکید)  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Seo Audit developed by coreyhaines31. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Seo Audit**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/seo-audit`, `/seo audit`\n"
+    }
   },
   {
     "id": "obra/superpowers/subagent-driven-development",
@@ -10755,7 +11987,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "obra",
     "repo": "superpowers",
     "repository": "https://github.com/obra/superpowers",
-    "description": "Official trending agent skill subagent-driven-development by obra. Ranked #276 on Skills.sh with 226.2K verified installs.",
+    "description": "Official agent skill for Subagent Driven Development developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "obra",
     "version": "1.0.0",
@@ -10806,7 +12038,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "subagent-driven-development",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Subagent Driven Development\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Subagent Driven Development developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Subagent Driven Development**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Subagent Driven Development.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/subagent-driven-development`, `/subagent driven development`\n",
+      "fa": "# Subagent Driven Development\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Subagent Driven Development developed by obra. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Subagent Driven Development**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/subagent-driven-development`, `/subagent driven development`\n"
+    }
   },
   {
     "id": "coreyhaines31/marketingskills/copywriting",
@@ -10816,7 +12055,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "coreyhaines31",
     "repo": "marketingskills",
     "repository": "https://github.com/coreyhaines31/marketingskills",
-    "description": "Official trending agent skill copywriting by coreyhaines31. Ranked #277 on Skills.sh with 223.4K verified installs.",
+    "description": "Official agent skill for Copywriting developed by coreyhaines31. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "coreyhaines31",
     "version": "1.0.0",
@@ -10867,7 +12106,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "copywriting",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "recommended",
+    "docsMarkdown": {
+      "en": "# Copywriting\n\n> [!IMPORTANT]\n> **Level:** 🟡 HIGH PRIORITY (Recommended)  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Copywriting developed by coreyhaines31. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Copywriting**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Copywriting.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/copywriting`, `/copywriting`\n",
+      "fa": "# Copywriting\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🟡 اولویت بالا (توصیه اکید)  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Copywriting developed by coreyhaines31. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Copywriting**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/copywriting`, `/copywriting`\n"
+    }
   },
   {
     "id": "emilkowalski/skills/review-animations",
@@ -10877,7 +12123,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "emilkowalski",
     "repo": "skills",
     "repository": "https://github.com/emilkowalski/skills",
-    "description": "Official trending agent skill review-animations by emilkowalski. Ranked #278 on Skills.sh with 223.0K verified installs.",
+    "description": "Official agent skill for Review Animations developed by emilkowalski. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "design",
     "author": "emilkowalski",
     "version": "1.0.0",
@@ -10928,7 +12174,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "review-animations",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "frontend",
+    "criticality": "recommended",
+    "docsMarkdown": {
+      "en": "# Review Animations\n\n> [!IMPORTANT]\n> **Level:** 🟡 HIGH PRIORITY (Recommended)  \n> **Domain:** `FRONTEND` | **Category:** `DESIGN` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Review Animations developed by emilkowalski. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Frontend Engineers & UI Specialists\n- **Architecture Layer:** FRONTEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Review Animations**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Review Animations.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/review-animations`, `/review animations`\n",
+      "fa": "# Review Animations\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🟡 اولویت بالا (توصیه اکید)  \n> **حوزه تخصصی:** `فرانت‌اند (FRONTEND)` | **دسته‌بندی:** `DESIGN` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Review Animations developed by emilkowalski. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فرانت‌اند و طراحان رابط کاربری (UI/UX)\n- **لایه معماری:** فرانت‌اند (FRONTEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Review Animations**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/review-animations`, `/review animations`\n"
+    }
   },
   {
     "id": "mattpocock/skills/retro",
@@ -10938,7 +12191,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill retro by Matt Pocock. Ranked #279 on Skills.sh with 222.5K verified installs.",
+    "description": "Official agent skill for Retro developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -10989,7 +12242,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "retro",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Retro\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Retro developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Retro**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Retro.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/retro`, `/retro`\n",
+      "fa": "# Retro\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Retro developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Retro**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/retro`, `/retro`\n"
+    }
   },
   {
     "id": "mattpocock/skills/write-a-skill",
@@ -10999,7 +12259,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill write-a-skill by Matt Pocock. Ranked #280 on Skills.sh with 219.7K verified installs.",
+    "description": "Official agent skill for Write A Skill developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -11050,7 +12310,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "write-a-skill",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Write A Skill\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Write A Skill developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Write A Skill**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Write A Skill.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/write-a-skill`, `/write a skill`\n",
+      "fa": "# Write A Skill\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Write A Skill developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Write A Skill**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/write-a-skill`, `/write a skill`\n"
+    }
   },
   {
     "id": "mattpocock/skills/zoom-out",
@@ -11060,7 +12327,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "mattpocock",
     "repo": "skills",
     "repository": "https://github.com/mattpocock/skills",
-    "description": "Official trending agent skill zoom-out by Matt Pocock. Ranked #281 on Skills.sh with 219.1K verified installs.",
+    "description": "Official agent skill for Zoom Out developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "coding",
     "author": "Matt Pocock",
     "version": "1.0.0",
@@ -11111,7 +12378,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "zoom-out",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "fullstack",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Zoom Out\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `FULLSTACK` | **Category:** `CODING` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Zoom Out developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Full-Stack Software Engineers\n- **Architecture Layer:** FULLSTACK\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Zoom Out**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Zoom Out.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/zoom-out`, `/zoom out`\n",
+      "fa": "# Zoom Out\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `فول‌استک (FULLSTACK)` | **دسته‌بندی:** `CODING` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Zoom Out developed by Matt Pocock. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان فول‌استک و توسعه محصول\n- **لایه معماری:** فول‌استک (FULLSTACK)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Zoom Out**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/zoom-out`, `/zoom out`\n"
+    }
   },
   {
     "id": "microsoft/azure-skills/python-appservice-deploy",
@@ -11121,7 +12395,7 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "owner": "microsoft",
     "repo": "azure-skills",
     "repository": "https://github.com/microsoft/azure-skills",
-    "description": "Official trending agent skill python-appservice-deploy by Microsoft Azure Team. Ranked #282 on Skills.sh with 216.2K verified installs.",
+    "description": "Official agent skill for Python Appservice Deploy developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.",
     "category": "devops",
     "author": "Microsoft Azure Team",
     "version": "1.0.0",
@@ -11172,7 +12446,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "python-appservice-deploy",
       "skills.sh",
       "trending"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "devops",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Python Appservice Deploy\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `DEVOPS` | **Category:** `DEVOPS` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nOfficial agent skill for Python Appservice Deploy developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** DevOps & Infrastructure Engineers\n- **Architecture Layer:** DEVOPS\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Python Appservice Deploy**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Python Appservice Deploy.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/python-appservice-deploy`, `/python appservice deploy`\n",
+      "fa": "# Python Appservice Deploy\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `دوآپس و زیرساخت (DEVOPS)` | **دسته‌بندی:** `DEVOPS` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nOfficial agent skill for Python Appservice Deploy developed by Microsoft Azure Team. Delivers specialized agent instructions, boundary enforcement, and production engineering patterns.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** مهندسان دوآپس، زیرساخت و کلود\n- **لایه معماری:** دوآپس و زیرساخت (DEVOPS)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Python Appservice Deploy**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/python-appservice-deploy`, `/python appservice deploy`\n"
+    }
   },
   {
     "id": "science/alphafold-db",
@@ -11232,7 +12513,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "biology",
       "alphafold",
       "deepmind"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "recommended",
+    "docsMarkdown": {
+      "en": "# AlphaFold Structure Database\n\n> [!IMPORTANT]\n> **Level:** 🟡 HIGH PRIORITY (Recommended)  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nQuery and analyze 200M+ predicted 3D protein structures with pLDDT confidence metrics.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **AlphaFold Structure Database**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for AlphaFold Structure Database.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/alphafold`, `/protein structure`, `/plddt`\n",
+      "fa": "# AlphaFold Structure Database\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🟡 اولویت بالا (توصیه اکید)  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nQuery and analyze 200M+ predicted 3D protein structures with pLDDT confidence metrics.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **AlphaFold Structure Database**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/alphafold`, `/protein structure`, `/plddt`\n"
+    }
   },
   {
     "id": "science/chembl-database",
@@ -11292,7 +12580,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "chemistry",
       "chembl",
       "drugs"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# ChEMBL Bioactive Molecules\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nQuery bioactive molecules, drug targets, IC50/Ki values, and pharmaceutical assays from EMBL-EBI.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **ChEMBL Bioactive Molecules**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for ChEMBL Bioactive Molecules.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/chembl`, `/bioactivity`, `/drug targets`\n",
+      "fa": "# ChEMBL Bioactive Molecules\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nQuery bioactive molecules, drug targets, IC50/Ki values, and pharmaceutical assays from EMBL-EBI.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **ChEMBL Bioactive Molecules**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/chembl`, `/bioactivity`, `/drug targets`\n"
+    }
   },
   {
     "id": "science/pubmed-literature",
@@ -11352,7 +12647,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "pubmed",
       "ncbi",
       "medicine"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# PubMed Biomedical Literature\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nSearch 36M+ biomedical citations, abstracts, and clinical trial results via NCBI E-utilities.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **PubMed Biomedical Literature**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for PubMed Biomedical Literature.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/pubmed`, `/literature`, `/biomedical`\n",
+      "fa": "# PubMed Biomedical Literature\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nSearch 36M+ biomedical citations, abstracts, and clinical trial results via NCBI E-utilities.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **PubMed Biomedical Literature**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/pubmed`, `/literature`, `/biomedical`\n"
+    }
   },
   {
     "id": "science/gtex-expression",
@@ -11412,7 +12714,14 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "genetics",
       "gtex",
       "rna"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "backend",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# GTEx Tissue Gene Expression\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `BACKEND` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nRetrieve tissue-specific RNA expression and eQTL associations across 54 human tissue sites.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Backend Developers & System Architects\n- **Architecture Layer:** BACKEND\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **GTEx Tissue Gene Expression**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for GTEx Tissue Gene Expression.\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/gtex`, `/gene expression`, `/eqtl`\n",
+      "fa": "# GTEx Tissue Gene Expression\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `بک‌اند (BACKEND)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nRetrieve tissue-specific RNA expression and eQTL associations across 54 human tissue sites.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** توسعه‌دهندگان بک‌اند و معماران سیستم\n- **لایه معماری:** بک‌اند (BACKEND)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **GTEx Tissue Gene Expression**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/gtex`, `/gene expression`, `/eqtl`\n"
+    }
   },
   {
     "id": "science/pdb-3d-structures",
@@ -11471,9 +12780,18 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
       "science",
       "pdb",
       "structural-biology"
-    ]
+    ],
+    "isEnriched": true,
+    "targetRole": "science",
+    "criticality": "specialized",
+    "docsMarkdown": {
+      "en": "# Protein Data Bank (PDB)\n\n> [!IMPORTANT]\n> **Level:** 🔵 SPECIALIZED UTILITY  \n> **Domain:** `SCIENCE` | **Category:** `SCIENCE` | **Version:** `v1.0.0`\n\n## ⚡ In Plain English\nSearch and fetch experimental 3D structures for macromolecules from the Worldwide PDB.\nThis skill acts as a dedicated co-pilot extension inside Antigravity, equipping the AI agent with deep procedural domain knowledge, boundary constraints, and battle-tested industry heuristics.\n\n## 🎯 Target Audience & Domain\n- **Primary Audience:** Computational Biologists & Life Science Researchers\n- **Architecture Layer:** SCIENCE\n- **Ecosystem Focus:** Modern high-performance production codebases\n\n## 🔥 Criticality & Impact in Project\n> [!TIP]\n> **Productivity & Polish Accelerator:** Enhances engineering velocity, ergonomics, and visual/operational quality while adhering to strict zero-leak principles.\n\n## ✅ When to Use\n- When designing, implementing, or refactoring components related to **Protein Data Bank (PDB)**.\n- When conducting rigorous architectural reviews, code hygiene audits, or troubleshooting regressions.\n- When you need exact best practices without guessing or relying on hallucinated API contracts.\n\n## 🚫 When NOT to Use\n- When working on lightweight standalone prototypes where standard baseline defaults suffice.\n- When an isolated non-standard legacy stack explicitly forbids modern architectural patterns.\n\n## 🚀 Value Added to Your Project\n- **100% Zero-Leak Isolation:** Runs locally inside your secure Antigravity environment with complete key privacy.\n- **Production-Grade Consistency:** Eliminates vibe-coding and phantom edits through verified patterns.\n- **Deterministic Velocity:** Delivers instant expert guidelines tailored specifically for Protein Data Bank (PDB).\n\n## 📦 Activation Triggers\nActivate via chat prompts or slash-commands: `/pdb`, `/protein structure`, `/macromolecule`\n",
+      "fa": "# Protein Data Bank (PDB)\n\n> [!IMPORTANT]\n> **سطح اهمیت:** 🔵 ابزار تخصصی ماژولار  \n> **حوزه تخصصی:** `علمی و تحقیقاتی (SCIENCE)` | **دسته‌بندی:** `SCIENCE` | **نسخه:** `v1.0.0`\n\n## ⚡ به زبان ساده چیست؟\nSearch and fetch experimental 3D structures for macromolecules from the Worldwide PDB.\nاین مهارت به عنوان یک متخصص ارشد و همکار هوشمند در Antigravity عمل می‌کند و ایجنت را به دانش عمیق رویه‌ای، مهار خطاهای رایج، الگوهای معماری ضدگلوله و استانداردهای روز صنعت مجهز می‌سازد.\n\n## 🎯 برای چه کسانی کاربرد دارد؟\n- **مخاطب اصلی:** پژوهشگران علوم داده، بیوانفورماتیک و داروسازی\n- **لایه معماری:** علمی و تحقیقاتی (SCIENCE)\n- **تمرکز اجرایی:** پروژه‌های واقعی، مقیاس‌پذیر و نیازمند قابلیت اطمینان بالا\n\n## 🔥 میزان اهمیت و نقش در پروژه\n> [!TIP]\n> **شتاب‌دهنده کیفیت و سرعت توسعه:** پیاده‌سازی تمیز، ارگونومیک و بدون آزمون و خطای کامپوننت‌ها و ماژول‌ها را با رعایت کامل اصل Zero-Leak تضمین می‌کند.\n\n## ✅ چه زمانی باید استفاده شود؟\n- هنگام طراحی، کدنویسی، دیباگ یا ریفکتور بخش‌های مرتبط با **Protein Data Bank (PDB)**.\n- در فرآیند بازبینی کد (Code Review)، ممیزی استانداردها و ارتقای پرفورمنس سیستم.\n- هنگامی که به گایدلاین‌های دقیق صنعتی بدون توهمات مدل زبانی (Hallucinations) نیاز دارید.\n\n## 🚫 چه زمانی نباید استفاده شود؟\n- در پروژه‌های تست بسیار ابتدایی و دموی موقت که نیازی به رعایت استانداردهای پروداکشن ندارند.\n- در سیستم‌های قدیمی ایزوله‌ای که معماری متناقض با استانداردهای مدرن دارند.\n\n## 🚀 چه قابلیت یا ارزش افزوده‌ای ایجاد می‌کند؟\n- **ایزولاسیون ۱۰۰٪ محلی (Zero-Leak):** حفظ کامل حریم خصوصی و عدم نشت اطلاعات یا کلیدها به بیرون.\n- **ریشه‌کنی خطاهای فانتوم:** اجرای جراحی تمیز کد با رعایت ناورداهای ریاضی و معماری.\n- **افزایش سرعت توسعه:** پاسخگویی آنی با راه‌حل‌های بهینه بدون نیاز به ساعت‌ها جستجو در مستندات پراکنده.\n\n## 📦 نحوه فراخوانی و تریگرها\nاز طریق پرامپت چت یا دستورات اسلش فعال می‌شود: `/pdb`, `/protein structure`, `/macromolecule`\n"
+    }
   }
 ];
+
+
 
 // =========================================================================
 // Helper Functions

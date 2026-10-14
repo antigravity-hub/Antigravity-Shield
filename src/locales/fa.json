@@ -2039,6 +2039,8 @@
     "local_path": "مسیر محلی:",
     "zero_leak_isolated": "ایزوله (Zero-Leak)",
     "security_audits": "ممیزی‌های امنیتی (Security Audits)",
-    "official_maker": "سازنده رسمی (Official Maker)"
+    "official_maker": "سازنده رسمی (Official Maker)",
+    "active_first": "ابتدا فعال‌ها",
+    "architecture_docs": "مستندات معماری و کارکرد"
   }
 }
