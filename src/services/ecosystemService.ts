@@ -22,6 +22,15 @@ export async function fetchSkills(): Promise<SkillItem[]> {
       if (native && Array.isArray(native)) {
         localSkills = native;
       }
+    } else {
+      // In browser dev mode (npm run dev), fetch from Vite dev local-skills endpoint
+      const res = await fetch('/__dev/local-skills').catch(() => null);
+      if (res && res.ok) {
+        const data = await res.json().catch(() => null);
+        if (Array.isArray(data)) {
+          localSkills = data;
+        }
+      }
     }
   } catch (err) {
     console.warn('[Ecosystem] Failed to fetch native skills, falling back to local storage / catalog:', err);
@@ -94,6 +103,14 @@ export async function readSkillContent(skillId: string, isLocal?: boolean): Prom
     } catch (err) {
       console.warn('[Ecosystem] Tauri read_skill_content fallback:', err);
     }
+  } else {
+    try {
+      const res = await fetch(`/__dev/read-skill?id=${encodeURIComponent(skillId)}`).catch(() => null);
+      if (res && res.ok) {
+        const text = await res.text().catch(() => '');
+        if (text) return text;
+      }
+    } catch {}
   }
   return '';
 }
