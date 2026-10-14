@@ -4,7 +4,7 @@
 
 *   **Version History**:
     *   **v5.22.0 (2026-10-13)**:
-        -   **Gemini 5-Hour Rolling Warmup Protocol & Canonical Model**: Fixed Google upstream `HTTP 400 Bad Request` by calibrating model ping to `gemini-2.5-flash` across all schedulers, decoupled 5-hour rolling warmup from weekly quota usage so active accounts are never skipped, and expanded warmup generation budget to 2048 tokens to decisively lock in the 5-hour countdown timer.
+        -   **Dynamic Account-Driven Model Discovery & Upstream Production Prioritization**: Fully automated model selection for 5-hour and weekly quota warmups by dynamically inspecting each account's authorized model list (prioritizing the newest supported Flash and Claude models) instead of brittle hardcoded names. Prioritized official production endpoint (`cloudcode-pa.googleapis.com`) to eliminate TCP connection resets from daily staging servers, and eliminated invalid `thinkingBudget: 0` payloads to ensure all Gemini 3.x and future model generations execute flawlessly.
         -   **Agent Ecosystem Hub (Skills, MCP & Rules)**: Integrated Skills.sh catalog, local filesystem scanner, single-click install/uninstall, and zero-leak privacy guard for path and credential redaction.
         -   **Instant UI Navigation**: Transitioned sidebar layout switches to instantaneous DOM hydration with persistent localStorage.
     *   **v5.21.0 (2026-10-13)**:

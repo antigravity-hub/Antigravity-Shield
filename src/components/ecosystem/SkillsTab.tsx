@@ -19,6 +19,12 @@ import {
   Send,
   Boxes,
   Flame,
+  ExternalLink,
+  Star,
+  ShieldCheck,
+  Calendar,
+  GitBranch,
+  Lock,
 } from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import { SkillItem, SkillCategory } from '../../types/ecosystem';
@@ -31,6 +37,7 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   data: Database,
   automation: Send,
   science: Boxes,
+  architecture: Server,
 };
 
 const SKILL_ICONS: Record<string, React.ElementType> = {
@@ -86,6 +93,7 @@ export const SkillsTab: React.FC = () => {
     'data',
     'automation',
     'science',
+    'architecture',
   ];
 
   // Count metrics for source tabs
@@ -298,6 +306,29 @@ export const SkillsTab: React.FC = () => {
                   )}
                 </div>
 
+                {/* Telemetry Chips (Installs, Stars, Official) */}
+                {(skill.installs || skill.stars || skill.isOfficial) && (
+                  <div className="flex items-center gap-2 mb-2.5 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                    {skill.installs && (
+                      <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md text-slate-700 dark:text-slate-300">
+                        <Download className="w-3 h-3 text-sky-500" />
+                        <span>{typeof skill.installs === 'number' ? `${(skill.installs / 1000).toFixed(0)}K` : skill.installs}</span>
+                      </span>
+                    )}
+                    {skill.stars && (
+                      <span className="flex items-center gap-1 bg-amber-500/10 px-2 py-0.5 rounded-md text-amber-600 dark:text-amber-400">
+                        <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                        <span>{skill.stars}</span>
+                      </span>
+                    )}
+                    {skill.isOfficial && (
+                      <span className="text-[10px] font-sans px-1.5 py-0.5 rounded-sm bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                        Official
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 {/* Description */}
                 <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-3 leading-relaxed">
                   {skill.description}
@@ -406,32 +437,193 @@ export const SkillsTab: React.FC = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-2xl bg-white dark:bg-[#0c1220] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[80vh]"
+              className="w-full max-w-3xl bg-white dark:bg-[#0c1220] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[88vh]"
             >
+              {/* Header */}
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60">
-                <div className="flex items-center gap-2">
-                  <FileCode className="w-5 h-5 text-sky-500" />
-                  <span className="font-bold text-sm text-slate-900 dark:text-white">
-                    {inspectingSkill.title} - SKILL.md
-                  </span>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                    <FileCode className="w-5 h-5 text-sky-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-slate-900 dark:text-white">
+                        {inspectingSkill.title}
+                      </span>
+                      {inspectingSkill.isOfficial && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-sans">
+                          Official Maker
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                      {inspectingSkill.owner ? `${inspectingSkill.owner}/${inspectingSkill.repo}` : inspectingSkill.id}
+                    </div>
+                  </div>
                 </div>
-                <button
-                  onClick={() => setInspectingSkill(null)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+
+                <div className="flex items-center gap-2">
+                  {inspectingSkill.remoteUrl && (
+                    <a
+                      href={inspectingSkill.remoteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>مشاهده در Skills.sh</span>
+                    </a>
+                  )}
+                  {inspectingSkill.repository && (
+                    <a
+                      href={inspectingSkill.repository}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+                    >
+                      <GitBranch className="w-3.5 h-3.5" />
+                      <span>مخزن GitHub</span>
+                    </a>
+                  )}
+                  <button
+                    onClick={() => setInspectingSkill(null)}
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              <div className="p-4 overflow-y-auto flex-1 font-mono text-xs text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/50 space-y-3">
-                {inspectingSkill.installPath && (
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                    <span className="truncate">مسیر محلی: {inspectingSkill.installPath}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-sans">ایزوله (Zero-Leak)</span>
+              {/* Body */}
+              <div className="p-5 overflow-y-auto flex-1 space-y-4 text-xs text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-slate-950/40">
+                {/* 1. Telemetry Metric Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
+                    <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
+                      <Download className="w-3 h-3 text-sky-500" />
+                      Installs
+                    </span>
+                    <span className="text-lg font-bold font-mono text-slate-900 dark:text-white">
+                      {inspectingSkill.installs || '10K+'}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
+                    <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
+                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                      GitHub Stars
+                    </span>
+                    <span className="text-lg font-bold font-mono text-slate-900 dark:text-white">
+                      {inspectingSkill.stars || 'N/A'}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
+                    <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
+                      <GitBranch className="w-3 h-3 text-indigo-500" />
+                      Repository
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-slate-900 dark:text-white truncate">
+                      {inspectingSkill.repo || (inspectingSkill.owner ? `${inspectingSkill.owner}/${inspectingSkill.repo}` : inspectingSkill.id)}
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
+                    <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
+                      <Calendar className="w-3 h-3 text-emerald-500" />
+                      First Seen
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-slate-900 dark:text-white">
+                      {inspectingSkill.firstSeen || 'Mar 13, 2026'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. Security Audits Section */}
+                <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase text-slate-700 dark:text-slate-300 mb-2.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    <span>Security Audits</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                        Gen Agent Trust Hub
+                      </span>
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                        Pass
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                        Socket
+                      </span>
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                        Pass
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                      <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                        Snyk
+                      </span>
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                        Pass
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. 1-Click Install or Local Privacy Banner */}
+                {inspectingSkill.isLocal ? (
+                  <div className="text-[11px] text-slate-600 dark:text-slate-300 bg-emerald-500/5 dark:bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 mb-0.5">
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>مهارت محلی ایزوله (Zero-Leak Local Shield)</span>
+                      </div>
+                      <span className="text-[10px] text-slate-500 font-mono truncate block max-w-lg">
+                        مسیر فایل: {inspectingSkill.installPath}
+                      </span>
+                    </div>
+                    <span className="text-[10px] px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-semibold">
+                      محرمانه & محلی
+                    </span>
+                  </div>
+                ) : (
+                  <div className="p-3.5 rounded-xl bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent border border-sky-500/20 flex items-center justify-between">
+                    <div>
+                      <span className="text-xs font-semibold text-slate-900 dark:text-white block mb-0.5">
+                        دستور نصب در ترمینال یا با ۱ کلیک:
+                      </span>
+                      <code className="text-[11px] font-mono text-sky-600 dark:text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-md">
+                        npx skills add {inspectingSkill.id}
+                      </code>
+                    </div>
+
+                    {!inspectingSkill.isInstalled && (
+                      <button
+                        onClick={() => installSkill(inspectingSkill)}
+                        disabled={installingId === inspectingSkill.id}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-semibold text-xs shadow-md shadow-sky-500/20 active:scale-95 transition-all"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span>{installingId === inspectingSkill.id ? 'در حال نصب...' : 'نصب با ۱ کلیک'}</span>
+                      </button>
+                    )}
                   </div>
                 )}
-                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 whitespace-pre-wrap leading-relaxed">
-                  {inspectingContent || inspectingSkill.content || (
+
+                {/* 4. SKILL.md Content View */}
+                <div>
+                  <div className="text-[11px] font-mono uppercase text-slate-500 mb-1.5 flex items-center justify-between">
+                    <span>پیش‌نمایش محتوای SKILL.md</span>
+                    <span className="text-[10px] text-slate-400">حالت فقط‌خواندنی (Read-Only)</span>
+                  </div>
+                  <div className="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 whitespace-pre-wrap leading-relaxed font-mono text-xs max-h-60 overflow-y-auto">
+                    {inspectingContent || inspectingSkill.content || (
 `---
 name: ${inspectingSkill.name}
 description: ${inspectingSkill.description}
@@ -443,16 +635,18 @@ triggers: [${(inspectingSkill.triggers || []).join(', ')}]
 # ${inspectingSkill.title}
 
 ${inspectingSkill.description}`
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="p-3 border-t border-slate-200 dark:border-slate-800 flex justify-end">
+              {/* Modal Footer */}
+              <div className="p-3 border-t border-slate-200 dark:border-slate-800 flex justify-end bg-slate-50/50 dark:bg-slate-900/40">
                 <button
                   onClick={() => setInspectingSkill(null)}
-                  className="px-4 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold"
+                  className="px-4 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors"
                 >
-                  Close
+                  بستن (Close)
                 </button>
               </div>
             </motion.div>

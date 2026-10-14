@@ -6,14 +6,14 @@ use serde_json::json;
 
 // Quota API endpoints (Primary Antigravity IDE endpoint, fallback to standard Cloud Code)
 const QUOTA_API_ENDPOINTS: [&str; 2] = [
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
     "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
+    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
 ];
 
 // Quota Summary API endpoints (weekly + 5h grouped quota)
 const QUOTA_SUMMARY_ENDPOINTS: [&str; 2] = [
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
     "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
+    "https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
 ];
 
 /// Critical retry threshold: considered near recovery when quota reaches 95%
@@ -159,7 +159,7 @@ async fn create_long_standard_client(account_id: Option<&str>) -> rquest::Client
     }
 }
 
-const CLOUD_CODE_BASE_URL: &str = "https://daily-cloudcode-pa.googleapis.com";
+const CLOUD_CODE_BASE_URL: &str = "https://cloudcode-pa.googleapis.com";
 
 /// Fetch project ID and subscription tier
 async fn fetch_project_id(
@@ -839,7 +839,43 @@ fn get_claude_rank(lower: &str) -> i32 {
     else { 100 }
 }
 
-/// Select target models for warmup based on full QuotaData (inspecting 5h buckets in quota_groups)
+/// Dynamically resolve the best available model for warmup directly from the account's models.
+/// This prevents hardcoding expiring models and automatically adapts to future Google model generations.
+pub fn resolve_warmup_model(quota: &crate::models::QuotaData, is_claude: bool) -> String {
+    if is_claude {
+        quota.models.iter()
+            .filter(|m| m.name.to_lowercase().contains("claude"))
+            .max_by_key(|m| get_claude_rank(&m.name.to_lowercase()))
+            .map(|m| m.name.clone())
+            .unwrap_or_else(|| "claude-sonnet-4-6".to_string())
+    } else {
+        // Find best Flash model in account
+        if let Some(flash) = quota.models.iter()
+            .filter(|m| {
+                let l = m.name.to_lowercase();
+                l.contains("flash") && !l.contains("thinking") && !l.contains("image")
+            })
+            .max_by_key(|m| get_flash_rank(&m.name.to_lowercase()))
+        {
+            return flash.name.clone();
+        }
+
+        // Fallback: any Gemini model in account
+        if let Some(gemini) = quota.models.iter()
+            .filter(|m| {
+                let l = m.name.to_lowercase();
+                l.starts_with("gemini") && !l.contains("thinking") && !l.contains("image")
+            })
+            .max_by_key(|m| get_flash_rank(&m.name.to_lowercase()))
+        {
+            return gemini.name.clone();
+        }
+
+        "gemini-2.5-flash".to_string()
+    }
+}
+
+/// Select target models for warmup based on full QuotaData (inspecting 5h and weekly buckets in quota_groups)
 pub fn select_target_warmup_models_for_quota(
     quota: &crate::models::QuotaData,
 ) -> Vec<crate::models::quota::ModelQuota> {
@@ -883,19 +919,16 @@ pub fn select_target_warmup_models_for_quota(
         }
 
         if needs_gemini_warmup {
-            let flash_model = quota.models.iter()
-                .filter(|m| {
-                    let l = m.name.to_lowercase();
-                    l.contains("flash") && !l.contains("thinking") && !l.contains("image") && m.percentage > 0
-                })
-                .max_by_key(|m| get_flash_rank(&m.name.to_lowercase()))
+            let model_name = resolve_warmup_model(quota, false);
+            let model_obj = quota.models.iter()
+                .find(|m| m.name == model_name)
                 .cloned()
                 .unwrap_or_else(|| {
                     crate::models::quota::ModelQuota {
-                        name: "gemini-2.5-flash".to_string(),
+                        name: model_name.clone(),
                         percentage: 100,
                         reset_time: String::new(),
-                        display_name: Some("Gemini 2.5 Flash".to_string()),
+                        display_name: Some(model_name),
                         supports_images: None,
                         supports_thinking: None,
                         thinking_budget: None,
@@ -905,23 +938,20 @@ pub fn select_target_warmup_models_for_quota(
                         supported_mime_types: None,
                     }
                 });
-            result.push(flash_model);
+            result.push(model_obj);
         }
 
         if needs_claude_warmup {
-            let claude_model = quota.models.iter()
-                .filter(|m| {
-                    let l = m.name.to_lowercase();
-                    l.contains("claude") && m.percentage > 0
-                })
-                .max_by_key(|m| get_claude_rank(&m.name.to_lowercase()))
+            let model_name = resolve_warmup_model(quota, true);
+            let model_obj = quota.models.iter()
+                .find(|m| m.name == model_name)
                 .cloned()
                 .unwrap_or_else(|| {
                     crate::models::quota::ModelQuota {
-                        name: "claude-sonnet-4-6".to_string(),
+                        name: model_name.clone(),
                         percentage: 100,
                         reset_time: String::new(),
-                        display_name: Some("Claude Sonnet 4.6".to_string()),
+                        display_name: Some(model_name),
                         supports_images: None,
                         supports_thinking: None,
                         thinking_budget: None,
@@ -931,7 +961,7 @@ pub fn select_target_warmup_models_for_quota(
                         supported_mime_types: None,
                     }
                 });
-            result.push(claude_model);
+            result.push(model_obj);
         }
 
         if !result.is_empty() {
@@ -942,7 +972,7 @@ pub fn select_target_warmup_models_for_quota(
     select_target_warmup_models(&quota.models)
 }
 
-/// Select at most 2 models for warmup:
+/// Select models for warmup from model list:
 /// 1. The latest active Flash model (Gemini quota bucket)
 /// 2. The latest active Claude model (Claude quota bucket, if available)
 pub fn select_target_warmup_models(
@@ -952,9 +982,6 @@ pub fn select_target_warmup_models(
     let mut best_claude: Option<(i32, crate::models::quota::ModelQuota)> = None;
 
     for m in models {
-        if m.percentage < 100 {
-            continue;
-        }
         let lower = m.name.to_lowercase();
         // Skip thinking variants and image models for warmup
         if lower.contains("thinking") || lower.contains("image") || lower.contains("imagen") {
@@ -978,10 +1005,7 @@ pub fn select_target_warmup_models(
     }
 
     let mut result = Vec::new();
-    if let Some((_, mut flash)) = best_flash {
-        if flash.name == "gemini-3-flash" {
-            flash.name = "gemini-2.5-flash".to_string();
-        }
+    if let Some((_, flash)) = best_flash {
         result.push(flash);
     }
     if let Some((_, claude)) = best_claude {

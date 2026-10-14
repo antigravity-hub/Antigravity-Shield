@@ -14,7 +14,7 @@ pub struct SkillItem {
     pub name: String,
     pub title: String,
     pub description: String,
-    pub category: String, // "coding" | "design" | "devops" | "data" | "automation" | "science"
+    pub category: String, // "coding" | "design" | "devops" | "data" | "automation" | "science" | "architecture"
     pub author: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub repo: Option<String>,
@@ -116,12 +116,17 @@ static RE_AWS: Lazy<Regex> = Lazy::new(|| {
 });
 
 static RE_EXA: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"(?i)\b(exa[_\-]?api[_\-]?key)\s*([:=])\s*["']?([0-9a-fA-F\-]{32,36}|[a-zA-Z0-9_\-]{20,})["']?"#)
+    Regex::new(r#"(?i)\b(exa[_\-]?api[_\-]?key)[ \t]*([:=])[ \t]*["']?([0-9a-fA-F\-]{32,36}|[a-zA-Z0-9_\-]{20,})["']?"#)
         .expect("Valid Exa API key regex")
 });
 
+static RE_URI_CREDENTIALS: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"(?i)([a-z0-9+.\-]+://[^:\s"']+):([^\s"']+)(@[^@\s"']+)"#)
+        .expect("Valid URI credentials regex")
+});
+
 static RE_COMPOUND_SECRET: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"(?i)\b([a-zA-Z0-9_\-]*(?:api[_\-]?key|secret|token|password|passwd|auth|access[_\-]?key|private[_\-]?key)[a-zA-Z0-9_\-]*)\s*([:=])\s*["']?([^\s"'`;,}&]{8,})['"]?"#)
+    Regex::new(r#"(?i)\b([a-zA-Z0-9_\-]*(?:api[_\-]?key|secret|token|password|passwd|auth|access[_\-]?key|private[_\-]?key)[a-zA-Z0-9_\-]*)[ \t]*([:=])[ \t]*["']?([^\s"'`;,}&]{8,})['"]?"#)
         .expect("Valid generic secret assignment regex")
 });
 
@@ -152,7 +157,15 @@ impl ZeroLeakRedactor {
         let s = RE_GOOGLE.replace_all(&s, "[REDACTED_GOOGLE_API_KEY]");
         let s = RE_AWS.replace_all(&s, "[REDACTED_AWS_KEY]");
         let s = RE_EXA.replace_all(&s, r#"$1: "[REDACTED_EXA_KEY]""#);
-        let s = RE_COMPOUND_SECRET.replace_all(&s, r#"$1: "[REDACTED_SECRET]""#);
+        let s = RE_URI_CREDENTIALS.replace_all(&s, "$1:[REDACTED_PASSWORD]$3");
+        let s = RE_COMPOUND_SECRET.replace_all(&s, |caps: &regex::Captures| {
+            let val = &caps[3];
+            if val.starts_with("[REDACTED_") || val.contains("REDACTED_") {
+                caps[0].to_string()
+            } else {
+                format!(r#"{}: "[REDACTED_SECRET]""#, &caps[1])
+            }
+        });
 
         Self::normalize_path(&s)
     }
@@ -501,7 +514,7 @@ pub fn extract_title(body: &str, fallback_name: &str) -> String {
         .join(" ")
 }
 
-/// Infers domain category across the 6 core categories.
+/// Infers domain category across the 7 core categories.
 pub fn infer_category(
     dir_name: &str,
     description: &str,
@@ -512,7 +525,7 @@ pub fn infer_category(
         let lower = cat.to_lowercase();
         if matches!(
             lower.as_str(),
-            "coding" | "design" | "devops" | "data" | "automation" | "science"
+            "coding" | "design" | "devops" | "data" | "automation" | "science" | "architecture"
         ) {
             return lower;
         }
@@ -1117,11 +1130,34 @@ mod tests {
     }
 
     #[test]
+    fn test_zero_leak_multiline_and_database_uri() {
+        // Multiline header comment
+        let text = "# DB Password:\ndb_password = \"MySecretP@ssw0rd!\"\n";
+        let redacted = ZeroLeakRedactor::redact(text);
+        assert!(!redacted.contains("MySecretP@ssw0rd!"));
+        assert!(redacted.contains("db_password: \"[REDACTED_SECRET]\""));
+
+        // Database URI
+        let db_url = "DATABASE_URL = \"postgres://postgres:SuperSecretP@ssw0rd!123@localhost:5432/mydb\"\n";
+        let redacted_url = ZeroLeakRedactor::redact(db_url);
+        assert!(!redacted_url.contains("SuperSecretP@ssw0rd!123"));
+        assert!(redacted_url.contains("postgres://postgres:[REDACTED_PASSWORD]@localhost:5432/mydb"));
+
+        // Preserving specific token classification (e.g. Exa key not overwritten by generic secret)
+        let exa_line = "exa_api_key = \"c9080270-7db2-43cf-bf5e-80c00fff2133\"";
+        let redacted_exa = ZeroLeakRedactor::redact(exa_line);
+        assert!(redacted_exa.contains("[REDACTED_EXA_KEY]"));
+        assert!(!redacted_exa.contains("[REDACTED_SECRET]"));
+    }
+
+    #[test]
     fn test_category_inference() {
         assert_eq!(infer_category("medical-biostatistics", "تحلیل آماری داده‌های پزشکی", &PathBuf::from("custom-skills"), None), "science");
         assert_eq!(infer_category("gsap-scrolltrigger", "Web animation with ScrollTrigger", &PathBuf::from("skills"), None), "design");
         assert_eq!(infer_category("postgres-best-practices", "Supabase database indexing", &PathBuf::from("custom-skills"), None), "data");
         assert_eq!(infer_category("telegram-bot-builder", "Automate workflows with bot", &PathBuf::from("custom-skills"), None), "automation");
         assert_eq!(infer_category("backend-architect", "Scale microservices and APIs", &PathBuf::from("custom-skills"), None), "coding");
+        assert_eq!(infer_category("backend-architect", "Scale microservices and APIs", &PathBuf::from("custom-skills"), Some("architecture")), "architecture");
+        assert_eq!(infer_category("system-design", "Enterprise architecture patterns", &PathBuf::from("skills"), Some("Architecture")), "architecture");
     }
 }

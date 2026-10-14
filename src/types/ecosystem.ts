@@ -53,8 +53,11 @@ export interface SkillItem {
   scope?: 'global' | 'workspace'; // Scope
 
   // Metrics & Badges
-  installs?: number;       // Total install count (from Skills.sh telemetry)
-  stars?: number;          // GitHub stars count
+  installs?: number | string;       // Total install count (from Skills.sh telemetry, e.g. 1300000 or "1.3M")
+  stars?: number | string;          // GitHub stars count (e.g. 8200 or "289.5K")
+  firstSeen?: string;               // First seen date on skills.sh (e.g. "Mar 13, 2026")
+  weeklyInstalls?: string;          // Weekly installs sparkline data
+  repository?: string;              // GitHub repository link
   isOfficial?: boolean;    // Verified official maker badge
   auditStatus?: SkillAuditStatus;
   audits?: SkillAuditEntry[];

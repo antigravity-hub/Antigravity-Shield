@@ -687,15 +687,11 @@ async fn run_warmup_cycle(
                         };
 
                         if should_warm && !history_key.is_empty() {
-                            let model_to_ping = if bucket
+                            let is_claude = bucket
                                 .bucket_id
                                 .contains("3p")
-                                || group.display_name.contains("Claude")
-                            {
-                                "claude-sonnet-4-6".to_string()
-                            } else {
-                                "gemini-2.5-flash".to_string()
-                            };
+                                || group.display_name.contains("Claude");
+                            let model_to_ping = quota::resolve_warmup_model(&fresh_quota, is_claude);
 
                             tasks_to_run.push((
                                 acc.id.clone(),
@@ -871,13 +867,9 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                     };
 
                     if should_warm && !history_key.is_empty() {
-                        let model_to_ping = if bucket.bucket_id.contains("3p")
-                            || group.display_name.contains("Claude")
-                        {
-                            "claude-sonnet-4-6".to_string()
-                        } else {
-                            "gemini-2.5-flash".to_string()
-                        };
+                        let is_claude = bucket.bucket_id.contains("3p")
+                            || group.display_name.contains("Claude");
+                        let model_to_ping = quota::resolve_warmup_model(&fresh_quota, is_claude);
 
                         let success = quota::warmup_model_directly(
                             &token,
