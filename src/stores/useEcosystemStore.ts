@@ -5,6 +5,9 @@ import {
   SkillItem,
   McpServerItem,
   RuleItem,
+  AgentPlatformId,
+  SkillTopicId,
+  SecurityAuditFilter,
 } from '../types/ecosystem';
 import * as ecosystemService from '../services/ecosystemService';
 
@@ -21,11 +24,21 @@ interface EcosystemState {
   testingMcpId: string | null;
   isTestingAllMcp: boolean;
 
+  // Advanced Multi-Dimensional Filters
+  selectedAgent: AgentPlatformId;
+  selectedTopic: SkillTopicId;
+  verifiedOnly: boolean;
+  auditFilter: SecurityAuditFilter;
+
   // Setters
   setActiveTab: (tab: EcosystemEntityType) => void;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: SkillCategory) => void;
   setSkillSource: (source: 'all' | 'local' | 'skills_sh') => void;
+  setSelectedAgent: (agent: AgentPlatformId) => void;
+  setSelectedTopic: (topic: SkillTopicId) => void;
+  setVerifiedOnly: (verified: boolean) => void;
+  setAuditFilter: (filter: SecurityAuditFilter) => void;
 
   // Actions
   loadAll: () => Promise<void>;
@@ -54,10 +67,19 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
   testingMcpId: null,
   isTestingAllMcp: false,
 
+  selectedAgent: 'all',
+  selectedTopic: 'all',
+  verifiedOnly: false,
+  auditFilter: 'all',
+
   setActiveTab: (tab) => set({ activeTab: tab }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSkillSource: (source) => set({ skillSource: source }),
+  setSelectedAgent: (agent) => set({ selectedAgent: agent }),
+  setSelectedTopic: (topic) => set({ selectedTopic: topic }),
+  setVerifiedOnly: (verified) => set({ verifiedOnly: verified }),
+  setAuditFilter: (filter) => set({ auditFilter: filter }),
 
   loadAll: async () => {
     set({ loading: true });

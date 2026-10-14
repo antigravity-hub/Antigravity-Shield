@@ -2,7 +2,193 @@ import {
   SkillItem,
   SkillCategory,
   SkillSourceType,
+  AgentPlatformInfo,
+  SkillTopicInfo,
 } from "../types/ecosystem";
+
+/**
+ * 20 Official AI Agent Platforms supported by the universal SKILL.md standard.
+ * Because SKILL.md is an open procedural specification, 100% of these skills
+ * can be directly installed and run natively inside Google Antigravity.
+ */
+export const OFFICIAL_AGENTS: AgentPlatformInfo[] = [
+  {
+    id: "antigravity",
+    name: "Antigravity",
+    tagline: "Google's developer agent platform",
+    description: "Google's developer agent platform. Skills installed via Antigravity Manager Shield extend sessions with zero-leak procedural guidance and native tool loops.",
+    isAntigravityTarget: true,
+  },
+  {
+    id: "gemini",
+    name: "Gemini",
+    tagline: "Google's Gemini family of agents",
+    description: "Google's Gemini family of agents. Compatible with the skills CLI for repo-scoped skill installation — including the Gemini CLI for terminal workflows.",
+    isAntigravityTarget: true,
+  },
+  {
+    id: "claude-code",
+    name: "Claude Code",
+    tagline: "Anthropic's official terminal agent",
+    description: "Anthropic's official terminal agent. Skills installed via the skills CLI become available as procedural knowledge across every Claude Code session in the project.",
+  },
+  {
+    id: "cursor",
+    name: "Cursor",
+    tagline: "AI-first code editor with deep agent integration",
+    description: "AI-first code editor with deep agent integration. The skills CLI installs SKILL.md files that Cursor agents reference automatically when working on the repo.",
+  },
+  {
+    id: "codex",
+    name: "Codex",
+    tagline: "OpenAI's coding agent",
+    description: "OpenAI's coding agent. Compatible with the skills CLI for installing reusable procedural knowledge — performance rules, design systems, and workflow patterns.",
+  },
+  {
+    id: "github-copilot",
+    name: "GitHub Copilot",
+    tagline: "GitHub's AI coding assistant",
+    description: "GitHub's AI coding assistant. Skills installed via the skills CLI augment Copilot's project context with structured guidance the model uses across edits and chats.",
+  },
+  {
+    id: "windsurf",
+    name: "Windsurf",
+    tagline: "Codeium's agentic IDE",
+    description: "Codeium's agentic IDE. Skills give Windsurf project-specific procedural knowledge that persists across sessions without manual re-prompting.",
+  },
+  {
+    id: "cline",
+    name: "Cline",
+    tagline: "Open-source autonomous coding agent for VS Code",
+    description: "Open-source autonomous coding agent for VS Code. Reads SKILL.md files installed via the skills CLI to apply project-specific patterns automatically.",
+  },
+  {
+    id: "amp",
+    name: "AMP",
+    tagline: "Research & operational agent",
+    description: "AMP is a research agent that uses the skills CLI to load procedural knowledge for engineering, design, and operational tasks.",
+  },
+  {
+    id: "openclaw",
+    name: "OpenClaw",
+    tagline: "Open-source personal AI assistant",
+    description: "OpenClaw is an open-source personal AI assistant that supports the skills CLI for installing reusable procedural knowledge across agent sessions.",
+  },
+  {
+    id: "droid",
+    name: "Droid",
+    tagline: "Factory's autonomous engineering agent",
+    description: "Factory's autonomous engineering agent. Compatible with the skills CLI for installing skills that Droid loads into its project context.",
+  },
+  {
+    id: "goose",
+    name: "Goose",
+    tagline: "Block's open-source on-machine agent",
+    description: "Block's open-source on-machine agent. Skills installed via the skills CLI extend Goose with reusable extensions and procedural guidance.",
+  },
+  {
+    id: "kilo",
+    name: "Kilo",
+    tagline: "Autonomous project-scoped coding agent",
+    description: "Kilo is an AI coding agent that supports the skills CLI for installing reusable, project-scoped capabilities.",
+  },
+  {
+    id: "kiro-cli",
+    name: "Kiro CLI",
+    tagline: "Kiro's terminal developer agent",
+    description: "Kiro's terminal agent. Compatible with the skills CLI for installing SKILL.md-based knowledge across sessions.",
+  },
+  {
+    id: "nous-research",
+    name: "Nous Research",
+    tagline: "Open foundation reasoning agents",
+    description: "Nous Research builds and ships open agents. Their tooling supports the skills CLI for installing reusable procedural knowledge.",
+  },
+  {
+    id: "opencode",
+    name: "OpenCode",
+    tagline: "Open-source autonomous coding agent",
+    description: "OpenCode is an open-source AI coding agent that integrates with the skills CLI for repo-scoped skill installation.",
+  },
+  {
+    id: "roo",
+    name: "Roo Code",
+    tagline: "Autonomous coding agent for VS Code",
+    description: "Roo Code is an autonomous coding agent with skills CLI compatibility for project-scoped guidance.",
+  },
+  {
+    id: "trae",
+    name: "Trae",
+    tagline: "Adaptive AI coding agent",
+    description: "Trae is an AI coding agent that supports the skills CLI for installing reusable knowledge across sessions.",
+  },
+  {
+    id: "vscode",
+    name: "VS Code",
+    tagline: "Visual Studio Code agent & chat integration",
+    description: "Visual Studio Code's GitHub Copilot Chat and agent features support the skills CLI for installing project-scoped procedural knowledge.",
+  },
+  {
+    id: "zed",
+    name: "Zed",
+    tagline: "Rust-based high-performance editor with parallel agents",
+    description: "Rust-based code editor with a built-in agent panel and native parallel agents. The skills CLI installs SKILL.md files that Zed references automatically when working on the repo.",
+  },
+];
+
+/**
+ * 8 Official Curated Topics from https://www.skills.sh/topic
+ */
+export const OFFICIAL_TOPICS: SkillTopicInfo[] = [
+  {
+    id: "frontend-react",
+    title: "Frontend & React",
+    description: "Performance rules, component patterns, and ecosystem knowledge for production-quality React.",
+    skillsCount: 6,
+  },
+  {
+    id: "nextjs",
+    title: "Next.js",
+    description: "App Router, server components, caching APIs, and Vercel deployment patterns kept current.",
+    skillsCount: 7,
+  },
+  {
+    id: "design-ui",
+    title: "Design & UI",
+    description: "Taste and frameworks for polished interfaces — from critique to design tokens.",
+    skillsCount: 16,
+  },
+  {
+    id: "mobile",
+    title: "Mobile",
+    description: "Expo, React Native, and native platform conventions for real iOS and Android.",
+    skillsCount: 6,
+  },
+  {
+    id: "agent-workflows",
+    title: "Agent Workflows",
+    description: "How agents should operate — plan, debug, dispatch subagents, and run autonomous loops.",
+    skillsCount: 20,
+  },
+  {
+    id: "databases",
+    title: "Databases",
+    description: "Postgres, Supabase, Firebase, Neon, and Convex — correct queries, schemas, and migrations.",
+    skillsCount: 13,
+  },
+  {
+    id: "testing",
+    title: "Testing",
+    description: "TDD loops, Playwright automation, and verification passes — meaningful tests over coverage.",
+    skillsCount: 5,
+  },
+  {
+    id: "marketing",
+    title: "Marketing",
+    description: "SEO, copywriting, CRO, and growth — domain expertise carried into every session.",
+    skillsCount: 21,
+  },
+];
 
 /**
  * Curated Skills.sh Ecosystem Catalog for Antigravity Shield.

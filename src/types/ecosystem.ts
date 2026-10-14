@@ -37,6 +37,63 @@ export interface SkillAuditEntry {
   auditedAt: string;       // ISO 8601 timestamp
 }
 
+export type AgentPlatformId =
+  | 'all'
+  | 'antigravity'
+  | 'claude-code'
+  | 'cursor'
+  | 'codex'
+  | 'github-copilot'
+  | 'windsurf'
+  | 'gemini'
+  | 'cline'
+  | 'amp'
+  | 'openclaw'
+  | 'droid'
+  | 'goose'
+  | 'kilo'
+  | 'kiro-cli'
+  | 'nous-research'
+  | 'opencode'
+  | 'roo'
+  | 'trae'
+  | 'vscode'
+  | 'zed';
+
+export interface AgentPlatformInfo {
+  id: AgentPlatformId;
+  name: string;
+  tagline: string;
+  description: string;
+  isAntigravityTarget?: boolean;
+}
+
+export type SkillTopicId =
+  | 'all'
+  | 'frontend-react'
+  | 'nextjs'
+  | 'design-ui'
+  | 'mobile'
+  | 'agent-workflows'
+  | 'databases'
+  | 'testing'
+  | 'marketing';
+
+export interface SkillTopicInfo {
+  id: SkillTopicId;
+  title: string;
+  description: string;
+  skillsCount: number;
+}
+
+export type SecurityAuditFilter =
+  | 'all'
+  | 'passed_only'
+  | 'gen_trust_hub_pass'
+  | 'socket_pass'
+  | 'snyk_pass'
+  | 'snyk_warn';
+
 export interface SkillItem {
   id: string;              // Unique identifier, e.g. "vercel-labs/skills/find-skills"
   slug?: string;           // URL-safe slug, e.g. "find-skills"
@@ -59,8 +116,13 @@ export interface SkillItem {
   weeklyInstalls?: string;          // Weekly installs sparkline data
   repository?: string;              // GitHub repository link
   isOfficial?: boolean;    // Verified official maker badge
+  isVerifiedMaker?: boolean; // Verified rosette checkmark badge next to install count
   auditStatus?: SkillAuditStatus;
   audits?: SkillAuditEntry[];
+
+  // Agent & Topic Compatibility
+  supportedAgents?: string[]; // IDs of supported agents, defaults to all 20 agents (including Antigravity)
+  topics?: string[];          // Topic identifiers, e.g. ['frontend-react', 'agent-workflows']
 
   // Lifecycle & Installation State
   isInstalled: boolean;    // Installed on user's machine

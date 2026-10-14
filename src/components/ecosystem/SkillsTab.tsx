@@ -24,12 +24,24 @@ import {
   ShieldCheck,
   Calendar,
   GitBranch,
-  Lock,
+  BadgeCheck,
+  Bot,
+  Layers,
 } from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
-import { SkillItem, SkillCategory } from '../../types/ecosystem';
+import {
+  SkillItem,
+  SkillCategory,
+  AgentPlatformId,
+  SkillTopicId,
+  SecurityAuditFilter,
+} from '../../types/ecosystem';
 import { RichSkillDocViewer } from './RichSkillDocViewer';
-import { SKILLS_SH_CATALOG } from '../../config/skillsCatalog';
+import {
+  SKILLS_SH_CATALOG,
+  OFFICIAL_AGENTS,
+  OFFICIAL_TOPICS,
+} from '../../config/skillsCatalog';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   all: Sliders,
@@ -72,6 +84,14 @@ export const SkillsTab: React.FC = () => {
     setSelectedCategory,
     skillSource,
     setSkillSource,
+    selectedAgent,
+    setSelectedAgent,
+    selectedTopic,
+    setSelectedTopic,
+    verifiedOnly,
+    setVerifiedOnly,
+    auditFilter,
+    setAuditFilter,
     installSkill,
     uninstallSkill,
     toggleSkill,
@@ -137,7 +157,66 @@ export const SkillsTab: React.FC = () => {
       (item.tags && item.tags.some((tag) => tag.toLowerCase().includes(q))) ||
       (item.triggers && item.triggers.some((tr) => tr.toLowerCase().includes(q) || tr.toLowerCase().replace(/^\//, '').includes(q)));
 
-    return matchesCategory && matchesQuery;
+    if (!matchesCategory || !matchesQuery) return false;
+
+    // 4. Verified Only Filter (Item 4: Verified maker rosette checkmark)
+    if (verifiedOnly) {
+      const isVerified =
+        Boolean(item.isVerifiedMaker) ||
+        Boolean(item.isOfficial) ||
+        (item.audits && item.audits.length > 0 && item.audits.every((a) => a.status === 'pass'));
+      if (!isVerified) return false;
+    }
+
+    // 5. Security Audits Filter (Item 1: Gen Agent Trust Hub, Socket, Snyk)
+    if (auditFilter !== 'all') {
+      const audits = item.audits || [];
+      if (auditFilter === 'passed_only') {
+        if (audits.length === 0 || audits.some((a) => a.status !== 'pass')) return false;
+      } else if (auditFilter === 'gen_trust_hub_pass') {
+        const hasPass = audits.some((a) => a.provider.toLowerCase().includes('gen') && a.status === 'pass');
+        if (!hasPass) return false;
+      } else if (auditFilter === 'socket_pass') {
+        const hasPass = audits.some((a) => a.provider.toLowerCase().includes('socket') && a.status === 'pass');
+        if (!hasPass) return false;
+      } else if (auditFilter === 'snyk_pass') {
+        const hasPass = audits.some((a) => a.provider.toLowerCase().includes('snyk') && a.status === 'pass');
+        if (!hasPass) return false;
+      } else if (auditFilter === 'snyk_warn') {
+        const hasWarn = audits.some((a) => a.provider.toLowerCase().includes('snyk') && a.status === 'warn');
+        if (!hasWarn) return false;
+      }
+    }
+
+    // 6. AI Agent Platform Compatibility Filter (Item 2: 20 agents supported by SKILL.md)
+    if (selectedAgent !== 'all') {
+      // In Antigravity & Gemini, 100% of SKILL.md skills run natively
+      if (selectedAgent !== 'antigravity' && selectedAgent !== 'gemini') {
+        const agentKey = selectedAgent.toLowerCase();
+        const hasExplicit = item.supportedAgents && item.supportedAgents.some((ag) => ag.toLowerCase() === agentKey);
+        const inTags = item.tags && item.tags.some((tg) => tg.toLowerCase().includes(agentKey));
+        if (item.supportedAgents && item.supportedAgents.length > 0 && !hasExplicit && !inTags) {
+          return false;
+        }
+      }
+    }
+
+    // 7. Curated Official Topics Filter (Item 3: https://www.skills.sh/topic)
+    if (selectedTopic !== 'all') {
+      const topicMatches =
+        (item.topics && item.topics.includes(selectedTopic)) ||
+        (selectedTopic === 'frontend-react' && (item.category === 'coding' || item.category === 'design' || item.tags?.some((t) => /react|front|ui/i.test(t)))) ||
+        (selectedTopic === 'nextjs' && (item.tags?.some((t) => /next|vercel|ssr/i.test(t)) || item.name.includes('next'))) ||
+        (selectedTopic === 'design-ui' && (item.category === 'design' || item.tags?.some((t) => /design|ui|motion|css|tailwind/i.test(t)))) ||
+        (selectedTopic === 'mobile' && (item.tags?.some((t) => /mobile|react-native|expo|android|ios/i.test(t)) || item.name.includes('mobile'))) ||
+        (selectedTopic === 'agent-workflows' && (item.category === 'automation' || item.category === 'architecture' || item.tags?.some((t) => /agent|workflow|subagent|swarm/i.test(t)))) ||
+        (selectedTopic === 'databases' && (item.category === 'data' || item.tags?.some((t) => /database|sql|postgres|supabase|prisma/i.test(t)))) ||
+        (selectedTopic === 'testing' && (item.tags?.some((t) => /test|playwright|tdd|eval/i.test(t)) || item.name.includes('test'))) ||
+        (selectedTopic === 'marketing' && (item.tags?.some((t) => /market|seo|growth|copy/i.test(t)) || item.name.includes('marketing') || item.name.includes('seo')));
+      if (!topicMatches) return false;
+    }
+
+    return true;
   });
 
   const sortedSkills = useMemo(() => {
@@ -372,12 +451,103 @@ export const SkillsTab: React.FC = () => {
         </div>
       </div>
 
+      {/* Advanced Secondary Controls: AI Agents Dropdown, Curated Topics, Security Audits & Verified Toggle */}
+      <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 bg-slate-50/70 dark:bg-slate-900/50 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* 1. AI Agent Compatibility Dropdown */}
+          <div className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+              <Bot className="w-3.5 h-3.5 text-sky-500" />
+              <span>{t('ecosystem.agent_filter_label', 'Agent')}:</span>
+            </span>
+            <select
+              value={selectedAgent}
+              onChange={(e) => setSelectedAgent(e.target.value as AgentPlatformId)}
+              className="text-xs font-medium py-1 px-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-500 cursor-pointer"
+            >
+              <option value="all">⚡ All 20 AI Agents</option>
+              <option value="antigravity" className="font-bold text-sky-600">
+                ⭐ Google Antigravity (100% Native)
+              </option>
+              {OFFICIAL_AGENTS.filter((a) => a.id !== 'antigravity').map((agent) => (
+                <option key={agent.id} value={agent.id}>
+                  {agent.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 2. Curated Topics Dropdown (https://www.skills.sh/topic) */}
+          <div className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+              <Layers className="w-3.5 h-3.5 text-purple-500" />
+              <span>{t('ecosystem.topic_filter_label', 'Topic')}:</span>
+            </span>
+            <select
+              value={selectedTopic}
+              onChange={(e) => setSelectedTopic(e.target.value as SkillTopicId)}
+              className="text-xs font-medium py-1 px-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer"
+            >
+              <option value="all">🌐 All Official Topics</option>
+              {OFFICIAL_TOPICS.map((topic) => (
+                <option key={topic.id} value={topic.id}>
+                  {topic.title} ({topic.skillsCount})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 3. Security Audits Filter Dropdown (Item 1) */}
+          <div className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+              <span>{t('ecosystem.audit_filter_label', 'Security')}:</span>
+            </span>
+            <select
+              value={auditFilter}
+              onChange={(e) => setAuditFilter(e.target.value as SecurityAuditFilter)}
+              className="text-xs font-medium py-1 px-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+            >
+              <option value="all">🛡️ All Security Audits</option>
+              <option value="passed_only">✅ Shield Clean (All Passed)</option>
+              <option value="gen_trust_hub_pass">🛡️ Gen Agent Trust Hub: Pass</option>
+              <option value="socket_pass">⚡ Socket: Pass</option>
+              <option value="snyk_pass">🔒 Snyk: Pass</option>
+              <option value="snyk_warn">⚠️ Snyk: Warn</option>
+            </select>
+          </div>
+        </div>
+
+        {/* 4. Verified Only Toggle (Item 4: Rosette checkmark) */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setVerifiedOnly(!verifiedOnly)}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border text-xs font-semibold transition-all ${
+              verifiedOnly
+                ? 'bg-sky-500/15 border-sky-500/50 text-sky-600 dark:text-sky-400 shadow-xs ring-1 ring-sky-500/30'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+            title="Show only skills from verified official publishers with clean security audits"
+          >
+            <BadgeCheck className={`w-3.5 h-3.5 ${verifiedOnly ? 'fill-sky-500/20 text-sky-500 animate-pulse' : 'text-slate-400'}`} />
+            <span>{t('ecosystem.verified_only', 'Verified Only')}</span>
+            {verifiedOnly && (
+              <span className="text-[10px] px-1 py-0.2 rounded-full bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono">
+                Active
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+
       {/* Skills Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {sortedSkills.map((skill) => {
           const IconComponent = SKILL_ICONS[skill.icon || 'Sparkles'] || Sparkles;
           const isBusy = installingId === skill.id;
           const rank = downloadRankMap.get(skill.id) ?? (skill.slug ? downloadRankMap.get(skill.slug) : undefined) ?? (skill.name ? downloadRankMap.get(skill.name) : undefined);
+          const isVerified = Boolean(skill.isVerifiedMaker) || Boolean(skill.isOfficial) || (skill.audits && skill.audits.length > 0 && skill.audits.every((a) => a.status === 'pass'));
 
           return (
             <div
@@ -428,11 +598,16 @@ export const SkillsTab: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Telemetry Chips (Installs, Stars, Official) */}
-                {(skill.installs || skill.stars || skill.isOfficial) && (
+                {/* Telemetry Chips (Installs with Geist Verified Rosette Checkmark, Stars, Official) */}
+                {(skill.installs || skill.stars || skill.isOfficial || isVerified) && (
                   <div className="flex items-center gap-2 mb-2.5 text-[11px] font-mono text-slate-500 dark:text-slate-400">
                     {skill.installs && (
-                      <span className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md text-slate-700 dark:text-slate-300">
+                      <span className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md text-slate-700 dark:text-slate-300">
+                        {isVerified && (
+                          <span title="Verified Publisher (Maker / Passed Security Audits)" className="text-sky-500 dark:text-sky-400 flex items-center">
+                            <BadgeCheck className="w-3.5 h-3.5 fill-sky-500/20 text-sky-500" />
+                          </span>
+                        )}
                         <Download className="w-3 h-3 text-sky-500" />
                         <span>{typeof skill.installs === 'number' ? `${(skill.installs / 1000).toFixed(0)}K` : skill.installs}</span>
                       </span>
