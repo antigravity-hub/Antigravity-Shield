@@ -1,64 +1,125 @@
-# Logs
-logs
-.logs
+# Logs & Diagnostic Output
+logs/
+.logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+ubuntu-log/
+check.log
 
-node_modules
-dist-ssr
+# Node & Package Managers
+node_modules/
+dist/
+dist-ssr/
+dist_release/
+.vite/
 *.local
-.vite
-dist
+pnpm-lock.yaml
+.eslintcache
+tsconfig.tsbuildinfo
+.turbo/
+.parcel-cache/
 
-# Editor directories and files
+# Editor & OS Artifacts
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
+.vs/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.user
+*.userosv
+*.sln.docstates
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+desktop.ini
+$RECYCLE.BIN/
 
-# Build output
+# Tauri & Rust Build Outputs
+target/
 src-tauri/target/
 src-tauri/gen/
 src-tauri/.env
+prebuilt_bindings.rs
+*.pdb
 
-# Environment
+# Binaries, Installers & Archives
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+*.exe
+*.dll
+*.msi
+*.dmg
+*.pkg
+*.deb
+*.rpm
+*.AppImage
+*.app/
+Downloads/
+
+# Database & Storage
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Environment & Secrets
 .env
 .env.*
+!.env.example
 environment/
 
-# Python virtual environments and test files
+# Python Virtual Environments, Cache & Tooling
 .venv*/
-venv/
-# *.py
+venv*/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage/
+.nyc_output/
+htmlcov/
+*.egg-info/
 
-# Reference projects (for development only)
+# Testing & Automation Artifacts
+playwright-report/
+test-results/
+.playwright/
+.playwright-mcp/
 
-# Temporary quota probing scripts & dumps (one-off debugging artifacts)
+# Export & Generated Sub-repositories
+hub-export/
+
+# Agent & Perpetual Framework Local State
+.agents/
+.perpetual/
+
+# Temporary Quota Probing Scripts & Dumps (One-off debugging artifacts)
 scripts/_*.json
 scripts/dump_quota_raw.py
 scripts/dump_full.py
 scripts/probe_weekly.py
 scripts/probe_quota_summary.py
-pnpm-lock.yaml
-.agents/
-*.zip
-*.exe
-*.dll
-Downloads/
-dist_release/
-prebuilt_bindings.rs
-*.db
 
 # Internal Architecture & Diagnostic Audits (OpSec Protected)
 DIAGNOSTIC_AUDIT.md
@@ -70,9 +131,4 @@ UPSTREAM_ISSUES_RESOLVED.json
 request_transform.md
 diff_output.txt
 exe_build.txt
-.playwright-mcp/
 *BRAINSTORM*
-
-
-# Perpetual Engine local cache & state
-.perpetual/
