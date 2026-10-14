@@ -68,9 +68,11 @@ export async function fetchSkills(): Promise<SkillItem[]> {
     // If already installed locally (matched by id or name), preserve installed state
     const matchedLocal = skillMap.get(remote.id) || skillMap.get(remote.name);
     if (matchedLocal) {
+      if (matchedLocal.id !== remote.id) {
+        skillMap.delete(matchedLocal.id);
+      }
       skillMap.set(remote.id, {
         ...remote,
-        ...matchedLocal,
         isInstalled: true,
         isEnabled: matchedLocal.isEnabled,
         installs: remote.installs,
@@ -78,6 +80,9 @@ export async function fetchSkills(): Promise<SkillItem[]> {
         isOfficial: remote.isOfficial,
         owner: remote.owner,
         repo: remote.repo,
+        installPath: matchedLocal.installPath || matchedLocal.localPath,
+        localPath: matchedLocal.localPath,
+        isLocal: true,
       });
     } else {
       const override = localOverrides[remote.id];
