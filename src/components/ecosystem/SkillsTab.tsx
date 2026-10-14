@@ -25,10 +25,10 @@ import {
   Calendar,
   GitBranch,
   Lock,
-} from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import { SkillItem, SkillCategory } from '../../types/ecosystem';
 import { RichSkillDocViewer } from './RichSkillDocViewer';
+import { SKILLS_SH_CATALOG } from '../../config/skillsCatalog';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   all: Sliders,
@@ -162,6 +162,54 @@ export const SkillsTab: React.FC = () => {
       return a.title.localeCompare(b.title);
     });
   }, [filteredSkills, activeFirst]);
+
+  // Global download rank lookup: ranks all catalog and system skills by installs descending
+  const downloadRankMap = useMemo(() => {
+    const seen = new Set<string>();
+    const rankedList: SkillItem[] = [];
+
+    // Combine all currently loaded skills and official catalog to ensure 100% stable global ranks
+    [...skills, ...SKILLS_SH_CATALOG].forEach((s) => {
+      const key = s.id || s.slug || s.name;
+      if (!seen.has(key) && parseInstalls(s.installs) > 0) {
+        seen.add(key);
+        rankedList.push(s);
+      }
+    });
+
+    rankedList.sort((a, b) => {
+      const diff = parseInstalls(b.installs) - parseInstalls(a.installs);
+      if (diff !== 0) return diff;
+      const bStars = parseInstalls(b.stars);
+      const aStars = parseInstalls(a.stars);
+      if (bStars !== aStars) return bStars - aStars;
+      return a.title.localeCompare(b.title);
+    });
+
+    const map = new Map<string, number>();
+    rankedList.forEach((s, idx) => {
+      const rank = idx + 1;
+      if (s.id) map.set(s.id, rank);
+      if (s.slug) map.set(s.slug, rank);
+      if (s.name) map.set(s.name, rank);
+    });
+    return map;
+  }, [skills]);
+
+  // Distinct multi-stop gradient styling for download ranks (Top 10, 11-99, 100+)
+  const getRankBadgeClasses = (rank: number) => {
+    if (rank <= 10) {
+      // Top 10 Tier: Fiery Amber-Orange-Rose Gradient with glowing aura
+      return 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white border-amber-300/40 shadow-xs shadow-orange-500/30';
+    }
+    if (rank <= 99) {
+      // Rank 11-99 Tier: Electric Violet-Purple-Indigo Gradient
+      return 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white border-purple-300/35 shadow-xs shadow-purple-500/25';
+    }
+    // Rank 100+ Tier: Modern Cyber Cyan-Teal-Blue Gradient
+    return 'bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white border-cyan-300/30 shadow-xs shadow-cyan-500/20';
+  };
+
 
   const handleOpenInspector = async (skill: SkillItem) => {
     setInspectingSkill(skill);
@@ -328,6 +376,7 @@ export const SkillsTab: React.FC = () => {
         {sortedSkills.map((skill) => {
           const IconComponent = SKILL_ICONS[skill.icon || 'Sparkles'] || Sparkles;
           const isBusy = installingId === skill.id;
+          const rank = downloadRankMap.get(skill.id) ?? (skill.slug ? downloadRankMap.get(skill.slug) : undefined) ?? (skill.name ? downloadRankMap.get(skill.name) : undefined);
 
           return (
             <div
@@ -353,16 +402,29 @@ export const SkillsTab: React.FC = () => {
                     </div>
                   </div>
 
-                  {skill.isInstalled && (
-                    <span className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
-                      skill.isEnabled
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-                    }`}>
-                      <CheckCircle2 className={`w-3 h-3 ${skill.isEnabled ? 'text-emerald-500' : 'text-slate-400'}`} />
-                      <span>{skill.isEnabled ? t('ecosystem.status.active', 'Active') : t('ecosystem.status.inactive', 'Inactive')}</span>
-                    </span>
-                  )}
+                  {/* Top Corner Badges: Numeric Download Rank & Active Status */}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {rank !== undefined && (
+                      <span
+                        title={`Download Rank: #${rank}`}
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-black tracking-tight border select-none transition-transform duration-200 group-hover:scale-105 ${getRankBadgeClasses(rank)}`}
+                      >
+                        {rank <= 10 && <Flame className="w-2.5 h-2.5 fill-current shrink-0 animate-pulse" />}
+                        <span>#{rank}</span>
+                      </span>
+                    )}
+
+                    {skill.isInstalled && (
+                      <span className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
+                        skill.isEnabled
+                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                      }`}>
+                        <CheckCircle2 className={`w-3 h-3 ${skill.isEnabled ? 'text-emerald-500' : 'text-slate-400'}`} />
+                        <span>{skill.isEnabled ? t('ecosystem.status.active', 'Active') : t('ecosystem.status.inactive', 'Inactive')}</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Telemetry Chips (Installs, Stars, Official) */}
@@ -509,6 +571,19 @@ export const SkillsTab: React.FC = () => {
                       <span className="font-bold text-sm text-slate-900 dark:text-white">
                         {inspectingSkill.title}
                       </span>
+                      {(() => {
+                        const modalRank = downloadRankMap.get(inspectingSkill.id) ?? (inspectingSkill.slug ? downloadRankMap.get(inspectingSkill.slug) : undefined) ?? (inspectingSkill.name ? downloadRankMap.get(inspectingSkill.name) : undefined);
+                        if (modalRank === undefined) return null;
+                        return (
+                          <span
+                            title={`Download Rank: #${modalRank}`}
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-black tracking-tight border shadow-xs ${getRankBadgeClasses(modalRank)}`}
+                          >
+                            {modalRank <= 10 && <Flame className="w-2.5 h-2.5 fill-current shrink-0 animate-pulse" />}
+                            <span>#{modalRank}</span>
+                          </span>
+                        );
+                      })()}
                       {inspectingSkill.isOfficial && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-sans">
                           {t('ecosystem.official_maker', 'Official Maker')}
@@ -624,23 +699,8 @@ export const SkillsTab: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 3. 1-Click Install or Local Privacy Banner */}
-                {inspectingSkill.isLocal ? (
-                  <div className="text-[11px] text-slate-600 dark:text-slate-300 bg-emerald-500/5 dark:bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20 flex items-center justify-between">
-                    <div>
-                      <div className="font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 mb-0.5">
-                        <Lock className="w-3.5 h-3.5" />
-                        <span>{t('ecosystem.local_shield_title', 'Zero-Leak Isolated Local Skill')}</span>
-                      </div>
-                      <span className="text-[10px] text-slate-500 font-mono truncate block max-w-lg">
-                        {t('ecosystem.file_path', 'File Path:')} {inspectingSkill.installPath}
-                      </span>
-                    </div>
-                    <span className="text-[10px] px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-semibold">
-                      {t('ecosystem.private_and_local', 'Private & Local')}
-                    </span>
-                  </div>
-                ) : (
+                {/* 3. 1-Click Install Banner for Online Skills */}
+                {!inspectingSkill.isLocal && (
                   <div className="p-3.5 rounded-xl bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-transparent border border-sky-500/20 flex items-center justify-between">
                     <div>
                       <span className="text-xs font-semibold text-slate-900 dark:text-white block mb-0.5">
