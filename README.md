@@ -1,6 +1,6 @@
 # Antigravity Shield 🛡️
 > **Enterprise High-Performance AI Account Manager, Universal Agent Skills Marketplace & Zero-Leak Multi-IDE Protocol Gateway**  
-> *Version 5.22.0 — Engineered with Rust (Axum / Tokio) & React 19 (Tauri 2.x)*
+> *Version 6.0.0 — Engineered with Rust (Axum / Tokio) & React 19 (Tauri 2.x)*
 
 <div align="center">
   <img src="public/icon.png" alt="Antigravity Shield Logo" width="130" height="130" style="border-radius: 28px; box-shadow: 0 12px 36px rgba(0,0,0,0.2);">
@@ -11,7 +11,7 @@
   </p>
 
   <p>
-    <a href="https://github.com/doctorguidance/antigravity-shield/releases"><img src="https://img.shields.io/badge/Version-5.22.0-0A84FF?style=for-the-badge&logo=tauri&logoColor=white" alt="Version 5.22.0"></a>
+    <a href="https://github.com/doctorguidance/antigravity-shield/releases"><img src="https://img.shields.io/badge/Version-6.0.0-0A84FF?style=for-the-badge&logo=tauri&logoColor=white" alt="Version 6.0.0"></a>
     <img src="https://img.shields.io/badge/Rust-Axum%20%2F%20Tokio-DEA584?style=for-the-badge&logo=rust&logoColor=white" alt="Rust Axum">
     <img src="https://img.shields.io/badge/Frontend-React%2019-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19">
     <img src="https://img.shields.io/badge/Desktop-Tauri%20v2-FFC131?style=for-the-badge&logo=tauri&logoColor=black" alt="Tauri v2">
@@ -365,7 +365,7 @@ curl http://127.0.0.1:8045/v1/chat/completions \
 
 ### Option 1: Pre-Built Binaries (Recommended)
 Download the latest verified release from [GitHub Releases](https://github.com/doctorguidance/antigravity-shield/releases/latest):
-* **Windows (x64):** `Antigravity.Shield_5.22.0_x64-setup.exe` (or portable zip)
+* **Windows (x64):** `Antigravity.Shield_6.0.0_x64-setup.exe` (or portable zip)
 * **macOS:** `.dmg` (Universal binary: Apple Silicon M-Series & Intel x64)
 * **Linux:** `.deb` or `.AppImage`
 

@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.0.0 (2026-10-15)**:
+        -   **Universal Dynamic Theme Adaptation & Brand Shield Invariant**: Eradicated static and hardcoded accent color classes (`sky-500`, `blue-600`, `cyan-500`) across Ecosystem Hub, SkillsTab, McpTab, RulesTab, and modal surfaces. All interactive controls, install actions, category badges, focus outlines, and status pings now dynamically adapt to custom themes (Pink / Rose, Emerald, Amber, etc.) via CSS variables (`--color-primary-btn`, `--color-accent`, `--color-badge-bg`). Core brand identity logos remain strictly immune to theme tinting.
+        -   **Universal Agent Ecosystem Hub**: Full integration of the curated 1,000+ Skills marketplace, local filesystem scanner (`~/.gemini/config/skills/`), 1-click installer and uninstaller, rich bilingual markdown doc viewer, and zero-leak privacy isolation.
+        -   **Architectural Invariant Enforcement**: Established and persisted project-wide workspace rules in `AGENTS.md` guaranteeing zero hardcoded accents and pre-flight multi-accent inspection gates.
     *   **v5.22.0 (2026-10-13)**:
         -   **Dynamic Account-Driven Model Discovery & Upstream Production Prioritization**: Fully automated model selection for 5-hour and weekly quota warmups by dynamically inspecting each account's authorized model list (prioritizing the newest supported Flash and Claude models) instead of brittle hardcoded names. Prioritized official production endpoint (`cloudcode-pa.googleapis.com`) to eliminate TCP connection resets from daily staging servers, and eliminated invalid `thinkingBudget: 0` payloads to ensure all Gemini 3.x and future model generations execute flawlessly.
         -   **Agent Ecosystem Hub (Skills, MCP & Rules)**: Integrated Skills.sh catalog, local filesystem scanner, single-click install/uninstall, and zero-leak privacy guard for path and credential redaction.
