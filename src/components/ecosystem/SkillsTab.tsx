@@ -228,12 +228,9 @@ export const SkillsTab: React.FC = () => {
 
     if (!matchesCategory || !matchesQuery) return false;
 
-    // 4. Verified Only Filter (Item 4: Verified maker rosette checkmark)
+    // 4. Verified Only Filter (Strict Official Technology Maker checkmark matching skills.sh)
     if (verifiedOnly) {
-      const isVerified =
-        Boolean(item.isVerifiedMaker) ||
-        Boolean(item.isOfficial) ||
-        (item.audits && item.audits.length > 0 && item.audits.every((a) => a.status === 'pass'));
+      const isVerified = Boolean(item.isVerifiedMaker) || Boolean(item.isOfficial);
       if (!isVerified) return false;
     }
 
@@ -766,7 +763,7 @@ export const SkillsTab: React.FC = () => {
           const IconComponent = SKILL_ICONS[skill.icon || 'Sparkles'] || Sparkles;
           const isBusy = installingId === skill.id;
           const rank = downloadRankMap.get(skill.id) ?? (skill.slug ? downloadRankMap.get(skill.slug) : undefined) ?? (skill.name ? downloadRankMap.get(skill.name) : undefined);
-          const isVerified = Boolean(skill.isVerifiedMaker) || Boolean(skill.isOfficial) || (skill.audits && skill.audits.length > 0 && skill.audits.every((a) => a.status === 'pass'));
+          const isVerified = Boolean(skill.isVerifiedMaker) || Boolean(skill.isOfficial);
 
           return (
             <motion.div
@@ -852,7 +849,7 @@ export const SkillsTab: React.FC = () => {
                     {skill.installs && (
                       <span className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md text-slate-700 dark:text-slate-300">
                         {isVerified && (
-                          <span title="Verified Publisher (Maker / Passed Security Audits)" className="flex items-center" style={{ color: 'var(--color-accent)' }}>
+                          <span title="Official Technology Maker (skills.sh verified)" className="flex items-center" style={{ color: 'var(--color-accent)' }}>
                             <BadgeCheck className="w-3.5 h-3.5" style={{ fill: 'var(--color-badge-bg)', color: 'var(--color-accent)' }} />
                           </span>
                         )}

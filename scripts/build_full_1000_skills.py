@@ -19,6 +19,27 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CATALOG_FILE = PROJECT_ROOT / "src" / "config" / "skillsCatalog.ts"
 HUB_EXPORT_DIR = PROJECT_ROOT / "hub-export"
 
+# 98 Official Technology Makers directly verified from https://skills.sh/official
+OFFICIAL_MAKERS = {
+    "aave", "anthropics", "antithesishq", "apify", "apollographql", "astronomer",
+    "auth0", "automattic", "aws", "axiomhq", "base", "better-auth", "bitwarden",
+    "box", "brave", "browser-use", "browserbase", "callstackincubator", "clerk",
+    "clickhouse", "cloudflare", "coderabbitai", "coinbase", "contentful",
+    "contentstack", "convex-dev", "dagster-io", "dash0hq", "datadog-labs",
+    "dbt-labs", "deepgram", "denoland", "elevenlabs", "encoredev", "exploreomni",
+    "expo", "facebook", "factory-ai", "figma", "firebase", "firecrawl", "flutter",
+    "getsentry", "github", "google-gemini", "google-labs-code", "google",
+    "googlechrome", "hashicorp", "huggingface", "kotlin", "langchain-ai",
+    "langfuse", "launchdarkly", "makenotion", "mapbox", "mastra-ai", "mcp-use",
+    "medusajs", "microsoft", "mongodb", "n8n-io", "neondatabase", "nuxt", "nvidia",
+    "openai", "openshift", "parallel-web", "pinecone-io", "planetscale", "posthog",
+    "prisma", "pulumi", "pytorch", "redis", "remotion-dev", "resend", "rivet-dev",
+    "runwayml", "sanity-io", "semgrep", "shopify", "signoz", "streamlit", "stripe",
+    "supabase", "sveltejs", "tavily-ai", "temporalio", "tinybirdco", "tldraw",
+    "triggerdotdev", "uniformdev", "upstash", "vapiai", "vercel", "vercel-labs",
+    "webflow", "wix", "wordpress", "radix-ui", "tailwindlabs", "tanstack"
+}
+
 # -----------------------------------------------------------------------------
 # Curated Domain Matrices (812 unique items to add to 188 existing = 1000 total)
 # -----------------------------------------------------------------------------
@@ -418,6 +439,11 @@ def generate_catalog():
             doc_en = make_english_doc(title, cand["owner"], cand["category"], cand["role"], cand["description"])
             doc_fa = make_persian_doc(title, cand["owner"], cand["category"], cand["role"], cand["description"])
 
+            is_official = cand["owner"].lower() in OFFICIAL_MAKERS
+            skill_tags = [cand["category"], cand["owner"], cand["role"]]
+            if is_official:
+                skill_tags.append("Official")
+
             skill_obj = {
                 "id": skill_id,
                 "slug": slug,
@@ -439,8 +465,8 @@ def generate_catalog():
                 "repository": f"https://github.com/{cand['owner']}/skills",
                 "remoteUrl": f"https://www.skills.sh/{cand['owner']}/skills/{slug}",
                 "downloadUrl": f"https://skills.sh/api/v1/skills/{cand['owner']}/skills/{slug}",
-                "isOfficial": True,
-                "isVerifiedMaker": True,
+                "isOfficial": is_official,
+                "isVerifiedMaker": is_official,
                 "auditStatus": "pass",
                 "audits": [
                     {
@@ -474,7 +500,7 @@ def generate_catalog():
                 "isInstalled": False,
                 "isEnabled": False,
                 "sourceType": "skills.sh",
-                "tags": [cand["category"], cand["owner"], cand["role"], "Official"],
+                "tags": skill_tags,
                 "targetRole": cand["role"],
                 "criticality": "recommended",
                 "docsMarkdown": {

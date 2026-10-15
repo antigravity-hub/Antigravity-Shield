@@ -12,7 +12,11 @@ async function main() {
   console.log('[Hub Export] Starting extraction of skills catalog...');
   
   if (fs.existsSync(exportDir)) {
-    fs.rmSync(exportDir, { recursive: true, force: true });
+    try {
+      fs.rmSync(exportDir, { recursive: true, force: true });
+    } catch {
+      // Ignore directory lock on Windows and overwrite in-place
+    }
   }
   fs.mkdirSync(exportDir, { recursive: true });
   fs.mkdirSync(path.join(exportDir, 'docs'), { recursive: true });
@@ -29,12 +33,13 @@ async function main() {
   }
 
   const jsonStart = startIdx + marker.length;
-  const jsonEnd = catalogContent.indexOf('\n];\n', jsonStart) + 2; // include ];
+  const helperMarker = catalogContent.indexOf('// =========================================================================', jsonStart);
+  const jsonEnd = catalogContent.lastIndexOf('];', helperMarker);
   if (jsonEnd <= jsonStart) {
     throw new Error('Failed to find closing bracket of SKILLS_SH_CATALOG in skillsCatalog.ts');
   }
 
-  const rawJson = catalogContent.slice(jsonStart, jsonEnd).trim();
+  const rawJson = catalogContent.slice(jsonStart, jsonEnd + 1).trim();
   const skills = JSON.parse(rawJson);
   console.log(`[Hub Export] Parsed ${skills.length} skills from catalog.`);
 
