@@ -31,19 +31,20 @@ const seafoamDeep = {
     950: '#04241d',
 };
 
-// Deep Obsidian Graphite (True luxury dark mode: zero blue, zero greenish glare, OLED-friendly)
-const organicGraphite = {
-    50: '#f6f8f7',
-    100: '#e9ecea',
-    200: '#d3d8d5',
-    300: '#aeb6b1',
-    400: '#849089',
-    500: '#616e66',
-    600: '#3e4842',
-    700: '#262d29',
-    800: '#141916', // Card borders and subtle tertiary surfaces
-    900: '#0c100e', // Primary deep obsidian card surface
-    950: '#060807', // Deepest background tone
+// High-contrast Obsidian Graphite Palette (Optimized for dark mode surfaces)
+const obsidianPalette = {
+    50: '#f8fafc',
+    100: '#f1f5f9',
+    200: '#e2e8f0',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    850: '#141916',
+    900: '#0c100e',
+    950: '#060807',
 };
 
 /** @type {import('tailwindcss').Config} */
@@ -60,16 +61,7 @@ export default {
             },
             colors: {
                 seafoam: seafoamCore,
-                // Replace cold navy-blue slate with luxurious organic graphite
-                slate: organicGraphite,
-                gray: organicGraphite,
-                zinc: organicGraphite,
-                neutral: organicGraphite,
-                // Re-route blue, sky, cyan, indigo to the Seafoam Green spectrum
-                blue: seafoamCore,
-                sky: seafoamDeep,
-                cyan: seafoamCore,
-                indigo: seafoamDeep,
+                obsidian: obsidianPalette,
             },
         },
     },
