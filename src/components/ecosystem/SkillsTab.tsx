@@ -282,18 +282,29 @@ export const SkillsTab: React.FC = () => {
     return map;
   }, [skills]);
 
-  // Distinct multi-stop gradient styling for download ranks (Top 10, 11-99, 100+)
+  // Distinct multi-stop gradient styling with tactile inner shadows for download ranks (Top 10, 11-99, 100+)
   const getRankBadgeClasses = (rank: number) => {
     if (rank <= 10) {
-      // Top 10 Tier: Fiery Amber-Orange-Rose Gradient with glowing aura
-      return 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white border-amber-300/40 shadow-xs shadow-orange-500/30';
+      // Top 10 Tier: Fiery Amber-Orange-Rose Gradient with glass bevel highlight and deep inner shadow
+      return 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 text-white border-y border-l border-amber-300/60 shadow-[inset_0_2px_3px_rgba(255,255,255,0.45),inset_0_-2.5px_5px_rgba(136,19,55,0.6),0_4px_12px_rgba(244,63,94,0.35)]';
     }
     if (rank <= 99) {
-      // Rank 11-99 Tier: Electric Violet-Purple-Indigo Gradient
-      return 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white border-purple-300/35 shadow-xs shadow-purple-500/25';
+      // Rank 11-99 Tier: Electric Violet-Purple-Indigo Gradient with tactile inner shadow
+      return 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 text-white border-y border-l border-purple-300/50 shadow-[inset_0_2px_3px_rgba(255,255,255,0.4),inset_0_-2.5px_5px_rgba(46,16,101,0.6),0_4px_12px_rgba(147,51,234,0.3)]';
     }
-    // Rank 100+ Tier: Modern Cyber Cyan-Teal-Blue Gradient
-    return 'bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-600 text-white border-cyan-300/30 shadow-xs shadow-cyan-500/20';
+    // Rank 100+ Tier: Modern Cyber Cyan-Teal-Blue Gradient with tactile inner shadow
+    return 'bg-gradient-to-r from-cyan-600 via-teal-600 to-blue-700 text-white border-y border-l border-cyan-300/40 shadow-[inset_0_2px_3px_rgba(255,255,255,0.35),inset_0_-2.5px_5px_rgba(8,47,73,0.6),0_4px_12px_rgba(6,182,212,0.25)]';
+  };
+
+  // 3D folded triangular shadow that connects the protruding ribbon back behind the card edge
+  const getRankFoldShadowClasses = (rank: number) => {
+    if (rank <= 10) {
+      return 'border-t-rose-950/80 dark:border-t-rose-950';
+    }
+    if (rank <= 99) {
+      return 'border-t-indigo-950/80 dark:border-t-purple-950';
+    }
+    return 'border-t-blue-950/80 dark:border-t-sky-950';
   };
 
 
@@ -596,9 +607,32 @@ export const SkillsTab: React.FC = () => {
               key={skill.id}
               className="group relative flex flex-col justify-between p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-xs hover:shadow-md hover:border-sky-500/30 transition-all duration-200"
             >
+              {/* 3D Protruding Rank Ribbon folded over the side edge */}
+              {rank !== undefined && (
+                <div className="absolute -right-2.5 top-3 z-10 select-none pointer-events-none">
+                  <div className="relative pointer-events-auto">
+                    {/* Ribbon Main Body */}
+                    <div
+                      title={`Download Rank: #${rank}`}
+                      className={`relative z-10 flex items-center gap-1.5 px-3.5 py-1 text-xs font-mono font-black tracking-tight rounded-l-xl transition-all duration-200 group-hover:scale-105 group-hover:-translate-x-0.5 ${getRankBadgeClasses(rank)}`}
+                    >
+                      {rank <= 10 && (
+                        <Flame className="w-4 h-4 fill-current shrink-0 animate-pulse drop-shadow-xs" />
+                      )}
+                      <span className="text-[13px] font-black drop-shadow-xs">#{rank}</span>
+                    </div>
+
+                    {/* 3D Folded Triangle tucked behind the card edge */}
+                    <div
+                      className={`absolute -bottom-2 right-0 w-0 h-0 border-t-[8px] border-r-[10px] border-r-transparent ${getRankFoldShadowClasses(rank)}`}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div>
                 {/* Header */}
-                <div className="flex items-start justify-between gap-3 mb-3">
+                <div className={`flex items-start justify-between gap-3 mb-3 ${rank !== undefined ? 'pr-20' : ''}`}>
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20">
                       <IconComponent className="w-5 h-5" />
@@ -615,29 +649,17 @@ export const SkillsTab: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Top Corner Badges: Numeric Download Rank & Active Status */}
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {rank !== undefined && (
-                      <span
-                        title={`Download Rank: #${rank}`}
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-black tracking-tight border select-none transition-transform duration-200 group-hover:scale-105 ${getRankBadgeClasses(rank)}`}
-                      >
-                        {rank <= 10 && <Flame className="w-2.5 h-2.5 fill-current shrink-0 animate-pulse" />}
-                        <span>#{rank}</span>
-                      </span>
-                    )}
-
-                    {skill.isInstalled && (
-                      <span className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
-                        skill.isEnabled
-                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-                      }`}>
-                        <CheckCircle2 className={`w-3 h-3 ${skill.isEnabled ? 'text-emerald-500' : 'text-slate-400'}`} />
-                        <span>{skill.isEnabled ? t('ecosystem.status.active', 'Active') : t('ecosystem.status.inactive', 'Inactive')}</span>
-                      </span>
-                    )}
-                  </div>
+                  {/* Active Status Pill */}
+                  {skill.isInstalled && (
+                    <span className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
+                      skill.isEnabled
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                    }`}>
+                      <CheckCircle2 className={`w-3 h-3 ${skill.isEnabled ? 'text-emerald-500' : 'text-slate-400'}`} />
+                      <span>{skill.isEnabled ? t('ecosystem.status.active', 'Active') : t('ecosystem.status.inactive', 'Inactive')}</span>
+                    </span>
+                  )}
                 </div>
 
                 {/* Telemetry Chips (Installs with Geist Verified Rosette Checkmark, Stars, Official) */}
