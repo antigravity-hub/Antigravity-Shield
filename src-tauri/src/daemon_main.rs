@@ -133,13 +133,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     if cli.command == "status" || cli.command == "accounts" {
-        let token_manager = Arc::new(antigravity_shield_lib::proxy::TokenManager::new(data_dir.clone()));
-        token_manager.load_accounts().await?;
-        let enabled_profiles = token_manager.enabled_account_count();
+        let profile_hub = Arc::new(antigravity_shield_lib::proxy::TokenManager::new(data_dir.clone()));
+        profile_hub.load_accounts().await?;
+        let active_profiles = profile_hub.active_profile_count();
         println!("\n=== Antigravity Shield Daemon Status ===");
         println!("Data Directory: {}", data_dir.display());
         println!("Configured Port: {}", config.proxy.port);
-        println!("Active Upstream Profiles: {}", enabled_profiles);
+        println!("Active Upstream Profiles: {}", active_profiles);
         println!("========================================\n");
         return Ok(());
     }
@@ -147,7 +147,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize headless token manager and integration
     let token_manager = Arc::new(antigravity_shield_lib::proxy::TokenManager::new(data_dir.clone()));
     token_manager.load_accounts().await?;
-    info!("👥 Loaded {} accounts into token manager", token_manager.enabled_account_count());
+    let active_profiles = token_manager.active_profile_count();
+    info!("👥 Loaded {} upstream profiles into gateway", active_profiles);
 
     let integration = antigravity_shield_lib::modules::integration::SystemManager::Headless;
     let monitor = Arc::new(antigravity_shield_lib::proxy::monitor::ProxyMonitor::new(1000, None));

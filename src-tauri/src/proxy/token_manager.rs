@@ -380,8 +380,12 @@ impl TokenManager {
             .collect()
     }
 
-    pub fn enabled_account_count(&self) -> usize {
+    pub fn active_profile_count(&self) -> usize {
         self.tokens.len()
+    }
+
+    pub fn enabled_account_count(&self) -> usize {
+        self.active_profile_count()
     }
 
     fn sync_image_scheduler_accounts(&self) {
