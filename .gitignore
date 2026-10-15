@@ -134,3 +134,6 @@ diff_output.txt
 exe_build.txt
 *BRAINSTORM*
 .juliet/
+
+preview_readme*.html
+scripts/generate_readme_preview.cjs
