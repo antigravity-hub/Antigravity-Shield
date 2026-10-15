@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Sparkles,
@@ -12,8 +12,10 @@ import {
   Layers,
   ShieldCheck,
   Bot,
+  Loader2,
 } from 'lucide-react';
 import { SkillItem } from '../../types/ecosystem';
+import { fetchSkillDoc } from '../../services/ecosystemService';
 
 interface RichSkillDocViewerProps {
   skill: SkillItem;
@@ -25,6 +27,53 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
   const currentLang = i18n.language?.startsWith('fa') ? 'fa' : 'en';
   const [selectedLang, setSelectedLang] = useState<'fa' | 'en' | 'raw'>(currentLang);
   const [copied, setCopied] = useState(false);
+  const [remoteDoc, setRemoteDoc] = useState<string | null>(null);
+  const [isLoadingDoc, setIsLoadingDoc] = useState(false);
+
+  // Lazy load documentation from antigravity-hub CDN if not already inlined
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (selectedLang === 'raw') {
+      setRemoteDoc(null);
+      setIsLoadingDoc(false);
+      return;
+    }
+
+    // Check if skill already has bundled docs for this language
+    const bundled = skill.docsMarkdown?.[selectedLang];
+    if (bundled && bundled.trim().length > 0) {
+      setRemoteDoc(bundled);
+      setIsLoadingDoc(false);
+      return;
+    }
+
+    // Otherwise, fetch lazily from Hub CDN with local cache
+    const slug = skill.slug || skill.name || skill.id.split('/').pop() || '';
+    if (!slug) {
+      setRemoteDoc(skill.description);
+      return;
+    }
+
+    setIsLoadingDoc(true);
+    fetchSkillDoc(slug, selectedLang)
+      .then((doc) => {
+        if (!isCancelled) {
+          setRemoteDoc(doc || skill.description);
+          setIsLoadingDoc(false);
+        }
+      })
+      .catch(() => {
+        if (!isCancelled) {
+          setRemoteDoc(skill.description);
+          setIsLoadingDoc(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [skill, selectedLang]);
 
   const roleLabels: Record<string, { en: string; fa: string; color: string }> = {
     frontend: { en: 'Frontend UI/UX', fa: 'فرانت‌اند و رابط کاربری', color: 'from-pink-500/20 to-rose-500/10 text-pink-600 dark:text-pink-400 border-pink-500/30' },
@@ -50,9 +99,7 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
   const markdownText =
     selectedLang === 'raw'
       ? rawSkillContent || skill.content || skill.description
-      : selectedLang === 'fa'
-      ? skill.docsMarkdown?.fa || skill.description
-      : skill.docsMarkdown?.en || skill.description;
+      : remoteDoc || (selectedLang === 'fa' ? skill.docsMarkdown?.fa : skill.docsMarkdown?.en) || skill.description;
 
   // Helper to parse markdown inline tokens (**bold**, `code`, *italic*) into React elements
   const renderInlineMarkdown = (text: string): React.ReactNode => {
@@ -390,7 +437,16 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
               {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
             </button>
 
-            {selectedLang === 'raw' ? (
+            {isLoadingDoc ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-3 text-slate-500">
+                <Loader2 className="w-6 h-6 animate-spin text-sky-500" />
+                <span className="text-xs font-medium">
+                  {selectedLang === 'fa'
+                    ? 'در حال دریافت مستندات تخصصی از هاب مرکزی...'
+                    : 'Fetching specialized documentation from Hub CDN...'}
+                </span>
+              </div>
+            ) : selectedLang === 'raw' ? (
               <pre className="font-mono text-xs whitespace-pre-wrap leading-relaxed text-slate-800 dark:text-slate-200" dir="ltr">
                 {markdownText}
               </pre>

@@ -36,6 +36,16 @@ export async function fetchSkills(): Promise<SkillItem[]> {
     console.warn('[Ecosystem] Failed to fetch native skills, falling back to local storage / catalog:', err);
   }
 
+  // Load dynamic telemetry updates (from previous live syncs)
+  const STORAGE_KEY_TELEMETRY = 'antigravity_ecosystem_telemetry_cache';
+  let telemetryCache: Record<string, { installs?: number | string; stars?: number | string; isOfficial?: boolean; isVerifiedMaker?: boolean }> = {};
+  const cachedTelemetry = localStorage.getItem(STORAGE_KEY_TELEMETRY);
+  if (cachedTelemetry) {
+    try {
+      telemetryCache = JSON.parse(cachedTelemetry);
+    } catch {}
+  }
+
   // Load local state modifications or installed statuses from storage
   let localOverrides: Record<string, Partial<SkillItem>> = {};
   const cached = localStorage.getItem(STORAGE_KEY_SKILLS);
@@ -65,6 +75,12 @@ export async function fetchSkills(): Promise<SkillItem[]> {
 
   // 2. Curated Skills.sh marketplace catalog
   for (const remote of SKILLS_SH_CATALOG) {
+    const dynamicTelemetry = telemetryCache[remote.id] || (remote.slug ? telemetryCache[remote.slug] : undefined);
+    const installs = dynamicTelemetry?.installs ?? remote.installs;
+    const stars = dynamicTelemetry?.stars ?? remote.stars;
+    const isOfficial = dynamicTelemetry?.isOfficial ?? remote.isOfficial;
+    const isVerifiedMaker = dynamicTelemetry?.isVerifiedMaker ?? remote.isVerifiedMaker;
+
     // If already installed locally (matched by id or name), preserve installed state
     const matchedLocal = skillMap.get(remote.id) || skillMap.get(remote.name);
     if (matchedLocal) {
@@ -75,9 +91,10 @@ export async function fetchSkills(): Promise<SkillItem[]> {
         ...remote,
         isInstalled: true,
         isEnabled: matchedLocal.isEnabled,
-        installs: remote.installs,
-        stars: remote.stars,
-        isOfficial: remote.isOfficial,
+        installs,
+        stars,
+        isOfficial,
+        isVerifiedMaker,
         owner: remote.owner,
         repo: remote.repo,
         installPath: matchedLocal.installPath || matchedLocal.localPath,
@@ -88,6 +105,10 @@ export async function fetchSkills(): Promise<SkillItem[]> {
       const override = localOverrides[remote.id];
       skillMap.set(remote.id, {
         ...remote,
+        installs,
+        stars,
+        isOfficial,
+        isVerifiedMaker,
         isInstalled: override?.isInstalled ?? false,
         isEnabled: override?.isEnabled ?? false,
         sourceType: 'skills.sh',
@@ -97,6 +118,109 @@ export async function fetchSkills(): Promise<SkillItem[]> {
   }
 
   return Array.from(skillMap.values());
+}
+
+/**
+ * Lazy fetcher for localized markdown documentation.
+ * First checks local storage cache; if missing, pulls from jsDelivr / GitHub Raw CDN.
+ */
+export async function fetchSkillDoc(slug: string, lang: 'fa' | 'en'): Promise<string | null> {
+  const cacheKey = `antigravity_doc_${slug}_${lang}`;
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const urls = [
+    `https://cdn.jsdelivr.net/gh/antigravity-hub/skills@main/docs/${slug}/doc.${lang}.md`,
+    `https://raw.githubusercontent.com/antigravity-hub/skills/main/docs/${slug}/doc.${lang}.md`,
+  ];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.trim().length > 0) {
+          localStorage.setItem(cacheKey, text);
+          return text;
+        }
+      }
+    } catch {
+      // Try next CDN fallback
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Live Telemetry Sync Service:
+ * Single-batch, lightweight sync from antigravity-hub/skills CDN with progressive streaming hydration.
+ */
+export async function syncMarketplaceTelemetry(
+  onChunk?: (chunk: Partial<SkillItem>[]) => void
+): Promise<{ updatedCount: number; lastSyncedAt: number }> {
+  const manifestUrls = [
+    'https://cdn.jsdelivr.net/gh/antigravity-hub/skills@main/manifest.json',
+    'https://raw.githubusercontent.com/antigravity-hub/skills/main/manifest.json',
+  ];
+
+  let manifestData: any = null;
+
+  for (const url of manifestUrls) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        manifestData = await res.json();
+        if (manifestData && manifestData.skills) break;
+      }
+    } catch {}
+  }
+
+  if (!manifestData || !manifestData.skills) {
+    throw new Error('Failed to reach telemetry CDN');
+  }
+
+  const STORAGE_KEY_TELEMETRY = 'antigravity_ecosystem_telemetry_cache';
+  const telemetryEntries: Record<string, any> = {};
+  const allUpdates: Partial<SkillItem>[] = [];
+
+  for (const [id, skillMeta] of Object.entries<any>(manifestData.skills)) {
+    const updateItem: Partial<SkillItem> = {
+      id,
+      slug: skillMeta.slug,
+      installs: skillMeta.installs,
+      stars: skillMeta.stars,
+      isOfficial: skillMeta.isOfficial,
+      isVerifiedMaker: skillMeta.isVerifiedMaker,
+    };
+    allUpdates.push(updateItem);
+    telemetryEntries[id] = {
+      installs: skillMeta.installs,
+      stars: skillMeta.stars,
+      isOfficial: skillMeta.isOfficial,
+      isVerifiedMaker: skillMeta.isVerifiedMaker,
+    };
+  }
+
+  // Save to persistent telemetry storage
+  localStorage.setItem(STORAGE_KEY_TELEMETRY, JSON.stringify(telemetryEntries));
+  const now = Date.now();
+  localStorage.setItem('antigravity_last_telemetry_sync', String(now));
+
+  // Stream in progressive chunks of 20 items for fluid UX
+  const chunkSize = 20;
+  for (let i = 0; i < allUpdates.length; i += chunkSize) {
+    const chunk = allUpdates.slice(i, i + chunkSize);
+    if (onChunk) {
+      onChunk(chunk);
+      // Brief yield to browser event loop to allow progressive CSS transitions
+      await new Promise((resolve) => setTimeout(resolve, 35));
+    }
+  }
+
+  return { updatedCount: allUpdates.length, lastSyncedAt: now };
 }
 
 export async function readSkillContent(skillId: string, isLocal?: boolean): Promise<string> {

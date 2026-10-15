@@ -27,6 +27,7 @@ import {
   BadgeCheck,
   Bot,
   Layers,
+  RefreshCw,
 } from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import {
@@ -92,6 +93,11 @@ export const SkillsTab: React.FC = () => {
     setVerifiedOnly,
     auditFilter,
     setAuditFilter,
+    isSyncingTelemetry,
+    lastTelemetrySyncAt,
+    syncTelemetry,
+    reorderRequired,
+    applyReorder,
     installSkill,
     uninstallSkill,
     toggleSkill,
@@ -538,8 +544,44 @@ export const SkillsTab: React.FC = () => {
               </span>
             )}
           </button>
+
+          {/* 5. Live Telemetry Sync Button (Single-Batch Hub CDN with Progressive Streaming Hydration) */}
+          <button
+            type="button"
+            onClick={() => syncTelemetry()}
+            disabled={isSyncingTelemetry}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border text-xs font-semibold transition-all ${
+              isSyncingTelemetry
+                ? 'bg-purple-500/15 border-purple-500/40 text-purple-600 dark:text-purple-400 cursor-wait'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-purple-500/30'
+            }`}
+            title={
+              lastTelemetrySyncAt
+                ? `Last synced: ${new Date(lastTelemetrySyncAt).toLocaleTimeString()}`
+                : 'Sync latest install counts and leaderboard from Hub CDN'
+            }
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncingTelemetry ? 'animate-spin text-purple-500' : 'text-slate-400'}`} />
+            <span>{isSyncingTelemetry ? t('ecosystem.syncing', 'Syncing...') : t('ecosystem.sync_telemetry', 'Sync Live')}</span>
+          </button>
         </div>
       </div>
+
+      {/* Anti-Layout-Thrashing Alert Banner */}
+      {reorderRequired && (
+        <div className="flex items-center justify-between p-3 rounded-2xl bg-purple-500/10 border border-purple-500/25 text-xs text-purple-700 dark:text-purple-300 backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-purple-500 shrink-0 animate-pulse" />
+            <span>{t('ecosystem.reorder_prompt', 'Latest download numbers & ranks have been synchronized via Hub CDN.')}</span>
+          </div>
+          <button
+            onClick={() => applyReorder()}
+            className="px-3 py-1 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs shadow-xs active:scale-95 transition-all"
+          >
+            {t('ecosystem.apply_reorder', 'Reorder Leaderboard')}
+          </button>
+        </div>
+      )}
 
       {/* Skills Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

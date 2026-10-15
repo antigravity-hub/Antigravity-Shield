@@ -30,6 +30,11 @@ interface EcosystemState {
   verifiedOnly: boolean;
   auditFilter: SecurityAuditFilter;
 
+  // Live Telemetry Sync State (Progressive Streaming Hydration)
+  isSyncingTelemetry: boolean;
+  lastTelemetrySyncAt: number | null;
+  reorderRequired: boolean;
+
   // Setters
   setActiveTab: (tab: EcosystemEntityType) => void;
   setSearchQuery: (query: string) => void;
@@ -42,6 +47,8 @@ interface EcosystemState {
 
   // Actions
   loadAll: () => Promise<void>;
+  syncTelemetry: () => Promise<boolean>;
+  applyReorder: () => void;
   installSkill: (skill: SkillItem) => Promise<boolean>;
   uninstallSkill: (skillId: string) => Promise<boolean>;
   toggleSkill: (skillId: string, enabled: boolean) => Promise<void>;
@@ -72,6 +79,13 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
   verifiedOnly: false,
   auditFilter: 'all',
 
+  isSyncingTelemetry: false,
+  lastTelemetrySyncAt: (() => {
+    const stored = localStorage.getItem('antigravity_last_telemetry_sync');
+    return stored ? Number(stored) : null;
+  })(),
+  reorderRequired: false,
+
   setActiveTab: (tab) => set({ activeTab: tab }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
@@ -94,6 +108,39 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
       console.error('[useEcosystemStore] Failed to load ecosystem:', err);
       set({ loading: false });
     }
+  },
+
+  syncTelemetry: async () => {
+    set({ isSyncingTelemetry: true });
+    try {
+      const res = await ecosystemService.syncMarketplaceTelemetry((chunk) => {
+        set((state) => {
+          const chunkMap = new Map(chunk.map((item) => [item.id, item]));
+          const updatedSkills = state.skills.map((s) => {
+            const update = chunkMap.get(s.id) || (s.slug ? chunkMap.get(s.slug) : undefined);
+            if (!update) return s;
+            return {
+              ...s,
+              installs: update.installs ?? s.installs,
+              stars: update.stars ?? s.stars,
+              isOfficial: update.isOfficial ?? s.isOfficial,
+              isVerifiedMaker: update.isVerifiedMaker ?? s.isVerifiedMaker,
+            };
+          });
+          return { skills: updatedSkills, reorderRequired: true };
+        });
+      });
+      set({ isSyncingTelemetry: false, lastTelemetrySyncAt: res.lastSyncedAt });
+      return true;
+    } catch (err) {
+      console.warn('[useEcosystemStore] Telemetry sync failed:', err);
+      set({ isSyncingTelemetry: false });
+      return false;
+    }
+  },
+
+  applyReorder: () => {
+    set((state) => ({ skills: [...state.skills], reorderRequired: false }));
   },
 
   installSkill: async (skill) => {
