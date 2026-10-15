@@ -3,7 +3,7 @@ use tauri::Emitter;
 use tauri_plugin_autostart::ManagerExt;
 
 #[cfg(target_os = "windows")]
-const STARTUP_APPS: &[&str] = &["Antigravity Shield", "Antigravity Tools"];
+const STARTUP_APPS: &[&str] = &["Antigravity Shield", "Antigravity Tools", "antigravity-shield"];
 
 /// Synchronizes Windows Task Manager's StartupApproved registry entry.
 /// Windows 10/11 uses HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run

@@ -19,7 +19,7 @@ html {
 }
 
 html.dark {
-  background-color: #090d16;
+  background-color: #09100d;
 }
 
 /* 全局样式 */
@@ -35,19 +35,19 @@ body {
 
 /* Dark mode override for body strictly */
 .dark body {
-  background-color: #090d16;
+  background-color: #09100d;
 }
 
 /* Cyber Shield Glassmorphism & Effects */
 .cyber-glass {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(13, 23, 19, 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(51, 65, 85, 0.6);
+  border: 1px solid rgba(147, 233, 190, 0.15);
 }
 
 .cyber-glass-glow {
-  box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 0 25px -5px rgba(147, 233, 190, 0.2);
 }
 
 .cyber-card {
@@ -55,8 +55,8 @@ body {
 }
 
 .cyber-card:hover {
-  border-color: rgba(6, 182, 212, 0.4);
-  box-shadow: 0 4px 20px -2px rgba(6, 182, 212, 0.15);
+  border-color: rgba(147, 233, 190, 0.4);
+  box-shadow: 0 4px 20px -2px rgba(147, 233, 190, 0.18);
 }
 
 #root {
@@ -126,12 +126,12 @@ a {
 .dark select,
 .dark select option,
 .dark select optgroup {
-  background-color: #1e293b;
-  color: #e2e8f0;
+  background-color: #13231c;
+  color: #e2f4eb;
 }
 
 .dark select option:checked {
-  background-color: #3b82f6;
+  background-color: #129a5f;
   color: white;
 }
 

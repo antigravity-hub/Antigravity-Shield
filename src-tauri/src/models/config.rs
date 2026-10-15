@@ -18,8 +18,10 @@ pub struct AppConfig {
     pub antigravity_ide_executable: Option<String>, // [NEW] Manually specified Antigravity IDE executable path
     pub antigravity_cli_executable: Option<String>, // [NEW] Manually specified Antigravity CLI (agy) path
     pub antigravity_args: Option<Vec<String>>,      // [NEW] Antigravity startup arguments
-    #[serde(default)]
-    pub auto_launch: bool,     // Launch on startup
+    #[serde(default = "default_true")]
+    pub auto_launch: bool,     // Launch on startup (Default: true in v6.0.0)
+    #[serde(default = "default_sidebar")]
+    pub navigation_layout: Option<String>, // Navigation layout mode (sidebar vs topbar)
     #[serde(default)]
     pub scheduled_warmup: ScheduledWarmupConfig, // [NEW] Scheduled warmup configuration
     #[serde(default)]
@@ -58,6 +60,10 @@ fn default_overlay_position() -> String {
 
 fn default_countdown_secs() -> u32 {
     30
+}
+
+fn default_sidebar() -> Option<String> {
+    Some("sidebar".to_string())
 }
 
 /// Scheduled warmup configuration
@@ -211,7 +217,8 @@ impl AppConfig {
             antigravity_ide_executable: None,
             antigravity_cli_executable: None,
             antigravity_args: None,
-            auto_launch: false,
+            auto_launch: true,
+            navigation_layout: Some("sidebar".to_string()),
             scheduled_warmup: ScheduledWarmupConfig::default(),
             quota_protection: QuotaProtectionConfig::default(),
             pinned_quota_models: PinnedQuotaModelsConfig::default(),

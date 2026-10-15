@@ -275,7 +275,7 @@ export default function MiniView() {
             ref={containerRef}
             onMouseDown={handleSurfaceMouseDown}
             data-tauri-drag-region
-            className="w-full h-full flex flex-col bg-white/95 dark:bg-[#111622]/95 backdrop-blur-md border border-gray-200/60 dark:border-white/10 rounded-xl overflow-hidden shadow-2xl select-none relative cursor-grab active:cursor-grabbing"
+            className="w-full h-full flex flex-col bg-white/95 dark:bg-[#0c1611]/95 backdrop-blur-md border border-gray-200/60 dark:border-white/10 rounded-xl overflow-hidden shadow-2xl select-none relative cursor-grab active:cursor-grabbing"
         >
             {/* 1. ULTRA-COMPACT / MICRO RING MODE (width < 155 or height < 115) */}
             {isMicro && (

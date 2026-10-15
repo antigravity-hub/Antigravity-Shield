@@ -45,6 +45,12 @@ export const McpTab: React.FC = () => {
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
   const [lastTestFeedback, setLastTestFeedback] = useState<{ id: string; message: string; success: boolean } | null>(null);
 
+  React.useEffect(() => {
+    if (mcpServers.length === 0) {
+      useEcosystemStore.getState().loadAll();
+    }
+  }, [mcpServers.length]);
+
   const [newServer, setNewServer] = useState<{
     id: string;
     title: string;
@@ -476,7 +482,27 @@ export const McpTab: React.FC = () => {
         })}
       </div>
 
-      {/* Diagnostics & Exposed Tools Modal */}
+      {/* Empty State UI */}
+      {filteredServers.length === 0 && (
+        <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 my-4">
+          <Plug className="w-8 h-8 text-slate-400 mb-2" />
+          <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            {t('ecosystem.mcp.no_servers', 'No MCP servers match your search or filter')}
+          </h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">
+            {t('ecosystem.mcp.no_servers_desc', 'Try clearing your search query or changing health filter.')}
+          </p>
+          <button
+            onClick={() => {
+              setHealthFilter('all');
+              useEcosystemStore.getState().setSearchQuery('');
+            }}
+            className="px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-semibold shadow-xs transition-colors active:scale-95"
+          >
+            {t('ecosystem.mcp.clear_filters', 'Clear filters & show all servers')}
+          </button>
+        </div>
+      )}
       <AnimatePresence>
         {inspectingServer && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">

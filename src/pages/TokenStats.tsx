@@ -78,12 +78,12 @@ type ViewMode = 'model' | 'account';
 type SourceFilter = 'all' | 'Antigravity IDE' | 'Antigravity Platform' | 'Antigravity CLI';
 
 const MODEL_COLORS = [
-    '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981',
-    '#06b6d4', '#6366f1', '#f43f5e', '#84cc16', '#a855f7',
-    '#14b8a6', '#f97316', '#64748b', '#0ea5e9', '#d946ef'
+    '#129a5f', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981',
+    '#93e9be', '#6366f1', '#f43f5e', '#84cc16', '#a855f7',
+    '#14b8a6', '#f97316', '#64748b', '#4ade9a', '#d946ef'
 ];
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#6366f1', '#f43f5e'];
+const COLORS = ['#129a5f', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#93e9be', '#6366f1', '#f43f5e'];
 
 const formatNumber = (num: number | undefined | null): string => {
     const val = Number(num) || 0;
@@ -466,8 +466,8 @@ const TokenStats: React.FC = () => {
         const row = payload[0]?.payload || {};
         const items = [
             { label: t('token_stats.total', 'Total'), value: row.total_tokens || 0, color: '#111827' },
-            { label: t('token_stats.input', 'Input'), value: row.total_input_tokens || 0, color: '#3b82f6' },
-            { label: t('token_stats.cached_token', 'Cached Tokens'), value: row.total_cached_tokens || 0, color: '#93c5fd' },
+            { label: t('token_stats.input', 'Input'), value: row.total_input_tokens || 0, color: '#129a5f' },
+            { label: t('token_stats.cached_token', 'Cached Tokens'), value: row.total_cached_tokens || 0, color: '#93e9be' },
             { label: t('token_stats.output', 'Output'), value: row.total_output_tokens || 0, color: '#8b5cf6' },
         ];
         return (
@@ -1060,8 +1060,8 @@ const TokenStats: React.FC = () => {
                                             allowEscapeViewBox={{ x: true, y: true }}
                                             wrapperStyle={{ zIndex: 100 }}
                                         />
-                                        <Bar dataKey="total_cached_tokens" name={t('token_stats.cached_token', 'Cached Tokens')} stackId="input" fill="#93c5fd" radius={[0, 0, 4, 4]} maxBarSize={50} />
-                                        <Bar dataKey="uncached_input_tokens" name={t('token_stats.input', 'Input')} stackId="input" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                                        <Bar dataKey="total_cached_tokens" name={t('token_stats.cached_token', 'Cached Tokens')} stackId="input" fill="#93e9be" radius={[0, 0, 4, 4]} maxBarSize={50} />
+                                        <Bar dataKey="uncached_input_tokens" name={t('token_stats.input', 'Input')} stackId="input" fill="#129a5f" radius={[4, 4, 0, 0]} maxBarSize={50} />
                                         <Bar dataKey="total_output_tokens" name={t('token_stats.output', 'Output')} fill="#8b5cf6" radius={[4, 4, 0, 0]} maxBarSize={50} />
                                     </BarChart>
                                 </ResponsiveContainer>

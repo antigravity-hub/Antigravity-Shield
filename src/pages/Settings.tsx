@@ -171,7 +171,7 @@ function Settings() {
             setFormData(prev => ({
                 ...config,
                 navigation_layout: config.navigation_layout || savedLayout || 'sidebar',
-                auto_launch: prev.auto_launch !== undefined ? prev.auto_launch : (config.auto_launch ?? false),
+                auto_launch: prev.auto_launch !== undefined ? prev.auto_launch : (config.auto_launch ?? true),
             }));
         }
     }, [config]);

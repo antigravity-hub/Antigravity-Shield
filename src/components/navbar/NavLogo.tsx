@@ -14,10 +14,10 @@ export function NavLogo() {
         >
             <div className="relative flex items-center justify-center">
                 {/* Neon Glow Aura */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/40 via-sky-500/30 to-emerald-500/40 rounded-xl blur-sm group-hover:blur-md transition-all duration-300 opacity-80 group-hover:opacity-100" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/40 via-[#93e9be]/40 to-teal-500/30 rounded-xl blur-sm group-hover:blur-md transition-all duration-300 opacity-80 group-hover:opacity-100" />
                 
                 {/* Logo Container */}
-                <div className="relative w-9 h-9 rounded-xl bg-slate-900/90 border border-cyan-500/40 p-1 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:border-cyan-400 transition-colors">
+                <div className="relative w-9 h-9 rounded-xl bg-slate-900/90 border border-[#93e9be]/40 p-1 flex items-center justify-center shadow-lg shadow-[#93e9be]/20 group-hover:border-[#93e9be] transition-colors">
                     {!imgFailed ? (
                         <img
                             src="/icon.png"
@@ -27,20 +27,20 @@ export function NavLogo() {
                             onError={() => setImgFailed(true)}
                         />
                     ) : (
-                        <Shield className="w-5 h-5 text-cyan-400 animate-pulse" />
+                        <Shield className="w-5 h-5 text-[#93e9be] animate-pulse" />
                     )}
                 </div>
             </div>
 
             <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                    <span className="text-base font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-emerald-400 bg-clip-text text-transparent">
+                    <span className="text-base font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-[#93e9be] to-teal-300 bg-clip-text text-transparent">
                         Antigravity
                     </span>
                     <span className="text-base font-extrabold tracking-tight text-white dark:text-slate-100">
                         Shield
                     </span>
-                    <span className="text-[9px] font-mono font-black uppercase px-1.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 shadow-[0_0_8px_rgba(6,182,212,0.25)]">
+                    <span className="text-[9px] font-mono font-black uppercase px-1.5 py-0.5 rounded-full bg-[#93e9be]/15 text-[#93e9be] border border-[#93e9be]/30 shadow-[0_0_8px_rgba(147,233,190,0.25)]">
                         PRO
                     </span>
                     <NavVersionBadge />

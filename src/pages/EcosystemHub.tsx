@@ -58,13 +58,13 @@ export const EcosystemHub: React.FC = () => {
   ];
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-y-auto bg-gradient-to-b from-[#FAFBFC] to-slate-100 dark:from-[#090d16] dark:to-[#0c1220] text-slate-900 dark:text-slate-100">
+    <div className="flex-1 flex flex-col h-full overflow-y-auto bg-gradient-to-b from-[#FAFBFC] to-slate-100 dark:from-[#09100d] dark:to-[#0b1410] text-slate-900 dark:text-slate-100">
       <div className={`${CONTAINER_MAX_WIDTH} w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-1 flex flex-col`}>
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70 dark:border-slate-800/70">
           <div>
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-cyan-500 via-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/20">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-emerald-600 via-seafoam-500 to-[#93e9be] text-slate-950 shadow-md shadow-emerald-500/20">
                 <Layers className="w-5 h-5" />
               </div>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -108,7 +108,7 @@ export const EcosystemHub: React.FC = () => {
                   }}
                   className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
                     isActive
-                      ? 'text-sky-600 dark:text-sky-400 shadow-sm'
+                      ? 'text-emerald-700 dark:text-[#93e9be] shadow-sm'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >

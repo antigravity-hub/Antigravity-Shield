@@ -148,7 +148,7 @@ export const DEFAULT_GAUGE_ZONES: GaugeZone[] = [
   {
     id: 'balanced',
     label: 'BALANCED',
-    color: '#38bdf8', // Sky Blue
+    color: '#4ade9a', // Seafoam Mid
     from: 0.85,
     to: 1.15,
     statusLabel: 'Balanced Sustainability',
@@ -157,7 +157,7 @@ export const DEFAULT_GAUGE_ZONES: GaugeZone[] = [
   {
     id: 'safe',
     label: 'SAFE',
-    color: '#06b6d4', // Cyan
+    color: '#93e9be', // Core Seafoam Green
     from: 1.15,
     to: 1.6,
     statusLabel: 'Safe Reserve',

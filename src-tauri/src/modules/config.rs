@@ -121,6 +121,18 @@ pub fn load_app_config() -> Result<AppConfig, String> {
         }
     }
 
+    // [AUTO-LAUNCH & SIDEBAR DEFAULT FOR V6.0.0] Ensure system startup and vertical sidebar default
+    if let Some(obj) = v.as_object_mut() {
+        if !obj.contains_key("auto_launch") {
+            obj.insert("auto_launch".to_string(), serde_json::Value::Bool(true));
+            modified = true;
+        }
+        if !obj.contains_key("navigation_layout") {
+            obj.insert("navigation_layout".to_string(), serde_json::Value::String("sidebar".to_string()));
+            modified = true;
+        }
+    }
+
     let config: AppConfig = serde_json::from_value(v)
         .map_err(|e| format!("failed_to_convert_config_after_migration: {}", e))?;
 

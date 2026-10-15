@@ -36,14 +36,13 @@ import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import {
   SkillItem,
   SkillCategory,
-  AgentPlatformId,
-  SecurityAuditFilter,
 } from '../../types/ecosystem';
 import { RichSkillDocViewer } from './RichSkillDocViewer';
 import {
   SKILLS_SH_CATALOG,
-  OFFICIAL_AGENTS,
 } from '../../config/skillsCatalog';
+import { AgentPlatformDropdown } from './AgentPlatformDropdown';
+import { SecurityAuditDropdown } from './SecurityAuditDropdown';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   all: Sliders,
@@ -108,7 +107,8 @@ export const SkillsTab: React.FC = () => {
     verifiedOnly,
     setVerifiedOnly,
     auditFilter,
-    setAuditFilter,
+    selectedAuditFilters,
+    setSelectedAuditFilters,
     isSyncingTelemetry,
     lastTelemetrySyncAt,
     syncTelemetry,
@@ -119,6 +119,13 @@ export const SkillsTab: React.FC = () => {
     toggleSkill,
     installingId,
   } = useEcosystemStore();
+
+  // Self-healing: if skills list is empty on mount, trigger loadAll
+  React.useEffect(() => {
+    if (skills.length === 0) {
+      useEcosystemStore.getState().loadAll();
+    }
+  }, [skills.length]);
 
   const [activeFirst, setActiveFirst] = useState(false);
   const [inspectingSkill, setInspectingSkill] = useState<SkillItem | null>(null);
@@ -230,8 +237,29 @@ export const SkillsTab: React.FC = () => {
       if (!isVerified) return false;
     }
 
-    // 5. Security Audits Filter (Item 1: Gen Agent Trust Hub, Socket, Snyk)
-    if (auditFilter !== 'all') {
+    // 5. Security Audits Multi-select Filter (Item 1: Gen Agent Trust Hub, Socket, Snyk)
+    if (selectedAuditFilters.length > 0) {
+      const audits = item.audits || [];
+      const matchesAnyAudit = selectedAuditFilters.some((filterKey) => {
+        if (filterKey === 'passed_only') {
+          return audits.length > 0 && audits.every((a) => a.status === 'pass');
+        }
+        if (filterKey === 'gen_trust_hub_pass') {
+          return audits.some((a) => a.provider.toLowerCase().includes('gen') && a.status === 'pass');
+        }
+        if (filterKey === 'socket_pass') {
+          return audits.some((a) => a.provider.toLowerCase().includes('socket') && a.status === 'pass');
+        }
+        if (filterKey === 'snyk_pass') {
+          return audits.some((a) => a.provider.toLowerCase().includes('snyk') && a.status === 'pass');
+        }
+        if (filterKey === 'snyk_warn') {
+          return audits.some((a) => a.provider.toLowerCase().includes('snyk') && a.status === 'warn');
+        }
+        return false;
+      });
+      if (!matchesAnyAudit) return false;
+    } else if (auditFilter !== 'all') {
       const audits = item.audits || [];
       if (auditFilter === 'passed_only') {
         if (audits.length === 0 || audits.some((a) => a.status !== 'pass')) return false;
@@ -607,47 +635,28 @@ export const SkillsTab: React.FC = () => {
       {/* Advanced Secondary Controls: AI Agents Dropdown, Security Audits & Verified Toggle */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 bg-slate-50/70 dark:bg-slate-900/50 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
         <div className="flex flex-wrap items-center gap-2.5">
-          {/* 1. AI Agent Compatibility Dropdown */}
+          {/* 1. AI Agent Compatibility Dropdown with Logos */}
           <div className="flex items-center gap-1.5">
             <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
               <Bot className="w-3.5 h-3.5 text-sky-500" />
               <span>{t('ecosystem.agent_filter_label', 'Agent')}:</span>
             </span>
-            <select
+            <AgentPlatformDropdown
               value={selectedAgent}
-              onChange={(e) => setSelectedAgent(e.target.value as AgentPlatformId)}
-              className="text-xs font-medium py-1 px-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-500 cursor-pointer"
-            >
-              <option value="all">⚡ All 20 AI Agents</option>
-              <option value="antigravity" className="font-bold text-sky-600">
-                ⭐ Google Antigravity (100% Native)
-              </option>
-              {OFFICIAL_AGENTS.filter((a) => a.id !== 'antigravity').map((agent) => (
-                <option key={agent.id} value={agent.id}>
-                  {agent.name}
-                </option>
-              ))}
-            </select>
+              onChange={setSelectedAgent}
+            />
           </div>
 
-          {/* 2. Security Audits Filter Dropdown (Item 1) */}
+          {/* 2. Security Audits Filter Dropdown with Checkboxes */}
           <div className="flex items-center gap-1.5">
             <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
               <span>{t('ecosystem.audit_filter_label', 'Security')}:</span>
             </span>
-            <select
-              value={auditFilter}
-              onChange={(e) => setAuditFilter(e.target.value as SecurityAuditFilter)}
-              className="text-xs font-medium py-1 px-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
-            >
-              <option value="all">🛡️ All Security Audits</option>
-              <option value="passed_only">✅ Shield Clean (All Passed)</option>
-              <option value="gen_trust_hub_pass">🛡️ Gen Agent Trust Hub: Pass</option>
-              <option value="socket_pass">⚡ Socket: Pass</option>
-              <option value="snyk_pass">🔒 Snyk: Pass</option>
-              <option value="snyk_warn">⚠️ Snyk: Warn</option>
-            </select>
+            <SecurityAuditDropdown
+              selectedAudits={selectedAuditFilters}
+              onChange={setSelectedAuditFilters}
+            />
           </div>
         </div>
 

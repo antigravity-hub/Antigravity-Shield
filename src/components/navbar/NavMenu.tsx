@@ -42,7 +42,7 @@ export function NavMenu({ navItems }: NavMenuProps) {
                                 whileTap={{ scale: 0.96 }}
                                 className={`relative px-3.5 xl:px-5 py-1.5 rounded-full text-xs xl:text-sm font-semibold transition-colors duration-150 whitespace-nowrap select-none ${
                                     active
-                                        ? 'text-white'
+                                        ? 'text-slate-950 font-bold'
                                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/40'
                                 }`}
                             >
@@ -55,7 +55,7 @@ export function NavMenu({ navItems }: NavMenuProps) {
                                             stiffness: 350,
                                             mass: 0.8,
                                         }}
-                                        className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.35)] border border-cyan-400/40"
+                                        className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-seafoam-500 to-[#93e9be] rounded-full shadow-[0_0_14px_rgba(147,233,190,0.35)] border border-[#93e9be]/50"
                                     />
                                 )}
                                 <span className="relative z-10">{item.label}</span>
@@ -81,7 +81,7 @@ export function NavMenu({ navItems }: NavMenuProps) {
                                 whileTap={{ scale: 0.94 }}
                                 className={`relative p-2 rounded-full transition-colors duration-150 select-none ${
                                     active
-                                        ? 'text-white'
+                                        ? 'text-slate-950 font-bold'
                                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/40'
                                 }`}
                             >
@@ -94,7 +94,7 @@ export function NavMenu({ navItems }: NavMenuProps) {
                                             stiffness: 350,
                                             mass: 0.8,
                                         }}
-                                        className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.35)] border border-cyan-400/40"
+                                        className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-seafoam-500 to-[#93e9be] rounded-full shadow-[0_0_14px_rgba(147,233,190,0.35)] border border-[#93e9be]/50"
                                     />
                                 )}
                                 <div className="relative z-10">
@@ -122,7 +122,7 @@ export function NavMenu({ navItems }: NavMenuProps) {
                                 whileTap={{ scale: 0.94 }}
                                 className={`relative p-2 rounded-full transition-colors duration-150 select-none ${
                                     active
-                                        ? 'text-white'
+                                        ? 'text-slate-950 font-bold'
                                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-800/40'
                                 }`}
                             >
@@ -135,7 +135,7 @@ export function NavMenu({ navItems }: NavMenuProps) {
                                             stiffness: 350,
                                             mass: 0.8,
                                         }}
-                                        className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.35)] border border-cyan-400/40"
+                                        className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-seafoam-500 to-[#93e9be] rounded-full shadow-[0_0_14px_rgba(147,233,190,0.35)] border border-[#93e9be]/50"
                                     />
                                 )}
                                 <div className="relative z-10">

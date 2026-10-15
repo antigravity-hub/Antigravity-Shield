@@ -10,6 +10,8 @@ import {
   SecurityAuditFilter,
 } from '../types/ecosystem';
 import * as ecosystemService from '../services/ecosystemService';
+import { SKILLS_SH_CATALOG } from '../config/skillsCatalog';
+import { DEFAULT_MCP_CATALOG, DEFAULT_RULES_CATALOG } from '../config/defaultEcosystemCatalog';
 
 interface EcosystemState {
   activeTab: EcosystemEntityType;
@@ -29,6 +31,7 @@ interface EcosystemState {
   selectedTopic: SkillTopicId;
   verifiedOnly: boolean;
   auditFilter: SecurityAuditFilter;
+  selectedAuditFilters: string[];
 
   // Live Telemetry Sync State (Progressive Streaming Hydration)
   isSyncingTelemetry: boolean;
@@ -44,6 +47,7 @@ interface EcosystemState {
   setSelectedTopic: (topic: SkillTopicId) => void;
   setVerifiedOnly: (verified: boolean) => void;
   setAuditFilter: (filter: SecurityAuditFilter) => void;
+  setSelectedAuditFilters: (filters: string[]) => void;
 
   // Actions
   loadAll: () => Promise<void>;
@@ -63,9 +67,9 @@ interface EcosystemState {
 
 export const useEcosystemStore = create<EcosystemState>((set) => ({
   activeTab: 'skills',
-  skills: [],
-  mcpServers: [],
-  rules: [],
+  skills: SKILLS_SH_CATALOG,
+  mcpServers: DEFAULT_MCP_CATALOG,
+  rules: DEFAULT_RULES_CATALOG,
   loading: false,
   searchQuery: '',
   selectedCategory: 'all',
@@ -78,6 +82,7 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
   selectedTopic: 'all',
   verifiedOnly: false,
   auditFilter: 'all',
+  selectedAuditFilters: [],
 
   isSyncingTelemetry: false,
   lastTelemetrySyncAt: (() => {
@@ -94,6 +99,7 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
   setSelectedTopic: (topic) => set({ selectedTopic: topic }),
   setVerifiedOnly: (verified) => set({ verifiedOnly: verified }),
   setAuditFilter: (filter) => set({ auditFilter: filter }),
+  setSelectedAuditFilters: (filters) => set({ selectedAuditFilters: filters }),
 
   loadAll: async () => {
     set({ loading: true });

@@ -234,12 +234,12 @@ export function calculateAccountBurnVelocity(
     zone = 'balanced';
     zoneLabel = 'Balanced Pace';
     zoneTag = 'NEUTRAL';
-    zoneColor = '#38bdf8'; // Sky Blue
+    zoneColor = '#4ade9a'; // Seafoam Mid
   } else if (sustainabilityRatio <= 1.6) {
     zone = 'safe';
     zoneLabel = 'Safe Reserve';
     zoneTag = 'BUY';
-    zoneColor = '#06b6d4'; // Cyan
+    zoneColor = '#93e9be'; // Seafoam Core Green
   } else {
     zone = 'surplus';
     zoneLabel = 'Full Surplus';
@@ -493,12 +493,12 @@ export function calculateFleetBurnVelocity(
     zone = 'balanced';
     zoneLabel = 'Balanced Sustainability';
     zoneTag = 'NEUTRAL';
-    zoneColor = '#38bdf8';
+    zoneColor = '#4ade9a';
   } else if (sustainabilityRatio <= 1.6) {
     zone = 'safe';
     zoneLabel = 'Healthy Fleet Buffer';
     zoneTag = 'BUY';
-    zoneColor = '#06b6d4';
+    zoneColor = '#93e9be';
   } else {
     zone = 'surplus';
     zoneLabel = 'Maximum Quota Surplus';

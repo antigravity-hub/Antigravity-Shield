@@ -16,10 +16,15 @@ interface UpdateInfoResponse {
   source?: string;
 }
 
-const COOLDOWN_SECONDS = 60;
+const COOLDOWN_SECONDS = 15;
 const STORAGE_KEY = 'antigravity_last_manual_update_check';
 
-export const NavVersionBadge: React.FC = () => {
+export interface NavVersionBadgeProps {
+  compact?: boolean;
+  className?: string;
+}
+
+export const NavVersionBadge: React.FC<NavVersionBadgeProps> = ({ compact = false, className = '' }) => {
   const { t } = useTranslation();
   const currentVersion = useAppVersion();
 
@@ -210,7 +215,9 @@ export const NavVersionBadge: React.FC = () => {
           ? { x: [-3, 3, -3, 3, 0], transition: { duration: 0.35 } }
           : undefined
       }
-      className={`relative inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-mono font-semibold transition-all duration-300 select-none cursor-pointer outline-none border shadow-xs overflow-hidden ${
+      className={`relative inline-flex items-center justify-center ${
+        compact ? 'p-1.5 rounded-lg' : 'gap-1.5 px-2 py-0.5 rounded-md text-[10px]'
+      } font-mono font-semibold transition-all duration-300 select-none cursor-pointer outline-none border shadow-xs overflow-hidden ${
         status === 'checking'
           ? 'bg-cyan-500/15 text-cyan-300 border-cyan-400/80 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
           : status === 'has-update'
@@ -222,7 +229,7 @@ export const NavVersionBadge: React.FC = () => {
           : status === 'cooldown'
           ? 'bg-amber-500/10 text-amber-400 border-amber-500/50'
           : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 border-slate-200/80 dark:border-slate-700/60 hover:text-cyan-500 dark:hover:text-cyan-300 hover:border-cyan-500/50 hover:shadow-[0_0_10px_rgba(6,182,212,0.25)]'
-      }`}
+      } ${className}`}
     >
       {/* Animated Light Shimmer during checking */}
       {status === 'checking' && (
@@ -243,8 +250,8 @@ export const NavVersionBadge: React.FC = () => {
             exit={{ opacity: 0, scale: 0.8 }}
             className="flex items-center gap-1"
           >
-            <RefreshCw className="w-2.5 h-2.5 animate-spin text-cyan-400" />
-            <span>{t('settings.about.checking_update', 'Checking...')}</span>
+            <RefreshCw className={`${compact ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'} animate-spin text-cyan-400`} />
+            {!compact && <span>{t('settings.about.checking_update', 'Checking...')}</span>}
           </motion.div>
         ) : status === 'has-update' ? (
           <motion.div
@@ -258,8 +265,8 @@ export const NavVersionBadge: React.FC = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
             </span>
-            <Sparkles className="w-2.5 h-2.5 text-amber-400 animate-pulse" />
-            <span>v{latestVersion || currentVersion}</span>
+            <Sparkles className={`${compact ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'} text-amber-400 animate-pulse`} />
+            {!compact && <span>v{latestVersion || currentVersion}</span>}
           </motion.div>
         ) : status === 'up-to-date' ? (
           <motion.div
@@ -269,8 +276,8 @@ export const NavVersionBadge: React.FC = () => {
             exit={{ opacity: 0, scale: 0.8 }}
             className="flex items-center gap-1"
           >
-            <Check className="w-2.5 h-2.5 text-emerald-400" />
-            <span>v{currentVersion}</span>
+            <Check className={`${compact ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'} text-emerald-400`} />
+            {!compact && <span>v{currentVersion}</span>}
           </motion.div>
         ) : status === 'cooldown' ? (
           <motion.div
@@ -280,8 +287,8 @@ export const NavVersionBadge: React.FC = () => {
             exit={{ opacity: 0, scale: 0.8 }}
             className="flex items-center gap-1"
           >
-            <Clock className="w-2.5 h-2.5 text-amber-400 animate-pulse" />
-            <span>{cooldownRemaining}s</span>
+            <Clock className={`${compact ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'} text-amber-400 animate-pulse`} />
+            {!compact && <span>{cooldownRemaining}s</span>}
           </motion.div>
         ) : status === 'error' ? (
           <motion.div
@@ -291,8 +298,8 @@ export const NavVersionBadge: React.FC = () => {
             exit={{ opacity: 0, scale: 0.8 }}
             className="flex items-center gap-1"
           >
-            <AlertCircle className="w-2.5 h-2.5 text-rose-400" />
-            <span>v{currentVersion}</span>
+            <AlertCircle className={`${compact ? 'w-3.5 h-3.5' : 'w-2.5 h-2.5'} text-rose-400`} />
+            {!compact && <span>v{currentVersion}</span>}
           </motion.div>
         ) : (
           <motion.div
@@ -300,12 +307,14 @@ export const NavVersionBadge: React.FC = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="flex items-center gap-1"
+            className="flex items-center gap-1.5"
           >
-            {cooldownRemaining > 0 && (
-              <span className="w-1 h-1 rounded-full bg-slate-400/50" />
+            {cooldownRemaining > 0 ? (
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+            ) : (
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             )}
-            <span>v{currentVersion}</span>
+            {!compact && <span>v{currentVersion}</span>}
           </motion.div>
         )}
       </AnimatePresence>
