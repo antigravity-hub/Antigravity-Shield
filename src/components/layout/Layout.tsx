@@ -4,6 +4,7 @@ import Navbar from '../navbar/Navbar';
 import BackgroundTaskRunner from '../common/BackgroundTaskRunner';
 import ToastContainer from '../common/ToastContainer';
 import SupportModal from '../common/SupportModal';
+import ToolkitIntegrationModal from '../navbar/ToolkitIntegrationModal';
 import { useViewStore } from '../../stores/useViewStore';
 import MiniView from './MiniView';
 import { useEffect } from 'react';
@@ -72,6 +73,7 @@ function Layout() {
             <BackgroundTaskRunner />
             <ToastContainer />
             <SupportModal />
+            <ToolkitIntegrationModal />
 
             {isSidebarLayout ? (
                 <div className="flex w-full h-full">

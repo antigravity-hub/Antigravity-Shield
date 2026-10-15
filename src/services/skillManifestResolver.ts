@@ -54,6 +54,7 @@ const KNOWN_HUBS: Record<string, HubConfig> = {
     repo: 'skills',
     defaultBranch: 'main',
     resolvePath: (slug) => {
+      const normalized = (slug || '').toLowerCase().trim();
       // Matt Pocock's monorepo partitions skills into categorized subdirectories
       const engineeringSkills = new Set([
         'implement',
@@ -71,14 +72,14 @@ const KNOWN_HUBS: Record<string, HubConfig> = {
         'plan-execution',
       ]);
 
-      if (engineeringSkills.has(slug)) {
-        return { skillDir: `skills/engineering/${slug}` };
+      if (engineeringSkills.has(normalized)) {
+        return { skillDir: `skills/engineering/${normalized}` };
       }
-      if (productivitySkills.has(slug)) {
-        return { skillDir: `skills/productivity/${slug}` };
+      if (productivitySkills.has(normalized)) {
+        return { skillDir: `skills/productivity/${normalized}` };
       }
       // Default guess
-      return { skillDir: `skills/productivity/${slug}` };
+      return { skillDir: `skills/productivity/${normalized}` };
     },
   },
   'obra/superpowers': {
@@ -152,6 +153,57 @@ export function isSkillUpstreamLive(skill: SkillItem): boolean {
 }
 
 /**
+ * Extracts and cleans allowed-tools list from markdown or YAML frontmatter.
+ * Handles both inline comma-separated values and multiline YAML bullet lists,
+ * stripping leading '- ' bullets from items.
+ */
+export function extractAllowedTools(markdown: string): string[] {
+  if (!markdown || typeof markdown !== 'string') return [];
+
+  const lines = markdown.split(/\r?\n/);
+  const tools: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const match = line.match(/^\s*allowed-tools:\s*(.*)$/i);
+    if (match) {
+      const inlineRest = match[1].trim();
+      if (inlineRest) {
+        const clean = inlineRest.replace(/^\[|\]$/g, '');
+        const items = clean
+          .split(',')
+          .map((t) => t.trim().replace(/^-\s*/, '').replace(/^['"]|['"]$/g, ''))
+          .filter((t) => t.length > 0);
+        tools.push(...items);
+      }
+
+      let j = i + 1;
+      while (j < lines.length) {
+        const nextLine = lines[j];
+        const trimmed = nextLine.trim();
+        if (trimmed.startsWith('---') || trimmed.startsWith('#')) {
+          break;
+        }
+        if (/^-\s+/.test(trimmed)) {
+          const item = trimmed.replace(/^-\s+/, '').replace(/^['"]|['"]$/g, '').trim();
+          if (item) {
+            tools.push(item);
+          }
+          j++;
+        } else if (trimmed === '') {
+          j++;
+        } else {
+          break;
+        }
+      }
+      break;
+    }
+  }
+
+  return tools;
+}
+
+/**
  * Parses prerequisite execution telemetry (allowed-tools, env vars, CLI commands)
  * from Markdown and YAML frontmatter.
  */
@@ -168,18 +220,10 @@ export function parsePrerequisitesFromMarkdown(markdown: string): SkillPrerequis
   }
 
   // 1. Extract allowed-tools from YAML frontmatter or inline text
-  const allowedToolsMatch = markdown.match(/allowed-tools:\s*([^\r\n]+)/i);
-  if (allowedToolsMatch && allowedToolsMatch[1]) {
-    const rawTools = allowedToolsMatch[1].trim();
-    const parsed = rawTools
-      .split(',')
-      .map((t) => t.trim().replace(/^['"]|['"]$/g, ''))
-      .filter((t) => t.length > 0);
-    prereqs.allowedTools = parsed;
-  }
+  prereqs.allowedTools = extractAllowedTools(markdown);
 
   // 2. Extract Environment variables (API keys, Tokens, Secrets)
-  const envVarMatches = markdown.match(/\b([A-Z0-9_]{3,}_(?:API_KEY|TOKEN|SECRET|KEY|PASSWORD|AUTH))\b/g);
+  const envVarMatches = markdown.match(/\b([A-Z0-9_]{2,}_(?:API_KEY|TOKEN|SECRET|KEY|PASSWORD|AUTH))\b/g);
   if (envVarMatches) {
     const excluded = new Set(['PRIMARY_KEY', 'FOREIGN_KEY', 'COMPOSITE_KEY', 'ROW_KEY']);
     const unique = Array.from(new Set(envVarMatches)).filter((k) => !excluded.has(k));

@@ -406,3 +406,5 @@ export const ToolkitIntegrationModal: React.FC = () => {
 
   return createPortal(modalContent, document.body);
 };
+
+export default ToolkitIntegrationModal;

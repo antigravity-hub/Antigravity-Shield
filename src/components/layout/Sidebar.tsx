@@ -20,6 +20,7 @@ import {
 import { useConfigStore } from '../../stores/useConfigStore';
 import { NavVersionBadge } from '../navbar/NavVersionBadge';
 import { AccentColorPicker } from '../common/AccentColorPicker';
+import { SidebarToolkitBadge } from './SidebarToolkitBadge';
 
 interface NavSectionItem {
   path: string;
@@ -247,7 +248,9 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Sidebar Footer & Quick Actions */}
-      <div className="p-2.5 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/30">
+      <div className="p-2.5 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/30 space-y-2">
+        <SidebarToolkitBadge collapsed={collapsed} />
+
         <div className={`flex items-center ${collapsed ? 'flex-col gap-2' : 'justify-between'}`}>
           <div className="flex items-center gap-1">
             <button

@@ -5,7 +5,6 @@ import { isTauri, isLinux } from '../../utils/env';
 import { NavLogo } from './NavLogo';
 import { NavMenu } from './NavMenu';
 import { NavSettings } from './NavSettings';
-import { ToolkitIntegrationModal } from './ToolkitIntegrationModal';
 import type { NavItem } from './constants';
 import { CONTAINER_MAX_WIDTH } from '../../constants/layout';
 
@@ -131,9 +130,6 @@ function Navbar() {
                     />
                 </div>
             </div>
-
-            {/* Antigravity Toolkit & IDE Integration Modal */}
-            <ToolkitIntegrationModal />
         </nav>
     );
 }

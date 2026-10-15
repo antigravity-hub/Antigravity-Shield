@@ -428,11 +428,13 @@ pub fn split_frontmatter<'a>(content: &'a str) -> (Vec<&'a str>, &'a str) {
         } else {
             clean.len()
         }
-    } else if found_closing {
-        clean.len()
     } else {
         clean.len()
     };
+
+    if !found_closing {
+        return (Vec::new(), clean);
+    }
 
     (frontmatter_lines, &clean[body_start_byte..])
 }
@@ -911,6 +913,10 @@ pub fn scan_installed_skills() -> Result<Vec<SkillItem>, String> {
                 None => continue,
             };
 
+            if dir_name.starts_with('.') {
+                continue;
+            }
+
             let skill_file = path.join("SKILL.md");
             let skill_file_disabled = path.join("SKILL.md.disabled");
             let target_file = if skill_file.is_file() {
@@ -1148,6 +1154,9 @@ pub async fn install_skill_physical(skill: &SkillItem) -> Result<String, String>
                     info!("Fetching companion file from {}", companion_url);
 
                     let dest_file = staging_dir.join(&clean_rel);
+                    if !dest_file.starts_with(&staging_dir) {
+                        continue;
+                    }
                     if let Some(parent) = dest_file.parent() {
                         let _ = fs::create_dir_all(parent);
                     }
@@ -1539,6 +1548,14 @@ mod tests {
     #[test]
     fn test_validate_skill_frontmatter_missing_delimiter() {
         let invalid = "name: find-skills\ndescription: Missing delimiter\n";
+        let res = validate_skill_frontmatter(invalid);
+        assert!(res.is_err());
+        assert!(res.unwrap_err().contains("Missing YAML frontmatter delimiters"));
+    }
+
+    #[test]
+    fn test_validate_skill_frontmatter_missing_closing_delimiter() {
+        let invalid = "---\nname: find-skills\ndescription: Missing closing delimiter\n\n# Body";
         let res = validate_skill_frontmatter(invalid);
         assert!(res.is_err());
         assert!(res.unwrap_err().contains("Missing YAML frontmatter delimiters"));
