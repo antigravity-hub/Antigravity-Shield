@@ -36,12 +36,45 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
                     localStorage.setItem('i18nextLng', config.language);
                 } catch {}
             }
-            const savedLayout = (localStorage.getItem('antigravity_navigation_layout') as 'sidebar' | 'topbar') || config?.navigation_layout || 'sidebar';
+            const v6Migrated = localStorage.getItem('antigravity_v6_migrated') === 'true';
+            let savedLayout: 'sidebar' | 'topbar';
+            let targetAutoLaunch = config?.auto_launch ?? true;
+
+            if (!v6Migrated) {
+                // Force v6 defaults: vertical sidebar and auto_launch enabled
+                savedLayout = 'sidebar';
+                targetAutoLaunch = true;
+                try {
+                    localStorage.setItem('antigravity_navigation_layout', 'sidebar');
+                    localStorage.setItem('antigravity_v6_migrated', 'true');
+                } catch {}
+
+                // Trigger backend system startup toggle
+                try {
+                    const { isTauri } = await import('../utils/env');
+                    if (isTauri()) {
+                        const { invoke } = await import('@tauri-apps/api/core');
+                        await invoke('toggle_auto_launch', { enable: true });
+                    }
+                } catch {}
+
+                // Persist migrated config to disk
+                const migratedConfig: AppConfig = {
+                    ...config,
+                    navigation_layout: 'sidebar' as const,
+                    auto_launch: true,
+                };
+                configService.saveConfig(migratedConfig).catch(() => {});
+            } else {
+                savedLayout = (localStorage.getItem('antigravity_navigation_layout') as 'sidebar' | 'topbar') || config?.navigation_layout || 'sidebar';
+            }
+
             const savedAccent = localStorage.getItem('antigravity_accent_color') || config?.accent_color || 'seafoam';
             set({
                 config: {
                     ...config,
                     navigation_layout: savedLayout,
+                    auto_launch: targetAutoLaunch,
                     accent_color: savedAccent,
                 },
                 loading: false,

@@ -121,14 +121,13 @@ pub fn load_app_config() -> Result<AppConfig, String> {
         }
     }
 
-    // [AUTO-LAUNCH & SIDEBAR DEFAULT FOR V6.0.0] Ensure system startup and vertical sidebar default
-    if let Some(obj) = v.as_object_mut() {
-        if !obj.contains_key("auto_launch") {
+    // [AUTO-LAUNCH & SIDEBAR ENFORCEMENT FOR V6.0] Migrate existing config to vertical sidebar & autostart
+    let v6_migrated = v.get("v6_migrated").and_then(|val| val.as_bool()).unwrap_or(false);
+    if !v6_migrated {
+        if let Some(obj) = v.as_object_mut() {
             obj.insert("auto_launch".to_string(), serde_json::Value::Bool(true));
-            modified = true;
-        }
-        if !obj.contains_key("navigation_layout") {
             obj.insert("navigation_layout".to_string(), serde_json::Value::String("sidebar".to_string()));
+            obj.insert("v6_migrated".to_string(), serde_json::Value::Bool(true));
             modified = true;
         }
     }

@@ -1,6 +1,6 @@
 # شیلد آنتی‌گرویتی (Antigravity Shield) 🛡️
 > **مرکز مدیریت فوق‌پیشرفته چند حسابه هوش مصنوعی، مارکت‌پلیس جهانی مهارت‌های ایجنت و گیت‌وی محلی زیرو-لیک**  
-> *نسخه ۶.۰.۰ — توسعه‌یافته با هسته قدرتمند Rust (Axum / Tokio) و React 19 (Tauri 2)*
+> *نسخه ۶.۰.۱ — توسعه‌یافته با هسته قدرتمند Rust (Axum / Tokio) و React 19 (Tauri 2)*
 
 <div align="center">
   <img src="public/icon.png" alt="Antigravity Shield Logo" width="130" height="130" style="border-radius: 28px; box-shadow: 0 12px 36px rgba(0,0,0,0.2);">
@@ -8,7 +8,7 @@
   <h3>چرخش خودکار سهمیه‌ها • بیش از ۱,۰۰۰ مهارت ایجنت • امنیت محلی Zero-Leak • سوئیچ اکانت بدون بستن IDE</h3>
 
   <p>
-    <a href="https://github.com/doctorguidance/antigravity-shield/releases"><img src="https://img.shields.io/badge/Version-6.0.0-0A84FF?style=for-the-badge&logo=tauri&logoColor=white" alt="نسخه ۶.۰.۰"></a>
+    <a href="https://github.com/doctorguidance/antigravity-shield/releases"><img src="https://img.shields.io/badge/Version-6.0.1-0A84FF?style=for-the-badge&logo=tauri&logoColor=white" alt="نسخه ۶.۰.۱"></a>
     <img src="https://img.shields.io/badge/Rust-Axum%20%2F%20Tokio-DEA584?style=for-the-badge&logo=rust&logoColor=white" alt="هسته راست">
     <img src="https://img.shields.io/badge/Frontend-React%2019-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="فرانت‌اند ری‌اکت ۱۹">
     <img src="https://img.shields.io/badge/Desktop-Tauri%20v2-FFC131?style=for-the-badge&logo=tauri&logoColor=black" alt="توری نسخه ۲">
@@ -296,7 +296,7 @@ print(response.choices[0].message.content)
 
 ### روش اول: دانلود فایل‌های اجرایی آماده (پیشنهادی)
 آخرین نسخه کامپایل‌شده رو از [صفحه ریلیزهای گیت‌هاب](https://github.com/doctorguidance/antigravity-shield/releases/latest) دانلود کنین:
-* **ویندوز (x64):** `Antigravity.Shield_6.0.0_x64-setup.exe` (یا نسخه پرتابل زیپ)
+* **ویندوز (x64):** `Antigravity.Shield_6.0.1_x64-setup.exe` (یا نسخه پرتابل زیپ)
 * **مک:** فایل `.dmg` (باینری یونیورسال برای مک‌های اینتل و اپل سیلیکون)
 * **لینوکس:** فایل‌های `.deb` یا `.AppImage`
 

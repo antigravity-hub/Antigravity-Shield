@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.0.1 (2026-10-15)**:
+        -   **Black Screen Route Freeze Elimination**: Removed `AnimatePresence mode="wait"` and exit opacity transitions from `<Outlet />` in `Layout.tsx`, guaranteeing instant, reliable page mounting without blank screen traps.
+        -   **Automated v6 Upgrade Migration**: Enforced automatic migration for existing installations, overwriting legacy horizontal navbar settings with the modern Apple-style vertical sidebar (`navigation_layout: 'sidebar'`) and actively enabling system auto-launch on startup (`auto_launch: true`).
+        -   **Proprietary IP Protection**: Hardened workspace rules in `AGENTS.md` and sanitized public system architecture diagrams into an abstract Black-Box gateway.
     *   **v6.0.0 (2026-10-15)**:
         -   **Universal Dynamic Theme Adaptation & Brand Shield Invariant**: Eradicated static and hardcoded accent color classes (`sky-500`, `blue-600`, `cyan-500`) across Ecosystem Hub, SkillsTab, McpTab, RulesTab, and modal surfaces. All interactive controls, install actions, category badges, focus outlines, and status pings now dynamically adapt to custom themes (Pink / Rose, Emerald, Amber, etc.) via CSS variables (`--color-primary-btn`, `--color-accent`, `--color-badge-bg`). Core brand identity logos remain strictly immune to theme tinting.
         -   **Universal Agent Ecosystem Hub**: Full integration of the curated 1,000+ Skills marketplace, local filesystem scanner (`~/.gemini/config/skills/`), 1-click installer and uninstaller, rich bilingual markdown doc viewer, and zero-leak privacy isolation.

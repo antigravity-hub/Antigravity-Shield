@@ -1,6 +1,5 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { getCurrentWindow } from '@tauri-apps/api/window';
-import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../navbar/Navbar';
 import BackgroundTaskRunner from '../common/BackgroundTaskRunner';
 import ToastContainer from '../common/ToastContainer';
@@ -19,7 +18,6 @@ import { useConfigStore } from '../../stores/useConfigStore';
 function Layout() {
     const { isMiniView } = useViewStore();
     const { config } = useConfigStore();
-    const location = useLocation();
     const localLayout = typeof window !== 'undefined' ? localStorage.getItem('antigravity_navigation_layout') : null;
     const isSidebarLayout = (config?.navigation_layout ?? localLayout ?? 'sidebar') === 'sidebar';
 
@@ -80,23 +78,7 @@ function Layout() {
                     <Sidebar />
                     <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
                         <main className="flex-1 overflow-hidden flex flex-col relative pt-9">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={location.pathname}
-                                    initial={{ opacity: 0, y: 8, scale: 0.996 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: -6, scale: 0.996 }}
-                                    transition={{
-                                        type: 'spring',
-                                        damping: 30,
-                                        stiffness: 360,
-                                        mass: 0.75,
-                                    }}
-                                    className="flex-1 flex flex-col h-full min-w-0 overflow-hidden will-change-[transform,opacity]"
-                                >
-                                    <Outlet />
-                                </motion.div>
-                            </AnimatePresence>
+                            <Outlet />
                         </main>
                     </div>
                 </div>
@@ -104,23 +86,7 @@ function Layout() {
                 <div className="flex flex-col w-full h-full">
                     <Navbar />
                     <main className="flex-1 overflow-hidden flex flex-col relative">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={location.pathname}
-                                initial={{ opacity: 0, y: 8, scale: 0.996 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -6, scale: 0.996 }}
-                                transition={{
-                                    type: 'spring',
-                                    damping: 30,
-                                    stiffness: 360,
-                                    mass: 0.75,
-                                }}
-                                className="flex-1 flex flex-col h-full min-w-0 overflow-hidden will-change-[transform,opacity]"
-                            >
-                                <Outlet />
-                            </motion.div>
-                        </AnimatePresence>
+                        <Outlet />
                     </main>
                 </div>
             )}

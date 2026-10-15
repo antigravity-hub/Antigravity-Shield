@@ -44,6 +44,8 @@ pub struct AppConfig {
     pub auto_switch_countdown_secs: u32, // Countdown seconds before auto-switch
     #[serde(default = "default_switch_threshold")]
     pub auto_switch_threshold_percentage: u32, // [NEW] Threshold percentage to trigger auto-switch (default 5%)
+    #[serde(default)]
+    pub v6_migrated: Option<bool>,
 }
 
 fn default_switch_threshold() -> u32 {
@@ -230,6 +232,7 @@ impl AppConfig {
             overlay_position: "top-right".to_string(),
             auto_switch_countdown_secs: 30,
             auto_switch_threshold_percentage: 5,
+            v6_migrated: Some(true),
         }
     }
 }
