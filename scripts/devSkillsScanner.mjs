@@ -137,6 +137,14 @@ description: ${cleanDesc}
 
 ${docBody}
 `;
+  } else if (!content.trim().startsWith('---')) {
+    content = `---
+name: ${cleanName}
+description: ${cleanDesc}
+---
+
+${content}
+`;
   }
 
   fs.writeFileSync(targetFile, content, 'utf8');

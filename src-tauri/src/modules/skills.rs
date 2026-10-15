@@ -1025,12 +1025,25 @@ pub fn install_skill_physical(skill: &SkillItem) -> Result<String, String> {
 
     let skill_file = target_dir.join("SKILL.md");
 
-    // Compose SKILL.md content
+    // Compose SKILL.md content - ensuring YAML frontmatter is ALWAYS present so Antigravity and AI agents can index it
     let content = if let Some(ref c) = skill.content {
-        if !c.trim().is_empty() {
+        let trimmed = c.trim();
+        if trimmed.is_empty() {
+            generate_canonical_skill_md(skill, &clean_name)
+        } else if trimmed.starts_with("---") {
             c.clone()
         } else {
-            generate_canonical_skill_md(skill, &clean_name)
+            let clean_desc = skill.description.replace('\r', "").replace('\n', " ");
+            let triggers_str = skill.triggers.join(", ");
+            format!(
+                "---\nname: {}\ndescription: {}\ncategory: {}\nversion: {}\ntriggers: [{}]\n---\n\n{}",
+                clean_name,
+                clean_desc,
+                skill.category,
+                skill.version,
+                triggers_str,
+                trimmed
+            )
         }
     } else {
         generate_canonical_skill_md(skill, &clean_name)

@@ -13,6 +13,7 @@ import * as ecosystemService from '../services/ecosystemService';
 import { SKILLS_SH_CATALOG } from '../config/skillsCatalog';
 import { DEFAULT_MCP_CATALOG, DEFAULT_RULES_CATALOG } from '../config/defaultEcosystemCatalog';
 import { showToast } from '../components/common/ToastContainer';
+import i18n from '../i18n';
 
 interface EcosystemState {
   activeTab: EcosystemEntityType;
@@ -169,12 +170,20 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
       }).catch(() => {});
 
       const label = skill.title || skill.name || 'Skill';
-      showToast(`مهارت "${label}" با موفقیت نصب شد.`, 'success');
+      const isFa = i18n.language?.startsWith('fa');
+      showToast(
+        isFa ? `مهارت "${label}" با موفقیت نصب شد.` : `Skill "${label}" installed successfully.`,
+        'success'
+      );
       return true;
     } catch (err) {
       console.error('[useEcosystemStore] Install skill failed:', err);
       set({ installingId: null });
-      showToast(`خطا در نصب مهارت: ${String(err)}`, 'error');
+      const isFa = i18n.language?.startsWith('fa');
+      showToast(
+        isFa ? `خطا در نصب مهارت: ${String(err)}` : `Failed to install skill: ${String(err)}`,
+        'error'
+      );
       return false;
     }
   },
@@ -197,12 +206,20 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
         set({ skills: fresh });
       }).catch(() => {});
 
-      showToast('مهارت با موفقیت حذف شد.', 'info');
+      const isFa = i18n.language?.startsWith('fa');
+      showToast(
+        isFa ? 'مهارت با موفقیت حذف شد.' : 'Skill uninstalled successfully.',
+        'info'
+      );
       return true;
     } catch (err) {
       console.error('[useEcosystemStore] Uninstall skill failed:', err);
       set({ installingId: null });
-      showToast(`خطا در حذف مهارت: ${String(err)}`, 'error');
+      const isFa = i18n.language?.startsWith('fa');
+      showToast(
+        isFa ? `خطا در حذف مهارت: ${String(err)}` : `Failed to uninstall skill: ${String(err)}`,
+        'error'
+      );
       return false;
     }
   },
