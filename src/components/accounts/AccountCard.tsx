@@ -220,7 +220,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
             account.validation_blocked
                 ? "bg-amber-500/[0.04] dark:bg-amber-950/20 border-amber-500/50 dark:border-amber-600/50 ring-1 ring-amber-500/30 shadow-sm shadow-amber-500/5"
                 : isAnyActive
-                    ? "bg-emerald-50/20 border-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-700/60 ring-1 ring-emerald-500/20"
+                    ? "bg-[rgba(var(--color-accent-rgb),0.04)] border-[var(--color-badge-border)] ring-1 ring-[rgba(var(--color-accent-rgb),0.2)]"
                     : "bg-white dark:bg-base-100 border-gray-200 dark:border-base-300",
             (isRefreshing || isDisabled) && "opacity-70",
             (isExhausted || isDisabled || account.proxy_disabled) && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 hover:opacity-85 transition-opacity"
@@ -238,7 +238,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                 <div className="flex-1 min-w-0 flex flex-col gap-1.5">
                     <h3 className={cn(
                         "font-semibold text-sm truncate w-full",
-                        isAnyActive ? "text-emerald-700 dark:text-emerald-400 font-bold" : "text-gray-900 dark:text-base-content"
+                        isAnyActive ? "text-[var(--color-accent)] font-bold" : "text-gray-900 dark:text-base-content"
                     )} title={account.email}>
                         {account.email}
                     </h3>
@@ -246,12 +246,17 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                         <div className="flex items-center gap-1.5 flex-wrap">
                             {isPlatformActive && (
                                 <span 
-                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold border border-emerald-500/30"
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-extrabold border"
+                                    style={{
+                                        backgroundColor: 'var(--color-badge-bg)',
+                                        color: 'var(--color-badge-text)',
+                                        borderColor: 'var(--color-badge-border)',
+                                    }}
                                     title="Active in Antigravity Platform"
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_5px_#10b981]"></span>
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 5px var(--color-accent)' }}></span>
                                     </span>
                                     Platform
                                 </span>
@@ -282,12 +287,17 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                             )}
                             {!isPlatformActive && !isIdeActive && !isCliActive && isCurrent && (
                                 <span
-                                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold shadow-xs border border-emerald-500/30 dark:border-emerald-500/40 select-none tracking-wide"
+                                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-extrabold shadow-xs border select-none tracking-wide"
+                                    style={{
+                                        backgroundColor: 'var(--color-badge-bg)',
+                                        color: 'var(--color-badge-text)',
+                                        borderColor: 'var(--color-badge-border)',
+                                    }}
                                     title={t('accounts.current', 'Current')}
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_5px_#10b981]"></span>
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 5px var(--color-accent)' }}></span>
                                     </span>
                                     {t('accounts.current', 'Current')}
                                 </span>

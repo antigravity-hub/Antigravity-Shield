@@ -49,12 +49,17 @@ export function WeeklyCountdown({
         return (
             <div
                 className={cn(
-                    "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 select-none shadow-xs transition-all",
+                    "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg select-none shadow-xs transition-all border",
                     className
                 )}
+                style={{
+                    backgroundColor: 'var(--color-badge-bg)',
+                    color: 'var(--color-badge-text)',
+                    borderColor: 'var(--color-badge-border)',
+                }}
                 title={t('accounts.weekly_reset_ready', 'Weekly Quota is Fresh / Ready')}
             >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-accent)' }} />
                 <span className="text-xs font-bold font-mono">{t('common.ready', 'Ready')}</span>
             </div>
         );
@@ -121,10 +126,24 @@ export function WeeklyCountdown({
                                 key={dayNum}
                                 className={cn(
                                     "flex-1 h-6 rounded-md text-[10px] font-mono font-bold flex items-center justify-center transition-all relative overflow-hidden select-none border",
-                                    isFull && "border-cyan-500/35 dark:border-cyan-400/40 bg-gradient-to-t from-cyan-600 to-emerald-500 text-white shadow-[0_0_8px_rgba(6,182,212,0.35)]",
+                                    isFull && "text-white",
                                     isEmpty && "bg-slate-100/60 dark:bg-slate-800/40 border-dashed border-slate-200/80 dark:border-slate-700/50 text-slate-300 dark:text-slate-600 opacity-40 line-through",
-                                    isActive && "border-cyan-400/80 dark:border-cyan-400 bg-slate-100/80 dark:bg-slate-800/60 ring-1 ring-cyan-400/60 shadow-[0_0_10px_rgba(6,182,212,0.45)] scale-105 z-10 text-white"
+                                    isActive && "bg-slate-100/80 dark:bg-slate-800/60 ring-1 scale-105 z-10 text-white"
                                 )}
+                                style={
+                                    isFull
+                                        ? {
+                                            background: 'linear-gradient(180deg, var(--color-primary-btn), var(--color-accent))',
+                                            borderColor: 'var(--color-badge-border)',
+                                            boxShadow: '0 0 8px var(--color-accent-glow)',
+                                        }
+                                        : isActive
+                                            ? {
+                                                borderColor: 'var(--color-accent)',
+                                                boxShadow: '0 0 10px var(--color-accent-glow)',
+                                            }
+                                            : undefined
+                                }
                                 title={`Day ${dayNum}: ${isFull ? '100% (Upcoming)' : isEmpty ? '0% (Passed)' : `${fillPercentage}% water remaining`}`}
                             >
                                 {/* Active Day Liquid Water Fill */}
@@ -132,8 +151,11 @@ export function WeeklyCountdown({
                                     <>
                                         {/* Water fluid layer filling up to fillPercentage */}
                                         <div
-                                            className="absolute inset-y-0 left-0 bg-gradient-to-t from-cyan-600 via-cyan-500 to-emerald-400 z-0 transition-all duration-300"
-                                            style={{ width: `${fillPercentage}%` }}
+                                            className="absolute inset-y-0 left-0 z-0 transition-all duration-300"
+                                            style={{
+                                                width: `${fillPercentage}%`,
+                                                background: 'linear-gradient(90deg, var(--color-primary-btn), var(--color-accent))',
+                                            }}
                                         />
 
                                         {/* Oscillating soft wave ripple on the right meniscus edge */}
@@ -143,7 +165,7 @@ export function WeeklyCountdown({
                                         >
                                             {/* Vertical gentle sine-wave oscillation */}
                                             <svg
-                                                className="w-full h-full text-emerald-200 animate-pulse"
+                                                className="w-full h-full text-white/80 animate-pulse"
                                                 viewBox="0 0 10 30"
                                                 preserveAspectRatio="none"
                                             >
@@ -167,15 +189,17 @@ export function WeeklyCountdown({
                                 <span className={cn(
                                     "relative z-10 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]",
                                     isEmpty && "drop-shadow-none text-slate-300 dark:text-slate-600"
-                                )}>
+                                )}
+                                style={isFull || isActive ? { color: '#ffffff' } : undefined}
+                                >
                                     {dayNum}
                                 </span>
 
                                 {/* Ping indicator on the active draining day */}
                                 {isActive && (
                                     <span className="absolute -top-1 -right-0.5 flex h-2 w-2 z-20 pointer-events-none">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_4px_#34d399]"></span>
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 shadow-xs" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 4px var(--color-accent)' }}></span>
                                     </span>
                                 )}
                             </div>
@@ -243,23 +267,42 @@ export function WeeklyCountdown({
                             key={dayNum}
                             className={cn(
                                 "flex-1 h-4 rounded text-[8px] font-mono font-bold flex items-center justify-center transition-all relative overflow-hidden border",
-                                isFull && "border-cyan-500/35 dark:border-cyan-400/35 bg-gradient-to-t from-cyan-600 to-emerald-500 text-white shadow-[0_0_6px_rgba(6,182,212,0.4)]",
+                                isFull && "text-white",
                                 isEmpty && "bg-slate-100/70 dark:bg-slate-800/40 border-dashed border-slate-200/80 dark:border-slate-700/60 text-slate-300 dark:text-slate-600 opacity-40 line-through",
-                                isActive && "border-cyan-400 bg-slate-100 dark:bg-slate-800/60 ring-1 ring-cyan-400 scale-105 z-10 text-white shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                                isActive && "bg-slate-100 dark:bg-slate-800/60 ring-1 scale-105 z-10 text-white"
                             )}
+                            style={
+                                isFull
+                                    ? {
+                                        background: 'linear-gradient(180deg, var(--color-primary-btn), var(--color-accent))',
+                                        borderColor: 'var(--color-badge-border)',
+                                        boxShadow: '0 0 6px var(--color-accent-glow)',
+                                    }
+                                    : isActive
+                                        ? {
+                                            borderColor: 'var(--color-accent)',
+                                            boxShadow: '0 0 8px var(--color-accent-glow)',
+                                        }
+                                        : undefined
+                            }
                         >
                             {/* Water layer for active day */}
                             {isActive && (
                                 <div
-                                    className="absolute inset-y-0 left-0 bg-gradient-to-t from-cyan-600 to-emerald-400 z-0"
-                                    style={{ width: `${fillPercentage}%` }}
+                                    className="absolute inset-y-0 left-0 z-0"
+                                    style={{
+                                        width: `${fillPercentage}%`,
+                                        background: 'linear-gradient(90deg, var(--color-primary-btn), var(--color-accent))',
+                                    }}
                                 />
                             )}
 
                             <span className={cn(
                                 "relative z-10 drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)]",
                                 isEmpty && "drop-shadow-none text-slate-300 dark:text-slate-600"
-                            )}>
+                            )}
+                            style={isFull || isActive ? { color: '#ffffff' } : undefined}
+                            >
                                 {dayNum}
                             </span>
                         </div>
@@ -274,8 +317,8 @@ export function WeeklyCountdown({
                         className="h-full rounded-full transition-all duration-500 relative"
                         style={{
                             width: `${Math.min(100, Math.max(0, quota.percentage ?? 0))}%`,
-                            background: 'linear-gradient(90deg, #65a30d 0%, #84cc16 55%, #bef264 100%)',
-                            boxShadow: '0 0 8px rgba(163, 230, 53, 0.6), inset 0 1px 0.5px rgba(255, 255, 255, 0.45)',
+                            background: 'linear-gradient(90deg, var(--color-primary-btn), var(--color-accent))',
+                            boxShadow: '0 0 8px var(--color-accent-glow), inset 0 1px 0.5px rgba(255, 255, 255, 0.45)',
                         }}
                     >
                         {/* Top glossy inner reflection highlight */}

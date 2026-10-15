@@ -53,7 +53,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
     const getColorClass = (percentage: number) => {
         const color = getQuotaColor(percentage);
         switch (color) {
-            case 'success': return 'bg-emerald-500';
+            case 'success': return 'bg-[var(--color-accent)]';
             case 'warning': return 'bg-amber-500';
             case 'error': return 'bg-rose-500';
             default: return 'bg-gray-500';
@@ -63,7 +63,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
     const getTimeColorClass = (resetTime: string | undefined) => {
         const color = getTimeRemainingColor(resetTime);
         switch (color) {
-            case 'success': return 'text-emerald-500 dark:text-emerald-400';
+            case 'success': return 'text-[var(--color-accent)]';
             case 'warning': return 'text-amber-500 dark:text-amber-400';
             default: return 'text-blue-600 dark:text-blue-400';
         }
@@ -265,8 +265,8 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                         const isReady = new Date(geminiImageModel.reset_time).getTime() <= Date.now();
                                         const formatted = isReady ? t('common.ready', 'Ready') : formatTimeRemaining(geminiImageModel.reset_time, t('common.ready', 'Ready'));
                                         return (
-                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(geminiImageModel.reset_time))}>
-                                                {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
+                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-[var(--color-accent)] font-semibold" : getTimeColorClass(geminiImageModel.reset_time))}>
+                                                {isReady ? <Check className="w-2.5 h-2.5 shrink-0" style={{ color: 'var(--color-accent)' }} strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
                                                 {formatted}
                                             </span>
                                         );
@@ -276,7 +276,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 </div>
                                 <span className={cn("w-[36px] text-right font-bold transition-colors",
                                     isImageLiveLimited ? (liveImageState.isActive ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400') :
-                                        getQuotaColor(geminiImageModel?.percentage || 0) === 'success' ? 'text-emerald-600 dark:text-emerald-400' :
+                                        getQuotaColor(geminiImageModel?.percentage || 0) === 'success' ? 'text-[var(--color-accent)]' :
                                         getQuotaColor(geminiImageModel?.percentage || 0) === 'warning' ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'
                                 )}>
                                     {isImageLiveLimited ? `${liveImageLimit?.status || 'ERR'}` : (geminiImageModel ? `${geminiImageModel.percentage}%` : '-')}
@@ -302,8 +302,8 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                         const isReady = new Date(claudeModel.reset_time).getTime() <= Date.now();
                                         const formatted = isReady ? t('common.ready', 'Ready') : formatTimeRemaining(claudeModel.reset_time, t('common.ready', 'Ready'));
                                         return (
-                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-emerald-600 dark:text-emerald-400 font-semibold" : getTimeColorClass(claudeModel.reset_time))}>
-                                                {isReady ? <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
+                                            <span className={cn("flex items-center gap-0.5 font-medium transition-colors", isReady ? "text-[var(--color-accent)] font-semibold" : getTimeColorClass(claudeModel.reset_time))}>
+                                                {isReady ? <Check className="w-2.5 h-2.5 shrink-0" style={{ color: 'var(--color-accent)' }} strokeWidth={2.5} /> : <Clock className="w-2.5 h-2.5 shrink-0" />}
                                                 {formatted}
                                             </span>
                                         );

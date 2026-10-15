@@ -151,16 +151,23 @@ export function AccountActionControls({
             onClick={(e) => e.stopPropagation()}
         >
             {/* Primary Target Switch Hub */}
-            <div className={cn(
-                "flex items-center rounded-xl p-0.5 border shadow-sm transition-all gap-0.5",
-                account.validation_blocked
-                    ? "bg-amber-500/10 dark:bg-amber-500/15 border-amber-500/40 shadow-amber-500/10"
-                    : isAnyActive
-                        ? "bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/50 shadow-emerald-500/20"
-                        : isExhausted
-                            ? "bg-slate-200/50 dark:bg-slate-800/40 border-slate-300/60 dark:border-slate-700/40 opacity-70"
-                            : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
-            )}>
+            <div 
+                className={cn(
+                    "flex items-center rounded-xl p-0.5 border shadow-sm transition-all gap-0.5",
+                    account.validation_blocked
+                        ? "bg-amber-500/10 dark:bg-amber-500/15 border-amber-500/40 shadow-amber-500/10"
+                        : isAnyActive
+                            ? "border"
+                            : isExhausted
+                                ? "bg-slate-200/50 dark:bg-slate-800/40 border-slate-300/60 dark:border-slate-700/40 opacity-70"
+                                : "bg-slate-100/80 dark:bg-slate-800/60 border-slate-200/80 dark:border-slate-700/60"
+                )}
+                style={isAnyActive && !account.validation_blocked ? {
+                    backgroundColor: 'rgba(var(--color-accent-rgb), 0.08)',
+                    borderColor: 'var(--color-badge-border)',
+                    boxShadow: '0 0 12px var(--color-accent-glow)',
+                } : undefined}
+            >
                 {/* Switch Target 1: Antigravity Platform */}
                 <button
                     type="button"
@@ -169,17 +176,23 @@ export function AccountActionControls({
                         isSwitchDisabled
                             ? "opacity-50 cursor-not-allowed"
                             : isPlatformActive
-                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                                ? "border font-bold"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"
                     )}
+                    style={isPlatformActive && !isSwitchDisabled ? {
+                        backgroundColor: 'rgba(var(--color-accent-rgb), 0.18)',
+                        borderColor: 'var(--color-badge-border)',
+                        boxShadow: '0 0 10px var(--color-accent-glow)',
+                        color: 'var(--color-accent)',
+                    } : undefined}
                     onClick={() => onSwitch('platform')}
                     disabled={isSwitchDisabled}
                     title={getSwitchTooltip('platform', isPlatformActive)}
                 >
                     {isPlatformActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-80" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 ring-2 ring-white dark:ring-slate-900" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                         </span>
                     )}
                     {isSwitching && (switchingTarget === 'platform' || !switchingTarget) ? (
@@ -197,17 +210,23 @@ export function AccountActionControls({
                         isSwitchDisabled
                             ? "opacity-50 cursor-not-allowed"
                             : isIdeActive
-                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                                ? "border font-bold"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400"
                     )}
+                    style={isIdeActive && !isSwitchDisabled ? {
+                        backgroundColor: 'rgba(var(--color-accent-rgb), 0.18)',
+                        borderColor: 'var(--color-badge-border)',
+                        boxShadow: '0 0 10px var(--color-accent-glow)',
+                        color: 'var(--color-accent)',
+                    } : undefined}
                     onClick={() => onSwitch('ide')}
                     disabled={isSwitchDisabled}
                     title={getSwitchTooltip('ide', isIdeActive)}
                 >
                     {isIdeActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-80" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 ring-2 ring-white dark:ring-slate-900" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                         </span>
                     )}
                     {isSwitching && switchingTarget === 'ide' ? (
@@ -225,17 +244,23 @@ export function AccountActionControls({
                         isSwitchDisabled
                             ? "opacity-50 cursor-not-allowed"
                             : isCliActive
-                                ? "bg-emerald-500/20 dark:bg-emerald-400/25 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] ring-1 ring-emerald-400/50 text-emerald-600 dark:text-emerald-400"
+                                ? "border font-bold"
                                 : "hover:bg-white dark:hover:bg-slate-700 hover:shadow-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
                     )}
+                    style={isCliActive && !isSwitchDisabled ? {
+                        backgroundColor: 'rgba(var(--color-accent-rgb), 0.18)',
+                        borderColor: 'var(--color-badge-border)',
+                        boxShadow: '0 0 10px var(--color-accent-glow)',
+                        color: 'var(--color-accent)',
+                    } : undefined}
                     onClick={() => onSwitch('agy')}
                     disabled={isSwitchDisabled}
                     title={getSwitchTooltip('agy', isCliActive)}
                 >
                     {isCliActive && (
                         <span className="absolute -top-1 -right-0.5 flex h-2.5 w-2.5 z-10 pointer-events-none">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-[0_0_6px_#10b981]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-80" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 ring-2 ring-white dark:ring-slate-900" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                         </span>
                     )}
                     {isSwitching && switchingTarget === 'agy' ? (

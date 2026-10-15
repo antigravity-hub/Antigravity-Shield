@@ -34,7 +34,7 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
     const getBgColorClass = (p: number) => {
         const color = getQuotaColor(p);
         switch (color) {
-            case 'success': return 'bg-emerald-500';
+            case 'success': return 'bg-[var(--color-accent)]';
             case 'warning': return 'bg-amber-500';
             case 'error': return 'bg-rose-500';
             default: return 'bg-gray-500';
@@ -44,7 +44,7 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
     const getTextColorClass = (p: number) => {
         const color = getQuotaColor(p);
         switch (color) {
-            case 'success': return 'text-emerald-600 dark:text-emerald-400';
+            case 'success': return 'text-[var(--color-accent)]';
             case 'warning': return 'text-amber-600 dark:text-amber-400';
             case 'error': return 'text-rose-600 dark:text-rose-400';
             default: return 'text-gray-500';
@@ -55,7 +55,7 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
         if (!time) return 'text-gray-300 dark:text-gray-600';
         const color = getTimeRemainingColor(time);
         switch (color) {
-            case 'success': return 'text-emerald-600 dark:text-emerald-400';
+            case 'success': return 'text-[var(--color-accent)]';
             case 'warning': return 'text-amber-600 dark:text-amber-400';
             default: return 'text-blue-600 dark:text-blue-400';
         }
@@ -124,8 +124,8 @@ export function QuotaItem({ label, percentage, resetTime, isProtected, liveLimit
                                 );
                             }
                             return (
-                                <span className="text-emerald-600 dark:text-emerald-400 font-semibold scale-90 flex items-center gap-0.5">
-                                    <Check className="w-2.5 h-2.5 shrink-0 text-emerald-500" strokeWidth={2.5} />
+                                <span className="text-[var(--color-accent)] font-semibold scale-90 flex items-center gap-0.5">
+                                    <Check className="w-2.5 h-2.5 shrink-0" style={{ color: 'var(--color-accent)' }} strokeWidth={2.5} />
                                     {t('common.ready', 'Ready')}
                                 </span>
                             );

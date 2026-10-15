@@ -226,11 +226,11 @@ function SortableAccountRow({
             className={cn(
                 "group transition-colors border-b border-gray-100 dark:border-base-200",
                 account.validation_blocked && "bg-amber-500/[0.06] dark:bg-amber-950/20 border-l-4 border-l-amber-500",
-                isAnyActive && !account.validation_blocked && "bg-emerald-50/40 dark:bg-emerald-950/20",
-                isDragging && "bg-emerald-100 dark:bg-emerald-900/30 shadow-lg",
+                isAnyActive && !account.validation_blocked && "bg-[rgba(var(--color-accent-rgb),0.04)]",
+                isDragging && "bg-[rgba(var(--color-accent-rgb),0.12)] shadow-lg",
                 !isDragging && !isAnyActive && !account.validation_blocked && "hover:bg-gray-50 dark:hover:bg-base-200",
                 !isDragging && account.validation_blocked && "hover:bg-amber-500/10 dark:hover:bg-amber-950/30",
-                !isDragging && isAnyActive && !account.validation_blocked && "hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30",
+                !isDragging && isAnyActive && !account.validation_blocked && "hover:bg-[rgba(var(--color-accent-rgb),0.08)]",
                 (isExhausted || account.disabled || account.proxy_disabled) && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
             )}
         >
@@ -410,7 +410,7 @@ function AccountRowContent({
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                 <span className={cn(
                     "font-medium text-sm truncate max-w-[180px] xl:max-w-[240px] inline-block transition-colors",
-                    isAnyActive ? "text-emerald-700 dark:text-emerald-400 font-semibold" : "text-gray-900 dark:text-base-content"
+                    isAnyActive ? "text-[var(--color-accent)] font-semibold" : "text-gray-900 dark:text-base-content"
                 )} title={account.email}>
                     {account.email}
                 </span>
@@ -418,24 +418,34 @@ function AccountRowContent({
                 <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
                     {isPlatformActive && (
                         <span 
-                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold border border-emerald-500/30"
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-extrabold border"
+                            style={{
+                                backgroundColor: 'var(--color-badge-bg)',
+                                color: 'var(--color-badge-text)',
+                                borderColor: 'var(--color-badge-border)',
+                            }}
                             title="Active in Antigravity Platform"
                         >
                             <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                             </span>
                             Platform
                         </span>
                     )}
                     {isIdeActive && (
                         <span 
-                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-[#93e9be] text-[10px] font-extrabold border border-emerald-500/30"
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-extrabold border"
+                            style={{
+                                backgroundColor: 'var(--color-badge-bg)',
+                                color: 'var(--color-badge-text)',
+                                borderColor: 'var(--color-badge-border)',
+                            }}
                             title="Active in Antigravity IDE"
                         >
                             <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#93e9be] shadow-[0_0_6px_#93e9be]"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                             </span>
                             IDE
                         </span>
@@ -454,12 +464,17 @@ function AccountRowContent({
                     )}
                     {!isPlatformActive && !isIdeActive && !isCliActive && isCurrent && (
                         <span 
-                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold border border-emerald-500/30"
+                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold border"
+                            style={{
+                                backgroundColor: 'var(--color-badge-bg)',
+                                color: 'var(--color-badge-text)',
+                                borderColor: 'var(--color-badge-border)',
+                            }}
                             title="Active in Antigravity"
                         >
                             <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                             </span>
                             Active
                         </span>
@@ -762,8 +777,8 @@ function AccountRowContent({
                         </div>
                     ) : isReady ? (
                         <div className="flex items-center gap-1">
-                            <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" strokeWidth={2.5} />
-                            <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                            <Check className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-accent)' }} strokeWidth={2.5} />
+                            <span className="font-mono text-xs font-bold text-[var(--color-accent)]">
                                 {t('common.ready', 'Ready')}
                             </span>
                         </div>

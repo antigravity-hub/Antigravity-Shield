@@ -107,18 +107,9 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar Header & Brand */}
       <div className="h-16 flex items-center px-4 border-b border-slate-200/60 dark:border-slate-800/60 justify-between">
         <Link to="/" className="flex items-center gap-3 overflow-hidden min-w-0 group">
-          <div
-            className="relative w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-white shadow-md group-hover:scale-105 transition-transform duration-200"
-            style={{
-              background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
-              boxShadow: '0 4px 14px -2px var(--color-accent-glow)',
-            }}
-          >
-            <ShieldCheck className="w-5 h-5 text-slate-950 dark:text-slate-900" />
-            <span
-              className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-[#09100d]"
-              style={{ backgroundColor: 'var(--color-accent)' }}
-            />
+          <div className="relative w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-emerald-600 via-seafoam-500 to-[#93e9be] text-white shadow-md shadow-emerald-500/25 group-hover:scale-105 transition-transform duration-200">
+            <ShieldCheck className="w-5 h-5 text-slate-950" />
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#93e9be] ring-2 ring-white dark:ring-[#09100d]" />
           </div>
 
           {!collapsed && (
@@ -132,14 +123,7 @@ export const Sidebar: React.FC = () => {
                 <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate">
                   Antigravity
                 </span>
-                <span
-                  className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full"
-                  style={{
-                    backgroundColor: 'var(--color-badge-bg)',
-                    color: 'var(--color-badge-text)',
-                    border: '1px solid var(--color-badge-border)',
-                  }}
-                >
+                <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-[#93e9be]/15 text-emerald-700 dark:text-[#93e9be] border border-[#93e9be]/30">
                   SHIELD
                 </span>
               </div>
