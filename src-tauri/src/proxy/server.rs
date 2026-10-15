@@ -2860,7 +2860,26 @@ async fn admin_save_http_api_settings(
 async fn admin_toolkit_heartbeat(
     Json(payload): Json<crate::modules::ide_scanner::ToolkitHeartbeatPayload>,
 ) -> impl IntoResponse {
+    let active_email = payload.active_email.clone();
     crate::modules::ide_scanner::record_heartbeat(payload);
+
+    // If the connected IDE reports its active email, ensure active_ide_account_id stays synchronized
+    if let Some(ref email) = active_email {
+        if !email.trim().is_empty() {
+            if let Ok(Some(acc)) = crate::modules::account::find_account_by_email(email) {
+                if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
+                    if targets.ide.as_deref() != Some(&acc.id) {
+                        let _ = crate::modules::account::set_current_account_id_with_target(&acc.id, Some("ide"));
+                        logger::log_info(&format!(
+                            "[Toolkit Heartbeat] Synchronized active IDE target to account {} ({})",
+                            acc.email, acc.id
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
     let pending_command = crate::modules::ide_scanner::pop_command();
     Json(serde_json::json!({
         "status": "ok",

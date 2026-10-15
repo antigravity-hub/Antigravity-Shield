@@ -89,6 +89,16 @@ pub fn is_toolkit_connected() -> bool {
     }
 }
 
+pub fn get_active_ide_email() -> Option<String> {
+    let last = LAST_HEARTBEAT.read().ok().and_then(|guard| *guard);
+    match last {
+        Some(instant) if instant.elapsed().as_secs() <= 45 => {
+            ACTIVE_EMAIL.read().ok().and_then(|guard| guard.clone())
+        }
+        _ => None,
+    }
+}
+
 // ============================================================================
 // Bidirectional Full-Duplex Command Queue (Shield -> IDE)
 // ============================================================================

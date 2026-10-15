@@ -122,6 +122,98 @@ impl QuotaData {
             100
         }
     }
+
+    /// Returns true if any weekly quota bucket has hit its limit (e.g. 0% remaining or limit reached message)
+    pub fn has_weekly_limit_hit(&self) -> bool {
+        if let Some(ref groups) = self.quota_groups {
+            for g in groups {
+                for b in &g.buckets {
+                    let is_weekly = b.window.eq_ignore_ascii_case("weekly")
+                        || b.bucket_id.to_lowercase().contains("weekly")
+                        || b.bucket_id.to_lowercase().contains("week");
+                    if is_weekly {
+                        if b.remaining_fraction <= 0.005 {
+                            return true;
+                        }
+                        if let Some(ref desc) = b.description {
+                            let lower = desc.to_lowercase();
+                            if lower.contains("hit your weekly limit") || lower.contains("weekly limit reached") {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Returns true if core Gemini models or the Gemini weekly bucket are fully exhausted (0%)
+    pub fn is_gemini_exhausted(&self) -> bool {
+        // Check Gemini group / weekly bucket first
+        if let Some(ref groups) = self.quota_groups {
+            for g in groups {
+                let g_name = g.display_name.to_lowercase();
+                if g_name.contains("gemini") {
+                    for b in &g.buckets {
+                        let is_weekly = b.window.eq_ignore_ascii_case("weekly")
+                            || b.bucket_id.to_lowercase().contains("weekly")
+                            || b.bucket_id.to_lowercase().contains("week");
+                        if is_weekly && b.remaining_fraction <= 0.005 {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check if all primary Gemini models are 0%
+        let gemini_models: Vec<_> = self.models
+            .iter()
+            .filter(|m| {
+                let n = m.name.to_lowercase();
+                n.contains("gemini") || n.contains("flash") || n.contains("pro")
+            })
+            .collect();
+
+        if !gemini_models.is_empty() && gemini_models.iter().all(|m| m.percentage <= 0) {
+            return true;
+        }
+
+        false
+    }
+
+    /// Minimum remaining percentage for Gemini family specifically
+    pub fn get_gemini_min_percentage(&self) -> i32 {
+        let mut min_pct = 100;
+        let mut has_gemini = false;
+
+        for m in &self.models {
+            let n = m.name.to_lowercase();
+            if n.contains("gemini") || n.contains("flash") || n.contains("pro") {
+                min_pct = min_pct.min(m.percentage);
+                has_gemini = true;
+            }
+        }
+
+        if let Some(ref groups) = self.quota_groups {
+            for g in groups {
+                if g.display_name.to_lowercase().contains("gemini") {
+                    for b in &g.buckets {
+                        let pct = (b.remaining_fraction * 100.0).round() as i32;
+                        min_pct = min_pct.min(pct.clamp(0, 100));
+                        has_gemini = true;
+                    }
+                }
+            }
+        }
+
+        if has_gemini {
+            min_pct
+        } else {
+            self.get_min_remaining_percentage()
+        }
+    }
 }
 
 impl Default for QuotaData {

@@ -1215,6 +1215,21 @@ pub fn list_accounts() -> Result<Vec<Account>, String> {
     Ok(accounts)
 }
 
+/// Find account by email (case-insensitive)
+pub fn find_account_by_email(email: &str) -> Result<Option<Account>, String> {
+    let target = email.trim();
+    if target.is_empty() {
+        return Ok(None);
+    }
+    let index = load_account_index()?;
+    for summary in &index.accounts {
+        if summary.email.eq_ignore_ascii_case(target) {
+            return load_account(&summary.id).map(Some);
+        }
+    }
+    Ok(None)
+}
+
 /// Add account
 pub fn add_account(
     email: String,

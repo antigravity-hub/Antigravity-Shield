@@ -210,9 +210,19 @@ pub fn start_scheduler(
             // Rapid polling (35-45s) is strictly reserved for when runway drops below ~5 minutes.
             if cfg.auto_refresh {
                 let mut active_target_account_id = None;
-                if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
-                    active_target_account_id = targets.ide.or(targets.agy);
+                // 1. Prioritize live heartbeat from connected IDE
+                if let Some(live_email) = crate::modules::ide_scanner::get_active_ide_email() {
+                    if let Ok(Some(live_acc)) = crate::modules::account::find_account_by_email(&live_email) {
+                        active_target_account_id = Some(live_acc.id);
+                    }
                 }
+                // 2. Fall back to active target accounts
+                if active_target_account_id.is_none() {
+                    if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
+                        active_target_account_id = targets.ide.or(targets.agy);
+                    }
+                }
+                // 3. Fall back to current account
                 if active_target_account_id.is_none() {
                     active_target_account_id = crate::modules::account::get_current_account_id().ok().flatten();
                 }
@@ -367,14 +377,15 @@ pub fn start_scheduler(
                                                     }
                                                     last_observed_pct = Some(new_min);
 
-                                                    // [PREEMPTIVE AUTO-SWITCH] Graceful handover based on Runway (Time-To-Depletion) & Safety Floor
+                                                    // [PREEMPTIVE AUTO-SWITCH] Graceful handover based on Runway (Time-To-Depletion), Weekly Exhaustion & Safety Floor
                                                     if cfg.auto_switch_on_quota {
                                                         let switch_threshold = cfg.auto_switch_threshold_percentage.max(5) as i32;
                                                         let is_critical_runway = estimated_runway_mins.map_or(false, |r| r <= 2.5 && r > 0.0);
-                                                        let is_hard_floor = new_min <= 5;
+                                                        let is_weekly_exhausted = refreshed_acc.quota.as_ref().map_or(false, |q| q.has_weekly_limit_hit() || q.is_gemini_exhausted());
+                                                        let is_hard_floor = new_min <= 5 || is_weekly_exhausted;
                                                         let is_burst_danger = new_min <= 10 && is_heavy_burst;
 
-                                                        if new_min <= switch_threshold && (is_critical_runway || is_hard_floor || is_burst_danger) {
+                                                        if (new_min <= switch_threshold || is_weekly_exhausted) && (is_critical_runway || is_hard_floor || is_burst_danger) {
                                                             if now - last_auto_switch_time >= 60 {
                                                                 if let Ok(all_accs) = crate::modules::account::list_accounts() {
                                                                     let mut candidates: Vec<_> = all_accs
@@ -384,22 +395,24 @@ pub fn start_scheduler(
                                                                                 && !a.disabled
                                                                                 && !a.proxy_disabled
                                                                                 && !a.validation_blocked
-                                                                                && a.quota.as_ref().map_or(false, |q| !q.is_forbidden)
+                                                                                && a.quota.as_ref().map_or(false, |q| {
+                                                                                    !q.is_forbidden && !q.has_weekly_limit_hit() && !q.is_gemini_exhausted()
+                                                                                })
                                                                         })
                                                                         .collect();
 
                                                                     candidates.sort_by(|a, b| {
-                                                                        let pct_b = b.quota.as_ref().map_or(0, |q| q.get_min_remaining_percentage());
-                                                                        let pct_a = a.quota.as_ref().map_or(0, |q| q.get_min_remaining_percentage());
+                                                                        let pct_b = b.quota.as_ref().map_or(0, |q| q.get_gemini_min_percentage());
+                                                                        let pct_a = a.quota.as_ref().map_or(0, |q| q.get_gemini_min_percentage());
                                                                         pct_b.cmp(&pct_a)
                                                                     });
 
                                                                     if let Some(best_cand) = candidates.first() {
-                                                                        let cand_pct = best_cand.quota.as_ref().map_or(0, |q| q.get_min_remaining_percentage());
+                                                                        let cand_pct = best_cand.quota.as_ref().map_or(0, |q| q.get_gemini_min_percentage());
                                                                         if cand_pct > new_min && cand_pct > 15 {
                                                                             logger::log_info(&format!(
-                                                                                "[Scheduler] ⚡ PREEMPTIVE AUTO-SWITCH TRIGGERED: {} at {}% (runway: {:.1}m, heavy_burst: {}). Handing over to standby: {} at {}%.",
-                                                                                refreshed_acc.email, new_min, estimated_runway_mins.unwrap_or(0.0), is_heavy_burst, best_cand.email, cand_pct
+                                                                                "[Scheduler] ⚡ PREEMPTIVE AUTO-SWITCH TRIGGERED: {} at {}% (runway: {:.1}m, weekly_exhausted: {}, heavy_burst: {}). Handing over to standby: {} at {}%.",
+                                                                                refreshed_acc.email, new_min, estimated_runway_mins.unwrap_or(0.0), is_weekly_exhausted, is_heavy_burst, best_cand.email, cand_pct
                                                                             ));
                                                                             last_auto_switch_time = now;
 
@@ -409,7 +422,7 @@ pub fn start_scheduler(
                                                                             };
                                                                             let service = crate::modules::account_service::AccountService::new(sys_manager);
 
-                                                                            if let Err(e) = service.switch_account(&best_cand.id, None).await {
+                                                                            if let Err(e) = service.switch_account(&best_cand.id, Some("ide")).await {
                                                                                 logger::log_error(&format!("[Scheduler] Preemptive auto-switch execution failed: {}", e));
                                                                             } else {
                                                                                 if let Some(ref app) = app_handle_for_daemon {
@@ -432,7 +445,9 @@ pub fn start_scheduler(
                                                                                         "to_email": best_cand.email,
                                                                                         "to_pct": cand_pct,
                                                                                         "runway_mins": estimated_runway_mins.unwrap_or(0.0),
-                                                                                        "reason": if is_critical_runway {
+                                                                                        "reason": if is_weekly_exhausted {
+                                                                                            "Google Gemini weekly limit reached (0% remaining)".to_string()
+                                                                                        } else if is_critical_runway {
                                                                                             format!("Estimated runway exhausted ({:.1} min remaining)", estimated_runway_mins.unwrap_or(0.0))
                                                                                         } else if is_burst_danger {
                                                                                             "High-concurrency token burst nearing exhaustion (<10%)".to_string()
