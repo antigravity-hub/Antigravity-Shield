@@ -1,14 +1,17 @@
 export type EcosystemEntityType = 'skills' | 'mcp' | 'rules';
 
 export type SkillCategory =
+  | 'all'
   | 'coding'
   | 'design'
-  | 'devops'
+  | 'mobile'
   | 'data'
+  | 'devops'
+  | 'testing'
   | 'automation'
-  | 'science'
   | 'architecture'
-  | 'all';
+  | 'marketing'
+  | 'science';
 
 export type SkillDomain = Exclude<SkillCategory, 'all'>;
 export type SkillCategoryFilter = SkillCategory;

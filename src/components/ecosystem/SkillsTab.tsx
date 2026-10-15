@@ -27,33 +27,50 @@ import {
   GitBranch,
   BadgeCheck,
   Bot,
-  Layers,
   RefreshCw,
+  Smartphone,
+  TestTube,
+  TrendingUp,
 } from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import {
   SkillItem,
   SkillCategory,
   AgentPlatformId,
-  SkillTopicId,
   SecurityAuditFilter,
 } from '../../types/ecosystem';
 import { RichSkillDocViewer } from './RichSkillDocViewer';
 import {
   SKILLS_SH_CATALOG,
   OFFICIAL_AGENTS,
-  OFFICIAL_TOPICS,
 } from '../../config/skillsCatalog';
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
   all: Sliders,
   coding: Code2,
-  design: Palette,
-  devops: Gauge,
   data: Database,
+  devops: Gauge,
+  design: Palette,
   automation: Send,
-  science: Boxes,
   architecture: Server,
+  marketing: TrendingUp,
+  mobile: Smartphone,
+  testing: TestTube,
+  science: Boxes,
+};
+
+const CATEGORY_METADATA: Record<SkillCategory, { en: string; fa: string }> = {
+  all: { en: 'All', fa: 'همه' },
+  coding: { en: 'Coding', fa: 'کدنویسی' },
+  data: { en: 'Data & DB', fa: 'داده و پایگاه‌داده' },
+  devops: { en: 'DevOps', fa: 'دوآپس' },
+  design: { en: 'Design & UI', fa: 'طراحی و UI' },
+  automation: { en: 'Automation', fa: 'اتوماسیون' },
+  architecture: { en: 'Architecture', fa: 'معماری سیستم' },
+  marketing: { en: 'Marketing', fa: 'مارکتینگ' },
+  mobile: { en: 'Mobile', fa: 'موبایل' },
+  testing: { en: 'Testing', fa: 'تست و QA' },
+  science: { en: 'Science', fa: 'علوم و پژوهش' },
 };
 
 const SKILL_ICONS: Record<string, React.ElementType> = {
@@ -78,7 +95,7 @@ function parseInstalls(val?: number | string): number {
 }
 
 export const SkillsTab: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     skills,
     searchQuery,
@@ -88,8 +105,6 @@ export const SkillsTab: React.FC = () => {
     setSkillSource,
     selectedAgent,
     setSelectedAgent,
-    selectedTopic,
-    setSelectedTopic,
     verifiedOnly,
     setVerifiedOnly,
     auditFilter,
@@ -156,13 +171,25 @@ export const SkillsTab: React.FC = () => {
   const categories: SkillCategory[] = [
     'all',
     'coding',
-    'design',
-    'devops',
     'data',
+    'devops',
+    'design',
     'automation',
-    'science',
     'architecture',
+    'marketing',
+    'mobile',
+    'testing',
+    'science',
   ];
+
+  // Count metrics for category pills
+  const categoryCounts = useMemo(() => {
+    const map: Record<string, number> = { all: skills.length };
+    for (const s of skills) {
+      map[s.category] = (map[s.category] || 0) + 1;
+    }
+    return map;
+  }, [skills]);
 
   // Count metrics for source tabs
   const localCount = skills.filter((s) => s.isLocal || s.isInstalled).length;
@@ -236,21 +263,6 @@ export const SkillsTab: React.FC = () => {
       }
     }
 
-    // 7. Curated Official Topics Filter (Item 3: https://www.skills.sh/topic)
-    if (selectedTopic !== 'all') {
-      const topicMatches =
-        (item.topics && item.topics.includes(selectedTopic)) ||
-        (selectedTopic === 'frontend-react' && (item.category === 'coding' || item.category === 'design' || item.tags?.some((t) => /react|front|ui/i.test(t)))) ||
-        (selectedTopic === 'nextjs' && (item.tags?.some((t) => /next|vercel|ssr/i.test(t)) || item.name.includes('next'))) ||
-        (selectedTopic === 'design-ui' && (item.category === 'design' || item.tags?.some((t) => /design|ui|motion|css|tailwind/i.test(t)))) ||
-        (selectedTopic === 'mobile' && (item.tags?.some((t) => /mobile|react-native|expo|android|ios/i.test(t)) || item.name.includes('mobile'))) ||
-        (selectedTopic === 'agent-workflows' && (item.category === 'automation' || item.category === 'architecture' || item.tags?.some((t) => /agent|workflow|subagent|swarm/i.test(t)))) ||
-        (selectedTopic === 'databases' && (item.category === 'data' || item.tags?.some((t) => /database|sql|postgres|supabase|prisma/i.test(t)))) ||
-        (selectedTopic === 'testing' && (item.tags?.some((t) => /test|playwright|tdd|eval/i.test(t)) || item.name.includes('test'))) ||
-        (selectedTopic === 'marketing' && (item.tags?.some((t) => /market|seo|growth|copy/i.test(t)) || item.name.includes('marketing') || item.name.includes('seo')));
-      if (!topicMatches) return false;
-    }
-
     return true;
   });
 
@@ -290,7 +302,6 @@ export const SkillsTab: React.FC = () => {
     selectedCategory,
     skillSource,
     selectedAgent,
-    selectedTopic,
     verifiedOnly,
     auditFilter,
     activeFirst,
@@ -517,15 +528,20 @@ export const SkillsTab: React.FC = () => {
 
       {/* Category Filter Pills & Create Action */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="relative flex flex-wrap items-center gap-1 p-1 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-md">
+        <div className="relative flex flex-wrap items-center gap-1.5 p-1.5 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-md">
           {categories.map((cat) => {
             const Icon = CATEGORY_ICONS[cat] || Sliders;
             const isSelected = selectedCategory === cat;
+            const isFa = i18n.language?.startsWith('fa');
+            const meta = CATEGORY_METADATA[cat] || { en: cat, fa: cat };
+            const label = isFa ? meta.fa : meta.en;
+            const count = categoryCounts[cat] ?? 0;
+
             return (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors select-none ${
+                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors select-none whitespace-nowrap ${
                   isSelected
                     ? 'text-sky-600 dark:text-sky-400 font-semibold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
@@ -539,8 +555,17 @@ export const SkillsTab: React.FC = () => {
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1.5">
-                  <Icon className="w-3.5 h-3.5" />
-                  <span className="capitalize">{cat}</span>
+                  <Icon className="w-3.5 h-3.5 shrink-0" />
+                  <span>{label}</span>
+                  <span
+                    className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full transition-colors ${
+                      isSelected
+                        ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400 font-semibold'
+                        : 'bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {count}
+                  </span>
                 </span>
               </button>
             );
@@ -579,7 +604,7 @@ export const SkillsTab: React.FC = () => {
         </div>
       </div>
 
-      {/* Advanced Secondary Controls: AI Agents Dropdown, Curated Topics, Security Audits & Verified Toggle */}
+      {/* Advanced Secondary Controls: AI Agents Dropdown, Security Audits & Verified Toggle */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 bg-slate-50/70 dark:bg-slate-900/50 rounded-2xl border border-slate-200/60 dark:border-slate-800/60">
         <div className="flex flex-wrap items-center gap-2.5">
           {/* 1. AI Agent Compatibility Dropdown */}
@@ -605,27 +630,7 @@ export const SkillsTab: React.FC = () => {
             </select>
           </div>
 
-          {/* 2. Curated Topics Dropdown (https://www.skills.sh/topic) */}
-          <div className="flex items-center gap-1.5">
-            <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
-              <Layers className="w-3.5 h-3.5 text-purple-500" />
-              <span>{t('ecosystem.topic_filter_label', 'Topic')}:</span>
-            </span>
-            <select
-              value={selectedTopic}
-              onChange={(e) => setSelectedTopic(e.target.value as SkillTopicId)}
-              className="text-xs font-medium py-1 px-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer"
-            >
-              <option value="all">🌐 All Official Topics</option>
-              {OFFICIAL_TOPICS.map((topic) => (
-                <option key={topic.id} value={topic.id}>
-                  {topic.title} ({topic.skillsCount})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 3. Security Audits Filter Dropdown (Item 1) */}
+          {/* 2. Security Audits Filter Dropdown (Item 1) */}
           <div className="flex items-center gap-1.5">
             <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
