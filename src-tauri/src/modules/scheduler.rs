@@ -674,7 +674,7 @@ async fn run_warmup_cycle(
                 let weekly_exhausted = group.buckets.iter().any(|b| {
                     let w = b.window.to_lowercase();
                     let id = b.bucket_id.to_lowercase();
-                    let desc = b.description.to_lowercase();
+                    let desc = b.description.as_deref().unwrap_or("").to_lowercase();
                     ((w.contains("week") || id.contains("week")) && b.remaining_fraction <= 0.001)
                         || desc.contains("hit your weekly limit")
                         || desc.contains("weekly limit does not currently apply")
@@ -716,7 +716,7 @@ async fn run_warmup_cycle(
                         } else {
                             // 5-hour rolling:
                             // Check if rolling countdown is already active
-                            let desc = bucket.description.to_lowercase();
+                            let desc = bucket.description.as_deref().unwrap_or("").to_lowercase();
                             let is_actively_rolling = desc.contains("you have used some of your 5-hour limit")
                                 || desc.contains("will fully refresh in");
 
@@ -877,7 +877,7 @@ pub async fn trigger_warmup_for_account(account: &Account) {
             let weekly_exhausted = group.buckets.iter().any(|b| {
                 let w = b.window.to_lowercase();
                 let id = b.bucket_id.to_lowercase();
-                let desc = b.description.to_lowercase();
+                let desc = b.description.as_deref().unwrap_or("").to_lowercase();
                 ((w.contains("week") || id.contains("week")) && b.remaining_fraction <= 0.001)
                     || desc.contains("hit your weekly limit")
                     || desc.contains("weekly limit does not currently apply")
@@ -917,7 +917,7 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                         }
                     } else {
                         // 5-hour rolling bucket:
-                        let desc = bucket.description.to_lowercase();
+                        let desc = bucket.description.as_deref().unwrap_or("").to_lowercase();
                         let is_actively_rolling = desc.contains("you have used some of your 5-hour limit")
                             || desc.contains("will fully refresh in");
                         let cooldown_duration = if is_actively_rolling { 16200 } else { 600 };

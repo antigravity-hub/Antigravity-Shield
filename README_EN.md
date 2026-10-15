@@ -176,58 +176,32 @@ While the original upstream project (`lbjlaq/Antigravity-Manager`) provided a ba
 ## 🏗️ System Architecture
 
 ```mermaid
-graph TD
+graph LR
     subgraph Clients["Supported Development Environments & Agent CLIs"]
-        IDE["Antigravity IDE / VS Code / Cursor / Zed"]
-        ClaudeCLI["Claude Code CLI (Anthropic Protocol)"]
-        OpenAIClients["Cursor / Windsurf / Cherry Studio (OpenAI Protocol)"]
-        AgentMarket["Agent Fleet (Claude, Gemini, Codex, Copilot, Cline)"]
+        direction TB
+        C1["Antigravity IDE / VS Code"]
+        C2["Claude Code CLI (Anthropic Protocol)"]
+        C3["Cursor / Windsurf / Cherry Studio (OpenAI Protocol)"]
+        C4["Modern Agent Fleet (Claude, Gemini, Codex, Copilot, Cline)"]
     end
 
-    subgraph ToolkitBridge["Antigravity Toolkit Loopback Bridge (Port 8765)"]
-        HotSwitch["Zero-Restart Hot Switcher"]
-        SessionSync["Active Editor State & Buffer Preserver"]
+    subgraph Gateway["Antigravity Shield 🛡️ (Local Zero-Leak Gateway)"]
+        direction TB
+        G1["High-Performance Rust Protocol Gateway"]
+        G2["Autonomous Account Quota Routing & Failover Engine"]
+        G3["Universal Agent Skills & MCP Orchestrator"]
+        G4["Encrypted Local State & Zero-Leak Security Layer"]
     end
 
-    subgraph ShieldCore["Antigravity Shield Core Engine (Tauri 2 / Rust Axum :8045)"]
-        Router["Axum Protocol Router: /v1/messages & /v1/chat/completions"]
-        SecurityShield["Zero-Leak Shield: Directory Traversal Guard & Memory Filter"]
-        Dispatcher["Intelligent Account Dispatcher: Tier Telemetry & Quota Balancer"]
-        Warmup["Auto-Warmup Engine (100% Reset Probing)"]
-        HealthPulse["Network Health Pulse & Geoblock Radar"]
-        BrainWatcher["Brain Transcript Scanner (~/.gemini/antigravity/brain/)"]
-        SkillsEngine["Universal Skills Manager (~/.gemini/config/skills/)"]
-        McpManager["MCP Server Orchestrator (stdio / sse / ws)"]
+    subgraph Upstream["Supported AI Cloud Endpoints"]
+        direction TB
+        U1["Google Cloud Code (Gemini 3.1 Pro / Flash / Thinking)"]
+        U2["Anthropic API (Claude 3.7 / 3.5 Sonnet)"]
+        U3["OpenAI-Compatible Custom Endpoints"]
     end
 
-    subgraph LocalStorage["Zero-Leak Local SQLite Storage"]
-        DB_Tokens[(token_stats.db)]
-        DB_Proxy[(proxy.db)]
-        DB_Security[(security.db)]
-    end
-
-    subgraph Upstream["Official Cloud Infrastructure"]
-        GoogleAPI["Official Google Production Endpoints (Zero Sandbox)"]
-    end
-
-    %% Client Connections
-    IDE <-->|WebSocket / IPC| ToolkitBridge
-    ToolkitBridge <-->|Loopback Bridge| ShieldCore
-    ClaudeCLI -->|POST /v1/messages| Router
-    OpenAIClients -->|POST /v1/chat/completions| Router
-    AgentMarket <-->|Physical Skill Deployment| SkillsEngine
-
-    %% Internal Core Flows
-    Router --> SecurityShield
-    SecurityShield --> Dispatcher
-    Dispatcher -->|Virtual DeviceProfile + Auth Bearer| GoogleAPI
-    Warmup -.->|Keep-Alive Warmup| GoogleAPI
-    HealthPulse -.->|Proactive Latency RTT| GoogleAPI
-
-    %% Local Telemetry & Storage
-    BrainWatcher -->|Parse Prompt/Completion Tokens| DB_Tokens
-    Dispatcher -->|Account Quotas & Rotations| DB_Proxy
-    SecurityShield -->|Encrypted Credentials| DB_Security
+    Clients -->|Local Secure IPC / HTTP Proxy| Gateway
+    Gateway -->|High-Availability Autonomous Routing| Upstream
 ```
 
 ---

@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use tracing::{info, warn};
 
 /// Canonical representation of an AI Agent Skill strictly aligned with frontend SkillItem interface.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct SkillItem {
     pub id: String,
@@ -753,6 +753,7 @@ pub fn parse_skill_markdown(
         source_url: None,
         dependencies: Vec::new(),
         source_type: "local".to_string(),
+        ..Default::default()
     }
 }
 
@@ -1260,6 +1261,7 @@ mod tests {
             source_url: None,
             dependencies: vec![],
             source_type: "local".to_string(),
+            ..Default::default()
         };
 
         assert!(LocalConfinementGuard::assert_can_transmit(&local_skill).is_err());
