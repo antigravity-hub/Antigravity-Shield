@@ -116,34 +116,63 @@ export function readLocalSkillContent(skillId) {
 
 export function installLocalSkill(skill) {
   const home = os.homedir();
-  const cleanName = (skill.name || skill.id).toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+  const rawName = skill.name || skill.slug || (skill.id ? skill.id.split('/').pop() : 'custom-skill');
+  const cleanName = rawName.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
   const targetDir = path.join(home, '.gemini', 'config', 'skills', cleanName);
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
   }
   const targetFile = path.join(targetDir, 'SKILL.md');
-  const content = skill.content || `---
-name: ${skill.name || cleanName}
-description: ${skill.description || 'Custom Skill'}
-category: ${skill.category || 'coding'}
-version: ${skill.version || '1.0.0'}
-triggers: [${(skill.triggers || []).join(', ')}]
+  const cleanDesc = (skill.description || `Official agent skill for ${skill.title || cleanName}`).replace(/\r?\n/g, ' ').trim();
+  
+  let content = skill.content;
+  if (!content || !content.trim()) {
+    const docBody = (skill.doc && (skill.doc.en || skill.doc.fa)) || skill.description || '';
+    content = `---
+name: ${cleanName}
+description: ${cleanDesc}
 ---
 
-# ${skill.title || skill.name}
+# ${skill.title || cleanName}
 
-${skill.description || ''}
+${docBody}
 `;
+  }
+
   fs.writeFileSync(targetFile, content, 'utf8');
   return targetFile;
 }
 
 export function uninstallLocalSkill(skillId) {
   const home = os.homedir();
-  const cleanName = skillId.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
-  const targetDir = path.join(home, '.gemini', 'config', 'skills', cleanName);
-  if (fs.existsSync(targetDir)) {
-    fs.rmSync(targetDir, { recursive: true, force: true });
+  const rawName = skillId.split('/').pop();
+  const cleanName = rawName.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+  const primaryDir = path.join(home, '.gemini', 'config', 'skills', cleanName);
+  const disabledDir = path.join(home, '.gemini', 'config', 'skills', `${cleanName}.disabled`);
+  
+  if (fs.existsSync(primaryDir)) {
+    fs.rmSync(primaryDir, { recursive: true, force: true });
+  }
+  if (fs.existsSync(disabledDir)) {
+    fs.rmSync(disabledDir, { recursive: true, force: true });
+  }
+}
+
+export function toggleLocalSkill(skillId, enabled) {
+  const home = os.homedir();
+  const rawName = skillId.split('/').pop();
+  const cleanName = rawName.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+  const activeDir = path.join(home, '.gemini', 'config', 'skills', cleanName);
+  const disabledDir = path.join(home, '.gemini', 'config', 'skills', `${cleanName}.disabled`);
+
+  if (enabled) {
+    if (fs.existsSync(disabledDir) && !fs.existsSync(activeDir)) {
+      fs.renameSync(disabledDir, activeDir);
+    }
+  } else {
+    if (fs.existsSync(activeDir) && !fs.existsSync(disabledDir)) {
+      fs.renameSync(activeDir, disabledDir);
+    }
   }
 }
 

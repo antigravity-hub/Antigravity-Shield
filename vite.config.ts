@@ -38,6 +38,60 @@ function devLocalSkillsPlugin() {
           return;
         }
 
+        if (req.url === "/__dev/install-skill" && req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk: any) => { body += chunk; });
+          req.on("end", async () => {
+            try {
+              const skill = JSON.parse(body);
+              const { installLocalSkill } = await import("./scripts/devSkillsScanner.mjs");
+              const targetFile = installLocalSkill(skill);
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify({ success: true, path: targetFile }));
+            } catch (e: any) {
+              res.statusCode = 500;
+              res.end(JSON.stringify({ error: e.message }));
+            }
+          });
+          return;
+        }
+
+        if (req.url === "/__dev/uninstall-skill" && req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk: any) => { body += chunk; });
+          req.on("end", async () => {
+            try {
+              const { skillId } = JSON.parse(body);
+              const { uninstallLocalSkill } = await import("./scripts/devSkillsScanner.mjs");
+              uninstallLocalSkill(skillId);
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify({ success: true }));
+            } catch (e: any) {
+              res.statusCode = 500;
+              res.end(JSON.stringify({ error: e.message }));
+            }
+          });
+          return;
+        }
+
+        if (req.url === "/__dev/toggle-skill" && req.method === "POST") {
+          let body = "";
+          req.on("data", (chunk: any) => { body += chunk; });
+          req.on("end", async () => {
+            try {
+              const { skillId, enabled } = JSON.parse(body);
+              const { toggleLocalSkill } = await import("./scripts/devSkillsScanner.mjs");
+              toggleLocalSkill(skillId, enabled);
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify({ success: true }));
+            } catch (e: any) {
+              res.statusCode = 500;
+              res.end(JSON.stringify({ error: e.message }));
+            }
+          });
+          return;
+        }
+
         next();
       });
     },

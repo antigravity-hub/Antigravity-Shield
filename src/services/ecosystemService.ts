@@ -257,6 +257,21 @@ export async function installSkill(skill: SkillItem): Promise<SkillItem> {
     } catch (err) {
       console.warn('[Ecosystem] Tauri install_skill invoke fallback:', err);
     }
+  } else {
+    // In browser dev mode (npm run dev), persist directly to filesystem via Vite dev server endpoint
+    try {
+      const res = await fetch('/__dev/install-skill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(skill),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        installPath = data.path;
+      }
+    } catch (err) {
+      console.warn('[Ecosystem] Dev install_skill fallback failed:', err);
+    }
   }
   const skills = await fetchSkills();
   const existingIdx = skills.findIndex((s) => s.id === skill.id);
@@ -288,6 +303,17 @@ export async function uninstallSkill(skillId: string): Promise<void> {
     } catch (err) {
       console.warn('[Ecosystem] Tauri uninstall_skill fallback:', err);
     }
+  } else {
+    // In browser dev mode, remove from filesystem via Vite dev server endpoint
+    try {
+      await fetch('/__dev/uninstall-skill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skillId }),
+      });
+    } catch (err) {
+      console.warn('[Ecosystem] Dev uninstall_skill fallback failed:', err);
+    }
   }
   const skills = await fetchSkills();
   const nextSkills = skills.map((s) => (s.id === skillId ? { ...s, isInstalled: false, isEnabled: false } : s));
@@ -301,6 +327,17 @@ export async function toggleSkill(skillId: string, enabled: boolean): Promise<vo
       await invoke('toggle_skill_status', { skillId, enabled });
     } catch (err) {
       console.warn('[Ecosystem] Tauri toggle_skill_status fallback:', err);
+    }
+  } else {
+    // In browser dev mode, toggle directory state via Vite dev server endpoint
+    try {
+      await fetch('/__dev/toggle-skill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skillId, enabled }),
+      });
+    } catch (err) {
+      console.warn('[Ecosystem] Dev toggle_skill fallback failed:', err);
     }
   }
   const skills = await fetchSkills();
