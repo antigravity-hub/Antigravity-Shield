@@ -176,15 +176,28 @@ export const Sidebar: React.FC = () => {
                       title={collapsed ? item.label : undefined}
                     >
                       <motion.div
-                        whileTap={{ scale: 0.98 }}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 ${
+                        whileTap={{ scale: 0.96 }}
+                        className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors select-none ${
                           isActive
-                            ? 'bg-gradient-to-r from-sky-500/15 via-blue-500/10 to-indigo-500/5 text-sky-600 dark:text-sky-400 font-semibold shadow-xs border border-sky-500/20'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/70 dark:hover:bg-slate-800/50'
+                            ? 'text-sky-600 dark:text-sky-400 font-semibold'
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
                         }`}
                       >
+                        {isActive && (
+                          <motion.div
+                            layoutId="activeSidebarIndicator"
+                            transition={{
+                              type: 'spring',
+                              damping: 28,
+                              stiffness: 350,
+                              mass: 0.8,
+                            }}
+                            className="absolute inset-0 bg-gradient-to-r from-sky-500/15 via-blue-500/10 to-indigo-500/5 dark:from-sky-500/20 dark:via-blue-500/15 dark:to-indigo-500/10 rounded-xl border border-sky-500/30 shadow-xs"
+                          />
+                        )}
+
                         <div
-                          className={`p-1 rounded-lg shrink-0 transition-colors ${
+                          className={`relative z-10 p-1 rounded-lg shrink-0 transition-colors ${
                             isActive
                               ? 'bg-sky-500 text-white shadow-xs shadow-sky-500/30'
                               : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-700'
@@ -194,7 +207,7 @@ export const Sidebar: React.FC = () => {
                         </div>
 
                         {!collapsed && (
-                          <div className="flex items-center justify-between flex-1 min-w-0">
+                          <div className="relative z-10 flex items-center justify-between flex-1 min-w-0">
                             <span className="truncate">{item.label}</span>
                             {item.badge && (
                               <span className="ms-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded-md bg-gradient-to-r from-sky-500 to-indigo-500 text-white shadow-xs">

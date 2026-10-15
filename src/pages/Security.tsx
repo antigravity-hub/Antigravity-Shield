@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Lock, FileText, Settings, Activity, RefreshCw } from 'lucide-react';
 import { IpAccessLogs } from '../components/security/IpAccessLogs';
 import { BlacklistManager } from '../components/security/BlacklistManager';
@@ -62,30 +63,48 @@ const Security: React.FC = () => {
 
             <div className="bg-white dark:bg-base-100 rounded-xl shadow-sm border border-gray-100 dark:border-base-200 mt-2">
                 <div className="flex border-b border-gray-100 dark:border-base-200">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id as any)}
-                            className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors relative ${activeTab === tab.id
-                                ? 'text-blue-600 dark:text-blue-400'
-                                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                                }`}
-                        >
-                            <tab.icon size={18} />
-                            {tab.label}
-                            {activeTab === tab.id && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400" />
-                            )}
-                        </button>
-                    ))}
+                    {tabs.map((tab) => {
+                        const isActive = activeTab === tab.id;
+                        return (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id as any)}
+                                className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors relative select-none ${isActive
+                                    ? 'text-blue-600 dark:text-blue-400'
+                                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                    }`}
+                            >
+                                <tab.icon size={18} />
+                                <span>{tab.label}</span>
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeSecurityTabIndicator"
+                                        transition={{ type: 'spring', damping: 28, stiffness: 350, mass: 0.8 }}
+                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 rounded-full"
+                                    />
+                                )}
+                            </button>
+                        );
+                    })}
                 </div>
                 <div className="p-0">
-                    {/* Content is rendered here, often components handle their own padding/layout */}
+                    {/* Content is rendered here */}
                 </div>
             </div>
 
             <div className="flex-1 overflow-hidden flex flex-col bg-white dark:bg-base-100 rounded-xl shadow-sm border border-gray-100 dark:border-base-200">
-                {renderContent()}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, y: 8, scale: 0.996 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.996 }}
+                        transition={{ type: 'spring', damping: 30, stiffness: 350, mass: 0.75 }}
+                        className="flex-1 flex flex-col h-full min-w-0 will-change-[transform,opacity]"
+                    >
+                        {renderContent()}
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
   Search,
@@ -170,11 +170,25 @@ export const EcosystemHub: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div key={activeTab} className="transition-opacity duration-150 animate-in fade-in">
-              {activeTab === 'skills' && <SkillsTab />}
-              {activeTab === 'mcp' && <McpTab />}
-              {activeTab === 'rules' && <RulesTab />}
-            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10, scale: 0.995 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.995 }}
+                transition={{
+                  type: 'spring',
+                  damping: 30,
+                  stiffness: 350,
+                  mass: 0.75,
+                }}
+                className="w-full will-change-[transform,opacity]"
+              >
+                {activeTab === 'skills' && <SkillsTab />}
+                {activeTab === 'mcp' && <McpTab />}
+                {activeTab === 'rules' && <RulesTab />}
+              </motion.div>
+            </AnimatePresence>
           )}
         </div>
       </div>

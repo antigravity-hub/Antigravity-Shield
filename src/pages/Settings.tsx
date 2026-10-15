@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw, Zap, Bell } from 'lucide-react';
 import { request as invoke } from '../utils/request';
 import { open } from '@tauri-apps/plugin-dialog';
@@ -584,62 +585,38 @@ function Settings() {
             <div className={`p-5 space-y-4 ${CONTAINER_MAX_WIDTH}`}>
                 {/* 顶部工具栏：Tab 导航和保存按钮 */}
                 <div className="flex justify-between items-center">
-                    {/* Tab 导航 - 采用顶部导航栏样式：外层灰色容器 */}
-                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-base-200 rounded-full p-1 w-fit">
-                        <button
-                            className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'general'
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            onClick={() => setActiveTab('general')}
-                        >
-                            {t('settings.tabs.general')}
-                        </button>
-                        <button
-                            className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'account'
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            onClick={() => setActiveTab('account')}
-                        >
-                            {t('settings.tabs.account')}
-                        </button>
-                        <button
-                            className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'proxy'
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            onClick={() => setActiveTab('proxy')}
-                        >
-                            {t('settings.tabs.proxy')}
-                        </button>
-                        <button
-                            className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'advanced'
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            onClick={() => setActiveTab('advanced')}
-                        >
-                            {t('settings.tabs.advanced')}
-                        </button>
-                        <button
-                            className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'debug'
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            onClick={() => setActiveTab('debug')}
-                        >
-                            {t('settings.tabs.debug')}
-                        </button>
-                        <button
-                            className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'about'
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                                }`}
-                            onClick={() => setActiveTab('about')}
-                        >
-                            {t('settings.tabs.about')}
-                        </button>
+                    {/* Tab 导航 - Apple iOS 玻璃拟态滑动胶囊 */}
+                    <div className="relative flex flex-wrap items-center gap-1 bg-gray-100/90 dark:bg-base-200/90 rounded-full p-1 w-fit border border-gray-200/60 dark:border-base-300/60 shadow-inner">
+                        {[
+                            { id: 'general' as const, label: t('settings.tabs.general') },
+                            { id: 'account' as const, label: t('settings.tabs.account') },
+                            { id: 'proxy' as const, label: t('settings.tabs.proxy') },
+                            { id: 'advanced' as const, label: t('settings.tabs.advanced') },
+                            { id: 'debug' as const, label: t('settings.tabs.debug') },
+                            { id: 'about' as const, label: t('settings.tabs.about') },
+                        ].map((tab) => {
+                            const isActive = activeTab === tab.id;
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`relative px-5 py-2 rounded-full text-sm font-semibold select-none transition-colors duration-150 ${
+                                        isActive
+                                            ? 'text-gray-900 dark:text-gray-100'
+                                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                    }`}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeSettingsTabPill"
+                                            transition={{ type: 'spring', damping: 28, stiffness: 350, mass: 0.8 }}
+                                            className="absolute inset-0 bg-white dark:bg-gray-700/90 rounded-full shadow-xs border border-gray-200/60 dark:border-gray-600/60"
+                                        />
+                                    )}
+                                    <span className="relative z-10">{tab.label}</span>
+                                </button>
+                            );
+                        })}
                     </div>
 
                     <button
@@ -651,11 +628,20 @@ function Settings() {
                     </button>
                 </div>
 
-                {/* 设置表单 */}
+                {/* 设置表单 - Apple iOS 弹簧平滑切换 */}
                 <div className="bg-white dark:bg-base-100 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-base-200">
-                    {/* 通用设置 */}
-                    {activeTab === 'general' && (
-                        <div className="space-y-6">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={activeTab}
+                            initial={{ opacity: 0, y: 8, scale: 0.996 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -6, scale: 0.996 }}
+                            transition={{ type: 'spring', damping: 30, stiffness: 350, mass: 0.75 }}
+                            className="w-full will-change-[transform,opacity]"
+                        >
+                            {/* 通用设置 */}
+                            {activeTab === 'general' && (
+                                <div className="space-y-6">
                             <h2 className="text-lg font-semibold text-gray-900 dark:text-base-content">{t('settings.general.title')}</h2>
 
                             {/* 语言选择 */}
@@ -2029,8 +2015,9 @@ function Settings() {
                                 {t('settings.about.copyright')}
                             </div>
                         </div>
-                    )
-                    }
+                    )}
+                        </motion.div>
+                    </AnimatePresence>
                 </div >
 
                 <ModalDialog

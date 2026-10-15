@@ -249,6 +249,52 @@ export const SkillsTab: React.FC = () => {
     });
   }, [filteredSkills, activeFirst]);
 
+  // Progressive Windowing / Infinite Scroll for 1,000+ Skills (Instant initial render, 0ms tab latency)
+  const [visibleCount, setVisibleCount] = useState<number>(36);
+  const sentinelRef = React.useRef<HTMLDivElement | null>(null);
+
+  // Reset window whenever user changes filter criteria
+  React.useEffect(() => {
+    setVisibleCount(36);
+  }, [
+    searchQuery,
+    selectedCategory,
+    skillSource,
+    selectedAgent,
+    selectedTopic,
+    verifiedOnly,
+    auditFilter,
+    activeFirst,
+  ]);
+
+  // Dynamically load next slice when sentinel enters viewport
+  React.useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => {
+            if (prev < sortedSkills.length) {
+              return Math.min(prev + 36, sortedSkills.length);
+            }
+            return prev;
+          });
+        }
+      },
+      {
+        rootMargin: '400px', // Pre-fetch 400px before user reaches bottom
+        threshold: 0.05,
+      }
+    );
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [sortedSkills.length]);
+
+  const visibleSkills = useMemo(() => {
+    return sortedSkills.slice(0, visibleCount);
+  }, [sortedSkills, visibleCount]);
+
   // Global download rank lookup: ranks all catalog and system skills by installs descending
   const downloadRankMap = useMemo(() => {
     const seen = new Set<string>();
@@ -360,48 +406,75 @@ export const SkillsTab: React.FC = () => {
     <div className="space-y-6">
       {/* Tri-Source Switcher (All / Local Skills / Skills.sh Catalog) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/60 dark:border-slate-800/60">
-        <div className="flex items-center gap-2 p-1 bg-slate-200/70 dark:bg-slate-900/80 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-md">
+        <div className="relative flex items-center gap-1.5 p-1 bg-slate-200/60 dark:bg-slate-900/80 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-xl shadow-inner">
           <button
             onClick={() => setSkillSource('all')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold select-none transition-colors ${
               skillSource === 'all'
-                ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
+                ? 'text-sky-600 dark:text-sky-400'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
-            <span>{t('ecosystem.source.all', 'All Skills')}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-700/60 font-mono">
-              {skills.length}
+            {skillSource === 'all' && (
+              <motion.div
+                layoutId="activeSkillSourcePill"
+                transition={{ type: 'spring', damping: 28, stiffness: 350, mass: 0.8 }}
+                className="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-xs border border-slate-200/60 dark:border-slate-700/60"
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-1.5">
+              <span>{t('ecosystem.source.all', 'All Skills')}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-700/60 font-mono">
+                {skills.length}
+              </span>
             </span>
           </button>
 
           <button
             onClick={() => setSkillSource('local')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold select-none transition-colors ${
               skillSource === 'local'
-                ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                ? 'text-emerald-600 dark:text-emerald-400'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span>{t('ecosystem.source.local', 'My Local Skills')}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono">
-              {localCount}
+            {skillSource === 'local' && (
+              <motion.div
+                layoutId="activeSkillSourcePill"
+                transition={{ type: 'spring', damping: 28, stiffness: 350, mass: 0.8 }}
+                className="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-xs border border-emerald-500/20"
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              <span>{t('ecosystem.source.local', 'My Local Skills')}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono">
+                {localCount}
+              </span>
             </span>
           </button>
 
           <button
             onClick={() => setSkillSource('skills_sh')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold select-none transition-colors ${
               skillSource === 'skills_sh'
-                ? 'bg-white dark:bg-slate-800 text-purple-600 dark:text-purple-400 shadow-xs'
+                ? 'text-purple-600 dark:text-purple-400'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-            <span>{t('ecosystem.source.skills_sh', 'Marketplace')}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono">
-              {onlineCount}
+            {skillSource === 'skills_sh' && (
+              <motion.div
+                layoutId="activeSkillSourcePill"
+                transition={{ type: 'spring', damping: 28, stiffness: 350, mass: 0.8 }}
+                className="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-xs border border-purple-500/20"
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+              <span>{t('ecosystem.source.skills_sh', 'Marketplace')}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono">
+                {onlineCount}
+              </span>
             </span>
           </button>
         </div>
@@ -415,7 +488,7 @@ export const SkillsTab: React.FC = () => {
 
       {/* Category Filter Pills & Create Action */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-md">
+        <div className="relative flex flex-wrap items-center gap-1 p-1 bg-slate-100/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 backdrop-blur-md">
           {categories.map((cat) => {
             const Icon = CATEGORY_ICONS[cat] || Sliders;
             const isSelected = selectedCategory === cat;
@@ -423,14 +496,23 @@ export const SkillsTab: React.FC = () => {
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors select-none ${
                   isSelected
-                    ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs font-semibold'
+                    ? 'text-sky-600 dark:text-sky-400 font-semibold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span className="capitalize">{cat}</span>
+                {isSelected && (
+                  <motion.div
+                    layoutId="activeCategoryPill"
+                    transition={{ type: 'spring', damping: 28, stiffness: 350, mass: 0.8 }}
+                    className="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-xs border border-slate-200/60 dark:border-slate-700/60"
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <Icon className="w-3.5 h-3.5" />
+                  <span className="capitalize">{cat}</span>
+                </span>
               </button>
             );
           })}
@@ -594,18 +676,29 @@ export const SkillsTab: React.FC = () => {
         </div>
       )}
 
-      {/* Skills Grid */}
+      {/* Skills Grid - Instant Progressive Virtualized Batching */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {sortedSkills.map((skill) => {
+        {visibleSkills.map((skill) => {
           const IconComponent = SKILL_ICONS[skill.icon || 'Sparkles'] || Sparkles;
           const isBusy = installingId === skill.id;
           const rank = downloadRankMap.get(skill.id) ?? (skill.slug ? downloadRankMap.get(skill.slug) : undefined) ?? (skill.name ? downloadRankMap.get(skill.name) : undefined);
           const isVerified = Boolean(skill.isVerifiedMaker) || Boolean(skill.isOfficial) || (skill.audits && skill.audits.length > 0 && skill.audits.every((a) => a.status === 'pass'));
 
           return (
-            <div
+            <motion.div
               key={skill.id}
-              className="group relative flex flex-col justify-between p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-xs hover:shadow-md hover:border-sky-500/30 transition-all duration-200"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{
+                type: 'spring',
+                damping: 26,
+                stiffness: 320,
+                mass: 0.7,
+              }}
+              whileHover={{ y: -3, transition: { type: 'spring', damping: 22, stiffness: 380 } }}
+              whileTap={{ scale: 0.985 }}
+              className="group relative flex flex-col justify-between p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/75 dark:bg-slate-900/65 backdrop-blur-xl shadow-xs hover:shadow-lg hover:border-sky-500/40 transition-shadow duration-200"
             >
               {/* 3D Protruding Rank Ribbon folded over the side edge */}
               {rank !== undefined && (
@@ -773,10 +866,29 @@ export const SkillsTab: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
+
+      {/* Progressive Infinite Scroll Sentinel & Counter */}
+      {visibleSkills.length < sortedSkills.length ? (
+        <div ref={sentinelRef} className="py-8 flex flex-col items-center justify-center gap-2">
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 shadow-xs text-xs font-medium text-slate-600 dark:text-slate-300 backdrop-blur-md">
+            <RefreshCw className="w-3.5 h-3.5 animate-spin text-sky-500" />
+            <span>
+              {t('ecosystem.loading_more', 'Loading more skills...')} ({visibleSkills.length} of {sortedSkills.length})
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-400">Scroll down to load more</p>
+        </div>
+      ) : sortedSkills.length > 0 ? (
+        <div className="py-8 flex items-center justify-center">
+          <span className="text-xs font-mono font-medium text-slate-400 dark:text-slate-500 px-3.5 py-1 rounded-full bg-slate-100/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/50">
+            ✓ All {sortedSkills.length} skills rendered
+          </span>
+        </div>
+      ) : null}
 
       {sortedSkills.length === 0 && (
         <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
