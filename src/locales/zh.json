@@ -1987,5 +1987,39 @@
     },
     "no_skills": "没有找到匹配的技能",
     "inspect": "查看 SKILL.md"
+  },
+  "theme": {
+    "accent_palette": "UI 主题高亮色盘",
+    "choose_accent": "选择界面强调色",
+    "accents": {
+      "seafoam": {
+        "name": "海泡石绿 (Seafoam Green)",
+        "desc": "经典品牌标志 • 平衡、现代与宁静"
+      },
+      "cyan": {
+        "name": "天青蔚蓝 (Azure Sky)",
+        "desc": "极客高科技青蓝 • 现代代码编辑器美学"
+      },
+      "violet": {
+        "name": "薰衣草紫 (Lavender Violet)",
+        "desc": "优雅奢华与深层专注"
+      },
+      "amber": {
+        "name": "琥珀流金 (Amber Gold)",
+        "desc": "温暖黑曜石蜜色 • 高端终端质感"
+      },
+      "rose": {
+        "name": "红宝玫瑰 (Ruby Rose)",
+        "desc": "充满活力与高能表现"
+      },
+      "emerald": {
+        "name": "翡翠碧绿 (Jade Emerald)",
+        "desc": "经典透亮矩阵绿"
+      },
+      "sunset": {
+        "name": "晚霞珊瑚 (Sunset Coral)",
+        "desc": "热烈地平线 • 鲜明醒目"
+      }
+    }
   }
 }

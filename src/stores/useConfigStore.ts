@@ -13,6 +13,7 @@ interface ConfigState {
     updateTheme: (theme: string) => Promise<void>;
     updateLanguage: (language: string) => Promise<void>;
     updateNavigationLayout: (layout: 'sidebar' | 'topbar') => Promise<void>;
+    updateAccentColor: (accentColor: string) => Promise<void>;
     toggleShowAllQuotas: () => void;
     showAllQuotas: boolean;
     toggleAutoWarm: () => Promise<void>;
@@ -36,10 +37,12 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
                 } catch {}
             }
             const savedLayout = (localStorage.getItem('antigravity_navigation_layout') as 'sidebar' | 'topbar') || config?.navigation_layout || 'sidebar';
+            const savedAccent = localStorage.getItem('antigravity_accent_color') || config?.accent_color || 'seafoam';
             set({
                 config: {
                     ...config,
                     navigation_layout: savedLayout,
+                    accent_color: savedAccent,
                 },
                 loading: false,
             });
@@ -55,6 +58,7 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
                 auto_switch_threshold_percentage: 5,
                 auto_launch: true,
                 navigation_layout: 'sidebar',
+                accent_color: localStorage.getItem('antigravity_accent_color') || 'seafoam',
                 proxy: {
                     enabled: false,
                     port: 8045,
@@ -126,6 +130,24 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
 
         const newConfig = { ...config, theme };
         await get().saveConfig(newConfig, true);
+    },
+
+    updateAccentColor: async (accentColor: string) => {
+        try {
+            localStorage.setItem('antigravity_accent_color', accentColor);
+        } catch {}
+        const { config } = get();
+        if (config) {
+            const next = { ...config, accent_color: accentColor };
+            set({ config: next });
+            await get().saveConfig(next, true).catch(() => {});
+        } else {
+            set({
+                config: {
+                    accent_color: accentColor,
+                } as any,
+            });
+        }
     },
 
     updateLanguage: async (language: string) => {

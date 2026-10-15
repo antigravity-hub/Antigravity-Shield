@@ -344,7 +344,11 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                 <div className="pt-4 mt-auto">
                     <button
                         type="button"
-                        className="w-full px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 dark:bg-[#129a5f] dark:hover:bg-[#15b36e] text-white shadow-sm shadow-emerald-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full px-4 py-2.5 rounded-xl text-xs font-bold text-white shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        style={{
+                            backgroundColor: 'var(--color-primary-btn, #129a5f)',
+                            boxShadow: '0 2px 10px var(--color-accent-glow, rgba(147, 233, 190, 0.2))',
+                        }}
                         onClick={() => {
                             if (mainTargetId) {
                                 onSwitch(mainTargetId);

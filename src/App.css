@@ -38,16 +38,28 @@ body {
   background-color: #060807;
 }
 
-/* Cyber Shield Glassmorphism & Effects */
+:root {
+  --color-accent: #93e9be;
+  --color-accent-rgb: 147, 233, 190;
+  --color-accent-glow: rgba(147, 233, 190, 0.25);
+  --color-accent-hover: rgba(147, 233, 190, 0.15);
+  --color-primary-btn: #129a5f;
+  --color-primary-btn-hover: #15b36e;
+  --color-badge-bg: rgba(147, 233, 190, 0.15);
+  --color-badge-text: #93e9be;
+  --color-badge-border: rgba(147, 233, 190, 0.35);
+}
+
+/* Cyber Shield Glassmorphism & Dynamic Accent Effects */
 .cyber-glass {
   background: rgba(12, 16, 14, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(147, 233, 190, 0.15);
+  border: 1px solid rgba(var(--color-accent-rgb), 0.15);
 }
 
 .cyber-glass-glow {
-  box-shadow: 0 0 25px -5px rgba(147, 233, 190, 0.2);
+  box-shadow: 0 0 25px -5px var(--color-accent-glow);
 }
 
 .cyber-card {
@@ -55,8 +67,18 @@ body {
 }
 
 .cyber-card:hover {
-  border-color: rgba(147, 233, 190, 0.4);
-  box-shadow: 0 4px 20px -2px rgba(147, 233, 190, 0.18);
+  border-color: rgba(var(--color-accent-rgb), 0.4);
+  box-shadow: 0 4px 20px -2px var(--color-accent-glow);
+}
+
+/* Dynamic Accent Utility Classes */
+.accent-glow {
+  box-shadow: 0 0 15px -3px var(--color-accent-glow);
+}
+
+.accent-border-glow:hover {
+  border-color: rgba(var(--color-accent-rgb), 0.4);
+  box-shadow: 0 0 16px -2px var(--color-accent-glow);
 }
 
 #root {

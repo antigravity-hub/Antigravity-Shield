@@ -2019,5 +2019,39 @@
     "official_maker": "Official Maker",
     "active_first": "Active First",
     "architecture_docs": "Architecture & Documentation"
+  },
+  "theme": {
+    "accent_palette": "UI Accent Palette",
+    "choose_accent": "Choose UI Accent Color",
+    "accents": {
+      "seafoam": {
+        "name": "Seafoam Green",
+        "desc": "Emerald seafoam signature • Balanced, modern & serene"
+      },
+      "cyan": {
+        "name": "Azure Sky",
+        "desc": "Electric high-tech azure • Crisp coding aesthetic"
+      },
+      "violet": {
+        "name": "Lavender Violet",
+        "desc": "Elegance and deep creative focus"
+      },
+      "amber": {
+        "name": "Amber Gold",
+        "desc": "Warm obsidian honey • Premium terminal warmth"
+      },
+      "rose": {
+        "name": "Ruby Rose",
+        "desc": "Vibrant and dynamic high-energy accent"
+      },
+      "emerald": {
+        "name": "Jade Emerald",
+        "desc": "Classic luminous matrix green"
+      },
+      "sunset": {
+        "name": "Sunset Coral",
+        "desc": "Vivid warm horizon • Tangy and bold"
+      }
+    }
   }
 }

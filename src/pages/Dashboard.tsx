@@ -202,13 +202,21 @@ function Dashboard() {
                                     : t('dashboard.hello', 'Hello 👋')
                                 }
                             </h1>
-                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#93e9be]/15 text-emerald-700 dark:text-[#93e9be] border border-[#93e9be]/30 shadow-[0_0_12px_rgba(147,233,190,0.15)]">
+                            <span
+                                className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border"
+                                style={{
+                                    backgroundColor: 'var(--color-badge-bg, rgba(147, 233, 190, 0.15))',
+                                    color: 'var(--color-badge-text, #93e9be)',
+                                    borderColor: 'var(--color-badge-border, rgba(147, 233, 190, 0.35))',
+                                    boxShadow: '0 0 12px var(--color-accent-glow, rgba(147, 233, 190, 0.15))',
+                                }}
+                            >
                                 <ShieldCheck className="w-3.5 h-3.5" />
                                 {t('dashboard.shield_active', 'Shield Active')}
                             </span>
                         </div>
                         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 font-medium">
-                            <Zap className="w-3.5 h-3.5 text-[#93e9be]" />
+                            <Zap className="w-3.5 h-3.5" style={{ color: 'var(--color-accent, #93e9be)' }} />
                             {t('dashboard.shield_subtitle', 'Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard')}
                         </p>
                     </div>
@@ -245,7 +253,12 @@ function Dashboard() {
                         </button>
                         <AddAccountDialog onAdd={handleAddAccount} />
                         <button
-                            className={`px-3.5 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-[#129a5f] dark:hover:bg-[#15b36e] text-white text-xs font-bold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm border border-slate-800 dark:border-emerald-500/30 cursor-pointer ${isRefreshing || !currentAccount ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}
+                            className={`px-3.5 py-2 text-white text-xs font-bold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm border cursor-pointer ${isRefreshing || !currentAccount ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}
+                            style={{
+                                backgroundColor: 'var(--color-primary-btn, #129a5f)',
+                                borderColor: 'var(--color-accent-hover, rgba(147, 233, 190, 0.3))',
+                                boxShadow: '0 2px 8px var(--color-accent-glow, rgba(147, 233, 190, 0.2))',
+                            }}
                             onClick={handleRefreshCurrent}
                             disabled={isRefreshing || !currentAccount}
                             title={isRefreshing ? t('dashboard.refreshing') : t('dashboard.refresh_quota')}
@@ -290,17 +303,20 @@ function Dashboard() {
                             <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">{t('dashboard.total_accounts')}</div>
                         </div>
                         <div className="w-full bg-slate-100 dark:bg-white/5 h-1.5 rounded-full overflow-hidden mt-4">
-                            <div className="h-full bg-[#93e9be] rounded-full" style={{ width: '100%' }} />
+                            <div className="h-full rounded-full" style={{ width: '100%', backgroundColor: 'var(--color-accent, #93e9be)' }} />
                         </div>
                     </div>
 
                     {/* Card 2: Average Gemini Pro Quota */}
                     <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex flex-col justify-between group">
                         <div className="flex items-center justify-between mb-3">
-                            <div className="p-2.5 bg-[#93e9be]/10 border border-[#93e9be]/20 rounded-xl">
-                                <Sparkles className="w-4 h-4 text-emerald-700 dark:text-[#93e9be]" />
+                            <div className="p-2.5 rounded-xl border" style={{ backgroundColor: 'var(--color-badge-bg)', borderColor: 'var(--color-badge-border)' }}>
+                                <Sparkles className="w-4 h-4" style={{ color: 'var(--color-accent, #93e9be)' }} />
                             </div>
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${stats.avgGemini >= 50 ? 'bg-emerald-500/10 text-emerald-700 dark:text-[#93e9be]' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'}`}>
+                            <span
+                                className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                                style={stats.avgGemini >= 50 ? { backgroundColor: 'var(--color-badge-bg)', color: 'var(--color-badge-text)' } : undefined}
+                            >
                                 {stats.avgGemini >= 50 ? t('dashboard.quota_sufficient') : t('dashboard.quota_low')}
                             </span>
                         </div>
@@ -310,8 +326,11 @@ function Dashboard() {
                         </div>
                         <div className="w-full bg-slate-100 dark:bg-white/5 h-1.5 rounded-full overflow-hidden mt-4">
                             <div
-                                className={`h-full rounded-full transition-all duration-500 ${stats.avgGemini >= 50 ? 'bg-[#93e9be]' : 'bg-amber-500'}`}
-                                style={{ width: `${Math.min(100, Math.max(0, stats.avgGemini))}%` }}
+                                className={`h-full rounded-full transition-all duration-500 ${stats.avgGemini < 50 ? 'bg-amber-500' : ''}`}
+                                style={{
+                                    width: `${Math.min(100, Math.max(0, stats.avgGemini))}%`,
+                                    backgroundColor: stats.avgGemini >= 50 ? 'var(--color-accent, #93e9be)' : undefined,
+                                }}
                             />
                         </div>
                     </div>

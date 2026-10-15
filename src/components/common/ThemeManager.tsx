@@ -2,8 +2,8 @@
 import { useEffect } from 'react';
 import { useConfigStore } from '../../stores/useConfigStore';
 import { getCurrentWindow } from '@tauri-apps/api/window';
-
 import { isLinux } from '../../utils/env';
+import { getAccentColor, DEFAULT_ACCENT_COLOR } from '../../constants/accents';
 
 export default function ThemeManager() {
     const { config, loadConfig } = useConfigStore();
@@ -27,6 +27,24 @@ export default function ThemeManager() {
         };
         init();
     }, [loadConfig]);
+
+    // Apply accent color CSS variables when config changes
+    useEffect(() => {
+        const accentId = config?.accent_color || localStorage.getItem('antigravity_accent_color') || DEFAULT_ACCENT_COLOR;
+        const accent = getAccentColor(accentId);
+        const root = document.documentElement;
+
+        root.style.setProperty('--color-accent', accent.cssVars.accent);
+        root.style.setProperty('--color-accent-rgb', accent.cssVars.accentRgb);
+        root.style.setProperty('--color-accent-glow', accent.cssVars.accentGlow);
+        root.style.setProperty('--color-accent-hover', accent.cssVars.accentHover);
+        root.style.setProperty('--color-primary-btn', accent.cssVars.primaryButton);
+        root.style.setProperty('--color-primary-btn-hover', accent.cssVars.primaryButtonHover);
+        root.style.setProperty('--color-badge-bg', accent.cssVars.badgeBg);
+        root.style.setProperty('--color-badge-text', accent.cssVars.badgeText);
+        root.style.setProperty('--color-badge-border', accent.cssVars.badgeBorder);
+        root.setAttribute('data-accent', accent.id);
+    }, [config?.accent_color]);
 
     // Apply theme when config changes
     useEffect(() => {
@@ -63,7 +81,7 @@ export default function ThemeManager() {
             root.setAttribute('data-theme', theme);
 
             // Set inline style for immediate visual feedback
-            root.style.backgroundColor = isDark ? '#050a08' : '#FAFBFC';
+            root.style.backgroundColor = isDark ? '#060807' : '#FAFBFC';
 
             // Set Tailwind dark mode class
             if (isDark) {

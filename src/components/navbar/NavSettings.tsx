@@ -7,6 +7,7 @@ import { useViewStore } from '../../stores/useViewStore';
 import { useSupportModalStore } from '../../stores/useSupportModalStore';
 import { NavToolkitBadge } from './NavToolkitBadge';
 import { enterMiniMode } from '../../utils/windowManager';
+import { AccentColorPicker } from '../common/AccentColorPicker';
 
 interface NavSettingsProps {
     theme: 'light' | 'dark';
@@ -80,6 +81,9 @@ export function NavSettings({
                         <Sun className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                     )}
                 </button>
+
+                {/* 7 种 UI 奢华主题高亮色选择器 */}
+                <AccentColorPicker />
 
                 {/* 语言切换下拉菜单 */}
                 <LanguageDropdown

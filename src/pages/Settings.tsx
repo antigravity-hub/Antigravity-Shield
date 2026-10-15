@@ -27,11 +27,12 @@ import { APP_VERSION, getAppVersion } from '../constants/version';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 import { copyToClipboard } from '../utils/clipboard';
 import AntigravityRtlCard from '../components/settings/AntigravityRtlCard';
+import { ACCENT_COLORS, DEFAULT_ACCENT_COLOR } from '../constants/accents';
 
 
 function Settings() {
     const { t, i18n } = useTranslation();
-    const { config, loadConfig, saveConfig, updateLanguage, updateTheme, updateNavigationLayout } = useConfigStore();
+    const { config, loadConfig, saveConfig, updateLanguage, updateTheme, updateNavigationLayout, updateAccentColor } = useConfigStore();
     const { enable, disable, isEnabled } = useDebugConsole();
     const { openModal: openSupportModal } = useSupportModalStore();
     const { accounts, currentAccount } = useAccountStore();
@@ -689,6 +690,42 @@ function Settings() {
                                     <option value="dark">{t('settings.general.theme_dark')}</option>
                                     <option value="system">{t('settings.general.theme_system')}</option>
                                 </select>
+                            </div>
+
+                            {/* UI 奢华主题高亮色选择器 */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-900 dark:text-base-content mb-2">{t('theme.choose_accent')}</label>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                                    {ACCENT_COLORS.map((accent) => {
+                                        const currentAccent = formData.accent_color ?? config?.accent_color ?? DEFAULT_ACCENT_COLOR;
+                                        const isSelected = currentAccent === accent.id;
+                                        return (
+                                            <button
+                                                key={accent.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    setFormData({ ...formData, accent_color: accent.id });
+                                                    updateAccentColor(accent.id);
+                                                }}
+                                                className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all duration-200 cursor-pointer text-center group ${
+                                                    isSelected
+                                                        ? 'bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/20 shadow-sm'
+                                                        : 'border-slate-200/80 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5'
+                                                }`}
+                                            >
+                                                <div
+                                                    className="w-6 h-6 rounded-full flex items-center justify-center shadow-xs transition-transform group-hover:scale-110"
+                                                    style={{ backgroundColor: accent.hex }}
+                                                >
+                                                    {isSelected && <span className="w-2 h-2 rounded-full bg-slate-950" />}
+                                                </div>
+                                                <span className="text-[11px] font-bold text-slate-800 dark:text-white truncate max-w-full">
+                                                    {t(accent.nameKey)}
+                                                </span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
 
                             {/* 导航布局选择 */}

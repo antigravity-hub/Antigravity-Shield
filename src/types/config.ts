@@ -154,6 +154,7 @@ export interface AppConfig {
     overlay_position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'; // 悬浮窗位置
     auto_switch_countdown_secs?: number; // 自动轮换倒计时秒数
     navigation_layout?: 'sidebar' | 'topbar'; // 导航布局模式 (Apple macOS Sidebar vs Top Navbar)
+    accent_color?: string; // 7 种 UI 奢华主题高亮色 (seafoam, cyan, violet, amber, rose, emerald, sunset)
 }
 
 // ============================================================================

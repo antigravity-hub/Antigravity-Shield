@@ -2042,5 +2042,39 @@
     "official_maker": "سازنده رسمی (Official Maker)",
     "active_first": "ابتدا فعال‌ها",
     "architecture_docs": "مستندات معماری و کارکرد"
+  },
+  "theme": {
+    "accent_palette": "پالت رنگ اختصاصی رابط کاربری",
+    "choose_accent": "انتخاب رنگ تم رابط کاربری",
+    "accents": {
+      "seafoam": {
+        "name": "زمرد دریایی (Seafoam Green)",
+        "desc": "رنگ امضای آنتی‌گرویتی • متعادل، مدرن و آرام‌بخش"
+      },
+      "cyan": {
+        "name": "آبی آسمانی (Azure Sky)",
+        "desc": "آبی الکتریک و های‌تک • حس مدرن ادیتورهای کد"
+      },
+      "violet": {
+        "name": "یاسی لطیف (Lavender Violet)",
+        "desc": "ظرافت لوکس و تمرکز عمیق مهندسی"
+      },
+      "amber": {
+        "name": "زرد کهربایی (Amber Gold)",
+        "desc": "عسلی گرم آبسیدین • گرمای ترمینال‌های درجه‌یک"
+      },
+      "rose": {
+        "name": "رز یاقوتی (Ruby Rose)",
+        "desc": "پویا، پرانرژی و سرزنده"
+      },
+      "emerald": {
+        "name": "یشم درخشان (Jade Emerald)",
+        "desc": "سبز ماتریسی کلاسیک و باابهت"
+      },
+      "sunset": {
+        "name": "مرجانی غروب (Sunset Coral)",
+        "desc": "افق گرم و پرشور • برجسته و گیرا"
+      }
+    }
   }
 }

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useConfigStore } from '../../stores/useConfigStore';
 import { NavVersionBadge } from '../navbar/NavVersionBadge';
+import { AccentColorPicker } from '../common/AccentColorPicker';
 
 interface NavSectionItem {
   path: string;
@@ -230,17 +231,22 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar Footer & Quick Actions */}
       <div className="p-2.5 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/30">
         <div className={`flex items-center ${collapsed ? 'flex-col gap-2' : 'justify-between'}`}>
-          <button
-            onClick={toggleTheme}
-            title={config?.theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-all active:scale-95"
-          >
-            {config?.theme === 'light' ? (
-              <Moon className="w-4 h-4" />
-            ) : (
-              <Sun className="w-4 h-4 text-amber-400" />
-            )}
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleTheme}
+              title={config?.theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-all active:scale-95 cursor-pointer"
+            >
+              {config?.theme === 'light' ? (
+                <Moon className="w-4 h-4" />
+              ) : (
+                <Sun className="w-4 h-4 text-amber-400" />
+              )}
+            </button>
+
+            {/* 7 种 UI 奢华主题高亮色选择器 */}
+            <AccentColorPicker compact={true} />
+          </div>
 
           {!collapsed ? (
             <NavVersionBadge />
