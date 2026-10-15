@@ -84,7 +84,11 @@ export const RulesTab: React.FC = () => {
 
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-xs shadow-md shadow-sky-500/20 active:scale-95 transition-all"
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-white font-medium text-xs shadow-md active:scale-95 transition-all"
+          style={{
+            background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+            boxShadow: '0 4px 12px var(--color-accent-glow)',
+          }}
         >
           <Plus className="w-3.5 h-3.5" />
           <span>{t('ecosystem.rules.create', 'Add Instruction Rule')}</span>
@@ -97,13 +101,20 @@ export const RulesTab: React.FC = () => {
           return (
             <div
               key={rule.id}
-              className="group relative flex flex-col justify-between p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-xs hover:shadow-md hover:border-sky-500/30 transition-all duration-200"
+              className="group relative flex flex-col justify-between p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-xs hover:shadow-md hover:border-[var(--color-accent)] transition-all duration-200"
             >
               <div>
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border"
+                      style={{
+                        backgroundColor: 'var(--color-badge-bg)',
+                        color: 'var(--color-accent)',
+                        borderColor: 'var(--color-badge-border)',
+                      }}
+                    >
                       <FileText className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
@@ -120,9 +131,18 @@ export const RulesTab: React.FC = () => {
                     <span
                       className={`flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
                         rule.scope === 'global'
-                          ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+                          ? ''
                           : 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20'
                       }`}
+                      style={
+                        rule.scope === 'global'
+                          ? {
+                              backgroundColor: 'var(--color-badge-bg)',
+                              color: 'var(--color-accent)',
+                              borderColor: 'var(--color-badge-border)',
+                            }
+                          : undefined
+                      }
                     >
                       {rule.scope === 'global' ? (
                         <Globe2 className="w-2.5 h-2.5" />
@@ -165,8 +185,9 @@ export const RulesTab: React.FC = () => {
                   />
                   <div
                     className={`w-8 h-4.5 rounded-full transition-colors relative ${
-                      rule.isEnabled ? 'bg-sky-500' : 'bg-slate-300 dark:bg-slate-700'
+                      !rule.isEnabled ? 'bg-slate-300 dark:bg-slate-700' : ''
                     }`}
+                    style={rule.isEnabled ? { backgroundColor: 'var(--color-primary-btn)' } : undefined}
                   >
                     <div
                       className={`w-3.5 h-3.5 rounded-full bg-white absolute top-0.5 transition-transform ${
@@ -359,7 +380,11 @@ export const RulesTab: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-white shadow-xs"
+                    className="px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-xs transition-all active:scale-95"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                      boxShadow: '0 2px 8px var(--color-accent-glow)',
+                    }}
                   >
                     Create Rule
                   </button>

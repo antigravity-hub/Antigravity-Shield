@@ -168,7 +168,14 @@ export const McpTab: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-sky-500/10 text-sky-500">
+              <span
+                className="p-1.5 rounded-lg border"
+                style={{
+                  backgroundColor: 'var(--color-badge-bg)',
+                  color: 'var(--color-accent)',
+                  borderColor: 'var(--color-badge-border)',
+                }}
+              >
                 <Activity className="w-4 h-4" />
               </span>
               <h2 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -199,13 +206,20 @@ export const McpTab: React.FC = () => {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-all active:scale-95 disabled:opacity-50"
               title={t('ecosystem.mcp.test_all', 'Check All Servers Health')}
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isTestingAllMcp ? 'animate-spin text-sky-500' : ''}`} />
+              <RefreshCw
+                className={`w-3.5 h-3.5 ${isTestingAllMcp ? 'animate-spin' : ''}`}
+                style={isTestingAllMcp ? { color: 'var(--color-accent)' } : undefined}
+              />
               <span>{isTestingAllMcp ? t('ecosystem.mcp.testing_all', 'در حال تست...') : t('ecosystem.mcp.test_all', 'بررسی سلامت همه سرورها')}</span>
             </button>
 
             <button
               onClick={() => setIsAddOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-xs shadow-md shadow-sky-500/20 active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-white font-medium text-xs shadow-md active:scale-95 transition-all"
+              style={{
+                background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                boxShadow: '0 4px 12px var(--color-accent-glow)',
+              }}
             >
               <Plus className="w-3.5 h-3.5" />
               <span>{t('ecosystem.mcp.add_server', 'Add MCP Server')}</span>
@@ -219,9 +233,17 @@ export const McpTab: React.FC = () => {
             onClick={() => setHealthFilter('all')}
             className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
               healthFilter === 'all'
-                ? 'bg-sky-500 text-white shadow-xs'
+                ? 'text-white shadow-xs'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
+            style={
+              healthFilter === 'all'
+                ? {
+                    background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                    boxShadow: '0 2px 8px var(--color-accent-glow)',
+                  }
+                : undefined
+            }
           >
             {t('ecosystem.mcp.filter_all', 'همه سرورها')} ({mcpServers.length})
           </button>
@@ -322,7 +344,7 @@ export const McpTab: React.FC = () => {
                         </h3>
                         {server.official && (
                           <span title="Official Verified MCP Server">
-                            <ShieldCheck className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                            <ShieldCheck className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-accent)' }} />
                           </span>
                         )}
                       </div>
@@ -333,7 +355,8 @@ export const McpTab: React.FC = () => {
                             <span>•</span>
                             <button
                               onClick={() => setInspectingServer(server)}
-                              className="text-sky-500 hover:text-sky-400 hover:underline flex items-center gap-1"
+                              className="hover:underline flex items-center gap-1"
+                              style={{ color: 'var(--color-accent)' }}
                               title="مشاهده لیست ابزارها"
                             >
                               <Layers className="w-3 h-3" />
@@ -347,7 +370,10 @@ export const McpTab: React.FC = () => {
 
                   {/* Status Indicator Pill */}
                   <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border shrink-0 ${badgeColor}`}>
-                    <span className={`w-2 h-2 rounded-full ${isTesting ? 'bg-sky-500 animate-spin' : dotColor}`} />
+                    <span
+                      className={`w-2 h-2 rounded-full ${isTesting ? 'animate-spin' : dotColor}`}
+                      style={isTesting ? { backgroundColor: 'var(--color-accent)' } : undefined}
+                    />
                     <span>{isTesting ? t('ecosystem.mcp.status_testing', 'در حال تست...') : badgeText}</span>
                   </div>
                 </div>
@@ -423,14 +449,17 @@ export const McpTab: React.FC = () => {
                     title={t('ecosystem.mcp.test', 'Test Server Connection')}
                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin text-sky-500' : ''}`} />
+                    <RefreshCw
+                      className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin' : ''}`}
+                      style={isTesting ? { color: 'var(--color-accent)' } : undefined}
+                    />
                     <span>{isTesting ? 'در حال تست...' : 'تست پینگ'}</span>
                   </button>
 
                   <button
                     onClick={() => setInspectingServer(server)}
                     title={t('ecosystem.mcp.diagnostics', 'عیب‌یابی و ابزارها')}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-sky-500 dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-[var(--color-accent)] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     <Wrench className="w-4 h-4" />
                   </button>
@@ -464,7 +493,7 @@ export const McpTab: React.FC = () => {
                     role="switch"
                     aria-checked={server.isEnabled}
                     onClick={() => toggleMcpServer(server.id, !server.isEnabled)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500/50 ${
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] ${
                       server.isEnabled ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
                     }`}
                   >
@@ -497,7 +526,11 @@ export const McpTab: React.FC = () => {
               setHealthFilter('all');
               useEcosystemStore.getState().setSearchQuery('');
             }}
-            className="px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-semibold shadow-xs transition-colors active:scale-95"
+            className="px-3.5 py-1.5 rounded-xl text-white text-xs font-semibold shadow-xs transition-all active:scale-95"
+            style={{
+              background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+              boxShadow: '0 2px 8px var(--color-accent-glow)',
+            }}
           >
             {t('ecosystem.mcp.clear_filters', 'Clear filters & show all servers')}
           </button>
@@ -515,7 +548,14 @@ export const McpTab: React.FC = () => {
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-sky-500/10 text-sky-500 border border-sky-500/20">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center border"
+                    style={{
+                      backgroundColor: 'var(--color-badge-bg)',
+                      color: 'var(--color-accent)',
+                      borderColor: 'var(--color-badge-border)',
+                    }}
+                  >
                     <Plug className="w-5 h-5" />
                   </div>
                   <div>
@@ -524,7 +564,14 @@ export const McpTab: React.FC = () => {
                         {inspectingServer.title}
                       </h3>
                       {inspectingServer.official && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sky-500/10 text-sky-500 border border-sky-500/20">
+                        <span
+                          className="px-2 py-0.5 rounded-full text-[10px] font-semibold border"
+                          style={{
+                            backgroundColor: 'var(--color-badge-bg)',
+                            color: 'var(--color-accent)',
+                            borderColor: 'var(--color-badge-border)',
+                          }}
+                        >
                           Official
                         </span>
                       )}
@@ -574,7 +621,11 @@ export const McpTab: React.FC = () => {
 
                   <button
                     onClick={() => handleTestPing(inspectingServer.id)}
-                    className="px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 shrink-0"
+                    className="px-3 py-1.5 rounded-xl text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 shrink-0 transition-all active:scale-95"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                      boxShadow: '0 2px 8px var(--color-accent-glow)',
+                    }}
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${testingMcpId === inspectingServer.id ? 'animate-spin' : ''}`} />
                     <span>تست مجدد</span>
@@ -584,7 +635,7 @@ export const McpTab: React.FC = () => {
                 {/* Exposed Tools Section */}
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-sky-500" />
+                    <Layers className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                     <span>{t('ecosystem.mcp.exposed_tools', 'ابزارهای ارائه‌شده برای هوش مصنوعی')}</span>
                     <span className="text-[11px] font-normal text-slate-400">
                       ({inspectingServer.tools?.length || inspectingServer.toolCount || 0} ابزار)
@@ -598,7 +649,10 @@ export const McpTab: React.FC = () => {
                           key={idx}
                           className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/60"
                         >
-                          <div className="font-mono text-xs font-semibold text-sky-600 dark:text-sky-400 mb-0.5">
+                          <div
+                            className="font-mono text-xs font-semibold mb-0.5"
+                            style={{ color: 'var(--color-accent)' }}
+                          >
                             {tool.name}
                           </div>
                           <div className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
@@ -722,7 +776,11 @@ export const McpTab: React.FC = () => {
                     await saveMcpServer(configuringServer);
                     setConfiguringServer(null);
                   }}
-                  className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-sky-500 hover:bg-sky-400 text-white shadow-xs"
+                  className="px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-xs transition-all active:scale-95"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                    boxShadow: '0 2px 8px var(--color-accent-glow)',
+                  }}
                 >
                   Save Changes
                 </button>
@@ -836,7 +894,11 @@ export const McpTab: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-sky-500 hover:bg-sky-400 text-white shadow-xs"
+                    className="px-4 py-1.5 rounded-xl text-xs font-semibold text-white shadow-xs transition-all active:scale-95"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                      boxShadow: '0 2px 8px var(--color-accent-glow)',
+                    }}
                   >
                     Register Server
                   </button>

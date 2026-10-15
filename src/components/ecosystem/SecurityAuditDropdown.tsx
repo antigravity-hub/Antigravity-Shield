@@ -136,7 +136,7 @@ export const SecurityAuditDropdown: React.FC<SecurityAuditDropdownProps> = ({
               }`}
             >
               <div className="flex items-center gap-2">
-                <Shield className="w-3.5 h-3.5 text-sky-500" />
+                <Shield className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
                 <span>{t('ecosystem.all_security_audits', 'All Security Audits')}</span>
               </div>
               {isAllSelected && <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}

@@ -108,7 +108,7 @@ export const EcosystemHub: React.FC = () => {
                   }}
                   className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
                     isActive
-                      ? 'text-emerald-700 dark:text-[#93e9be] shadow-sm'
+                      ? 'text-[var(--color-accent-secondary)] dark:text-[var(--color-accent)] font-bold shadow-sm'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
@@ -123,11 +123,17 @@ export const EcosystemHub: React.FC = () => {
                     <Icon className="w-4 h-4" />
                     <span>{tab.label}</span>
                     <span
-                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                        isActive
-                          ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400'
-                          : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono transition-colors ${
+                        !isActive ? 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400' : ''
                       }`}
+                      style={
+                        isActive
+                          ? {
+                              backgroundColor: 'var(--color-badge-bg)',
+                              color: 'var(--color-accent)',
+                            }
+                          : undefined
+                      }
                     >
                       {tab.activeCount}/{tab.count}
                     </span>
@@ -145,7 +151,7 @@ export const EcosystemHub: React.FC = () => {
               placeholder={t('ecosystem.search_placeholder', 'Search tools, triggers, servers...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-sky-500 shadow-xs"
+              className="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[var(--color-accent)] shadow-xs"
             />
             {searchQuery && (
               <button

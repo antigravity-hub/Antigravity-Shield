@@ -295,21 +295,23 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
         <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-800/80 text-xs">
           <button
             onClick={() => setSelectedLang('fa')}
-            className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+            className={`px-2.5 py-1 rounded-md transition-all ${
               selectedLang === 'fa'
-                ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs'
+                ? 'bg-white dark:bg-slate-700 font-bold shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
+            style={selectedLang === 'fa' ? { color: 'var(--color-accent)' } : undefined}
           >
             🇮🇷 فارسی
           </button>
           <button
             onClick={() => setSelectedLang('en')}
-            className={`px-2.5 py-1 rounded-md font-medium transition-all ${
+            className={`px-2.5 py-1 rounded-md transition-all ${
               selectedLang === 'en'
-                ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs'
+                ? 'bg-white dark:bg-slate-700 font-bold shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
+            style={selectedLang === 'en' ? { color: 'var(--color-accent)' } : undefined}
           >
             🇬🇧 English
           </button>
@@ -317,9 +319,10 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
             onClick={() => setSelectedLang('raw')}
             className={`px-2.5 py-1 rounded-md font-mono text-[11px] transition-all ${
               selectedLang === 'raw'
-                ? 'bg-white dark:bg-slate-700 text-sky-600 dark:text-sky-400 shadow-xs'
+                ? 'bg-white dark:bg-slate-700 font-bold shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
+            style={selectedLang === 'raw' ? { color: 'var(--color-accent)' } : undefined}
           >
             Raw
           </button>
@@ -419,7 +422,7 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
 
             {isLoadingDoc ? (
               <div className="py-12 flex flex-col items-center justify-center gap-3 text-slate-500">
-                <Loader2 className="w-6 h-6 animate-spin text-sky-500" />
+                <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--color-accent)' }} />
                 <span className="text-xs font-medium">
                   {selectedLang === 'fa'
                     ? 'در حال دریافت مستندات تخصصی از هاب مرکزی...'
