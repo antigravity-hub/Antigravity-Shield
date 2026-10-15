@@ -70,7 +70,10 @@ Operating locally on `127.0.0.1:8045` and `127.0.0.1:8765`, Antigravity Shield d
   - Enforces intelligent model routing (e.g. Claude 3.7 / Sonnet 4-6 routed exclusively to Pro/Ultra accounts; lightweight tasks routed to high-capacity pools).
   - Tracks real-time token quota percentages and calculates rolling **5-hour reset** and **weekly ceiling** countdowns for `gemini-3.1-pro`, `gemini-3-flash`, `claude-sonnet-4-6`, and `imagen-3`.
 * **Zero-Downtime Smart Failover:** Automatically shuffles traffic to accounts with the highest available quota score. When rate-limit challenges (HTTP 429) occur, it transparently migrates active requests without breaking running agent loops.
-* **Proactive Auto-Warmup:** Probes accounts as soon as their quota window recovers to 100%, eliminating cold-start latencies on fresh sessions.
+* **Proactive Auto-Warmup & Zero-Latency Probing Engine:**
+  - **The Cold-Start Problem:** Standard AI providers and proxy solutions suffer from cold-start latency when quota locks expire, causing initial requests to lag while tokens and endpoints re-validate.
+  - **Autonomous Shield Probing:** The moment an account's 5-hour rolling lockout window expires or its weekly ceiling resets, Antigravity Shield automatically dispatches lightweight, zero-overhead probing heartbeats in the background.
+  - **100% Instant Readiness:** The account is fully verified, warmed up, and primed for maximum concurrency *before* the user or agent even issues the next prompt.
 * **Background Scheduler & System Tray:** Native system tray icon, auto-start upon OS login, persistent background heartbeat daemon, and rich OS desktop notifications.
 
 ### 2. 🔒 Zero-Leak Security & Privacy Architecture
@@ -84,6 +87,12 @@ Operating locally on `127.0.0.1:8045` and `127.0.0.1:8765`, Antigravity Shield d
 
 ### 3. 🪐 Universal AI Agent Ecosystem & Marketplace (1,000+ Skills)
 * **Unified `SKILL.md` Specification:** Standardized procedural knowledge library executable across 20 leading AI agent platforms.
+
+<div align="center">
+  <img src="docs/images/agent-ecosystem-marketplace.png" alt="Antigravity Shield Agent Ecosystem Hub" width="100%" style="border-radius: 16px; margin: 18px 0; box-shadow: 0 10px 32px rgba(0,0,0,0.35);">
+  <p><em>Figure: Antigravity Shield Ecosystem Hub — 1,000+ curated skills, 11 unified professional domains, live download telemetry, rank glows, and 1-click installer.</em></p>
+</div>
+
 * **11 First-Class Domains:**
   1. `Coding & Web` (`coding`): Full-stack engineering, React 19, Next.js 15, TypeScript, Node.js, Swift, Rust, Python, Go.
   2. `Data & Databases` (`data`): PostgreSQL optimization, SQL query tuning, Supabase, Redis, ClickHouse.
@@ -120,8 +129,10 @@ Operating locally on `127.0.0.1:8045` and `127.0.0.1:8765`, Antigravity Shield d
 * **MiniView Desktop HUD:** Compact floating widget (down to 110x52) with an always-on-top toggle, active account switcher, and live quota meters designed to float over code editors.
 * **Native RTL & Vazirmatn Engine:** 1-click non-destructive typography patch for Antigravity IDE and desktop UI, enforcing Persian RTL alignment while keeping code blocks and monospace tokens left-to-right.
 
-### 7. 🔌 Multi-IDE Hot-Switching & Crash-Resilient Session Recovery
-* **Loopback Toolkit Bridge (`127.0.0.1:8765`):** Connects directly to IDE extensions. Switch active accounts in real-time without terminating editors or abandoning running agent tasks.
+### 7. 🔌 Zero-Restart Multi-IDE Hot-Switching & Crash Recovery
+* **Loopback Toolkit Bridge (`127.0.0.1:8765`):**
+  - **Zero-Restart Seamless Account Swapping:** In legacy environments, switching AI accounts requires terminating VS Code or Antigravity IDE, closing open workspace buffers, killing terminal jobs, and destroying long-running agent reasoning trajectories.
+  - **Hot Token Re-Binding:** Antigravity Shield routes editor authentication requests through its local loopback bridge on port `8765`. Switching active Google accounts instantaneously updates credentials underneath the IDE without dropping WebSocket streams or killing processes.
 * **Autonomous Brain Scanner:** Rust file watcher polls `~/.gemini/antigravity/brain/` every 3 seconds to catalog prompt/response tokens into SQLite analytics.
 * **Crash-Resilient State Injection:** Reconstructs unindexed agent conversations after sudden power cuts or OS crashes by synthesizing Protobuf trajectory descriptors into the IDE's internal state database (`state.vscdb`).
 
