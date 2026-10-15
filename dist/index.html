@@ -16,7 +16,7 @@
         const shouldBeDark = savedTheme === 'dark' || ((!savedTheme || savedTheme === 'system') && systemDark);
 
         // Set background color IMMEDIATELY to SPLASH COLOR (seamless transition)
-        document.documentElement.style.backgroundColor = '#1a1f2e';
+        document.documentElement.style.backgroundColor = shouldBeDark ? '#060807' : '#FAFBFC';
 
         if (shouldBeDark) {
           document.documentElement.classList.add('dark');
@@ -27,15 +27,15 @@
         }
       } catch (e) {
         console.error('Failed to apply theme during boot:', e);
-        document.documentElement.style.backgroundColor = '#1a1f2e';
+        document.documentElement.style.backgroundColor = '#060807';
       }
     })();
   </script>
-  <script type="module" crossorigin src="./assets/index-BytP16xn.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-C3Vf9YxI.css">
+  <script type="module" crossorigin src="./assets/index-CbDtRjvo.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BwTyXw0J.css">
 </head>
 
-<body style="margin: 0; background-color: #1a1f2e;">
+<body style="margin: 0; background-color: #060807;">
 
 
 

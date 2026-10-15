@@ -78,23 +78,47 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
         return 4;
     };
 
-    // Color definitions for light / dark modes
-    const getCellColor = (level: number, isSelected: boolean): string => {
+    // Color definitions with dynamic accent styling
+    const getCellStyle = (level: number, isSelected: boolean): React.CSSProperties | undefined => {
         if (isSelected) {
-            return 'bg-amber-400 dark:bg-amber-400 ring-2 ring-amber-500 scale-125 z-10 shadow-md';
+            return undefined;
         }
         switch (level) {
             case 1:
-                return 'bg-[#d1fae5] dark:bg-emerald-300/25 border border-emerald-200 dark:border-emerald-400/30 hover:ring-1 hover:ring-emerald-400';
+                return {
+                    backgroundColor: 'rgba(var(--color-accent-rgb), 0.22)',
+                    borderColor: 'rgba(var(--color-accent-rgb), 0.35)',
+                };
             case 2:
-                return 'bg-[#6ee7b7] dark:bg-emerald-400/50 border border-emerald-400 dark:border-emerald-400/60 hover:ring-1 hover:ring-emerald-400';
+                return {
+                    backgroundColor: 'rgba(var(--color-accent-rgb), 0.48)',
+                    borderColor: 'rgba(var(--color-accent-rgb), 0.65)',
+                };
             case 3:
-                return 'bg-[#10b981] dark:bg-emerald-500 border border-emerald-600 dark:border-emerald-400 hover:ring-1 hover:ring-emerald-300 shadow-xs';
+                return {
+                    backgroundColor: 'rgba(var(--color-accent-rgb), 0.78)',
+                    borderColor: 'var(--color-accent)',
+                    boxShadow: '0 1px 3px -1px var(--color-accent-glow)',
+                };
             case 4:
-                return 'bg-[#065f46] dark:bg-[#15803d] border border-emerald-800 dark:border-emerald-500 text-white shadow-sm hover:ring-1 hover:ring-emerald-200';
+                return {
+                    backgroundColor: 'var(--color-primary-btn)',
+                    borderColor: 'var(--color-accent)',
+                    boxShadow: '0 2px 6px -1px var(--color-accent-glow)',
+                };
             default:
-                return 'bg-gray-100 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/40 hover:border-gray-400 dark:hover:border-gray-600';
+                return undefined;
         }
+    };
+
+    const getCellClass = (level: number, isSelected: boolean): string => {
+        if (isSelected) {
+            return 'bg-amber-400 dark:bg-amber-400 ring-2 ring-amber-500 scale-125 z-10 shadow-md';
+        }
+        if (level === 0) {
+            return 'bg-gray-100 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/40 hover:border-gray-400 dark:hover:border-gray-600';
+        }
+        return 'border transition-all hover:scale-125 hover:z-10';
     };
 
     // Generate weeks matrix for the selected year (Sunday to Saturday, 52/53 weeks)
@@ -201,7 +225,7 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
             {/* Header: Title + Year Navigator + View Toggle */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2">
-                    <Flame className="w-5 h-5 text-emerald-500" />
+                    <Flame className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
                     <h2 className="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2">
                         {t('token_stats.heatmap_title', 'Annual Activity Heatmap')}
                         <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
@@ -331,9 +355,10 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                                                         }
                                                     }}
                                                     className={cn(
-                                                        "w-3 h-3 rounded-xs cursor-pointer transition-all",
-                                                        getCellColor(level, isSelected)
+                                                        "w-3 h-3 rounded-xs cursor-pointer",
+                                                        getCellClass(level, isSelected)
                                                     )}
+                                                    style={getCellStyle(level, isSelected)}
                                                 />
                                             );
                                         })}
@@ -354,15 +379,20 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                                     title={`Week ${wk.weekIndex} (${wk.dateRange})\nTotal: ${formatNumber(wk.total_tokens)} tokens\nInput: ${formatNumber(wk.input_tokens)}\nOutput: ${formatNumber(wk.output_tokens)}`}
                                     className={cn(
                                         "flex flex-col p-2 rounded-lg border text-center transition-all cursor-default",
-                                        wk.total_tokens > 0
-                                            ? "bg-emerald-500/10 border-emerald-500/30 dark:bg-emerald-950/20 dark:border-emerald-800/40"
-                                            : "bg-gray-50 border-gray-200/50 dark:bg-gray-800/40 dark:border-gray-700/40 opacity-50"
+                                        wk.total_tokens === 0 && "bg-gray-50 border-gray-200/50 dark:bg-gray-800/40 dark:border-gray-700/40 opacity-50"
                                     )}
+                                    style={wk.total_tokens > 0 ? {
+                                        backgroundColor: 'var(--color-badge-bg)',
+                                        borderColor: 'var(--color-badge-border)',
+                                    } : undefined}
                                 >
                                     <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">
                                         W{wk.weekIndex}
                                     </span>
-                                    <span className="text-xs font-mono font-bold text-gray-800 dark:text-gray-200 mt-1">
+                                    <span 
+                                        className="text-xs font-mono font-bold mt-1"
+                                        style={wk.total_tokens > 0 ? { color: 'var(--color-accent)' } : undefined}
+                                    >
                                         {formatNumber(wk.total_tokens)}
                                     </span>
                                 </div>
@@ -380,7 +410,10 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                             {selectedDate}:
                         </span>
                         {activityMap.get(selectedDate) ? (
-                            <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                            <span 
+                                className="font-mono font-bold"
+                                style={{ color: 'var(--color-accent)' }}
+                            >
                                 {formatNumber(activityMap.get(selectedDate)!.total_tokens)} tokens (
                                 {formatNumber(activityMap.get(selectedDate)!.input_tokens)} in / {formatNumber(activityMap.get(selectedDate)!.output_tokens)} out)
                             </span>
@@ -400,14 +433,14 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                     </span>
                 )}
 
-                {/* GitHub Level Legend */}
+                {/* Dynamic Accent Level Legend */}
                 <div className="flex items-center gap-1.5">
                     <span className="text-[10px]">{t('token_stats.heatmap_less', 'Less')}</span>
                     <div className="w-2.5 h-2.5 rounded-xs bg-gray-100 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/50" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-[#d1fae5] dark:bg-emerald-300/25 border border-emerald-200 dark:border-emerald-400/30" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-[#6ee7b7] dark:bg-emerald-400/50 border border-emerald-400 dark:border-emerald-400/60" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-[#10b981] dark:bg-emerald-500 border border-emerald-600 dark:border-emerald-400" />
-                    <div className="w-2.5 h-2.5 rounded-xs bg-[#065f46] dark:bg-[#15803d] border border-emerald-800 dark:border-emerald-500" />
+                    <div className="w-2.5 h-2.5 rounded-xs border" style={{ backgroundColor: 'rgba(var(--color-accent-rgb), 0.22)', borderColor: 'rgba(var(--color-accent-rgb), 0.35)' }} />
+                    <div className="w-2.5 h-2.5 rounded-xs border" style={{ backgroundColor: 'rgba(var(--color-accent-rgb), 0.48)', borderColor: 'rgba(var(--color-accent-rgb), 0.65)' }} />
+                    <div className="w-2.5 h-2.5 rounded-xs border" style={{ backgroundColor: 'rgba(var(--color-accent-rgb), 0.78)', borderColor: 'var(--color-accent)' }} />
+                    <div className="w-2.5 h-2.5 rounded-xs border" style={{ backgroundColor: 'var(--color-primary-btn)', borderColor: 'var(--color-accent)' }} />
                     <span className="text-[10px]">{t('token_stats.heatmap_more', 'More')}</span>
                 </div>
             </div>

@@ -19,6 +19,8 @@ import {
 } from '../../utils/predictiveBurn';
 import { SpeedometerGauge } from '../common/SpeedometerGauge';
 import { request as invoke } from '../../utils/request';
+import { useConfigStore } from '../../stores/useConfigStore';
+import { getAccentColor } from '../../constants/accents';
 
 interface FleetVelocityGaugeProps {
   accounts: Account[];
@@ -53,6 +55,57 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
       })
       .catch(() => {});
   }, []);
+
+  const { config } = useConfigStore();
+  const activeAccent = useMemo(() => getAccentColor(config?.accent_color), [config?.accent_color]);
+
+  const dynamicZones = useMemo(() => [
+    {
+      id: 'critical',
+      label: 'CRITICAL',
+      color: '#f43f5e',
+      from: 0,
+      to: 0.5,
+      statusLabel: 'Critical Deficit',
+      trend: 'down' as const,
+    },
+    {
+      id: 'high',
+      label: 'HIGH',
+      color: '#f59e0b',
+      from: 0.5,
+      to: 0.85,
+      statusLabel: 'Over-Burning',
+      trend: 'down' as const,
+    },
+    {
+      id: 'balanced',
+      label: 'BALANCED',
+      color: activeAccent.secondaryHex,
+      from: 0.85,
+      to: 1.15,
+      statusLabel: 'Balanced Sustainability',
+      trend: 'down' as const,
+    },
+    {
+      id: 'safe',
+      label: 'SAFE',
+      color: activeAccent.hex,
+      from: 1.15,
+      to: 1.6,
+      statusLabel: 'Safe Reserve',
+      trend: 'up' as const,
+    },
+    {
+      id: 'surplus',
+      label: 'SURPLUS',
+      color: activeAccent.cssVars.primaryButtonHover,
+      from: 1.6,
+      to: 2.0,
+      statusLabel: 'Full Surplus',
+      trend: 'up' as const,
+    },
+  ], [activeAccent]);
 
   const metrics: BurnVelocityMetrics = useMemo(() => {
     if (viewMode === 'active' && currentAccount) {
@@ -166,7 +219,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               onClick={() => setViewMode('fleet')}
               className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all duration-200 cursor-pointer ${
                 viewMode === 'fleet'
-                  ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-[#93e9be] shadow-sm'
+                  ? 'bg-white dark:bg-slate-700 shadow-sm text-[var(--color-accent-secondary)] dark:text-[var(--color-accent)]'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
@@ -178,7 +231,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               disabled={!currentAccount}
               className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all duration-200 cursor-pointer ${
                 viewMode === 'active'
-                  ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-[#93e9be] shadow-sm'
+                  ? 'bg-white dark:bg-slate-700 shadow-sm text-[var(--color-accent-secondary)] dark:text-[var(--color-accent)]'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               } ${!currentAccount ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
@@ -205,6 +258,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
             <SpeedometerGauge
               value={metrics.sustainabilityRatio}
               unit="x"
+              zones={dynamicZones}
               statusBadgeText={t(`dashboard.velocity_gauge.zone_${metrics.zone}`, metrics.zoneLabel)}
               caption={t(
                 'dashboard.velocity_gauge.caption',
@@ -239,10 +293,10 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               style={{
                 backgroundColor: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset)
                   ? 'rgba(244, 63, 94, 0.08)'
-                  : 'rgba(16, 185, 129, 0.08)',
+                  : 'var(--color-badge-bg)',
                 borderColor: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset)
                   ? 'rgba(244, 63, 94, 0.25)'
-                  : 'rgba(16, 185, 129, 0.25)',
+                  : 'var(--color-badge-border)',
               }}
             >
               <div className="flex items-center gap-2.5">
@@ -251,8 +305,8 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                   style={{
                     backgroundColor: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset)
                       ? 'rgba(244, 63, 94, 0.15)'
-                      : 'rgba(16, 185, 129, 0.15)',
-                    color: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? '#f43f5e' : '#10b981',
+                      : 'var(--color-badge-bg)',
+                    color: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? '#f43f5e' : 'var(--color-accent)',
                   }}
                 >
                   {(metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? (
@@ -266,7 +320,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                     <h3
                       className="text-xs font-black tracking-tight"
                       style={{
-                        color: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? '#f43f5e' : '#10b981',
+                        color: (metrics.isSessionAtRisk || metrics.isDepletedBeforeReset) ? '#f43f5e' : 'var(--color-accent)',
                       }}
                     >
                       {viewMode === 'active' && metrics.sessionResetTimeMs !== undefined ? (
@@ -375,7 +429,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               {/* Tile 2: Runway Remaining */}
               <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-[#121714]/80 border border-slate-200/60 dark:border-white/5">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
-                  <Clock className="w-3 h-3 text-emerald-500 dark:text-[#93e9be]" />
+                  <Clock className="w-3 h-3 text-[var(--color-accent)]" />
                   <span className="text-[9.5px] font-bold uppercase tracking-wider">
                     {t('dashboard.velocity_gauge.runway', 'Runway')}
                   </span>
@@ -412,11 +466,11 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               <div
                 onClick={() => navigate('/token-stats')}
                 title={t('dashboard.view_token_stats_tooltip', 'View Token Statistics & Consumption Limits')}
-                className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-[#93e9be] cursor-pointer transition-colors"
+                className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 hover:text-[var(--color-accent)] cursor-pointer transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-emerald-500 dark:text-[#93e9be]" />
+                    <Clock className="w-3 h-3 text-[var(--color-accent)]" />
                     <span className="font-bold text-slate-800 dark:text-slate-200">
                       {(() => {
                         const n = Number(horizon.last_5h_tokens) || 0;
@@ -437,7 +491,10 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                     <span>{t('dashboard.horizon_7d', '7-Day')}</span>
                   </span>
                 </div>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-[#93e9be] flex items-center gap-0.5 hover:underline">
+                <span 
+                  className="text-[10px] font-semibold flex items-center gap-0.5 hover:underline"
+                  style={{ color: 'var(--color-accent)' }}
+                >
                   {t('dashboard.view_token_stats', 'Token Stats')} ➜
                 </span>
               </div>

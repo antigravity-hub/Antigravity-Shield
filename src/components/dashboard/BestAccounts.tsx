@@ -210,15 +210,23 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                 <div className="space-y-3">
                     {/* Gemini Recommendation */}
                     {showGemini && bestGemini && (
-                        <div className="p-3.5 rounded-xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/5 space-y-2 hover:border-[#93e9be]/30 transition-all">
+                        <div className="p-3.5 rounded-xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/5 space-y-2 hover:border-[var(--color-badge-border)] transition-all">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5">
-                                    <span className="text-[10px] text-emerald-700 dark:text-[#93e9be] font-bold uppercase tracking-wider flex items-center gap-1">
-                                        <Sparkles className="w-3 h-3 text-[#93e9be]" />
+                                    <span 
+                                        className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 text-[var(--color-accent-secondary)] dark:text-[var(--color-accent)]"
+                                    >
+                                        <Sparkles className="w-3 h-3" style={{ color: 'var(--color-accent)' }} />
                                         {t('dashboard.for_gemini', 'For Gemini')}
                                     </span>
                                     {bestGemini.hasSafeBuffer ? (
-                                        <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.2 bg-[#93e9be]/15 text-emerald-700 dark:text-[#93e9be] rounded-md font-bold">
+                                        <span 
+                                            className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.2 rounded-md font-bold"
+                                            style={{
+                                                backgroundColor: 'var(--color-badge-bg)',
+                                                color: 'var(--color-badge-text)',
+                                            }}
+                                        >
                                             <ShieldCheck className="w-2.5 h-2.5" />
                                             &gt;20m
                                         </span>
@@ -235,7 +243,14 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                             W: {bestGemini.weeklyScore}%
                                         </span>
                                     )}
-                                    <span className="px-2 py-0.5 bg-emerald-500/15 text-emerald-700 dark:text-[#93e9be] text-xs font-mono font-black rounded-lg border border-emerald-500/20">
+                                    <span 
+                                        className="px-2 py-0.5 text-xs font-mono font-black rounded-lg border"
+                                        style={{
+                                            backgroundColor: 'var(--color-badge-bg)',
+                                            color: 'var(--color-badge-text)',
+                                            borderColor: 'var(--color-badge-border)',
+                                        }}
+                                    >
                                         {bestGemini.effectiveScore}%
                                     </span>
                                 </div>
@@ -250,7 +265,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                         type="button"
                                         onClick={() => navigate('/accounts', { state: { email: bestGemini.account.email } })}
                                         title={t('dashboard.view_in_accounts', 'View in Accounts')}
-                                        className="p-1 rounded-md text-slate-400 hover:text-emerald-600 dark:hover:text-[#93e9be] transition-colors cursor-pointer"
+                                        className="p-1 rounded-md text-slate-400 hover:text-[var(--color-accent)] transition-colors cursor-pointer"
                                     >
                                         <ArrowUpRight className="w-3.5 h-3.5" />
                                     </button>
@@ -258,7 +273,12 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                         <button
                                             type="button"
                                             onClick={() => onSwitch(bestGemini.account.id)}
-                                            className="p-1.5 bg-[#93e9be]/15 hover:bg-[#93e9be]/25 text-emerald-700 dark:text-[#93e9be] rounded-lg transition-colors cursor-pointer border border-[#93e9be]/30"
+                                            className="p-1.5 rounded-lg transition-colors cursor-pointer border"
+                                            style={{
+                                                backgroundColor: 'var(--color-badge-bg)',
+                                                color: 'var(--color-badge-text)',
+                                                borderColor: 'var(--color-badge-border)',
+                                            }}
                                             title={`${t('dashboard.switch_to', 'Switch')} (${bestGemini.account.email})`}
                                         >
                                             <ArrowRightLeft className="w-3.5 h-3.5" />

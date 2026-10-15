@@ -5,6 +5,8 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { Clock, Calendar, CalendarDays, Users, Zap, TrendingUp, RefreshCw, Cpu, History, CheckCircle2, CalendarRange, Filter, Compass, ShieldCheck } from 'lucide-react';
 import { TokenHeatmap, DailyTokenActivity } from '../components/stats/TokenHeatmap';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
+import { useConfigStore } from '../stores/useConfigStore';
+import { getAccentColor } from '../constants/accents';
 
 interface TokenStatsAggregated {
     period: string;
@@ -77,13 +79,6 @@ type TimeRange = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom'
 type ViewMode = 'model' | 'account';
 type SourceFilter = 'all' | 'Antigravity IDE' | 'Antigravity Platform' | 'Antigravity CLI';
 
-const MODEL_COLORS = [
-    '#129a5f', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981',
-    '#93e9be', '#6366f1', '#f43f5e', '#84cc16', '#a855f7',
-    '#14b8a6', '#f97316', '#64748b', '#4ade9a', '#d946ef'
-];
-
-const COLORS = ['#129a5f', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#93e9be', '#6366f1', '#f43f5e'];
 
 const formatNumber = (num: number | undefined | null): string => {
     const val = Number(num) || 0;
@@ -134,6 +129,35 @@ const TokenStats: React.FC = () => {
     const [heatmapData, setHeatmapData] = useState<DailyTokenActivity[]>([]);
     const [selectedHeatmapDate, setSelectedHeatmapDate] = useState<string | null>(null);
     const [horizonMetrics, setHorizonMetrics] = useState<TokenHorizonMetrics | null>(null);
+
+    const { config } = useConfigStore();
+    const currentAccent = React.useMemo(() => getAccentColor(config?.accent_color), [config?.accent_color]);
+
+    const dynamicModelColors = React.useMemo(() => [
+        currentAccent.secondaryHex,
+        '#8b5cf6',
+        currentAccent.hex,
+        '#ec4899',
+        '#f59e0b',
+        '#6366f1',
+        '#f43f5e',
+        '#84cc16',
+        '#a855f7',
+        '#14b8a6',
+        '#f97316',
+        '#64748b',
+        '#d946ef',
+    ], [currentAccent]);
+
+    const dynamicColors = React.useMemo(() => [
+        currentAccent.secondaryHex,
+        currentAccent.hex,
+        '#8b5cf6',
+        '#ec4899',
+        '#f59e0b',
+        '#6366f1',
+        '#f43f5e',
+    ], [currentAccent]);
 
     // Refs to avoid stale closures in event listeners
     const timeRangeRef = useRef<TimeRange>(timeRange);
@@ -373,7 +397,7 @@ const TokenStats: React.FC = () => {
         name: account.account_email.split('@')[0] + '...',
         value: account.total_tokens,
         fullEmail: account.account_email,
-        color: COLORS[index % COLORS.length]
+        color: dynamicColors[index % dynamicColors.length]
     }));
 
     const trendChartContainerRef = useRef<HTMLDivElement>(null);
@@ -466,8 +490,8 @@ const TokenStats: React.FC = () => {
         const row = payload[0]?.payload || {};
         const items = [
             { label: t('token_stats.total', 'Total'), value: row.total_tokens || 0, color: '#111827' },
-            { label: t('token_stats.input', 'Input'), value: row.total_input_tokens || 0, color: '#129a5f' },
-            { label: t('token_stats.cached_token', 'Cached Tokens'), value: row.total_cached_tokens || 0, color: '#93e9be' },
+            { label: t('token_stats.input', 'Input'), value: row.total_input_tokens || 0, color: currentAccent.secondaryHex },
+            { label: t('token_stats.cached_token', 'Cached Tokens'), value: row.total_cached_tokens || 0, color: currentAccent.hex },
             { label: t('token_stats.output', 'Output'), value: row.total_output_tokens || 0, color: '#8b5cf6' },
         ];
         return (
@@ -558,8 +582,15 @@ const TokenStats: React.FC = () => {
                             <Zap className="w-6 h-6 text-blue-500" />
                             {t('token_stats.title', 'Token Consumption Statistics')}
                         </h1>
-                        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <div 
+                            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                            style={{
+                                backgroundColor: 'var(--color-badge-bg)',
+                                color: 'var(--color-badge-text)',
+                                border: '1px solid var(--color-badge-border)',
+                            }}
+                        >
+                            <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-accent)' }}></span>
                             <span>{t('token_stats.live_sync', 'Live IDE / CLI Sync')}</span>
                         </div>
                     </div>
@@ -1008,8 +1039,8 @@ const TokenStats: React.FC = () => {
                                             type="monotone"
                                             dataKey={item}
                                             stackId="1"
-                                            stroke={viewMode === 'model' ? MODEL_COLORS[index % MODEL_COLORS.length] : COLORS[index % COLORS.length]}
-                                            fill={viewMode === 'model' ? MODEL_COLORS[index % MODEL_COLORS.length] : COLORS[index % COLORS.length]}
+                                            stroke={viewMode === 'model' ? dynamicModelColors[index % dynamicModelColors.length] : dynamicColors[index % dynamicColors.length]}
+                                            fill={viewMode === 'model' ? dynamicModelColors[index % dynamicModelColors.length] : dynamicColors[index % dynamicColors.length]}
                                             fillOpacity={0.6}
                                         />
                                     ))}
@@ -1060,8 +1091,8 @@ const TokenStats: React.FC = () => {
                                             allowEscapeViewBox={{ x: true, y: true }}
                                             wrapperStyle={{ zIndex: 100 }}
                                         />
-                                        <Bar dataKey="total_cached_tokens" name={t('token_stats.cached_token', 'Cached Tokens')} stackId="input" fill="#93e9be" radius={[0, 0, 4, 4]} maxBarSize={50} />
-                                        <Bar dataKey="uncached_input_tokens" name={t('token_stats.input', 'Input')} stackId="input" fill="#129a5f" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                                        <Bar dataKey="total_cached_tokens" name={t('token_stats.cached_token', 'Cached Tokens')} stackId="input" fill={currentAccent.hex} radius={[0, 0, 4, 4]} maxBarSize={50} />
+                                        <Bar dataKey="uncached_input_tokens" name={t('token_stats.input', 'Input')} stackId="input" fill={currentAccent.secondaryHex} radius={[4, 4, 0, 0]} maxBarSize={50} />
                                         <Bar dataKey="total_output_tokens" name={t('token_stats.output', 'Output')} fill="#8b5cf6" radius={[4, 4, 0, 0]} maxBarSize={50} />
                                     </BarChart>
                                 </ResponsiveContainer>
@@ -1117,7 +1148,7 @@ const TokenStats: React.FC = () => {
                                     <div className="flex items-center gap-2">
                                         <div
                                             className="w-3 h-3 rounded-full"
-                                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                                            style={{ backgroundColor: dynamicColors[index % dynamicColors.length] }}
                                         />
                                         <span className="text-gray-600 dark:text-gray-300 truncate max-w-[120px]">
                                             {account.account_email.split('@')[0]}
@@ -1179,7 +1210,7 @@ const TokenStats: React.FC = () => {
                                                         <div className="flex items-center gap-2">
                                                             <div
                                                                 className="w-3 h-3 rounded-full"
-                                                                style={{ backgroundColor: MODEL_COLORS[index % MODEL_COLORS.length] }}
+                                                                style={{ backgroundColor: dynamicModelColors[index % dynamicModelColors.length] }}
                                                             />
                                                             <span className="text-gray-800 dark:text-white font-medium">
                                                                 {model.model}
@@ -1208,7 +1239,7 @@ const TokenStats: React.FC = () => {
                                                                     className="h-2 rounded-full"
                                                                     style={{
                                                                         width: `${percentage}%`,
-                                                                        backgroundColor: MODEL_COLORS[index % MODEL_COLORS.length]
+                                                                        backgroundColor: dynamicModelColors[index % dynamicModelColors.length]
                                                                     }}
                                                                 />
                                                             </div>

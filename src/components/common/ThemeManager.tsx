@@ -43,6 +43,8 @@ export default function ThemeManager() {
         root.style.setProperty('--color-badge-bg', accent.cssVars.badgeBg);
         root.style.setProperty('--color-badge-text', accent.cssVars.badgeText);
         root.style.setProperty('--color-badge-border', accent.cssVars.badgeBorder);
+        root.style.setProperty('--color-accent-secondary', accent.secondaryHex);
+        root.style.setProperty('--color-accent-light-text', accent.lightTextHex);
         root.setAttribute('data-accent', accent.id);
     }, [config?.accent_color]);
 

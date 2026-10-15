@@ -107,9 +107,18 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar Header & Brand */}
       <div className="h-16 flex items-center px-4 border-b border-slate-200/60 dark:border-slate-800/60 justify-between">
         <Link to="/" className="flex items-center gap-3 overflow-hidden min-w-0 group">
-          <div className="relative w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-emerald-600 via-seafoam-500 to-[#93e9be] text-white shadow-md shadow-emerald-500/25 group-hover:scale-105 transition-transform duration-200">
-            <ShieldCheck className="w-5 h-5 text-slate-950" />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#93e9be] ring-2 ring-white dark:ring-[#09100d]" />
+          <div
+            className="relative w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-white shadow-md group-hover:scale-105 transition-transform duration-200"
+            style={{
+              background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+              boxShadow: '0 4px 14px -2px var(--color-accent-glow)',
+            }}
+          >
+            <ShieldCheck className="w-5 h-5 text-slate-950 dark:text-slate-900" />
+            <span
+              className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-[#09100d]"
+              style={{ backgroundColor: 'var(--color-accent)' }}
+            />
           </div>
 
           {!collapsed && (
@@ -123,7 +132,14 @@ export const Sidebar: React.FC = () => {
                 <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate">
                   Antigravity
                 </span>
-                <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-[#93e9be]/15 text-emerald-700 dark:text-[#93e9be] border border-[#93e9be]/30">
+                <span
+                  className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full"
+                  style={{
+                    backgroundColor: 'var(--color-badge-bg)',
+                    color: 'var(--color-badge-text)',
+                    border: '1px solid var(--color-badge-border)',
+                  }}
+                >
                   SHIELD
                 </span>
               </div>
@@ -181,7 +197,7 @@ export const Sidebar: React.FC = () => {
                         whileTap={{ scale: 0.96 }}
                         className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors select-none ${
                           isActive
-                            ? 'text-emerald-700 dark:text-[#93e9be] font-bold'
+                            ? 'text-[var(--color-accent-secondary)] dark:text-[var(--color-accent)] font-bold'
                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
                         }`}
                       >
@@ -194,16 +210,29 @@ export const Sidebar: React.FC = () => {
                               stiffness: 350,
                               mass: 0.8,
                             }}
-                            className="absolute inset-0 bg-gradient-to-r from-emerald-500/15 via-[#93e9be]/15 to-teal-500/10 dark:from-[#93e9be]/20 dark:via-emerald-500/15 dark:to-teal-500/10 rounded-xl border border-[#93e9be]/40 shadow-xs"
+                            className="absolute inset-0 rounded-xl shadow-xs"
+                            style={{
+                              background: 'linear-gradient(90deg, rgba(var(--color-accent-rgb), 0.18), rgba(var(--color-accent-rgb), 0.08))',
+                              border: '1px solid rgba(var(--color-accent-rgb), 0.35)',
+                              boxShadow: '0 2px 10px -2px var(--color-accent-glow)',
+                            }}
                           />
                         )}
 
                         <div
                           className={`relative z-10 p-1 rounded-lg shrink-0 transition-colors ${
                             isActive
-                              ? 'bg-gradient-to-br from-emerald-600 to-[#129a5f] text-white shadow-xs shadow-emerald-500/30'
+                              ? 'text-white shadow-xs'
                               : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-700'
                           }`}
+                          style={
+                            isActive
+                              ? {
+                                  background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                                  boxShadow: '0 2px 8px -1px var(--color-accent-glow)',
+                                }
+                              : undefined
+                          }
                         >
                           <Icon className="w-4 h-4" />
                         </div>
@@ -212,7 +241,12 @@ export const Sidebar: React.FC = () => {
                           <div className="relative z-10 flex items-center justify-between flex-1 min-w-0">
                             <span className="truncate">{item.label}</span>
                             {item.badge && (
-                              <span className="ms-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded-md bg-gradient-to-r from-emerald-600 to-[#129a5f] text-white shadow-xs">
+                              <span
+                                className="ms-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded-md text-white shadow-xs"
+                                style={{
+                                  background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                                }}
+                              >
                                 {item.badge}
                               </span>
                             )}

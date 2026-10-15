@@ -48,7 +48,25 @@ body {
   --color-badge-bg: rgba(147, 233, 190, 0.15);
   --color-badge-text: #93e9be;
   --color-badge-border: rgba(147, 233, 190, 0.35);
+  --color-accent-secondary: #129a5f;
+  --color-accent-light-text: #0f794c;
 }
+
+.accent-brand-gradient {
+  background: linear-gradient(135deg, var(--color-primary-btn), var(--color-accent));
+}
+
+.accent-subtle-pill {
+  background: linear-gradient(90deg, rgba(var(--color-accent-rgb), 0.18), rgba(var(--color-accent-rgb), 0.08));
+  border: 1px solid rgba(var(--color-accent-rgb), 0.35);
+}
+
+.accent-subtle-badge {
+  background-color: var(--color-badge-bg);
+  color: var(--color-badge-text);
+  border: 1px solid var(--color-badge-border);
+}
+
 
 /* Cyber Shield Glassmorphism & Dynamic Accent Effects */
 .cyber-glass {

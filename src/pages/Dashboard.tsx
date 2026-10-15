@@ -291,10 +291,16 @@ function Dashboard() {
                 {/* 5. Fleet Intelligence Matrix (4 Obsidian Metric Cards) */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Card 1: Total Accounts in Fleet */}
-                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex flex-col justify-between group">
+                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[var(--color-badge-border)] transition-all duration-200 flex flex-col justify-between group">
                         <div className="flex items-center justify-between mb-3">
-                            <div className="p-2.5 bg-emerald-500/10 dark:bg-[#93e9be]/10 border border-emerald-500/20 dark:border-[#93e9be]/20 rounded-xl">
-                                <Users className="w-4 h-4 text-emerald-700 dark:text-[#93e9be]" />
+                            <div 
+                                className="p-2.5 rounded-xl border"
+                                style={{
+                                    backgroundColor: 'var(--color-badge-bg)',
+                                    borderColor: 'var(--color-badge-border)',
+                                }}
+                            >
+                                <Users className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                             </div>
                             <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400">POOL</span>
                         </div>
@@ -308,7 +314,7 @@ function Dashboard() {
                     </div>
 
                     {/* Card 2: Average Gemini Pro Quota */}
-                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex flex-col justify-between group">
+                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[var(--color-badge-border)] transition-all duration-200 flex flex-col justify-between group">
                         <div className="flex items-center justify-between mb-3">
                             <div className="p-2.5 rounded-xl border" style={{ backgroundColor: 'var(--color-badge-bg)', borderColor: 'var(--color-badge-border)' }}>
                                 <Sparkles className="w-4 h-4" style={{ color: 'var(--color-accent, #93e9be)' }} />
@@ -336,7 +342,7 @@ function Dashboard() {
                     </div>
 
                     {/* Card 3: Average Claude Quota */}
-                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex flex-col justify-between group">
+                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-sky-500/30 transition-all duration-200 flex flex-col justify-between group">
                         <div className="flex items-center justify-between mb-3">
                             <div className="p-2.5 bg-sky-500/10 border border-sky-500/20 rounded-xl">
                                 <Bot className="w-4 h-4 text-sky-600 dark:text-sky-400" />
@@ -368,7 +374,13 @@ function Dashboard() {
                                     ATTENTION
                                 </span>
                             ) : (
-                                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-[#93e9be]">
+                                <span 
+                                    className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                                    style={{
+                                        backgroundColor: 'var(--color-badge-bg)',
+                                        color: 'var(--color-badge-text)',
+                                    }}
+                                >
                                     HEALTHY
                                 </span>
                             )}
