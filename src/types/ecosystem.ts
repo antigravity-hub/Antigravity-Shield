@@ -97,7 +97,25 @@ export type SecurityAuditFilter =
   | 'snyk_pass'
   | 'snyk_warn';
 
-export interface SkillItem {
+export interface SkillPrerequisites {
+  envVars?: string[];       // e.g. ["TAVILY_API_KEY"]
+  cliCommands?: string[];   // e.g. ["npm i -g @tavily/cli", "tvly login"]
+  allowedTools?: string[];  // e.g. ["Bash(agent-browser:*)", "Bash(tvly *)"]
+  dependencies?: string[];  // e.g. ["@tavily/core", "playwright"]
+  notes?: string;           // Brief human guidance
+}
+
+export interface SkillManifestMetadata {
+  repoUrl?: string;          // e.g. "https://github.com/vercel-labs/skills"
+  rawManifestUrl?: string;   // e.g. "https://raw.githubusercontent.com/vercel-labs/skills/main/skills/find-skills/SKILL.md"
+  branch?: string;           // e.g. "main"
+  skillDir?: string;         // e.g. "skills/find-skills" or "skills/productivity/grill-me"
+  companionFiles?: string[]; // e.g. ["scripts/accept_changes.py", "references/crawl.md"]
+  prerequisites?: SkillPrerequisites;
+  isUpstreamLive?: boolean;  // true if verified live public repo
+}
+
+export interface SkillItem extends SkillManifestMetadata {
   id: string;              // Unique identifier, e.g. "vercel-labs/skills/find-skills"
   slug?: string;           // URL-safe slug, e.g. "find-skills"
   name: string;            // Normalized name, e.g. "find-skills"

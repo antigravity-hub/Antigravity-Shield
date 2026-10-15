@@ -1,4 +1,5 @@
 import { SkillItem, McpServerItem, RuleItem, WorkspaceExclusion } from '../types/ecosystem';
+import { resolveSkillManifest } from './skillManifestResolver';
 import {
   DEFAULT_MCP_CATALOG,
   DEFAULT_RULES_CATALOG,
@@ -304,6 +305,9 @@ export async function saveSkillsToStorage(skills: SkillItem[]): Promise<void> {
 }
 
 export async function installSkill(skill: SkillItem): Promise<SkillItem> {
+  // Resolve canonical upstream manifest and telemetry
+  const manifest = resolveSkillManifest(skill);
+
   // Ensure content is populated from rich documentation if available
   const content =
     skill.content ||
@@ -311,8 +315,9 @@ export async function installSkill(skill: SkillItem): Promise<SkillItem> {
     (skill as any).documentation?.en ||
     undefined;
 
-  const skillPayload = {
+  const skillPayload: SkillItem = {
     ...skill,
+    ...manifest,
     content,
   };
 

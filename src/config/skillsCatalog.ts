@@ -250,6 +250,17 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "sourceType": "skills.sh",
     "remoteUrl": "https://www.skills.sh/vercel-labs/skills/find-skills",
     "downloadUrl": "https://skills.sh/api/v1/skills/vercel-labs/skills/find-skills",
+    "rawManifestUrl": "https://raw.githubusercontent.com/vercel-labs/skills/main/skills/find-skills/SKILL.md",
+    "repoUrl": "https://github.com/vercel-labs/skills",
+    "branch": "main",
+    "skillDir": "skills/find-skills",
+    "companionFiles": [],
+    "isUpstreamLive": true,
+    "prerequisites": {
+      "allowedTools": [],
+      "envVars": [],
+      "cliCommands": ["npx skills add find-skills"]
+    },
     "tags": [
       "automation",
       "vercel-labs",
@@ -320,6 +331,17 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "sourceType": "skills.sh",
     "remoteUrl": "https://www.skills.sh/mattpocock/skills/grill-me",
     "downloadUrl": "https://skills.sh/api/v1/skills/mattpocock/skills/grill-me",
+    "rawManifestUrl": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/grill-me/SKILL.md",
+    "repoUrl": "https://github.com/mattpocock/skills",
+    "branch": "main",
+    "skillDir": "skills/productivity/grill-me",
+    "companionFiles": [],
+    "isUpstreamLive": true,
+    "prerequisites": {
+      "allowedTools": [],
+      "envVars": [],
+      "cliCommands": ["npx skills add grill-me"]
+    },
     "tags": [
       "coding",
       "mattpocock",
@@ -458,6 +480,25 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "sourceType": "skills.sh",
     "remoteUrl": "https://www.skills.sh/vercel-labs/agent-browser/agent-browser",
     "downloadUrl": "https://skills.sh/api/v1/skills/vercel-labs/agent-browser/agent-browser",
+    "rawManifestUrl": "https://raw.githubusercontent.com/vercel-labs/agent-browser/main/skills/agent-browser/SKILL.md",
+    "repoUrl": "https://github.com/vercel-labs/agent-browser",
+    "branch": "main",
+    "skillDir": "skills/agent-browser",
+    "companionFiles": [
+      "skill-data/core/references/index.md",
+      "skill-data/core/templates/setup.sh"
+    ],
+    "isUpstreamLive": true,
+    "prerequisites": {
+      "allowedTools": [
+        "Bash(agent-browser:*)",
+        "Bash(npx agent-browser:*)"
+      ],
+      "envVars": [],
+      "cliCommands": [
+        "npm i -g agent-browser && agent-browser install"
+      ]
+    },
     "tags": [
       "automation",
       "vercel-labs",
@@ -804,6 +845,17 @@ export const SKILLS_SH_CATALOG: SkillItem[] = [
     "sourceType": "skills.sh",
     "remoteUrl": "https://www.skills.sh/anthropics/skills/frontend-design",
     "downloadUrl": "https://skills.sh/api/v1/skills/anthropics/skills/frontend-design",
+    "rawManifestUrl": "https://raw.githubusercontent.com/anthropics/skills/main/skills/frontend-design/SKILL.md",
+    "repoUrl": "https://github.com/anthropics/skills",
+    "branch": "main",
+    "skillDir": "skills/frontend-design",
+    "companionFiles": [],
+    "isUpstreamLive": true,
+    "prerequisites": {
+      "allowedTools": [],
+      "envVars": [],
+      "cliCommands": ["npx skills add frontend-design"]
+    },
     "tags": [
       "design",
       "anthropics",

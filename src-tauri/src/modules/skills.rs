@@ -74,6 +74,18 @@ pub struct SkillItem {
     pub criticality: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub docs_markdown: Option<serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repo_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub raw_manifest_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub branch: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub skill_dir: Option<String>,
+    #[serde(default)]
+    pub companion_files: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub is_upstream_live: Option<bool>,
 }
 
 fn default_version() -> String {
@@ -525,6 +537,22 @@ fn assign_frontmatter_field(dest: &mut ParsedFrontmatter, key: &str, val: &str) 
             dest.other.insert(key.to_string(), val.to_string());
         }
     }
+}
+
+/// Strictly validates opening/closing delimiters '---', non-empty 'name', and non-empty 'description'.
+pub fn validate_skill_frontmatter(content: &str) -> Result<ParsedFrontmatter, String> {
+    let (lines, _) = split_frontmatter(content);
+    if lines.is_empty() {
+        return Err("Missing YAML frontmatter delimiters ('---')".to_string());
+    }
+    let parsed = parse_frontmatter_lines(&lines);
+    if parsed.name.as_deref().unwrap_or("").trim().is_empty() {
+        return Err("YAML frontmatter missing required 'name' field".to_string());
+    }
+    if parsed.description.as_deref().unwrap_or("").trim().is_empty() {
+        return Err("YAML frontmatter missing required 'description' field".to_string());
+    }
+    Ok(parsed)
 }
 
 /// Extracts title from the first Level-1 Markdown header (# Title) in markdown body.
@@ -988,8 +1016,9 @@ pub fn read_skill_content_safe(skill_id: &str, _install_path: Option<&str>) -> R
     read_skill_markdown(skill_id, true)
 }
 
-/// Physically installs a skill to ~/.gemini/config/skills/<clean_name>/SKILL.md
-pub fn install_skill_physical(skill: &SkillItem) -> Result<String, String> {
+/// Physically installs a skill to ~/.gemini/config/skills/<clean_name>/SKILL.md with atomic staging,
+/// upstream live downloading via reqwest, multi-file companion support, and offline fallback.
+pub async fn install_skill_physical(skill: &SkillItem) -> Result<String, String> {
     let home = dirs::home_dir().ok_or_else(|| "Could not resolve user home directory".to_string())?;
     let primary = home.join(".gemini").join("config").join("skills");
     if !primary.exists() {
@@ -1021,38 +1050,158 @@ pub fn install_skill_physical(skill: &SkillItem) -> Result<String, String> {
         return Err("Path traversal detected in target directory".to_string());
     }
 
-    fs::create_dir_all(&target_dir).map_err(|e| format!("Failed to create skill directory: {}", e))?;
+    // Step 1: Create isolated temporary staging directory
+    let stage_uuid = uuid::Uuid::new_v4().to_string();
+    let staging_dir = primary.join(format!(".tmp_{}_{}", clean_name, &stage_uuid[..8]));
+    if staging_dir.exists() {
+        let _ = fs::remove_dir_all(&staging_dir);
+    }
+    fs::create_dir_all(&staging_dir)
+        .map_err(|e| format!("Failed to create staging directory: {}", e))?;
 
-    let skill_file = target_dir.join("SKILL.md");
+    let mut cleanup_staging = true;
 
-    // Compose SKILL.md content - ensuring YAML frontmatter is ALWAYS present so Antigravity and AI agents can index it
-    let content = if let Some(ref c) = skill.content {
-        let trimmed = c.trim();
-        if trimmed.is_empty() {
-            generate_canonical_skill_md(skill, &clean_name)
-        } else if trimmed.starts_with("---") {
-            c.clone()
-        } else {
-            let clean_desc = skill.description.replace('\r', "").replace('\n', " ");
-            let triggers_str = skill.triggers.join(", ");
-            format!(
-                "---\nname: {}\ndescription: {}\ncategory: {}\nversion: {}\ntriggers: [{}]\n---\n\n{}",
-                clean_name,
-                clean_desc,
-                skill.category,
-                skill.version,
-                triggers_str,
-                trimmed
-            )
+    let execution_result: Result<String, String> = async {
+        let http_client = reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(8))
+            .user_agent("Antigravity-Shield/6.0")
+            .build()
+            .map_err(|e| format!("HTTP client build failed: {}", e))?;
+
+        let mut manifest_content: Option<String> = None;
+        let is_live = skill.is_upstream_live.unwrap_or(false);
+
+        // Try downloading live from upstream if configured
+        if is_live {
+            if let Some(ref url) = skill.raw_manifest_url {
+                info!("Attempting live manifest fetch from: {}", url);
+                match http_client.get(url).send().await {
+                    Ok(resp) if resp.status().is_success() => {
+                        match resp.text().await {
+                            Ok(text) => {
+                                info!("Successfully fetched live manifest from {} ({} bytes)", url, text.len());
+                                manifest_content = Some(text);
+                            }
+                            Err(e) => {
+                                warn!("Failed to decode response text from {}: {}", url, e);
+                            }
+                        }
+                    }
+                    Ok(resp) => {
+                        warn!("Upstream fetch from {} returned HTTP {}", url, resp.status());
+                    }
+                    Err(e) => {
+                        warn!("Network fetch error from {}: {}", url, e);
+                    }
+                }
+            }
         }
-    } else {
-        generate_canonical_skill_md(skill, &clean_name)
-    };
 
-    fs::write(&skill_file, content.as_bytes()).map_err(|e| format!("Failed to write SKILL.md: {}", e))?;
+        // Resilient Offline Fallback: If live fetch failed or skill is local/synthetic, compose canonical content
+        let content_to_write = if let Some(live_text) = manifest_content {
+            if validate_skill_frontmatter(&live_text).is_ok() {
+                live_text
+            } else {
+                let clean_desc = skill.description.replace('\r', "").replace('\n', " ");
+                let triggers_str = skill.triggers.join(", ");
+                format!(
+                    "---\nname: {}\ndescription: {}\ncategory: {}\nversion: {}\ntriggers: [{}]\n---\n\n{}",
+                    clean_name, clean_desc, skill.category, skill.version, triggers_str, live_text.trim()
+                )
+            }
+        } else if let Some(ref c) = skill.content {
+            let trimmed = c.trim();
+            if trimmed.starts_with("---") && validate_skill_frontmatter(trimmed).is_ok() {
+                trimmed.to_string()
+            } else {
+                let clean_desc = skill.description.replace('\r', "").replace('\n', " ");
+                let triggers_str = skill.triggers.join(", ");
+                format!(
+                    "---\nname: {}\ndescription: {}\ncategory: {}\nversion: {}\ntriggers: [{}]\n---\n\n{}",
+                    clean_name, clean_desc, skill.category, skill.version, triggers_str, trimmed
+                )
+            }
+        } else {
+            generate_canonical_skill_md(skill, &clean_name)
+        };
 
-    info!("Successfully installed skill '{}' to {:?}", clean_name, skill_file);
-    Ok(skill_file.to_string_lossy().to_string())
+        // Write primary SKILL.md in staging
+        let staging_skill_file = staging_dir.join("SKILL.md");
+        fs::write(&staging_skill_file, content_to_write.as_bytes())
+            .map_err(|e| format!("Failed to write SKILL.md in staging: {}", e))?;
+
+        // Strict YAML Frontmatter Validation Gate
+        validate_skill_frontmatter(&content_to_write)
+            .map_err(|e| format!("Staged SKILL.md failed frontmatter validation: {}", e))?;
+
+        // Multi-File Companion Downloads
+        if is_live && !skill.companion_files.is_empty() {
+            if let Some(ref raw_manifest_url) = skill.raw_manifest_url {
+                let base_url = raw_manifest_url.trim_end_matches("/SKILL.md");
+                for companion_rel in &skill.companion_files {
+                    let clean_rel = companion_rel.trim().trim_start_matches('/').replace('\\', "/");
+                    if clean_rel.contains("..") || clean_rel.is_empty() {
+                        continue;
+                    }
+
+                    let companion_url = format!("{}/{}", base_url, clean_rel);
+                    info!("Fetching companion file from {}", companion_url);
+
+                    let dest_file = staging_dir.join(&clean_rel);
+                    if let Some(parent) = dest_file.parent() {
+                        let _ = fs::create_dir_all(parent);
+                    }
+
+                    match http_client.get(&companion_url).send().await {
+                        Ok(c_resp) if c_resp.status().is_success() => {
+                            if let Ok(c_bytes) = c_resp.bytes().await {
+                                let _ = fs::write(&dest_file, &c_bytes);
+                                info!("Saved companion file to {:?} ({} bytes)", dest_file, c_bytes.len());
+                            }
+                        }
+                        Ok(c_resp) => {
+                            warn!("Companion fetch {} returned HTTP {}", companion_url, c_resp.status());
+                        }
+                        Err(c_err) => {
+                            warn!("Companion fetch error {}: {}", companion_url, c_err);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Two-phase directory promotion on Windows (safe swap)
+        let backup_dir = primary.join(format!(".backup_{}_{}", clean_name, &stage_uuid[..8]));
+        if target_dir.exists() {
+            fs::rename(&target_dir, &backup_dir)
+                .map_err(|e| format!("Failed to create backup of existing directory: {}", e))?;
+        }
+
+        match fs::rename(&staging_dir, &target_dir) {
+            Ok(_) => {
+                cleanup_staging = false;
+                if backup_dir.exists() {
+                    let _ = fs::remove_dir_all(&backup_dir);
+                }
+                let installed_file = target_dir.join("SKILL.md");
+                info!("Successfully atomically installed skill '{}' to {:?}", clean_name, installed_file);
+                Ok(installed_file.to_string_lossy().to_string())
+            }
+            Err(rename_err) => {
+                // Rollback from backup if rename failed
+                if backup_dir.exists() {
+                    let _ = fs::rename(&backup_dir, &target_dir);
+                }
+                Err(format!("Atomic directory promotion failed: {}", rename_err))
+            }
+        }
+    }.await;
+
+    if cleanup_staging && staging_dir.exists() {
+        let _ = fs::remove_dir_all(&staging_dir);
+    }
+
+    execution_result
 }
 
 /// Physically uninstalls a skill by removing ~/.gemini/config/skills/<clean_name>
@@ -1375,5 +1524,39 @@ mod tests {
         assert_eq!(infer_category("backend-architect", "Scale microservices and APIs", &PathBuf::from("custom-skills"), None), "coding");
         assert_eq!(infer_category("backend-architect", "Scale microservices and APIs", &PathBuf::from("custom-skills"), Some("architecture")), "architecture");
         assert_eq!(infer_category("system-design", "Enterprise architecture patterns", &PathBuf::from("skills"), Some("Architecture")), "architecture");
+    }
+
+    #[test]
+    fn test_validate_skill_frontmatter_valid() {
+        let valid_sample = "---\nname: find-skills\ndescription: Discover and install AI agent skills\n---\n\n# Find Skills\n";
+        let res = validate_skill_frontmatter(valid_sample);
+        assert!(res.is_ok());
+        let parsed = res.unwrap();
+        assert_eq!(parsed.name.as_deref(), Some("find-skills"));
+        assert_eq!(parsed.description.as_deref(), Some("Discover and install AI agent skills"));
+    }
+
+    #[test]
+    fn test_validate_skill_frontmatter_missing_delimiter() {
+        let invalid = "name: find-skills\ndescription: Missing delimiter\n";
+        let res = validate_skill_frontmatter(invalid);
+        assert!(res.is_err());
+        assert!(res.unwrap_err().contains("Missing YAML frontmatter delimiters"));
+    }
+
+    #[test]
+    fn test_validate_skill_frontmatter_missing_name() {
+        let invalid = "---\ndescription: Missing name field\n---\n";
+        let res = validate_skill_frontmatter(invalid);
+        assert!(res.is_err());
+        assert!(res.unwrap_err().contains("missing required 'name' field"));
+    }
+
+    #[test]
+    fn test_validate_skill_frontmatter_missing_description() {
+        let invalid = "---\nname: only-name\n---\n";
+        let res = validate_skill_frontmatter(invalid);
+        assert!(res.is_err());
+        assert!(res.unwrap_err().contains("missing required 'description' field"));
     }
 }

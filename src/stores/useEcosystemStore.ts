@@ -25,6 +25,7 @@ interface EcosystemState {
   selectedCategory: SkillCategory;
   skillSource: 'all' | 'local' | 'skills_sh';
   installingId: string | null;
+  installErrors: Record<string, string>;
   testingMcpId: string | null;
   isTestingAllMcp: boolean;
 
@@ -50,6 +51,7 @@ interface EcosystemState {
   setVerifiedOnly: (verified: boolean) => void;
   setAuditFilter: (filter: SecurityAuditFilter) => void;
   setSelectedAuditFilters: (filters: string[]) => void;
+  clearInstallError: (skillId: string) => void;
 
   // Actions
   loadAll: () => Promise<void>;
@@ -77,6 +79,7 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
   selectedCategory: 'all',
   skillSource: 'all',
   installingId: null,
+  installErrors: {},
   testingMcpId: null,
   isTestingAllMcp: false,
 
@@ -102,6 +105,12 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
   setVerifiedOnly: (verified) => set({ verifiedOnly: verified }),
   setAuditFilter: (filter) => set({ auditFilter: filter }),
   setSelectedAuditFilters: (filters) => set({ selectedAuditFilters: filters }),
+  clearInstallError: (skillId) =>
+    set((state) => {
+      const next = { ...state.installErrors };
+      delete next[skillId];
+      return { installErrors: next };
+    }),
 
   loadAll: async () => {
     set({ loading: true });
@@ -152,7 +161,13 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
   },
 
   installSkill: async (skill) => {
-    set({ installingId: skill.id });
+    set((state) => {
+      const next = { ...state.installErrors };
+      delete next[skill.id];
+      if (skill.slug) delete next[skill.slug];
+      if (skill.name) delete next[skill.name];
+      return { installingId: skill.id, installErrors: next };
+    });
     try {
       const updated = await ecosystemService.installSkill(skill);
       set((state) => ({
@@ -178,10 +193,14 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
       return true;
     } catch (err) {
       console.error('[useEcosystemStore] Install skill failed:', err);
-      set({ installingId: null });
+      const errMsg = String(err instanceof Error ? err.message : err);
+      set((state) => ({
+        installingId: null,
+        installErrors: { ...state.installErrors, [skill.id]: errMsg },
+      }));
       const isFa = i18n.language?.startsWith('fa');
       showToast(
-        isFa ? `خطا در نصب مهارت: ${String(err)}` : `Failed to install skill: ${String(err)}`,
+        isFa ? `خطا در نصب مهارت: ${errMsg}` : `Failed to install skill: ${errMsg}`,
         'error'
       );
       return false;

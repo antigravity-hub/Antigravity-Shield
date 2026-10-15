@@ -31,6 +31,8 @@ import {
   Smartphone,
   TestTube,
   TrendingUp,
+  Globe,
+  Terminal,
 } from 'lucide-react';
 import { useEcosystemStore } from '../../stores/useEcosystemStore';
 import {
@@ -38,6 +40,10 @@ import {
   SkillCategory,
 } from '../../types/ecosystem';
 import { RichSkillDocViewer } from './RichSkillDocViewer';
+import {
+  isSkillUpstreamLive,
+  parsePrerequisitesFromMarkdown,
+} from '../../services/skillManifestResolver';
 import {
   SKILLS_SH_CATALOG,
 } from '../../config/skillsCatalog';
@@ -118,6 +124,7 @@ export const SkillsTab: React.FC = () => {
     uninstallSkill,
     toggleSkill,
     installingId,
+    installErrors,
   } = useEcosystemStore();
 
   // Self-healing: if skills list is empty on mount, trigger loadAll
@@ -762,6 +769,7 @@ export const SkillsTab: React.FC = () => {
         {visibleSkills.map((skill) => {
           const IconComponent = SKILL_ICONS[skill.icon || 'Sparkles'] || Sparkles;
           const isBusy = installingId === skill.id;
+          const installError = installErrors[skill.id] || (skill.slug ? installErrors[skill.slug] : undefined);
           const rank = downloadRankMap.get(skill.id) ?? (skill.slug ? downloadRankMap.get(skill.slug) : undefined) ?? (skill.name ? downloadRankMap.get(skill.name) : undefined);
           const isVerified = Boolean(skill.isVerifiedMaker) || Boolean(skill.isOfficial);
 
@@ -875,6 +883,20 @@ export const SkillsTab: React.FC = () => {
                         Official
                       </span>
                     )}
+                    {isSkillUpstreamLive(skill) && (
+                      <span
+                        className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded-sm border"
+                        style={{
+                          backgroundColor: 'var(--color-badge-bg)',
+                          color: 'var(--color-accent)',
+                          borderColor: 'var(--color-badge-border)',
+                        }}
+                        title="Live verified upstream Git repository"
+                      >
+                        <Globe className="w-2.5 h-2.5" />
+                        Live
+                      </span>
+                    )}
                   </div>
                 )}
 
@@ -973,6 +995,16 @@ export const SkillsTab: React.FC = () => {
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>{t('common.uninstall', 'Uninstall')}</span>
                     </button>
+                  ) : installError ? (
+                    <button
+                      onClick={() => installSkill(skill)}
+                      disabled={isBusy}
+                      className="flex items-center gap-1.5 px-2.5 py-1.2 rounded-lg text-rose-500 bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold border border-rose-500/30 transition-all active:scale-95"
+                      title={installError}
+                    >
+                      {isBusy ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                      <span>{isBusy ? t('ecosystem.installing', 'Installing...') : t('common.retry', 'Retry')}</span>
+                    </button>
                   ) : (
                     <button
                       onClick={() => installSkill(skill)}
@@ -983,8 +1015,12 @@ export const SkillsTab: React.FC = () => {
                         boxShadow: '0 2px 8px var(--color-accent-glow)',
                       }}
                     >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>{isBusy ? 'Installing...' : t('common.install', 'Install')}</span>
+                      {isBusy ? (
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Download className="w-3.5 h-3.5" />
+                      )}
+                      <span>{isBusy ? t('ecosystem.installing', 'Installing...') : t('common.install', 'Install')}</span>
                     </button>
                   )}
                 </div>
@@ -1189,6 +1225,152 @@ export const SkillsTab: React.FC = () => {
                   </div>
                 </div>
 
+                {/* 2.5 Execution Prerequisites & Security Telemetry */}
+                {(() => {
+                  const prereqs =
+                    inspectingSkill.prerequisites ||
+                    parsePrerequisitesFromMarkdown(
+                      inspectingSkill.content ||
+                        (inspectingSkill.docsMarkdown as any)?.en ||
+                        ''
+                    );
+
+                  const hasPrereqs =
+                    prereqs &&
+                    ((prereqs.allowedTools && prereqs.allowedTools.length > 0) ||
+                      (prereqs.envVars && prereqs.envVars.length > 0) ||
+                      (prereqs.cliCommands && prereqs.cliCommands.length > 0) ||
+                      (inspectingSkill.companionFiles && inspectingSkill.companionFiles.length > 0) ||
+                      isSkillUpstreamLive(inspectingSkill));
+
+                  if (!hasPrereqs) return null;
+
+                  return (
+                    <div
+                      className="p-3.5 rounded-xl border space-y-3"
+                      style={{
+                        backgroundColor: 'var(--color-badge-bg)',
+                        borderColor: 'var(--color-badge-border)',
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div
+                          className="flex items-center gap-1.5 text-xs font-mono font-semibold uppercase"
+                          style={{ color: 'var(--color-accent)' }}
+                        >
+                          <Terminal className="w-4 h-4" />
+                          <span>Execution Prerequisites & Tool Telemetry</span>
+                        </div>
+                        {isSkillUpstreamLive(inspectingSkill) && (
+                          <span
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border"
+                            style={{
+                              backgroundColor: 'var(--color-badge-bg)',
+                              color: 'var(--color-accent)',
+                              borderColor: 'var(--color-badge-border)',
+                            }}
+                          >
+                            <Globe className="w-3 h-3" />
+                            LIVE GITHUB
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Allowed Tools */}
+                      {prereqs.allowedTools && prereqs.allowedTools.length > 0 && (
+                        <div>
+                          <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
+                            Allowed Tools (Execution Permissions):
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {prereqs.allowedTools.map((tool, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-0.5 rounded-md font-mono text-[11px] border"
+                                style={{
+                                  backgroundColor: 'var(--color-badge-bg)',
+                                  borderColor: 'var(--color-badge-border)',
+                                  color: 'var(--color-accent)',
+                                }}
+                              >
+                                {tool}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Required Environment Variables */}
+                      {prereqs.envVars && prereqs.envVars.length > 0 && (
+                        <div>
+                          <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
+                            Required Environment Variables (API Keys / Tokens):
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {prereqs.envVars.map((envVar, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-0.5 rounded-md font-mono text-[11px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-semibold"
+                              >
+                                {envVar}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* CLI Setup Commands */}
+                      {prereqs.cliCommands && prereqs.cliCommands.length > 0 && (
+                        <div>
+                          <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
+                            CLI Setup Commands:
+                          </span>
+                          <div className="space-y-1.5">
+                            {prereqs.cliCommands.map((cmd, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-black/20 border border-slate-700/50 font-mono text-[11px] text-slate-200"
+                              >
+                                <code>{cmd}</code>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(cmd);
+                                    handleCopyTrigger(cmd);
+                                  }}
+                                  className="p-1 rounded text-slate-400 hover:text-white transition-colors"
+                                  title="Copy command"
+                                >
+                                  <Copy className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Companion Files */}
+                      {inspectingSkill.companionFiles && inspectingSkill.companionFiles.length > 0 && (
+                        <div>
+                          <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
+                            Multi-File Companion Assets ({inspectingSkill.companionFiles.length}):
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {inspectingSkill.companionFiles.map((file, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-0.5 rounded-md font-mono text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700"
+                              >
+                                {file}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {/* 3. 1-Click Install Banner for Online Skills */}
                 {!inspectingSkill.isLocal && (
                   <div
@@ -1228,6 +1410,27 @@ export const SkillsTab: React.FC = () => {
                       >
                         <Trash2 className="w-4 h-4" />
                         <span>{t('common.uninstall', 'Uninstall')}</span>
+                      </button>
+                    ) : installErrors[inspectingSkill.id] ? (
+                      <button
+                        onClick={async () => {
+                          const ok = await installSkill(inspectingSkill);
+                          if (ok) {
+                            setInspectingSkill((prev) =>
+                              prev ? { ...prev, isInstalled: true, isEnabled: true } : null
+                            );
+                          }
+                        }}
+                        disabled={installingId === inspectingSkill.id}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-rose-500 bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold border border-rose-500/30 transition-all active:scale-95"
+                        title={installErrors[inspectingSkill.id]}
+                      >
+                        <RefreshCw className={`w-4 h-4 ${installingId === inspectingSkill.id ? 'animate-spin' : ''}`} />
+                        <span>
+                          {installingId === inspectingSkill.id
+                            ? t('ecosystem.installing', 'Installing...')
+                            : t('common.retry', 'Retry')}
+                        </span>
                       </button>
                     ) : (
                       <button
