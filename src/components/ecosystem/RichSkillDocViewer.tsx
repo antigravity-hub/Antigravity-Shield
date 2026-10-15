@@ -11,7 +11,6 @@ import {
   Check,
   Layers,
   ShieldCheck,
-  Bot,
   Loader2,
 } from 'lucide-react';
 import { SkillItem } from '../../types/ecosystem';
@@ -394,25 +393,6 @@ export const RichSkillDocViewer: React.FC<RichSkillDocViewerProps> = ({ skill, r
         );
       })()}
 
-      {/* 20 AI Agent Compatibility & Antigravity Native Banner (Item 2) */}
-      <div className="flex items-center justify-between p-2.5 rounded-xl bg-sky-500/5 dark:bg-sky-500/10 border border-sky-500/20 text-xs">
-        <div className="flex items-center gap-2">
-          <Bot className="w-4 h-4 text-sky-500 shrink-0" />
-          <div className="text-[11px] text-slate-700 dark:text-slate-300">
-            <span className="font-semibold text-sky-600 dark:text-sky-400">
-              {selectedLang === 'fa' ? 'سازگاری ۱۰۰٪ با Antigravity:' : '100% Antigravity Native:'}
-            </span>{' '}
-            <span>
-              {selectedLang === 'fa'
-                ? 'پشتیبانی کامل از استاندارد فراگیر SKILL.md. این مهارت علاوه بر Antigravity با کلیه ۱۹ دستیار دیگر (Claude Code، Cursor، Codex، Gemini، Windsurf و...) سازگار است.'
-                : 'Follows universal SKILL.md standard. Runs natively in Antigravity, Claude Code, Cursor, Codex, Gemini, Windsurf, Zed & 13+ others.'}
-            </span>
-          </div>
-        </div>
-        <span className="hidden sm:inline-flex shrink-0 text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-300 border border-sky-500/30">
-          Native Engine
-        </span>
-      </div>
 
       {/* Main Documentation Viewer Body */}
       {(() => {

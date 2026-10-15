@@ -7,6 +7,7 @@ import {
   Trash2,
   CheckCircle2,
   Check,
+  Copy,
   Plus,
   Eye,
   Code2,
@@ -107,6 +108,34 @@ export const SkillsTab: React.FC = () => {
   const [activeFirst, setActiveFirst] = useState(false);
   const [inspectingSkill, setInspectingSkill] = useState<SkillItem | null>(null);
   const [inspectingContent, setInspectingContent] = useState<string>('');
+  const [copiedTrigger, setCopiedTrigger] = useState<string | null>(null);
+
+  const handleCopyTrigger = (cmd: string) => {
+    navigator.clipboard.writeText(cmd);
+    setCopiedTrigger(cmd);
+    setTimeout(() => {
+      setCopiedTrigger((prev) => (prev === cmd ? null : prev));
+    }, 1500);
+  };
+
+  const getSanitizedTriggers = (triggers?: string[]): string[] => {
+    if (!triggers || triggers.length === 0) return [];
+    const result: string[] = [];
+    const seen = new Set<string>();
+
+    for (const raw of triggers) {
+      const clean = raw.trim().replace(/^\/+/, '');
+      if (!clean) continue;
+      const slug = clean.toLowerCase().replace(/\s+/g, '-');
+      if (!seen.has(slug)) {
+        seen.add(slug);
+        result.push(slug);
+      }
+    }
+
+    return result;
+  };
+
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newSkill, setNewSkill] = useState<{
     id: string;
@@ -789,23 +818,47 @@ export const SkillsTab: React.FC = () => {
                 </p>
 
                 {/* Triggers Tags */}
-                {skill.triggers && skill.triggers.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {skill.triggers.slice(0, 3).map((tr, idx) => (
-                      <span
-                        key={idx}
-                        className="px-1.5 py-0.5 text-[10px] rounded-md bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 font-mono"
-                      >
-                        /{tr}
-                      </span>
-                    ))}
-                    {skill.triggers.length > 3 && (
-                      <span className="text-[10px] text-slate-400 px-1 py-0.5">
-                        +{skill.triggers.length - 3}
-                      </span>
-                    )}
-                  </div>
-                )}
+                {(() => {
+                  const sanitized = getSanitizedTriggers(skill.triggers);
+                  if (sanitized.length === 0) return null;
+
+                  return (
+                    <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                      {sanitized.slice(0, 2).map((slug) => {
+                        const fullCmd = `/${slug}`;
+                        const isCopied = copiedTrigger === fullCmd;
+                        return (
+                          <button
+                            key={slug}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCopyTrigger(fullCmd);
+                            }}
+                            title={t('ecosystem.click_to_copy', 'Click to copy command')}
+                            className={`group inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono rounded-md transition-all active:scale-95 cursor-pointer select-none ${
+                              isCopied
+                                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                                : 'bg-slate-100 hover:bg-sky-500/10 dark:bg-slate-800/80 dark:hover:bg-sky-500/15 text-slate-600 hover:text-sky-600 dark:text-slate-400 dark:hover:text-sky-300 border border-slate-200/40 dark:border-slate-700/40 hover:border-sky-500/20'
+                            }`}
+                          >
+                            {isCopied ? (
+                              <Check className="w-2.5 h-2.5 text-emerald-500 shrink-0" />
+                            ) : (
+                              <Copy className="w-2.5 h-2.5 opacity-60 group-hover:opacity-100 transition-opacity text-slate-400 group-hover:text-sky-500 shrink-0" />
+                            )}
+                            <span>{fullCmd}</span>
+                          </button>
+                        );
+                      })}
+                      {sanitized.length > 2 && (
+                        <span className="text-[10px] text-slate-400 px-1 py-0.5 font-mono">
+                          +{sanitized.length - 2}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Actions & Footer */}
@@ -913,14 +966,14 @@ export const SkillsTab: React.FC = () => {
               className="w-full max-w-3xl bg-white dark:bg-[#0c1220] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[88vh]"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+              <div className="flex items-center justify-between gap-4 px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
                     <FileCode className="w-5 h-5 text-sky-500" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-slate-900 dark:text-white">
+                  <div className="min-w-0 space-y-0.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-sm text-slate-900 dark:text-white truncate">
                         {inspectingSkill.title}
                       </span>
                       {(() => {
@@ -929,7 +982,7 @@ export const SkillsTab: React.FC = () => {
                         return (
                           <span
                             title={`Download Rank: #${modalRank}`}
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-black tracking-tight border shadow-xs ${getRankBadgeClasses(modalRank)}`}
+                            className={`inline-flex items-center gap-1 h-5 px-2 rounded-full text-[10px] font-mono font-bold tracking-tight border shadow-xs whitespace-nowrap shrink-0 ${getRankBadgeClasses(modalRank)}`}
                           >
                             {modalRank <= 10 && <Flame className="w-2.5 h-2.5 fill-current shrink-0 animate-pulse" />}
                             <span>#{modalRank}</span>
@@ -937,24 +990,25 @@ export const SkillsTab: React.FC = () => {
                         );
                       })()}
                       {inspectingSkill.isOfficial && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-sans">
-                          {t('ecosystem.official_maker', 'Official Maker')}
+                        <span className="inline-flex items-center gap-1 h-5 px-2 rounded-full text-[10px] font-medium bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 whitespace-nowrap shrink-0 font-sans">
+                          <BadgeCheck className="w-3 h-3 text-sky-500 shrink-0" />
+                          <span>{t('ecosystem.official_maker', 'Official Maker')}</span>
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">
                       {inspectingSkill.owner ? `${inspectingSkill.owner}/${inspectingSkill.repo}` : inspectingSkill.id}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {inspectingSkill.repository && (
                     <a
                       href={inspectingSkill.repository}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+                      className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60 transition-colors whitespace-nowrap"
                     >
                       <GitBranch className="w-3.5 h-3.5" />
                       <span>{t('ecosystem.github_repo', 'GitHub Repo')}</span>
@@ -962,7 +1016,7 @@ export const SkillsTab: React.FC = () => {
                   )}
                   <button
                     onClick={() => setInspectingSkill(null)}
-                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    className="w-7 h-7 rounded-lg inline-flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
