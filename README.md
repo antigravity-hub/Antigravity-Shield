@@ -25,16 +25,18 @@
     <a href="#-executive-overview">Executive Overview</a> • 
     <a href="#-core-architectural-pillars">Core Pillars</a> • 
     <a href="#-universal-agent-ecosystem--marketplace">Skills Marketplace</a> • 
-    <a href="#-architecture">Architecture</a> • 
+    <a href="#-system-architecture">Architecture</a> • 
     <a href="#-quick-integration">Integration Guide</a> • 
     <a href="#-tech-stack">Tech Stack</a> • 
     <a href="#-installation--setup">Installation</a> • 
+    <a href="#-راهنمای-جامع-فارسی-persian-guide">راهنمای فارسی</a> • 
     <a href="#-license--attribution">License</a>
   </p>
 
   <p>
-    <strong>English</strong> | 
-    <a href="#-معرفی-سیستم-و-قابلیت‌ها-persian-overview">فارسی (Persian)</a> | 
+    <strong>English (Master)</strong> | 
+    <a href="./README_FA.md">فارسی (Persian)</a> | 
+    <a href="./README_EN.md">English (Pure)</a> | 
     <a href="./README_ZH.md">简体中文</a>
   </p>
 </div>
@@ -45,31 +47,17 @@
 
 **Antigravity Shield** is an ultra-hardened, agency-grade desktop environment and local reverse-proxy gateway engineered for high-concurrency AI agent workflows. It bridges the gap between modern autonomous coding agents (**Google Antigravity**, **Claude Code CLI**, **Cursor**, **Windsurf**, **Gemini CLI**, **Zed**) and enterprise-tier multi-account infrastructure.
 
-Operating locally on `127.0.0.1:8045` and `127.0.0.1:8765`, Antigravity Shield delivers non-blocking account rotation, real-time quota telemetry, automated failover with 0ms interruption, zero-restart IDE account hot-switching, and a curated marketplace of **1,000+ universal agent skills** conforming to the `SKILL.md` standard.
+Operating locally on `127.0.0.1:8045` and `127.0.0.1:8765`, Antigravity Shield delivers non-blocking account rotation, real-time quota telemetry, automated failover with 0ms interruption, zero-restart IDE account hot-switching, and a curated marketplace of **over 1,000 universal agent skills** conforming to the `SKILL.md` standard.
 
 ### 🎯 Key Performance Highlights
-- **Zero-Restart IDE Hot-Switching:** Switch active Google accounts inside running Antigravity IDE, VS Code, Cursor, or Zed sessions without restarting editors or destroying agent execution loops.
-- **Zero-Leak Security Architecture:** API keys, OAuth refresh tokens, and Model Context Protocol (MCP) server credentials remain 100% isolated on your physical machine inside encrypted local SQLite databases.
+- **Autonomous Multi-Account Proxy (`127.0.0.1:8045`):** High-throughput Rust Axum/Tokio reverse proxy with intelligent account rotation and zero-interruption failover during rate limits.
+- **Tier Telemetry (`Pro` vs `Free` vs `Ultra`):** Automatic classification and quota telemetry across subscription tiers with dynamic routing prioritizations and quota window countdowns (5-hour and weekly).
+- **Zero-Leak Security Architecture:** Physical local confinement for private API keys, custom MCP configurations, and tokens inside local SQLite databases with live memory scrubbing.
 - **1,000+ Agent Skills Marketplace:** 1-click physical deployment of production skills into local agent directories across 11 professional domains.
+- **Visual MCP Server Orchestrator:** Visual catalog, latency ping testing, and 1-click configuration synchronization for stdio, SSE, and WebSocket MCP servers.
+- **Zero-Restart IDE Hot-Switching:** Switch active Google accounts inside running Antigravity IDE, VS Code, Cursor, or Zed sessions via loopback bridge (`127.0.0.1:8765`) without restarting editors or destroying agent execution loops.
 - **Protobuf Crash Recovery:** Automatically detects unindexed session transcripts after power cuts or abrupt OS restarts and reconciles IDE conversation history with zero data loss.
-- **Apple-Grade Human Interface:** 60fps spring transitions (Framer Motion), progressive windowing / infinite scrolling for 1,000+ cards with 0ms lag, and native Persian/RTL typography (Vazirmatn).
-
----
-
-<div dir="rtl" id="-معرفی-سیستم-و-قابلیت‌ها-persian-overview">
-
-## 🇮🇷 معرفی سیستم و قابلیت‌ها (Persian Overview)
-
-**شیلد آنتی‌گرویتی (Antigravity Shield)** یک نرم‌افزار دسکتاپ چندسکویی و گیت‌وی مهندسی‌شده با **Rust (Axum/Tokio)** و **React 19 (Tauri 2)** است که به عنوان مرکز فرماندهی و سوئیچینگ هوشمند برای توسعه‌دهندگان، معماران نرم‌افزار و ایجنت‌های کدنویسی خودکار عمل می‌کند.
-
-### مزایای کلیدی سیستم:
-1. **مدیریت هوشمند سهمیه و روتینگ چند حسابه:** اجرای پروکسی محلی روی پورت `8045` با قابلیت جابجایی خودکار و آنی (Failover با تأخیر ۰ میلی‌ثانیه) بین حساب‌های Google و Gemini هنگام اتمام سهمیه مدل‌های 3.1 Pro و Flash.
-2. **سوئیچینگ بدون نیاز به ری‌استارت IDE:** به کمک اکستنشن توکار Antigravity Toolkit (پورت `8765`) حساب کاربری بدون بستن ادیتور، حفظ ترمینال‌ها و ادامه‌ی بدون توقف حلقه‌های ایجنت Claude Code یا Antigravity تعویض می‌گردد.
-3. **مارکت‌پلیس جهانی بیش از ۱,۰۰۰ مهارت ایجنت (Universal Skills):** دسترسی به گنجینه‌ای سازمان‌یافته در ۱۱ حوزه تخصصی با امکان نصب فیزیکی تک‌کلیک در مسیر محلی `~/.gemini/config/skills/`، کپی آسان دستورات Slash (`/find-skills`) و مشاهده داکیومنت دوزبانه (فارسی و انگلیسی).
-4. **شیلد امنیتی Zero-Leak:** ایزولاسیون کامل توکن‌ها و کلیدهای محرمانه روی حافظه محلی SQLite بدون ارسال حتی ۱ بایت دیتا به سرورهای واسط یا ردیاب‌های شخص ثالث.
-5. **ارگونومی بصری اپل و تایپوگرافی وزیرمتن:** انیمیشن‌های فیزیکی نرم، پیمایش روان بیش از ۱,۰۰۰ کارت بدون کندی، داشبورد شناور MiniView HUD و پچ ۱-کلیک راست‌چین و فونت وزیرمتن با حفظ فرمت LTR بلوک‌های کد.
-
-</div>
+- **Apple-Grade Human Interface:** 60fps spring transitions (Framer Motion), progressive windowing / infinite scrolling for 1,000+ cards with 0ms lag (`@tanstack/react-virtual`), MiniView desktop HUD, and native Persian/RTL typography (Vazirmatn).
 
 ---
 
@@ -77,50 +65,56 @@ Operating locally on `127.0.0.1:8045` and `127.0.0.1:8765`, Antigravity Shield d
 
 ### 1. 🛡️ High-Performance Multi-Account AI Quota & Session Proxy
 * **Local Axum/Tokio Reverse Proxy (`127.0.0.1:8045`):** High-throughput, non-blocking asynchronous pipeline capable of handling concurrent agent tool calls without thread serialization or deadlock bottlenecks.
-* **Autonomous Rolling Quota Tracking:** Monitors exact remaining quotas and calculates rolling 5-hour and weekly reset windows for **Gemini 3.1 Pro**, **Gemini 3 Flash**, **Claude 3.7 Sonnet**, and **Imagen 3**.
+* **Tier Telemetry & Multi-Tier Quota Tracking:**
+  - Automatically identifies and classifies account subscription tiers: **`PRO`**, **`ULTRA`**, and **`FREE`**.
+  - Enforces intelligent model routing (e.g. Claude 3.7 / Sonnet 4-6 routed exclusively to Pro/Ultra accounts; lightweight tasks routed to high-capacity pools).
+  - Tracks real-time token quota percentages and calculates rolling **5-hour reset** and **weekly ceiling** countdowns for `gemini-3.1-pro`, `gemini-3-flash`, `claude-sonnet-4-6`, and `imagen-3`.
 * **Zero-Downtime Smart Failover:** Automatically shuffles traffic to accounts with the highest available quota score. When rate-limit challenges (HTTP 429) occur, it transparently migrates active requests without breaking running agent loops.
 * **Proactive Auto-Warmup:** Probes accounts as soon as their quota window recovers to 100%, eliminating cold-start latencies on fresh sessions.
 * **Background Scheduler & System Tray:** Native system tray icon, auto-start upon OS login, persistent background heartbeat daemon, and rich OS desktop notifications.
 
 ### 2. 🔒 Zero-Leak Security & Privacy Architecture
-* **Strict Physical Local Confinement:** Private API keys, OAuth session secrets, custom rules, and enterprise credentials never leave the host system.
-* **Encrypted SQLite Core:** All account metadata and usage analytics persist locally in `~/.antigravity_shield/` or `%APPDATA%\antigravity-shield\` using encrypted SQLite stores (`proxy.db`, `token_stats.db`, `security_db.sqlite`).
-* **Live Memory Shields & Path Guards:** Built-in sanitization filters protect against directory traversal attacks (`../` injection guard) and scrub sensitive bearer tokens from debug telemetry logs.
+* **Strict Physical Local Confinement:** Private API keys, OAuth session secrets, custom rules, and enterprise credentials never leave the host system. Zero telemetry is sent to third-party tracking servers.
+* **Built-in Live Memory Zero-Leak Shields:**
+  - **Memory Bearer Sanitizer:** Actively scrubs sensitive authorization bearer headers from in-flight logs and telemetry pipelines.
+  - **Directory Traversal Guard:** Hardened path validation prevents `../` path injection attacks during `SKILL.md` retrieval and local file reads.
+  - **Secret Redaction Filter:** Scans and redacts 12+ patterns of secret keys (e.g., Anthropic keys, OpenAI tokens, AWS secrets) during file scanning.
+* **Encrypted SQLite Core:** All account metadata and usage analytics persist locally in `~/.antigravity_shield/` or `%APPDATA%\antigravity-shield\` using encrypted SQLite stores (`proxy.db`, `token_stats.db`, `security.db`).
 * **Virtual Device Profile Isolation:** Each authenticated account operates under an isolated, deterministic hardware profile and RFC UUID to prevent upstream cross-account device correlation.
 
 ### 3. 🪐 Universal AI Agent Ecosystem & Marketplace (1,000+ Skills)
 * **Unified `SKILL.md` Specification:** Standardized procedural knowledge library executable across 20 leading AI agent platforms.
 * **11 First-Class Domains:**
-  1. `Coding & Web`: Full-stack engineering, React 19, Next.js, Node.js, Swift, Rust, Python, Go.
-  2. `Data & Databases`: PostgreSQL optimization, SQL tuning, Supabase, Redis, ClickHouse.
-  3. `DevOps & Cloud`: Docker, Kubernetes, CI/CD pipelines, Cloudflare Workers, Nginx.
-  4. `Design & UI/UX`: High-end agency design, Tailwind CSS, Framer Motion, GSAP, Apple Human Interface.
-  5. `Automation & Agents`: Agent swarms, workflow automation, Telegram bots, browser automation.
-  6. `Architecture & Systems`: Clean Architecture, microservices, distributed systems, DDD.
-  7. `Marketing & Growth`: Viral copywriting, algorithmic SEO, conversion psychology, product launch.
-  8. `Mobile & Cross-Platform`: React Native, Expo, Flutter, iOS Swift, Android CLI.
-  9. `Testing & QA`: Playwright, E2E regression, unit test suites, security edge-case auditing.
-  10. `Science & Research`: AlphaFold, NCBI, ChEMBL, PubMed, scientific biostatistics, literature discovery.
-  11. `All / Global Index`: Full search and filter matrix across the entire 1,000+ skill index.
+  1. `Coding & Web` (`coding`): Full-stack engineering, React 19, Next.js 15, TypeScript, Node.js, Swift, Rust, Python, Go.
+  2. `Data & Databases` (`data`): PostgreSQL optimization, SQL query tuning, Supabase, Redis, ClickHouse.
+  3. `DevOps & Cloud` (`devops`): Docker, Kubernetes, CI/CD pipelines, Cloudflare Workers, Nginx.
+  4. `Design & UI/UX` (`design`): High-end agency design, Tailwind CSS, Framer Motion, GSAP, Apple Human Interface.
+  5. `Automation & Agents` (`automation`): Agent swarms, workflow automation, Telegram bots, browser automation.
+  6. `Architecture & Systems` (`architecture`): Clean Architecture, microservices, distributed systems, DDD.
+  7. `Marketing & Growth` (`marketing`): Viral copywriting, algorithmic SEO, conversion psychology, product launch.
+  8. `Mobile & Cross-Platform` (`mobile`): React Native, Expo, Flutter, iOS Swift, Android CLI.
+  9. `Testing & QA` (`testing`): Playwright, E2E regression, unit test suites, security edge-case auditing.
+  10. `Science & Research` (`science`): AlphaFold, NCBI, ChEMBL, PubMed, scientific biostatistics, literature discovery.
+  11. `All / Global Index` (`all`): Full search and filter matrix across the entire 1,000+ skill index.
 * **1-Click Physical Installation:** Writes skill bundles directly to native agent configuration directories:
   - Windows: `%USERPROFILE%\.gemini\config\skills\<skill-name>\SKILL.md`
   - macOS/Linux: `~/.gemini/config/skills/<skill-name>/SKILL.md`
 * **1-Click Slash Command Copier:** Instantly copy sanitized commands (e.g., `/find-skills`, `/animate`, `/seo`, `/apple-design`) into agent prompts.
 * **Bilingual Documentation Viewer:** Interactive modal featuring tabbed English and Persian (`fa`) documentation, formatted warning alerts, code samples, and live markdown preview.
-* **Cross-Agent Platform Support:** Native support for **Google Antigravity**, **Claude Code CLI**, **Cursor**, **Codex**, **Gemini CLI**, **Windsurf**, **Zed**, **GitHub Copilot**, **Cline**, **Roo Code**, **Goose**, **OpenCode**, and 8+ more.
+* **Broad Agent Platform Compatibility:** Native support for **Google Antigravity**, **Claude Code CLI**, **Cursor**, **Codex**, **Gemini CLI**, **Windsurf**, **Zed**, **GitHub Copilot**, **Cline**, **Roo Code**, **Goose**, **OpenCode**, and 15+ modern AI coding agents.
 
-### 4. 🔌 Visual MCP (Model Context Protocol) Server Orchestrator
-* **Visual Server Directory:** Manage stdio, SSE, and WebSocket MCP servers in a single unified dashboard.
+### 4. 🔌 Visual MCP (Model Context Protocol) Server Management
+* **Visual Server Catalog:** Manage stdio, SSE, and WebSocket MCP servers in a single unified dashboard.
 * **Live Health & Latency Testing:** 1-click round-trip ping measurement to verify server reachability and tool readiness.
 * **Automated Config Sync:** Seamlessly synchronizes MCP configurations across local IDE config files (`claude_desktop_config.json`, `antigravity_mcp.json`).
-* **Requirement Validation:** Automatically validates required binaries (e.g. `npx`, `uvx`, `docker`) and prompts for missing environment variables before launch.
+* **Pre-Flight Binary Validation:** Automatically validates required binaries (e.g. `npx`, `uvx`, `docker`) and prompts for missing environment variables before launch.
 
 ### 5. 📜 System Rules & Personas Governance
 * **Scoped Rule Management:** Define and orchestrate prompt guidelines across Global (`~/.gemini/config/`) and Workspace-specific levels.
 * **Dynamic Trigger Modes:** Support for both `always_on` foundational rules and `model_decision` specialized rules.
 * **Non-Destructive Backups:** Safely preserves original system prompts with automated `.bak` rollback checkpoints.
 
-### 6. 🎨 Apple-Grade Human Interface & Persian RTL Engine
+### 6. 🎨 Apple-Grade Human Interface Design & Persian RTL Engine
 * **Fluid Spring Physics:** Buttery-smooth transitions and micro-interactions powered by Framer Motion.
 * **Virtual Windowing Engine:** Seamless rendering and instant filtering of 1,000+ cards using `@tanstack/react-virtual` with zero frame drops.
 * **MiniView Desktop HUD:** Compact floating widget (down to 110x52) with an always-on-top toggle, active account switcher, and live quota meters designed to float over code editors.
@@ -152,7 +146,7 @@ graph TD
     subgraph ShieldCore["Antigravity Shield Core Engine (Tauri 2 / Rust Axum :8045)"]
         Router["Axum Protocol Router: /v1/messages & /v1/chat/completions"]
         SecurityShield["Zero-Leak Shield: Directory Traversal Guard & Memory Filter"]
-        Dispatcher["Intelligent Account Dispatcher: 5H & Weekly Quota Prioritizer"]
+        Dispatcher["Intelligent Account Dispatcher: Tier Telemetry & Quota Balancer"]
         Warmup["Auto-Warmup Engine (100% Reset Probing)"]
         HealthPulse["Network Health Pulse & Geoblock Radar"]
         BrainWatcher["Brain Transcript Scanner (~/.gemini/antigravity/brain/)"]
@@ -197,7 +191,7 @@ graph TD
 | 💓 System & AI Health Pulse Radar | 🎛️ Multi-Account Quota Grid & Reset Windows |
 | :---: | :---: |
 | <a href="docs/images/dashboard-overview.png"><img src="docs/images/dashboard-overview.png" alt="Dashboard Overview & Health Pulse" width="460"></a> | <a href="docs/images/accounts-quota-grid.png"><img src="docs/images/accounts-quota-grid.png" alt="Account Quota Grid & Reset Monitor" width="460"></a> |
-| <sub>Real-time upstream probe, proxy status & pool summary</sub> | <sub>Side-by-side Gemini 3.1 Pro, 3.8 Flash & Claude 5H/weekly resets</sub> |
+| <sub>Real-time upstream probe, proxy status & pool summary</sub> | <sub>Side-by-side Gemini 3.1 Pro, 3 Flash & Claude 5H/weekly resets with Tier badges</sub> |
 
 | 📊 53-Week Token Activity Heatmap | 🇮🇷 Native RTL & Vazirmatn Font Patch |
 | :---: | :---: |
@@ -264,8 +258,10 @@ claude
 * **Supported Model Identifiers:**
   - `gemini-3-pro-high` (Primary reasoning powerhouse)
   - `gemini-3-flash` (Ultra-low latency coding model)
-  - `claude-3-7-sonnet` (Hybrid thinking & execution)
-  - `imagen-3` (High-definition 4K image generation)
+  - `gemini-3.1-pro-preview` (Extended thinking & deep code review)
+  - `gemini-3.1-flash-image` (High-definition vision & multimodal analysis)
+  - `claude-sonnet-4-6` / `claude-3-7-sonnet` (Hybrid thinking & execution)
+  - `claude-opus-4-6-thinking` (Architectural synthesis)
 
 ### 3. Python SDK (`openai` Client)
 ```python
@@ -280,7 +276,7 @@ response = client.chat.completions.create(
     model="gemini-3-flash",
     messages=[
         {"role": "system", "content": "You are Juliet, Principal Systems Architect."},
-        {"role": "user", "content": "Verify my distributed lock implementation in Redis."}
+        {"role": "user", "content": "Verify my distributed rate-limiter in Redis."}
     ],
     temperature=0.2
 )
@@ -361,6 +357,81 @@ docker run -d --name antigravity-shield \
   -v ~/.antigravity_shield:/root/.antigravity_shield \
   doctorguidance/antigravity-shield:latest
 ```
+
+---
+
+<div dir="rtl" id="-راهنمای-جامع-فارسی-persian-guide">
+
+## 🇮🇷 راهنمای جامع فارسی (Persian Guide)
+
+**شیلد آنتی‌گرویتی (Antigravity Shield)** یک محیط کاری دسکتاپ مدرن، سبک و با کارایی فوق‌العاده بالا بر پایه **Tauri 2 (Rust)** و **React 19** است. این ابزار به عنوان گیت‌وی روتینگ هوشمند و سوئیچینگ سهمیه بین چند حساب هوش مصنوعی، مرکز مدیریت ابزارهای MCP و بزرگ‌ترین مارکت‌پلیس مهارت‌های ایجنت کدنویسی (بیش از ۱,۰۰۰ مهارت) ایفای نقش می‌کنه.
+
+### 🌟 قابلیت‌های اصلی شیلد:
+
+1. **پروکسی پرسرعت چند حسابه (Rust Axum رو پورت ۸۰۴۵):**
+   - چرخش کاملاً خودکار و بدون مکث ترافیک (Failover با تأخیر ۰ میلی‌ثانیه) بین حساب‌های متصل هنگام وقوع لیمیت ۴۲۹.
+   - **تله‌متری سطح اشتراک (Pro vs Free vs Ultra):** تشخیص بلادرنگ نوع اکانت‌ها و هدایت وظایف سنگین منطقی (مثل Claude 3.7 و مدل‌های عمیق) به اکانت‌های دارای رتبه Pro/Ultra.
+   - مانیتورینگ دقیق پنجره‌های بازیابی ۵ ساعته و سقف‌های هفتگی مصرف برای مدل‌های Gemini 3.1 Pro، Gemini 3 Flash و Claude.
+   - پیش‌گرمایش خودکار (Auto-Warmup) به محض تکمیل شدن ۱۰۰٪ ظرفیت یک اکانت برای حذف لگ اولیه در شروع کار.
+
+2. **معماری امنیت محلی Zero-Leak:**
+   - عدم خروج حتی یک بایت داده خصوصی، کلیدهای API، تنظیمات MCP یا نشست‌ها به سرورهای خارجی.
+   - فیلترهای پاک‌سازی درون‌حافظه‌ای برای حذف هدرهای Bearer محرمانه از گزارش‌های دیباگ.
+   - گارد مسدودکننده Directory Traversal برای جلوگیری از حملات تزریق مسیر (`../`) در خواندن اسناد مارک‌داون.
+   - نگهداری کل اطلاعات در دیتابیس‌های محلی و امن SQLite روی سیستم شخصی کاربر.
+   - ساخت هویت سخت‌افزاری مجزا (DeviceProfile) برای هر حساب جهت پیشگیری از ردیابی دستگاه توسط سرورهای بالادست.
+
+3. **مارکت‌پلیس و اکوسیستم جهانی بیش از ۱,۰۰۰ مهارت ایجنت:**
+   - دسته‌بندی دقیق در ۱۱ حوزه تخصصی: برنامه‌نویسی وب، دیتابیس و داده، دِوآپس و کلود، طراحی و UI/UX، اتوماسیون و ایجنت‌ها، معماری سیستم‌ها، مارکتینگ و رشد، توسعه موبایل، تست نرم‌افزار، علوم و پژوهش، و فهرست جامع.
+   - نصب فیزیکی تک‌کلیک فایل‌های مهارت مستقیم در فولدر محلی ایجنت‌ها (`~/.gemini/config/skills/`).
+   - دکمه کپی دستورات اسلش استاندارد (مانند `/find-skills`، `/animate`، `/apple-design`) برای درج مستقیم در پرامپت‌ها.
+   - نمایشگر داکیومنت دوزبانه (فارسی و انگلیسی) همراه با هشدارهای فرمت‌شده و پیش‌نمایش زنده مارک‌داون.
+   - سازگاری بدون دستکاری با تمام محیط‌های ایجنتی روز (Antigravity، Claude Code، Cursor، Windsurf، Zed، Codex، Copilot، Cline و بیش از ۱۵ ایجنت دیگر).
+
+4. **مدیریت بصری سرورهای MCP (پروتکل زمینه مدل):**
+   - فهرست‌بندی و فعال/غیرفعال‌سازی تک‌کلیک سرورهای stdio، SSE و WebSocket.
+   - تست زنده میزان تأخیر (Ping Latency) جهت اطمینان از سلامت ابزارها.
+   - همگام‌سازی دوطرفه کانفیگ با کلاینت‌های دسکتاپ کلود و آنتی‌گرویتی.
+   - اعتبارسنجی پیش‌پرواز ابزارهای سیستمی مانند `npx`، `uvx` و `docker`.
+
+5. **مدیریت قوانین سیستم و پرسوناهای توسعه:**
+   - تعریف قوانین در دو سطح جهانی (Global) و اختصاصی هر پروژه (Workspace).
+   - سوئیچ بین حالت‌های اعمال همیشگی (`always_on`) و تصمیم‌گیری مدل (`model_decision`).
+   - ذخیره‌سازی نسخه‌های پشتیبان غیرمخرب با فرمت `.bak`.
+
+6. **طراحی ارگونومیک به سبک اپل و پچ فونت وزیرمتن:**
+   - انیمیشن‌های روان فیزیکی با Framer Motion.
+   - رندر و پیمایش بی‌نهایت بیش از ۱,۰۰۰ کارت مهارت بدون هیچ‌گونه لگ با تکنولوژی `@tanstack/react-virtual`.
+   - ویجت شناور MiniView HUD برای نظارت بلادرنگ روی سهمیه‌ها بالای ادیتور کد بدون اشغال فضا.
+   - پچ غیرمخرب ۱-کلیک برای اعمال راست‌چین استاندارد و فونت وزیرمتن در محیط ادیتور آنتی‌گرویتی با حفظ فرمت چپ‌به‌راست کدهای برنامه‌نویسی.
+
+7. **سوئیچینگ بدون نیاز به ری‌استارت IDE:**
+   - به کمک پل لوپ‌بک تولکیت (`127.0.0.1:8765`) حساب فعال در آنتی‌گرویتی، VS Code یا Cursor بدون بستن ادیتور یا قطع حلقه‌های در حال اجرای کد تغییر می‌کند.
+   - ریکاوری کرش بر پایه Protobuf برای بازسازی تاریخچه گفتگوهای ذخیره‌نشده پس از قطع ناگهانی برق یا خاموش شدن سیستم.
+
+---
+
+### 🚀 نحوه اتصال به ابزارهای برنامه‌نویسی:
+
+#### اجرای ابزار خط فرمان Claude Code CLI:
+```bash
+# در ویندوز پاورشل:
+$env:ANTHROPIC_API_KEY = "sk-antigravity"
+$env:ANTHROPIC_BASE_URL = "http://127.0.0.1:8045"
+claude
+
+# در مک یا لینوکس:
+export ANTHROPIC_API_KEY="sk-antigravity"
+export ANTHROPIC_BASE_URL="http://127.0.0.1:8045"
+claude
+```
+
+#### اتصال Cursor / Windsurf / Cherry Studio:
+- **آدرس پایه API:** `http://127.0.0.1:8045/v1`
+- **کلید API:** `sk-antigravity`
+- **مدل‌های پشتیبانی‌شده:** `gemini-3-pro-high`, `gemini-3-flash`, `gemini-3.1-pro-preview`, `claude-sonnet-4-6`
+
+</div>
 
 ---
 
