@@ -42,7 +42,7 @@ export default function ThemeManager() {
                 if (!isLinux() && (window as any).__TAURI_INTERNALS__) {
                     const win = getCurrentWindow();
                     if (win.label === 'main') {
-                        const bgColor = isDark ? '#050a08' : '#FAFBFC';
+                        const bgColor = isDark ? '#060807' : '#FAFBFC';
                         // Don't await this, let it happen in background to avoid blocking React render
                         win.setBackgroundColor(bgColor).catch(e =>
                             console.error('Failed to set window background color:', e)

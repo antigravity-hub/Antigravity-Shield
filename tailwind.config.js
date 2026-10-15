@@ -31,19 +31,19 @@ const seafoamDeep = {
     950: '#04241d',
 };
 
-// Organic Pine-Slate (Eliminates all cold navy blue! Luxurious eye-friendly graphite)
+// Deep Obsidian Graphite (True luxury dark mode: zero blue, zero greenish glare, OLED-friendly)
 const organicGraphite = {
-    50: '#f5f9f6',
-    100: '#e8f2ec',
-    200: '#d1e3d8',
-    300: '#accbba',
-    400: '#81ac98',
-    500: '#5e8e7a',
-    600: '#477060',
-    700: '#38584c',
-    800: '#14221b', // Card borders, subtle secondary surfaces
-    900: '#09120e', // Primary dark card background (0% navy blue, 100% soothing)
-    950: '#050a08', // Deepest background tone
+    50: '#f6f8f7',
+    100: '#e9ecea',
+    200: '#d3d8d5',
+    300: '#aeb6b1',
+    400: '#849089',
+    500: '#616e66',
+    600: '#3e4842',
+    700: '#262d29',
+    800: '#141916', // Card borders and subtle tertiary surfaces
+    900: '#0c100e', // Primary deep obsidian card surface
+    950: '#060807', // Deepest background tone
 };
 
 /** @type {import('tailwindcss').Config} */
@@ -96,10 +96,10 @@ export default {
                     "primary": "#93e9be",
                     "secondary": "#34d399",
                     "accent": "#93e9be",
-                    "neutral": "#14221b",
-                    "base-100": "#050a08",
-                    "base-200": "#09120e",
-                    "base-300": "#14221b",
+                    "neutral": "#141916",
+                    "base-100": "#060807",
+                    "base-200": "#0c100e",
+                    "base-300": "#141916",
                     "info": "#5eead4",
                     "success": "#93e9be",
                     "warning": "#fbbf24",

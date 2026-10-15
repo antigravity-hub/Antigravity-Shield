@@ -98,7 +98,7 @@ function Navbar() {
     return (
         <nav
             style={{ position: 'sticky', top: 0, zIndex: 50 }}
-            className="pt-9 transition-all duration-200 bg-white/80 dark:bg-[#050a08]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-sm"
+            className="pt-9 transition-all duration-200 bg-white/80 dark:bg-[#060807]/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-sm"
         >
             {/* 窗口拖拽区域 - Tauri 专用 */}
             {isTauri() && (

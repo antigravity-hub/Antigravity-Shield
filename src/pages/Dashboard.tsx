@@ -186,14 +186,14 @@ function Dashboard() {
     return (
         <div className="h-full w-full overflow-y-auto">
             <div
-                className={`p-6 space-y-6 ${CONTAINER_MAX_WIDTH}`}
+                className={`p-5 sm:p-7 space-y-6 ${CONTAINER_MAX_WIDTH}`}
                 style={{ position: 'relative', zIndex: 1 }}
             >
-                {/* 问候语、Shield 状态和操作按钮 */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60 dark:border-slate-800/60">
+                {/* 1. Command Header Bar: Greeting, Shield Status & Actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-white/10">
                     <div>
-                        <div className="flex items-center gap-2.5 mb-1 flex-wrap">
-                            <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                        <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+                            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                                 {currentAccount
                                     ? t('dashboard.hello_user', {
                                         name: currentAccount.name || currentAccount.email.split('@')[0],
@@ -202,17 +202,18 @@ function Dashboard() {
                                     : t('dashboard.hello', 'Hello 👋')
                                 }
                             </h1>
-                            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.15)]">
+                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#93e9be]/15 text-emerald-700 dark:text-[#93e9be] border border-[#93e9be]/30 shadow-[0_0_12px_rgba(147,233,190,0.15)]">
                                 <ShieldCheck className="w-3.5 h-3.5" />
                                 {t('dashboard.shield_active', 'Shield Active')}
                             </span>
                         </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                            <Zap className="w-3.5 h-3.5 text-cyan-500" />
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2 font-medium">
+                            <Zap className="w-3.5 h-3.5 text-[#93e9be]" />
                             {t('dashboard.shield_subtitle', 'Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard')}
                         </p>
                     </div>
-                    <div className="flex items-center gap-2.5 shrink-0">
+
+                    <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
                         <button
                             onClick={async () => {
                                 try {
@@ -228,23 +229,23 @@ function Dashboard() {
                                 }
                             }}
                             className={cn(
-                                "px-3 py-2 text-xs font-semibold rounded-xl transition-all duration-200 flex items-center gap-1.5 border cursor-pointer active:scale-95 shadow-sm",
+                                "px-3.5 py-2 text-xs font-bold rounded-xl transition-all duration-200 flex items-center gap-2 border cursor-pointer active:scale-95 shadow-sm",
                                 isAutoWarmEnabled
-                                    ? "bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 border-orange-500/30"
-                                    : "bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700"
+                                    ? "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30"
+                                    : "bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/10"
                             )}
                             title={t('settings.warmup.title', 'Auto-Warm (100% Quota Recovery Warmup)')}
                         >
-                            <Sparkles className={cn("w-3.5 h-3.5", isAutoWarmEnabled ? "text-orange-500 fill-orange-500/20" : "text-slate-400")} />
-                            <span className="hidden sm:inline font-bold">{t('dashboard.auto_warm', 'Auto-Warm')}</span>
+                            <Sparkles className={cn("w-3.5 h-3.5", isAutoWarmEnabled ? "text-amber-500 fill-amber-500/20" : "text-slate-400")} />
+                            <span className="hidden sm:inline">{t('dashboard.auto_warm', 'Auto-Warm')}</span>
                             <span className={cn(
                                 "w-2 h-2 rounded-full",
-                                isAutoWarmEnabled ? "bg-orange-500 animate-pulse shadow-[0_0_6px_rgba(249,115,22,0.8)]" : "bg-slate-400"
+                                isAutoWarmEnabled ? "bg-amber-500 animate-pulse shadow-[0_0_6px_rgba(245,158,11,0.8)]" : "bg-slate-400"
                             )} />
                         </button>
                         <AddAccountDialog onAdd={handleAddAccount} />
                         <button
-                            className={`px-3.5 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-cyan-500/25 border border-cyan-400/30 cursor-pointer ${isRefreshing || !currentAccount ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}
+                            className={`px-3.5 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-[#129a5f] dark:hover:bg-[#15b36e] text-white text-xs font-bold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm border border-slate-800 dark:border-emerald-500/30 cursor-pointer ${isRefreshing || !currentAccount ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}
                             onClick={handleRefreshCurrent}
                             disabled={isRefreshing || !currentAccount}
                             title={isRefreshing ? t('dashboard.refreshing') : t('dashboard.refresh_quota')}
@@ -255,117 +256,11 @@ function Dashboard() {
                     </div>
                 </div>
 
-                {/* پایش سلامت اینترنت و هوش مصنوعی جمینای */}
-                <NetworkHealthPulse onOpenProxySettings={() => navigate('/settings')} />
-
-                {/* کارت میانبر راست‌چین و فونت وزیرمتن (فقط در صورت تنظیم ساعت سیستم روی ایران یا کشورهای عربی) */}
-                {isRtlRegionTimezone() && (
-                    <AntigravityRtlCard compact={true} />
-                )}
-
-                {/* بخش ویژه اکانت‌های نیازمند احراز هویت گوگل (Verification Required) */}
+                {/* 2. Verification Required Banner (Alert state) */}
                 <VerificationRequiredBanner accounts={accounts} />
 
-                {/* گیج سرعت مصرف و پیش‌بینی پایداری سهمیه کل ناوگان */}
-                <FleetVelocityGauge accounts={accounts} currentAccount={currentAccount} />
-
-                {/* 统计卡片 - 5 columns */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
-                    {/* Card 1: Total Accounts */}
-                    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10 transition-all duration-200 cyber-card group">
-                        <div className="flex items-center justify-between mb-2">
-                            <div className="p-2 bg-cyan-500/10 dark:bg-cyan-500/15 border border-cyan-500/20 rounded-xl">
-                                <Users className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                            </div>
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">POOL</span>
-                        </div>
-                        <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.total}</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('dashboard.total_accounts')}</div>
-                        <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3">
-                            <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full" style={{ width: '100%' }} />
-                        </div>
-                    </div>
-
-                    {/* Card 2: Avg Gemini */}
-                    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-emerald-500/10 transition-all duration-200 cyber-card group">
-                        <div className="flex items-center justify-between mb-2">
-                            <div className="p-2 bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 rounded-xl">
-                                <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                            </div>
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${stats.avgGemini >= 50 ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'}`}>
-                                {stats.avgGemini >= 50 ? t('dashboard.quota_sufficient') : t('dashboard.quota_low')}
-                            </span>
-                        </div>
-                        <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.avgGemini}%</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('dashboard.avg_gemini')}</div>
-                        <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3">
-                            <div 
-                                className={`h-full rounded-full transition-all duration-500 ${stats.avgGemini >= 50 ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-gradient-to-r from-amber-500 to-rose-500'}`} 
-                                style={{ width: `${Math.min(100, Math.max(0, stats.avgGemini))}%` }} 
-                            />
-                        </div>
-                    </div>
-
-                    {/* Card 3: Avg Gemini Image */}
-                    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-200 cyber-card group">
-                        <div className="flex items-center justify-between mb-2">
-                            <div className="p-2 bg-purple-500/10 dark:bg-purple-500/15 border border-purple-500/20 rounded-xl">
-                                <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                            </div>
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${stats.avgGeminiImage >= 50 ? 'bg-purple-500/15 text-purple-600 dark:text-purple-400' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'}`}>
-                                {stats.avgGeminiImage >= 50 ? t('dashboard.quota_sufficient') : t('dashboard.quota_low')}
-                            </span>
-                        </div>
-                        <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.avgGeminiImage}%</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('dashboard.avg_gemini_image')}</div>
-                        <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3">
-                            <div 
-                                className={`h-full rounded-full transition-all duration-500 ${stats.avgGeminiImage >= 50 ? 'bg-gradient-to-r from-purple-500 to-indigo-500' : 'bg-gradient-to-r from-amber-500 to-rose-500'}`} 
-                                style={{ width: `${Math.min(100, Math.max(0, stats.avgGeminiImage))}%` }} 
-                            />
-                        </div>
-                    </div>
-
-                    {/* Card 4: Avg Claude */}
-                    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-200 cyber-card group">
-                        <div className="flex items-center justify-between mb-2">
-                            <div className="p-2 bg-sky-500/10 dark:bg-sky-500/15 border border-sky-500/20 rounded-xl">
-                                <Bot className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                            </div>
-                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${stats.avgClaude >= 50 ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'}`}>
-                                {stats.avgClaude >= 50 ? t('dashboard.quota_sufficient') : t('dashboard.quota_low')}
-                            </span>
-                        </div>
-                        <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.avgClaude}%</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('dashboard.avg_claude')}</div>
-                        <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3">
-                            <div 
-                                className={`h-full rounded-full transition-all duration-500 ${stats.avgClaude >= 50 ? 'bg-gradient-to-r from-sky-500 to-blue-500' : 'bg-gradient-to-r from-amber-500 to-rose-500'}`} 
-                                style={{ width: `${Math.min(100, Math.max(0, stats.avgClaude))}%` }} 
-                            />
-                        </div>
-                    </div>
-
-                    {/* Card 5: Low Quota Alerts */}
-                    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-500/40 hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-200 cyber-card group">
-                        <div className="flex items-center justify-between mb-2">
-                            <div className="p-2 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20 rounded-xl">
-                                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                            </div>
-                            {stats.lowQuota > 0 && (
-                                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-600 dark:text-rose-400 animate-pulse">
-                                    ATTENTION
-                                </span>
-                            )}
-                        </div>
-                        <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.lowQuota}</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('dashboard.low_quota_accounts')}</div>
-                        <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-2">{t('dashboard.quota_desc')}</div>
-                    </div>
-                </div>
-
-                {/* 双栏布局 */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* 3. Hero Bento: Current Account & Best Candidates Twin Cards */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
                     <CurrentAccount
                         account={currentAccount}
                         onSwitch={() => navigate('/accounts')}
@@ -377,37 +272,135 @@ function Dashboard() {
                     />
                 </div>
 
-                {/* 快速链接 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                {/* 4. Fleet Velocity Radar & Predictive Runway */}
+                <FleetVelocityGauge accounts={accounts} currentAccount={currentAccount} />
+
+                {/* 5. Fleet Intelligence Matrix (4 Obsidian Metric Cards) */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Card 1: Total Accounts in Fleet */}
+                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex flex-col justify-between group">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="p-2.5 bg-emerald-500/10 dark:bg-[#93e9be]/10 border border-emerald-500/20 dark:border-[#93e9be]/20 rounded-xl">
+                                <Users className="w-4 h-4 text-emerald-700 dark:text-[#93e9be]" />
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400">POOL</span>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.total}</div>
+                            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">{t('dashboard.total_accounts')}</div>
+                        </div>
+                        <div className="w-full bg-slate-100 dark:bg-white/5 h-1.5 rounded-full overflow-hidden mt-4">
+                            <div className="h-full bg-[#93e9be] rounded-full" style={{ width: '100%' }} />
+                        </div>
+                    </div>
+
+                    {/* Card 2: Average Gemini Pro Quota */}
+                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex flex-col justify-between group">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="p-2.5 bg-[#93e9be]/10 border border-[#93e9be]/20 rounded-xl">
+                                <Sparkles className="w-4 h-4 text-emerald-700 dark:text-[#93e9be]" />
+                            </div>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${stats.avgGemini >= 50 ? 'bg-emerald-500/10 text-emerald-700 dark:text-[#93e9be]' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'}`}>
+                                {stats.avgGemini >= 50 ? t('dashboard.quota_sufficient') : t('dashboard.quota_low')}
+                            </span>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.avgGemini}%</div>
+                            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">{t('dashboard.avg_gemini')}</div>
+                        </div>
+                        <div className="w-full bg-slate-100 dark:bg-white/5 h-1.5 rounded-full overflow-hidden mt-4">
+                            <div
+                                className={`h-full rounded-full transition-all duration-500 ${stats.avgGemini >= 50 ? 'bg-[#93e9be]' : 'bg-amber-500'}`}
+                                style={{ width: `${Math.min(100, Math.max(0, stats.avgGemini))}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Card 3: Average Claude Quota */}
+                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex flex-col justify-between group">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="p-2.5 bg-sky-500/10 border border-sky-500/20 rounded-xl">
+                                <Bot className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                            </div>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${stats.avgClaude >= 50 ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'}`}>
+                                {stats.avgClaude >= 50 ? t('dashboard.quota_sufficient') : t('dashboard.quota_low')}
+                            </span>
+                        </div>
+                        <div>
+                            <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.avgClaude}%</div>
+                            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">{t('dashboard.avg_claude')}</div>
+                        </div>
+                        <div className="w-full bg-slate-100 dark:bg-white/5 h-1.5 rounded-full overflow-hidden mt-4">
+                            <div
+                                className={`h-full rounded-full transition-all duration-500 ${stats.avgClaude >= 50 ? 'bg-sky-500' : 'bg-amber-500'}`}
+                                style={{ width: `${Math.min(100, Math.max(0, stats.avgClaude))}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Card 4: Low Quota / Exhausted Attention */}
+                    <div className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-amber-500/40 transition-all duration-200 flex flex-col justify-between group">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+                                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                            </div>
+                            {stats.lowQuota > 0 ? (
+                                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-600 dark:text-rose-400 animate-pulse">
+                                    ATTENTION
+                                </span>
+                            ) : (
+                                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-[#93e9be]">
+                                    HEALTHY
+                                </span>
+                            )}
+                        </div>
+                        <div>
+                            <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.lowQuota}</div>
+                            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">{t('dashboard.low_quota_accounts')}</div>
+                        </div>
+                        <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-4 truncate">{t('dashboard.quota_desc')}</div>
+                    </div>
+                </div>
+
+                {/* 6. Upstream Network Health & Latency Pulse */}
+                <NetworkHealthPulse onOpenProxySettings={() => navigate('/settings')} />
+
+                {/* 7. RTL Card & Regional Settings */}
+                {isRtlRegionTimezone() && (
+                    <AntigravityRtlCard compact={true} />
+                )}
+
+                {/* 8. Quick Navigation Bento Footer */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <button
-                        className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-cyan-500/40 hover:shadow-lg hover:shadow-cyan-500/10 transition-all duration-200 flex items-center justify-between group cursor-pointer"
+                        className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex items-center justify-between group cursor-pointer text-left rtl:text-right"
                         onClick={() => navigate('/accounts')}
                     >
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-500 group-hover:bg-cyan-500/20 transition-colors">
+                        <div className="flex items-center gap-3.5">
+                            <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-[#93e9be] group-hover:bg-[#93e9be]/15 transition-colors">
                                 <Users className="w-5 h-5" />
                             </div>
-                            <div className="text-left rtl:text-right">
-                                <span className="text-slate-800 dark:text-slate-200 font-bold text-sm block">{t('dashboard.view_all_accounts')}</span>
-                                <span className="text-xs text-slate-500 dark:text-slate-400">{t('dashboard.manage_accounts_desc', 'Manage, rotate and inspect accounts')}</span>
+                            <div>
+                                <span className="text-slate-900 dark:text-white font-bold text-sm block">{t('dashboard.view_all_accounts')}</span>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('dashboard.manage_accounts_desc', 'Manage, rotate and inspect accounts')}</span>
                             </div>
                         </div>
-                        <ArrowRight className="w-5 h-5 text-cyan-500 group-hover:translate-x-1.5 rtl:rotate-180 rtl:group-hover:-translate-x-1.5 transition-transform" />
+                        <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-[#93e9be] group-hover:translate-x-1.5 rtl:rotate-180 rtl:group-hover:-translate-x-1.5 transition-all" />
                     </button>
                     <button
-                        className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/40 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-200 flex items-center justify-between group cursor-pointer"
+                        className="bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-white/10 hover:border-[#93e9be]/40 transition-all duration-200 flex items-center justify-between group cursor-pointer text-left rtl:text-right"
                         onClick={handleExport}
                     >
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-500 group-hover:bg-purple-500/20 transition-colors">
+                        <div className="flex items-center gap-3.5">
+                            <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-[#93e9be] group-hover:bg-[#93e9be]/15 transition-colors">
                                 <Download className="w-5 h-5" />
                             </div>
-                            <div className="text-left rtl:text-right">
-                                <span className="text-slate-800 dark:text-slate-200 font-bold text-sm block">{t('dashboard.export_data')}</span>
-                                <span className="text-xs text-slate-500 dark:text-slate-400">{t('dashboard.export_accounts_desc', 'Export encrypted backup of active accounts')}</span>
+                            <div>
+                                <span className="text-slate-900 dark:text-white font-bold text-sm block">{t('dashboard.export_data')}</span>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('dashboard.export_accounts_desc', 'Export encrypted backup of active accounts')}</span>
                             </div>
                         </div>
-                        <Download className="w-5 h-5 text-purple-500 group-hover:translate-y-0.5 transition-transform" />
+                        <Download className="w-5 h-5 text-slate-400 group-hover:text-[#93e9be] group-hover:translate-y-0.5 transition-all" />
                     </button>
                 </div>
             </div>

@@ -112,7 +112,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={`relative overflow-hidden rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-sm hover:border-[#93e9be]/40 transition-all duration-300 group ${className}`}>
+    <div className={`relative overflow-hidden rounded-2xl bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 p-4 sm:p-5 shadow-sm hover:border-[#93e9be]/30 transition-all duration-300 group ${className}`}>
       {/* Background ambient decorative glow */}
       <div
         className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-15 pointer-events-none transition-colors duration-700"
@@ -357,7 +357,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
             {/* 3 Metric Mini-Tiles */}
             <div className="grid grid-cols-3 gap-2">
               {/* Tile 1: Consumption Burn Rate */}
-              <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800/60">
+              <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-[#121714]/80 border border-slate-200/60 dark:border-white/5">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
                   <Zap className="w-3 h-3 text-amber-500" />
                   <span className="text-[9.5px] font-bold uppercase tracking-wider">
@@ -373,7 +373,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               </div>
 
               {/* Tile 2: Runway Remaining */}
-              <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800/60">
+              <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-[#121714]/80 border border-slate-200/60 dark:border-white/5">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
                   <Clock className="w-3 h-3 text-emerald-500 dark:text-[#93e9be]" />
                   <span className="text-[9.5px] font-bold uppercase tracking-wider">
@@ -390,7 +390,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               </div>
 
               {/* Tile 3: Weekly Window Left */}
-              <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800/60">
+              <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-[#121714]/80 border border-slate-200/60 dark:border-white/5">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
                   <Sparkles className="w-3 h-3 text-purple-500" />
                   <span className="text-[9.5px] font-bold uppercase tracking-wider">

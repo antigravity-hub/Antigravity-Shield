@@ -316,7 +316,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
         || pulse?.discovered_proxies.find(p => p.is_listening && p.port !== 40000);
 
     return (
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-br from-white via-slate-50/50 to-blue-50/30 dark:from-base-100 dark:via-base-200/50 dark:to-blue-950/20 shadow-sm transition-all duration-300 mb-6">
+        <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c100e]/90 backdrop-blur-xl shadow-sm hover:border-[#93e9be]/30 transition-all duration-300">
             {/* جلوه نوری گرادیانت در پس‌زمینه */}
             <div className={`absolute top-0 right-0 w-72 h-72 rounded-full blur-3xl pointer-events-none -mr-28 -mt-28 transition-all duration-700 ${
                 pulse?.overall_status === 'healthy' 
@@ -326,7 +326,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                     : 'bg-rose-400/10 dark:bg-rose-400/5'
             }`} />
 
-            <div className="p-5 sm:p-6 relative z-10 space-y-5">
+            <div className="p-5 sm:p-6 relative z-10 space-y-4">
                 {/* هدر بخش پایش */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -400,18 +400,18 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                         <button
                             onClick={() => runNetworkProbe(undefined, true)}
                             disabled={loading}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-base-200 hover:bg-slate-100 dark:hover:bg-base-300 text-gray-700 dark:text-gray-200 text-xs font-bold transition-all border border-slate-200 dark:border-slate-700 active:scale-95 shadow-xs disabled:opacity-50"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all border border-slate-200/60 dark:border-white/10 active:scale-95 shadow-xs disabled:opacity-50 cursor-pointer"
                         >
-                            <RefreshCw size={13} className={loading ? 'animate-spin text-blue-600' : ''} />
+                            <RefreshCw size={13} className={loading ? 'animate-spin text-emerald-600 dark:text-[#93e9be]' : ''} />
                             <span>{loading ? t('common.loading', 'Loading...') : t('dashboard.health_pulse.retest', 'Re-test')}</span>
                         </button>
                     </div>
                 </div>
 
                 {/* پایپ‌لاین بصری سه مرحله‌ای (Visual Pipeline Strip) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 rounded-xl bg-white/70 dark:bg-slate-950/60 backdrop-blur-md border border-slate-200/60 dark:border-slate-800/60 shadow-inner">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 rounded-xl bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/50 dark:border-white/5">
                     {/* گره ۱: اینترنت عمومی */}
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/80 dark:bg-[#121714]/80 border border-slate-200/60 dark:border-white/5">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             pulse?.internet_ok
                                 ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
@@ -437,7 +437,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                     </div>
 
                     {/* گره ۲: دسترسی به گوگل (عدم فیلترینگ) */}
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/80 dark:bg-[#121714]/80 border border-slate-200/60 dark:border-white/5">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             pulse?.google_ok
                                 ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
@@ -463,7 +463,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                     </div>
 
                     {/* گره ۳: دسترسی به هوش مصنوعی جمینای */}
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/80 dark:bg-[#121714]/80 border border-slate-200/60 dark:border-white/5">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                             pulse?.overall_status === 'healthy'
                                 ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'

@@ -19,7 +19,7 @@ html {
 }
 
 html.dark {
-  background-color: #050a08;
+  background-color: #060807;
 }
 
 /* 全局样式 */
@@ -35,12 +35,12 @@ body {
 
 /* Dark mode override for body strictly */
 .dark body {
-  background-color: #050a08;
+  background-color: #060807;
 }
 
 /* Cyber Shield Glassmorphism & Effects */
 .cyber-glass {
-  background: rgba(9, 18, 14, 0.85);
+  background: rgba(12, 16, 14, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(147, 233, 190, 0.15);

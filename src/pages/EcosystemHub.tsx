@@ -58,7 +58,7 @@ export const EcosystemHub: React.FC = () => {
   ];
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-y-auto bg-gradient-to-b from-[#FAFBFC] to-slate-100 dark:from-[#050a08] dark:to-[#09120e] text-slate-900 dark:text-slate-100">
+    <div className="flex-1 flex flex-col h-full overflow-y-auto bg-gradient-to-b from-[#FAFBFC] to-slate-100 dark:from-[#060807] dark:to-[#0b0e0c] text-slate-900 dark:text-slate-100">
       <div className={`${CONTAINER_MAX_WIDTH} w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 flex-1 flex flex-col`}>
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70 dark:border-slate-800/70">
