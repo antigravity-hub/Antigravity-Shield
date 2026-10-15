@@ -134,13 +134,13 @@ export function getAccountCycleReset(
         };
     }
 
-    // If 5h quota is 100% full (unused), it is fully ready!
+    // If 5h quota is high (>= 99%), check whether it is actively warmed or cold/unused.
     // Google returns a sliding "now + 5h" dummy reset_time for unused accounts which causes misleading countdowns.
     if (windowType === 'five_hour') {
         const bucketPct = getBucketPercentage(account.quota?.quota_groups, category, '5h');
-        let isFullyFull = false;
-        if (bucketPct !== null && bucketPct >= 100) {
-            isFullyFull = true;
+        let isHighQuota = false;
+        if (bucketPct !== null && bucketPct >= 99) {
+            isHighQuota = true;
         } else if (bucketPct === null && account.quota?.models) {
             const targetModels = account.quota.models.filter(m => {
                 const mName = m.name.toLowerCase();
@@ -148,12 +148,63 @@ export function getAccountCycleReset(
                     ? (mName.startsWith('claude') || mName.startsWith('gpt'))
                     : (mName.startsWith('gemini') || !mName.startsWith('claude'));
             });
-            if (targetModels.length > 0 && targetModels.every(m => (m.percentage ?? 0) >= 100)) {
-                isFullyFull = true;
+            if (targetModels.length > 0 && targetModels.every(m => (m.percentage ?? 0) >= 99)) {
+                isHighQuota = true;
             }
         }
 
-        if (isFullyFull) {
+        // Check if account has an active rolling window (warmed state)
+        let hasActiveConsumption = false;
+        if (account.quota?.quota_groups) {
+            for (const group of account.quota.quota_groups) {
+                const name = (group.display_name || '').toLowerCase();
+                const isCategory = category === 'claude'
+                    ? (name.includes('claude') || name.includes('gpt'))
+                    : (name.includes('gemini') || !name.includes('claude'));
+                if (!isCategory) continue;
+
+                for (const b of group.buckets || []) {
+                    const bWindow = (b.window || '').toLowerCase();
+                    const bId = (b.bucket_id || '').toLowerCase();
+                    const isWeekly = bWindow.includes('week') || bId.includes('week');
+                    const is5h = !isWeekly && (bWindow.includes('5h') || bId.includes('5h') || bWindow.includes('rolling') || bWindow.includes('hour'));
+                    if (is5h) {
+                        const desc = (b.description || '').toLowerCase();
+                        if (desc.includes('used some of your 5-hour limit') || desc.includes('will fully refresh in')) {
+                            hasActiveConsumption = true;
+                        }
+                        if (b.remaining_fraction !== undefined && b.remaining_fraction < 0.9999 && b.remaining_fraction > 0) {
+                            hasActiveConsumption = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        const diffMs = resetTime ? new Date(resetTime).getTime() - now : 0;
+        const isActivelyCountingDown = hasActiveConsumption || (diffMs > 0 && diffMs < 4.85 * 3600 * 1000);
+
+        if (isHighQuota) {
+            if (isActivelyCountingDown && diffMs > 0) {
+                const totalMinutes = Math.max(0, Math.ceil(diffMs / (1000 * 60)));
+                const totalHours = Math.floor(totalMinutes / 60);
+                const hoursInDay = totalHours % 24;
+                const minutesInHour = totalMinutes % 60;
+
+                return {
+                    resetTime,
+                    totalHours,
+                    totalMinutes,
+                    exactDaysRemaining: 0,
+                    daysRemaining: 0,
+                    hoursInDay,
+                    minutesInHour,
+                    isReady: false,
+                    isAvailable: true,
+                    isWarmed: true,
+                };
+            }
+
             return {
                 resetTime,
                 totalHours: 0,
@@ -234,6 +285,7 @@ export function getAccountCycleReset(
         minutesInHour,
         isReady: false,
         isAvailable: true,
+        isWarmed: false,
     };
 }
 

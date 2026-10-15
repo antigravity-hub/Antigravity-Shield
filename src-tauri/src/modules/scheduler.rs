@@ -652,6 +652,19 @@ async fn run_warmup_cycle(
         // Check quota_groups for WEEKLY and 5H buckets
         if let Some(groups) = &fresh_quota.quota_groups {
             for group in groups {
+                let g_name = group.display_name.to_lowercase();
+                let is_claude = g_name.contains("claude") || g_name.contains("gpt");
+
+                // Check if weekly quota for this group is exhausted (avoids HTTP 429 INSUFFICIENT_G1_CREDITS_BALANCE)
+                let weekly_exhausted = group.buckets.iter().any(|b| {
+                    let w = b.window.to_lowercase();
+                    let id = b.bucket_id.to_lowercase();
+                    let desc = b.description.to_lowercase();
+                    ((w.contains("week") || id.contains("week")) && b.remaining_fraction <= 0.001)
+                        || desc.contains("hit your weekly limit")
+                        || desc.contains("weekly limit does not currently apply")
+                });
+
                 for bucket in &group.buckets {
                     let is_weekly = bucket.window.to_lowercase().contains("week")
                         || bucket.bucket_id.to_lowercase().contains("week");
@@ -660,6 +673,11 @@ async fn run_warmup_cycle(
                         || bucket.window.to_lowercase().contains("rolling");
 
                     if !is_weekly && !is_5h {
+                        continue;
+                    }
+
+                    // Guard: Never attempt 5h warmup if weekly quota is depleted (causes HTTP 429)
+                    if is_5h && weekly_exhausted {
                         continue;
                     }
 
@@ -681,16 +699,20 @@ async fn run_warmup_cycle(
                                 (false, String::new())
                             }
                         } else {
-                            // 5-hour rolling: recovered to 100%, trigger warm if 4.5h cooldown passed
+                            // 5-hour rolling:
+                            // Check if rolling countdown is already active
+                            let desc = bucket.description.to_lowercase();
+                            let is_actively_rolling = desc.contains("you have used some of your 5-hour limit")
+                                || desc.contains("will fully refresh in");
+
+                            // If account is cold/unconsumed, use 600s (10m) retry backoff instead of locking out for 4.5h.
+                            // If actively rolling, enforce 4.5h (16200s) cooldown.
+                            let cooldown_duration = if is_actively_rolling { 16200 } else { 600 };
                             let key = format!("{}:{}:5h", acc.email, bucket.bucket_id);
-                            (!check_cooldown(&key, 16200), key)
+                            (!check_cooldown(&key, cooldown_duration), key)
                         };
 
                         if should_warm && !history_key.is_empty() {
-                            let is_claude = bucket
-                                .bucket_id
-                                .contains("3p")
-                                || group.display_name.contains("Claude");
                             let model_to_ping = quota::resolve_warmup_model(&fresh_quota, is_claude);
 
                             tasks_to_run.push((
@@ -833,6 +855,19 @@ pub async fn trigger_warmup_for_account(account: &Account) {
 
     if let Some(groups) = &fresh_quota.quota_groups {
         for group in groups {
+            let g_name = group.display_name.to_lowercase();
+            let is_claude = g_name.contains("claude") || g_name.contains("gpt");
+
+            // Check if weekly quota for this group is exhausted (avoids HTTP 429 INSUFFICIENT_G1_CREDITS_BALANCE)
+            let weekly_exhausted = group.buckets.iter().any(|b| {
+                let w = b.window.to_lowercase();
+                let id = b.bucket_id.to_lowercase();
+                let desc = b.description.to_lowercase();
+                ((w.contains("week") || id.contains("week")) && b.remaining_fraction <= 0.001)
+                    || desc.contains("hit your weekly limit")
+                    || desc.contains("weekly limit does not currently apply")
+            });
+
             for bucket in &group.buckets {
                 let is_weekly = bucket.window.to_lowercase().contains("week")
                     || bucket.bucket_id.to_lowercase().contains("week");
@@ -841,6 +876,11 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                     || bucket.window.to_lowercase().contains("rolling");
 
                 if !is_weekly && !is_5h {
+                    continue;
+                }
+
+                // Guard: Never attempt 5h warmup if weekly quota is depleted (causes HTTP 429)
+                if is_5h && weekly_exhausted {
                     continue;
                 }
 
@@ -861,14 +901,16 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                             (false, String::new(), "weekly")
                         }
                     } else {
-                        // 5-hour rolling bucket: recovered to 100%, trigger warm if 4.5h cooldown passed
+                        // 5-hour rolling bucket:
+                        let desc = bucket.description.to_lowercase();
+                        let is_actively_rolling = desc.contains("you have used some of your 5-hour limit")
+                            || desc.contains("will fully refresh in");
+                        let cooldown_duration = if is_actively_rolling { 16200 } else { 600 };
                         let key = format!("{}:{}:5h", account.email, bucket.bucket_id);
-                        (!check_cooldown(&key, 16200), key, "5h")
+                        (!check_cooldown(&key, cooldown_duration), key, "5h")
                     };
 
                     if should_warm && !history_key.is_empty() {
-                        let is_claude = bucket.bucket_id.contains("3p")
-                            || group.display_name.contains("Claude");
                         let model_to_ping = quota::resolve_warmup_model(&fresh_quota, is_claude);
 
                         let success = quota::warmup_model_directly(

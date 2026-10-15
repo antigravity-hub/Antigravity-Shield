@@ -213,7 +213,7 @@ pub async fn handle_warmup(
             .call_v1_internal(
                 "generateContent",
                 &access_token,
-                body,
+                body.clone(),
                 None,
                 Some(account_id.as_str()),
             )
@@ -221,6 +221,62 @@ pub async fn handle_warmup(
 
         if let Ok(ref fb) = fallback_res {
             if fb.response.status().is_success() {
+                result = fallback_res;
+            }
+        }
+    }
+
+    // 如果指定模型（如特定预览或未授权实验模型）未成功，自动回退到最稳定的 gemini-2.5-flash
+    let still_failed = match &result {
+        Ok(call_res) => !call_res.response.status().is_success(),
+        Err(_) => true,
+    };
+
+    if still_failed && !is_claude && !is_image && req.model != "gemini-2.5-flash" {
+        tracing::info!(
+            "[Warmup-API] Warmup for {} failed, attempting fallback to gemini-2.5-flash",
+            req.model
+        );
+        let fallback_model = "gemini-2.5-flash".to_string();
+        let session_id = format!(
+            "warmup_{}_{}",
+            chrono::Utc::now().timestamp_millis(),
+            &uuid::Uuid::new_v4().to_string()[..8]
+        );
+        let warmup_prompt = "Write a comprehensive and detailed technical analysis of modern distributed systems design.";
+        let fallback_base = json!({
+            "model": fallback_model,
+            "contents": [{"role": "user", "parts": [{"text": warmup_prompt}]}],
+            "generationConfig": {
+                "temperature": 0.2,
+                "maxOutputTokens": 1024
+            },
+            "session_id": session_id
+        });
+        let fallback_body = wrap_request(
+            &fallback_base,
+            &project_id,
+            &fallback_model,
+            None,
+            Some(&session_id),
+            None,
+        );
+        let fallback_res = state
+            .upstream
+            .call_v1_internal(
+                "generateContent",
+                &access_token,
+                fallback_body,
+                None,
+                Some(account_id.as_str()),
+            )
+            .await;
+        if let Ok(ref fb) = fallback_res {
+            if fb.response.status().is_success() {
+                tracing::info!(
+                    "[Warmup-API] Fallback to gemini-2.5-flash SUCCEEDED for {}",
+                    req.email
+                );
                 result = fallback_res;
             }
         }
