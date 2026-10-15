@@ -61,11 +61,11 @@ export const ToolkitIntegrationModal: React.FC = () => {
 
   const modalContent = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl max-h-[85vh] flex flex-col bg-white dark:bg-[#0b101b] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800/90 overflow-hidden">
+      <div className="relative w-full max-w-xl max-h-[85vh] flex flex-col bg-white dark:bg-[#09120e] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800/90 overflow-hidden">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-900/60 shrink-0">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="p-2 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 shrink-0">
+            <div className="p-2 rounded-xl bg-[#93e9be]/15 text-emerald-600 dark:text-[#93e9be] shrink-0">
               <PlugZap className="w-5 h-5" />
             </div>
             <div className="min-w-0">
@@ -359,7 +359,7 @@ export const ToolkitIntegrationModal: React.FC = () => {
         {/* Safety Confirmation Prompt Before Installation */}
         {ideToConfirm && (
           <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
-            <div className="w-full max-w-md bg-white dark:bg-[#0d1322] rounded-2xl shadow-2xl border border-amber-500/30 p-5 space-y-4">
+            <div className="w-full max-w-md bg-white dark:bg-[#09120e] rounded-2xl shadow-2xl border border-amber-500/30 p-5 space-y-4">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 shrink-0">
                   <AlertTriangle className="w-5 h-5" />

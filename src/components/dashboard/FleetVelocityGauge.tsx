@@ -112,7 +112,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={`relative overflow-hidden rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-sm hover:border-cyan-500/40 transition-all duration-300 group ${className}`}>
+    <div className={`relative overflow-hidden rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-sm hover:border-[#93e9be]/40 transition-all duration-300 group ${className}`}>
       {/* Background ambient decorative glow */}
       <div
         className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-15 pointer-events-none transition-colors duration-700"
@@ -166,7 +166,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               onClick={() => setViewMode('fleet')}
               className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all duration-200 cursor-pointer ${
                 viewMode === 'fleet'
-                  ? 'bg-white dark:bg-slate-700 text-cyan-600 dark:text-cyan-400 shadow-sm'
+                  ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-[#93e9be] shadow-sm'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
@@ -178,7 +178,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               disabled={!currentAccount}
               className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all duration-200 cursor-pointer ${
                 viewMode === 'active'
-                  ? 'bg-white dark:bg-slate-700 text-cyan-600 dark:text-cyan-400 shadow-sm'
+                  ? 'bg-white dark:bg-slate-700 text-emerald-700 dark:text-[#93e9be] shadow-sm'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               } ${!currentAccount ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
@@ -298,7 +298,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                     </h3>
                     {formattedProjectedDate && (
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700/50 flex items-center gap-1">
-                        <Calendar className="w-2.5 h-2.5 text-cyan-500" />
+                        <Calendar className="w-2.5 h-2.5 text-emerald-500 dark:text-[#93e9be]" />
                         {formattedProjectedDate}
                       </span>
                     )}
@@ -375,7 +375,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               {/* Tile 2: Runway Remaining */}
               <div className="py-1 px-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800/60">
                 <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
-                  <Clock className="w-3 h-3 text-cyan-500" />
+                  <Clock className="w-3 h-3 text-emerald-500 dark:text-[#93e9be]" />
                   <span className="text-[9.5px] font-bold uppercase tracking-wider">
                     {t('dashboard.velocity_gauge.runway', 'Runway')}
                   </span>
@@ -412,11 +412,11 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
               <div
                 onClick={() => navigate('/token-stats')}
                 title={t('dashboard.view_token_stats_tooltip', 'View Token Statistics & Consumption Limits')}
-                className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 cursor-pointer transition-colors"
+                className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-[#93e9be] cursor-pointer transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-blue-500" />
+                    <Clock className="w-3 h-3 text-emerald-500 dark:text-[#93e9be]" />
                     <span className="font-bold text-slate-800 dark:text-slate-200">
                       {(() => {
                         const n = Number(horizon.last_5h_tokens) || 0;
@@ -437,7 +437,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
                     <span>{t('dashboard.horizon_7d', '7-Day')}</span>
                   </span>
                 </div>
-                <span className="text-[10px] font-semibold text-cyan-600 dark:text-cyan-400 flex items-center gap-0.5 hover:underline">
+                <span className="text-[10px] font-semibold text-emerald-600 dark:text-[#93e9be] flex items-center gap-0.5 hover:underline">
                   {t('dashboard.view_token_stats', 'Token Stats')} ➜
                 </span>
               </div>

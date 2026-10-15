@@ -123,7 +123,7 @@ export const SecurityAuditDropdown: React.FC<SecurityAuditDropdownProps> = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.98 }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
-            className="absolute left-0 mt-1.5 w-64 rounded-2xl bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl p-2 z-50 focus:outline-none"
+            className="absolute left-0 mt-1.5 w-64 rounded-2xl bg-white/95 dark:bg-[#09120e]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl p-2 z-50 focus:outline-none"
           >
             {/* Header: All Security Audits (Reset) */}
             <button

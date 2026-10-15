@@ -42,7 +42,7 @@ export default function ThemeManager() {
                 if (!isLinux() && (window as any).__TAURI_INTERNALS__) {
                     const win = getCurrentWindow();
                     if (win.label === 'main') {
-                        const bgColor = isDark ? '#09100d' : '#FAFBFC';
+                        const bgColor = isDark ? '#050a08' : '#FAFBFC';
                         // Don't await this, let it happen in background to avoid blocking React render
                         win.setBackgroundColor(bgColor).catch(e =>
                             console.error('Failed to set window background color:', e)
@@ -63,7 +63,7 @@ export default function ThemeManager() {
             root.setAttribute('data-theme', theme);
 
             // Set inline style for immediate visual feedback
-            root.style.backgroundColor = isDark ? '#09100d' : '#FAFBFC';
+            root.style.backgroundColor = isDark ? '#050a08' : '#FAFBFC';
 
             // Set Tailwind dark mode class
             if (isDark) {

@@ -229,13 +229,13 @@ export default function MiniView() {
             : (model.reset_time ? `R: ${formatTimeRemaining(model.reset_time, t('common.ready', 'Ready'))}` : t('common.unknown'));
 
         const getStatusColor = (p: number) => {
-            if (p >= 50) return 'text-[#93B93B]';
+            if (p >= 50) return 'text-[#93e9be]';
             if (p >= 20) return 'text-amber-500';
             return 'text-rose-500';
         };
 
         const getBarColor = (p: number) => {
-            if (p >= 50) return colorClass === 'cyan' ? 'bg-gradient-to-r from-cyan-400 to-[#93B93B]' : 'bg-gradient-to-r from-emerald-400 to-[#93B93B]';
+            if (p >= 50) return colorClass === 'cyan' ? 'bg-gradient-to-r from-cyan-400 to-[#93e9be]' : 'bg-gradient-to-r from-emerald-400 to-[#93e9be]';
             if (p >= 20) return colorClass === 'cyan' ? 'bg-gradient-to-r from-orange-400 to-amber-500' : 'bg-gradient-to-r from-amber-400 to-amber-500';
             return 'bg-gradient-to-r from-rose-400 to-rose-500';
         };
@@ -250,7 +250,7 @@ export default function MiniView() {
                 <div className="flex justify-between items-baseline">
                     <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{displayName}</span>
                     <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono">
+                        <span className="text-[10px] text-emerald-700 dark:text-[#93e9be] font-mono">
                             {resetDisplay}
                         </span>
                         <span className={clsx("text-xs font-bold font-mono", getStatusColor(percentage))}>
@@ -306,13 +306,13 @@ export default function MiniView() {
                         </button>
                     </div>
 
-                    {/* Circular Rings in Theme Color #93B93B with adaptive sizing */}
+                    {/* Circular Rings in Theme Color #93e9be with adaptive sizing */}
                     <div className="flex items-center justify-center gap-2" data-tauri-drag-region>
                         <CircularProgressRing
                             percentage={geminiPercentage}
                             size={microRingSize}
                             strokeWidth={microStrokeWidth}
-                            color="#93B93B"
+                            color="#93e9be"
                             title={`Gemini: ${geminiPercentage}%`}
                             showTooltip={shouldShowRingTooltip}
                         >
@@ -324,7 +324,7 @@ export default function MiniView() {
                                 percentage={claudePercentage}
                                 size={microRingSize}
                                 strokeWidth={microStrokeWidth}
-                                color="#93B93B"
+                                color="#93e9be"
                                 title={`Claude: ${claudePercentage}%`}
                                 showTooltip={shouldShowRingTooltip}
                             >
@@ -344,7 +344,7 @@ export default function MiniView() {
                     {/* Compact Header */}
                     <div className="flex items-center justify-between" data-tauri-drag-region>
                         <div className="flex items-center gap-1.5 overflow-hidden" data-tauri-drag-region>
-                            <div className="w-2 h-2 rounded-full bg-[#93B93B] shadow-[0_0_6px_#93B93B] animate-pulse shrink-0" />
+                            <div className="w-2 h-2 rounded-full bg-[#93e9be] shadow-[0_0_6px_#93e9be] animate-pulse shrink-0" />
                             <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate max-w-[120px]" title={currentAccount?.email}>
                                 {currentAccount?.email?.split('@')[0] || 'No Account'}
                             </span>
@@ -378,11 +378,11 @@ export default function MiniView() {
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                                 {geminiResetFormatted && (
-                                    <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono shrink-0">
+                                    <span className="text-[10px] text-emerald-700 dark:text-[#93e9be] font-mono shrink-0">
                                         R: {geminiResetFormatted}
                                     </span>
                                 )}
-                                <span className={clsx("text-xs font-bold font-mono shrink-0", geminiPercentage >= 50 ? "text-[#93B93B]" : geminiPercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
+                                <span className={clsx("text-xs font-bold font-mono shrink-0", geminiPercentage >= 50 ? "text-[#93e9be]" : geminiPercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
                                     {geminiPercentage}%
                                 </span>
                             </div>
@@ -396,11 +396,11 @@ export default function MiniView() {
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
                                     {claudeResetFormatted && (
-                                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-mono shrink-0">
+                                        <span className="text-[10px] text-emerald-700 dark:text-[#93e9be] font-mono shrink-0">
                                             R: {claudeResetFormatted}
                                         </span>
                                     )}
-                                    <span className={clsx("text-xs font-bold font-mono shrink-0", claudePercentage >= 50 ? "text-[#93B93B]" : claudePercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
+                                    <span className={clsx("text-xs font-bold font-mono shrink-0", claudePercentage >= 50 ? "text-[#93e9be]" : claudePercentage >= 20 ? "text-amber-500" : "text-rose-500")}>
                                         {claudePercentage}%
                                     </span>
                                 </div>
@@ -422,7 +422,7 @@ export default function MiniView() {
                             className="flex items-center gap-2 text-xs font-semibold text-gray-900 dark:text-white overflow-hidden"
                             data-tauri-drag-region
                         >
-                            <div className="w-2 h-2 rounded-full bg-[#93B93B] shadow-[0_0_8px_#93B93B] animate-pulse shrink-0" />
+                            <div className="w-2 h-2 rounded-full bg-[#93e9be] shadow-[0_0_8px_#93e9be] animate-pulse shrink-0" />
                             <span className="truncate" title={currentAccount?.email}>
                                 {currentAccount?.email?.split('@')[0] || 'No Account'}
                             </span>
@@ -523,7 +523,7 @@ export default function MiniView() {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="flex items-center w-full gap-2"
                             >
-                                <span title={latestLog.status.toString()} className={`w-1.5 h-1.5 rounded-full ${latestLog.status >= 200 && latestLog.status < 400 ? 'bg-[#93B93B]' : 'bg-red-500'}`}></span>
+                                <span title={latestLog.status.toString()} className={`w-1.5 h-1.5 rounded-full ${latestLog.status >= 200 && latestLog.status < 400 ? 'bg-[#93e9be]' : 'bg-red-500'}`}></span>
                                 <span className="font-bold truncate max-w-[100px]" title={latestLog.model}>
                                     {latestLog.mapped_model || latestLog.model}
                                 </span>
@@ -551,7 +551,7 @@ export default function MiniView() {
                         ) : (
                             <>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-[#93B93B]" />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#93e9be]" />
                                     <span>Connected</span>
                                 </div>
                                 <span className="font-mono opacity-50">v{appVersion}</span>
@@ -575,7 +575,7 @@ export default function MiniView() {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="w-full max-w-[280px] bg-white dark:bg-[#1a202c] border border-gray-200 dark:border-white/10 rounded-xl p-3.5 shadow-2xl space-y-3"
+                            className="w-full max-w-[280px] bg-white dark:bg-[#09120e] border border-gray-200 dark:border-white/10 rounded-xl p-3.5 shadow-2xl space-y-3"
                             data-no-drag="true"
                         >
                             {/* Modal Header */}
@@ -613,7 +613,7 @@ export default function MiniView() {
                                                     <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">Best</span>
                                                 </div>
                                                 <div className="flex items-center gap-3 text-[10px] text-gray-500 dark:text-gray-400 font-mono">
-                                                    <span>Gemini: <strong className="text-[#93B93B]">{recommended.geminiScore}%</strong></span>
+                                                    <span>Gemini: <strong className="text-[#93e9be]">{recommended.geminiScore}%</strong></span>
                                                     <span>Claude: <strong className="text-cyan-500">{recommended.claudeScore}%</strong></span>
                                                 </div>
                                             </div>
@@ -632,7 +632,7 @@ export default function MiniView() {
                                         {bestAccount && (
                                             <button
                                                 onClick={handleConfirmSwitch}
-                                                className="px-3 py-1 text-xs rounded-lg bg-[#93B93B] hover:bg-[#83a734] text-black font-semibold shadow-md transition-all active:scale-95"
+                                                className="px-3 py-1 text-xs rounded-lg bg-[#93e9be] hover:bg-[#129a5f] text-slate-950 font-bold shadow-md transition-all active:scale-95"
                                                 data-no-drag="true"
                                             >
                                                 {t('common.confirm_proceed', 'Yes, Continue')}
@@ -655,12 +655,12 @@ export default function MiniView() {
                                         <button
                                             onClick={(e) => handleSelectTarget('platform', e)}
                                             disabled={isSwitching}
-                                            className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-blue-500/10 hover:border-blue-500/30 border border-gray-200/50 dark:border-white/10 transition-all group active:scale-95"
+                                            className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-[#93e9be]/15 hover:border-[#93e9be]/30 border border-gray-200/50 dark:border-white/10 transition-all group active:scale-95"
                                             title="Antigravity Platform"
                                             data-no-drag="true"
                                         >
                                             <AntigravityPlatformIcon size={24} className="transition-transform group-hover:scale-110" />
-                                            <span className="text-[10px] font-semibold mt-1.5 text-gray-700 dark:text-gray-300 group-hover:text-blue-500">Platform</span>
+                                            <span className="text-[10px] font-semibold mt-1.5 text-gray-700 dark:text-gray-300 group-hover:text-emerald-600 dark:group-hover:text-[#93e9be]">Platform</span>
                                         </button>
 
                                         {/* 2. IDE */}
@@ -690,7 +690,7 @@ export default function MiniView() {
 
                                     {/* Feedback Toast */}
                                     {switchFeedback && (
-                                        <div className="flex items-center justify-center gap-1.5 py-1 text-xs text-[#93B93B] font-bold animate-pulse">
+                                        <div className="flex items-center justify-center gap-1.5 py-1 text-xs text-[#93e9be] font-bold animate-pulse">
                                             <Check size={14} />
                                             <span>{switchFeedback}</span>
                                         </div>

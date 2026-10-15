@@ -1033,7 +1033,7 @@ function Accounts() {
               className={cn(
                 "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 shrink-0",
                 showLastUsed
-                  ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-black/5"
+                  ? "bg-white dark:bg-base-100 text-emerald-700 dark:text-[#93e9be] shadow-sm ring-1 ring-black/5"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40",
               )}
               onClick={() => setShowLastUsed(!showLastUsed)}
@@ -1042,7 +1042,7 @@ function Accounts() {
               <Clock className="w-3.5 h-3.5" />
               <span className="hidden xl:inline">{t("accounts.table.last_used", "Last Used")}</span>
               {showLastUsed && (
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#93e9be]"></span>
               )}
             </button>
           </div>
@@ -1053,7 +1053,7 @@ function Accounts() {
               className={cn(
                 "p-1.5 rounded-md transition-all",
                 viewMode === "list"
-                  ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm"
+                  ? "bg-white dark:bg-base-100 text-emerald-700 dark:text-[#93e9be] shadow-sm"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content",
               )}
               onClick={() => setViewMode("list")}
@@ -1065,7 +1065,7 @@ function Accounts() {
               className={cn(
                 "p-1.5 rounded-md transition-all",
                 viewMode === "grid"
-                  ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm"
+                  ? "bg-white dark:bg-base-100 text-emerald-700 dark:text-[#93e9be] shadow-sm"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content",
               )}
               onClick={() => setViewMode("grid")}
@@ -1089,7 +1089,7 @@ function Accounts() {
                 onClick={() => setQuotaProvider('gemini')}
                 title={t('accounts.provider_gemini_tooltip', 'Gemini Quota & Reset Timers')}
               >
-                <Bot className="w-3.5 h-3.5 text-cyan-500" />
+                <Bot className="w-3.5 h-3.5 text-emerald-500 dark:text-[#93e9be]" />
                 <span className="hidden xl:inline font-medium">Gemini</span>
                 {quotaProvider === 'gemini' && (
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -1121,7 +1121,7 @@ function Accounts() {
               className={cn(
                 "px-2 md:px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap shrink-0",
                 filter === 'all'
-                  ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-black/5"
+                  ? "bg-white dark:bg-base-100 text-emerald-700 dark:text-[#93e9be] shadow-sm ring-1 ring-black/5"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
               )}
               onClick={() => setFilter('all')}
@@ -1131,7 +1131,7 @@ function Accounts() {
               <span className={cn(
                 "px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-colors",
                 filter === 'all'
-                  ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
+                  ? "bg-[#93e9be]/20 text-emerald-700 dark:text-[#93e9be]"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
               )}>
                 {filterCounts.all}
@@ -1143,7 +1143,7 @@ function Accounts() {
               className={cn(
                 "px-2 md:px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap shrink-0",
                 filter === 'pro'
-                  ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-black/5"
+                  ? "bg-white dark:bg-base-100 text-emerald-700 dark:text-[#93e9be] shadow-sm ring-1 ring-black/5"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
               )}
               onClick={() => setFilter('pro')}
@@ -1153,7 +1153,7 @@ function Accounts() {
               <span className={cn(
                 "px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-colors",
                 filter === 'pro'
-                  ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
+                  ? "bg-[#93e9be]/20 text-emerald-700 dark:text-[#93e9be]"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
               )}>
                 {filterCounts.pro}
@@ -1165,7 +1165,7 @@ function Accounts() {
               className={cn(
                 "px-2 md:px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap shrink-0",
                 filter === 'ultra'
-                  ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-black/5"
+                  ? "bg-white dark:bg-base-100 text-emerald-700 dark:text-[#93e9be] shadow-sm ring-1 ring-black/5"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
               )}
               onClick={() => setFilter('ultra')}
@@ -1175,7 +1175,7 @@ function Accounts() {
               <span className={cn(
                 "px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-colors",
                 filter === 'ultra'
-                  ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
+                  ? "bg-[#93e9be]/20 text-emerald-700 dark:text-[#93e9be]"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
               )}>
                 {filterCounts.ultra}
@@ -1187,7 +1187,7 @@ function Accounts() {
               className={cn(
                 "px-2 md:px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap shrink-0",
                 filter === 'free'
-                  ? "bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-black/5"
+                  ? "bg-white dark:bg-base-100 text-emerald-700 dark:text-[#93e9be] shadow-sm ring-1 ring-black/5"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
               )}
               onClick={() => setFilter('free')}
@@ -1197,7 +1197,7 @@ function Accounts() {
               <span className={cn(
                 "px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-colors",
                 filter === 'free'
-                  ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
+                  ? "bg-[#93e9be]/20 text-emerald-700 dark:text-[#93e9be]"
                   : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
               )}>
                 {filterCounts.free}
@@ -1275,7 +1275,7 @@ function Accounts() {
                   "px-2.5 py-2 text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 shadow-sm",
                   refreshCooldown > 0 
                     ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-80" 
-                    : "bg-blue-500 hover:bg-blue-600 active:scale-95"
+                    : "bg-emerald-600 hover:bg-emerald-700 dark:bg-[#129a5f] dark:hover:bg-emerald-600 active:scale-95"
                 )}
                 onClick={handleRefreshClick}
                 title={

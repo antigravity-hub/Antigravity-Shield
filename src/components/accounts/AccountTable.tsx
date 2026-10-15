@@ -430,24 +430,24 @@ function AccountRowContent({
                     )}
                     {isIdeActive && (
                         <span 
-                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-sky-500/15 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 text-[10px] font-extrabold border border-sky-500/30"
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-[#93e9be] text-[10px] font-extrabold border border-emerald-500/30"
                             title="Active in Antigravity IDE"
                         >
                             <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500 shadow-[0_0_6px_#0284c7]"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#93e9be] shadow-[0_0_6px_#93e9be]"></span>
                             </span>
                             IDE
                         </span>
                     )}
                     {isCliActive && (
                         <span 
-                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-500/15 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-extrabold border border-indigo-500/30"
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-teal-500/15 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400 text-[10px] font-extrabold border border-teal-500/30"
                             title="Active in Antigravity CLI"
                         >
                             <span className="relative flex h-1.5 w-1.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500 shadow-[0_0_6px_#6366f1]"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-teal-500 shadow-[0_0_6px_#14b8a6]"></span>
                             </span>
                             CLI
                         </span>
@@ -526,7 +526,7 @@ function AccountRowContent({
                             );
                         } else if (tier.includes('pro')) {
                             return (
-                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 via-teal-600 to-[#129a5f] text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
                                     <Diamond className="w-2.5 h-2.5 fill-current" />
                                     {t('accounts.pro')}
                                 </span>

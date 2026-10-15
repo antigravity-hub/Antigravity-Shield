@@ -100,7 +100,7 @@ export const Sidebar: React.FC = () => {
       transition={{ type: 'spring', stiffness: 350, damping: 30 }}
       className={`h-screen flex flex-col shrink-0 select-none z-40 transition-colors
         border-e border-slate-200/70 dark:border-slate-800/80
-        bg-white/75 dark:bg-[#09100d]/85 backdrop-blur-2xl shadow-[4px_0_24px_rgba(0,0,0,0.02)]
+        bg-white/75 dark:bg-[#070e0a]/90 backdrop-blur-2xl shadow-[4px_0_24px_rgba(0,0,0,0.02)]
         dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]`}
     >
       {/* Sidebar Header & Brand */}
