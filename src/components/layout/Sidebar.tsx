@@ -245,7 +245,7 @@ export const Sidebar: React.FC = () => {
             </button>
 
             {/* 7 种 UI 奢华主题高亮色选择器 */}
-            <AccentColorPicker compact={true} />
+            <AccentColorPicker compact={true} dropUp={true} />
           </div>
 
           {!collapsed ? (

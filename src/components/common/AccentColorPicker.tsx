@@ -6,9 +6,10 @@ import { useConfigStore } from '../../stores/useConfigStore';
 
 interface AccentColorPickerProps {
     compact?: boolean;
+    dropUp?: boolean;
 }
 
-export const AccentColorPicker: React.FC<AccentColorPickerProps> = ({ compact = false }) => {
+export const AccentColorPicker: React.FC<AccentColorPickerProps> = ({ compact = false, dropUp = false }) => {
     const { t } = useTranslation();
     const { config, updateAccentColor } = useConfigStore();
     const [isOpen, setIsOpen] = useState(false);
@@ -62,7 +63,11 @@ export const AccentColorPicker: React.FC<AccentColorPickerProps> = ({ compact = 
             {/* Dropdown Menu */}
             {isOpen && (
                 <div
-                    className="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-72 rounded-2xl bg-white/95 dark:bg-[#0c100e]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 shadow-2xl p-3 z-50 animate-in fade-in zoom-in-95 duration-150"
+                    className={`absolute rtl:right-auto rtl:left-0 w-72 rounded-2xl bg-white/95 dark:bg-[#0c100e]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 shadow-2xl p-3 z-50 animate-in fade-in zoom-in-95 duration-150 ${
+                        dropUp || compact
+                            ? 'bottom-full mb-2 left-0'
+                            : 'top-full mt-2 right-0'
+                    }`}
                 >
                     <div className="px-2 py-1.5 mb-2 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
                         <span className="text-xs font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
