@@ -768,6 +768,7 @@ pub fn run() {
             commands::skills::read_skill_content,
             commands::skills::install_skill,
             commands::skills::uninstall_skill,
+            commands::skills::toggle_skill_status,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

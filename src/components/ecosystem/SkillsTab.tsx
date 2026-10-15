@@ -1216,9 +1216,32 @@ export const SkillsTab: React.FC = () => {
                       </code>
                     </div>
 
-                    {!inspectingSkill.isInstalled && (
+                    {inspectingSkill.isInstalled ? (
                       <button
-                        onClick={() => installSkill(inspectingSkill)}
+                        onClick={async () => {
+                          const ok = await uninstallSkill(inspectingSkill.id);
+                          if (ok) {
+                            setInspectingSkill((prev) =>
+                              prev ? { ...prev, isInstalled: false, isEnabled: false } : null
+                            );
+                          }
+                        }}
+                        disabled={installingId === inspectingSkill.id}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-rose-500 hover:bg-rose-500/10 text-xs font-semibold transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>{t('common.uninstall', 'Uninstall')}</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={async () => {
+                          const ok = await installSkill(inspectingSkill);
+                          if (ok) {
+                            setInspectingSkill((prev) =>
+                              prev ? { ...prev, isInstalled: true, isEnabled: true } : null
+                            );
+                          }
+                        }}
                         disabled={installingId === inspectingSkill.id}
                         className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-semibold text-xs shadow-md active:scale-95 transition-all"
                         style={{
@@ -1227,7 +1250,11 @@ export const SkillsTab: React.FC = () => {
                         }}
                       >
                         <Download className="w-4 h-4" />
-                        <span>{installingId === inspectingSkill.id ? t('ecosystem.installing', 'Installing...') : t('ecosystem.one_click_install', '1-Click Install')}</span>
+                        <span>
+                          {installingId === inspectingSkill.id
+                            ? t('ecosystem.installing', 'Installing...')
+                            : t('ecosystem.one_click_install', '1-Click Install')}
+                        </span>
                       </button>
                     )}
                   </div>

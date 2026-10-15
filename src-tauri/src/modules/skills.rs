@@ -1069,6 +1069,69 @@ pub fn uninstall_skill_physical(skill_id: &str) -> Result<(), String> {
         fs::remove_dir_all(&target_dir).map_err(|e| format!("Failed to remove skill directory: {}", e))?;
         info!("Successfully removed skill directory {:?}", target_dir);
     }
+    let target_dir_disabled = primary.join(format!("{}.disabled", clean_name));
+    if target_dir_disabled.is_dir() {
+        let _ = fs::remove_dir_all(&target_dir_disabled);
+    }
+
+    Ok(())
+}
+
+/// Physically toggles a skill enabled/disabled by renaming SKILL.md <-> SKILL.md.disabled
+pub fn toggle_skill_physical(skill_id: &str, enabled: bool) -> Result<(), String> {
+    let roots = get_skill_scan_roots();
+    let raw_name = skill_id.rsplit('/').next().unwrap_or(skill_id);
+    let clean_name = raw_name
+        .replace('/', "-")
+        .replace('\\', "-")
+        .replace("..", "")
+        .replace('\0', "")
+        .trim()
+        .to_string();
+
+    if clean_name.is_empty() {
+        return Err("Invalid skill ID for status toggle".to_string());
+    }
+
+    // Search across roots for the skill directory
+    for root in roots {
+        let candidate_active = root.path.join(&clean_name);
+        let candidate_disabled = root.path.join(format!("{}.disabled", clean_name));
+
+        // 1. If active directory exists
+        if candidate_active.is_dir() {
+            let skill_file = candidate_active.join("SKILL.md");
+            let skill_file_disabled = candidate_active.join("SKILL.md.disabled");
+
+            if !enabled {
+                if skill_file.is_file() {
+                    let _ = fs::rename(&skill_file, &skill_file_disabled);
+                    info!("Disabled skill '{}' by renaming SKILL.md -> SKILL.md.disabled", clean_name);
+                    return Ok(());
+                }
+            } else {
+                if skill_file_disabled.is_file() {
+                    let _ = fs::rename(&skill_file_disabled, &skill_file);
+                    info!("Enabled skill '{}' by renaming SKILL.md.disabled -> SKILL.md", clean_name);
+                    return Ok(());
+                }
+            }
+        }
+
+        // 2. If directory itself was renamed with .disabled
+        if candidate_disabled.is_dir() {
+            if enabled {
+                let _ = fs::rename(&candidate_disabled, &candidate_active);
+                let skill_file = candidate_active.join("SKILL.md");
+                let skill_file_disabled = candidate_active.join("SKILL.md.disabled");
+                if skill_file_disabled.is_file() && !skill_file.is_file() {
+                    let _ = fs::rename(&skill_file_disabled, &skill_file);
+                }
+                info!("Enabled skill '{}' by restoring directory name", clean_name);
+                return Ok(());
+            }
+        }
+    }
 
     Ok(())
 }

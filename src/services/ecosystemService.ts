@@ -5,10 +5,53 @@ import {
 } from '../config/defaultEcosystemCatalog';
 import { isTauri } from '../utils/env';
 
-const STORAGE_KEY_SKILLS = 'antigravity_ecosystem_skills_v1';
+const STORAGE_KEY_SKILL_OVERRIDES = 'antigravity_skill_overrides_v1';
+const STORAGE_KEY_SKILLS_LEGACY = 'antigravity_ecosystem_skills_v1';
 const STORAGE_KEY_MCP = 'antigravity_ecosystem_mcp_v1';
 const STORAGE_KEY_RULES = 'antigravity_ecosystem_rules_v1';
 const STORAGE_KEY_EXCLUSIONS = 'antigravity_ecosystem_exclusions_v1';
+
+export function getSkillOverrides(): Record<string, Partial<SkillItem>> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_SKILL_OVERRIDES);
+    if (raw) {
+      return JSON.parse(raw);
+    }
+    // Backward-compatibility: migrate legacy array once if present
+    const legacy = localStorage.getItem(STORAGE_KEY_SKILLS_LEGACY);
+    if (legacy) {
+      const parsed = JSON.parse(legacy);
+      const overrides: Record<string, Partial<SkillItem>> = {};
+      if (Array.isArray(parsed)) {
+        parsed.forEach((s: any) => {
+          if (s && s.id && (s.isInstalled || s.isEnabled !== undefined)) {
+            overrides[s.id] = {
+              isInstalled: s.isInstalled,
+              isEnabled: s.isEnabled,
+              installPath: s.installPath || s.localPath,
+            };
+          }
+        });
+      }
+      localStorage.removeItem(STORAGE_KEY_SKILLS_LEGACY);
+      localStorage.setItem(STORAGE_KEY_SKILL_OVERRIDES, JSON.stringify(overrides));
+      return overrides;
+    }
+  } catch (err) {
+    console.warn('[Ecosystem] Failed to read skill overrides:', err);
+  }
+  return {};
+}
+
+export function saveSkillOverride(id: string, override: Partial<SkillItem>): void {
+  try {
+    const overrides = getSkillOverrides();
+    overrides[id] = { ...(overrides[id] || {}), ...override };
+    localStorage.setItem(STORAGE_KEY_SKILL_OVERRIDES, JSON.stringify(overrides));
+  } catch (err) {
+    console.warn('[Ecosystem] Failed to save skill override:', err);
+  }
+}
 
 import { SKILLS_SH_CATALOG } from '../config/skillsCatalog';
 
@@ -46,17 +89,8 @@ export async function fetchSkills(): Promise<SkillItem[]> {
     } catch {}
   }
 
-  // Load local state modifications or installed statuses from storage
-  let localOverrides: Record<string, Partial<SkillItem>> = {};
-  const cached = localStorage.getItem(STORAGE_KEY_SKILLS);
-  if (cached) {
-    try {
-      const parsed: SkillItem[] = JSON.parse(cached);
-      parsed.forEach((s) => {
-        localOverrides[s.id] = s;
-      });
-    } catch {}
-  }
+  // Load lightweight local state modifications from storage
+  const localOverrides = getSkillOverrides();
 
   // Map and deduplicate:
   // 1. All skills found locally on disk
@@ -81,8 +115,11 @@ export async function fetchSkills(): Promise<SkillItem[]> {
     const isOfficial = dynamicTelemetry?.isOfficial ?? remote.isOfficial;
     const isVerifiedMaker = dynamicTelemetry?.isVerifiedMaker ?? remote.isVerifiedMaker;
 
-    // If already installed locally (matched by id or name), preserve installed state
-    const matchedLocal = skillMap.get(remote.id) || skillMap.get(remote.name);
+    // If already installed locally (matched by id, name, or slug), preserve installed state
+    const matchedLocal =
+      skillMap.get(remote.id) ||
+      skillMap.get(remote.name) ||
+      (remote.slug ? skillMap.get(remote.slug) : undefined);
     if (matchedLocal) {
       if (matchedLocal.id !== remote.id) {
         skillMap.delete(matchedLocal.id);
@@ -102,7 +139,10 @@ export async function fetchSkills(): Promise<SkillItem[]> {
         isLocal: true,
       });
     } else {
-      const override = localOverrides[remote.id];
+      const override =
+        localOverrides[remote.id] ||
+        localOverrides[remote.name] ||
+        (remote.slug ? localOverrides[remote.slug] : undefined);
       skillMap.set(remote.id, {
         ...remote,
         installs,
@@ -245,17 +285,46 @@ export async function readSkillContent(skillId: string, isLocal?: boolean): Prom
 }
 
 export async function saveSkillsToStorage(skills: SkillItem[]): Promise<void> {
-  localStorage.setItem(STORAGE_KEY_SKILLS, JSON.stringify(skills));
+  // Lightweight persistence: only persist user overrides (installed/toggled skills), NEVER the 7.6MB catalog!
+  try {
+    const overrides = getSkillOverrides();
+    for (const s of skills) {
+      if (s.isInstalled || s.isEnabled !== undefined) {
+        overrides[s.id] = {
+          isInstalled: s.isInstalled,
+          isEnabled: s.isEnabled,
+          installPath: s.installPath || s.localPath,
+        };
+      }
+    }
+    localStorage.setItem(STORAGE_KEY_SKILL_OVERRIDES, JSON.stringify(overrides));
+  } catch (err) {
+    console.warn('[Ecosystem] Failed to save skills override storage:', err);
+  }
 }
 
 export async function installSkill(skill: SkillItem): Promise<SkillItem> {
+  // Ensure content is populated from rich documentation if available
+  const content =
+    skill.content ||
+    skill.docsMarkdown?.en ||
+    (skill as any).documentation?.en ||
+    undefined;
+
+  const skillPayload = {
+    ...skill,
+    content,
+  };
+
   let installPath: string | undefined;
+
   if (isTauri()) {
+    const { invoke } = await import('@tauri-apps/api/core');
     try {
-      const { invoke } = await import('@tauri-apps/api/core');
-      installPath = await invoke<string>('install_skill', { skill });
+      installPath = await invoke<string>('install_skill', { skill: skillPayload });
     } catch (err) {
-      console.warn('[Ecosystem] Tauri install_skill invoke fallback:', err);
+      console.error('[Ecosystem] Tauri install_skill invoke failed:', err);
+      throw err;
     }
   } else {
     // In browser dev mode (npm run dev), persist directly to filesystem via Vite dev server endpoint
@@ -263,7 +332,7 @@ export async function installSkill(skill: SkillItem): Promise<SkillItem> {
       const res = await fetch('/__dev/install-skill', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(skill),
+        body: JSON.stringify(skillPayload),
       });
       if (res.ok) {
         const data = await res.json();
@@ -273,35 +342,39 @@ export async function installSkill(skill: SkillItem): Promise<SkillItem> {
       console.warn('[Ecosystem] Dev install_skill fallback failed:', err);
     }
   }
-  const skills = await fetchSkills();
-  const existingIdx = skills.findIndex((s) => s.id === skill.id);
-  const updatedSkill: SkillItem = {
-    ...skill,
+
+  // Persist lightweight local override (takes < 150 bytes in localStorage)
+  const overrideData = {
     isInstalled: true,
     isEnabled: true,
     isLocal: true,
     installPath: installPath || skill.installPath,
   };
 
-  let nextSkills: SkillItem[];
-  if (existingIdx >= 0) {
-    nextSkills = [...skills];
-    nextSkills[existingIdx] = updatedSkill;
-  } else {
-    nextSkills = [updatedSkill, ...skills];
+  saveSkillOverride(skill.id, overrideData);
+  if (skill.name && skill.name !== skill.id) {
+    saveSkillOverride(skill.name, overrideData);
+  }
+  if (skill.slug && skill.slug !== skill.id && skill.slug !== skill.name) {
+    saveSkillOverride(skill.slug, overrideData);
   }
 
-  await saveSkillsToStorage(nextSkills);
+  const updatedSkill: SkillItem = {
+    ...skill,
+    ...overrideData,
+  };
+
   return updatedSkill;
 }
 
 export async function uninstallSkill(skillId: string): Promise<void> {
   if (isTauri()) {
+    const { invoke } = await import('@tauri-apps/api/core');
     try {
-      const { invoke } = await import('@tauri-apps/api/core');
       await invoke('uninstall_skill', { skillId });
     } catch (err) {
-      console.warn('[Ecosystem] Tauri uninstall_skill fallback:', err);
+      console.error('[Ecosystem] Tauri uninstall_skill failed:', err);
+      throw err;
     }
   } else {
     // In browser dev mode, remove from filesystem via Vite dev server endpoint
@@ -315,15 +388,15 @@ export async function uninstallSkill(skillId: string): Promise<void> {
       console.warn('[Ecosystem] Dev uninstall_skill fallback failed:', err);
     }
   }
-  const skills = await fetchSkills();
-  const nextSkills = skills.map((s) => (s.id === skillId ? { ...s, isInstalled: false, isEnabled: false } : s));
-  await saveSkillsToStorage(nextSkills);
+
+  // Persist lightweight uninstalled status
+  saveSkillOverride(skillId, { isInstalled: false, isEnabled: false });
 }
 
 export async function toggleSkill(skillId: string, enabled: boolean): Promise<void> {
   if (isTauri()) {
+    const { invoke } = await import('@tauri-apps/api/core');
     try {
-      const { invoke } = await import('@tauri-apps/api/core');
       await invoke('toggle_skill_status', { skillId, enabled });
     } catch (err) {
       console.warn('[Ecosystem] Tauri toggle_skill_status fallback:', err);
@@ -340,9 +413,8 @@ export async function toggleSkill(skillId: string, enabled: boolean): Promise<vo
       console.warn('[Ecosystem] Dev toggle_skill fallback failed:', err);
     }
   }
-  const skills = await fetchSkills();
-  const nextSkills = skills.map((s) => (s.id === skillId ? { ...s, isEnabled: enabled } : s));
-  await saveSkillsToStorage(nextSkills);
+
+  saveSkillOverride(skillId, { isEnabled: enabled });
 }
 
 export async function fetchMcpServers(): Promise<McpServerItem[]> {

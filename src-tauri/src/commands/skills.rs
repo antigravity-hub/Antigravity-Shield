@@ -41,3 +41,13 @@ pub async fn uninstall_skill(skill_id: String) -> Result<(), String> {
     .await
     .map_err(|e| format!("Uninstall skill task failed: {}", e))?
 }
+
+/// Physically toggles a skill status (enabled/disabled)
+#[tauri::command]
+pub async fn toggle_skill_status(skill_id: String, enabled: bool) -> Result<(), String> {
+    tokio::task::spawn_blocking(move || {
+        skills::toggle_skill_physical(&skill_id, enabled)
+    })
+    .await
+    .map_err(|e| format!("Toggle skill task failed: {}", e))?
+}

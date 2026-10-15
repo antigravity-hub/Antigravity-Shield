@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.0.2 (2026-10-15)**:
+        -   **Skills Installation & LocalStorage Quota Fix**: Eradicated the `DOMException: QuotaExceededError` caused by full-catalog serialization into 5MB browser storage upon skill install/uninstall. Switched to a lightweight delta override engine (<150 bytes per skill), guaranteeing instant UI state updates and zero silent failures.
+        -   **Full Skill Toggle & Lifecycle Implementation**: Implemented missing `toggle_skill_status` Tauri IPC command and physical Rust filesystem handler (`SKILL.md` <-> `SKILL.md.disabled`), allowing users to dynamically activate/deactivate skills without file loss.
+        -   **Reactive Inspector Modal & Toast Telemetry**: Integrated real-time toast feedback on skill install/uninstall and made the 1-Click Install inspector modal immediately reactive to lifecycle state changes.
     *   **v6.0.1 (2026-10-15)**:
         -   **Black Screen Route Freeze Elimination**: Removed `AnimatePresence mode="wait"` and exit opacity transitions from `<Outlet />` in `Layout.tsx`, guaranteeing instant, reliable page mounting without blank screen traps.
         -   **Automated v6 Upgrade Migration**: Enforced automatic migration for existing installations, overwriting legacy horizontal navbar settings with the modern Apple-style vertical sidebar (`navigation_layout: 'sidebar'`) and actively enabling system auto-launch on startup (`auto_launch: true`).

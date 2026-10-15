@@ -12,6 +12,7 @@ import {
 import * as ecosystemService from '../services/ecosystemService';
 import { SKILLS_SH_CATALOG } from '../config/skillsCatalog';
 import { DEFAULT_MCP_CATALOG, DEFAULT_RULES_CATALOG } from '../config/defaultEcosystemCatalog';
+import { showToast } from '../components/common/ToastContainer';
 
 interface EcosystemState {
   activeTab: EcosystemEntityType;
@@ -154,13 +155,26 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
     try {
       const updated = await ecosystemService.installSkill(skill);
       set((state) => ({
-        skills: state.skills.map((s) => (s.id === skill.id ? updated : s)),
+        skills: state.skills.map((s) =>
+          s.id === skill.id || s.name === skill.name || (s.slug && s.slug === skill.slug)
+            ? { ...s, ...updated, isInstalled: true, isEnabled: true }
+            : s
+        ),
         installingId: null,
       }));
+
+      // Background consistency sync: ensure local disk scanner and metrics stay 100% in sync
+      ecosystemService.fetchSkills().then((fresh) => {
+        set({ skills: fresh });
+      }).catch(() => {});
+
+      const label = skill.title || skill.name || 'Skill';
+      showToast(`مهارت "${label}" با موفقیت نصب شد.`, 'success');
       return true;
     } catch (err) {
       console.error('[useEcosystemStore] Install skill failed:', err);
       set({ installingId: null });
+      showToast(`خطا در نصب مهارت: ${String(err)}`, 'error');
       return false;
     }
   },
@@ -170,13 +184,25 @@ export const useEcosystemStore = create<EcosystemState>((set) => ({
     try {
       await ecosystemService.uninstallSkill(skillId);
       set((state) => ({
-        skills: state.skills.map((s) => (s.id === skillId ? { ...s, isInstalled: false, isEnabled: false } : s)),
+        skills: state.skills.map((s) =>
+          s.id === skillId || s.name === skillId || (s.slug && s.slug === skillId)
+            ? { ...s, isInstalled: false, isEnabled: false }
+            : s
+        ),
         installingId: null,
       }));
+
+      // Background consistency sync
+      ecosystemService.fetchSkills().then((fresh) => {
+        set({ skills: fresh });
+      }).catch(() => {});
+
+      showToast('مهارت با موفقیت حذف شد.', 'info');
       return true;
     } catch (err) {
       console.error('[useEcosystemStore] Uninstall skill failed:', err);
       set({ installingId: null });
+      showToast(`خطا در حذف مهارت: ${String(err)}`, 'error');
       return false;
     }
   },

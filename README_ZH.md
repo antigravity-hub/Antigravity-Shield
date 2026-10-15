@@ -1,5 +1,5 @@
 # Antigravity-Shield 🛡️
-> 专业级 AI 账号管理与高防协议代理系统 (v6.0.1)
+> 专业级 AI 账号管理与高防协议代理系统 (v6.0.2)
 <div align="center">
   <img src="public/icon.png" alt="Antigravity Shield Logo" width="120" height="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
 
@@ -7,7 +7,7 @@
   <p>彻底解决 Google 403 Forbidden 封禁陷阱，全面清除 Sandbox 触发器，提供稳定、安全的多账号调度中转。</p>
   
   <p>
-    <img src="https://img.shields.io/badge/Version-6.0.1-blue?style=flat-square" alt="Version">
+    <img src="https://img.shields.io/badge/Version-6.0.2-blue?style=flat-square" alt="Version">
     <img src="https://img.shields.io/badge/Security-Hardened-success?style=flat-square" alt="Security Hardened">
     <img src="https://img.shields.io/badge/Tauri-v2-orange?style=flat-square" alt="Tauri">
     <img src="https://img.shields.io/badge/Backend-Rust-red?style=flat-square" alt="Rust">
