@@ -204,15 +204,25 @@ export const RulesTab: React.FC = () => {
       </div>
 
       {/* Edit Rule Modal */}
-      <AnimatePresence>
-        {editingRule && typeof document !== 'undefined' && createPortal(
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {editingRule && (
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-2xl bg-white dark:bg-[#09120e] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[85vh]"
+              key={`edit-rule-backdrop-${editingRule.id}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+              onClick={() => setEditingRule(null)}
             >
+              <motion.div
+                key={`edit-rule-modal-${editingRule.id}`}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-2xl bg-white dark:bg-[#09120e] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[85vh]"
+              >
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60">
                 <div className="flex items-center gap-2">
                   <FileCode2 className="w-5 h-5 text-emerald-500" />
@@ -272,21 +282,32 @@ export const RulesTab: React.FC = () => {
                 </button>
               </div>
             </motion.div>
-          </div>,
-          document.body
+          </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
 
       {/* Create Rule Modal */}
-      <AnimatePresence>
-        {isCreateOpen && typeof document !== 'undefined' && createPortal(
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isCreateOpen && (
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-xl bg-white dark:bg-[#09120e] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col"
+              key="create-rule-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+              onClick={() => setIsCreateOpen(false)}
             >
+              <motion.div
+                key="create-rule-modal"
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-xl bg-white dark:bg-[#09120e] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col"
+              >
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60">
                 <span className="font-bold text-sm text-slate-900 dark:text-white">
                   Add New Agent Rule
@@ -393,10 +414,11 @@ export const RulesTab: React.FC = () => {
                 </div>
               </form>
             </motion.div>
-          </div>,
-          document.body
+          </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
     </div>
   );
 };
