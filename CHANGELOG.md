@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.0.3 (2026-10-16)**:
+        -   **Physical Multi-File 1-Click Skill Installer**: Engineered a production-grade atomic skill installation engine in Rust with 2-stage staging and rollback (`.tmp_<uuid>`), downloading canonical `SKILL.md` manifests and companion assets (`scripts/`, `references/`) directly from authoritative creator GitHub repositories (`raw.githubusercontent.com`).
+        -   **Upstream Manifest Resolver & Prerequisite Telemetry**: Integrated an upstream resolver service for premier hubs (`vercel-labs`, `anthropics`, `mattpocock`, `tavily-ai`, `obra`), automatically parsing allowed tools, environment secrets (e.g. `HF_TOKEN`, `GH_TOKEN`), and setup CLI commands into a dedicated Inspector telemetry panel.
+        -   **Continuous 4-State UI & Internationalized Feedback**: Implemented 4-state lifecycle feedback across cards (Idle, Downloading, Installed/Active toggle, Error with Retry) and eliminated hardcoded Persian toasts for non-Persian locales.
+        -   **Automated Continuous QA Harness**: Added comprehensive 63-test automated harness verifying filesystem persistence, agent loader compliance, and YAML frontmatter invariants across all local directories.
     *   **v6.0.2 (2026-10-15)**:
         -   **Skills Installation & LocalStorage Quota Fix**: Eradicated the `DOMException: QuotaExceededError` caused by full-catalog serialization into 5MB browser storage upon skill install/uninstall. Switched to a lightweight delta override engine (<150 bytes per skill), guaranteeing instant UI state updates and zero silent failures.
         -   **Full Skill Toggle & Lifecycle Implementation**: Implemented missing `toggle_skill_status` Tauri IPC command and physical Rust filesystem handler (`SKILL.md` <-> `SKILL.md.disabled`), allowing users to dynamically activate/deactivate skills without file loss.
