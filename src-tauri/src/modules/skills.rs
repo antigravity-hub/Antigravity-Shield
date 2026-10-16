@@ -1194,6 +1194,7 @@ pub async fn install_skill_physical(skill: &SkillItem) -> Result<String, String>
                 }
                 let installed_file = target_dir.join("SKILL.md");
                 info!("Successfully atomically installed skill '{}' to {:?}", clean_name, installed_file);
+                notify_skills_updated(&clean_name, "installed");
                 Ok(installed_file.to_string_lossy().to_string())
             }
             Err(rename_err) => {
@@ -1245,6 +1246,7 @@ pub fn uninstall_skill_physical(skill_id: &str) -> Result<(), String> {
         let _ = fs::remove_dir_all(&target_dir_disabled);
     }
 
+    notify_skills_updated(&clean_name, "uninstalled");
     Ok(())
 }
 
@@ -1278,12 +1280,14 @@ pub fn toggle_skill_physical(skill_id: &str, enabled: bool) -> Result<(), String
                 if skill_file.is_file() {
                     let _ = fs::rename(&skill_file, &skill_file_disabled);
                     info!("Disabled skill '{}' by renaming SKILL.md -> SKILL.md.disabled", clean_name);
+                    notify_skills_updated(&clean_name, "disabled");
                     return Ok(());
                 }
             } else {
                 if skill_file_disabled.is_file() {
                     let _ = fs::rename(&skill_file_disabled, &skill_file);
                     info!("Enabled skill '{}' by renaming SKILL.md.disabled -> SKILL.md", clean_name);
+                    notify_skills_updated(&clean_name, "enabled");
                     return Ok(());
                 }
             }
@@ -1299,12 +1303,32 @@ pub fn toggle_skill_physical(skill_id: &str, enabled: bool) -> Result<(), String
                     let _ = fs::rename(&skill_file_disabled, &skill_file);
                 }
                 info!("Enabled skill '{}' by restoring directory name", clean_name);
+                notify_skills_updated(&clean_name, "enabled");
                 return Ok(());
             }
         }
     }
 
     Ok(())
+}
+
+/// Broadcasts a lightweight skill update event to ~/.antigravity_shield/skills_event.json
+/// so the IDE extension immediately syncs with zero window reload.
+pub fn notify_skills_updated(skill_name: &str, action: &str) {
+    if let Some(home) = dirs::home_dir() {
+        let shield_dir = home.join(".antigravity_shield");
+        let _ = fs::create_dir_all(&shield_dir);
+        let event_file = shield_dir.join("skills_event.json");
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis();
+        let payload = format!(
+            "{{\"event\":\"SKILLS_UPDATED\",\"skill\":\"{}\",\"action\":\"{}\",\"timestamp\":{}}}\n",
+            skill_name, action, now
+        );
+        let _ = fs::write(&event_file, payload);
+    }
 }
 
 fn generate_canonical_skill_md(skill: &SkillItem, clean_name: &str) -> String {
