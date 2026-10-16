@@ -3,6 +3,9 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.1.0 (2026-10-16)**:
+        -   **Ecosystem Modals Viewport Trapping Elimination**: Resolved the CSS containing block trap caused by animated tab containers (`framer-motion` transform and will-change). Portaled all modals across `SkillsTab`, `McpTab`, and `RulesTab` directly to `document.body` via `createPortal`, ensuring inspector and creation dialogs open perfectly centered in the visible viewport regardless of page scroll.
+        -   **Zero-Reload Real-Time IDE Skill Broadcast**: Synchronized real-time skill state updates (`custom:skills-changed` and `antigravity://skills-updated`) upon installation, uninstallation, and status toggles for seamless agent synchronization without manual IDE restarts.
     *   **v6.0.3 (2026-10-16)**:
         -   **Physical Multi-File 1-Click Skill Installer**: Engineered a production-grade atomic skill installation engine in Rust with 2-stage staging and rollback (`.tmp_<uuid>`), downloading canonical `SKILL.md` manifests and companion assets (`scripts/`, `references/`) directly from authoritative creator GitHub repositories (`raw.githubusercontent.com`).
         -   **Upstream Manifest Resolver & Prerequisite Telemetry**: Integrated an upstream resolver service for premier hubs (`vercel-labs`, `anthropics`, `mattpocock`, `tavily-ai`, `obra`), automatically parsing allowed tools, environment secrets (e.g. `HF_TOKEN`, `GH_TOKEN`), and setup CLI commands into a dedicated Inspector telemetry panel.
