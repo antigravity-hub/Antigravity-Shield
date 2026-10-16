@@ -4,16 +4,14 @@ use rquest;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-// Quota API endpoints (Primary Antigravity IDE endpoint, fallback to standard Cloud Code)
-const QUOTA_API_ENDPOINTS: [&str; 2] = [
+// Quota API endpoints (Official Google Cloud Code production API)
+const QUOTA_API_ENDPOINTS: [&str; 1] = [
     "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
 ];
 
 // Quota Summary API endpoints (weekly + 5h grouped quota)
-const QUOTA_SUMMARY_ENDPOINTS: [&str; 2] = [
+const QUOTA_SUMMARY_ENDPOINTS: [&str; 1] = [
     "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
 ];
 
 /// Critical retry threshold: considered near recovery when quota reaches 95%
@@ -814,17 +812,52 @@ pub async fn warmup_model_directly(
     }
 }
 
-/// Rank Flash models (higher is newer)
+/// Rank Flash models dynamically by version (higher is newer) and prioritize '-high' tier
 fn get_flash_rank(lower: &str) -> i32 {
-    if lower.contains("3.8") { 380 }
-    else if lower.contains("3.7") { 370 }
-    else if lower.contains("3.5") { 350 }
-    else if lower.contains("3.1") { 310 }
-    else if lower.contains("gemini-3") || lower.contains("3-flash") { 300 }
-    else if lower.contains("2.5") { 250 }
-    else if lower.contains("2.0") || lower.contains("2-flash") { 200 }
-    else if lower.contains("1.5") { 150 }
-    else { 100 }
+    let mut version_score = 1000;
+
+    // Detect known and emerging Gemini Flash versions
+    if lower.contains("3.8") {
+        version_score = 3800;
+    } else if lower.contains("3.7") {
+        version_score = 3700;
+    } else if lower.contains("3.5") {
+        version_score = 3500;
+    } else if lower.contains("3.1") {
+        version_score = 3100;
+    } else if lower.contains("gemini-3") || lower.contains("3-flash") {
+        version_score = 3000;
+    } else if lower.contains("2.5") {
+        version_score = 2500;
+    } else if lower.contains("2.0") || lower.contains("2-flash") {
+        version_score = 2000;
+    } else if lower.contains("1.5") {
+        version_score = 1500;
+    }
+
+    // Dynamic forward-compatible inspection for future versions (e.g. 3.9, 4.0, 4.5, 5.0)
+    for major in (4..=9).rev() {
+        let pattern = format!("{}.", major);
+        if lower.contains(&pattern) {
+            version_score = major * 1000;
+            break;
+        }
+    }
+
+    // Tier preference: Prioritize '-high' tier to guarantee sufficient quota deduction for locking 5h rolling countdown
+    let tier_modifier = if lower.contains("high") {
+        50 // Highest priority: e.g. gemini-3.8-flash-high
+    } else if !lower.contains("low") && !lower.contains("tiered") {
+        20 // Standard Flash model without low/tiered suffix
+    } else if lower.contains("low") {
+        -20 // Low tier
+    } else if lower.contains("tiered") {
+        -40 // Tiered / zero-quota impact tier
+    } else {
+        0
+    };
+
+    version_score + tier_modifier
 }
 
 /// Rank Claude models (higher is newer)
