@@ -188,7 +188,7 @@ export const EcosystemHub: React.FC = () => {
                   stiffness: 350,
                   mass: 0.75,
                 }}
-                className="w-full will-change-[transform,opacity]"
+                className="w-full"
               >
                 {activeTab === 'skills' && <SkillsTab />}
                 {activeTab === 'mcp' && <McpTab />}
