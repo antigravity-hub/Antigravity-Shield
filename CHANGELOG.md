@@ -3,6 +3,9 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.1.1 (2026-10-16)**:
+        -   **Quota Warmup Resilience & Production Endpoint Consolidation**: Eradicated deprecated daily-cloudcode sandbox endpoint that triggered frequent TCP connection resets. Dynamically prioritizes high-tier Flash models (`gemini-2.5-flash`, `gemini-3.0-flash`, `gemini-2.5-pro`) for account quota warmups, guaranteeing stable 5-hour rolling reset deductions and eliminating false-positive warmup flapping.
+        -   **Ecosystem Modals Transition & React Portal Polish**: Properly nested `AnimatePresence` inside `createPortal` across `McpTab`, `RulesTab`, and `SkillsTab` dialogs, fixing exit animations and unmounting glitches when closing modals inside transformed tab layouts.
     *   **v6.1.0 (2026-10-16)**:
         -   **Ecosystem Modals Viewport Trapping Elimination**: Resolved the CSS containing block trap caused by animated tab containers (`framer-motion` transform and will-change). Portaled all modals across `SkillsTab`, `McpTab`, and `RulesTab` directly to `document.body` via `createPortal`, ensuring inspector and creation dialogs open perfectly centered in the visible viewport regardless of page scroll.
         -   **Zero-Reload Real-Time IDE Skill Broadcast**: Synchronized real-time skill state updates (`custom:skills-changed` and `antigravity://skills-updated`) upon installation, uninstallation, and status toggles for seamless agent synchronization without manual IDE restarts.
