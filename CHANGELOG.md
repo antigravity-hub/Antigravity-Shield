@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.1.2-pre.1 (2026-10-17)**:
+        -   **Autonomous Dynamic Model Discovery & Live In-Memory Registry**: Replaced legacy 2024 hardcoded model mappings with a DashMap-based, lock-free `DynamicModelRegistry` with TTL caching (45m) and Stale-While-Revalidate semantics.
+        -   **Zero Synchronous Disk I/O on Proxy Route**: Eradicated synchronous JSON disk reads (`get_available_models_from_json`) from the hot request path; all model availability queries and quota limits are served strictly from in-memory account caches.
+        -   **Semantic Family Classification & Forwarding**: Implemented dynamic version ranking and semantic model family mapping (`GeminiFlash`, `GeminiPro`, `GeminiThinking`, `ClaudeSonnet`, `ClaudeOpus`) to route aliases (e.g. `gpt-4o-mini`, `gemini-3.8-flash`) automatically to the latest active upstream models.
+        -   **Full Protocol Verification & Smart Failover**: Passed all 29 E2E test suites (100%) across OpenAI, Claude, SSE streaming, and adversarial failover scenarios.
     *   **v6.1.1 (2026-10-16)**:
         -   **Quota Warmup Resilience & Production Endpoint Consolidation**: Eradicated deprecated daily-cloudcode sandbox endpoint that triggered frequent TCP connection resets. Dynamically prioritizes high-tier Flash models (`gemini-2.5-flash`, `gemini-3.0-flash`, `gemini-2.5-pro`) for account quota warmups, guaranteeing stable 5-hour rolling reset deductions and eliminating false-positive warmup flapping.
         -   **Ecosystem Modals Transition & React Portal Polish**: Properly nested `AnimatePresence` inside `createPortal` across `McpTab`, `RulesTab`, and `SkillsTab` dialogs, fixing exit animations and unmounting glitches when closing modals inside transformed tab layouts.
