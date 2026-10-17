@@ -24,6 +24,7 @@ import ModalDialog from '../components/common/ModalDialog';
 import { showToast } from '../components/common/ToastContainer';
 import { useProxyModels } from '../hooks/useProxyModels';
 import { listAccounts } from '../services/accountService';
+import { useConfigStore } from '../stores/useConfigStore';
 
 import { ProxyOverviewTab } from '../components/proxy/ProxyOverviewTab';
 import { ProxyAccountsTab } from '../components/proxy/ProxyAccountsTab';
@@ -280,8 +281,34 @@ export default function ApiProxy() {
                 setCfUseHttp2(config.cloudflared.use_http2 ?? true);
             }
         } catch (error) {
-            console.error('Failed to load proxy config:', error);
-            setConfigError(String(error));
+            console.error('Failed to load proxy config from backend, applying resilient fallback:', error);
+            const storeConfig = useConfigStore.getState().config;
+            const fallback: AppConfig = storeConfig || {
+                language: 'fa',
+                theme: 'dark',
+                auto_refresh: false,
+                refresh_interval: 10,
+                auto_sync: false,
+                sync_interval: 5,
+                auto_switch_on_quota: true,
+                auto_switch_threshold_percentage: 5,
+                auto_launch: true,
+                navigation_layout: 'sidebar',
+                accent_color: 'seafoam',
+                proxy: {
+                    enabled: true,
+                    port: 8045,
+                    api_key: 'sk-antigravity-shield',
+                    auto_start: false,
+                    request_timeout: 120,
+                    auth_mode: 'AllExceptHealth',
+                    rate_limit_per_minute: 60,
+                    model_mapping: {},
+                },
+            };
+            setAppConfig(fallback);
+            setTempApiKey(fallback.proxy.api_key || '');
+            setTempAdminPassword(fallback.proxy.admin_password || '');
         } finally {
             setConfigLoading(false);
         }

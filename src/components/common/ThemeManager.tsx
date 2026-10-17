@@ -48,13 +48,13 @@ export default function ThemeManager() {
         root.setAttribute('data-accent', accent.id);
     }, [config?.accent_color]);
 
-    // Apply theme when config changes
+    // Apply theme when config changes or fallback on early mount
     useEffect(() => {
-        if (!config) return;
+        const activeTheme = config?.theme || localStorage.getItem('app-theme-preference') || 'dark';
 
-        const applyTheme = async (theme: string) => {
+        const applyTheme = async (t: string) => {
             const root = document.documentElement;
-            const isDark = theme === 'dark';
+            const isDark = t === 'dark';
 
             // Set Tauri window background color
             // Skip on Linux due to crash with transparent windows + softbuffer
@@ -70,7 +70,7 @@ export default function ThemeManager() {
 
                         // Sync Windows title bar theme (for minimize/maximize/close button colors)
                         const { invoke } = await import('@tauri-apps/api/core');
-                        invoke('set_window_theme', { theme }).catch(() => {
+                        invoke('set_window_theme', { theme: t }).catch(() => {
                             // Ignore errors on non-Windows platforms
                         });
                     }
@@ -80,7 +80,7 @@ export default function ThemeManager() {
             }
 
             // Set DaisyUI theme
-            root.setAttribute('data-theme', theme);
+            root.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
             // Set inline style for immediate visual feedback
             root.style.backgroundColor = isDark ? '#060807' : '#FAFBFC';
@@ -93,12 +93,10 @@ export default function ThemeManager() {
             }
         };
 
-        const theme = config.theme || 'system';
-
         // Sync to localStorage for early boot check
-        localStorage.setItem('app-theme-preference', theme);
+        localStorage.setItem('app-theme-preference', activeTheme);
 
-        if (theme === 'system') {
+        if (activeTheme === 'system') {
             const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
             const handleSystemChange = (e: MediaQueryListEvent | MediaQueryList) => {
@@ -113,7 +111,7 @@ export default function ThemeManager() {
             mediaQuery.addEventListener('change', handleSystemChange);
             return () => mediaQuery.removeEventListener('change', handleSystemChange);
         } else {
-            applyTheme(theme);
+            applyTheme(activeTheme);
         }
     }, [config?.theme]);
 

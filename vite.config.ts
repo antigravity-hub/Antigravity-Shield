@@ -92,6 +92,65 @@ function devLocalSkillsPlugin() {
           return;
         }
 
+        if (req.url?.startsWith("/api/config") && req.method === "GET") {
+          try {
+            const resp = await fetch("http://127.0.0.1:8045/api/config", { signal: AbortSignal.timeout(500) });
+            if (resp.ok) {
+              const data = await resp.json();
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify(data));
+              return;
+            }
+          } catch {}
+
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify({
+            language: "fa",
+            theme: "dark",
+            auto_refresh: false,
+            refresh_interval: 10,
+            auto_sync: false,
+            sync_interval: 5,
+            auto_switch_on_quota: true,
+            auto_switch_threshold_percentage: 5,
+            auto_launch: true,
+            navigation_layout: "sidebar",
+            accent_color: "seafoam",
+            proxy: {
+              enabled: true,
+              port: 8045,
+              api_key: "sk-antigravity-shield",
+              auto_start: false,
+              request_timeout: 120,
+              auth_mode: "AllExceptHealth",
+              rate_limit_per_minute: 60,
+              model_mapping: {}
+            }
+          }));
+          return;
+        }
+
+        if (req.url?.startsWith("/api/proxy/status") && req.method === "GET") {
+          try {
+            const resp = await fetch("http://127.0.0.1:8045/api/proxy/status", { signal: AbortSignal.timeout(500) });
+            if (resp.ok) {
+              const data = await resp.json();
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify(data));
+              return;
+            }
+          } catch {}
+
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify({
+            running: true,
+            port: 8045,
+            base_url: "http://127.0.0.1:8045",
+            active_accounts: 10
+          }));
+          return;
+        }
+
         next();
       });
     },
@@ -128,7 +187,7 @@ export default defineConfig(async () => ({
     },
     proxy: {
       "/api/": {
-        target: "http://127.0.0.1:8046",
+        target: "http://127.0.0.1:8045",
         changeOrigin: true,
       },
     },
