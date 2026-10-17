@@ -571,7 +571,7 @@ export default function ApiProxy() {
     const executeClearSessionBindings = async () => {
         setIsClearBindingsConfirmOpen(false);
         try {
-            await invoke('clear_session_bindings');
+            await invoke('clear_proxy_session_bindings');
             showToast(t('proxy.config.scheduling.clear_bindings_success'), 'success');
         } catch (error) {
             console.error('Failed to clear session bindings:', error);
@@ -583,7 +583,7 @@ export default function ApiProxy() {
     const executeClearRateLimits = async () => {
         setIsClearRateLimitsConfirmOpen(false);
         try {
-            await invoke('clear_rate_limits');
+            await invoke('clear_all_proxy_rate_limits');
             showToast(t('proxy.config.scheduling.clear_rate_limits_success'), 'success');
         } catch (error) {
             console.error('Failed to clear rate limits:', error);
@@ -597,10 +597,10 @@ export default function ApiProxy() {
         setLoading(true);
         try {
             if (status.running) {
-                await invoke('stop_proxy');
+                await invoke('stop_proxy_service');
                 showToast(t('proxy.status.stopped'), 'info');
             } else {
-                await invoke('start_proxy', { config: appConfig?.proxy || {} });
+                await invoke('start_proxy_service', { config: appConfig?.proxy || {} });
                 showToast(t('proxy.status.started'), 'success');
             }
             await loadStatus();

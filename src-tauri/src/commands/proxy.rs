@@ -66,6 +66,17 @@ pub async fn start_proxy_service(
     .await
 }
 
+/// 启动反代服务简写别名 (start_proxy)
+#[tauri::command]
+pub async fn start_proxy(
+    config: ProxyConfig,
+    state: State<'_, ProxyServiceState>,
+    cf_state: State<'_, crate::commands::cloudflared::CloudflaredState>,
+    app_handle: tauri::AppHandle,
+) -> Result<ProxyStatus, String> {
+    start_proxy_service(config, state, cf_state, app_handle).await
+}
+
 struct StartingGuard(Arc<AtomicBool>);
 impl Drop for StartingGuard {
     fn drop(&mut self) {
@@ -304,6 +315,12 @@ pub async fn stop_proxy_service(state: State<'_, ProxyServiceState>) -> Result<(
     }
 
     Ok(())
+}
+
+/// 停止反代服务简写别名 (stop_proxy)
+#[tauri::command]
+pub async fn stop_proxy(state: State<'_, ProxyServiceState>) -> Result<(), String> {
+    stop_proxy_service(state).await
 }
 
 /// 获取反代服务状态
@@ -687,6 +704,14 @@ pub async fn clear_proxy_session_bindings(
     }
 }
 
+/// 清除会话绑定简写别名 (clear_session_bindings)
+#[tauri::command]
+pub async fn clear_session_bindings(
+    state: State<'_, ProxyServiceState>,
+) -> Result<(), String> {
+    clear_proxy_session_bindings(state).await
+}
+
 // ===== [FIX #820] 固定账号模式命令 =====
 
 /// 设置优先使用的账号（固定账号模式）
@@ -768,6 +793,14 @@ pub async fn clear_all_proxy_rate_limits(
     } else {
         Err("服务未运行".to_string())
     }
+}
+
+/// 清除限流记录简写别名 (clear_rate_limits)
+#[tauri::command]
+pub async fn clear_rate_limits(
+    state: State<'_, ProxyServiceState>,
+) -> Result<(), String> {
+    clear_all_proxy_rate_limits(state).await
 }
 
 /// 触发所有代理的健康检查，并返回更新后的配置

@@ -34,12 +34,16 @@ const COMMAND_MAPPING: Record<string, { url: string; method: 'GET' | 'POST' | 'D
   // Proxy Control & Status
   'get_proxy_status': { url: '/api/proxy/status', method: 'GET' },
   'start_proxy_service': { url: '/api/proxy/start', method: 'POST' },
+  'start_proxy': { url: '/api/proxy/start', method: 'POST' },
   'stop_proxy_service': { url: '/api/proxy/stop', method: 'POST' },
+  'stop_proxy': { url: '/api/proxy/stop', method: 'POST' },
   'update_model_mapping': { url: '/api/proxy/mapping', method: 'POST' },
   'generate_api_key': { url: '/api/proxy/api-key/generate', method: 'POST' },
   'clear_proxy_session_bindings': { url: '/api/proxy/session-bindings/clear', method: 'POST' },
+  'clear_session_bindings': { url: '/api/proxy/session-bindings/clear', method: 'POST' },
   'clear_proxy_rate_limit': { url: '/api/proxy/rate-limits/:accountId', method: 'DELETE' },
   'clear_all_proxy_rate_limits': { url: '/api/proxy/rate-limits', method: 'DELETE' },
+  'clear_rate_limits': { url: '/api/proxy/rate-limits', method: 'DELETE' },
   'check_proxy_health': { url: '/api/proxy/health-check/trigger', method: 'POST' },
   'proxy_execute_diagnostic_probe': { url: '/api/proxy/diagnostic/probe', method: 'POST' },
   'get_preferred_account': { url: '/api/proxy/preferred-account', method: 'GET' },
@@ -172,20 +176,40 @@ const COMMAND_MAPPING: Record<string, { url: string; method: 'GET' | 'POST' | 'D
   'get_overlay_payload': { url: '/api/system/overlay/payload', method: 'GET' },
 };
 
+const COMMAND_ALIASES: Record<string, string> = {
+  'start_proxy': 'start_proxy_service',
+  'stop_proxy': 'stop_proxy_service',
+  'clear_session_bindings': 'clear_proxy_session_bindings',
+  'clear_rate_limits': 'clear_all_proxy_rate_limits',
+  'refresh_account_quota': 'fetch_account_quota',
+  'warm_up_accounts': 'warm_up_all_accounts',
+};
+
 export async function request<T>(cmd: string, args?: any): Promise<T> {
+  const targetCmd = COMMAND_ALIASES[cmd] || cmd;
+
   // 1. Tauri 环境：直接使用 invoke ...
   if (isTauri()) {
     try {
       const { invoke } = await import('@tauri-apps/api/core');
-      return await invoke<T>(cmd, args);
-    } catch (error) {
-      console.error(`Tauri Invoke Error [${cmd}]:`, error);
+      return await invoke<T>(targetCmd, args);
+    } catch (error: any) {
+      // If alias failed with command not found, try original cmd as fallback
+      if (targetCmd !== cmd && String(error).includes('not found')) {
+        try {
+          const { invoke } = await import('@tauri-apps/api/core');
+          return await invoke<T>(cmd, args);
+        } catch {
+          // ignore fallback error and throw original
+        }
+      }
+      console.error(`Tauri Invoke Error [${targetCmd} (from ${cmd})]:`, error);
       throw error;
     }
   }
 
   // 2. Web 环境：映射到 HTTP API
-  const mapping = COMMAND_MAPPING[cmd];
+  const mapping = COMMAND_MAPPING[targetCmd] || COMMAND_MAPPING[cmd];
   if (!mapping) {
     console.error(`Command [${cmd}] is not yet mapped for Web mode. Failing.`);
     throw new Error(`Command [${cmd}] not supported in Web mode.`);

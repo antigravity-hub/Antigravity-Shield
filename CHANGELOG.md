@@ -3,6 +3,8 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.1.3 (2026-10-17)**:
+        -   **Proxy & API Improvements**: Stability and IPC pipeline improvements.
     *   **v6.1.2 (2026-10-17)**:
         -   **Proxy & API Improvements**: Internal optimizations and stability improvements for API proxy pipelines.
     *   **v6.1.1 (2026-10-16)**:
