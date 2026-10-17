@@ -105,7 +105,7 @@ export default function CircuitBreaker({
                                         defaultValue={seconds}
                                         key={`${idx}-${seconds}`}
                                         onBlur={(e) => handleLevelChange(idx, e.target.value)}
-                                        className="w-full bg-white dark:bg-base-100 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 text-sm font-mono focus:ring-2 focus:ring-blue-500/20 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                        className="w-full bg-white dark:bg-base-100 border border-gray-200 dark:border-base-300 rounded-lg px-3 py-1.5 text-sm font-mono text-gray-900 dark:text-base-content focus:ring-2 focus:ring-blue-500/20 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         min="0"
                                     />
                                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold opacity-30 select-none pointer-events-none">S</span>

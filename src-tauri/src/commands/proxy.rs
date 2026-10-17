@@ -1073,12 +1073,14 @@ pub async fn proxy_execute_diagnostic_probe(
     };
 
     let mut req = client.post(&url).json(&body);
-    if !api_key.is_empty() {
-        if is_openai {
+    if is_openai {
+        if !api_key.is_empty() {
             req = req.header("Authorization", format!("Bearer {}", api_key));
-        } else {
+        }
+    } else {
+        req = req.header("anthropic-version", "2023-06-01");
+        if !api_key.is_empty() {
             req = req.header("x-api-key", &api_key);
-            req = req.header("anthropic-version", "2023-06-01");
         }
     }
 

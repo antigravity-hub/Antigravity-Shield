@@ -43,7 +43,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
     models = [],
 }) => {
     // Live Probe State
-    const [probeModel, setProbeModel] = useState('gemini-3-flash');
+    const [probeModel, setProbeModel] = useState('gemini-3.5-flash');
     const [probeProtocol, setProbeProtocol] = useState<'openai' | 'claude'>('openai');
     const [probePrompt, setProbePrompt] = useState('Verify Antigravity Shield API Proxy connection and latency.');
     const [probeState, setProbeState] = useState<'idle' | 'probing' | 'success' | 'error'>('idle');
@@ -55,6 +55,18 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
     // Health Telemetry
     const [healthLatency, setHealthLatency] = useState<number | null>(null);
     const [healthStatus, setHealthStatus] = useState<'ok' | 'down'>('down');
+
+    // Group models by family/group for ergonomic dropdown navigation
+    const groupedModels = React.useMemo(() => {
+        if (!models || models.length === 0) return {};
+        const map: Record<string, any[]> = {};
+        for (const m of models) {
+            const group = m.group || 'Models';
+            if (!map[group]) map[group] = [];
+            map[group].push(m);
+        }
+        return map;
+    }, [models]);
 
     // Auto-select valid model when models list is available
     useEffect(() => {
@@ -243,14 +255,18 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                             style={{ borderColor: 'var(--color-accent)' }}
                         >
                             {models && models.length > 0 ? (
-                                models.map((m: any) => (
-                                    <option key={m.id} value={m.id}>
-                                        {m.name && m.name !== m.id ? `${m.name} (${m.id})` : m.id}
-                                    </option>
+                                Object.entries(groupedModels).map(([group, groupList]) => (
+                                    <optgroup key={group} label={group}>
+                                        {groupList.map((m: any) => (
+                                            <option key={m.id} value={m.id}>
+                                                {m.name && m.name !== m.id ? `${m.name} (${m.id})` : m.id}
+                                            </option>
+                                        ))}
+                                    </optgroup>
                                 ))
                             ) : (
                                 <>
-                                    <option value="gemini-3-flash">Gemini 3 Flash (gemini-3-flash)</option>
+                                    <option value="gemini-3.5-flash">Gemini 3.5 Flash (gemini-3.5-flash)</option>
                                     <option value="gemini-2.5-flash">Gemini 2.5 Flash (gemini-2.5-flash)</option>
                                     <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (claude-sonnet-4-6)</option>
                                 </>

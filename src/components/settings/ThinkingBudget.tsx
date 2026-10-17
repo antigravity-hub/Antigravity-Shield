@@ -68,13 +68,13 @@ export default function ThinkingBudget({
                     </p>
                 </div>
 
-                <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+                <div className="flex bg-gray-100 dark:bg-base-200/80 p-1 rounded-lg border border-gray-200/50 dark:border-base-300">
                     {modes.map((key) => (
                         <button
                             key={key}
                             onClick={() => handleModeChange(key)}
                             className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${config.mode === key
-                                ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                                ? 'bg-white dark:bg-base-100 text-blue-600 dark:text-blue-400 shadow-sm'
                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                                 }`}
                         >
@@ -108,13 +108,13 @@ export default function ThinkingBudget({
                             <span className="text-xs text-gray-500 dark:text-gray-400">
                                 {t("settings.thinking_budget.effort_label", { defaultValue: "Thinking Effort" })}:
                             </span>
-                            <div className="flex bg-gray-100 dark:bg-gray-800 p-0.5 rounded-lg">
+                            <div className="flex bg-gray-100 dark:bg-base-200/80 p-0.5 rounded-lg border border-gray-200/50 dark:border-base-300">
                                 {efforts.map((effort) => (
                                     <button
                                         key={effort}
                                         onClick={() => handleEffortChange(effort)}
                                         className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${config.effort === effort
-                                            ? 'bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm'
+                                            ? 'bg-white dark:bg-base-100 text-purple-600 dark:text-purple-400 shadow-sm'
                                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                                             }`}
                                     >
@@ -140,7 +140,7 @@ export default function ThinkingBudget({
                                 value={inputValue}
                                 onChange={(e) => handleInputChange(e.target.value)}
                                 onBlur={handleInputBlur}
-                                className="w-24 bg-white dark:bg-base-100 border border-gray-200 dark:border-gray-700 rounded-md px-2 py-1 text-xs font-mono focus:ring-1 focus:ring-blue-500 outline-none transition-all [appearance:textfield]"
+                                className="w-24 bg-white dark:bg-base-100 border border-gray-200 dark:border-base-300 rounded-md px-2 py-1 text-xs font-mono focus:ring-1 focus:ring-blue-500 outline-none transition-all [appearance:textfield] text-gray-900 dark:text-base-content"
                                 min={1024}
                                 max={65536}
                                 step={1024}

@@ -56,7 +56,7 @@ export default function GlobalSystemPrompt({
                             defaultValue: "Enter global system prompt...\nExample: You are a senior fullstack engineer specializing in React and Rust.",
                         })}
                         rows={6}
-                        className="w-full bg-white dark:bg-base-100 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none transition-all resize-y min-h-[120px]"
+                        className="w-full bg-white dark:bg-base-100 border border-gray-200 dark:border-base-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-purple-500/20 outline-none transition-all resize-y min-h-[120px] text-gray-900 dark:text-base-content"
                     />
                     <div className="flex items-center justify-between">
                         <p className="text-xs text-gray-400 dark:text-gray-500">
