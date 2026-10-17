@@ -38,7 +38,7 @@ interface NavSection {
 export const Sidebar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
-  const { config, saveConfig, isMenuItemHidden } = useConfigStore();
+  const { config, saveConfig, updateTheme, isMenuItemHidden } = useConfigStore();
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     return localStorage.getItem('antigravity_sidebar_collapsed') === 'true';
   });
