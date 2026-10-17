@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { request as invoke } from '../../utils/request';
 import { showToast } from '../common/ToastContainer';
 import { useAppVersion } from '../../constants/version';
+import { getUpdateSeverity } from '../../utils/version';
 
 type CheckStatus = 'idle' | 'checking' | 'up-to-date' | 'has-update' | 'cooldown' | 'error';
 
@@ -120,8 +121,7 @@ export const NavVersionBadge: React.FC<NavVersionBadgeProps> = ({ compact = fals
           if (resp.ok) {
             const release = await resp.json();
             const tag = (release.tag_name || '').replace(/^v/i, '');
-            const cur = currentVersion.replace(/^v/i, '');
-            const hasUpdate = Boolean(tag && tag !== cur);
+            const hasUpdate = Boolean(tag && getUpdateSeverity(currentVersion, tag) !== 'none');
             result = {
               has_update: hasUpdate,
               latest_version: tag || currentVersion,

@@ -659,8 +659,9 @@ pub fn get_installed_toolkit_version(subdirs: &[&str]) -> Option<String> {
 /// Compares two semver strings: returns true if candidate is strictly newer than current
 pub fn is_version_newer(candidate: &str, current: &str) -> bool {
     fn parse_parts(v: &str) -> Vec<u32> {
-        v.trim_start_matches('v')
-            .split('.')
+        let clean = v.trim_start_matches('v');
+        let base = clean.split('-').next().unwrap_or(clean);
+        base.split('.')
             .filter_map(|s| s.parse::<u32>().ok())
             .collect()
     }

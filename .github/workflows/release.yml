@@ -335,15 +335,15 @@ jobs:
           artifacts: "release-files/*,updater.json"
           artifactErrorsFailBuild: false
           replacesArtifacts: true
-          prerelease: ${{ startsWith(github.ref_name, 'v6.1.') || startsWith(github.event.inputs.release_tag, 'v6.1.') || contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
-          makeLatest: ${{ (startsWith(github.ref_name, 'v6.1.') || startsWith(github.event.inputs.release_tag, 'v6.1.') || contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true') && 'false' || 'legacy' }}
+          prerelease: ${{ contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
+          makeLatest: ${{ (contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true') && 'false' || 'legacy' }}
 
       - name: Dispatch Release Unix Workflow
         if: github.event_name == 'workflow_dispatch' && !startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.event.inputs.release_tag || github.ref_name }}
-          IS_PRE: ${{ startsWith(github.ref_name, 'v6.1.') || startsWith(github.event.inputs.release_tag, 'v6.1.') || contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
+          IS_PRE: ${{ contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
         run: |
           echo "Dispatching Release Unix for tag $TAG (prerelease: $IS_PRE)..."
           gh workflow run release-unix.yml -f release_tag="$TAG" -f prerelease="$IS_PRE" || echo "Workflow dispatch completed or skipped"

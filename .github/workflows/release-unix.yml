@@ -459,5 +459,5 @@ jobs:
           artifacts: "release-files/*"
           artifactErrorsFailBuild: false
           replacesArtifacts: true
-          prerelease: ${{ startsWith(github.ref_name, 'v6.1.') || startsWith(github.event.inputs.release_tag, 'v6.1.') || contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
-          makeLatest: ${{ (startsWith(github.ref_name, 'v6.1.') || startsWith(github.event.inputs.release_tag, 'v6.1.') || contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true') && 'false' || 'legacy' }}
+          prerelease: ${{ contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true' }}
+          makeLatest: ${{ (contains(github.ref_name, '-') || contains(github.event.inputs.release_tag, '-') || github.event.inputs.prerelease == true || github.event.inputs.prerelease == 'true') && 'false' || 'legacy' }}
