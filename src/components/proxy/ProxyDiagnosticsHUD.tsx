@@ -14,12 +14,21 @@ import {
 } from 'lucide-react';
 import { AppConfig } from '../../types/config';
 import { ProxyMonitor } from './ProxyMonitor';
+import { request } from '../../utils/request';
 
 interface ProxyStatus {
     running: boolean;
     port: number;
     base_url: string;
     active_accounts: number;
+}
+
+interface DiagnosticProbeResult {
+    success: boolean;
+    status_code: number;
+    latency_ms: number;
+    content: string;
+    error?: string;
 }
 
 interface ProxyDiagnosticsHUDProps {
@@ -30,12 +39,9 @@ interface ProxyDiagnosticsHUDProps {
 
 export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
     status,
-    appConfig,
+    appConfig: _appConfig,
+    models = [],
 }) => {
-    const port = status.running ? status.port : (appConfig.proxy.port || 8045);
-    const baseUrl = `http://127.0.0.1:${port}`;
-    const apiKey = appConfig.proxy.api_key || 'YOUR_API_KEY';
-
     // Live Probe State
     const [probeModel, setProbeModel] = useState('gemini-3-flash');
     const [probeProtocol, setProbeProtocol] = useState<'openai' | 'claude'>('openai');
@@ -50,7 +56,14 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
     const [healthLatency, setHealthLatency] = useState<number | null>(null);
     const [healthStatus, setHealthStatus] = useState<'ok' | 'down'>('down');
 
-    // Periodic Health Ping
+    // Auto-select valid model when models list is available
+    useEffect(() => {
+        if (models && models.length > 0 && !models.some((m: any) => m.id === probeModel)) {
+            setProbeModel(models[0].id);
+        }
+    }, [models]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Periodic Health Ping via Native IPC (bypasses WebView2 Mixed Content / Loopback isolation)
     const pingHealth = async () => {
         if (!status.running) {
             setHealthStatus('down');
@@ -58,15 +71,13 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
             return;
         }
 
-        const start = performance.now();
         try {
-            const res = await fetch(`${baseUrl}/health`, {
-                method: 'GET',
-                signal: AbortSignal.timeout(3000),
+            const res = await request<DiagnosticProbeResult>('proxy_execute_diagnostic_probe', {
+                protocol: 'health',
             });
-            if (res.ok) {
+            if (res && res.success) {
                 setHealthStatus('ok');
-                setHealthLatency(Math.round(performance.now() - start));
+                setHealthLatency(res.latency_ms);
             } else {
                 setHealthStatus('down');
             }
@@ -79,9 +90,9 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
         pingHealth();
         const interval = setInterval(pingHealth, 4000);
         return () => clearInterval(interval);
-    }, [status.running, baseUrl]);
+    }, [status.running]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Live Probe Execution
+    // Live Probe Execution via Native IPC Command
     const executeLiveProbe = async () => {
         if (!status.running) {
             setProbeState('error');
@@ -94,72 +105,26 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
         setProbeResponse(null);
         setProbeLatency(null);
 
-        const startTime = performance.now();
-
         try {
-            if (probeProtocol === 'openai') {
-                const res = await fetch(`${baseUrl}/v1/chat/completions`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${apiKey}`,
-                    },
-                    body: JSON.stringify({
-                        model: probeModel,
-                        messages: [{ role: 'user', content: probePrompt }],
-                        max_tokens: 150,
-                        stream: false,
-                    }),
-                    signal: AbortSignal.timeout(15000),
-                });
+            const res = await request<DiagnosticProbeResult>('proxy_execute_diagnostic_probe', {
+                protocol: probeProtocol,
+                model: probeModel,
+                prompt: probePrompt,
+            });
 
-                const duration = Math.round(performance.now() - startTime);
-                setProbeLatency(duration);
+            setProbeLatency(res.latency_ms);
 
-                if (!res.ok) {
-                    const errData = await res.json().catch(() => ({}));
-                    throw new Error(errData.error?.message || `HTTP error ${res.status}: ${res.statusText}`);
-                }
-
-                const data = await res.json();
-                const content = data.choices?.[0]?.message?.content || JSON.stringify(data, null, 2);
-                setProbeResponse(content);
+            if (res.success) {
+                setProbeResponse(res.content);
                 setProbeState('success');
             } else {
-                // Claude protocol
-                const res = await fetch(`${baseUrl}/v1/messages`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey,
-                        'anthropic-version': '2023-06-01',
-                    },
-                    body: JSON.stringify({
-                        model: probeModel,
-                        messages: [{ role: 'user', content: probePrompt }],
-                        max_tokens: 150,
-                    }),
-                    signal: AbortSignal.timeout(15000),
-                });
-
-                const duration = Math.round(performance.now() - startTime);
-                setProbeLatency(duration);
-
-                if (!res.ok) {
-                    const errData = await res.json().catch(() => ({}));
-                    throw new Error(errData.error?.message || `HTTP error ${res.status}: ${res.statusText}`);
-                }
-
-                const data = await res.json();
-                const text = data.content?.[0]?.text || JSON.stringify(data, null, 2);
-                setProbeResponse(text);
-                setProbeState('success');
+                setProbeError(res.error || 'Diagnostic probe returned an error.');
+                setProbeState('error');
             }
         } catch (err: any) {
-            const duration = Math.round(performance.now() - startTime);
-            setProbeLatency(duration);
+            setProbeLatency(0);
             setProbeState('error');
-            setProbeError(err.message || 'Unknown network error during completion probe.');
+            setProbeError(err?.message || err?.toString() || 'Unknown IPC error during diagnostic probe.');
         }
     };
 
@@ -174,7 +139,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
         <div className="space-y-5 animate-in fade-in duration-200">
             {/* Top Diagnostics Bento Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-white dark:bg-base-100 p-4 rounded-xl border border-gray-100 dark:border-base-200 shadow-sm flex items-center justify-between">
+                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                             <Server size={15} style={{ color: 'var(--color-accent)' }} />
@@ -204,7 +169,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     )}
                 </div>
 
-                <div className="bg-white dark:bg-base-100 p-4 rounded-xl border border-gray-100 dark:border-base-200 shadow-sm">
+                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                         <Cpu size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>Stream Engine</span>
@@ -217,7 +182,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-base-100 p-4 rounded-xl border border-gray-100 dark:border-base-200 shadow-sm">
+                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                         <Zap size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>Failover Threshold</span>
@@ -229,7 +194,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
             </div>
 
             {/* Interactive "Test Connection" Live Probe Card */}
-            <div className="bg-white dark:bg-base-100 rounded-2xl p-5 border border-gray-100 dark:border-base-200 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="text-sm font-bold text-gray-900 dark:text-base-content flex items-center gap-2">
@@ -241,13 +206,13 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-base-200 p-1 rounded-xl">
+                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-base-300 p-1 rounded-xl">
                         <button
                             onClick={() => setProbeProtocol('openai')}
                             className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                                 probeProtocol === 'openai'
                                     ? 'bg-white dark:bg-base-100 text-gray-900 dark:text-base-content shadow-xs'
-                                    : 'text-gray-500 hover:text-gray-800'
+                                    : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
                             }`}
                         >
                             OpenAI Protocol
@@ -257,7 +222,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                             className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                                 probeProtocol === 'claude'
                                     ? 'bg-white dark:bg-base-100 text-gray-900 dark:text-base-content shadow-xs'
-                                    : 'text-gray-500 hover:text-gray-800'
+                                    : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
                             }`}
                         >
                             Claude Protocol
@@ -274,15 +239,22 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                         <select
                             value={probeModel}
                             onChange={(e) => setProbeModel(e.target.value)}
-                            className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-base-200 bg-white dark:bg-base-200 text-xs font-mono text-gray-900 dark:text-base-content focus:outline-none"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs font-mono text-gray-900 dark:text-base-content focus:outline-none"
                             style={{ borderColor: 'var(--color-accent)' }}
                         >
-                            <option value="gemini-3-flash">gemini-3-flash</option>
-                            <option value="gemini-3.8-flash">gemini-3.8-flash (Normalized)</option>
-                            <option value="gemini-3.8-flash-high">gemini-3.8-flash-high</option>
-                            <option value="gpt-4o-mini">gpt-4o-mini (OpenAI Alias)</option>
-                            <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
-                            <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+                            {models && models.length > 0 ? (
+                                models.map((m: any) => (
+                                    <option key={m.id} value={m.id}>
+                                        {m.name && m.name !== m.id ? `${m.name} (${m.id})` : m.id}
+                                    </option>
+                                ))
+                            ) : (
+                                <>
+                                    <option value="gemini-3-flash">Gemini 3 Flash (gemini-3-flash)</option>
+                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (gemini-2.5-flash)</option>
+                                    <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (claude-sonnet-4-6)</option>
+                                </>
+                            )}
                         </select>
                     </div>
 
@@ -296,7 +268,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 value={probePrompt}
                                 onChange={(e) => setProbePrompt(e.target.value)}
                                 placeholder="Enter diagnostic prompt..."
-                                className="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-base-200 bg-white dark:bg-base-200 text-xs text-gray-900 dark:text-base-content focus:outline-none"
+                                className="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content focus:outline-none"
                             />
                             <button
                                 onClick={executeLiveProbe}
@@ -322,7 +294,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
 
                 {/* Probe Result Box (4-State Display) */}
                 {probeState === 'probing' && (
-                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-base-200/50 border border-gray-200 dark:border-base-300 flex items-center justify-center gap-3 py-8">
+                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-base-300/40 border border-gray-200 dark:border-base-300 flex items-center justify-center gap-3 py-8">
                         <RotateCcw size={18} className="animate-spin" style={{ color: 'var(--color-accent)' }} />
                         <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                             Sending probe request through {probeProtocol === 'openai' ? '/v1/chat/completions' : '/v1/messages'}...
@@ -351,13 +323,13 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                             </div>
                         </div>
 
-                        <div className="relative group bg-white dark:bg-base-100 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
+                        <div className="relative group bg-gray-50 dark:bg-base-100 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
                             <pre className="text-xs font-mono text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
                                 {probeResponse}
                             </pre>
                             <button
                                 onClick={handleCopyResponse}
-                                className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 dark:bg-base-200 text-gray-600 dark:text-gray-300 hover:bg-gray-200 transition-colors"
+                                className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 dark:bg-base-200 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-base-300 transition-colors"
                                 title="Copy Response"
                             >
                                 {copiedResponse ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
@@ -381,7 +353,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 </span>
                             )}
                         </div>
-                        <p className="text-xs font-mono text-rose-700 dark:text-rose-400 bg-white/70 dark:bg-black/30 p-2.5 rounded-lg border border-rose-200/50 dark:border-rose-900/30">
+                        <p className="text-xs font-mono text-rose-700 dark:text-rose-300 bg-white/70 dark:bg-base-100/60 p-2.5 rounded-lg border border-rose-200/50 dark:border-rose-900/30">
                             {probeError}
                         </p>
                     </div>
@@ -389,8 +361,8 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
             </div>
 
             {/* Embedded Live Proxy Monitor (Real-Time Request Traffic) */}
-            <div className="bg-white dark:bg-base-100 rounded-2xl border border-gray-100 dark:border-base-200 shadow-sm overflow-hidden">
-                <div className="px-5 py-3.5 border-b border-gray-100 dark:border-base-200 flex items-center justify-between">
+            <div className="bg-white dark:bg-base-200/60 rounded-2xl border border-gray-100 dark:border-base-300 shadow-sm overflow-hidden">
+                <div className="px-5 py-3.5 border-b border-gray-100 dark:border-base-300 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Terminal size={16} style={{ color: 'var(--color-accent)' }} />
                         <h4 className="text-xs font-bold text-gray-900 dark:text-base-content uppercase tracking-wider">

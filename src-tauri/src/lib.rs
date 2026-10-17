@@ -668,6 +668,7 @@ pub fn run() {
             commands::proxy::start_warp_download,
             commands::proxy::connect_warp_proxy,
             commands::proxy::disconnect_warp_proxy,
+            commands::proxy::proxy_execute_diagnostic_probe,
             // Proxy Pool Binding commands
             commands::proxy_pool::bind_account_proxy,
             commands::proxy_pool::unbind_account_proxy,

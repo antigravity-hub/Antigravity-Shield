@@ -969,3 +969,185 @@ pub async fn disconnect_warp_proxy() -> Result<String, String> {
     crate::modules::warp_manager::WARP_MANAGER.disconnect_warp().await
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DiagnosticProbeResult {
+    pub success: bool,
+    pub status_code: u16,
+    pub latency_ms: u64,
+    pub content: String,
+    pub error: Option<String>,
+}
+
+/// 执行 API Proxy 诊断探测 (解决 WebView2 跨源/Loopback 隔离导致的 Failed to fetch)
+#[tauri::command]
+pub async fn proxy_execute_diagnostic_probe(
+    protocol: String,
+    model: Option<String>,
+    prompt: Option<String>,
+    state: State<'_, ProxyServiceState>,
+) -> Result<DiagnosticProbeResult, String> {
+    // 1. 获取运行中实例的端口和 API Key
+    let (port, api_key) = {
+        let instance_lock = state.instance.read().await;
+        if let Some(instance) = instance_lock.as_ref() {
+            (instance.config.port, instance.config.api_key.clone())
+        } else {
+            // 如果 instance 尚未启动，如果是健康检查允许尝试默认端口，其它协议直接返回未启动
+            if protocol != "health" {
+                return Ok(DiagnosticProbeResult {
+                    success: false,
+                    status_code: 0,
+                    latency_ms: 0,
+                    content: String::new(),
+                    error: Some("Proxy service is not running. Please start the gateway first.".to_string()),
+                });
+            }
+            if let Ok(app_cfg) = crate::modules::config::load_app_config() {
+                (app_cfg.proxy.port, app_cfg.proxy.api_key)
+            } else {
+                (8045, String::new())
+            }
+        }
+    };
+
+    let start_time = std::time::Instant::now();
+    let client = reqwest::Client::builder()
+        .no_proxy()
+        .timeout(Duration::from_secs(15))
+        .build()
+        .map_err(|e| format!("Failed to build HTTP client: {}", e))?;
+
+    if protocol == "health" {
+        let url = format!("http://127.0.0.1:{}/health", port);
+        match client.get(&url).send().await {
+            Ok(resp) => {
+                let latency_ms = start_time.elapsed().as_millis() as u64;
+                let status_code = resp.status().as_u16();
+                let is_ok = resp.status().is_success();
+                let text = resp.text().await.unwrap_or_default();
+                return Ok(DiagnosticProbeResult {
+                    success: is_ok,
+                    status_code,
+                    latency_ms,
+                    content: text,
+                    error: if is_ok { None } else { Some(format!("HTTP error {}", status_code)) },
+                });
+            }
+            Err(e) => {
+                let latency_ms = start_time.elapsed().as_millis() as u64;
+                return Ok(DiagnosticProbeResult {
+                    success: false,
+                    status_code: 0,
+                    latency_ms,
+                    content: String::new(),
+                    error: Some(format!("Health ping failed: {}", e)),
+                });
+            }
+        }
+    }
+
+    let model_str = model.unwrap_or_else(|| "gemini-3-flash".to_string());
+    let prompt_str = prompt.unwrap_or_else(|| "Verify Antigravity Shield API Proxy connection and latency.".to_string());
+
+    let (url, body, is_openai) = if protocol == "openai" {
+        let url = format!("http://127.0.0.1:{}/v1/chat/completions", port);
+        let body = serde_json::json!({
+            "model": model_str,
+            "messages": [
+                { "role": "user", "content": prompt_str }
+            ],
+            "max_tokens": 150,
+            "stream": false
+        });
+        (url, body, true)
+    } else {
+        let url = format!("http://127.0.0.1:{}/v1/messages", port);
+        let body = serde_json::json!({
+            "model": model_str,
+            "messages": [
+                { "role": "user", "content": prompt_str }
+            ],
+            "max_tokens": 150
+        });
+        (url, body, false)
+    };
+
+    let mut req = client.post(&url).json(&body);
+    if !api_key.is_empty() {
+        if is_openai {
+            req = req.header("Authorization", format!("Bearer {}", api_key));
+        } else {
+            req = req.header("x-api-key", &api_key);
+            req = req.header("anthropic-version", "2023-06-01");
+        }
+    }
+
+    match req.send().await {
+        Ok(resp) => {
+            let latency_ms = start_time.elapsed().as_millis() as u64;
+            let status_code = resp.status().as_u16();
+            let is_success = resp.status().is_success();
+            let text = resp.text().await.unwrap_or_default();
+
+            if is_success {
+                let content = if let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) {
+                    if is_openai {
+                        json.get("choices")
+                            .and_then(|c| c.get(0))
+                            .and_then(|c0| c0.get("message"))
+                            .and_then(|m| m.get("content"))
+                            .and_then(|ct| ct.as_str())
+                            .map(|s| s.to_string())
+                            .unwrap_or_else(|| serde_json::to_string_pretty(&json).unwrap_or_else(|_| text.clone()))
+                    } else {
+                        json.get("content")
+                            .and_then(|c| c.get(0))
+                            .and_then(|c0| c0.get("text"))
+                            .and_then(|t| t.as_str())
+                            .map(|s| s.to_string())
+                            .unwrap_or_else(|| serde_json::to_string_pretty(&json).unwrap_or_else(|_| text.clone()))
+                    }
+                } else {
+                    text
+                };
+
+                Ok(DiagnosticProbeResult {
+                    success: true,
+                    status_code,
+                    latency_ms,
+                    content,
+                    error: None,
+                })
+            } else {
+                let err_msg = if let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) {
+                    json.get("error")
+                        .and_then(|e| e.get("message"))
+                        .and_then(|m| m.as_str())
+                        .map(|s| s.to_string())
+                        .unwrap_or_else(|| format!("HTTP error {}: {}", status_code, text))
+                } else {
+                    format!("HTTP error {}: {}", status_code, text)
+                };
+
+                Ok(DiagnosticProbeResult {
+                    success: false,
+                    status_code,
+                    latency_ms,
+                    content: text,
+                    error: Some(err_msg),
+                })
+            }
+        }
+        Err(e) => {
+            let latency_ms = start_time.elapsed().as_millis() as u64;
+            Ok(DiagnosticProbeResult {
+                success: false,
+                status_code: 0,
+                latency_ms,
+                content: String::new(),
+                error: Some(format!("Diagnostic probe failed: {}", e)),
+            })
+        }
+    }
+}
+
