@@ -160,7 +160,7 @@ fn apply_thinking_hints(
     }
 }
 
-const MAX_RETRY_ATTEMPTS: usize = 3;
+const MAX_RETRY_ATTEMPTS: usize = 10;
 
 // ===== Model Constants for Background Tasks =====
 // These can be adjusted for performance/cost optimization or overridden by custom_mapping
@@ -421,10 +421,8 @@ pub async fn handle_messages(
         );
     }
 
-    // Decide whether this request should be handled by z.ai (Anthropic passthrough) or the existing Google flow.
-    let zai = state.zai.read().await.clone();
-    let zai_enabled =
-        zai.enabled && !matches!(zai.dispatch_mode, crate::proxy::ZaiDispatchMode::Off);
+    // [MODERNIZED M1] Decoupled external zai provider from core request path.
+    // Core Antigravity Shield native proxy relies exclusively on high-performance Cloud Code PA pipeline.
     let google_accounts = state.token_manager.len();
 
     // [CRITICAL REFACTOR] 优先解析请求以获取模型信息(用于智能兜底判断)
@@ -495,45 +493,7 @@ pub async fn handle_messages(
         crate::proxy::common::model_mapping::normalize_to_standard_id(&request.model)
             .unwrap_or_else(|| request.model.clone());
 
-    let use_zai = if !zai_enabled {
-        false
-    } else {
-        match zai.dispatch_mode {
-            crate::proxy::ZaiDispatchMode::Off => false,
-            crate::proxy::ZaiDispatchMode::Exclusive => true,
-            crate::proxy::ZaiDispatchMode::Fallback => {
-                if google_accounts == 0 {
-                    // 没有 Google 账号,使用兜底
-                    tracing::info!(
-                        "[{}] No Google accounts available, using fallback provider",
-                        trace_id
-                    );
-                    true
-                } else {
-                    // [Issue #703 Fix] 智能判断:检查是否有可用的 Google 账号
-                    let has_available = state
-                        .token_manager
-                        .has_available_account("claude", &normalized_model)
-                        .await;
-                    if !has_available {
-                        tracing::info!(
-                            "[{}] All Google accounts unavailable (rate-limited or quota-protected for {}), using fallback provider",
-                            trace_id,
-                            request.model
-                        );
-                    }
-                    !has_available
-                }
-            }
-            crate::proxy::ZaiDispatchMode::Pooled => {
-                // Treat z.ai as exactly one extra slot in the pool.
-                // No strict guarantees: it may get 0 requests if selection never hits.
-                let total = google_accounts.saturating_add(1).max(1);
-                let slot = state.provider_rr.fetch_add(1, Ordering::Relaxed) % total;
-                slot == 0
-            }
-        }
-    };
+    let use_zai = false;
 
     // [CRITICAL FIX] 预先清理所有消息中的 cache_control 字段 (Issue #744)
     // 必须在序列化之前处理，以确保 z.ai 和 Google Flow 都不受历史消息缓存标记干扰
@@ -576,48 +536,6 @@ pub async fn handle_messages(
         experimental_cfg.compression_level.clone()
     };
 
-    if compression_level != "disabled" {
-        // [ACC-P RTK] Low, Medium, High 等级均对传入的工具返回日志执行静态 RTK 去噪折叠
-        for msg in &mut request.messages {
-            crate::proxy::mappers::context_manager::ContextManager::clean_tool_message(msg);
-        }
-
-        // [ACC-P Caveman] Medium, High 等级对除最近 4 条（~2轮）以外的旧对话常驻执行 Caveman 提纯
-        if compression_level == "medium" || compression_level == "high" {
-            let total_msgs = request.messages.len();
-            let start_protection_idx = total_msgs.saturating_sub(4);
-            for (i, msg) in request.messages.iter_mut().enumerate() {
-                if i >= start_protection_idx {
-                    continue;
-                }
-                if msg.role == "user" || msg.role == "assistant" {
-                    match &mut msg.content {
-                        crate::proxy::mappers::claude::models::MessageContent::String(s) => {
-                            let cleaned =
-                                crate::proxy::mappers::caveman_cleaner::CavemanCleaner::clean(s);
-                            if cleaned != *s {
-                                *s = cleaned;
-                            }
-                        }
-                        crate::proxy::mappers::claude::models::MessageContent::Array(blocks) => {
-                            for block in blocks {
-                                if let crate::proxy::mappers::claude::models::ContentBlock::Text {
-                                    text,
-                                } = block
-                                {
-                                    let cleaned = crate::proxy::mappers::caveman_cleaner::CavemanCleaner::clean(text);
-                                    if cleaned != *text {
-                                        *text = cleaned;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     // ===== [Issue #467 Fix] 拦截 Claude Code Warmup 请求 =====
     // Claude Code 会每 10 秒发送一次 warmup 请求来保持连接热身，
     // 这些请求会消耗大量配额。检测到 warmup 请求后直接返回模拟响应。
@@ -627,30 +545,6 @@ pub async fn handle_messages(
             trace_id
         );
         return create_warmup_response(&request, request.stream);
-    }
-
-    if use_zai {
-        // 重新序列化修复后的请求体
-        let mut new_body = match serde_json::to_value(&request) {
-            Ok(v) => v,
-            Err(e) => {
-                tracing::error!("Failed to serialize fixed request for z.ai: {}", e);
-                return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-            }
-        };
-
-        // Inject cache_control into the XML summary message if it is a Forked session
-        inject_cache_control_to_forked_summary(&mut new_body);
-
-        return crate::proxy::providers::zai_anthropic::forward_anthropic_json(
-            &state,
-            axum::http::Method::POST,
-            "/v1/messages",
-            &headers,
-            new_body,
-            request.messages.len(), // [NEW v4.0.0] Pass message count
-        )
-        .await;
     }
 
     // Google Flow 继续使用 request 对象
@@ -790,9 +684,8 @@ pub async fn handle_messages(
     let token_manager = state.token_manager;
 
     let pool_size = token_manager.len();
-    // [FIX] Ensure max_attempts is at least 2 to allow for internal retries (e.g. stripping signatures)
-    // even if the user has only 1 account.
-    let max_attempts = MAX_RETRY_ATTEMPTS.min(pool_size.saturating_add(1)).max(2);
+    // [MODERNIZED M2] Dynamically scale retry attempts with pool size
+    let max_attempts = std::cmp::max(10, pool_size.saturating_add(1));
 
     let mut last_error = String::new();
     let mut retried_without_thinking = false;

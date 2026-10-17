@@ -20,7 +20,7 @@ use crate::proxy::session_manager::SessionManager;
 use crate::proxy::upstream::client::mask_email;
 use axum::http::HeaderMap;
 
-const MAX_RETRY_ATTEMPTS: usize = 3;
+const MAX_RETRY_ATTEMPTS: usize = 10;
 
 fn response_has_inline_image_data(value: &Value) -> bool {
     let response = value.get("response").unwrap_or(value);
@@ -139,7 +139,7 @@ pub async fn handle_generate(
     let request_timeout = state.request_timeout;
     let token_manager = state.token_manager;
     let pool_size = token_manager.len();
-    let max_attempts = MAX_RETRY_ATTEMPTS.min(pool_size).max(1);
+    let max_attempts = std::cmp::max(10, pool_size);
 
     let mut last_error = String::new();
     let mut last_email: Option<String> = None;

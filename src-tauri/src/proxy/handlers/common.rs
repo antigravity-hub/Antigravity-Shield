@@ -116,10 +116,7 @@ pub fn determine_retry_strategy(
                 );
                 RetryStrategy::GraceRetry(Duration::from_millis(actual_delay))
             }
-            Some(delay_ms) => RetryStrategy::FixedDelay(Duration::from_millis(
-                delay_ms.saturating_add(200).min(30_000),
-            )),
-            None => RetryStrategy::LinearBackoff { base_ms: 5000 },
+            _ => RetryStrategy::FixedDelay(Duration::ZERO),
         };
     }
 
@@ -192,12 +189,13 @@ fn determine_retry_strategy_inner(
                         RetryStrategy::FixedDelay(Duration::ZERO)
                     }
                 } else {
-                    let actual_delay = parsed_delay.actual_wait_ms().min(30_000);
-                    RetryStrategy::FixedDelay(Duration::from_millis(actual_delay))
+                    // [MODERNIZED M2] Fast Failover on 429: Eliminate blocking client-facing sleep (was 30s)
+                    // Failover immediately to next candidate Pro account in < 50ms without stalling client connection
+                    RetryStrategy::FixedDelay(Duration::ZERO)
                 }
             } else {
-                // 否则使用线性退避：起始 5s，逐步增加
-                RetryStrategy::LinearBackoff { base_ms: 5000 }
+                // [MODERNIZED M2] Fast Failover on 429: Eliminate linear backoff on client connection
+                RetryStrategy::FixedDelay(Duration::ZERO)
             }
         }
 
@@ -319,15 +317,25 @@ pub async fn apply_retry_strategy(
 
         RetryStrategy::FixedDelay(duration) => {
             let base_ms = duration.as_millis() as u64;
-            info!(
-                "[{}] ⏱️ Retry with fixed delay: status={}, attempt={}/{}, delay={}ms",
-                trace_id,
-                status_code,
-                attempt + 1,
-                max_attempts,
-                base_ms
-            );
-            sleep(duration).await;
+            if base_ms > 0 {
+                info!(
+                    "[{}] ⏱️ Retry with fixed delay: status={}, attempt={}/{}, delay={}ms",
+                    trace_id,
+                    status_code,
+                    attempt + 1,
+                    max_attempts,
+                    base_ms
+                );
+                sleep(duration).await;
+            } else {
+                debug!(
+                    "[{}] ⚡ Fast failover (<50ms): status={}, attempt={}/{}, rotating to next candidate Pro account immediately",
+                    trace_id,
+                    status_code,
+                    attempt + 1,
+                    max_attempts
+                );
+            }
             true
         }
 

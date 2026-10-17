@@ -16,7 +16,7 @@ use crate::proxy::debug_logger;
 use crate::proxy::server::AppState;
 use crate::proxy::upstream::client::mask_email;
 
-const MAX_RETRY_ATTEMPTS: usize = 3;
+const MAX_RETRY_ATTEMPTS: usize = 10;
 const MAX_INPUT_IMAGES: usize = 16;
 const MAX_INPUT_IMAGE_BYTES: usize = 20 * 1024 * 1024;
 const MAX_TOTAL_INPUT_IMAGE_BYTES: usize = 32 * 1024 * 1024;
@@ -1892,7 +1892,7 @@ pub async fn handle_chat_completions(
     let request_timeout = state.request_timeout;
     let token_manager = state.token_manager;
     let pool_size = token_manager.len();
-    let max_attempts = MAX_RETRY_ATTEMPTS.min(pool_size).max(1);
+    let max_attempts = std::cmp::max(10, pool_size);
 
     let mut last_error = String::new();
     let mut last_email: Option<String> = None;
@@ -3644,7 +3644,7 @@ pub async fn handle_completions(
 
     let upstream = state.upstream.clone();
     let pool_size = token_manager.len();
-    let max_attempts = MAX_RETRY_ATTEMPTS.min(pool_size).max(1);
+    let max_attempts = std::cmp::max(10, pool_size);
 
     let mut last_error = String::new();
     let mut last_email: Option<String> = None;
@@ -4694,7 +4694,7 @@ pub async fn handle_images_generations_internal(
     let image_scheduler = state.image_scheduler.clone();
     let request_timeout = state.request_timeout;
     let max_pool_size = token_manager.len();
-    let max_attempts = MAX_RETRY_ATTEMPTS.min(max_pool_size).max(1);
+    let max_attempts = std::cmp::max(10, max_pool_size);
 
     let mut tasks = JoinSet::new();
 
@@ -5215,7 +5215,7 @@ pub async fn handle_images_edits(
     let image_scheduler = state.image_scheduler.clone();
     let request_timeout = state.request_timeout;
     let max_pool_size = token_manager.len();
-    let max_attempts = MAX_RETRY_ATTEMPTS.min(max_pool_size).max(1);
+    let max_attempts = std::cmp::max(10, max_pool_size);
 
     let mut tasks = JoinSet::new();
     for _ in 0..n {

@@ -145,7 +145,7 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
     const [stats, setStats] = useState<ProxyStats>({ total_requests: 0, success_count: 0, error_count: 0 });
     const [filter, setFilter] = useState('');
     const [accountFilter, setAccountFilter] = useState('');
-    // [FIX] 使用 ref 存储最新的筛选条件，避免 setInterval 闭包问题
+    // Use ref to store latest filter criteria to avoid closure staleness in setInterval
     const filterRef = useRef(filter);
     const accountFilterRef = useRef(accountFilter);
     const currentPageRef = useRef(1);
@@ -255,7 +255,7 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
     const goToPage = (page: number) => {
         if (page >= 1 && page <= totalPages && page !== currentPage) {
             setCurrentPage(page);
-            currentPageRef.current = page; // [FIX] 同步 ref
+            currentPageRef.current = page; // Sync page ref
             loadData(page, filter, accountFilter);
         }
     };
@@ -302,7 +302,7 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
 
                 const newLog = event.payload;
 
-                // 移除 body 以减少内存占用
+                // Strip body to minimize memory footprint
                 const logSummary = {
                     ...newLog,
                     request_body: undefined,
@@ -318,7 +318,7 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
 
                 pendingLogsRef.current.push(logSummary);
 
-                // 防抖:每 500ms 批量更新一次
+                // Debounce: batch update every 500ms
                 if (updateTimeout) clearTimeout(updateTimeout);
                 updateTimeout = window.setTimeout(async () => {
                     if (!isMountedRef.current) return;
@@ -356,13 +356,13 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
         };
         setupListener();
 
-        // Web 模式補強：如果不是 Tauri 環境，則啟用定時輪詢
+        // Web mode fallback: enable periodic polling if not running in Tauri environment
         let pollInterval: number | null = null;
         if (!isTauri()) {
             console.debug('[ProxyMonitor] Web mode detected, starting auto-poll (10s)');
             pollInterval = window.setInterval(() => {
                 if (isMountedRef.current && !loading) {
-                    // [FIX] 使用 ref.current 获取最新的筛选条件
+                    // Retrieve latest filter criteria via ref.current to avoid closure staleness
                     loadData(currentPageRef.current, filterRef.current, accountFilterRef.current);
                 }
             }, 10000);
@@ -391,7 +391,7 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
     useEffect(() => {
         setCurrentPage(1);
         loadData(1, filter, accountFilter);
-        // [FIX] 同步 ref 值，供 setInterval 使用
+        // Synchronize ref values for interval callback consumption
         filterRef.current = filter;
         accountFilterRef.current = accountFilter;
         currentPageRef.current = 1;

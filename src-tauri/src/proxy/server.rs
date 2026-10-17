@@ -8,6 +8,7 @@ use axum::{
     routing::{any, delete, get, post},
     Router,
 };
+use dashmap::DashSet;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::AtomicUsize;
@@ -15,72 +16,72 @@ use std::sync::{Arc, Mutex, OnceLock};
 use tokio::sync::{oneshot, watch, RwLock};
 use tracing::{debug, error};
 
-// [FIX] 全局待重新加载账号队列
-// 当 update_account_quota 更新 protected_models 后，将账号 ID 加入此队列
-// TokenManager 在 get_token 时会检查并处理这些账号
-static PENDING_RELOAD_ACCOUNTS: OnceLock<std::sync::RwLock<HashSet<String>>> = OnceLock::new();
+// [MODERNIZED M1] 全局待重新加载与待删除账号队列 (Lock-free concurrent DashSet)
+// 替换原有的 std::sync::RwLock，彻底杜绝 Tokio 异步工作线程阻塞与死锁隐患
+static PENDING_RELOAD_ACCOUNTS: OnceLock<DashSet<String>> = OnceLock::new();
+static PENDING_DELETE_ACCOUNTS: OnceLock<DashSet<String>> = OnceLock::new();
 
-// [NEW] 全局待删除账号队列 (Issue #1477)
-// 当账号被删除后，将账号 ID 加入此队列，TokenManager 在 get_token 时会检查并清理内存缓存
-static PENDING_DELETE_ACCOUNTS: OnceLock<std::sync::RwLock<HashSet<String>>> = OnceLock::new();
-
-fn get_pending_reload_accounts() -> &'static std::sync::RwLock<HashSet<String>> {
-    PENDING_RELOAD_ACCOUNTS.get_or_init(|| std::sync::RwLock::new(HashSet::new()))
+fn get_pending_reload_accounts() -> &'static DashSet<String> {
+    PENDING_RELOAD_ACCOUNTS.get_or_init(DashSet::new)
 }
 
-fn get_pending_delete_accounts() -> &'static std::sync::RwLock<HashSet<String>> {
-    PENDING_DELETE_ACCOUNTS.get_or_init(|| std::sync::RwLock::new(HashSet::new()))
+fn get_pending_delete_accounts() -> &'static DashSet<String> {
+    PENDING_DELETE_ACCOUNTS.get_or_init(DashSet::new)
 }
 
-/// 触发账号重新加载信号（供 update_account_quota 调用）
+/// 触发账号重新加载信号（供 update_account_quota 调用，无锁非阻塞）
 pub fn trigger_account_reload(account_id: &str) {
-    if let Ok(mut pending) = get_pending_reload_accounts().write() {
-        pending.insert(account_id.to_string());
+    get_pending_reload_accounts().insert(account_id.to_string());
+    tracing::debug!(
+        "[Quota] Queued account {} for TokenManager reload",
+        account_id
+    );
+}
+
+/// 触发账号删除信号 (Issue #1477，无锁非阻塞)
+pub fn trigger_account_delete(account_id: &str) {
+    get_pending_delete_accounts().insert(account_id.to_string());
+    tracing::debug!("[Proxy] Queued account {} for cache removal", account_id);
+}
+
+/// 获取并清空待重新加载的账号列表（供 TokenManager 调用，无锁快速排空）
+pub fn take_pending_reload_accounts() -> Vec<String> {
+    let pending = get_pending_reload_accounts();
+    if pending.is_empty() {
+        return Vec::new();
+    }
+    let mut accounts = Vec::new();
+    pending.retain(|account| {
+        accounts.push(account.clone());
+        false
+    });
+    if !accounts.is_empty() {
         tracing::debug!(
-            "[Quota] Queued account {} for TokenManager reload",
-            account_id
+            "[Quota] Taking {} pending accounts for reload",
+            accounts.len()
         );
     }
+    accounts
 }
 
-/// 触发账号删除信号 (Issue #1477)
-pub fn trigger_account_delete(account_id: &str) {
-    if let Ok(mut pending) = get_pending_delete_accounts().write() {
-        pending.insert(account_id.to_string());
-        tracing::debug!("[Proxy] Queued account {} for cache removal", account_id);
-    }
-}
-
-/// 获取并清空待重新加载的账号列表（供 TokenManager 调用）
-pub fn take_pending_reload_accounts() -> Vec<String> {
-    if let Ok(mut pending) = get_pending_reload_accounts().write() {
-        let accounts: Vec<String> = pending.drain().collect();
-        if !accounts.is_empty() {
-            tracing::debug!(
-                "[Quota] Taking {} pending accounts for reload",
-                accounts.len()
-            );
-        }
-        accounts
-    } else {
-        Vec::new()
-    }
-}
-
-/// 获取并清空待删除的账号列表 (Issue #1477)
+/// 获取并清空待删除的账号列表（供 TokenManager 调用，无锁快速排空）
 pub fn take_pending_delete_accounts() -> Vec<String> {
-    if let Ok(mut pending) = get_pending_delete_accounts().write() {
-        let accounts: Vec<String> = pending.drain().collect();
-        if !accounts.is_empty() {
-            tracing::debug!(
-                "[Proxy] Taking {} pending accounts for cache removal",
-                accounts.len()
-            );
-        }
-        accounts
-    } else {
-        Vec::new()
+    let pending = get_pending_delete_accounts();
+    if pending.is_empty() {
+        return Vec::new();
     }
+    let mut accounts = Vec::new();
+    pending.retain(|account| {
+        accounts.push(account.clone());
+        false
+    });
+    if !accounts.is_empty() {
+        tracing::debug!(
+            "[Proxy] Taking {} pending accounts for deletion",
+            accounts.len()
+        );
+    }
+    accounts
 }
 
 /// Axum 应用状态

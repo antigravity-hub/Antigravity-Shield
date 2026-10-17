@@ -186,32 +186,7 @@ pub fn transform_openai_request(
     mapped_model: &str,
     token: Option<&ProxyToken>,
 ) -> (Value, String, usize, String) {
-    let remember_cwd =
-        |text: &str| crate::proxy::adapters::apply_patch_preflight::remember_cwd_from_text(text);
-    let found_cwd = request.instructions.as_deref().is_some_and(remember_cwd);
-    if !found_cwd {
-        'messages: for message in &request.messages {
-            let Some(content) = &message.content else {
-                continue;
-            };
-            match content {
-                OpenAIContent::String(text) => {
-                    if remember_cwd(text) {
-                        break 'messages;
-                    }
-                }
-                OpenAIContent::Array(blocks) => {
-                    for block in blocks {
-                        if let OpenAIContentBlock::Text { text } = block {
-                            if remember_cwd(text) {
-                                break 'messages;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+
 
     let session_id =
         crate::proxy::session_manager::SessionManager::extract_openai_session_id(request);

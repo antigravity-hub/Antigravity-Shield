@@ -179,51 +179,7 @@ pub fn wrap_request_v2(
         }
     }
 
-    if compression_level != "disabled" {
-        if let Some(contents) = inner_request
-            .get_mut("contents")
-            .and_then(|c| c.as_array_mut())
-        {
-            let total_turns = contents.len();
-            let protected_last_n = 4;
-            let start_protection_idx = total_turns.saturating_sub(protected_last_n);
 
-            for (i, content) in contents.iter_mut().enumerate() {
-                if let Some(parts) = content.get_mut("parts").and_then(|p| p.as_array_mut()) {
-                    for part in parts {
-                        if let Some(obj) = part.as_object_mut() {
-                            if compression_level == "medium" || compression_level == "high" {
-                                if i < start_protection_idx {
-                                    if let Some(text_val) =
-                                        obj.get_mut("text").and_then(|t| t.as_str())
-                                    {
-                                        let cleaned = crate::proxy::mappers::caveman_cleaner::CavemanCleaner::clean(text_val);
-                                        if cleaned != text_val {
-                                            obj.insert("text".to_string(), json!(cleaned));
-                                        }
-                                    }
-                                }
-                            }
-                            if let Some(fr) = obj.get_mut("functionResponse") {
-                                if let Some(resp_obj) =
-                                    fr.get_mut("response").and_then(|r| r.as_object_mut())
-                                {
-                                    for (_key, val) in resp_obj.iter_mut() {
-                                        if let Some(s) = val.as_str() {
-                                            let cleaned = crate::proxy::mappers::rtk_cleaner::RtkCleaner::clean(s, 48);
-                                            if cleaned != s {
-                                                *val = json!(cleaned);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     if let Some(contents) = inner_request
         .get_mut("contents")

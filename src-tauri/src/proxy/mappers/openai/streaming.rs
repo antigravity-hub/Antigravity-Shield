@@ -897,26 +897,9 @@ where
                                                                 let is_custom_tool = actual_name == "apply_patch" || actual_name == "apply_patch_v2" || actual_name == "shell";
 
                                                                 let mut final_args_str = args_str.clone();
-                                                                let mut apply_patch_repairs_value: Option<Value> = None;
-                                                                let mut apply_patch_validation: Option<(usize, String)> = None;
                                                                 if is_custom_tool && (actual_name == "apply_patch" || actual_name == "apply_patch_v2") {
                                                                     let extracted_patch = extract_apply_patch_input(&args);
-                                                                    let (optimized_patch, repairs) =
-                                                                        crate::proxy::adapters::apply_patch_preflight::optimize_patch(
-                                                                            &extracted_patch,
-                                                                            None,
-                                                                            true,
-                                                                        );
-                                                                    if !repairs.is_empty() {
-                                                                        apply_patch_repairs_value = Some(
-                                                                            crate::proxy::adapters::apply_patch_preflight::repairs_to_value(&repairs),
-                                                                        );
-                                                                    }
-                                                                    final_args_str = optimized_patch;
-                                                                    apply_patch_validation =
-                                                                        crate::proxy::adapters::apply_patch_preflight::validate_v4a_for_codex(
-                                                                            &final_args_str,
-                                                                        );
+                                                                    final_args_str = extracted_patch;
                                                                 }
 
                                                                 let mut item_obj = json!({
@@ -937,31 +920,6 @@ where
 
                                                                 let tool_output_index = next_output_index;
                                                                 next_output_index += 1;
-
-                                                                if let Some((line, message)) = apply_patch_validation.as_ref() {
-                                                                    crate::proxy::adapters::apply_patch_trace::emit(
-                                                                        &crate::proxy::adapters::apply_patch_trace::ApplyPatchTrace {
-                                                                            source: "gemini_native",
-                                                                            model: &model,
-                                                                            call_id: &call_id,
-                                                                            fc_id: &tool_item_id,
-                                                                            args_raw: &args_str,
-                                                                            input: &final_args_str,
-                                                                            interrupted: false,
-                                                                            json_truncation: None,
-                                                                            v4a_truncation: None,
-                                                                            v4a_validation: Some((*line, message.as_str())),
-                                                                            decision: "incomplete",
-                                                                            repairs: apply_patch_repairs_value.as_ref(),
-                                                                        },
-                                                                    );
-                                                                    if accumulated_text.is_empty() {
-                                                                        accumulated_text = format!(
-                                                                            "apply_patch 格式非法，已停止执行以避免重复失败。第 {line} 行：{message}"
-                                                                        );
-                                                                    }
-                                                                    continue;
-                                                                }
 
                                                                 has_seen_tool_calls = true;
 
@@ -1016,24 +974,6 @@ where
 
                                                                 let tc_val = item_obj.clone();
                                                                 crate::proxy::handlers::openai::insert_cached_tool_call(call_id.clone(), tc_val.clone());
-                                                                if is_custom_tool && (actual_name == "apply_patch" || actual_name == "apply_patch_v2") {
-                                                                    crate::proxy::adapters::apply_patch_trace::emit(
-                                                                        &crate::proxy::adapters::apply_patch_trace::ApplyPatchTrace {
-                                                                            source: "gemini_native",
-                                                                            model: &model,
-                                                                            call_id: &call_id,
-                                                                            fc_id: &tool_item_id,
-                                                                            args_raw: &args_str,
-                                                                            input: &final_args_str,
-                                                                            interrupted: false,
-                                                                            json_truncation: None,
-                                                                            v4a_truncation: None,
-                                                                            v4a_validation: None,
-                                                                            decision: "completed",
-                                                                            repairs: apply_patch_repairs_value.as_ref(),
-                                                                        },
-                                                                    );
-                                                                }
                                                                 final_outputs_map.insert(tool_output_index, tc_val);
                                                             }
                                                         }

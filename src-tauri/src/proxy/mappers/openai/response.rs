@@ -300,26 +300,7 @@ pub fn transform_openai_response(
                         // [FIX] Codex CLI apply_patch freeform raw string
                         if name == "apply_patch" || name == "apply_patch_v2" {
                             let extracted_patch = extract_apply_patch_input(&args_json);
-                            let (optimized_patch, _) =
-                                crate::proxy::adapters::apply_patch_preflight::optimize_patch(
-                                    &extracted_patch,
-                                    None,
-                                    true,
-                                );
-                            arguments_str = optimized_patch;
-                            if let Some((line, message)) =
-                                crate::proxy::adapters::apply_patch_preflight::validate_v4a_for_codex(
-                                    &arguments_str,
-                                )
-                            {
-                                if !content_out.is_empty() {
-                                    content_out.push('\n');
-                                }
-                                content_out.push_str(&format!(
-                                    "apply_patch 格式非法，已停止执行以避免重复失败。第 {line} 行：{message}"
-                                ));
-                                continue;
-                            }
+                            arguments_str = extracted_patch;
                         }
 
                         let final_name = resolve_shell_tool_name(name, client_tool_names);

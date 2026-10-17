@@ -399,11 +399,147 @@ impl TokenManager {
         }
     }
 
-    /// 启动限流记录与内存隔离区自动清理后台任务（每15秒检查并清除过期记录）
+    /// 刷新单个账号的 access_token 并同步更新内存与磁盘（带 Double-Checked Locking 防并发）
+    pub async fn refresh_account_token(&self, account_id: &str) -> Result<ProxyToken, String> {
+        let current_token = self
+            .tokens
+            .get(account_id)
+            .map(|r| r.clone())
+            .ok_or_else(|| format!("Account {} not found in token manager", account_id))?;
+
+        let now = chrono::Utc::now().timestamp();
+        const TOKEN_REFRESH_BUFFER_SECS: i64 = 600; // 提前 10 分钟平滑刷新
+
+        let refresh_mu = self
+            .refresh_locks
+            .entry(account_id.to_string())
+            .or_insert_with(|| Arc::new(tokio::sync::Mutex::new(())))
+            .clone();
+
+        let _guard = refresh_mu.lock().await;
+
+        // 双重检查：是否已被其他并发任务或后台刷新
+        if let Some(latest) = self.tokens.get(account_id).map(|r| r.clone()) {
+            if now < latest.timestamp - TOKEN_REFRESH_BUFFER_SECS {
+                return Ok(latest);
+            }
+        }
+
+        tracing::info!(
+            "🔄 [Token Refresher] Refreshing token for account {} ({})",
+            account_id,
+            current_token.email
+        );
+
+        match crate::modules::oauth::refresh_access_token(
+            &current_token.refresh_token,
+            Some(account_id),
+        )
+        .await
+        {
+            Ok(token_response) => {
+                tracing::info!("✅ [Token Refresher] Token refreshed successfully for {}", current_token.email);
+                self.invalid_grant_failures.remove(account_id);
+
+                let mut updated = current_token.clone();
+                updated.access_token = token_response.access_token.clone();
+                updated.expires_in = token_response.expires_in;
+                updated.timestamp = now + token_response.expires_in;
+
+                if let Some(mut entry) = self.tokens.get_mut(account_id) {
+                    entry.access_token = updated.access_token.clone();
+                    entry.expires_in = updated.expires_in;
+                    entry.timestamp = updated.timestamp;
+                }
+
+                // 磁盘写盘后台化
+                let write_path = updated.account_path.clone();
+                let access_token = token_response.access_token.clone();
+                let expires_in = token_response.expires_in;
+                let id_token = token_response.id_token.clone();
+                let new_rt = token_response.refresh_token.clone();
+                let write_ts = updated.timestamp;
+                tokio::task::spawn_blocking(move || {
+                    let Ok(_lk) = crate::modules::account::lock_account_file_updates() else { return; };
+                    let Ok(raw) = std::fs::read_to_string(&write_path) else { return; };
+                    let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&raw) else { return; };
+                    val["token"]["access_token"] = access_token.into();
+                    val["token"]["expires_in"] = expires_in.into();
+                    val["token"]["expiry_timestamp"] = write_ts.into();
+                    if let Some(it) = id_token { val["token"]["id_token"] = it.into(); }
+                    if let Some(rt) = new_rt { val["token"]["refresh_token"] = rt.into(); }
+                    if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&write_path, s); }
+                });
+
+                Ok(updated)
+            }
+            Err(e) => {
+                tracing::error!(
+                    "❌ [Token Refresher] Failed to refresh token for {} ({}): {}",
+                    account_id,
+                    current_token.email,
+                    e
+                );
+                let is_grant_error =
+                    e.contains("\"invalid_grant\"") || e.contains("invalid_grant");
+                if is_grant_error {
+                    let mut fail_count = self
+                        .invalid_grant_failures
+                        .entry(account_id.to_string())
+                        .or_insert(0);
+                    *fail_count += 1;
+                    let current_fails = *fail_count;
+                    if current_fails >= 2 {
+                        tracing::error!(
+                            "账号 {} 连续 {} 次确认为 invalid_grant，正式执行停用",
+                            current_token.email,
+                            current_fails
+                        );
+                        let _ = self
+                            .disable_account(
+                                account_id,
+                                &format!("invalid_grant: {}", e),
+                            )
+                            .await;
+                    }
+                }
+                Err(e)
+            }
+        }
+    }
+
+    /// 主动扫描并刷新所有即将过期的 Token（提前 10 分钟），保证用户请求路径零阻塞
+    pub async fn proactive_refresh_expiring_tokens(&self) {
+        let now = chrono::Utc::now().timestamp();
+        const PROACTIVE_THRESHOLD_SECS: i64 = 600; // 10 minutes
+
+        let expiring_account_ids: Vec<String> = self
+            .tokens
+            .iter()
+            .filter(|entry| {
+                let token = entry.value();
+                now >= token.timestamp - PROACTIVE_THRESHOLD_SECS
+            })
+            .map(|entry| entry.key().clone())
+            .collect();
+
+        if !expiring_account_ids.is_empty() {
+            tracing::info!(
+                "🔄 [Proactive Token Refresher] Found {} account(s) needing refresh",
+                expiring_account_ids.len()
+            );
+            for account_id in expiring_account_ids {
+                let _ = self.refresh_account_token(&account_id).await;
+            }
+        }
+    }
+
+    /// 启动限流记录与内存隔离区自动清理后台任务（每15秒检查并清除过期记录，并主动刷新即将过期的 Token）
     pub async fn start_auto_cleanup(&self) {
         let tracker = self.rate_limit_tracker.clone();
         let quarantine_records = self.quarantine_records.clone();
         let cancel = self.cancel_token.child_token();
+        let tm = self.clone();
 
         let handle = tokio::spawn(async move {
             let mut interval = tokio::time::interval(std::time::Duration::from_secs(15));
@@ -435,6 +571,9 @@ impl TokenManager {
                                 true
                             }
                         });
+
+                        // [MODERNIZED M2] Proactive Background Token Refresher
+                        tm.proactive_refresh_expiring_tokens().await;
                     }
                 }
             }
@@ -448,7 +587,7 @@ impl TokenManager {
         }
         *guard = Some(handle);
 
-        tracing::info!("Rate limit auto-cleanup task started (interval: 15s)");
+        tracing::info!("Rate limit auto-cleanup and proactive token refresh task started (interval: 15s)");
     }
 
     /// 从主应用账号目录加载所有账号
@@ -1708,8 +1847,7 @@ impl TokenManager {
             return Err("Token pool is empty".to_string());
         }
 
-        // [NEW] 1. 动态能力过滤 (Capability Filter)
-
+        // [MODERNIZED M1] 动态能力过滤与优雅降级容错机制 (Graceful Capability Filter & Fallback)
         // 定义常量
         const RESET_TIME_THRESHOLD_SECS: i64 = 600; // 10 分钟阈值
 
@@ -1718,26 +1856,32 @@ impl TokenManager {
             crate::proxy::common::model_mapping::normalize_to_standard_id(target_model)
                 .unwrap_or_else(|| target_model.to_string());
 
-        // 仅保留明确拥有该模型配额的账号
-        // 这一步确保了 "保证有模型才可以进入轮询"，特别是对 Opus 4.6 等高端模型
         let candidate_count_before = tokens_snapshot.len();
 
-        // 此处假设所有受支持的模型都会出现在 model_quotas 中
-        // 如果 API 返回的配额信息不完整，可能会导致误杀，但为了严格性，我们执行此过滤
-        tokens_snapshot.retain(|t| t.model_quotas.contains_key(&normalized_target));
+        // 检查是否有账号在配额表中明确注册了该目标模型
+        let has_explicit_quota = tokens_snapshot
+            .iter()
+            .any(|t| t.model_quotas.contains_key(&normalized_target));
+
+        if has_explicit_quota {
+            // 如果存在明确记录该模型配额的账号，保留拥有配额或者配额尚未拉取(model_quotas 为空)的健康账号
+            tokens_snapshot.retain(|t| {
+                t.model_quotas.contains_key(&normalized_target) || t.model_quotas.is_empty()
+            });
+        } else if candidate_count_before > 0 {
+            // 优雅降级容错机制 (Graceful Capability Fallback):
+            // 如果没有账号明确包含该模型的配额键（例如尚未拉取完整配额表，或者目标是未在配额字典硬编码的模型别名如 gemini-3.8-flash），
+            // 绝不允许将所有健康账号一网打尽并返回 503 "No accounts available with quota for model" 假死错误！
+            // 此时放行所有健康账号进入轮询，并通过后续排序优先调度 PRO 和 ULTRA 账号。
+            tracing::warn!(
+                "[Capability Fallback] Model '{}' (normalized: '{}') has no explicit quota key in snapshot. Retaining all {} healthy account(s) prioritizing PRO/ULTRA.",
+                target_model,
+                normalized_target,
+                candidate_count_before
+            );
+        }
 
         if tokens_snapshot.is_empty() {
-            if candidate_count_before > 0 {
-                // 如果过滤前有账号，过滤后没了，说明所有账号都没有该模型的配额
-                tracing::warn!(
-                    "No accounts have satisfied quota for model: {}",
-                    normalized_target
-                );
-                return Err(format!(
-                    "No accounts available with quota for model: {}",
-                    normalized_target
-                ));
-            }
             return Err("Token pool is empty".to_string());
         }
 
@@ -1766,9 +1910,19 @@ impl TokenManager {
             }
 
             // Priority 1: 目标模型的 quota (higher is better) -> 保护低配额账号
-            // 经过过滤，key 肯定存在
-            let quota_a = a.model_quotas.get(&normalized_target).copied().unwrap_or(0);
-            let quota_b = b.model_quotas.get(&normalized_target).copied().unwrap_or(0);
+            // 若该模型未在特定列表注册，回退到账号全局 remaining_quota 进行智能调度
+            let quota_a = a
+                .model_quotas
+                .get(&normalized_target)
+                .copied()
+                .or(a.remaining_quota)
+                .unwrap_or(0);
+            let quota_b = b
+                .model_quotas
+                .get(&normalized_target)
+                .copied()
+                .or(b.remaining_quota)
+                .unwrap_or(0);
 
             let quota_cmp = quota_b.cmp(&quota_a);
             if quota_cmp != std::cmp::Ordering::Equal {
@@ -1892,88 +2046,11 @@ impl TokenManager {
                             // 直接使用优先账号，跳过轮询逻辑
                             let mut token = preferred_token.clone();
 
-                            // [NEW] 检查 token 是否过期（调整刷新时机对齐官方：90s 宽限期）
+                            // [MODERNIZED M2] 检查 token 是否过期并平滑刷新（Double-Checked Locking 防并发）
                             let now = chrono::Utc::now().timestamp();
                             if now >= token.timestamp - 90 {
-                                // [NEW] 双重检查锁定逻辑 (Double-Checked Locking)
-                                // 1. 获取（或创建）该账号专属的刷新锁
-                                let refresh_mu = self
-                                    .refresh_locks
-                                    .entry(token.account_id.clone())
-                                    .or_insert_with(|| Arc::new(tokio::sync::Mutex::new(())))
-                                    .clone();
-
-                                // 2. 尝试获取锁
-                                let _guard = refresh_mu.lock().await;
-
-                                // 3. 再次检查本账号最新状态（可能已被其他并发请求刷新完毕）
-                                let latest_token_opt =
-                                    self.tokens.get(&token.account_id).map(|r| r.clone());
-                                if let Some(latest) = latest_token_opt {
-                                    if now < latest.timestamp - 90 {
-                                        // 已经被别人刷过了，同步最新数据并跳过刷新动作
-                                        token = latest.clone();
-                                        tracing::debug!(
-                                            "账号 {} 已由并发线程刷新，跳过重复刷新",
-                                            token.email
-                                        );
-                                    } else {
-                                        // 确实需要刷新
-                                        tracing::debug!(
-                                            "账号 {} 的 token 即将过期 ({}s)，正在刷新...",
-                                            token.email,
-                                            token.timestamp - now
-                                        );
-                                        match crate::modules::oauth::refresh_access_token(
-                                            &token.refresh_token,
-                                            Some(&token.account_id),
-                                        )
-                                        .await
-                                        {
-                                            Ok(token_response) => {
-                                                token.access_token =
-                                                    token_response.access_token.clone();
-                                                token.expires_in = token_response.expires_in;
-                                                token.timestamp = now + token_response.expires_in;
-
-                                                if let Some(mut entry) =
-                                                    self.tokens.get_mut(&token.account_id)
-                                                {
-                                                    entry.access_token = token.access_token.clone();
-                                                    entry.expires_in = token.expires_in;
-                                                    entry.timestamp = token.timestamp;
-                                                }
-                                                // [FIX] 写盘操作后台化：避免阻塞 get_token 的 5s 超时窗口
-                                                // 内存已更新完毕，将磁盘持久化 spawn 到 blocking 线程池
-                                                {
-                                                    let write_path = token.account_path.clone();
-                                                    let access_token = token_response.access_token.clone();
-                                                    let expires_in = token_response.expires_in;
-                                                    let id_token = token_response.id_token.clone();
-                                                    let new_rt = token_response.refresh_token.clone();
-                                                    let write_ts = now + token_response.expires_in;
-                                                    tokio::task::spawn_blocking(move || {
-                                                        let Ok(_lk) = crate::modules::account::lock_account_file_updates() else { return; };
-                                                        let Ok(raw) = std::fs::read_to_string(&write_path) else { return; };
-                                                        let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&raw) else { return; };
-                                                        val["token"]["access_token"] = access_token.into();
-                                                        val["token"]["expires_in"] = expires_in.into();
-                                                        val["token"]["expiry_timestamp"] = write_ts.into();
-                                                        if let Some(it) = id_token { val["token"]["id_token"] = it.into(); }
-                                                        if let Some(rt) = new_rt { val["token"]["refresh_token"] = rt.into(); }
-                                                        if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&write_path, s); }
-                                                    });
-                                                }
-                                            }
-                                            Err(e) => {
-                                                tracing::warn!(
-                                                    "Preferred account token refresh failed: {}",
-                                                    e
-                                                );
-                                                // 继续使用旧 token，让后续逻辑处理失败
-                                            }
-                                        }
-                                    }
+                                if let Ok(refreshed) = self.refresh_account_token(&token.account_id).await {
+                                    token = refreshed;
                                 }
                             }
 
@@ -2345,120 +2422,24 @@ impl TokenManager {
                 OnDiskAccountState::Enabled => {}
             }
 
-            // 3. [ENHANCED] 检查 token 是否过期（提前 300 秒/5分钟平滑刷新，保障高可用与并发重试）
+            // 3. [MODERNIZED M2] 检查 token 是否过期（提前 300 秒/5分钟平滑刷新，优先已被后台刷新器更新）
             let now = chrono::Utc::now().timestamp();
             const TOKEN_REFRESH_BUFFER_SECS: i64 = 300;
             if now >= token.timestamp - TOKEN_REFRESH_BUFFER_SECS {
-                // [NEW] 双重检查锁定逻辑 (Double-Checked Locking)
-                let refresh_mu = self
-                    .refresh_locks
-                    .entry(token.account_id.clone())
-                    .or_insert_with(|| Arc::new(tokio::sync::Mutex::new(())))
-                    .clone();
-
-                let _guard = refresh_mu.lock().await;
-
-                // 再次检查最新状态
-                let latest_token_opt = self.tokens.get(&token.account_id).map(|r| r.clone());
-                if let Some(latest) = latest_token_opt {
-                    if now < latest.timestamp - TOKEN_REFRESH_BUFFER_SECS {
-                        token = latest.clone();
-                        tracing::debug!("账号 {} 已由并发线程在循环中刷新，跳过", token.email);
-                    } else {
-                        tracing::debug!(
-                            "账号 {} 的 token 即将过期，正在执行主路径刷新...",
-                            token.email
-                        );
-                        // 调用 OAuth 刷新 token
-                        match crate::modules::oauth::refresh_access_token(
-                            &token.refresh_token,
-                            Some(&token.account_id),
-                        )
-                        .await
+                match self.refresh_account_token(&token.account_id).await {
+                    Ok(refreshed) => {
+                        token = refreshed;
+                    }
+                    Err(e) => {
+                        last_error = Some(format!("Token refresh failed: {}", e));
+                        attempted.insert(token.account_id.clone());
+                        if quota_group != "image_gen"
+                            && matches!(&last_used_account_id, Some((id, _)) if id == &token.account_id)
                         {
-                            Ok(token_response) => {
-                                tracing::debug!("Token 刷新成功！");
-                                // 刷新成功后重置该账号的 invalid_grant 失败计数
-                                self.invalid_grant_failures.remove(&token.account_id);
-
-                                token.access_token = token_response.access_token.clone();
-                                token.expires_in = token_response.expires_in;
-                                token.timestamp = now + token_response.expires_in;
-
-                                if let Some(mut entry) = self.tokens.get_mut(&token.account_id) {
-                                    entry.access_token = token.access_token.clone();
-                                    entry.expires_in = token.expires_in;
-                                    entry.timestamp = token.timestamp;
-                                }
-                                // [FIX] 写盘操作后台化：内存已更新，磁盘持久化 spawn 到 blocking 线程池
-                                // 避免在 get_token 的 5s 超时窗口内因磁盘 I/O 或锁争抢导致超时
-                                {
-                                    let write_path = token.account_path.clone();
-                                    let access_token = token_response.access_token.clone();
-                                    let expires_in = token_response.expires_in;
-                                    let id_token = token_response.id_token.clone();
-                                    let new_rt = token_response.refresh_token.clone();
-                                    let write_ts = now + token_response.expires_in;
-                                    tokio::task::spawn_blocking(move || {
-                                        let Ok(_lk) = crate::modules::account::lock_account_file_updates() else { return; };
-                                        let Ok(raw) = std::fs::read_to_string(&write_path) else { return; };
-                                        let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&raw) else { return; };
-                                        val["token"]["access_token"] = access_token.into();
-                                        val["token"]["expires_in"] = expires_in.into();
-                                        val["token"]["expiry_timestamp"] = write_ts.into();
-                                        if let Some(it) = id_token { val["token"]["id_token"] = it.into(); }
-                                        if let Some(rt) = new_rt { val["token"]["refresh_token"] = rt.into(); }
-                                        if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&write_path, s); }
-                                    });
-                                }
-                            }
-                            Err(e) => {
-                                tracing::error!(
-                                    "Token 刷新失败 ({}): {}，尝试下一个账号",
-                                    token.email,
-                                    e
-                                );
-                                let is_grant_error =
-                                    e.contains("\"invalid_grant\"") || e.contains("invalid_grant");
-                                if is_grant_error {
-                                    let mut fail_count = self
-                                        .invalid_grant_failures
-                                        .entry(token.account_id.clone())
-                                        .or_insert(0);
-                                    *fail_count += 1;
-                                    let current_fails = *fail_count;
-                                    if current_fails >= 2 {
-                                        tracing::error!(
-                                            "账号 {} 连续 {} 次确认为 invalid_grant，正式执行停用",
-                                            token.email,
-                                            current_fails
-                                        );
-                                        let _ = self
-                                            .disable_account(
-                                                &token.account_id,
-                                                &format!("invalid_grant: {}", e),
-                                            )
-                                            .await;
-                                        self.invalid_grant_failures.remove(&token.account_id);
-                                    } else {
-                                        tracing::warn!(
-                                            "账号 {} 首次确认为 invalid_grant (计数 {}/2)，暂不停用，跳过本次调度",
-                                            token.email,
-                                            current_fails
-                                        );
-                                    }
-                                }
-                                last_error = Some(format!("Token refresh failed: {}", e));
-                                attempted.insert(token.account_id.clone());
-                                if quota_group != "image_gen"
-                                    && matches!(&last_used_account_id, Some((id, _)) if id == &token.account_id)
-                                {
-                                    need_update_last_used =
-                                        Some((String::new(), std::time::Instant::now()));
-                                }
-                                continue;
-                            }
+                            need_update_last_used =
+                                Some((String::new(), std::time::Instant::now()));
                         }
+                        continue;
                     }
                 }
             }
@@ -2898,32 +2879,34 @@ impl TokenManager {
         let Some(path) = self.resolve_account_path(account_id) else {
             return false;
         };
-        let Ok(canonical) = std::fs::canonicalize(&path) else {
-            return false;
-        };
-        let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
-            return false;
-        };
-        let Ok(raw) = std::fs::read_to_string(&canonical) else {
-            return false;
-        };
-        let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
-            return false;
-        };
-        let Some(live_limits) = content
-            .get_mut("live_limited_models")
-            .and_then(|value| value.as_object_mut())
-        else {
-            return false;
-        };
-        if live_limits.is_empty() {
-            return false;
-        }
-        live_limits.clear();
-        let Ok(serialized) = serde_json::to_string_pretty(&content) else {
-            return false;
-        };
-        std::fs::write(&canonical, serialized).is_ok()
+        tokio::task::spawn_blocking(move || {
+            let Ok(canonical) = std::fs::canonicalize(&path) else {
+                return;
+            };
+            let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
+                return;
+            };
+            let Ok(raw) = std::fs::read_to_string(&canonical) else {
+                return;
+            };
+            let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
+                return;
+            };
+            let Some(live_limits) = content
+                .get_mut("live_limited_models")
+                .and_then(|value| value.as_object_mut())
+            else {
+                return;
+            };
+            if live_limits.is_empty() {
+                return;
+            }
+            live_limits.clear();
+            if let Ok(serialized) = serde_json::to_string_pretty(&content) {
+                let _ = std::fs::write(&canonical, serialized);
+            }
+        });
+        true
     }
 
     /// 标记账号请求成功，重置连续失败计数
@@ -3220,46 +3203,7 @@ impl TokenManager {
         backoff_steps: &[u64],
         parser_mode: TrackerParserMode,
     ) -> Option<crate::proxy::rate_limit::RateLimitInfo> {
-        if model
-            .and_then(crate::proxy::rate_limit::normalize_image_model_id)
-            .is_some()
-        {
-            match crate::modules::account::lock_account_file_updates() {
-                Ok(_account_write) => {
-                    let info = self.parse_rate_limit_with_mode(
-                        account_id,
-                        status,
-                        retry_after_header,
-                        error_body,
-                        model,
-                        backoff_steps,
-                        parser_mode,
-                    );
-                    if parser_mode == TrackerParserMode::Current {
-                        if let Some(ref info) = info {
-                            self.persist_live_limit_locked(
-                                account_id,
-                                model,
-                                status,
-                                retry_after_header,
-                                error_body,
-                                info,
-                            );
-                        }
-                    }
-                    return info;
-                }
-                Err(error) => {
-                    tracing::debug!(
-                        "Failed to serialize live limit update for {}: {}",
-                        account_id,
-                        error
-                    );
-                }
-            }
-        }
-
-        self.parse_rate_limit_with_mode(
+        let info = self.parse_rate_limit_with_mode(
             account_id,
             status,
             retry_after_header,
@@ -3267,7 +3211,27 @@ impl TokenManager {
             model,
             backoff_steps,
             parser_mode,
-        )
+        );
+
+        if model
+            .and_then(crate::proxy::rate_limit::normalize_image_model_id)
+            .is_some()
+        {
+            if parser_mode == TrackerParserMode::Current {
+                if let Some(ref info_ref) = info {
+                    self.persist_live_limit_locked(
+                        account_id,
+                        model,
+                        status,
+                        retry_after_header,
+                        error_body,
+                        info_ref,
+                    );
+                }
+            }
+        }
+
+        info
     }
 
     /// Register the in-memory image exclusion before releasing its account permit.
@@ -3322,16 +3286,19 @@ impl TokenManager {
             .unwrap_or_else(|| email.to_string());
         let reason = crate::proxy::rate_limit::RateLimitReason::QuotaExhausted;
 
-        if self
-            .fetch_and_lock_with_realtime_quota(email, reason, model_to_track.map(str::to_string))
-            .await
-        {
-            tracing::info!("账号 {} 已使用实时配额精确锁定", email);
-            return;
-        }
+        // Non-blocking: apply precise lockout from local cache first
         if self.set_precise_lockout(&account_id, reason, model_to_track.map(str::to_string)) {
             tracing::info!("账号 {} 已使用本地缓存配额锁定", account_id);
         }
+
+        let tm = self.clone();
+        let email_str = email.to_string();
+        let model_str = model_to_track.map(str::to_string);
+        tokio::spawn(async move {
+            if tm.fetch_and_lock_with_realtime_quota(&email_str, reason, model_str).await {
+                tracing::info!("账号 {} 异步刷新配额锁定成功", email_str);
+            }
+        });
     }
 
     pub async fn mark_rate_limited_async(
@@ -3419,28 +3386,33 @@ impl TokenManager {
             return;
         }
 
-        if self
-            .fetch_and_lock_with_realtime_quota(email, reason, model_to_track.map(str::to_string))
-            .await
-        {
-            tracing::info!("账号 {} 已使用实时配额精确锁定", email);
-            return;
-        }
+        // [MODERNIZED M2] Non-Blocking Cooldown & Quota Telemetry:
+        // Do NOT execute synchronous network calls (fetch_and_lock_with_realtime_quota) on the 429 hotpath!
+        // Immediately apply local precision lockout or exponential backoff in memory (< 1ms).
         if self.set_precise_lockout(&account_id, reason, model_to_track.map(str::to_string)) {
-            tracing::info!("账号 {} 已使用本地缓存配额锁定", account_id);
-            return;
+            tracing::info!("账号 {} 已使用本地缓存配额即时锁定", account_id);
+        } else {
+            tracing::warn!("账号 {} 无法获取本地配额刷新时间,即时使用指数退避策略锁定", account_id);
+            self.record_rate_limit_atomic(
+                &account_id,
+                status,
+                retry_after_header,
+                error_body,
+                model_to_track,
+                &config.backoff_steps,
+                parser_mode,
+            );
         }
 
-        tracing::warn!("账号 {} 无法获取配额刷新时间,使用指数退避策略", account_id);
-        self.record_rate_limit_atomic(
-            &account_id,
-            status,
-            retry_after_header,
-            error_body,
-            model_to_track,
-            &config.backoff_steps,
-            parser_mode,
-        );
+        // Spawn detached background task to fetch latest quota from Google PA API and update lock without stalling hotpath
+        let tm = self.clone();
+        let email_str = email.to_string();
+        let model_str = model_to_track.map(str::to_string);
+        tokio::spawn(async move {
+            if tm.fetch_and_lock_with_realtime_quota(&email_str, reason, model_str).await {
+                tracing::info!("账号 {} 已在后台异步拉取最新配额并精确更新锁定", email_str);
+            }
+        });
     }
 
     fn persist_live_limit_locked(
@@ -3487,44 +3459,54 @@ impl TokenManager {
             return;
         };
 
-        let Ok(canonical) = std::fs::canonicalize(&path) else {
-            return;
-        };
+        let account_id_owned = account_id.to_string();
+        let reason_str = format!("{:?}", info.reason);
+        let error_body_truncated = truncate_reason(error_body, 400);
 
-        let Ok(raw) = std::fs::read_to_string(&canonical) else {
-            return;
-        };
-        let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
-            return;
-        };
+        tokio::task::spawn_blocking(move || {
+            let Ok(canonical) = std::fs::canonicalize(&path) else {
+                return;
+            };
 
-        if !content
-            .get("live_limited_models")
-            .and_then(|v| v.as_object())
-            .is_some()
-        {
-            content["live_limited_models"] = serde_json::Value::Object(serde_json::Map::new());
-        }
+            let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
+                return;
+            };
 
-        content["live_limited_models"][&model_key] = serde_json::json!({
-            "model": model_key,
-            "status": status,
-            "reason": format!("{:?}", info.reason),
-            "until": until,
-            "detected_at": detected_at,
-            "message": format!(
-                "QUOTA_EXHAUSTED; retry after {}ms; {}",
-                explicit_delay_ms,
-                truncate_reason(error_body, 400)
-            ),
+            let Ok(raw) = std::fs::read_to_string(&canonical) else {
+                return;
+            };
+            let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
+                return;
+            };
+
+            if !content
+                .get("live_limited_models")
+                .and_then(|v| v.as_object())
+                .is_some()
+            {
+                content["live_limited_models"] = serde_json::Value::Object(serde_json::Map::new());
+            }
+
+            content["live_limited_models"][&model_key] = serde_json::json!({
+                "model": model_key,
+                "status": status,
+                "reason": reason_str,
+                "until": until,
+                "detected_at": detected_at,
+                "message": format!(
+                    "QUOTA_EXHAUSTED; retry after {}ms; {}",
+                    explicit_delay_ms,
+                    error_body_truncated
+                ),
+            });
+
+            let Ok(serialized) = serde_json::to_string_pretty(&content) else {
+                return;
+            };
+            if let Err(e) = std::fs::write(&canonical, serialized) {
+                tracing::debug!("Failed to persist live limit for {}: {}", account_id_owned, e);
+            }
         });
-
-        let Ok(serialized) = serde_json::to_string_pretty(&content) else {
-            return;
-        };
-        if let Err(e) = std::fs::write(&canonical, serialized) {
-            tracing::debug!("Failed to persist live limit for {}: {}", account_id, e);
-        }
     }
 
     pub fn clear_persisted_live_limit(&self, account_id: &str, model: Option<&str>) {
@@ -3537,6 +3519,9 @@ impl TokenManager {
         let model_key = crate::proxy::common::model_mapping::normalize_to_standard_id(raw_model)
             .unwrap_or_else(|| raw_model.to_string());
 
+        // 立即从内存限流跟踪器中清除，微秒级解除锁定
+        self.rate_limit_tracker.clear_model(account_id, &model_key);
+
         let path = if let Some(entry) = self.tokens.get(account_id) {
             entry.account_path.clone()
         } else if let Some(p) = self.resolve_account_path(account_id) {
@@ -3545,52 +3530,46 @@ impl TokenManager {
             return;
         };
 
-        let Ok(canonical) = std::fs::canonicalize(&path) else {
-            return;
-        };
+        let raw_model_owned = raw_model.to_string();
+        let account_id_owned = account_id.to_string();
 
-        let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
-            return;
-        };
-
-        let raw = match std::fs::read_to_string(&canonical) {
-            Ok(raw) => raw,
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-                self.rate_limit_tracker.clear_model(account_id, &model_key);
-                return;
-            }
-            Err(error) => {
-                tracing::debug!("Failed to read live limit for {}: {}", account_id, error);
-                return;
-            }
-        };
-        let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
-            return;
-        };
-
-        let Some(live_limits) = content
-            .get_mut("live_limited_models")
-            .and_then(|value| value.as_object_mut())
-        else {
-            self.rate_limit_tracker.clear_model(account_id, &model_key);
-            return;
-        };
-
-        let mut changed = live_limits.remove(&model_key).is_some();
-        if model_key != raw_model {
-            changed |= live_limits.remove(raw_model).is_some();
-        }
-
-        if changed {
-            let Ok(serialized) = serde_json::to_string_pretty(&content) else {
+        tokio::task::spawn_blocking(move || {
+            let Ok(canonical) = std::fs::canonicalize(&path) else {
                 return;
             };
-            if let Err(error) = std::fs::write(&canonical, serialized) {
-                tracing::debug!("Failed to clear live limit for {}: {}", account_id, error);
+
+            let Ok(_account_write) = crate::modules::account::lock_account_file_updates() else {
                 return;
+            };
+
+            let raw = match std::fs::read_to_string(&canonical) {
+                Ok(raw) => raw,
+                Err(_) => return,
+            };
+            let Ok(mut content) = serde_json::from_str::<serde_json::Value>(&raw) else {
+                return;
+            };
+
+            let Some(live_limits) = content
+                .get_mut("live_limited_models")
+                .and_then(|value| value.as_object_mut())
+            else {
+                return;
+            };
+
+            let mut changed = live_limits.remove(&model_key).is_some();
+            if model_key != raw_model_owned {
+                changed |= live_limits.remove(&raw_model_owned).is_some();
             }
-        }
-        self.rate_limit_tracker.clear_model(account_id, &model_key);
+
+            if changed {
+                if let Ok(serialized) = serde_json::to_string_pretty(&content) {
+                    if let Err(error) = std::fs::write(&canonical, serialized) {
+                        tracing::debug!("Failed to clear live limit for {}: {}", account_id_owned, error);
+                    }
+                }
+            }
+        });
     }
 
     // ===== 调度配置相关方法 =====
