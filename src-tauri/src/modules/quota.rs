@@ -455,6 +455,35 @@ pub async fn fetch_quota_with_cache(
                     // Set subscription tier
                     quota_data.subscription_tier = subscription_tier.clone();
 
+                    // Register discovered models into global DynamicModelRegistry
+                    if let Some(acc_id) = account_id {
+                        let mut discovered = Vec::new();
+                        for mq in &quota_data.models {
+                            let (family, version_rank) =
+                                crate::proxy::common::model_registry::ModelFamily::classify(&mq.name);
+                            discovered.push(crate::proxy::common::model_registry::DiscoveredModel {
+                                id: mq.name.clone(),
+                                display_name: mq.display_name.clone(),
+                                supports_images: mq.supports_images.unwrap_or(false),
+                                supports_thinking: mq.supports_thinking.unwrap_or(false),
+                                thinking_budget: mq.thinking_budget,
+                                recommended: mq.recommended.unwrap_or(false),
+                                max_tokens: mq.max_tokens,
+                                max_output_tokens: mq.max_output_tokens,
+                                remaining_percentage: mq.percentage,
+                                reset_time: mq.reset_time.clone(),
+                                family,
+                                version_rank,
+                            });
+                        }
+                        crate::proxy::common::model_registry::DynamicModelRegistry::global()
+                            .register_account_models(
+                                acc_id,
+                                discovered,
+                                quota_data.model_forwarding_rules.clone(),
+                            );
+                    }
+
                     // Best-effort: fetch grouped quota summary (weekly + 5h windows).
                     // Failure here must not block the primary quota result.
                     quota_data.quota_groups =

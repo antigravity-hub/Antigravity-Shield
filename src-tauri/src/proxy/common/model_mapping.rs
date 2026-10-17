@@ -17,141 +17,22 @@ pub fn update_dynamic_forwarding_rules(old_model: String, new_model: String) {
     DYNAMIC_MODEL_FORWARDING_RULES.insert(old_model, new_model);
 }
 
-static CLAUDE_TO_GEMINI: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {
-    let mut m = HashMap::new();
+use crate::proxy::common::model_registry::DynamicModelRegistry;
 
-    // 直接支持的模型
-    m.insert("claude-sonnet-4-6", "claude-sonnet-4-6");
-    m.insert("claude-sonnet-4-6-thinking", "claude-sonnet-4-6-thinking");
-
-    // [Redirect] Sonnet 4.5 -> Sonnet 4.6
-    m.insert("claude-sonnet-4-5", "claude-sonnet-4-6");
-    m.insert("claude-sonnet-4-5-thinking", "claude-sonnet-4-6-thinking");
-
-    // 别名映射
-    m.insert("claude-sonnet-4-5-20250929", "claude-sonnet-4-6-thinking");
-    m.insert("claude-3-5-sonnet-20241022", "claude-sonnet-4-6");
-    m.insert("claude-3-5-sonnet-20240620", "claude-sonnet-4-6");
-    // [Redirect] Opus 4.5 -> Opus 4.6 (Issue #1743)
-    m.insert("claude-opus-4", "claude-opus-4-6-thinking");
-    m.insert("claude-opus-4-5-thinking", "claude-opus-4-6-thinking");
-    m.insert("claude-opus-4-5-20251101", "claude-opus-4-6-thinking");
-
-    // Claude Opus 4.6
-    m.insert("claude-opus-4-6-thinking", "claude-opus-4-6-thinking");
-    m.insert("claude-opus-4-6", "claude-opus-4-6-thinking");
-    m.insert("claude-opus-4.6-thinking", "claude-opus-4-6-thinking");
-    m.insert("claude-opus-4.6", "claude-opus-4-6-thinking");
-    m.insert("claude-opus-4-6-20260201", "claude-opus-4-6-thinking");
-
-    m.insert("claude-haiku-4", "claude-sonnet-4-6");
-    m.insert("claude-3-haiku-20240307", "claude-sonnet-4-6");
-    m.insert("claude-haiku-4-5-20251001", "claude-sonnet-4-6");
-    // OpenAI 协议映射表
-    m.insert("gpt-4", "gemini-2.5-flash");
-    m.insert("gpt-4-turbo", "gemini-2.5-flash");
-    m.insert("gpt-4-turbo-preview", "gemini-2.5-flash");
-    m.insert("gpt-4-0125-preview", "gemini-2.5-flash");
-    m.insert("gpt-4-1106-preview", "gemini-2.5-flash");
-    m.insert("gpt-4-0613", "gemini-2.5-flash");
-
-    m.insert("gpt-4o", "gemini-2.5-flash");
-    m.insert("gpt-4o-2024-05-13", "gemini-2.5-flash");
-    m.insert("gpt-4o-2024-08-06", "gemini-2.5-flash");
-
-    m.insert("gpt-4o-mini", "gemini-2.5-flash");
-    m.insert("gpt-4o-mini-2024-07-18", "gemini-2.5-flash");
-
-    m.insert("gpt-3.5-turbo", "gemini-2.5-flash");
-    m.insert("gpt-3.5-turbo-16k", "gemini-2.5-flash");
-    m.insert("gpt-3.5-turbo-0125", "gemini-2.5-flash");
-    m.insert("gpt-3.5-turbo-1106", "gemini-2.5-flash");
-    m.insert("gpt-3.5-turbo-0613", "gemini-2.5-flash");
-
-    // Gemini 协议映射表
-    m.insert("gemini-2.5-flash-lite", "gemini-2.5-flash");
-    m.insert("gemini-2.5-flash-thinking", "gemini-2.5-flash-thinking");
-    // Gemini Pro family:
-    // - Concrete model IDs should pass through unchanged.
-    // - Generic aliases (without tier) still route to preview as fallback entrypoint.
-    m.insert("gemini-3.1-pro-low", "gemini-3.1-pro-low");
-    m.insert("gemini-3.1-pro-high", "gemini-pro-agent");
-    m.insert("gemini-3.1-pro-preview", "gemini-3.1-pro-preview");
-    m.insert("gemini-3.1-pro", "gemini-3.1-pro-preview");
-    m.insert("gemini-3-pro-low", "gemini-3-pro-low");
-    m.insert("gemini-3-pro-high", "gemini-pro-agent");
-    m.insert("gemini-3-pro-preview", "gemini-3-pro-preview");
-    m.insert("gemini-3-pro", "gemini-3-pro-preview");
-    m.insert("gemini-2.5-flash", "gemini-2.5-flash");
-    m.insert("gemini-3-flash", "gemini-3-flash");
-    m.insert("gemini-3.5-flash", "gemini-3.5-flash");
-    m.insert("gemini-3.6-flash", "gemini-3.6-flash");
-    m.insert("gemini-3.7-flash", "gemini-3.7-flash");
-    m.insert("gemini-3.7-flash-tiered", "gemini-3.7-flash-tiered");
-    m.insert("gemini-3.7-flash-low", "gemini-3.7-flash-low");
-    m.insert("gemini-3.7-flash-medium", "gemini-3.7-flash-medium");
-    m.insert("gemini-3.7-flash-high", "gemini-3.7-flash-high");
-    m.insert("gemini-3-pro-image", "gemini-3-pro-image");
-
-    // Gemini 3.8 Flash aliases normalized to active Flash model
-    m.insert("gemini-3.8-flash", "gemini-3-flash");
-    m.insert("gemini-3.8-flash-medium", "gemini-3-flash");
-    m.insert("gemini-3.8-flash-low", "gemini-3-flash");
-    m.insert("gemini-3.8-flash-high", "gemini-3-flash");
-
-    // [New] Unified Virtual ID for Background Tasks (Title, Summary, etc.)
-    // Allows users to override all background tasks via custom_mapping
-    m.insert("internal-background-task", "gemini-2.5-flash");
-
-    m
-});
-
-/// Map Claude model names to Gemini model names
-///
-/// # 映射策略
-/// 1. **精确匹配**: 检查 CLAUDE_TO_GEMINI 映射表
-/// 2. **已知前缀透传**: gemini-* 和 *-thinking 模型直接透传
-/// 3. **[NEW] 直接透传**: 未知模型 ID 直接传递给 Google API (支持体验未发布模型)
-///
-/// # 参数
-/// - `input`: 原始模型名称
-///
-/// # 返回
-/// 映射后的目标模型名称
-///
-/// # 示例
-/// ```ignore
-/// use antigravity_shield_lib::proxy::common::model_mapping::map_claude_model_to_gemini;
-/// // 精确匹配
-/// assert_eq!(map_claude_model_to_gemini("claude-opus-4"), "claude-opus-4-5-thinking");
-///
-/// // Gemini 模型透传
-/// assert_eq!(map_claude_model_to_gemini("gemini-2.5-flash"), "gemini-2.5-flash");
-///
-/// // 直接透传未知模型 (NEW!)
-/// assert_eq!(map_claude_model_to_gemini("claude-opus-4-6"), "claude-opus-4-6");
-/// assert_eq!(map_claude_model_to_gemini("claude-sonnet-5"), "claude-sonnet-5");
-/// ```
+/// Map Claude and downstream model names dynamically using the 5-tier priority cascade of DynamicModelRegistry
 pub fn map_claude_model_to_gemini(input: &str) -> String {
-    // 1. Check exact match in map
-    if let Some(mapped) = CLAUDE_TO_GEMINI.get(input) {
-        return mapped.to_string();
+    // 1. Upstream Dynamic Retirement Rules
+    if let Some(forwarded) = DYNAMIC_MODEL_FORWARDING_RULES.get(input) {
+        return forwarded.value().clone();
     }
 
-    // 2. Pass-through known prefixes (gemini-, -thinking) to support dynamic suffixes
-    if input.starts_with("gemini-") || input.contains("thinking") {
-        return input.to_string();
-    }
-
-    // 3. [ENHANCED] 直接透传未知模型 ID,而不是强制 fallback
-    // 这允许用户通过自定义映射体验未发布的模型 (如 claude-opus-4-6)
-    // Google API 会自动处理无效模型并返回错误,用户可以根据错误调整映射
-    input.to_string()
+    // 2. Delegate to the global dynamic model registry
+    DynamicModelRegistry::global().resolve_model(input, None)
 }
 
-/// 获取所有内置支持的模型列表关键字
+/// 获取所有内置支持的模型列表关键字 (Forward to DynamicModelRegistry)
 pub fn get_supported_models() -> Vec<String> {
-    CLAUDE_TO_GEMINI.keys().map(|s| s.to_string()).collect()
+    DynamicModelRegistry::global().get_available_models(None, false)
 }
 
 /// 动态获取可用模型列表 (支持全账号汇总或指定账号/固定账号作用域，Issue #3384)
@@ -170,76 +51,35 @@ pub async fn get_dynamic_models_scoped(
     only_raw_quota_models: bool,
     target_account_id: Option<&str>,
 ) -> Vec<String> {
-    use std::collections::HashSet;
-    let mut model_ids = HashSet::new();
+    use std::collections::BTreeSet;
+    let mut model_ids = BTreeSet::new();
 
-    // 1. 获取账号从官方接口下发的动态模型 (Quota Models)
-    if let Some(tm) = token_manager {
-        // 如果指定了账号 ID，或者当前设置了固定优先账号，优先只展示该账号真实支持的模型
-        let scoped_account_id = match target_account_id {
-            Some(id) if !id.is_empty() => Some(id.to_string()),
-            _ => tm.get_preferred_account_id().await,
-        };
-
-        if let Some(ref acc_id) = scoped_account_id {
-            if let Some(account_models) = tm.get_account_collected_models(acc_id) {
-                for m in account_models {
-                    model_ids.insert(m);
-                }
+    // 1. Resolve effective target account ID
+    let scoped_account_id = match target_account_id {
+        Some(id) if !id.is_empty() => Some(id.to_string()),
+        _ => {
+            if let Some(tm) = token_manager {
+                tm.get_preferred_account_id().await
             } else {
-                for dynamic_model in tm.get_all_collected_models() {
-                    model_ids.insert(dynamic_model);
-                }
-            }
-        } else {
-            for dynamic_model in tm.get_all_collected_models() {
-                model_ids.insert(dynamic_model);
+                None
             }
         }
+    };
+
+    // 2. Fetch live discovered models from DynamicModelRegistry (Zero Disk I/O)
+    for model_id in DynamicModelRegistry::global().get_available_models(scoped_account_id.as_deref(), only_raw_quota_models) {
+        model_ids.insert(model_id);
     }
 
-    // 如果未开启 only_raw_quota_models，则追加 custom_mapping、内置映射别名与硬编码画画/变体模型
+    // 3. Include user custom mappings when not restricted to strictly raw quota
     if !only_raw_quota_models {
-        // 2. 获取所有自定义映射模型 (Custom)
-        {
-            let mapping = custom_mapping.read().await;
-            for key in mapping.keys() {
-                model_ids.insert(key.clone());
-            }
+        let mapping = custom_mapping.read().await;
+        for key in mapping.keys() {
+            model_ids.insert(key.clone());
         }
-
-        // 3. 获取所有内置映射模型
-        for m in get_supported_models() {
-            model_ids.insert(m);
-        }
-
-        // 4. 确保包含常用的 Gemini/画画模型 ID
-        model_ids.insert("gemini-3.1-pro-low".to_string());
-
-        // Issue #247: Dynamically generate all Image Gen Combinations
-        let base = "gemini-3-pro-image";
-        let resolutions = vec!["", "-2k", "-4k"];
-        let ratios = vec!["", "-1x1", "-4x3", "-3x4", "-16x9", "-9x16", "-21x9"];
-
-        for res in resolutions {
-            for ratio in ratios.iter() {
-                let mut id = base.to_string();
-                id.push_str(res);
-                id.push_str(ratio);
-                model_ids.insert(id);
-            }
-        }
-
-        model_ids.insert("gemini-2.0-flash-exp".to_string());
-        model_ids.insert("gemini-2.5-flash".to_string());
-        model_ids.insert("gemini-3-flash".to_string());
-        model_ids.insert("gemini-3.1-pro-high".to_string());
-        model_ids.insert("gemini-3.1-pro-low".to_string());
     }
 
-    let mut sorted_ids: Vec<_> = model_ids.into_iter().collect();
-    sorted_ids.sort();
-    sorted_ids
+    model_ids.into_iter().collect()
 }
 
 /// Wildcard matching - supports multiple wildcards
@@ -483,7 +323,7 @@ mod tests {
         );
         assert_eq!(
             map_claude_model_to_gemini("gpt-4o-mini"),
-            "gemini-2.5-flash"
+            "gemini-3-flash"
         );
 
         // Test Normalization (Opus 4.6 now merged into "claude" group)

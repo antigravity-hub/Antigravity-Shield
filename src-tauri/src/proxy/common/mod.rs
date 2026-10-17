@@ -6,6 +6,7 @@ pub mod client_adapter;
 pub mod client_adapters;
 pub mod json_schema;
 pub mod model_mapping;
+pub mod model_registry;
 pub mod schema_cache;
 pub mod session;
 pub mod tool_adapter;

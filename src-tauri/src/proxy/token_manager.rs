@@ -959,6 +959,7 @@ impl TokenManager {
         let mut model_quotas = HashMap::new();
         // [NEW] 构建模型输出限额内存缓存 (max_output_tokens)
         let mut model_limits: HashMap<String, u64> = HashMap::new();
+        let mut discovered_models = Vec::new();
         if let Some(models) = account
             .get("quota")
             .and_then(|q| q.get("models"))
@@ -974,6 +975,23 @@ impl TokenManager {
                         crate::proxy::common::model_mapping::normalize_to_standard_id(name)
                             .unwrap_or_else(|| name.to_string());
                     model_quotas.insert(standard_id, pct as i32);
+
+                    let (family, version_rank) =
+                        crate::proxy::common::model_registry::ModelFamily::classify(name);
+                    discovered_models.push(crate::proxy::common::model_registry::DiscoveredModel {
+                        id: name.to_string(),
+                        display_name: model.get("display_name").and_then(|v| v.as_str()).map(|s| s.to_string()),
+                        supports_images: model.get("supports_images").and_then(|v| v.as_bool()).unwrap_or(false),
+                        supports_thinking: model.get("supports_thinking").and_then(|v| v.as_bool()).unwrap_or(false),
+                        thinking_budget: model.get("thinking_budget").and_then(|v| v.as_i64()).map(|n| n as i32),
+                        recommended: model.get("recommended").and_then(|v| v.as_bool()).unwrap_or(false),
+                        max_tokens: model.get("max_tokens").and_then(|v| v.as_i64()).map(|n| n as i32),
+                        max_output_tokens: model.get("max_output_tokens").and_then(|v| v.as_i64()).map(|n| n as i32),
+                        remaining_percentage: pct as i32,
+                        reset_time: model.get("reset_time").and_then(|v| v.as_str()).unwrap_or("").to_string(),
+                        family,
+                        version_rank,
+                    });
                 }
                 // [NEW] 解析并缓存 max_output_tokens (按原始 model name，不归一化)
                 if let (Some(name), Some(limit)) = (
@@ -983,6 +1001,23 @@ impl TokenManager {
                     model_limits.insert(name.to_string(), limit);
                 }
             }
+        }
+
+        // Register into global DynamicModelRegistry
+        let mut deprecated_rules = HashMap::new();
+        if let Some(rules) = account.get("quota").and_then(|q| q.get("model_forwarding_rules")).and_then(|r| r.as_object()) {
+            for (old_id, new_id) in rules {
+                if let Some(new_id_str) = new_id.as_str() {
+                    deprecated_rules.insert(old_id.clone(), new_id_str.to_string());
+                }
+            }
+        }
+        if !discovered_models.is_empty() {
+            crate::proxy::common::model_registry::DynamicModelRegistry::global().register_account_models(
+                &account_id,
+                discovered_models,
+                deprecated_rules,
+            );
         }
 
         if let Some(live_limits) = account
@@ -1254,6 +1289,7 @@ impl TokenManager {
         None
     }
 
+    #[allow(dead_code)]
     fn get_available_models_from_json(account_path: &PathBuf) -> Option<HashSet<String>> {
         let canonical = std::fs::canonicalize(account_path).ok()?;
         let content = std::fs::read_to_string(&canonical).ok()?;
@@ -1349,20 +1385,29 @@ impl TokenManager {
         account_id: &str,
         mapped_model: &str,
     ) -> String {
+        // Fast in-memory resolution via DynamicModelRegistry (Zero disk I/O)
+        let resolved = crate::proxy::common::model_registry::DynamicModelRegistry::global()
+            .resolve_model_for_account(mapped_model, account_id);
+
+        if resolved != mapped_model {
+            tracing::info!(
+                "[Dynamic-Model-Rewrite] account={} {} -> {}",
+                account_id,
+                mapped_model,
+                resolved
+            );
+            return resolved;
+        }
+
         let candidates = match Self::build_dynamic_model_candidates(mapped_model) {
             Some(c) => c,
             None => return mapped_model.to_string(),
         };
 
-        let account_path = match self.tokens.get(account_id) {
-            Some(token) => token.account_path.clone(),
-            None => return mapped_model.to_string(),
-        };
-
-        let available_models = match Self::get_available_models_from_json(&account_path) {
-            Some(models) if !models.is_empty() => models,
-            _ => return mapped_model.to_string(),
-        };
+        let available_models: HashSet<String> = crate::proxy::common::model_registry::DynamicModelRegistry::global()
+            .get_available_models(Some(account_id), true)
+            .into_iter()
+            .collect();
 
         for candidate in candidates {
             if available_models.contains(&candidate) {
@@ -3766,22 +3811,18 @@ impl TokenManager {
         earliest_ts
     }
 
-    /// 获取当前所有可用账号中收集到的官方下发的所有动态模型集合
+    /// 获取当前所有可用账号中收集到的官方下发的所有动态模型集合 (Zero Disk I/O)
     pub fn get_all_collected_models(&self) -> std::collections::HashSet<String> {
         let mut all_models = std::collections::HashSet::new();
+
+        // 1. Query in-memory discovered models from DynamicModelRegistry (Zero Disk I/O)
+        for model_id in crate::proxy::common::model_registry::DynamicModelRegistry::global().get_available_models(None, true) {
+            all_models.insert(model_id);
+        }
+
+        // 2. Also keep normalized bucket IDs from in-memory token state
         for entry in self.tokens.iter() {
             let token = entry.value();
-
-            // Keep the raw quota model IDs for /v1/models discovery. `model_quotas`
-            // intentionally stores normalized protection buckets (e.g. gemini-3-flash),
-            // but clients need concrete usable IDs such as gemini-3-flash-agent.
-            if let Some(raw_models) = Self::get_available_models_from_json(&token.account_path) {
-                for model_id in raw_models {
-                    all_models.insert(model_id);
-                }
-            }
-
-            // Also keep normalized bucket IDs for existing quota/protection behavior.
             for model_id in token.model_quotas.keys() {
                 all_models.insert(model_id.clone());
             }
@@ -3819,18 +3860,18 @@ impl TokenManager {
         self.preferred_account_id.read().await.clone()
     }
 
-    /// [NEW #3384] 获取指定账号所支持的所有模型集合
+    /// [NEW #3384] 获取指定账号所支持的所有模型集合 (Zero Disk I/O)
     pub fn get_account_collected_models(&self, account_id: &str) -> Option<std::collections::HashSet<String>> {
         let entry = self.tokens.get(account_id)?;
         let token = entry.value();
         let mut models = std::collections::HashSet::new();
 
-        if let Some(raw_models) = Self::get_available_models_from_json(&token.account_path) {
-            for model_id in raw_models {
-                models.insert(model_id);
-            }
+        // 1. Query in-memory discovered models from DynamicModelRegistry (Zero Disk I/O)
+        for model_id in crate::proxy::common::model_registry::DynamicModelRegistry::global().get_available_models(Some(account_id), true) {
+            models.insert(model_id);
         }
 
+        // 2. Also keep normalized bucket IDs from in-memory token state
         for model_id in token.model_quotas.keys() {
             models.insert(model_id.clone());
         }
