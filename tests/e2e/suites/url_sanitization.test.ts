@@ -2,6 +2,7 @@ import test from 'node:test';
 import { assertEqual, assertTrue, assertFalse, assertIncludes, assertNotIncludes } from '../harness/assertions';
 
 export const V1_INTERNAL_BASE_URL_PROD = 'https://cloudcode-pa.googleapis.com/v1internal';
+export const V1_INTERNAL_BASE_URL_DAILY = 'https://daily-cloudcode-pa.googleapis.com/v1internal';
 export const DISALLOWED_ENDPOINTS = [
   'https://daily-cloudcode-pa.sandbox.googleapis.com/v1internal',
   'https://staging-cloudcode-pa.googleapis.com/v1internal',
@@ -9,7 +10,7 @@ export const DISALLOWED_ENDPOINTS = [
 ];
 
 export function buildUpstreamUrl(baseUrl: string, method: string, queryString: string): string {
-  if (baseUrl !== V1_INTERNAL_BASE_URL_PROD) {
+  if (baseUrl !== V1_INTERNAL_BASE_URL_PROD && baseUrl !== V1_INTERNAL_BASE_URL_DAILY) {
     throw new Error('Security Violation: Disallowed upstream endpoint: ' + baseUrl);
   }
   if (method.includes('..') || method.includes('/') || method.includes('\\')) {
@@ -47,6 +48,11 @@ test('Feature 4: Production Route Sanitization & Credential Scrubbing', async (t
   await t.test('TC-T1-F04-01: Production endpoint is strictly whitelisted for generateContent', () => {
     const url = buildUpstreamUrl(V1_INTERNAL_BASE_URL_PROD, 'generateContent', '');
     assertEqual(url, 'https://cloudcode-pa.googleapis.com/v1internal:generateContent');
+  });
+
+  await t.test('TC-T1-F04-01B: Daily production endpoint is strictly whitelisted for streamGenerateContent', () => {
+    const url = buildUpstreamUrl(V1_INTERNAL_BASE_URL_DAILY, 'streamGenerateContent', 'alt=sse');
+    assertEqual(url, 'https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse');
   });
 
   await t.test('TC-T1-F04-02: Non-production sandbox endpoints are strictly rejected', () => {

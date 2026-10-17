@@ -91,16 +91,21 @@ pub fn is_whitelisted_production_url(raw_url: &str) -> bool {
 
     if let Ok(parsed) = url::Url::parse(trimmed) {
         let host = parsed.host_str().unwrap_or_default();
+        let path = parsed.path();
+        let is_valid_path = path == V1_INTERNAL_ALLOWED_PATH_PREFIX
+            || path.starts_with("/v1internal/")
+            || path.starts_with("/v1internal:");
+
         parsed.scheme() == "https"
             && (host == V1_INTERNAL_ALLOWED_HOST_PROD || host == V1_INTERNAL_ALLOWED_HOST_DAILY)
-            && parsed.path().starts_with(V1_INTERNAL_ALLOWED_PATH_PREFIX)
+            && is_valid_path
     } else {
         false
     }
 }
 
 /// Sanitizes any given base URL to enforce strict endpoint whitelisting.
-/// Non-whitelisted or dev/staging/sandbox/daily URLs are neutralized and redirected to the official production endpoint.
+/// Non-whitelisted or dev/staging/sandbox URLs are neutralized and redirected to the official production endpoint.
 pub fn sanitize_v1_internal_base_url(raw_url: &str) -> &'static str {
     if is_whitelisted_production_url(raw_url) {
         if raw_url.contains("daily-cloudcode-pa") {
@@ -729,6 +734,7 @@ mod tests {
             "https://evil-phishing.com/v1internal",
             "https://cloudcode-pa.googleapis.com/staging",
             "https://sandbox.googleapis.com",
+            "https://cloudcode-pa.googleapis.com/v1internal-daily",
             "",
             "   ",
         ];
@@ -758,5 +764,11 @@ mod tests {
             url_with_query,
             "https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse"
         );
+    }
+
+    #[test]
+    fn test_fallback_order_prioritizes_daily() {
+        assert_eq!(V1_INTERNAL_BASE_URL_FALLBACKS[0], V1_INTERNAL_BASE_URL_DAILY);
+        assert_eq!(V1_INTERNAL_BASE_URL_FALLBACKS[1], V1_INTERNAL_BASE_URL_PROD);
     }
 }

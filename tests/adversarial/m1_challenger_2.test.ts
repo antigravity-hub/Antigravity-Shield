@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import { assertEqual, assertTrue, assertFalse, assertNotIncludes, assertIncludes } from '../e2e/harness/assertions';
 import {
   V1_INTERNAL_BASE_URL_PROD,
+  V1_INTERNAL_BASE_URL_DAILY,
   DISALLOWED_ENDPOINTS,
   buildUpstreamUrl,
   sanitizeErrorForLog,
@@ -26,7 +27,6 @@ function rustIsWhitelistedProductionUrl(rawUrl: string): boolean {
   const lower = trimmed.toLowerCase();
   if (
     lower.includes('sandbox') ||
-    lower.includes('daily') ||
     lower.includes('autopush') ||
     lower.includes('staging') ||
     lower.includes('test')
@@ -36,10 +36,16 @@ function rustIsWhitelistedProductionUrl(rawUrl: string): boolean {
 
   try {
     const parsed = new URL(trimmed);
+    const pathname = parsed.pathname;
+    const isValidPath =
+      pathname === '/v1internal' ||
+      pathname.startsWith('/v1internal/') ||
+      pathname.startsWith('/v1internal:');
+
     return (
       parsed.protocol === 'https:' &&
-      parsed.hostname === 'cloudcode-pa.googleapis.com' &&
-      parsed.pathname.startsWith('/v1internal')
+      (parsed.hostname === 'cloudcode-pa.googleapis.com' || parsed.hostname === 'daily-cloudcode-pa.googleapis.com') &&
+      isValidPath
     );
   } catch {
     return false;
@@ -52,6 +58,9 @@ function rustIsWhitelistedProductionUrl(rawUrl: string): boolean {
  */
 function rustSanitizeV1InternalBaseUrl(rawUrl: string): string {
   if (rustIsWhitelistedProductionUrl(rawUrl)) {
+    if (rawUrl.includes('daily-cloudcode-pa')) {
+      return V1_INTERNAL_BASE_URL_DAILY;
+    }
     return V1_INTERNAL_BASE_URL_PROD;
   }
   return V1_INTERNAL_BASE_URL_PROD;
@@ -121,6 +130,23 @@ test('ADVERSARIAL VERIFICATION: URL Whitelisting, Staging/Sandbox Blocking & SSR
         `Rust sanitize failed to neutralize: ${badUrl}`
       );
     }
+  });
+
+  await t.test('ADV-URL-01B: Whitelist and preserve official daily-cloudcode-pa endpoint', () => {
+    assertTrue(
+      rustIsWhitelistedProductionUrl(V1_INTERNAL_BASE_URL_DAILY),
+      'Rust is_whitelisted_production_url must whitelist daily-cloudcode-pa'
+    );
+    assertEqual(
+      rustSanitizeV1InternalBaseUrl(V1_INTERNAL_BASE_URL_DAILY),
+      V1_INTERNAL_BASE_URL_DAILY,
+      'Rust sanitize_v1_internal_base_url must preserve daily endpoint'
+    );
+    const url = buildUpstreamUrl(V1_INTERNAL_BASE_URL_DAILY, 'streamGenerateContent', 'alt=sse');
+    assertEqual(
+      url,
+      'https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    );
   });
 
   await t.test('ADV-URL-02: SSRF & Host Spoofing Resistance', () => {
