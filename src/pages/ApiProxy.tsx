@@ -300,9 +300,9 @@ export default function ApiProxy() {
                     auto_launch: true,
                     navigation_layout: 'sidebar',
                     accent_color: 'seafoam',
-                    scheduled_warmup: { enabled: false, interval_hours: 24, account_ids: [] },
-                    quota_protection: { enabled: false, min_quota_percentage: 5 },
-                    pinned_quota_models: { enabled: false, models: [] },
+                    scheduled_warmup: { enabled: false, monitored_models: [] },
+                    quota_protection: { enabled: false, threshold_percentage: 5, monitored_models: [] },
+                    pinned_quota_models: { models: [] },
                     circuit_breaker: { enabled: true, backoff_steps: [5, 15, 30, 60] },
                     cloudflared: { enabled: false, mode: 'quick', port: 8045, use_http2: true },
                     proxy: {
