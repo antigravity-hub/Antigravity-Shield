@@ -62,6 +62,10 @@ export default {
             colors: {
                 seafoam: seafoamCore,
                 obsidian: obsidianPalette,
+                'base-100': '#141916',
+                'base-200': '#0c100e',
+                'base-300': '#1e293b',
+                'base-content': '#f8fafc',
             },
         },
     },

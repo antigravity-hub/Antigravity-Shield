@@ -21,6 +21,8 @@ import { useConfigStore } from '../../stores/useConfigStore';
 import { NavVersionBadge } from '../navbar/NavVersionBadge';
 import { AccentColorPicker } from '../common/AccentColorPicker';
 import { SidebarToolkitBadge } from './SidebarToolkitBadge';
+import { LanguageDropdown } from '../navbar/NavDropdowns';
+import { LANGUAGES } from '../navbar/constants';
 
 interface NavSectionItem {
   path: string;
@@ -90,12 +92,44 @@ export const Sidebar: React.FC = () => {
   ];
 
   const toggleTheme = () => {
-    const isCurrentlyDark = document.documentElement.classList.contains('dark');
+    const root = document.documentElement;
+    const isCurrentlyDark = root.classList.contains('dark');
     const newTheme = isCurrentlyDark ? 'light' : 'dark';
+
+    // Direct synchronous DOM feedback
+    if (newTheme === 'dark') {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+      root.style.backgroundColor = '#060807';
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+      root.style.backgroundColor = '#FAFBFC';
+    }
+    try {
+      localStorage.setItem('app-theme-preference', newTheme);
+    } catch {}
+
     if (config) {
       saveConfig({ ...config, theme: newTheme }, true);
     } else {
       updateTheme(newTheme);
+    }
+  };
+
+  const handleLanguageChange = (langCode: string) => {
+    i18n.changeLanguage(langCode);
+    document.documentElement.lang = langCode;
+    if (langCode === 'ar' || langCode === 'fa' || langCode.startsWith('fa-')) {
+      document.documentElement.dir = 'rtl';
+    } else {
+      document.documentElement.dir = 'ltr';
+    }
+    try {
+      localStorage.setItem('i18nextLng', langCode);
+    } catch {}
+    if (config) {
+      saveConfig({ ...config, language: langCode }, true);
     }
   };
 
@@ -271,6 +305,13 @@ export const Sidebar: React.FC = () => {
 
             {/* 7 种 UI 奢华主题高亮色选择器 */}
             <AccentColorPicker compact={true} dropUp={true} />
+
+            {/* Language Switcher */}
+            <LanguageDropdown
+              currentLanguage={config?.language || i18n.language || 'en'}
+              languages={LANGUAGES}
+              onLanguageChange={handleLanguageChange}
+            />
           </div>
 
           {!collapsed ? (

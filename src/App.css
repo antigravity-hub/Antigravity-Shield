@@ -38,6 +38,35 @@ body {
   background-color: #060807;
 }
 
+/* Bulletproof Dark Mode Surfaces for Proxy Bento Cards & Modals */
+.dark .bg-white:not(button):not(input) {
+  background-color: #0c100e;
+}
+
+.dark [class*="bg-base-200"] {
+  background-color: #0c100e !important;
+}
+
+.dark [class*="bg-base-100"] {
+  background-color: #141916 !important;
+}
+
+.dark [class*="bg-base-300"] {
+  background-color: #141916 !important;
+}
+
+.dark [class*="border-base-300"] {
+  border-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+.dark [class*="border-base-200"] {
+  border-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+.dark .text-base-content {
+  color: #f8fafc !important;
+}
+
 :root {
   --color-accent: #93e9be;
   --color-accent-rgb: 147, 233, 190;

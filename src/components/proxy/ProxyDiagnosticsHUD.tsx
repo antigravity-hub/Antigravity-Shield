@@ -151,13 +151,13 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
         <div className="space-y-5 animate-in fade-in duration-200">
             {/* Top Diagnostics Bento Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm flex items-center justify-between">
+                <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                             <Server size={15} style={{ color: 'var(--color-accent)' }} />
                             <span>Gateway Health</span>
                         </div>
-                        <div className="text-lg font-bold text-gray-900 dark:text-base-content mt-1 flex items-center gap-2">
+                        <div className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-1 flex items-center gap-2">
                             {healthStatus === 'ok' ? (
                                 <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -181,12 +181,12 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     )}
                 </div>
 
-                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm">
+                <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                         <Cpu size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>Stream Engine</span>
                     </div>
-                    <div className="text-xs font-semibold text-gray-900 dark:text-base-content mt-1.5 flex items-center gap-2">
+                    <div className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-1.5 flex items-center gap-2">
                         <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400">
                             Non-Blocking Tokio
                         </span>
@@ -194,22 +194,22 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm">
+                <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                         <Zap size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>Failover Threshold</span>
                     </div>
-                    <div className="text-xs font-semibold text-gray-900 dark:text-base-content mt-1.5">
+                    <div className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-1.5">
                         Sub-50ms Fast Cooldown Rotation
                     </div>
                 </div>
             </div>
 
             {/* Interactive "Test Connection" Live Probe Card */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-base-content flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                             <Activity size={16} style={{ color: 'var(--color-accent)' }} />
                             Interactive Live Diagnostic Probe
                         </h3>
@@ -218,12 +218,12 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-base-300 p-1 rounded-xl">
+                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-[#141916] p-1 rounded-xl">
                         <button
                             onClick={() => setProbeProtocol('openai')}
                             className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                                 probeProtocol === 'openai'
-                                    ? 'bg-white dark:bg-base-100 text-gray-900 dark:text-base-content shadow-xs'
+                                    ? 'bg-white dark:bg-[#0c100e] text-gray-900 dark:text-gray-100 shadow-xs'
                                     : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
                             }`}
                         >
@@ -233,7 +233,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                             onClick={() => setProbeProtocol('claude')}
                             className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                                 probeProtocol === 'claude'
-                                    ? 'bg-white dark:bg-base-100 text-gray-900 dark:text-base-content shadow-xs'
+                                    ? 'bg-white dark:bg-[#0c100e] text-gray-900 dark:text-gray-100 shadow-xs'
                                     : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
                             }`}
                         >
@@ -251,7 +251,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                         <select
                             value={probeModel}
                             onChange={(e) => setProbeModel(e.target.value)}
-                            className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs font-mono text-gray-900 dark:text-base-content focus:outline-none"
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs font-mono text-gray-900 dark:text-gray-100 focus:outline-none"
                             style={{ borderColor: 'var(--color-accent)' }}
                         >
                             {models && models.length > 0 ? (
@@ -284,7 +284,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 value={probePrompt}
                                 onChange={(e) => setProbePrompt(e.target.value)}
                                 placeholder="Enter diagnostic prompt..."
-                                className="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content focus:outline-none"
+                                className="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
                             />
                             <button
                                 onClick={executeLiveProbe}
@@ -310,7 +310,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
 
                 {/* Probe Result Box (4-State Display) */}
                 {probeState === 'probing' && (
-                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-base-300/40 border border-gray-200 dark:border-base-300 flex items-center justify-center gap-3 py-8">
+                    <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141916] border border-gray-200 dark:border-slate-800/80 flex items-center justify-center gap-3 py-8">
                         <RotateCcw size={18} className="animate-spin" style={{ color: 'var(--color-accent)' }} />
                         <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                             Sending probe request through {probeProtocol === 'openai' ? '/v1/chat/completions' : '/v1/messages'}...
@@ -339,13 +339,13 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                             </div>
                         </div>
 
-                        <div className="relative group bg-gray-50 dark:bg-base-100 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
+                        <div className="relative group bg-gray-50 dark:bg-[#141916] p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
                             <pre className="text-xs font-mono text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
                                 {probeResponse}
                             </pre>
                             <button
                                 onClick={handleCopyResponse}
-                                className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 dark:bg-base-200 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-base-300 transition-colors"
+                                className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 dark:bg-[#0c100e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#141916] transition-colors"
                                 title="Copy Response"
                             >
                                 {copiedResponse ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
@@ -369,7 +369,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 </span>
                             )}
                         </div>
-                        <p className="text-xs font-mono text-rose-700 dark:text-rose-300 bg-white/70 dark:bg-base-100/60 p-2.5 rounded-lg border border-rose-200/50 dark:border-rose-900/30">
+                        <p className="text-xs font-mono text-rose-700 dark:text-rose-300 bg-white/70 dark:bg-[#141916] p-2.5 rounded-lg border border-rose-200/50 dark:border-rose-900/30">
                             {probeError}
                         </p>
                     </div>
@@ -377,11 +377,11 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
             </div>
 
             {/* Embedded Live Proxy Monitor (Real-Time Request Traffic) */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl border border-gray-100 dark:border-base-300 shadow-sm overflow-hidden">
-                <div className="px-5 py-3.5 border-b border-gray-100 dark:border-base-300 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm overflow-hidden">
+                <div className="px-5 py-3.5 border-b border-gray-100 dark:border-slate-800/80 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Terminal size={16} style={{ color: 'var(--color-accent)' }} />
-                        <h4 className="text-xs font-bold text-gray-900 dark:text-base-content uppercase tracking-wider">
+                        <h4 className="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider">
                             Live Gateway Traffic &amp; Request Logs
                         </h4>
                     </div>

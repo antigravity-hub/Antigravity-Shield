@@ -107,10 +107,10 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
     return (
         <div className="space-y-5 animate-in fade-in duration-200">
             {/* Core Network Settings Card */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center gap-2">
                     <Settings size={18} style={{ color: 'var(--color-accent)' }} />
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                         Core Network &amp; Listener Configuration
                     </h3>
                 </div>
@@ -133,7 +133,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             min={8000}
                             max={65535}
                             disabled={status.running}
-                            className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content disabled:opacity-50"
+                            className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 disabled:opacity-50"
                         />
                         <p className="text-[10px] text-gray-400">
                             {status.running ? 'Stop proxy to change port' : 'Default: 8045 or 8765'}
@@ -157,7 +157,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             min={30}
                             max={7200}
                             disabled={status.running}
-                            className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content disabled:opacity-50"
+                            className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 disabled:opacity-50"
                         />
                         <p className="text-[10px] text-gray-400">
                             30 to 7200 seconds (recommended: 120s for code generation)
@@ -186,19 +186,19 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
             </div>
 
             {/* Security & Authentication Bento Card */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center gap-2">
                     <Shield size={18} style={{ color: 'var(--color-accent)' }} />
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                         Authentication &amp; Access Control
                     </h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* API Key Box */}
-                    <div className="p-4 bg-gray-50/70 dark:bg-base-300/40 rounded-xl border border-gray-200/70 dark:border-base-300 space-y-2">
+                    <div className="p-4 bg-gray-50/70 dark:bg-[#141916] rounded-xl border border-gray-200/70 dark:border-slate-800/80 space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-gray-900 dark:text-base-content flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
                                 <Key size={14} style={{ color: 'var(--color-accent)' }} />
                                 Proxy API Key (Bearer Token)
                             </span>
@@ -208,7 +208,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                         <button onClick={onSaveApiKey} className="p-1 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded" title="Save">
                                             <Check size={14} />
                                         </button>
-                                        <button onClick={onCancelEditApiKey} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-base-300 rounded" title="Cancel">
+                                        <button onClick={onCancelEditApiKey} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916] rounded" title="Cancel">
                                             <X size={14} />
                                         </button>
                                     </>
@@ -237,10 +237,10 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                 type="text"
                                 value={tempApiKey}
                                 onChange={(e) => setTempApiKey(e.target.value)}
-                                className="w-full px-2.5 py-1.5 rounded border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs font-mono text-gray-900 dark:text-base-content"
+                                className="w-full px-2.5 py-1.5 rounded border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs font-mono text-gray-900 dark:text-gray-100"
                             />
                         ) : (
-                            <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-base-100 px-3 py-1.5 rounded border border-gray-200 dark:border-base-300 truncate">
+                            <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-[#0c100e] px-3 py-1.5 rounded border border-gray-200 dark:border-slate-800 truncate">
                                 {appConfig?.proxy?.api_key || 'No key set'}
                             </div>
                         )}
@@ -250,9 +250,9 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                     </div>
 
                     {/* Admin Password Box */}
-                    <div className="p-4 bg-gray-50/70 dark:bg-base-300/40 rounded-xl border border-gray-200/70 dark:border-base-300 space-y-2">
+                    <div className="p-4 bg-gray-50/70 dark:bg-[#141916] rounded-xl border border-gray-200/70 dark:border-slate-800/80 space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-gray-900 dark:text-base-content flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
                                 <Lock size={14} style={{ color: 'var(--color-accent)' }} />
                                 Admin Dashboard Password
                             </span>
@@ -262,7 +262,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                         <button onClick={onSaveAdminPassword} className="p-1 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded" title="Save">
                                             <Check size={14} />
                                         </button>
-                                        <button onClick={onCancelEditAdminPassword} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-base-300 rounded" title="Cancel">
+                                        <button onClick={onCancelEditAdminPassword} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916] rounded" title="Cancel">
                                             <X size={14} />
                                         </button>
                                     </>
@@ -280,10 +280,10 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                 value={tempAdminPassword}
                                 onChange={(e) => setTempAdminPassword(e.target.value)}
                                 placeholder="Enter new admin password"
-                                className="w-full px-2.5 py-1.5 rounded border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content"
+                                className="w-full px-2.5 py-1.5 rounded border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100"
                             />
                         ) : (
-                            <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-base-100 px-3 py-1.5 rounded border border-gray-200 dark:border-base-300">
+                            <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-[#0c100e] px-3 py-1.5 rounded border border-gray-200 dark:border-slate-800">
                                 {appConfig?.proxy?.admin_password ? '••••••••••••' : 'None (Open access)'}
                             </div>
                         )}
@@ -295,7 +295,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
             </div>
 
             {/* CLI Sync Card Embed */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl border border-gray-100 dark:border-base-300 shadow-sm overflow-hidden p-5">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm overflow-hidden p-5">
                 <CliSyncCard
                     proxyUrl={status.running ? `http://127.0.0.1:${status.port}` : `http://127.0.0.1:${appConfig?.proxy?.port || 8045}`}
                     apiKey={appConfig?.proxy?.api_key || ''}
@@ -303,12 +303,12 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
             </div>
 
             {/* Public Access & Cloudflared Tunnel */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Globe size={18} className="text-amber-500" />
                         <div>
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
+                            <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                                 Cloudflared Zero-Trust Tunnel (Egress &amp; Remote Access)
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -427,14 +427,14 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
 
             {/* Advanced Thinking & Circuit Breaker */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm">
+                <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <AdvancedThinking
                         config={appConfig.proxy}
                         onChange={(newProxy) => onUpdateProxyConfig(newProxy)}
                     />
                 </div>
 
-                <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm">
+                <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <CircuitBreaker
                         config={appConfig.circuit_breaker}
                         onChange={onUpdateCircuitBreakerConfig}

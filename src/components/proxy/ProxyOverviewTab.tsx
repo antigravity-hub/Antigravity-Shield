@@ -74,7 +74,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
             {/* Top Bento Hero: Gateway Status & Controls */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Main Gateway Card */}
-                <div className="lg:col-span-2 bg-white dark:bg-base-200/60 rounded-2xl p-6 border border-gray-100 dark:border-base-300 shadow-sm relative overflow-hidden flex flex-col justify-between">
+                <div className="lg:col-span-2 bg-white dark:bg-[#0c100e] rounded-2xl p-6 border border-gray-100 dark:border-slate-800/80 shadow-sm relative overflow-hidden flex flex-col justify-between">
                     <div className="flex items-start justify-between gap-4">
                         <div className="space-y-1">
                             <div className="flex items-center gap-2.5">
@@ -162,7 +162,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                 </div>
 
                 {/* Quick Telemetry Bento Card */}
-                <div className="bg-white dark:bg-base-200/60 rounded-2xl p-6 border border-gray-100 dark:border-base-300 shadow-sm flex flex-col justify-between">
+                <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-6 border border-gray-100 dark:border-slate-800/80 shadow-sm flex flex-col justify-between">
                     <div className="space-y-3">
                         <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                             <Zap size={14} style={{ color: 'var(--color-accent)' }} />
@@ -170,25 +170,25 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                         </span>
 
                         <div className="grid grid-cols-2 gap-3 pt-1">
-                            <div className="bg-gray-50/80 dark:bg-base-100/70 p-3 rounded-xl border border-gray-100 dark:border-base-300">
+                            <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
                                 <div className="text-[11px] text-gray-500 dark:text-gray-400">Active Accounts</div>
                                 <div className="text-lg font-bold text-gray-900 dark:text-gray-100 pt-0.5">
                                     {status.active_accounts}
                                 </div>
                             </div>
-                            <div className="bg-gray-50/80 dark:bg-base-100/70 p-3 rounded-xl border border-gray-100 dark:border-base-300">
+                            <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
                                 <div className="text-[11px] text-gray-500 dark:text-gray-400">Failover Latency</div>
                                 <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400 pt-0.5">
                                     &lt; 50ms
                                 </div>
                             </div>
-                            <div className="bg-gray-50/80 dark:bg-base-100/70 p-3 rounded-xl border border-gray-100 dark:border-base-300">
+                            <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
                                 <div className="text-[11px] text-gray-500 dark:text-gray-400">Protocol Support</div>
                                 <div className="text-xs font-semibold text-gray-800 dark:text-gray-200 pt-1">
                                     OpenAI / Claude
                                 </div>
                             </div>
-                            <div className="bg-gray-50/80 dark:bg-base-100/70 p-3 rounded-xl border border-gray-100 dark:border-base-300">
+                            <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
                                 <div className="text-[11px] text-gray-500 dark:text-gray-400">Zero-Leak Guard</div>
                                 <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 pt-1 flex items-center gap-1">
                                     <CheckCircle size={12} />
@@ -200,7 +200,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
 
                     <button
                         onClick={() => onSelectTab('accounts')}
-                        className="w-full mt-4 py-2 px-3 rounded-xl text-xs font-medium border border-gray-200 dark:border-base-300 hover:bg-gray-50 dark:hover:bg-base-300 transition-colors flex items-center justify-center gap-2 text-gray-700 dark:text-gray-300"
+                        className="w-full mt-4 py-2 px-3 rounded-xl text-xs font-medium border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-[#141916] transition-colors flex items-center justify-center gap-2 text-gray-700 dark:text-gray-300"
                     >
                         <Layers size={14} style={{ color: 'var(--color-accent)' }} />
                         <span>{t('proxy.overview.view_quotas', { defaultValue: 'View Accounts & Quotas' })}</span>
@@ -210,10 +210,10 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
             </div>
 
             {/* Protocol Endpoints Bento Grid */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-6 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-6 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-base-content flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                             <Terminal size={16} style={{ color: 'var(--color-accent)' }} />
                             {t('proxy.overview.endpoints_title', { defaultValue: 'Universal Protocol Endpoints' })}
                         </h3>
@@ -230,7 +230,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                     {endpoints.map((ep) => (
                         <div
                             key={ep.path}
-                            className="bg-gray-50/70 dark:bg-base-100/60 p-4 rounded-xl border border-gray-200/70 dark:border-base-300 flex flex-col justify-between hover:shadow-sm transition-all"
+                            className="bg-gray-50/70 dark:bg-[#141916] p-4 rounded-xl border border-gray-200/70 dark:border-slate-800/80 flex flex-col justify-between hover:shadow-sm transition-all"
                         >
                             <div className="space-y-1.5">
                                 <div className="flex items-center justify-between">
@@ -277,11 +277,11 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
             {/* Quick Agent Setup Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Cursor AI Setup */}
-                <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-3">
+                <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Cpu size={16} style={{ color: 'var(--color-accent)' }} />
-                            <h4 className="text-xs font-bold text-gray-900 dark:text-base-content">
+                            <h4 className="text-xs font-bold text-gray-900 dark:text-gray-100">
                                 Cursor AI Quick Setup
                             </h4>
                         </div>
@@ -303,7 +303,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                 </div>
 
                 {/* Claude Code CLI Setup */}
-                <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-3">
+                <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Terminal size={16} style={{ color: 'var(--color-accent)' }} />

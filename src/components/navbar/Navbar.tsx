@@ -1,7 +1,7 @@
 import { LayoutDashboard, Users, Network, Activity, BarChart3, Settings, Lock, Layers } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '../../stores/useConfigStore';
-import { isTauri, isLinux } from '../../utils/env';
+import { isTauri } from '../../utils/env';
 import { NavLogo } from './NavLogo';
 import { NavMenu } from './NavMenu';
 import { NavSettings } from './NavSettings';
@@ -15,7 +15,7 @@ import { CONTAINER_MAX_WIDTH } from '../../constants/layout';
  * 响应式逻辑由各个子组件独立处理
  */
 function Navbar() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { config, saveConfig } = useConfigStore();
 
     // 创建导航项(包含翻译后的标签)
@@ -31,68 +31,53 @@ function Navbar() {
         { path: '/settings', label: t('nav.settings'), icon: Settings, priority: 'high' },
     ];
 
-    // 主题切换逻辑(带 View Transition 动画)
-    const toggleTheme = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (!config) return;
-
-        const isCurrentlyDark = document.documentElement.classList.contains('dark');
+    // 主题切换逻辑
+    const toggleTheme = async () => {
+        const root = document.documentElement;
+        const isCurrentlyDark = root.classList.contains('dark');
         const newTheme = isCurrentlyDark ? 'light' : 'dark';
 
-        // Use View Transition API if supported, but skip on Linux (may cause crash)
-        if ('startViewTransition' in document && !isLinux()) {
-            const x = event.clientX;
-            const y = event.clientY;
-            const endRadius = Math.hypot(
-                Math.max(x, window.innerWidth - x),
-                Math.max(y, window.innerHeight - y)
-            );
-
-            // @ts-ignore
-            const transition = document.startViewTransition(async () => {
-                saveConfig({
-                    ...config,
-                    theme: newTheme,
-                    language: config.language
-                }, true);
-            });
-
-            transition.ready.then(() => {
-                const isDarkMode = newTheme === 'dark';
-                const clipPath = isDarkMode
-                    ? [`circle(${endRadius}px at ${x}px ${y}px)`, `circle(0px at ${x}px ${y}px)`]
-                    : [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
-
-                document.documentElement.animate(
-                    {
-                        clipPath: clipPath
-                    },
-                    {
-                        duration: 500,
-                        easing: 'ease-in-out',
-                        fill: 'forwards',
-                        pseudoElement: isDarkMode ? '::view-transition-old(root)' : '::view-transition-new(root)'
-                    }
-                );
-            });
+        // Immediate synchronous DOM update
+        if (newTheme === 'dark') {
+            root.classList.add('dark');
+            root.setAttribute('data-theme', 'dark');
+            root.style.backgroundColor = '#060807';
         } else {
-            // Fallback: direct switch (Linux or browsers without View Transition)
+            root.classList.remove('dark');
+            root.setAttribute('data-theme', 'light');
+            root.style.backgroundColor = '#FAFBFC';
+        }
+        try {
+            localStorage.setItem('app-theme-preference', newTheme);
+        } catch {}
+
+        if (config) {
             await saveConfig({
                 ...config,
                 theme: newTheme,
-                language: config.language
             }, true);
         }
     };
 
     // 语言切换逻辑
     const handleLanguageChange = async (langCode: string) => {
-        if (!config) return;
+        i18n.changeLanguage(langCode);
+        document.documentElement.lang = langCode;
+        if (langCode === 'ar' || langCode === 'fa' || langCode.startsWith('fa-')) {
+            document.documentElement.dir = 'rtl';
+        } else {
+            document.documentElement.dir = 'ltr';
+        }
+        try {
+            localStorage.setItem('i18nextLng', langCode);
+        } catch {}
 
-        await saveConfig({
-            ...config,
-            language: langCode,
-            theme: config.theme
-        }, true);
+        if (config) {
+            await saveConfig({
+                ...config,
+                language: langCode,
+            }, true);
+        }
     };
 
     return (

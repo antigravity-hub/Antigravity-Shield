@@ -110,12 +110,12 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
     return (
         <div className="space-y-5 animate-in fade-in duration-200">
             {/* Presets Toolbar Bento */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
                         <BrainCircuit size={18} style={{ color: 'var(--color-accent)' }} />
                         <div>
-                            <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
+                            <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                                 Model Routing Presets &amp; Alias Normalizer
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -127,7 +127,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                     <div className="flex items-center gap-2">
                         <button
                             onClick={onResetMapping}
-                            className="px-3 py-1.5 rounded-xl text-xs font-medium border border-gray-200 dark:border-base-300 hover:bg-gray-50 dark:hover:bg-base-300 transition-colors flex items-center gap-1.5 text-gray-700 dark:text-gray-300"
+                            className="px-3 py-1.5 rounded-xl text-xs font-medium border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-[#141916] transition-colors flex items-center gap-1.5 text-gray-700 dark:text-gray-300"
                         >
                             <RotateCcw size={13} />
                             <span>{t('proxy.router.reset_mapping', { defaultValue: 'Reset Defaults' })}</span>
@@ -136,7 +136,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                 </div>
 
                 {/* Presets Selector Row */}
-                <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-gray-100 dark:border-base-300">
+                <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-gray-100 dark:border-slate-800/80">
                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 pe-2">
                         Presets:
                     </span>
@@ -151,7 +151,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                                 className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
                                     isSelected
                                         ? 'text-white shadow-sm'
-                                        : 'bg-gray-100 dark:bg-base-300/60 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-base-300'
+                                        : 'bg-gray-100 dark:bg-[#141916] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#1a201c]'
                                 }`}
                                 style={isSelected ? { backgroundColor: 'var(--color-primary-btn)' } : undefined}
                             >
@@ -171,7 +171,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                         </button>
                         <button
                             onClick={onOpenPresetManager}
-                            className="px-3 py-1.5 rounded-xl text-xs font-medium border border-gray-200 dark:border-base-300 hover:bg-gray-50 dark:hover:bg-base-300 text-gray-700 dark:text-gray-300 transition-colors"
+                            className="px-3 py-1.5 rounded-xl text-xs font-medium border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-[#141916] text-gray-700 dark:text-gray-300 transition-colors"
                         >
                             Save / Manage
                         </button>
@@ -180,10 +180,10 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
             </div>
 
             {/* Custom Model Aliases & Add Mapping Form */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-base-content flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                             <Sparkles size={16} style={{ color: 'var(--color-accent)' }} />
                             Configured Custom Model Aliases
                         </h4>
@@ -204,13 +204,13 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                 </div>
 
                 {/* Inline Add Form */}
-                <div className="p-3 bg-gray-50/70 dark:bg-base-300/40 rounded-xl border border-gray-200/60 dark:border-base-300 flex flex-wrap items-center gap-2">
+                <div className="p-3 bg-gray-50/70 dark:bg-[#141916] rounded-xl border border-gray-200/60 dark:border-slate-800/80 flex flex-wrap items-center gap-2">
                     <input
                         type="text"
                         value={newMappingKey}
                         onChange={(e) => setNewMappingKey(e.target.value)}
                         placeholder="Request Model Name (e.g. my-custom-model)"
-                        className="flex-1 min-w-[200px] px-3 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content focus:outline-none"
+                        className="flex-1 min-w-[200px] px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
                     />
                     <span className="text-gray-400 font-mono text-xs">&rarr;</span>
                     <input
@@ -218,7 +218,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                         value={newMappingValue}
                         onChange={(e) => setNewMappingValue(e.target.value)}
                         placeholder="Target Upstream (e.g. gemini-3-flash)"
-                        className="flex-1 min-w-[200px] px-3 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content focus:outline-none"
+                        className="flex-1 min-w-[200px] px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
                     />
                     <button
                         onClick={handleAddMapping}
@@ -233,24 +233,24 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
 
                 {/* Custom Mapping Table */}
                 {Object.keys(customMapping).length === 0 ? (
-                    <div className="py-6 text-center text-xs text-gray-400 border border-dashed border-gray-200 dark:border-base-300 rounded-xl">
+                    <div className="py-6 text-center text-xs text-gray-400 border border-dashed border-gray-200 dark:border-slate-800/80 rounded-xl">
                         No custom model aliases registered. Standard built-in mappings are active below.
                     </div>
                 ) : (
-                    <div className="overflow-x-auto rounded-xl border border-gray-200/70 dark:border-base-300">
+                    <div className="overflow-x-auto rounded-xl border border-gray-200/70 dark:border-slate-800/80">
                         <table className="table w-full text-xs">
-                            <thead className="bg-gray-50 dark:bg-base-300/50 text-gray-500 dark:text-gray-400">
+                            <thead className="bg-gray-50 dark:bg-[#141916] text-gray-500 dark:text-gray-400">
                                 <tr>
                                     <th className="py-2.5 ps-4 font-semibold text-start">Incoming Alias</th>
                                     <th className="py-2.5 font-semibold text-start">Mapped Target</th>
                                     <th className="py-2.5 pe-4 font-semibold text-end">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100 dark:divide-base-300">
+                            <tbody className="divide-y divide-gray-100 dark:divide-slate-800/80">
                                 {Object.entries(customMapping).map(([key, val]) => {
                                     const isEditing = editingKey === key;
                                     return (
-                                        <tr key={key} className="hover:bg-gray-50/50 dark:hover:bg-base-200/50">
+                                        <tr key={key} className="hover:bg-gray-50/50 dark:hover:bg-[#141916]/50">
                                             <td className="ps-4 py-2 font-mono font-medium text-gray-900 dark:text-gray-100">
                                                 {key}
                                             </td>
@@ -260,7 +260,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                                                         type="text"
                                                         value={editingValue}
                                                         onChange={(e) => setEditingValue(e.target.value)}
-                                                        className="px-2 py-1 rounded border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs font-mono text-gray-900 dark:text-base-content"
+                                                        className="px-2 py-1 rounded border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs font-mono text-gray-900 dark:text-gray-100"
                                                     />
                                                 ) : (
                                                     <span className="font-mono text-gray-700 dark:text-gray-300">
@@ -280,7 +280,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                                                         </button>
                                                         <button
                                                             onClick={handleCancelEdit}
-                                                            className="p-1 rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-base-300"
+                                                            className="p-1 rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916]"
                                                             title="Cancel"
                                                         >
                                                             <X size={14} />
@@ -315,9 +315,9 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
             </div>
 
             {/* Built-in Normalization References */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-3">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-base-content flex items-center gap-2">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                         <Terminal size={16} style={{ color: 'var(--color-accent)' }} />
                         Standard Built-in Normalization Table (Native Rust Engine)
                     </h4>
@@ -328,7 +328,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                     {builtInAliases.map((item) => (
                         <div
                             key={item.from}
-                            className="bg-gray-50/70 dark:bg-base-300/40 p-2.5 rounded-xl border border-gray-200/60 dark:border-base-300"
+                            className="bg-gray-50/70 dark:bg-[#141916] p-2.5 rounded-xl border border-gray-200/60 dark:border-slate-800/80"
                         >
                             <div className="font-mono text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">
                                 {item.from}
@@ -343,22 +343,22 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
             </div>
 
             {/* Supported Models Catalog & Quick Integration Code Generator */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl border border-gray-100 dark:border-base-300 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-100 dark:border-base-300 flex items-center justify-between">
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-base-content flex items-center gap-2">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl border border-gray-100 dark:border-slate-800/80 shadow-sm overflow-hidden">
+                <div className="p-4 border-b border-gray-100 dark:border-slate-800/80 flex items-center justify-between">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                         <Code size={16} style={{ color: 'var(--color-accent)' }} />
                         Supported Models Directory &amp; Code Generator
                     </h4>
 
                     {/* Protocol Selector */}
-                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-base-300/60 p-1 rounded-xl">
+                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-[#141916] p-1 rounded-xl">
                         {(['openai', 'anthropic', 'gemini'] as const).map((proto) => (
                             <button
                                 key={proto}
                                 onClick={() => onSelectProtocol(proto)}
                                 className={`px-2.5 py-1 rounded-lg text-xs font-medium uppercase transition-colors ${
                                     selectedProtocol === proto
-                                        ? 'bg-white dark:bg-base-100 text-gray-900 dark:text-base-content shadow-xs'
+                                        ? 'bg-white dark:bg-[#0c100e] text-gray-900 dark:text-gray-100 shadow-xs'
                                         : 'text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
                                 }`}
                             >

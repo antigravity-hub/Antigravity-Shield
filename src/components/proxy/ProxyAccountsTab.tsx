@@ -97,46 +97,46 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
         <div className="space-y-5 animate-in fade-in duration-200">
             {/* Top Stat Row */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm">
+                <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <Users size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>Total Accounts</span>
                     </div>
-                    <div className="text-xl font-bold text-gray-900 dark:text-base-content mt-1">
+                    <div className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-1">
                         {accounts.length}
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm">
+                <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <Activity size={15} className="text-amber-500" />
                         <span>Active Cooldowns</span>
                     </div>
-                    <div className={`text-xl font-bold mt-1 ${activeCooldowns.length > 0 ? 'text-amber-600' : 'text-gray-900 dark:text-base-content'}`}>
+                    <div className={`text-xl font-bold mt-1 ${activeCooldowns.length > 0 ? 'text-amber-600' : 'text-gray-900 dark:text-gray-100'}`}>
                         {activeCooldowns.length}
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm">
+                <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <Lock size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>Preferred Route</span>
                     </div>
-                    <div className="text-xs font-semibold text-gray-900 dark:text-base-content mt-2 truncate">
+                    <div className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-2 truncate">
                         {preferredAccountId
                             ? accounts.find((a) => a.id === preferredAccountId)?.email || preferredAccountId
                             : 'Smart Tiered Rotation'}
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-base-200/60 p-4 rounded-xl border border-gray-100 dark:border-base-300 shadow-sm flex items-center justify-between">
+                <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center justify-between">
                     <div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Cooldown Actions</div>
                         <div className="text-xs text-gray-400 pt-0.5">Reset active 429 timers</div>
                     </div>
                     <button
                         onClick={onClearRateLimits}
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-gray-200 dark:border-base-300 hover:bg-gray-50 dark:hover:bg-base-300 transition-colors flex items-center gap-1.5 text-gray-700 dark:text-gray-300"
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-[#141916] transition-colors flex items-center gap-1.5 text-gray-700 dark:text-gray-300"
                         title={t('proxy.config.scheduling.clear_rate_limits_tooltip', { defaultValue: 'Clear all rate limit records' })}
                     >
                         <Trash2 size={13} className="text-rose-500" />
@@ -146,7 +146,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
             </div>
 
             {/* Active Cooldown Pool HUD */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-3">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Clock size={16} className={activeCooldowns.length > 0 ? 'text-amber-500 animate-pulse' : 'text-gray-400'} />
@@ -160,7 +160,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                 </div>
 
                 {activeCooldowns.length === 0 ? (
-                    <div className="p-4 rounded-xl bg-gray-50/60 dark:bg-base-300/40 border border-dashed border-gray-200 dark:border-base-300 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="p-4 rounded-xl bg-gray-50/60 dark:bg-[#141916] border border-dashed border-gray-200 dark:border-slate-800/80 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                         <CheckCircle2 size={15} className="text-emerald-500" />
                         <span>Zero active 429 cooldowns. All accounts in pool are available for high-throughput dispatch.</span>
                     </div>
@@ -195,10 +195,10 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
             </div>
 
             {/* Per-Account Quota Health Gauges */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-base-content flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                             <Layers size={16} style={{ color: 'var(--color-accent)' }} />
                             Per-Account Quota Health Gauges
                         </h3>
@@ -210,7 +210,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                     {preferredAccountId && (
                         <button
                             onClick={() => onSetPreferredAccount(null)}
-                            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-base-300 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-base-200 transition-colors"
+                            className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-[#141916] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#1a201c] transition-colors"
                         >
                             Reset to Auto Rotation
                         </button>
@@ -234,7 +234,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                     className={`p-4 rounded-xl border transition-all ${
                                         isPreferred
                                             ? 'bg-emerald-50/20 dark:bg-emerald-950/20 border-emerald-500/40 shadow-sm'
-                                            : 'bg-white dark:bg-base-100 border-gray-200/70 dark:border-base-300 dark:text-base-content'
+                                            : 'bg-white dark:bg-[#141916] border-gray-200/70 dark:border-slate-800/80 dark:text-gray-100'
                                     }`}
                                 >
                                     <div className="flex items-start justify-between gap-2 pb-3 border-b border-gray-200/50 dark:border-base-300">
@@ -315,18 +315,18 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
             </div>
 
             {/* Scheduling & Session Sticky Card */}
-            <div className="bg-white dark:bg-base-200/60 rounded-2xl p-5 border border-gray-100 dark:border-base-300 shadow-sm space-y-4">
+            <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Sliders size={16} style={{ color: 'var(--color-accent)' }} />
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                             Rotation &amp; Sticky Session Policies
                         </h3>
                     </div>
 
                     <button
                         onClick={onClearSessionBindings}
-                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-gray-200 dark:border-base-300 hover:bg-gray-50 dark:hover:bg-base-300 transition-colors flex items-center gap-1.5 text-gray-700 dark:text-gray-300"
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-[#141916] transition-colors flex items-center gap-1.5 text-gray-700 dark:text-gray-300"
                     >
                         <RotateCcw size={13} />
                         <span>Clear Session Bindings</span>

@@ -735,9 +735,9 @@ print(response.choices[0].message.content)`;
         <div className="h-full w-full overflow-y-auto overflow-x-hidden rtl:text-right">
             <div className={`p-5 space-y-5 ${CONTAINER_MAX_WIDTH}`}>
                 {/* Header & Segmented Pill Navigation */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100 dark:border-base-200">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100 dark:border-slate-800/80">
                     <div>
-                        <h1 className="text-xl font-bold text-gray-900 dark:text-base-content flex items-center gap-2.5">
+                        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2.5">
                             <Activity size={22} style={{ color: 'var(--color-accent)' }} />
                             <span>{t('proxy.header.title', { defaultValue: 'Antigravity Shield API Proxy' })}</span>
                         </h1>
@@ -747,7 +747,7 @@ print(response.choices[0].message.content)`;
                     </div>
 
                     {/* Segmented Pill Tabs */}
-                    <div className="bg-gray-100/80 dark:bg-base-200/80 p-1 rounded-2xl border border-gray-200/50 dark:border-base-300 flex items-center gap-1 backdrop-blur-md overflow-x-auto">
+                    <div className="bg-gray-100/80 dark:bg-[#0c100e]/80 p-1 rounded-2xl border border-gray-200/50 dark:border-slate-800/80 flex items-center gap-1 backdrop-blur-md overflow-x-auto">
                         {TABS.map((tab) => {
                             const Icon = tab.icon;
                             const isActive = activeTab === tab.id;
@@ -758,7 +758,7 @@ print(response.choices[0].message.content)`;
                                     className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center gap-2 whitespace-nowrap ${
                                         isActive
                                             ? 'text-white shadow-xs'
-                                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-200/50 dark:hover:bg-base-300/50'
+                                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-200/50 dark:hover:bg-[#141916]'
                                     }`}
                                     style={isActive ? { backgroundColor: 'var(--color-primary-btn)' } : undefined}
                                 >
