@@ -246,8 +246,9 @@ export function useQuotaAlertWatcher() {
                     switchTitle: string,
                     switchMsg: string
                 ) => {
-                    // Do not show intrusive floating countdown overlay for IDE environment (IDE handles hot-swap silently or via extension)
-                    const overlayEnabled = config?.overlay_notifications_enabled !== false && targetEnv !== 'ide';
+                    // Do not show intrusive floating countdown overlay or notifications for IDE environment
+                    const isIdeSwitch = targetEnv === 'ide' || (activeTargetAccounts?.ide === sourceAccount.id);
+                    const overlayEnabled = config?.overlay_notifications_enabled !== false && !isIdeSwitch;
                     const countdownSecs = config?.auto_switch_countdown_secs || 30;
 
                     isAutoSwitchingRef.current = true;
@@ -292,9 +293,15 @@ export function useQuotaAlertWatcher() {
                                 console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} from ${sourceAccount.email} to ${nextAccount.email} (${modelFamily} score: ${quotaScore}%)`);
                                 lastAutoSwitchMap.set(nextAccount.id, Date.now());
                                 await switchAccount(nextAccount.id, targetEnv);
-                                showToast(switchMsg, 'success', 8000);
-                                if (!overlayEnabled) {
-                                    sendDesktopNotification(switchTitle, switchMsg);
+                                
+                                // For IDE switch, do NOT show toast or desktop notification - keep it 100% silent and undisruptive
+                                if (!isIdeSwitch) {
+                                    showToast(switchMsg, 'success', 8000);
+                                    if (!overlayEnabled) {
+                                        sendDesktopNotification(switchTitle, switchMsg);
+                                    }
+                                } else {
+                                    console.log(`[QuotaAlertWatcher] IDE switch completed silently for ${nextAccount.email}`);
                                 }
                                 await fetchAccounts();
                             } catch (err) {

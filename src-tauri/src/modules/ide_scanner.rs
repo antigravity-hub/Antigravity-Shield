@@ -46,6 +46,27 @@ pub fn record_heartbeat(payload: ToolkitHeartbeatPayload) {
     }
 }
 
+/// Touch heartbeat on any incoming toolkit activity (e.g. command polling)
+pub fn touch_heartbeat(ide: Option<&str>, email: Option<&str>) {
+    if let Ok(mut lock) = LAST_HEARTBEAT.write() {
+        *lock = Some(Instant::now());
+    }
+    if let Some(ide_name) = ide {
+        if !ide_name.trim().is_empty() {
+            if let Ok(mut lock) = ACTIVE_IDE_NAME.write() {
+                *lock = Some(ide_name.to_string());
+            }
+        }
+    }
+    if let Some(active_email) = email {
+        if !active_email.trim().is_empty() {
+            if let Ok(mut lock) = ACTIVE_EMAIL.write() {
+                *lock = Some(active_email.to_string());
+            }
+        }
+    }
+}
+
 pub fn get_connection_status() -> ToolkitConnectionStatus {
     let last = LAST_HEARTBEAT.read().ok().and_then(|guard| *guard);
     let ide = ACTIVE_IDE_NAME.read().ok().and_then(|guard| guard.clone());
@@ -59,8 +80,8 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
     match last {
         Some(instant) => {
             let elapsed = instant.elapsed().as_secs();
-            // Connected if ping received in the last 45 seconds
-            let is_connected = elapsed <= 45;
+            // Connected if ping received in the last 60 seconds
+            let is_connected = elapsed <= 60;
             ToolkitConnectionStatus {
                 is_connected,
                 active_ide: if is_connected { ide } else { None },
@@ -84,7 +105,7 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
 pub fn is_toolkit_connected() -> bool {
     let last = LAST_HEARTBEAT.read().ok().and_then(|guard| *guard);
     match last {
-        Some(instant) => instant.elapsed().as_secs() <= 45,
+        Some(instant) => instant.elapsed().as_secs() <= 60,
         None => false,
     }
 }
@@ -92,7 +113,7 @@ pub fn is_toolkit_connected() -> bool {
 pub fn get_active_ide_email() -> Option<String> {
     let last = LAST_HEARTBEAT.read().ok().and_then(|guard| *guard);
     match last {
-        Some(instant) if instant.elapsed().as_secs() <= 45 => {
+        Some(instant) if instant.elapsed().as_secs() <= 60 => {
             ACTIVE_EMAIL.read().ok().and_then(|guard| guard.clone())
         }
         _ => None,

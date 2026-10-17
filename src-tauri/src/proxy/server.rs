@@ -2890,11 +2890,19 @@ async fn admin_toolkit_heartbeat(
 #[derive(Deserialize)]
 struct PollCommandQuery {
     timeout: Option<u64>,
+    ide: Option<String>,
+    email: Option<String>,
 }
 
 async fn admin_toolkit_poll_commands(
     Query(query): Query<PollCommandQuery>,
 ) -> impl IntoResponse {
+    // Proactively touch heartbeat on every poll to guarantee Shield recognizes active IDE tunnel
+    crate::modules::ide_scanner::touch_heartbeat(
+        query.ide.as_deref().or(Some("Antigravity IDE")),
+        query.email.as_deref(),
+    );
+
     let timeout = query.timeout.unwrap_or(20);
     let cmd = crate::modules::ide_scanner::wait_for_command(timeout).await;
     if let Some(c) = cmd {
@@ -2925,6 +2933,12 @@ async fn admin_toolkit_sync_active(
     Json(payload): Json<AdminToolkitSyncActiveRequest>,
 ) -> impl IntoResponse {
     use tauri::Emitter;
+
+    // Touch heartbeat on active account sync from toolkit
+    crate::modules::ide_scanner::touch_heartbeat(
+        payload.target_ide.as_deref().or(Some("Antigravity IDE")),
+        payload.email.as_deref(),
+    );
 
     let account_id = payload.account_id.or(payload.email).unwrap_or_default();
     let target_ide = payload.target_ide.as_deref().or(Some("ide"));

@@ -113,10 +113,13 @@ impl SystemIntegration for DesktopIntegration {
                 }
             }
 
-            self.show_notification(
-                "Antigravity Shield",
-                &format!("⚡ Switched to {} (Zero-Reload)", account.email),
-            );
+            // For IDE switches with connected extension, keep switch completely silent and undisruptive
+            if target_ide != Some("ide") {
+                self.show_notification(
+                    "Antigravity Shield",
+                    &format!("⚡ Switched to {} (Zero-Reload)", account.email),
+                );
+            }
             self.update_tray();
 
             return Ok(());
@@ -267,19 +270,20 @@ impl SystemIntegration for DesktopIntegration {
             }
         }
 
-        // 4. Send desktop notification
-        let target_title = match target_ide {
-            Some("platform") => "Antigravity Platform",
-            Some("ide") => "Antigravity IDE",
-            Some(other) => other,
-            None => "Antigravity",
-        };
-        let notif_body = if was_running {
-            format!("⚡ Switched to {} (Restarted)", account.email)
-        } else {
-            format!("⚡ Switched to {}", account.email)
-        };
-        self.show_notification(target_title, &notif_body);
+        // 4. Send desktop notification (suppressed for IDE environment to prevent disruptive overlays)
+        if target_ide != Some("ide") {
+            let target_title = match target_ide {
+                Some("platform") => "Antigravity Platform",
+                Some(other) => other,
+                None => "Antigravity",
+            };
+            let notif_body = if was_running {
+                format!("⚡ Switched to {} (Restarted)", account.email)
+            } else {
+                format!("⚡ Switched to {}", account.email)
+            };
+            self.show_notification(target_title, &notif_body);
+        }
 
         // 5. Update tray
         let _ = crate::modules::tray::update_tray_menus(&self.app_handle);
