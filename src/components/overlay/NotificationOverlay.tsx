@@ -221,7 +221,7 @@ export const NotificationOverlay: React.FC = () => {
         >
             {/* Main Cyber-Glass Card */}
             <div
-                className={`relative w-full h-full rounded-2xl flex flex-col justify-between p-3.5 shadow-2xl backdrop-blur-2xl transition-all duration-300 overflow-hidden border ${
+                className={`relative w-full h-full rounded-2xl flex flex-col justify-between p-3 shadow-2xl backdrop-blur-2xl transition-all duration-300 overflow-hidden border ${
                     isUrgent
                         ? 'bg-slate-950/95 border-rose-500/50 shadow-[0_8px_30px_rgba(244,63,94,0.3)]'
                         : 'bg-slate-950/95 border-cyan-500/30 shadow-[0_8px_30px_rgba(6,182,212,0.2)]'
@@ -314,14 +314,14 @@ export const NotificationOverlay: React.FC = () => {
                 </div>
 
                 {/* Content Body */}
-                <div className="relative py-2 flex-1 flex flex-col justify-center min-h-0 z-10">
+                <div className="relative py-1 flex-1 flex flex-col justify-center min-h-0 z-10">
                     {!payload ? (
                         <div className="flex items-center justify-center gap-2 text-xs text-slate-400 py-3">
                             <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
                             <span>{t('notifications.overlay_waiting', { defaultValue: 'Waiting for Shield data...' })}</span>
                         </div>
                     ) : payload.notification_type === 'countdown' ? (
-                        <div className="flex flex-col gap-1.5 py-0.5">
+                        <div className="flex flex-col gap-1 py-0.5">
                             {/* 1. Current Account (Depleted / From) */}
                             <div className="flex items-center justify-between gap-2 bg-slate-900/70 rounded-xl px-3 py-1.5 border border-rose-500/25 shadow-inner">
                                 <div className="flex items-center gap-2 min-w-0">

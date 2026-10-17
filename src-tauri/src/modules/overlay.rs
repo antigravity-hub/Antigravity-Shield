@@ -54,8 +54,8 @@ pub fn show_overlay_notification(
         let mon_size = mon.size();
         let scale = mon.scale_factor();
 
-        let win_width = (450.0 * scale) as i32;
-        let win_height = (215.0 * scale) as i32;
+        let win_width = (460.0 * scale) as i32;
+        let win_height = (240.0 * scale) as i32;
         let margin_x = (24.0 * scale) as i32;
         let margin_y = (24.0 * scale) as i32;
 
@@ -83,8 +83,8 @@ pub fn show_overlay_notification(
 
     // Ensure dimensions are explicitly synchronized
     let _ = window.set_size(tauri::Size::Logical(tauri::LogicalSize {
-        width: 440.0,
-        height: 210.0,
+        width: 460.0,
+        height: 240.0,
     }));
 
     // Reveal and elevate on top
