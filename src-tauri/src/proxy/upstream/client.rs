@@ -62,11 +62,14 @@ pub fn sanitize_error_for_log(error_text: &str) -> String {
 }
 
 // Cloud Code v1internal endpoints
+pub const V1_INTERNAL_BASE_URL_DAILY: &str = "https://daily-cloudcode-pa.googleapis.com/v1internal";
 pub const V1_INTERNAL_BASE_URL_PROD: &str = "https://cloudcode-pa.googleapis.com/v1internal";
 pub const V1_INTERNAL_ALLOWED_HOST_PROD: &str = "cloudcode-pa.googleapis.com";
+pub const V1_INTERNAL_ALLOWED_HOST_DAILY: &str = "daily-cloudcode-pa.googleapis.com";
 pub const V1_INTERNAL_ALLOWED_PATH_PREFIX: &str = "/v1internal";
 
-pub const V1_INTERNAL_BASE_URL_FALLBACKS: [&str; 1] = [
+pub const V1_INTERNAL_BASE_URL_FALLBACKS: [&str; 2] = [
+    V1_INTERNAL_BASE_URL_DAILY,
     V1_INTERNAL_BASE_URL_PROD,
 ];
 
@@ -82,7 +85,6 @@ pub fn is_whitelisted_production_url(raw_url: &str) -> bool {
         || lower.contains("autopush")
         || lower.contains("staging")
         || lower.contains("test")
-        || lower.contains("daily-cloudcode-pa")
     {
         return false;
     }
@@ -90,7 +92,7 @@ pub fn is_whitelisted_production_url(raw_url: &str) -> bool {
     if let Ok(parsed) = url::Url::parse(trimmed) {
         let host = parsed.host_str().unwrap_or_default();
         parsed.scheme() == "https"
-            && host == V1_INTERNAL_ALLOWED_HOST_PROD
+            && (host == V1_INTERNAL_ALLOWED_HOST_PROD || host == V1_INTERNAL_ALLOWED_HOST_DAILY)
             && parsed.path().starts_with(V1_INTERNAL_ALLOWED_PATH_PREFIX)
     } else {
         false
@@ -101,7 +103,11 @@ pub fn is_whitelisted_production_url(raw_url: &str) -> bool {
 /// Non-whitelisted or dev/staging/sandbox/daily URLs are neutralized and redirected to the official production endpoint.
 pub fn sanitize_v1_internal_base_url(raw_url: &str) -> &'static str {
     if is_whitelisted_production_url(raw_url) {
-        V1_INTERNAL_BASE_URL_PROD
+        if raw_url.contains("daily-cloudcode-pa") {
+            V1_INTERNAL_BASE_URL_DAILY
+        } else {
+            V1_INTERNAL_BASE_URL_PROD
+        }
     } else {
         tracing::warn!(
             "Sanitizing unauthorized/non-production upstream URL '{}' -> enforcing official endpoint: {}",
@@ -694,23 +700,29 @@ mod tests {
             url2,
             "https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse"
         );
+
+        let daily_base = "https://daily-cloudcode-pa.googleapis.com/v1internal";
+        let url3 = UpstreamClient::build_url(daily_base, "streamGenerateContent", Some("alt=sse"));
+        assert_eq!(
+            url3,
+            "https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse"
+        );
     }
 
     #[test]
     fn test_production_url_whitelisting_and_sanitization() {
         assert!(is_whitelisted_production_url("https://cloudcode-pa.googleapis.com/v1internal"));
-        assert!(!is_whitelisted_production_url("https://daily-cloudcode-pa.googleapis.com/v1internal"));
+        assert!(is_whitelisted_production_url("https://daily-cloudcode-pa.googleapis.com/v1internal"));
         assert_eq!(
             sanitize_v1_internal_base_url("https://cloudcode-pa.googleapis.com/v1internal"),
             V1_INTERNAL_BASE_URL_PROD
         );
         assert_eq!(
             sanitize_v1_internal_base_url("https://daily-cloudcode-pa.googleapis.com/v1internal"),
-            V1_INTERNAL_BASE_URL_PROD
+            V1_INTERNAL_BASE_URL_DAILY
         );
 
         let banned_urls = [
-            "https://daily-cloudcode-pa.googleapis.com/v1internal",
             "https://daily-cloudcode-pa.sandbox.googleapis.com/v1internal",
             "https://autopush-cloudcode-pa.sandbox.googleapis.com/v1internal",
             "http://cloudcode-pa.googleapis.com/v1internal",
