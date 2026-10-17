@@ -90,9 +90,13 @@ export const Sidebar: React.FC = () => {
   ];
 
   const toggleTheme = () => {
-    if (!config) return;
-    const newTheme = config.theme === 'light' ? 'dark' : 'light';
-    saveConfig({ ...config, theme: newTheme }, true);
+    const isCurrentlyDark = document.documentElement.classList.contains('dark');
+    const newTheme = isCurrentlyDark ? 'light' : 'dark';
+    if (config) {
+      saveConfig({ ...config, theme: newTheme }, true);
+    } else {
+      updateTheme(newTheme);
+    }
   };
 
   return (

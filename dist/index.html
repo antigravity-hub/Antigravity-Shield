@@ -12,8 +12,8 @@
         const savedTheme = localStorage.getItem('app-theme-preference');
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-        // Determine if should be dark for later use, but ALWAYS start with splash color
-        const shouldBeDark = savedTheme === 'dark' || ((!savedTheme || savedTheme === 'system') && systemDark);
+        // Antigravity Shield is an Obsidian Dark theme by default; only switch to light if user explicitly selected light
+        const shouldBeDark = savedTheme !== 'light';
 
         // Set background color IMMEDIATELY to SPLASH COLOR (seamless transition)
         document.documentElement.style.backgroundColor = shouldBeDark ? '#060807' : '#FAFBFC';
@@ -31,7 +31,7 @@
       }
     })();
   </script>
-  <script type="module" crossorigin src="./assets/index-CZyQPM1B.js"></script>
+  <script type="module" crossorigin src="./assets/index-O4U8VaB-.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-BjVAFFXV.css">
 </head>
 

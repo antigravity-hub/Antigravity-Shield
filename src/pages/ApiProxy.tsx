@@ -289,7 +289,7 @@ export default function ApiProxy() {
                 setTempAdminPassword(storeConfig.proxy.admin_password || '');
             } else {
                 const fallback: AppConfig = {
-                    language: 'fa',
+                    language: 'en',
                     theme: 'dark',
                     auto_refresh: false,
                     refresh_interval: 10,

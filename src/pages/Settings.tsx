@@ -39,8 +39,8 @@ function Settings() {
     const [activeTab, setActiveTab] = useState<'general' | 'account' | 'proxy' | 'advanced' | 'debug' | 'about'>('general');
     const [appVersion, setAppVersion] = useState<string>(APP_VERSION);
     const [formData, setFormData] = useState<AppConfig>({
-        language: 'zh',
-        theme: 'system',
+        language: 'en',
+        theme: 'dark',
         auto_refresh: false,
         refresh_interval: 10,
         auto_sync: false,

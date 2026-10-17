@@ -81,7 +81,7 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
             });
         } catch (error) {
             const fallback: AppConfig = {
-                language: localStorage.getItem('i18nextLng') || 'fa',
+                language: localStorage.getItem('i18nextLng') || 'en',
                 theme: localStorage.getItem('app-theme-preference') || 'dark',
                 auto_refresh: false,
                 refresh_interval: 10,
@@ -114,19 +114,26 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
 
     saveConfig: async (config: AppConfig, silent: boolean = false) => {
         if (!silent) set({ loading: true, error: null });
+        // Optimistic instant state update
+        set({ config });
+        if (config?.theme) {
+            try {
+                localStorage.setItem('app-theme-preference', config.theme);
+            } catch {}
+        }
+        if (config?.language) {
+            try {
+                localStorage.setItem('i18nextLng', config.language);
+            } catch {}
+        }
+        if (config?.navigation_layout) {
+            try {
+                localStorage.setItem('antigravity_navigation_layout', config.navigation_layout);
+            } catch {}
+        }
         try {
-            if (config?.language) {
-                try {
-                    localStorage.setItem('i18nextLng', config.language);
-                } catch {}
-            }
-            if (config?.navigation_layout) {
-                try {
-                    localStorage.setItem('antigravity_navigation_layout', config.navigation_layout);
-                } catch {}
-            }
             await configService.saveConfig(config);
-            set({ config, loading: false });
+            set({ loading: false });
             const { isTauri } = await import('../utils/env');
             if (isTauri()) {
                 const { invoke } = await import('@tauri-apps/api/core');
@@ -134,8 +141,8 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
                 });
             }
         } catch (error) {
+            console.warn('[ConfigStore] Failed to persist config to backend:', error);
             set({ error: String(error), loading: false });
-            throw error;
         }
     },
 
@@ -158,8 +165,11 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
     },
 
     updateTheme: async (theme: string) => {
+        try {
+            localStorage.setItem('app-theme-preference', theme);
+        } catch {}
         const { config } = get();
-        if (!config || config.theme === theme) return;
+        if (!config) return;
 
         const newConfig = { ...config, theme };
         await get().saveConfig(newConfig, true);
@@ -188,7 +198,7 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
             localStorage.setItem('i18nextLng', language);
         } catch {}
         const { config } = get();
-        if (!config || config.language === language) return;
+        if (!config) return;
 
         const newConfig = { ...config, language };
         await get().saveConfig(newConfig, true);

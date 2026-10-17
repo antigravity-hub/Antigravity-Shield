@@ -1,9 +1,47 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import packageJson from "./package.json";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
+
+function getGuiConfigPath() {
+  const custom = process.env.ANTIGRAVITY_SHIELD_DATA_DIR || process.env.SHIELD_DATA_DIR || process.env.ABV_DATA_DIR;
+  if (custom && fs.existsSync(custom)) {
+    return path.join(custom, "gui_config.json");
+  }
+  return path.join(os.homedir(), ".antigravity_shield", "gui_config.json");
+}
+
+function readGuiConfig(): any {
+  try {
+    const configPath = getGuiConfigPath();
+    if (fs.existsSync(configPath)) {
+      return JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    }
+  } catch (err) {
+    console.error("[dev-server] Failed to read gui_config.json:", err);
+  }
+  return null;
+}
+
+function writeGuiConfig(config: any): boolean {
+  try {
+    const configPath = getGuiConfigPath();
+    const dir = path.dirname(configPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf-8");
+    return true;
+  } catch (err) {
+    console.error("[dev-server] Failed to write gui_config.json:", err);
+    return false;
+  }
+}
 
 function devLocalSkillsPlugin() {
   return {
@@ -92,47 +130,60 @@ function devLocalSkillsPlugin() {
           return;
         }
 
-        if (req.url?.startsWith("/api/config") && req.method === "GET") {
-          try {
-            const resp = await fetch("http://127.0.0.1:8045/api/config", { signal: AbortSignal.timeout(500) });
-            if (resp.ok) {
-              const data = await resp.json();
+        // Direct SSoT Configuration handling for Browser Dev Mode
+        if (req.url?.startsWith("/api/config")) {
+          if (req.method === "GET") {
+            const diskConfig = readGuiConfig();
+            if (diskConfig) {
               res.setHeader("Content-Type", "application/json");
-              res.end(JSON.stringify(data));
+              res.end(JSON.stringify(diskConfig));
               return;
             }
-          } catch {}
+          } else if (req.method === "POST") {
+            let body = "";
+            req.on("data", (chunk: any) => {
+              body += chunk;
+            });
+            req.on("end", async () => {
+              try {
+                const parsed = JSON.parse(body);
+                const configToSave = parsed.config || parsed;
+                writeGuiConfig(configToSave);
 
-          res.setHeader("Content-Type", "application/json");
-          res.end(JSON.stringify({
-            language: "fa",
-            theme: "dark",
-            auto_refresh: false,
-            refresh_interval: 10,
-            auto_sync: false,
-            sync_interval: 5,
-            auto_switch_on_quota: true,
-            auto_switch_threshold_percentage: 5,
-            auto_launch: true,
-            navigation_layout: "sidebar",
-            accent_color: "seafoam",
-            proxy: {
-              enabled: true,
-              port: 8045,
-              api_key: "sk-antigravity-shield",
-              auto_start: false,
-              request_timeout: 120,
-              auth_mode: "AllExceptHealth",
-              rate_limit_per_minute: 60,
-              model_mapping: {}
-            }
-          }));
-          return;
+                // Also forward to Axum backend with bearer auth if running
+                const apiKey = configToSave?.proxy?.api_key || "sk-88d0a0c262754391bf7c1cc589d10cb2";
+                fetch("http://127.0.0.1:8045/api/config", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`,
+                    "x-api-key": apiKey
+                  },
+                  body: JSON.stringify(parsed)
+                }).catch(() => {});
+
+                res.setHeader("Content-Type", "application/json");
+                res.end(JSON.stringify({ success: true }));
+              } catch (e: any) {
+                res.statusCode = 500;
+                res.end(JSON.stringify({ error: e.message }));
+              }
+            });
+            return;
+          }
         }
 
         if (req.url?.startsWith("/api/proxy/status") && req.method === "GET") {
           try {
-            const resp = await fetch("http://127.0.0.1:8045/api/proxy/status", { signal: AbortSignal.timeout(500) });
+            const diskConfig = readGuiConfig();
+            const apiKey = diskConfig?.proxy?.api_key || "sk-88d0a0c262754391bf7c1cc589d10cb2";
+            const resp = await fetch("http://127.0.0.1:8045/api/proxy/status", {
+              headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "x-api-key": apiKey
+              },
+              signal: AbortSignal.timeout(1000)
+            });
             if (resp.ok) {
               const data = await resp.json();
               res.setHeader("Content-Type", "application/json");
@@ -189,6 +240,18 @@ export default defineConfig(async () => ({
       "/api/": {
         target: "http://127.0.0.1:8045",
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq) => {
+            const config = readGuiConfig();
+            const apiKey = config?.proxy?.api_key || "sk-88d0a0c262754391bf7c1cc589d10cb2";
+            if (!proxyReq.getHeader("Authorization")) {
+              proxyReq.setHeader("Authorization", `Bearer ${apiKey}`);
+            }
+            if (!proxyReq.getHeader("x-api-key")) {
+              proxyReq.setHeader("x-api-key", apiKey);
+            }
+          });
+        },
       },
     },
   },

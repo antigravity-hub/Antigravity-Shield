@@ -35,7 +35,8 @@ function Navbar() {
     const toggleTheme = async (event: React.MouseEvent<HTMLButtonElement>) => {
         if (!config) return;
 
-        const newTheme = config.theme === 'light' ? 'dark' : 'light';
+        const isCurrentlyDark = document.documentElement.classList.contains('dark');
+        const newTheme = isCurrentlyDark ? 'light' : 'dark';
 
         // Use View Transition API if supported, but skip on Linux (may cause crash)
         if ('startViewTransition' in document && !isLinux()) {

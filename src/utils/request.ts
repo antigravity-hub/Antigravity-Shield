@@ -210,7 +210,7 @@ export async function request<T>(cmd: string, args?: any): Promise<T> {
   }
 
   const rawKey = typeof window !== 'undefined' ? (sessionStorage.getItem('abv_admin_auth_token') || sessionStorage.getItem('abv_admin_api_key')) : null;
-  const apiKey = rawKey ? decryptSensitiveData(rawKey) : (Boolean(import.meta.env.DEV) ? 'sk-d96a6d8ac1364a1ba05c1ff056625483' : null);
+  const apiKey = rawKey ? decryptSensitiveData(rawKey) : (Boolean(import.meta.env.DEV) ? 'sk-88d0a0c262754391bf7c1cc589d10cb2' : null);
 
   const options: RequestInit = {
     method: mapping.method,
