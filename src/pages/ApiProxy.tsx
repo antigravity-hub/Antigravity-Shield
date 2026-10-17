@@ -283,32 +283,43 @@ export default function ApiProxy() {
         } catch (error) {
             console.error('Failed to load proxy config from backend, applying resilient fallback:', error);
             const storeConfig = useConfigStore.getState().config;
-            const fallback: AppConfig = storeConfig || {
-                language: 'fa',
-                theme: 'dark',
-                auto_refresh: false,
-                refresh_interval: 10,
-                auto_sync: false,
-                sync_interval: 5,
-                auto_switch_on_quota: true,
-                auto_switch_threshold_percentage: 5,
-                auto_launch: true,
-                navigation_layout: 'sidebar',
-                accent_color: 'seafoam',
-                proxy: {
-                    enabled: true,
-                    port: 8045,
-                    api_key: 'sk-antigravity-shield',
-                    auto_start: false,
-                    request_timeout: 120,
-                    auth_mode: 'AllExceptHealth',
-                    rate_limit_per_minute: 60,
-                    model_mapping: {},
-                },
-            };
-            setAppConfig(fallback);
-            setTempApiKey(fallback.proxy.api_key || '');
-            setTempAdminPassword(fallback.proxy.admin_password || '');
+            if (storeConfig) {
+                setAppConfig(storeConfig);
+                setTempApiKey(storeConfig.proxy.api_key || '');
+                setTempAdminPassword(storeConfig.proxy.admin_password || '');
+            } else {
+                const fallback: AppConfig = {
+                    language: 'fa',
+                    theme: 'dark',
+                    auto_refresh: false,
+                    refresh_interval: 10,
+                    auto_sync: false,
+                    sync_interval: 5,
+                    auto_switch_on_quota: true,
+                    auto_switch_threshold_percentage: 5,
+                    auto_launch: true,
+                    navigation_layout: 'sidebar',
+                    accent_color: 'seafoam',
+                    scheduled_warmup: { enabled: false, interval_hours: 24, account_ids: [] },
+                    quota_protection: { enabled: false, min_quota_percentage: 5 },
+                    pinned_quota_models: { enabled: false, models: [] },
+                    circuit_breaker: { enabled: true, backoff_steps: [5, 15, 30, 60] },
+                    cloudflared: { enabled: false, mode: 'quick', port: 8045, use_http2: true },
+                    proxy: {
+                        enabled: true,
+                        port: 8045,
+                        api_key: 'sk-antigravity-shield',
+                        auto_start: false,
+                        request_timeout: 120,
+                        enable_logging: true,
+                        auth_mode: 'all_except_health',
+                        upstream_proxy: { enabled: false, url: '' },
+                    },
+                };
+                setAppConfig(fallback);
+                setTempApiKey(fallback.proxy.api_key || '');
+                setTempAdminPassword(fallback.proxy.admin_password || '');
+            }
         } finally {
             setConfigLoading(false);
         }
