@@ -33,13 +33,17 @@ interface LanguageDropdownProps {
     languages: Language[];
     onLanguageChange: (langCode: string) => void;
     className?: string;
+    compact?: boolean;
+    dropUp?: boolean;
 }
 
 export function LanguageDropdown({
     currentLanguage,
     languages,
     onLanguageChange,
-    className = ''
+    className = '',
+    compact = false,
+    dropUp = false,
 }: LanguageDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -53,10 +57,15 @@ export function LanguageDropdown({
     };
 
     return (
-        <div className={`relative ${className}`} ref={menuRef}>
+        <div className={`relative ${compact ? 'inline-block' : ''} ${className}`} ref={menuRef}>
             <button
+                type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100 flex items-center justify-center transition-colors"
+                className={`relative rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer group active:scale-95 ${
+                    compact
+                        ? 'p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800/60'
+                        : 'w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100'
+                }`}
                 title={languages.find(l => l.code === currentLanguage)?.label || t('settings.general.language')}
             >
                 <FlagIcon code={currentLanguage} className="w-5 h-3.5" />
@@ -64,26 +73,39 @@ export function LanguageDropdown({
 
             {/* 下拉菜单 */}
             {isOpen && (
-                <div className="absolute ltr:right-0 rtl:left-0 mt-2 w-48 bg-white dark:bg-base-200 rounded-xl shadow-lg border border-gray-100 dark:border-base-100 py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ltr:origin-top-right rtl:origin-top-left z-50">
-                    {languages.map((lang) => (
-                        <button
-                            key={lang.code}
-                            onClick={() => handleLanguageChange(lang.code)}
-                            className={`w-full px-3.5 py-2 text-left rtl:text-right text-sm flex items-center justify-between hover:bg-gray-50 dark:hover:bg-base-100 transition-colors ${currentLanguage === lang.code
-                                ? 'text-blue-500 font-medium bg-blue-50 dark:bg-blue-900/10'
-                                : 'text-gray-700 dark:text-gray-300'
+                <div
+                    className={`absolute z-50 w-52 bg-white/95 dark:bg-[#0c100e]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200/80 dark:border-white/10 p-1.5 animate-in fade-in zoom-in-95 duration-150 ${
+                        dropUp || compact
+                            ? 'bottom-full mb-2 ltr:left-0 rtl:right-0 ltr:origin-bottom-left rtl:origin-bottom-right'
+                            : 'top-full mt-2 ltr:right-0 rtl:left-0 ltr:origin-top-right rtl:origin-top-left'
+                    }`}
+                >
+                    <div className="max-h-64 overflow-y-auto space-y-0.5 custom-scrollbar pr-0.5">
+                        {languages.map((lang) => (
+                            <button
+                                key={lang.code}
+                                type="button"
+                                onClick={() => handleLanguageChange(lang.code)}
+                                className={`w-full px-3 py-2 rounded-xl text-left rtl:text-right text-xs sm:text-sm flex items-center justify-between transition-colors cursor-pointer ${
+                                    currentLanguage === lang.code
+                                        ? 'text-[var(--color-accent-secondary)] dark:text-[var(--color-accent)] font-semibold bg-slate-100/90 dark:bg-white/10 shadow-xs'
+                                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-white/5'
                                 }`}
-                        >
-                            <div className="flex items-center gap-2.5 min-w-0">
-                                <FlagIcon code={lang.code} className="w-4.5 h-3.5 shrink-0" />
-                                <span className="font-mono font-bold text-xs w-6 shrink-0">{lang.short}</span>
-                                <span className="text-xs opacity-75 truncate">{lang.label}</span>
-                            </div>
-                            {currentLanguage === lang.code && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 ms-1.5"></span>
-                            )}
-                        </button>
-                    ))}
+                            >
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <FlagIcon code={lang.code} className="w-4.5 h-3.5 shrink-0" />
+                                    <span className="font-mono font-bold text-xs w-6 shrink-0 opacity-75">{lang.short}</span>
+                                    <span className="text-xs truncate">{lang.label}</span>
+                                </div>
+                                {currentLanguage === lang.code && (
+                                    <span
+                                        className="w-1.5 h-1.5 rounded-full shrink-0 ms-1.5"
+                                        style={{ backgroundColor: 'var(--color-accent)' }}
+                                    />
+                                )}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
@@ -262,9 +284,10 @@ export function MoreDropdown({
                     {languages.map((lang) => (
                         <button
                             key={lang.code}
+                            type="button"
                             onClick={() => handleLanguageChange(lang.code)}
                             className={`w-full px-3.5 py-2 text-left rtl:text-right text-sm flex items-center justify-between hover:bg-gray-50 dark:hover:bg-base-100 transition-colors ${currentLanguage === lang.code
-                                ? 'text-blue-500 font-medium bg-blue-50 dark:bg-blue-900/10'
+                                ? 'text-[var(--color-accent-secondary)] dark:text-[var(--color-accent)] font-medium bg-slate-100/80 dark:bg-white/10'
                                 : 'text-gray-700 dark:text-gray-300'
                                 }`}
                         >
@@ -274,7 +297,10 @@ export function MoreDropdown({
                                 <span className="text-xs opacity-70 truncate">{lang.label}</span>
                             </div>
                             {currentLanguage === lang.code && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 ms-1.5"></span>
+                                <span
+                                    className="w-1.5 h-1.5 rounded-full shrink-0 ms-1.5"
+                                    style={{ backgroundColor: 'var(--color-accent)' }}
+                                />
                             )}
                         </button>
                     ))}

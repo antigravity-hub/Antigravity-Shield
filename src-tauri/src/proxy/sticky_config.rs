@@ -4,10 +4,13 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum SchedulingMode {
     /// 缓存优先 (Cache-first): 尽可能锁定同一账号，限流时优先等待，极大提升 Prompt Caching 命中率
+    #[serde(alias = "cache_first", alias = "CacheFirst")]
     CacheFirst,
     /// 平衡模式 (Balance): 锁定同一账号，限流时立即切换到备选账号，兼顾成功率和性能
+    #[serde(alias = "balance", alias = "Balance")]
     Balance,
     /// 性能优先 (Performance-first): 纯轮询模式 (Round-robin)，账号负载最均衡，但不利用缓存
+    #[serde(alias = "performance_first", alias = "PerformanceFirst", alias = "round_robin", alias = "RoundRobin")]
     PerformanceFirst,
 }
 

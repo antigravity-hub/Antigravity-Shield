@@ -79,6 +79,46 @@ pub fn load_app_config() -> Result<AppConfig, String> {
             modified = true;
         }
 
+        // Migrate legacy scheduling config (e.g. mode="round_robin", extra obsolete fields)
+        if let Some(scheduling) = proxy.get_mut("scheduling").and_then(|s| s.as_object_mut()) {
+            if let Some(mode) = scheduling.get("mode").and_then(|m| m.as_str()) {
+                if mode == "round_robin" || mode == "performance_first" {
+                    scheduling.insert("mode".to_string(), serde_json::Value::String("PerformanceFirst".to_string()));
+                    modified = true;
+                } else if mode == "cache_first" {
+                    scheduling.insert("mode".to_string(), serde_json::Value::String("CacheFirst".to_string()));
+                    modified = true;
+                } else if mode == "balance" {
+                    scheduling.insert("mode".to_string(), serde_json::Value::String("Balance".to_string()));
+                    modified = true;
+                }
+            }
+            if !scheduling.contains_key("max_wait_seconds") {
+                scheduling.insert("max_wait_seconds".to_string(), serde_json::json!(60));
+                modified = true;
+            }
+        }
+
+        // Migrate proxy_pool to ensure missing fields have standard defaults
+        if let Some(pool) = proxy.get_mut("proxy_pool").and_then(|p| p.as_object_mut()) {
+            if !pool.contains_key("health_check_interval") {
+                pool.insert("health_check_interval".to_string(), serde_json::json!(300));
+                modified = true;
+            }
+            if !pool.contains_key("auto_failover") {
+                pool.insert("auto_failover".to_string(), serde_json::json!(true));
+                modified = true;
+            }
+            if !pool.contains_key("strategy") {
+                pool.insert("strategy".to_string(), serde_json::json!("priority"));
+                modified = true;
+            }
+            if !pool.contains_key("account_bindings") {
+                pool.insert("account_bindings".to_string(), serde_json::json!({}));
+                modified = true;
+            }
+        }
+
         if modified {
             proxy.as_object_mut().unwrap().insert(
                 "custom_mapping".to_string(),

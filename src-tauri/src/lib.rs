@@ -462,50 +462,54 @@ pub fn run() {
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 // Load config
-                if let Ok(config) = modules::config::load_app_config() {
-                    let state = handle.state::<commands::proxy::ProxyServiceState>();
-                    let cf_state = handle.state::<commands::cloudflared::CloudflaredState>();
-                    let integration =
-                        crate::modules::integration::SystemManager::Desktop(handle.clone());
+                match modules::config::load_app_config() {
+                    Ok(config) => {
+                        let state = handle.state::<commands::proxy::ProxyServiceState>();
+                        let cf_state = handle.state::<commands::cloudflared::CloudflaredState>();
+                        let integration =
+                            crate::modules::integration::SystemManager::Desktop(handle.clone());
 
-                    // 1. 确保管理后台开启
-                    if let Err(e) = commands::proxy::ensure_admin_server(
-                        config.proxy.clone(),
-                        &state,
-                        integration.clone(),
-                        Arc::new(cf_state.inner().clone()),
-                    )
-                    .await
-                    {
-                        error!("Failed to start admin server: {}", e);
-                    } else {
-                        info!(
-                            "Admin server (port {}) started successfully",
-                            config.proxy.port
-                        );
-                    }
-
-                    // 2. 自动启动转发逻辑
-                    if config.proxy.auto_start {
-                        if let Err(e) = commands::proxy::internal_start_proxy_service(
-                            config.proxy,
+                        // 1. 确保管理后台开启
+                        if let Err(e) = commands::proxy::ensure_admin_server(
+                            config.proxy.clone(),
                             &state,
-                            integration,
+                            integration.clone(),
                             Arc::new(cf_state.inner().clone()),
                         )
                         .await
                         {
-                            error!("Failed to auto-start proxy service: {}", e);
+                            error!("Failed to start admin server: {}", e);
                         } else {
-                            info!("Proxy service auto-started successfully");
+                            info!(
+                                "Admin server (port {}) started successfully",
+                                config.proxy.port
+                            );
+                        }
+
+                        // 2. 自动启动转发逻辑
+                        if config.proxy.auto_start {
+                            if let Err(e) = commands::proxy::internal_start_proxy_service(
+                                config.proxy,
+                                &state,
+                                integration,
+                                Arc::new(cf_state.inner().clone()),
+                            )
+                            .await
+                            {
+                                error!("Failed to auto-start proxy service: {}", e);
+                            } else {
+                                info!("Proxy service auto-started successfully");
+                            }
                         }
                     }
-                } else {
-                    // 配置加载失败不能再被静默吞掉：否则重启后“服务没起来”时无任何痕迹可查。
-                    error!(
-                        "Failed to load app config at startup; admin server and proxy service were NOT started. \
-                         Fix or reset the config file and restart the app."
-                    );
+                    Err(e) => {
+                        // 配置加载失败不能再被静默吞掉：否则重启后“服务没起来”时无任何痕迹可查。
+                        error!(
+                            "Failed to load app config at startup: {}. Admin server and proxy service were NOT started. \
+                             Fix or reset the config file and restart the app.",
+                            e
+                        );
+                    }
                 }
             });
 

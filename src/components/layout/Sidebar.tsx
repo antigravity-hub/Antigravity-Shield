@@ -40,7 +40,7 @@ interface NavSection {
 export const Sidebar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
-  const { config, saveConfig, updateTheme, isMenuItemHidden } = useConfigStore();
+  const { config, saveConfig, updateTheme, updateLanguage, isMenuItemHidden } = useConfigStore();
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     return localStorage.getItem('antigravity_sidebar_collapsed') === 'true';
   });
@@ -130,6 +130,8 @@ export const Sidebar: React.FC = () => {
     } catch {}
     if (config) {
       saveConfig({ ...config, language: langCode }, true);
+    } else {
+      updateLanguage(langCode);
     }
   };
 
@@ -308,6 +310,8 @@ export const Sidebar: React.FC = () => {
 
             {/* Language Switcher */}
             <LanguageDropdown
+              compact={true}
+              dropUp={true}
               currentLanguage={config?.language || i18n.language || 'en'}
               languages={LANGUAGES}
               onLanguageChange={handleLanguageChange}

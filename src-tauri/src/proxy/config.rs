@@ -797,6 +797,7 @@ pub struct ProxyEntry {
 
 /// 代理池配置
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
 pub struct ProxyPoolConfig {
     pub enabled: bool, // 是否启用代理池
     // pub mode: ProxyPoolMode,        // [REMOVED] 代理池模式，统一为 Hybrid 逻辑
