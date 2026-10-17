@@ -183,7 +183,7 @@ export default function ApiProxy() {
                 const config = {
                     enabled: true,
                     mode: cfMode,
-                    port: appConfig?.proxy.port || 8045,
+                    port: appConfig?.proxy?.port || 8045,
                     token: cfMode === 'auth' ? cfToken : null,
                     use_http2: cfUseHttp2,
                 };
@@ -200,7 +200,7 @@ export default function ApiProxy() {
                             mode: cfMode,
                             token: cfToken,
                             use_http2: cfUseHttp2,
-                            port: appConfig.proxy.port || 8045,
+                            port: appConfig?.proxy?.port || 8045,
                         },
                     };
                     saveConfig(newConfig);
@@ -272,13 +272,39 @@ export default function ApiProxy() {
             setConfigLoading(true);
             setConfigError(null);
             const config = await invoke<AppConfig>('load_config');
-            setAppConfig(config);
-            setTempApiKey(config.proxy.api_key || '');
-            setTempAdminPassword(config.proxy.admin_password || '');
-            if (config.cloudflared) {
-                setCfMode(config.cloudflared.mode || 'quick');
-                setCfToken(config.cloudflared.token || '');
-                setCfUseHttp2(config.cloudflared.use_http2 ?? true);
+            const defaultProxy = {
+                enabled: true,
+                port: 8045,
+                api_key: 'sk-88d0a0c262754391bf7c1cc589d10cb2',
+                auto_start: true,
+                request_timeout: 120,
+                enable_logging: true,
+                auth_mode: 'auto' as const,
+                upstream_proxy: { enabled: true, url: 'socks5://127.0.0.1:10808' },
+                custom_mapping: {},
+                scheduling: {
+                    mode: 'round_robin',
+                    session_ttl_minutes: 30,
+                    retry_delays_ms: [1000, 2000, 4000],
+                    max_retries: 3,
+                    cooldown_period_seconds: 60,
+                    sticky_sessions: true,
+                },
+            };
+            const safeProxy = Object.assign({}, defaultProxy, config?.proxy || {});
+            if (!safeProxy.port) safeProxy.port = 8045;
+            if (!safeProxy.api_key) safeProxy.api_key = 'sk-88d0a0c262754391bf7c1cc589d10cb2';
+            const safeConfig: AppConfig = {
+                ...config,
+                proxy: safeProxy as any,
+            };
+            setAppConfig(safeConfig);
+            setTempApiKey(safeProxy.api_key || '');
+            setTempAdminPassword(safeConfig.proxy.admin_password || '');
+            if (safeConfig.cloudflared) {
+                setCfMode(safeConfig.cloudflared.mode || 'quick');
+                setCfToken(safeConfig.cloudflared.token || '');
+                setCfUseHttp2(safeConfig.cloudflared.use_http2 ?? true);
             }
         } catch (error) {
             console.error('Failed to load proxy config from backend, applying resilient fallback:', error);
@@ -359,7 +385,7 @@ export default function ApiProxy() {
         const newConfig = {
             ...appConfig,
             proxy: {
-                ...appConfig.proxy,
+                ...(appConfig.proxy || {}),
                 ...updates,
             },
         };
@@ -369,7 +395,7 @@ export default function ApiProxy() {
     // Update scheduling configuration
     const updateSchedulingConfig = (updates: Partial<StickySessionConfig>) => {
         if (!appConfig) return;
-        const currentScheduling = appConfig.proxy.scheduling || {
+        const currentScheduling = appConfig.proxy?.scheduling || {
             mode: 'Balance',
             max_wait_seconds: 30,
             enable_dynamic_switch: true,
@@ -380,7 +406,7 @@ export default function ApiProxy() {
         const newAppConfig = {
             ...appConfig,
             proxy: {
-                ...appConfig.proxy,
+                ...(appConfig.proxy || {}),
                 scheduling: newScheduling,
             },
         };
@@ -400,14 +426,14 @@ export default function ApiProxy() {
     // Custom model mapping updates
     const handleUpdateCustomMapping = (key: string, value: string) => {
         if (!appConfig) return;
-        const currentMapping = appConfig.proxy.custom_mapping || {};
+        const currentMapping = appConfig.proxy?.custom_mapping || {};
         const newCustom = { ...currentMapping, [key]: value };
         updateProxyConfig({ custom_mapping: newCustom });
     };
 
     const handleRemoveCustomMapping = (key: string) => {
         if (!appConfig) return;
-        const newCustom = { ...appConfig.proxy.custom_mapping };
+        const newCustom = { ...(appConfig.proxy?.custom_mapping || {}) };
         delete newCustom[key];
         updateProxyConfig({ custom_mapping: newCustom });
     };
@@ -418,7 +444,7 @@ export default function ApiProxy() {
         const newConfig = {
             ...appConfig,
             proxy: {
-                ...appConfig.proxy,
+                ...(appConfig.proxy || {}),
                 custom_mapping: {},
             },
         };
@@ -505,7 +531,7 @@ export default function ApiProxy() {
             id: `custom_${Date.now()}`,
             name: newPresetName.trim(),
             description: t('proxy.router.custom_preset_desc', { defaultValue: 'Custom preset' }),
-            mappings: { ...appConfig.proxy.custom_mapping },
+            mappings: { ...(appConfig.proxy?.custom_mapping || {}) },
         };
         const updatedPresets = [...customPresets, newPreset];
         setCustomPresets(updatedPresets);
@@ -533,7 +559,7 @@ export default function ApiProxy() {
         const newConfig = {
             ...appConfig,
             proxy: {
-                ...appConfig.proxy,
+                ...(appConfig.proxy || {}),
                 custom_mapping: { ...selectedPresetData.mappings },
             },
         };
@@ -574,7 +600,7 @@ export default function ApiProxy() {
                 await invoke('stop_proxy');
                 showToast(t('proxy.status.stopped'), 'info');
             } else {
-                await invoke('start_proxy', { config: appConfig.proxy });
+                await invoke('start_proxy', { config: appConfig?.proxy || {} });
                 showToast(t('proxy.status.started'), 'success');
             }
             await loadStatus();
@@ -611,7 +637,7 @@ export default function ApiProxy() {
 
     // API Key Edit Handlers
     const handleEditApiKey = () => {
-        setTempApiKey(appConfig?.proxy.api_key || '');
+        setTempApiKey(appConfig?.proxy?.api_key || '');
         setIsEditingApiKey(true);
     };
 
@@ -622,13 +648,13 @@ export default function ApiProxy() {
     };
 
     const handleCancelEditApiKey = () => {
-        setTempApiKey(appConfig?.proxy.api_key || '');
+        setTempApiKey(appConfig?.proxy?.api_key || '');
         setIsEditingApiKey(false);
     };
 
     // Admin Password Edit Handlers
     const handleEditAdminPassword = () => {
-        setTempAdminPassword(appConfig?.proxy.admin_password || '');
+        setTempAdminPassword(appConfig?.proxy?.admin_password || '');
         setIsEditingAdminPassword(true);
     };
 
@@ -639,15 +665,15 @@ export default function ApiProxy() {
     };
 
     const handleCancelEditAdminPassword = () => {
-        setTempAdminPassword(appConfig?.proxy.admin_password || '');
+        setTempAdminPassword(appConfig?.proxy?.admin_password || '');
         setIsEditingAdminPassword(false);
     };
 
     // Python Integration Snippet Generator
     const getPythonExample = (modelId: string) => {
-        const port = status.running ? status.port : (appConfig?.proxy.port || 8045);
+        const port = status.running ? status.port : (appConfig?.proxy?.port || 8045);
         const baseUrl = `http://127.0.0.1:${port}/v1`;
-        const apiKey = appConfig?.proxy.api_key || 'YOUR_API_KEY';
+        const apiKey = appConfig?.proxy?.api_key || 'YOUR_API_KEY';
 
         if (selectedProtocol === 'anthropic') {
             return `from anthropic import Anthropic

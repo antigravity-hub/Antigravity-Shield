@@ -88,7 +88,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
         }
     });
 
-    const scheduling: StickySessionConfig = appConfig.proxy.scheduling || {
+    const scheduling: StickySessionConfig = appConfig?.proxy?.scheduling || {
         mode: 'Balance',
         max_wait_seconds: 30,
     };
@@ -378,7 +378,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                             <span className="text-xs text-gray-500">Only Raw Quota Models</span>
                             <input
                                 type="checkbox"
-                                checked={appConfig.proxy.only_raw_quota_models || false}
+                                checked={appConfig?.proxy?.only_raw_quota_models || false}
                                 onChange={(e) => onUpdateProxyConfig({ only_raw_quota_models: e.target.checked })}
                                 className="toggle toggle-sm"
                             />

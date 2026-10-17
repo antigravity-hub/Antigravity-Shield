@@ -36,24 +36,24 @@ export default function AdvancedThinking({
                 {/* 1. 思考预算 (Thinking Budget) */}
                 <div className="pt-0">
                     <ThinkingBudget
-                        config={config.thinking_budget || { mode: 'auto', custom_value: 24576 }}
-                        onChange={(newConfig) => onChange({ ...config, thinking_budget: newConfig })}
+                        config={config?.thinking_budget || { mode: 'auto', custom_value: 24576 }}
+                        onChange={(newConfig) => onChange({ ...(config || {}), thinking_budget: newConfig })}
                     />
                 </div>
 
                 {/* 2. 图像思维模式 (Image Thinking Mode) */}
                 <div className="pt-4">
                     <ImageThinkingMode
-                        value={config.image_thinking_mode || 'enabled'}
-                        onChange={(newValue) => onChange({ ...config, image_thinking_mode: newValue })}
+                        value={config?.image_thinking_mode || 'enabled'}
+                        onChange={(newValue) => onChange({ ...(config || {}), image_thinking_mode: newValue })}
                     />
                 </div>
 
                 {/* 3. 全局系统提示词 (Global System Prompt) */}
                 <div className="pt-4">
                     <GlobalSystemPrompt
-                        config={config.global_system_prompt || { enabled: false, content: '' }}
-                        onChange={(newConfig) => onChange({ ...config, global_system_prompt: newConfig })}
+                        config={config?.global_system_prompt || { enabled: false, content: '' }}
+                        onChange={(newConfig) => onChange({ ...(config || {}), global_system_prompt: newConfig })}
                     />
                 </div>
             </div>

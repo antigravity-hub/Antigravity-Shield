@@ -16,6 +16,29 @@ function getGuiConfigPath() {
   return path.join(os.homedir(), ".antigravity_shield", "gui_config.json");
 }
 
+function isObject(item: any): boolean {
+  return item && typeof item === "object" && !Array.isArray(item);
+}
+
+function deepMerge(target: any, source: any): any {
+  if (!isObject(target) || !isObject(source)) {
+    return source !== undefined ? source : target;
+  }
+  const output = { ...target };
+  for (const key of Object.keys(source)) {
+    if (isObject(source[key])) {
+      if (!(key in target) || !isObject(target[key])) {
+        output[key] = source[key];
+      } else {
+        output[key] = deepMerge(target[key], source[key]);
+      }
+    } else if (source[key] !== undefined) {
+      output[key] = source[key];
+    }
+  }
+  return output;
+}
+
 function readGuiConfig(): any {
   try {
     const configPath = getGuiConfigPath();
@@ -28,14 +51,16 @@ function readGuiConfig(): any {
   return null;
 }
 
-function writeGuiConfig(config: any): boolean {
+function writeGuiConfig(incomingConfig: any): boolean {
   try {
     const configPath = getGuiConfigPath();
     const dir = path.dirname(configPath);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf-8");
+    const existing = readGuiConfig() || {};
+    const merged = deepMerge(existing, incomingConfig);
+    fs.writeFileSync(configPath, JSON.stringify(merged, null, 2), "utf-8");
     return true;
   } catch (err) {
     console.error("[dev-server] Failed to write gui_config.json:", err);

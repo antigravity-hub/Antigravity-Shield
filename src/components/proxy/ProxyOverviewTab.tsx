@@ -41,9 +41,9 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
     onSelectTab,
 }) => {
     const { t } = useTranslation();
-    const port = status.running ? status.port : (appConfig.proxy.port || 8045);
+    const port = status.running ? status.port : (appConfig?.proxy?.port || 8045);
     const baseUrl = `http://127.0.0.1:${port}`;
-    const apiKey = appConfig.proxy.api_key || 'YOUR_API_KEY';
+    const apiKey = appConfig?.proxy?.api_key || 'YOUR_API_KEY';
 
     const endpoints = [
         {

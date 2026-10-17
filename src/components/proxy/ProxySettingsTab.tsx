@@ -128,7 +128,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                         </label>
                         <input
                             type="number"
-                            value={appConfig.proxy.port}
+                            value={appConfig?.proxy?.port ?? 8045}
                             onChange={(e) => onUpdateProxyConfig({ port: parseInt(e.target.value) || 8045 })}
                             min={8000}
                             max={65535}
@@ -152,7 +152,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                         </label>
                         <input
                             type="number"
-                            value={appConfig.proxy.request_timeout || 120}
+                            value={appConfig?.proxy?.request_timeout || 120}
                             onChange={(e) => onUpdateProxyConfig({ request_timeout: parseInt(e.target.value) || 120 })}
                             min={30}
                             max={7200}
@@ -173,7 +173,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             <span className="text-xs text-gray-600 dark:text-gray-400">Auto-start on app launch</span>
                             <input
                                 type="checkbox"
-                                checked={appConfig.proxy.auto_start || false}
+                                checked={appConfig?.proxy?.auto_start || false}
                                 onChange={(e) => onUpdateProxyConfig({ auto_start: e.target.checked })}
                                 className="toggle toggle-sm"
                             />
@@ -221,7 +221,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                             <RefreshCw size={13} />
                                         </button>
                                         <button
-                                            onClick={() => onCopy(appConfig.proxy.api_key || '', 'api-key')}
+                                            onClick={() => onCopy(appConfig?.proxy?.api_key || '', 'api-key')}
                                             className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded"
                                             title="Copy"
                                         >
@@ -241,7 +241,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             />
                         ) : (
                             <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-base-100 px-3 py-1.5 rounded border border-gray-200 dark:border-base-300 truncate">
-                                {appConfig.proxy.api_key || 'No key set'}
+                                {appConfig?.proxy?.api_key || 'No key set'}
                             </div>
                         )}
                         <p className="text-[10px] text-gray-400">
@@ -284,7 +284,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             />
                         ) : (
                             <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-base-100 px-3 py-1.5 rounded border border-gray-200 dark:border-base-300">
-                                {appConfig.proxy.admin_password ? '••••••••••••' : 'None (Open access)'}
+                                {appConfig?.proxy?.admin_password ? '••••••••••••' : 'None (Open access)'}
                             </div>
                         )}
                         <p className="text-[10px] text-gray-400">
@@ -297,8 +297,8 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
             {/* CLI Sync Card Embed */}
             <div className="bg-white dark:bg-base-200/60 rounded-2xl border border-gray-100 dark:border-base-300 shadow-sm overflow-hidden p-5">
                 <CliSyncCard
-                    proxyUrl={status.running ? `http://127.0.0.1:${status.port}` : `http://127.0.0.1:${appConfig.proxy.port || 8045}`}
-                    apiKey={appConfig.proxy.api_key || ''}
+                    proxyUrl={status.running ? `http://127.0.0.1:${status.port}` : `http://127.0.0.1:${appConfig?.proxy?.port || 8045}`}
+                    apiKey={appConfig?.proxy?.api_key || ''}
                 />
             </div>
 

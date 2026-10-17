@@ -71,7 +71,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
     const [editingKey, setEditingKey] = useState<string | null>(null);
     const [editingValue, setEditingValue] = useState('');
 
-    const customMapping = appConfig.proxy.custom_mapping || {};
+    const customMapping = appConfig?.proxy?.custom_mapping || {};
 
     // Standard built-in normalized aliases
     const builtInAliases = [
