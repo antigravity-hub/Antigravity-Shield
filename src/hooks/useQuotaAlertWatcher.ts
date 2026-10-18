@@ -12,8 +12,10 @@ import { useTranslation } from 'react-i18next';
 // Cache last alert timestamp per (email:grouped_key) to prevent spamming
 const lastAlertMap = new Map<string, number>();
 const lastAutoSwitchMap = new Map<string, number>();
+let lastGlobalExhaustedAlert = 0;
 const ALERT_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes cooldown
 const AUTO_SWITCH_COOLDOWN_MS = 60 * 1000; // 1 minute cooldown per account
+const GLOBAL_EXHAUSTED_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes cooldown for global quota exhausted alerts
 
 function isClaudeModel(name: string, displayName?: string): boolean {
     const lower = `${name || ''} ${displayName || ''}`.toLowerCase();
@@ -144,7 +146,7 @@ export function useQuotaAlertWatcher() {
 
                         const alertKey = `${targetAccount.email}:${model.name}`;
                         const prevPct = prevPercentageMap.current.get(alertKey);
-                        if (pct <= DEPLETED_THRESHOLD && (prevPct === undefined || prevPct > DEPLETED_THRESHOLD)) {
+                        if (pct <= DEPLETED_THRESHOLD && prevPct !== undefined && prevPct > DEPLETED_THRESHOLD) {
                             hasNewDepleted = true;
                         }
                         prevPercentageMap.current.set(alertKey, pct);
@@ -188,7 +190,7 @@ export function useQuotaAlertWatcher() {
 
                                 const alertKey = `${targetAccount.email}:weekly:${bucket.bucket_id}`;
                                 const prevPct = prevPercentageMap.current.get(alertKey);
-                                if (pct <= DEPLETED_THRESHOLD && (prevPct === undefined || prevPct > DEPLETED_THRESHOLD)) {
+                                if (pct <= DEPLETED_THRESHOLD && prevPct !== undefined && prevPct > DEPLETED_THRESHOLD) {
                                     hasNewDepleted = true;
                                 }
                                 prevPercentageMap.current.set(alertKey, pct);
@@ -373,15 +375,19 @@ export function useQuotaAlertWatcher() {
                     })();
                     break;
                 } else {
-                    // All quotas depleted across all accounts
-                    const exhaustedTitle = t('notifications.quota_exhausted_title', {
-                        defaultValue: 'Antigravity Shield - Quota Depleted',
-                    });
-                    const exhaustedMsg = t('notifications.all_quotas_depleted', {
-                        defaultValue: '⚠️ Quotas exhausted across all available accounts.',
-                    });
-                    showToast(exhaustedMsg, 'error', 9000);
-                    sendDesktopNotification(exhaustedTitle, exhaustedMsg);
+                    // All quotas depleted across all accounts (throttled to 1 alert per 15 minutes)
+                    if (now - lastGlobalExhaustedAlert > GLOBAL_EXHAUSTED_COOLDOWN_MS) {
+                        lastGlobalExhaustedAlert = now;
+                        const exhaustedTitle = t('notifications.quota_exhausted_title', {
+                            defaultValue: 'Antigravity Shield - Quota Depleted',
+                        });
+                        const exhaustedMsg = t('notifications.all_quotas_depleted', {
+                            defaultValue: '⚠️ Quotas exhausted across all available accounts.',
+                        });
+                        showToast(exhaustedMsg, 'error', 9000);
+                        sendDesktopNotification(exhaustedTitle, exhaustedMsg);
+                    }
+                    break; // Prevent duplicate alerts across multiple target environments in the same tick
                 }
             }
         }

@@ -1106,6 +1106,7 @@ pub async fn proxy_execute_diagnostic_probe(
     };
 
     let mut req = client.post(&url).json(&body);
+    req = req.header("x-shield-probe", "true");
     if is_openai {
         if !api_key.is_empty() {
             req = req.header("Authorization", format!("Bearer {}", api_key));
@@ -1259,7 +1260,7 @@ pub async fn proxy_execute_diagnostic_probe(
                     error: None,
                 })
             } else {
-                let err_msg = if let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) {
+                let mut err_msg = if let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) {
                     json.get("error")
                         .and_then(|e| {
                             if let Some(s) = e.as_str() {
@@ -1272,6 +1273,10 @@ pub async fn proxy_execute_diagnostic_probe(
                 } else {
                     format!("HTTP error {}: {}", status_code, text)
                 };
+
+                if status_code == 429 || err_msg.to_lowercase().contains("resource_exhausted") || err_msg.to_lowercase().contains("quota") {
+                    err_msg = format!("{} (Account quota exhausted or model tier entitlement not active on upstream account)", err_msg);
+                }
 
                 Ok(DiagnosticProbeResult {
                     success: false,
