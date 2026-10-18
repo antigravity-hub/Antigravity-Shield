@@ -92,6 +92,11 @@ i18n
             },
         },
         fallbackLng: "en",
+        detection: {
+            order: ["localStorage"],
+            lookupLocalStorage: "i18nextLng",
+            caches: ["localStorage"],
+        },
         debug: false, // Set to true for development
 
         interpolation: {
