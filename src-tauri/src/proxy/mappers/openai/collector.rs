@@ -75,8 +75,11 @@ where
                                 }
 
                                 // Reasoning Content
-                                if let Some(rc) =
-                                    delta.get("reasoning_content").and_then(|v| v.as_str())
+                                if let Some(rc) = delta
+                                    .get("reasoning_content")
+                                    .or_else(|| delta.get("reasoning"))
+                                    .or_else(|| delta.get("thought"))
+                                    .and_then(|v| v.as_str())
                                 {
                                     reasoning_parts.push(rc.to_string());
                                 }
@@ -205,7 +208,11 @@ where
 
     let message = OpenAIMessage {
         role: role.unwrap_or("assistant".to_string()),
-        content: Some(OpenAIContent::String(full_content)),
+        content: if full_content.is_empty() && final_tool_calls.is_some() {
+            None
+        } else {
+            Some(OpenAIContent::String(full_content))
+        },
         reasoning_content: full_reasoning,
         tool_calls: final_tool_calls,
         tool_call_id: None,

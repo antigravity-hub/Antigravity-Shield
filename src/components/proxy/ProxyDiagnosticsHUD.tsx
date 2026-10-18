@@ -43,9 +43,9 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
     models = [],
 }) => {
     // Live Probe State
-    const [probeModel, setProbeModel] = useState('gemini-3.5-flash');
+    const [probeModel, setProbeModel] = useState('gemini-3.8-flash');
     const [probeProtocol, setProbeProtocol] = useState<'openai' | 'claude'>('openai');
-    const [probePrompt, setProbePrompt] = useState('Verify Antigravity Shield API Proxy connection and latency.');
+    const [probePrompt, setProbePrompt] = useState('Ping! Please respond with: Antigravity Shield API Proxy is operational.');
     const [probeState, setProbeState] = useState<'idle' | 'probing' | 'success' | 'error'>('idle');
     const [probeLatency, setProbeLatency] = useState<number | null>(null);
     const [probeResponse, setProbeResponse] = useState<string | null>(null);
@@ -266,6 +266,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 ))
                             ) : (
                                 <>
+                                    <option value="gemini-3.8-flash">Gemini 3.8 Flash (gemini-3.8-flash)</option>
                                     <option value="gemini-3.5-flash">Gemini 3.5 Flash (gemini-3.5-flash)</option>
                                     <option value="gemini-2.5-flash">Gemini 2.5 Flash (gemini-2.5-flash)</option>
                                     <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (claude-sonnet-4-6)</option>
@@ -340,16 +341,22 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                         </div>
 
                         <div className="relative group bg-gray-50 dark:bg-[#141916] p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
-                            <pre className="text-xs font-mono text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
-                                {probeResponse}
+                            <pre className="text-xs font-mono text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
+                                {probeResponse && probeResponse.trim() ? (
+                                    probeResponse
+                                ) : (
+                                    <span className="text-gray-400 italic">No text content returned.</span>
+                                )}
                             </pre>
-                            <button
-                                onClick={handleCopyResponse}
-                                className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 dark:bg-[#0c100e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#141916] transition-colors"
-                                title="Copy Response"
-                            >
-                                {copiedResponse ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
-                            </button>
+                            {probeResponse && probeResponse.trim() && (
+                                <button
+                                    onClick={handleCopyResponse}
+                                    className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 dark:bg-[#0c100e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#141916] transition-colors"
+                                    title="Copy Response"
+                                >
+                                    {copiedResponse ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
+                                </button>
+                            )}
                         </div>
                     </div>
                 )}
