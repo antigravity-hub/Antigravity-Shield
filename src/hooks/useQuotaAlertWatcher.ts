@@ -284,6 +284,11 @@ export function useQuotaAlertWatcher() {
                                     console.log(`[QuotaAlertWatcher] Auto-switch cancelled for 30 minutes on ${sourceAccount.email}`);
                                     lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 30 * 60 * 1000);
                                     shouldSwitch = false;
+                                } else if (action === 'switch_now') {
+                                    console.log(`[QuotaAlertWatcher] User confirmed switch_now from overlay for ${sourceAccount.email}`);
+                                    // Give user and system a 15-minute grace period to prevent immediate re-prompting
+                                    lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 15 * 60 * 1000);
+                                    shouldSwitch = true;
                                 }
                             } catch (e) {
                                 console.warn('[QuotaAlertWatcher] Overlay notification failed, falling back to direct switch:', e);
@@ -293,6 +298,7 @@ export function useQuotaAlertWatcher() {
                         if (shouldSwitch) {
                             try {
                                 console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} from ${sourceAccount.email} to ${nextAccount.email} (${modelFamily} score: ${quotaScore}%)`);
+                                lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 15 * 60 * 1000);
                                 lastAutoSwitchMap.set(nextAccount.id, Date.now());
                                 await switchAccount(nextAccount.id, targetEnv);
                                 
@@ -330,8 +336,17 @@ export function useQuotaAlertWatcher() {
                 const modelLabel = getModelDisplayName(mostCritical) || mostCritical.display_name || mostCritical.name;
 
                 // Step 1: Find best standby account for the primary category
+                // Exclude accounts already actively running in other slots (e.g. IDE or Platform)
+                const otherActiveSlots = [
+                    activeTargetAccounts?.ide,
+                    activeTargetAccounts?.platform,
+                    activeTargetAccounts?.agy,
+                ].filter(id => id && id !== targetAccount.id);
+
                 let targetCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {
                     category: primaryCategory,
+                    excludedAccountIds: otherActiveSlots,
+                    minQuotaThreshold: 15,
                 });
                 let candidateScore = primaryCategory === 'gemini' ? targetCandidate.geminiScore : targetCandidate.claudeScore;
 
@@ -340,6 +355,8 @@ export function useQuotaAlertWatcher() {
                     const fallbackCategory = primaryCategory === 'gemini' ? 'claude' : 'gemini';
                     const fallbackCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {
                         category: fallbackCategory,
+                        excludedAccountIds: otherActiveSlots,
+                        minQuotaThreshold: 15,
                     });
                     const fallbackScore = fallbackCategory === 'gemini' ? fallbackCandidate.geminiScore : fallbackCandidate.claudeScore;
                     if (fallbackCandidate.account && fallbackScore > DEPLETED_THRESHOLD) {

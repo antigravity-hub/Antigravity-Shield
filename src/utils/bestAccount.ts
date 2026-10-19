@@ -23,6 +23,10 @@ export interface BestAccountOptions {
     minResetMinutes?: number;
     /** Preferred Claude model filter if evaluating Claude (default: 'claude-opus') */
     targetClaudeModel?: string;
+    /** Specific account IDs to exclude from recommendation (e.g. accounts already active in other slots) */
+    excludedAccountIds?: (string | null | undefined)[];
+    /** Minimum quota percentage required to be considered a viable standby account (default: 15) */
+    minQuotaThreshold?: number;
 }
 
 export interface ScoredCandidate {
@@ -50,11 +54,24 @@ export function getRecommendedBestAccount(
         category = 'gemini',
         minResetMinutes = 20,
         targetClaudeModel = 'claude-opus',
+        excludedAccountIds = [],
+        minQuotaThreshold = 15,
     } = options;
 
-    const candidates = accounts.filter(
-        a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled && !a.validation_blocked && !a.quota?.is_forbidden
+    const excludedSet = new Set(
+        [currentAccountId, ...excludedAccountIds].filter((id): id is string => Boolean(id))
     );
+
+    let candidates = accounts.filter(
+        a => !excludedSet.has(a.id) && !a.disabled && !a.proxy_disabled && !a.validation_blocked && !a.quota?.is_forbidden
+    );
+
+    // If all candidates are excluded because they are active elsewhere, allow non-current accounts
+    if (candidates.length === 0 && currentAccountId) {
+        candidates = accounts.filter(
+            a => a.id !== currentAccountId && !a.disabled && !a.proxy_disabled && !a.validation_blocked && !a.quota?.is_forbidden
+        );
+    }
 
     if (candidates.length === 0) {
         return {
@@ -169,7 +186,13 @@ export function getRecommendedBestAccount(
         }
     });
 
-    const best = sorted[0];
+    // Filter out accounts below the minimum viable standby threshold (e.g. 15%)
+    const viableCandidates = sorted.filter(c => {
+        const score = category === 'claude' ? c.claudeScore : (category === 'both' ? Math.max(c.fiveHourScore, c.claudeScore) : c.fiveHourScore);
+        return score >= minQuotaThreshold;
+    });
+
+    const best = viableCandidates[0] || sorted[0];
     const isClaude = category === 'claude';
     return {
         account: best ? best.account : null,
