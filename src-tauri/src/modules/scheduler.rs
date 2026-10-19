@@ -641,7 +641,10 @@ async fn run_warmup_cycle(
     let mut tasks_to_run = Vec::new();
 
     for acc in &accounts {
-        if acc.disabled || acc.proxy_disabled {
+        if acc.disabled || acc.proxy_disabled || acc.validation_blocked {
+            continue;
+        }
+        if acc.quota.as_ref().map_or(false, |q| q.is_forbidden) {
             continue;
         }
 
@@ -805,11 +808,18 @@ async fn run_warmup_cycle(
                 .await;
 
                 let now = Utc::now().timestamp();
+                // Mandatory cooldown: Enforce cooldown on BOTH success and failure to eliminate runaway error loops
+                record_warmup_history(&history_key, now);
+
                 if success {
                     any_success = true;
-                    record_warmup_history(&history_key, now);
                     logger::log_info(&format!(
                         "[WeeklyWarmup] ✅ Successfully warmed {} @ {}",
+                        model, email
+                    ));
+                } else {
+                    logger::log_warn(&format!(
+                        "[WeeklyWarmup] ⚠️ Warmup failed for {} @ {}. Cooldown enforced to protect account from automated abuse flags.",
                         model, email
                     ));
                 }
@@ -843,6 +853,10 @@ async fn run_warmup_cycle(
 
 /// Trigger immediate smart warmup check for a single account (e.g. on manual trigger / recovered event / after login)
 pub async fn trigger_warmup_for_account(account: &Account) {
+    if account.disabled || account.proxy_disabled || account.validation_blocked {
+        return;
+    }
+
     let Ok((token, pid)) = quota::get_valid_token_for_warmup(account).await else {
         return;
     };
@@ -938,12 +952,19 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                         )
                         .await;
 
+                        // Mandatory cooldown regardless of success/failure
+                        record_warmup_history(&history_key, now_ts);
+
                         if success {
                             any_warmed = true;
-                            record_warmup_history(&history_key, now_ts);
                             logger::log_info(&format!(
                                 "[AutoWarmup] ✅ Successfully auto-warmed {} ({} cycle) for {}",
                                 model_to_ping, cycle_type, account.email
+                            ));
+                        } else {
+                            logger::log_warn(&format!(
+                                "[AutoWarmup] ⚠️ AutoWarmup failed for {} @ {}. Cooldown enforced.",
+                                model_to_ping, account.email
                             ));
                         }
                     }
@@ -965,9 +986,12 @@ pub async fn trigger_warmup_for_account(account: &Account) {
                     Some(&account.id),
                 )
                 .await;
+
+                // Mandatory cooldown regardless of outcome
+                record_warmup_history(&history_key, now_ts);
+
                 if success {
                     any_warmed = true;
-                    record_warmup_history(&history_key, now_ts);
                     logger::log_info(&format!(
                         "[AutoWarmup] ✅ Successfully auto-warmed {} for {}",
                         m.name, account.email
