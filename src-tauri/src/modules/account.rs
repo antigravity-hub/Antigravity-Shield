@@ -2559,10 +2559,11 @@ pub struct RefreshStats {
 /// Core logic to batch refresh all account quotas (decoupled from Tauri status)
 pub async fn refresh_all_quotas_logic() -> Result<RefreshStats, String> {
     use futures::future::join_all;
+    use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     use std::sync::Arc;
     use tokio::sync::Semaphore;
 
-    const MAX_CONCURRENT: usize = 5;
+    const MAX_CONCURRENT: usize = 2;
     let start = std::time::Instant::now();
 
     crate::modules::logger::log_info(&format!(
@@ -2572,14 +2573,12 @@ pub async fn refresh_all_quotas_logic() -> Result<RefreshStats, String> {
     let accounts = list_accounts()?;
 
     let semaphore = Arc::new(Semaphore::new(MAX_CONCURRENT));
+    let consecutive_forbidden = Arc::new(AtomicUsize::new(0));
+    let abort_flag = Arc::new(AtomicBool::new(false));
 
     let tasks: Vec<_> = accounts
         .into_iter()
         .filter(|account| {
-            // [MOD] Now we allow refreshing disabled and proxy_disabled accounts
-            // to support forced re-sync from UI.
-            // Only strictly skip forbidden accounts if necessary, but even those
-            // might want a retry to see if they are unbanned.
             if let Some(ref q) = account.quota {
                 if q.is_forbidden {
                     crate::modules::logger::log_info(&format!(
@@ -2589,17 +2588,40 @@ pub async fn refresh_all_quotas_logic() -> Result<RefreshStats, String> {
                     return false;
                 }
             }
+            if account.validation_blocked {
+                crate::modules::logger::log_info(&format!(
+                    "  - Skipping {} (Validation Blocked)",
+                    account.email
+                ));
+                return false;
+            }
             true
         })
-        .map(|mut account| {
+        .enumerate()
+        .map(|(idx, mut account)| {
             let email = account.email.clone();
             let account_id = account.id.clone();
             let permit = semaphore.clone();
+            let consecutive_forbidden = consecutive_forbidden.clone();
+            let abort_flag = abort_flag.clone();
             async move {
+                if abort_flag.load(Ordering::Relaxed) {
+                    let msg = format!("Account {}: Skipped due to circuit breaker trip", email);
+                    return Err(msg);
+                }
+                // Stagger starts to prevent immediate burst spikes
+                if idx > 0 {
+                    tokio::time::sleep(tokio::time::Duration::from_millis((idx as u64) * 500)).await;
+                }
                 let _guard = permit.acquire().await.unwrap();
+                if abort_flag.load(Ordering::Relaxed) {
+                    let msg = format!("Account {}: Skipped due to circuit breaker trip", email);
+                    return Err(msg);
+                }
                 crate::modules::logger::log_info(&format!("  - Processing {}", email));
                 match fetch_quota_with_retry(&mut account).await {
                     Ok(quota) => {
+                        consecutive_forbidden.store(0, Ordering::Relaxed);
                         if let Err(e) = update_account_quota(&account_id, quota) {
                             let msg = format!("Account {}: Save quota failed - {}", email, e);
                             crate::modules::logger::log_error(&msg);
@@ -2610,6 +2632,21 @@ pub async fn refresh_all_quotas_logic() -> Result<RefreshStats, String> {
                         }
                     }
                     Err(e) => {
+                        let err_str = e.to_string();
+                        if err_str.contains("403")
+                            || err_str.contains("Forbidden")
+                            || err_str.contains("VALIDATION_REQUIRED")
+                        {
+                            let count = consecutive_forbidden.fetch_add(1, Ordering::Relaxed) + 1;
+                            if count >= 2 {
+                                crate::modules::logger::log_error(&format!(
+                                    "🚨 Circuit breaker triggered! Multiple 403 Forbidden errors during batch refresh. Halting remaining accounts to prevent IP rate-limiting."
+                                ));
+                                abort_flag.store(true, Ordering::Relaxed);
+                            }
+                        } else {
+                            consecutive_forbidden.store(0, Ordering::Relaxed);
+                        }
                         let msg = format!("Account {}: Fetch quota failed - {}", email, e);
                         crate::modules::logger::log_error(&msg);
                         Err(msg)
@@ -2638,8 +2675,9 @@ pub async fn refresh_all_quotas_logic() -> Result<RefreshStats, String> {
 
     let elapsed = start.elapsed();
     crate::modules::logger::log_info(&format!(
-        "Batch refresh completed: {} success, {} failed, took: {}ms",
+        "Batch refresh completed: {}/{} success, {} failed, took: {}ms",
         success,
+        total,
         failed,
         elapsed.as_millis()
     ));
@@ -2682,12 +2720,13 @@ pub async fn check_and_trigger_warmup_for_recovered_models() {
 
     for account in accounts {
         // Skip disabled accounts
-        if account.disabled || account.proxy_disabled {
+        if account.disabled || account.proxy_disabled || account.validation_blocked {
             continue;
         }
 
-        // Trigger warmup check for this account
+        // Trigger warmup check for this account with 2s cooldown between accounts
         crate::modules::scheduler::trigger_warmup_for_account(&account).await;
+        tokio::time::sleep(tokio::time::Duration::from_millis(2000)).await;
     }
 }
 

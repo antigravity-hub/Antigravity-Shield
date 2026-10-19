@@ -197,10 +197,24 @@ pub async fn handle_warmup(
         )
         .await;
 
-    // 如果流式未成功（网络报错或 HTTP 非 2xx），回退尝试非流式请求
-    let need_fallback = match &result {
-        Ok(call_res) => !call_res.response.status().is_success(),
-        Err(_) => true,
+    // [SAFETY INVARIANT] If upstream returns 403 Forbidden / TOS violation, halt immediately without retries
+    let is_forbidden = match &result {
+        Ok(call_res) => call_res.response.status() == StatusCode::FORBIDDEN,
+        Err(_) => false,
+    };
+
+    // 如果流式未成功（网络报错或 HTTP 非 2xx），回退尝试非流式请求 (403 绝不回退)
+    let need_fallback = if is_forbidden {
+        tracing::warn!(
+            "[Warmup-API] 🛑 Upstream 403 Forbidden detected for {}. Skipping all fallbacks to protect account from automated abuse detection.",
+            req.email
+        );
+        false
+    } else {
+        match &result {
+            Ok(call_res) => !call_res.response.status().is_success(),
+            Err(_) => true,
+        }
     };
 
     if need_fallback {
@@ -226,10 +240,14 @@ pub async fn handle_warmup(
         }
     }
 
-    // 如果指定模型（如特定预览或未授权实验模型）未成功，自动回退到最稳定的 gemini-2.5-flash
-    let still_failed = match &result {
-        Ok(call_res) => !call_res.response.status().is_success(),
-        Err(_) => true,
+    // 如果指定模型未成功且非 403，自动回退到最稳定的 gemini-2.5-flash
+    let still_failed = if is_forbidden {
+        false
+    } else {
+        match &result {
+            Ok(call_res) => !call_res.response.status().is_success(),
+            Err(_) => true,
+        }
     };
 
     if still_failed && !is_claude && !is_image && req.model != "gemini-2.5-flash" {
