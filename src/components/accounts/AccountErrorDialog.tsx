@@ -55,41 +55,13 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
         return raw;
     };
 
-    const extractActionInfo = (raw: string): { url: string | null, label: string | null } => {
-        if (account.validation_url) {
-            return { url: account.validation_url, label: null };
-        }
-
-        const trimmed = raw.trim();
-        try {
-            const parsed = JSON.parse(trimmed);
-            // Google API 返回的链接通常在 metadata 中
-            const metadata = parsed?.error?.details?.[0]?.metadata;
-            let url = metadata?.appeal_url || metadata?.validation_url || parsed?.validation_url || parsed?.appeal_url;
-            let label = metadata?.appeal_url_link_text || metadata?.validation_url_link_text || parsed?.appeal_url_link_text || parsed?.validation_url_link_text;
-
-            if (!url && typeof parsed?.error === 'string') {
-                try {
-                    const innerParsed = JSON.parse(parsed.error);
-                    const innerMeta = innerParsed?.error?.details?.[0]?.metadata;
-                    url = innerMeta?.appeal_url || innerMeta?.validation_url;
-                    label = innerMeta?.appeal_url_link_text || innerMeta?.validation_url_link_text;
-                } catch (_) { }
-            }
-
-            if (url) return { url: String(url), label: label ? String(label) : null };
-        } catch (_) { }
-
-        // 最后降级到正则匹配
-        const urlRegex = /https:\/\/[^\s"']+/g;
-        const match = raw.match(urlRegex);
-        if (match) {
-            let extracted = match[0];
-            extracted = extracted.replace(/\\u0026/g, '&').replace(/\\"/g, '').replace(/\\/g, '');
-            if (extracted.endsWith(',')) {
-                extracted = extracted.slice(0, -1);
-            }
-            return { url: extracted, label: null };
+    const extractActionInfo = (_raw: string): { url: string | null, label: string | null } => {
+        if (directUrl) {
+            const isAppeal = directUrl.includes('forms.gle') || directUrl.toLowerCase().includes('appeal');
+            return {
+                url: directUrl,
+                label: isAppeal ? t('accounts.submit_appeal_btn', 'Submit Appeal') : t('accounts.verify_in_browser_btn', 'Verify in Browser')
+            };
         }
         return { url: null, label: null };
     };

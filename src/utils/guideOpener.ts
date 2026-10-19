@@ -81,6 +81,31 @@ export function cleanValidationUrl(url: string): string {
     return cleaned;
 }
 
+export const GOOGLE_DEFAULT_APPEAL_URL = 'https://forms.gle/hGzM9MEUv2azZsrb9';
+
+/**
+ * Filter to verify a URL is an actual user-facing action/appeal URL, and NOT an internal API endpoint.
+ */
+export function isValidUserActionUrl(url: string | null | undefined): boolean {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) return false;
+
+    const lower = trimmed.toLowerCase();
+    // Strictly reject internal Google Cloud Code backend endpoints
+    if (
+        lower.includes('googleapis.com/v1internal') ||
+        lower.includes(':fetchavailablemodels') ||
+        lower.includes(':retrieveuserquotasummary') ||
+        lower.includes(':loadcodeassist') ||
+        lower.includes(':generatecontent') ||
+        lower.includes(':streamgeneratecontent')
+    ) {
+        return false;
+    }
+    return true;
+}
+
 /**
  * Check if an account error corresponds to a Google Terms of Service suspension / appeal requirement
  */
@@ -120,42 +145,66 @@ export function extractAccountValidationUrl(account: {
 } | null | undefined): string | null {
     if (!account) return null;
 
+    // 1. Direct validation_url on account
     if (account.validation_url && typeof account.validation_url === 'string') {
         const cleaned = cleanValidationUrl(account.validation_url);
-        if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+        if (isValidUserActionUrl(cleaned)) {
             return cleaned;
         }
     }
 
     const raw = account.validation_blocked_reason || account.disabled_reason || account.quota?.forbidden_reason || account.proxy_disabled_reason || account.quota?.disabled_reason || (account.quota as any)?.error_details || '';
-    if (!raw) return null;
+    if (!raw) {
+        return isAccountTosViolation(account) ? GOOGLE_DEFAULT_APPEAL_URL : null;
+    }
 
     const trimmed = raw.trim();
-    try {
-        const parsed = JSON.parse(trimmed);
-        let meta = parsed?.error?.details?.[0]?.metadata;
-        if (!meta && typeof parsed?.error === 'string') {
-            try {
-                const inner = JSON.parse(parsed.error);
-                meta = inner?.error?.details?.[0]?.metadata;
-            } catch (_) {}
-        }
-        const url = meta?.validation_url || meta?.appeal_url || parsed?.validation_url || parsed?.appeal_url;
-        if (url && typeof url === 'string') {
-            const cleaned = cleanValidationUrl(url);
-            if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
-                return cleaned;
-            }
-        }
-    } catch (_) {}
 
-    // Fallback: regex search for http/https URLs in the raw error
-    const match = trimmed.match(/https?:\/\/[^\s"']+/);
-    if (match) {
-        const cleaned = cleanValidationUrl(match[0]);
-        if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+    // 2. High-priority direct match for Google appeal form URL (forms.gle)
+    const formsMatch = trimmed.match(/https?:\/\/forms\.gle\/[^\s"'\],}]+/i);
+    if (formsMatch) {
+        const cleaned = cleanValidationUrl(formsMatch[0]);
+        if (isValidUserActionUrl(cleaned)) {
             return cleaned;
         }
+    }
+
+    // 3. Embedded JSON substring extraction (handles "Network error: Quota API ... { ... }")
+    const firstBrace = trimmed.indexOf('{');
+    const lastBrace = trimmed.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        const jsonSub = trimmed.slice(firstBrace, lastBrace + 1);
+        try {
+            const parsed = JSON.parse(jsonSub);
+            let meta = parsed?.error?.details?.[0]?.metadata;
+            if (!meta && typeof parsed?.error === 'string') {
+                try {
+                    const inner = JSON.parse(parsed.error);
+                    meta = inner?.error?.details?.[0]?.metadata;
+                } catch (_) {}
+            }
+            const url = meta?.appeal_url || meta?.validation_url || parsed?.appeal_url || parsed?.validation_url;
+            if (url && typeof url === 'string') {
+                const cleaned = cleanValidationUrl(url);
+                if (isValidUserActionUrl(cleaned)) {
+                    return cleaned;
+                }
+            }
+        } catch (_) {}
+    }
+
+    // 4. Safe URL search across all candidate links, strictly filtering out internal API endpoints
+    const allUrls = trimmed.match(/https?:\/\/[^\s"'\],}]+/g) || [];
+    for (const candidate of allUrls) {
+        const cleaned = cleanValidationUrl(candidate);
+        if (isValidUserActionUrl(cleaned)) {
+            return cleaned;
+        }
+    }
+
+    // 5. Fallback: If this is a TOS violation, provide Google's official appeal form
+    if (isAccountTosViolation(account)) {
+        return GOOGLE_DEFAULT_APPEAL_URL;
     }
 
     return null;

@@ -2555,6 +2555,17 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
                 account.proxy_disabled = true;
                 account.proxy_disabled_reason = Some(format!("TOS Violation: {}", err_str));
                 account.proxy_disabled_at = Some(chrono::Utc::now().timestamp());
+
+                // Extract direct Google appeal URL (forms.gle) or default official appeal form
+                if let Some(pos) = err_str.find("https://forms.gle/") {
+                    let sub = &err_str[pos..];
+                    let end = sub.find(|c: char| c.is_whitespace() || c == '"' || c == '\'' || c == '\\' || c == ',' || c == '}')
+                        .unwrap_or(sub.len());
+                    account.validation_url = Some(sub[..end].to_string());
+                } else if account.validation_url.is_none() {
+                    account.validation_url = Some("https://forms.gle/hGzM9MEUv2azZsrb9".to_string());
+                }
+
                 if let Some(ref mut q) = account.quota {
                     q.is_forbidden = true;
                     q.forbidden_reason = Some(err_str.clone());
