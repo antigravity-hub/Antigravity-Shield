@@ -4,15 +4,13 @@ use rquest;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-// Quota API endpoints (Primary Antigravity IDE endpoint, fallback to standard Cloud Code)
-const QUOTA_API_ENDPOINTS: [&str; 2] = [
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
+// Quota API endpoints (Official Google Cloud Code production API)
+const QUOTA_API_ENDPOINTS: [&str; 1] = [
     "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels",
 ];
 
 // Quota Summary API endpoints (weekly + 5h grouped quota)
-const QUOTA_SUMMARY_ENDPOINTS: [&str; 2] = [
-    "https://daily-cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
+const QUOTA_SUMMARY_ENDPOINTS: [&str; 1] = [
     "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary",
 ];
 
@@ -159,7 +157,29 @@ async fn create_long_standard_client(account_id: Option<&str>) -> rquest::Client
     }
 }
 
-const CLOUD_CODE_BASE_URL: &str = "https://daily-cloudcode-pa.googleapis.com";
+const CLOUD_CODE_BASE_URL: &str = "https://cloudcode-pa.googleapis.com";
+
+pub fn get_quota_device_headers(account_id: Option<&str>) -> rquest::header::HeaderMap {
+    if let Some(id) = account_id {
+        if let Ok(acc) = crate::modules::account::load_account(id) {
+            return crate::modules::device::get_account_device_headers(&acc);
+        }
+    }
+    let mut headers = rquest::header::HeaderMap::new();
+    if let Ok(cname) = rquest::header::HeaderValue::from_str("antigravity") {
+        headers.insert("x-client-name", cname);
+    }
+    if let Ok(ver) = rquest::header::HeaderValue::from_str(&crate::constants::CURRENT_VERSION) {
+        headers.insert("x-client-version", ver);
+    }
+    if let Some(id) = account_id {
+        let mid = crate::modules::device::derive_account_machine_id(id);
+        if let Ok(m) = rquest::header::HeaderValue::from_str(&mid) {
+            headers.insert("x-machine-id", m);
+        }
+    }
+    headers
+}
 
 /// Fetch project ID and subscription tier
 async fn fetch_project_id(
@@ -181,6 +201,7 @@ async fn fetch_project_id(
             rquest::header::USER_AGENT,
             crate::constants::NATIVE_OAUTH_USER_AGENT.as_str(),
         )
+        .headers(get_quota_device_headers(account_id))
         .json(&meta)
         .send()
         .await;
@@ -305,6 +326,7 @@ pub async fn fetch_quota_with_cache(
                     rquest::header::USER_AGENT,
                     crate::constants::NATIVE_OAUTH_USER_AGENT.as_str(),
                 )
+                .headers(get_quota_device_headers(account_id))
                 .json(&current_payload)
                 .send()
                 .await
@@ -581,6 +603,7 @@ async fn fetch_quota_summary(
                 rquest::header::USER_AGENT,
                 crate::constants::NATIVE_OAUTH_USER_AGENT.as_str(),
             )
+            .headers(get_quota_device_headers(account_id))
             .json(&payload)
             .send()
             .await;

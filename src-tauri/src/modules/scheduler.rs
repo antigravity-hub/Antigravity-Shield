@@ -282,23 +282,23 @@ pub fn start_scheduler(
                                         let effective_runway = runway / concurrency_factor;
 
                                         if effective_runway < 8.0 || is_heavy_burst {
-                                            30 + (now % 8) // High burn
+                                            120 + (now % 30) // High burn: safe 2-2.5m window
                                         } else if effective_runway < 18.0 {
-                                            50 + (now % 10) // Moderate burn
+                                            180 + (now % 40) // Moderate burn: safe 3-3.5m window
                                         } else if effective_runway > 30.0 && !has_live_tokens {
-                                            150 + (now % 25) // Safe fleet cycle (~2.5m)
+                                            300 + (now % 60) // Safe fleet cycle (~5-6m)
                                         } else {
-                                            90 + (now % 15) // Active steady burn (~1.5m)
+                                            210 + (now % 45) // Active steady burn (~3.5-4m)
                                         }
                                     } else {
                                         // Quota > 25% without established velocity:
-                                        // NEVER set 0! We must poll periodically to establish velocity trajectory.
+                                        // NEVER poll excessively! Human-paced intervals prevent automated abuse flags.
                                         if is_heavy_burst {
-                                            45 + (now % 10) // Burst active (~45-55s)
+                                            150 + (now % 30) // Burst active (~2.5-3m)
                                         } else if has_live_tokens {
-                                            60 + (now % 15) // Active IDE coding session (~60-75s)
+                                            240 + (now % 45) // Active IDE coding session (~4-5m)
                                         } else {
-                                            150 + (now % 25) // Idle baseline heartbeat (~2.5m)
+                                            360 + (now % 60) // Idle baseline heartbeat (~6-7m)
                                         }
                                     };
 
