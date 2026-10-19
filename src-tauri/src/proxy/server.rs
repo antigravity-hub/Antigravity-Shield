@@ -1524,6 +1524,20 @@ async fn admin_refresh_account_by_id(
         )
     })?;
 
+    // Throttling Guard: Return cached quota if refreshed within last 15 seconds
+    let now = chrono::Utc::now().timestamp();
+    if let Some(existing_quota) = &acc.quota {
+        if now.saturating_sub(existing_quota.last_updated) < 15 {
+            return Ok(Json(serde_json::json!({
+                "success": true,
+                "account_id": resolved_id,
+                "email": acc.email,
+                "quota": existing_quota,
+                "cached": true
+            })));
+        }
+    }
+
     let quota = account::fetch_quota_with_retry(&mut acc).await.map_err(|e| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,

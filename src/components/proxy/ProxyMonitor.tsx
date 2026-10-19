@@ -49,6 +49,15 @@ interface LogTableProps {
     t: any;
 }
 
+const formatDisplayUrl = (url: string) => {
+    if (!url) return '-';
+    const uuidRegex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+    if (uuidRegex.test(url)) {
+        return url.replace(uuidRegex, (m) => `${m.slice(0, 6)}…${m.slice(-4)}`);
+    }
+    return url;
+};
+
 const LogTable: React.FC<LogTableProps> = ({
     logs,
     loading,
@@ -106,7 +115,7 @@ const LogTable: React.FC<LogTableProps> = ({
                             <td className="text-gray-600 dark:text-gray-400 truncate text-[10px]" style={{ width: '140px', maxWidth: '140px' }} title={log.account_email || ''}>
                                 {log.account_email ? log.account_email.replace(/(.{3}).*(@.*)/, '$1***$2') : '-'}
                             </td>
-                            <td className="truncate" style={{ width: '180px', maxWidth: '180px' }}>{log.url}</td>
+                            <td className="truncate" style={{ width: '180px', maxWidth: '180px' }} title={log.url}>{formatDisplayUrl(log.url)}</td>
                             <td className="text-right text-[9px]" style={{ width: '90px' }}>
                                 {log.input_tokens != null && <div>{t('monitor.input')}: {formatCompactNumber(log.input_tokens)}</div>}
                                 {log.output_tokens != null && <div>{t('monitor.output')}: {formatCompactNumber(log.output_tokens)}</div>}
@@ -397,12 +406,22 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
         currentPageRef.current = 1;
     }, [filter, accountFilter]);
 
+    const [trafficType, setTrafficType] = useState<'all' | 'inference' | 'system'>('all');
+
     // Logs are already filtered and sorted by backend
-    // Apply account filter on frontend
+    // Apply account & traffic type filter on frontend
     const filteredLogs = useMemo(() => {
-        if (!accountFilter) return logs;
-        return logs.filter(log => log.account_email === accountFilter);
-    }, [logs, accountFilter]);
+        let result = logs;
+        if (accountFilter) {
+            result = result.filter(log => log.account_email === accountFilter);
+        }
+        if (trafficType === 'inference') {
+            result = result.filter(log => !log.url.startsWith('/accounts') && !log.url.startsWith('/health') && !log.url.startsWith('/switch') && !log.url.startsWith('/system') && !log.url.startsWith('/toolkit'));
+        } else if (trafficType === 'system') {
+            result = result.filter(log => log.url.startsWith('/accounts') || log.url.startsWith('/health') || log.url.startsWith('/switch') || log.url.startsWith('/system') || log.url.startsWith('/toolkit'));
+        }
+        return result;
+    }, [logs, accountFilter, trafficType]);
 
     const quickFilters = [
         { label: t('monitor.filters.all'), value: '' },
@@ -490,6 +509,33 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
                                 </option>
                             ))}
                         </select>
+                    </div>
+
+                    {/* Traffic Stream Segmentation */}
+                    <div className="flex items-center gap-1 bg-gray-100 dark:bg-base-200 p-0.5 rounded-lg text-[10px] font-semibold">
+                        <button
+                            type="button"
+                            onClick={() => setTrafficType('all')}
+                            className={`px-2 py-1 rounded-md transition-all ${trafficType === 'all' ? 'bg-white dark:bg-base-100 text-gray-900 dark:text-gray-100 shadow-xs' : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-200'}`}
+                        >
+                            All
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setTrafficType('inference')}
+                            className={`px-2 py-1 rounded-md transition-all ${trafficType === 'inference' ? 'bg-white dark:bg-base-100 text-emerald-600 dark:text-emerald-400 font-bold shadow-xs' : 'text-gray-500 hover:text-emerald-600'}`}
+                            title="Filter for AI model completion & chat calls only"
+                        >
+                            AI Models
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setTrafficType('system')}
+                            className={`px-2 py-1 rounded-md transition-all ${trafficType === 'system' ? 'bg-white dark:bg-base-100 text-amber-600 dark:text-amber-400 font-bold shadow-xs' : 'text-gray-500 hover:text-amber-600'}`}
+                            title="Filter for local gateway management & refresh calls"
+                        >
+                            System Calls
+                        </button>
                     </div>
 
                     <div className="hidden lg:flex gap-4 text-[10px] font-bold uppercase">
@@ -640,6 +686,17 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
                                     <div className="mt-5 pt-5 border-t border-gray-200 dark:border-base-300">
                                         <span className="block text-gray-500 dark:text-gray-400 uppercase font-black text-[10px] tracking-widest mb-2">{t('monitor.details.account_used')}</span>
                                         <span className="font-mono font-semibold text-gray-900 dark:text-base-content text-xs">{selectedLog.account_email}</span>
+                                    </div>
+                                )}
+
+                                {selectedLog.status === 404 && (
+                                    <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/25 text-xs text-amber-800 dark:text-amber-300">
+                                        <div className="font-bold mb-1 flex items-center gap-1.5">
+                                            <span>⚠️ Route Not Matched (Local Gateway 404)</span>
+                                        </div>
+                                        <div className="leading-relaxed text-[11px] opacity-90">
+                                            This request targeted an unmapped local path (<code className="font-mono bg-amber-500/15 px-1 py-0.5 rounded">{selectedLog.url}</code>) and was rejected by the Gateway router in 0ms. It is <strong>not</strong> an AI model failure and is <strong>not</strong> associated with Google account quota limits or bans.
+                                        </div>
                                     </div>
                                 )}
                             </div>
