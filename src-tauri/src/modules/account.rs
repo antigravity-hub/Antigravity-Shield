@@ -1665,12 +1665,21 @@ fn recover_cached_quota_on_rate_limit(
     Some(cached)
 }
 
+pub fn is_tos_violation_text(text: &str) -> bool {
+    text.contains("tos_violation")
+        || text.contains("terms of service")
+        || text.contains("appeal_url")
+        || (text.contains("permission_denied") && text.contains("disabled in this account"))
+}
+
 fn is_validation_required_error(err: &crate::error::AppError) -> bool {
     let text = err.to_string().to_lowercase();
+    if is_tos_violation_text(&text) {
+        return false;
+    }
     text.contains("verify your account")
         || text.contains("further action is required")
         || text.contains("validation_url")
-        || text.contains("appeal_url")
         || text.contains("validation required")
 }
 
@@ -2533,8 +2542,26 @@ pub async fn fetch_quota_with_retry(account: &mut Account) -> crate::error::AppR
             Ok(q)
         }
         Err(e) => {
-            if is_validation_required_error(&e) {
-                mark_validation_blocked(account, &e.to_string());
+            let err_str = e.to_string();
+            let lower = err_str.to_lowercase();
+            if is_tos_violation_text(&lower) {
+                crate::modules::logger::log_warn(&format!(
+                    "🛑 [{}] TOS violation confirmed. Marking as policy violation and clearing validation_blocked flag.",
+                    account.email
+                ));
+                account.validation_blocked = false;
+                account.validation_blocked_reason = None;
+                account.validation_blocked_until = None;
+                account.proxy_disabled = true;
+                account.proxy_disabled_reason = Some(format!("TOS Violation: {}", err_str));
+                account.proxy_disabled_at = Some(chrono::Utc::now().timestamp());
+                if let Some(ref mut q) = account.quota {
+                    q.is_forbidden = true;
+                    q.forbidden_reason = Some(err_str.clone());
+                }
+                let _ = save_account(account);
+            } else if is_validation_required_error(&e) {
+                mark_validation_blocked(account, &err_str);
             }
             if let Some(cached) = recover_cached_quota_on_rate_limit(account, &e) {
                 modules::logger::log_warn(&format!(

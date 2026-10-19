@@ -39,6 +39,7 @@ import {
     ExternalLink,
     Copy,
     QrCode,
+    AlertTriangle,
 } from 'lucide-react';
 import type { Account, ModelQuota } from '../../types/account';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +55,7 @@ import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import HelpTooltip from '../common/HelpTooltip';
-import { openVerificationGuide, openVerificationQrModal, openExternalUrl, extractAccountValidationUrl } from '../../utils/guideOpener';
+import { openVerificationGuide, openVerificationQrModal, openExternalUrl, extractAccountValidationUrl, isAccountTosViolation } from '../../utils/guideOpener';
 import { copyToClipboard } from '../../utils/clipboard';
 import { showToast } from '../common/ToastContainer';
 
@@ -596,12 +597,77 @@ function AccountRowContent({
     );
 
     const renderModelsCell = () => {
+        const isTos = isAccountTosViolation(account);
         const validationUrl = extractAccountValidationUrl(account);
         const hasValidationUrl = Boolean(validationUrl);
 
         return (
             <td key="models" className="px-2 py-1 align-middle min-w-[260px]">
-                {account.validation_blocked ? (
+                {isTos ? (
+                    <div className="flex items-center justify-between gap-2.5 py-1.5 px-3 rounded-xl border bg-red-500/10 dark:bg-red-900/20 border-red-500/30 dark:border-red-500/30 shadow-sm animate-fadeIn">
+                        <div className="flex items-center gap-2 min-w-0">
+                            <div className="p-1 rounded-lg bg-red-500/20 text-red-600 dark:text-red-400 shrink-0">
+                                <AlertTriangle className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="text-xs font-bold text-red-800 dark:text-red-300 truncate">
+                                {t('accounts.tos_violation_title', 'Suspended: Google Terms of Service')}
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                            {hasValidationUrl ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            openExternalUrl(validationUrl!);
+                                        }}
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-sm shadow-red-500/20 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                                        title={t('accounts.submit_appeal_tooltip', 'Open Google official appeal form in browser')}
+                                    >
+                                        <ExternalLink className="w-3.5 h-3.5" />
+                                        <span>{t('accounts.submit_appeal_btn', 'Submit Appeal')}</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            copyToClipboard(validationUrl!);
+                                            showToast(t('accounts.appeal_url_copied', 'Appeal link copied to clipboard'), 'success');
+                                        }}
+                                        className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-red-500/20 rounded-lg transition-colors cursor-pointer shrink-0"
+                                        title={t('accounts.copy_appeal_url', 'Copy Appeal Link')}
+                                    >
+                                        <Copy className="w-3.5 h-3.5" />
+                                    </button>
+                                </>
+                            ) : null}
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (onRefresh) onRefresh();
+                                }}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-red-700 dark:text-red-300 hover:bg-red-500/20 rounded-lg border border-red-500/40 transition-all duration-200 active:scale-95 cursor-pointer shrink-0"
+                                title={t('accounts.recheck_tooltip', 'Clear block status and re-check account quota')}
+                            >
+                                <RefreshCw className={cn("w-3 h-3", isRefreshing && "animate-spin")} />
+                                <span>{t('accounts.recheck_btn', 'Re-check')}</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onViewError();
+                                }}
+                                className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:underline shrink-0 cursor-pointer"
+                                title={t('accounts.view_error_details_tooltip', 'View full error details')}
+                            >
+                                <span>{t('accounts.view_error', 'View Error')}</span>
+                            </button>
+                        </div>
+                    </div>
+                ) : account.validation_blocked ? (
                     <div className="flex items-center justify-between gap-2.5 py-1.5 px-3 rounded-xl border bg-amber-500/10 dark:bg-amber-900/20 border-amber-500/30 dark:border-amber-500/30 shadow-sm animate-fadeIn">
                         <div className="flex items-center gap-2 min-w-0">
                             <div className="p-1 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 shrink-0">

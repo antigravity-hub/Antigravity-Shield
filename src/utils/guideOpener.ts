@@ -82,6 +82,33 @@ export function cleanValidationUrl(url: string): string {
 }
 
 /**
+ * Check if an account error corresponds to a Google Terms of Service suspension / appeal requirement
+ */
+export function isAccountTosViolation(account: {
+    validation_blocked_reason?: string;
+    disabled_reason?: string;
+    proxy_disabled_reason?: string;
+    validation_url?: string;
+    quota?: { forbidden_reason?: string; disabled_reason?: string; error_details?: string };
+} | null | undefined): boolean {
+    if (!account) return false;
+    const combined = [
+        account.validation_blocked_reason,
+        account.disabled_reason,
+        account.proxy_disabled_reason,
+        account.validation_url,
+        account.quota?.forbidden_reason,
+        account.quota?.disabled_reason,
+        (account.quota as any)?.error_details,
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    return combined.includes('tos_violation') ||
+        combined.includes('terms of service') ||
+        combined.includes('appeal_url') ||
+        combined.includes('forms.gle');
+}
+
+/**
  * Extract a direct Google verification / appeal URL from an account or its error payloads
  */
 export function extractAccountValidationUrl(account: {
@@ -89,7 +116,7 @@ export function extractAccountValidationUrl(account: {
     validation_blocked_reason?: string;
     disabled_reason?: string;
     proxy_disabled_reason?: string;
-    quota?: { forbidden_reason?: string };
+    quota?: { forbidden_reason?: string; disabled_reason?: string; error_details?: string };
 } | null | undefined): string | null {
     if (!account) return null;
 
@@ -100,7 +127,7 @@ export function extractAccountValidationUrl(account: {
         }
     }
 
-    const raw = account.validation_blocked_reason || account.disabled_reason || account.quota?.forbidden_reason || account.proxy_disabled_reason || '';
+    const raw = account.validation_blocked_reason || account.disabled_reason || account.quota?.forbidden_reason || account.proxy_disabled_reason || account.quota?.disabled_reason || (account.quota as any)?.error_details || '';
     if (!raw) return null;
 
     const trimmed = raw.trim();

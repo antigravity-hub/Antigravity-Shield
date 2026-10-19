@@ -127,22 +127,10 @@ pub fn load_app_config() -> Result<AppConfig, String> {
         }
     }
 
-    // [AUTO-WARM DEFAULT ENABLED] Ensure scheduled_warmup is enabled by default across updates
-    if let Some(warmup) = v.get_mut("scheduled_warmup") {
-        if let Some(warmup_obj) = warmup.as_object_mut() {
-            if let Some(enabled_val) = warmup_obj.get("enabled") {
-                if !enabled_val.as_bool().unwrap_or(false) {
-                    warmup_obj.insert("enabled".to_string(), serde_json::Value::Bool(true));
-                    modified = true;
-                }
-            } else {
-                warmup_obj.insert("enabled".to_string(), serde_json::Value::Bool(true));
-                modified = true;
-            }
-        }
-    } else {
+    // Ensure scheduled_warmup exists, default to disabled to prevent automated account abuse
+    if !v.as_object().map_or(false, |o| o.contains_key("scheduled_warmup")) {
         let mut default_warmup = serde_json::Map::new();
-        default_warmup.insert("enabled".to_string(), serde_json::Value::Bool(true));
+        default_warmup.insert("enabled".to_string(), serde_json::Value::Bool(false));
         default_warmup.insert(
             "monitored_models".to_string(),
             serde_json::json!([
