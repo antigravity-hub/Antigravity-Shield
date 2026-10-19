@@ -9,7 +9,9 @@ import {
     Sliders,
     Layers,
     Activity,
-    Lock
+    Lock,
+    AlertTriangle,
+    ShieldAlert
 } from 'lucide-react';
 import { listAccounts } from '../../services/accountService';
 import { Account, LiveLimitStatus } from '../../types/account';
@@ -93,6 +95,11 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
         max_wait_seconds: 30,
     };
 
+    const blockedAccountsCount = accounts.filter(
+        (a) => a.validation_blocked || a.disabled || a.proxy_disabled || a.quota?.is_forbidden
+    ).length;
+    const activeAccountsCount = accounts.length - blockedAccountsCount;
+
     return (
         <div className="space-y-5 animate-in fade-in duration-200">
             {/* Top Stat Row */}
@@ -102,8 +109,11 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                         <Users size={15} style={{ color: 'var(--color-accent)' }} />
                         <span>Total Accounts</span>
                     </div>
-                    <div className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                        {accounts.length}
+                    <div className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-1 flex items-baseline gap-1.5">
+                        <span>{accounts.length}</span>
+                        <span className="text-[11px] font-normal text-gray-500 dark:text-gray-400">
+                            ({activeAccountsCount} active{blockedAccountsCount > 0 ? `, ${blockedAccountsCount} suspended` : ''})
+                        </span>
                     </div>
                 </div>
 
@@ -225,6 +235,8 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {accounts.map((acc) => {
                             const isPreferred = preferredAccountId === acc.id;
+                            const isBlocked = !!(acc.validation_blocked || acc.disabled || acc.proxy_disabled || acc.quota?.is_forbidden);
+                            const blockReason = acc.validation_blocked_reason || acc.disabled_reason || acc.proxy_disabled_reason || (acc.quota?.is_forbidden ? 'Google TOS / Forbidden' : '');
                             const tier = acc.quota?.subscription_tier || 'PRO';
                             const models = acc.quota?.models || [];
 
@@ -232,14 +244,16 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                 <div
                                     key={acc.id}
                                     className={`p-4 rounded-xl border transition-all ${
-                                        isPreferred
+                                        isBlocked
+                                            ? 'bg-rose-50/10 dark:bg-rose-950/10 border-rose-500/30 dark:border-rose-900/40 opacity-75'
+                                            : isPreferred
                                             ? 'bg-emerald-50/20 dark:bg-emerald-950/20 border-emerald-500/40 shadow-sm'
                                             : 'bg-white dark:bg-[#141916] border-gray-200/70 dark:border-slate-800/80 dark:text-gray-100'
                                     }`}
                                 >
                                     <div className="flex items-start justify-between gap-2 pb-3 border-b border-gray-200/50 dark:border-base-300">
                                         <div className="space-y-0.5">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 flex-wrap">
                                                 <span className="font-semibold text-xs text-gray-900 dark:text-gray-100 truncate max-w-[200px]">
                                                     {acc.email}
                                                 </span>
@@ -253,6 +267,12 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                                 >
                                                     {tier}
                                                 </span>
+                                                {isBlocked && (
+                                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30 flex items-center gap-1">
+                                                        <ShieldAlert size={11} />
+                                                        Suspended
+                                                    </span>
+                                                )}
                                             </div>
                                             {acc.custom_label && (
                                                 <div className="text-[10px] text-gray-400">{acc.custom_label}</div>
@@ -260,19 +280,33 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                         </div>
 
                                         <button
-                                            onClick={() => onSetPreferredAccount(isPreferred ? null : acc.id)}
+                                            disabled={isBlocked}
+                                            onClick={() => !isBlocked && onSetPreferredAccount(isPreferred ? null : acc.id)}
                                             className={`px-2 py-1 rounded text-[11px] font-medium transition-colors ${
-                                                isPreferred
+                                                isBlocked
+                                                    ? 'opacity-40 cursor-not-allowed bg-gray-100 dark:bg-base-200 text-gray-400 border border-gray-200 dark:border-base-300'
+                                                    : isPreferred
                                                     ? 'bg-emerald-600 text-white'
                                                     : 'bg-gray-100 dark:bg-base-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-base-300 hover:bg-gray-200 dark:hover:bg-base-300'
                                             }`}
                                         >
-                                            {isPreferred ? 'Pinned Preferred' : 'Pin Route'}
+                                            {isBlocked ? 'Blocked' : isPreferred ? 'Pinned Preferred' : 'Pin Route'}
                                         </button>
                                     </div>
 
+                                    {/* Suspended Notice Banner */}
+                                    {isBlocked && (
+                                        <div className="mt-2.5 p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-[11px] text-rose-600 dark:text-rose-400 flex items-start gap-1.5">
+                                            <AlertTriangle size={13} className="shrink-0 mt-0.5 text-rose-500" />
+                                            <div className="leading-tight">
+                                                <span className="font-semibold">Isolated from rotation: </span>
+                                                <span>{blockReason || 'Account suspended by Google (Appeal required)'}</span>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* Quota Progress Bars */}
-                                    <div className="pt-3 space-y-2.5">
+                                    <div className={`pt-3 space-y-2.5 ${isBlocked ? 'opacity-40' : ''}`}>
                                         {models.length === 0 ? (
                                             <div className="text-[11px] text-gray-400 py-1">No detailed quota stats received yet.</div>
                                         ) : (

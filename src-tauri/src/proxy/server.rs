@@ -985,9 +985,19 @@ impl AxumServer {
                 admin_auth_middleware,
             ));
 
+        let root_account_routes = Router::new()
+            .route("/switch", post(admin_switch_account))
+            .route("/refresh", post(admin_refresh_all_quotas))
+            .route("/:accountId/refresh", post(admin_refresh_account_by_id))
+            .layer(axum::middleware::from_fn_with_state(
+                state.clone(),
+                admin_auth_middleware,
+            ));
+
         let app = Router::new()
             .nest("/api", admin_routes)
             .nest("/toolkit", toolkit_routes_with_auth)
+            .nest("/accounts", root_account_routes)
             .route("/switch", post(admin_switch_account))
             .merge(proxy_routes)
             // 公开路由 (无需鉴权)
