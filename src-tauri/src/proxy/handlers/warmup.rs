@@ -137,14 +137,14 @@ pub async fn handle_warmup(
             }
         }
     } else {
-        // Gemini 模型：使用 wrap_request
+        // Gemini 模型：使用 wrap_request 并通过模型注册表解析有效模型名称
         let session_id = format!(
             "warmup_{}_{}",
             chrono::Utc::now().timestamp_millis(),
             &uuid::Uuid::new_v4().to_string()[..8]
         );
 
-        let effective_model = req.model.clone();
+        let effective_model = crate::proxy::common::model_mapping::map_claude_model_to_gemini(&req.model);
 
         let base_request = if is_image {
             json!({
@@ -158,18 +158,12 @@ pub async fn handle_warmup(
                 "session_id": session_id
             })
         } else {
-            let warmup_prompt = "Write a comprehensive and detailed technical analysis of modern distributed systems design. \
-                Compare event-driven architecture, CQRS, and saga patterns for managing distributed transactions across microservices. \
-                Detail failure modes, consensus algorithms (Raft and Paxos), idempotency strategies, and practical considerations \
-                for achieving high availability and fault tolerance in high-throughput enterprise platforms. Include architectural \
-                trade-offs and concrete implementation recommendations.";
-
             json!({
                 "model": effective_model,
-                "contents": [{"role": "user", "parts": [{"text": warmup_prompt}]}],
+                "contents": [{"role": "user", "parts": [{"text": "Hello"}]}],
                 "generationConfig": {
-                    "temperature": 0.2,
-                    "maxOutputTokens": 2048
+                    "temperature": 0.0,
+                    "maxOutputTokens": 16
                 },
                 "session_id": session_id
             })
