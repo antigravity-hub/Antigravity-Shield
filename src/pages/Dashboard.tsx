@@ -1,5 +1,5 @@
 import { save } from '@tauri-apps/plugin-dialog';
-import { AlertTriangle, ArrowRight, Bot, Download, RefreshCw, Sparkles, Users, ShieldCheck, Zap } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Bot, Download, RefreshCw, Sparkles, Users, ShieldCheck, Zap, BrainCircuit } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +37,57 @@ function Dashboard() {
     } = useAccountStore();
     const { config, loadConfig, toggleAutoWarm } = useConfigStore();
     const isAutoWarmEnabled = config?.scheduled_warmup?.enabled ?? true;
+    const [argonOverride, setArgonOverride] = useState<{ enabled: boolean; tier: string }>({ enabled: false, tier: 'high' });
+
+    useEffect(() => {
+        const loadArgon = async () => {
+            try {
+                if (isTauri()) {
+                    const res = await invoke<any>('get_argon_override');
+                    if (res) {
+                        setArgonOverride({ enabled: res.enabled, tier: res.tier || 'high' });
+                    }
+                } else if (config?.proxy?.ide_argon_override) {
+                    setArgonOverride(config.proxy.ide_argon_override);
+                }
+            } catch (e) {
+                console.error('Failed to load argon override in dashboard', e);
+            }
+        };
+        loadArgon();
+    }, [config]);
+
+    const handleCycleArgon = async () => {
+        try {
+            let nextEnabled = argonOverride.enabled;
+            let nextTier = argonOverride.tier;
+
+            if (!argonOverride.enabled) {
+                nextEnabled = true;
+                nextTier = 'high';
+            } else if (argonOverride.tier === 'high') {
+                nextTier = 'medium';
+            } else if (argonOverride.tier === 'medium') {
+                nextTier = 'low';
+            } else {
+                nextEnabled = false;
+                nextTier = 'high';
+            }
+
+            setArgonOverride({ enabled: nextEnabled, tier: nextTier });
+            if (isTauri()) {
+                await invoke('set_argon_override', { enabled: nextEnabled, tier: nextTier });
+            }
+            showToast(
+                nextEnabled
+                    ? `Gemini 4 Argon Brain: ${nextTier.toUpperCase()}`
+                    : 'Argon Brain disabled (Native Flash passthrough)',
+                'info'
+            );
+        } catch (err) {
+            showToast(String(err), 'error');
+        }
+    };
 
     useEffect(() => {
         fetchAccounts();
@@ -223,6 +274,23 @@ function Dashboard() {
 
                     <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
                         <button
+                            onClick={handleCycleArgon}
+                            className={cn(
+                                "px-3.5 py-2 text-xs font-bold rounded-xl transition-all duration-200 flex items-center gap-2 border cursor-pointer active:scale-95 shadow-sm",
+                                argonOverride.enabled
+                                    ? "bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.15)]"
+                                    : "bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/10"
+                            )}
+                            title={argonOverride.enabled ? `Gemini 4 Argon Brain: ${argonOverride.tier.toUpperCase()} (Click to cycle tier/off)` : "Enable Gemini 4 Argon Brain Override"}
+                        >
+                            <BrainCircuit className={cn("w-3.5 h-3.5", argonOverride.enabled ? "text-purple-500 animate-pulse" : "text-slate-400")} />
+                            <span className="hidden sm:inline">Argon 4: {argonOverride.enabled ? argonOverride.tier.toUpperCase() : 'OFF'}</span>
+                            <span className={cn(
+                                "w-2 h-2 rounded-full",
+                                argonOverride.enabled ? "bg-purple-500 animate-pulse shadow-[0_0_6px_rgba(168,85,247,0.8)]" : "bg-slate-400"
+                            )} />
+                        </button>
+                        <button
                             onClick={async () => {
                                 try {
                                     await toggleAutoWarm();
@@ -271,6 +339,94 @@ function Dashboard() {
 
                 {/* 2. Verification Required Banner (Alert state) */}
                 <VerificationRequiredBanner accounts={accounts} />
+
+                {/* 2.5. Gemini 4 Argon Brain Quick Control Banner */}
+                <div className={cn(
+                    "p-4 rounded-2xl border transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-xl",
+                    argonOverride.enabled
+                        ? "bg-purple-500/[0.07] border-purple-500/30 dark:bg-purple-950/20 shadow-[0_0_24px_rgba(168,85,247,0.1)]"
+                        : "bg-white/80 dark:bg-[#0c100e]/80 border-slate-200/80 dark:border-white/10"
+                )}>
+                    <div className="flex items-center gap-3.5">
+                        <div
+                            className={cn(
+                                "w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 transition-transform duration-300",
+                                argonOverride.enabled
+                                    ? "bg-purple-500/20 border-purple-500/40 text-purple-600 dark:text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.3)] scale-105"
+                                    : "bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-400"
+                            )}
+                        >
+                            <BrainCircuit className={cn("w-5 h-5", argonOverride.enabled ? "animate-pulse" : "")} />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                    Gemini 4 Argon Brain Override
+                                </h3>
+                                <span
+                                    className={cn(
+                                        "text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border",
+                                        argonOverride.enabled
+                                            ? "bg-purple-500/20 text-purple-600 dark:text-purple-300 border-purple-500/30"
+                                            : "bg-slate-100 dark:bg-white/5 text-slate-400 border-slate-200 dark:border-white/10"
+                                    )}
+                                >
+                                    {argonOverride.enabled ? `ACTIVE (${argonOverride.tier.toUpperCase()})` : 'PASSTHROUGH'}
+                                </span>
+                            </div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
+                                {argonOverride.enabled
+                                    ? `Antigravity IDE Flash chat traffic is intercepted and redirected into Gemini 4 Argon (${argonOverride.tier === 'high' ? '24.5k deep reasoning tokens' : argonOverride.tier === 'medium' ? '4k reasoning tokens' : '1k reasoning tokens'}).`
+                                    : 'Native Flash pass-through. Click to hijack Antigravity IDE Flash into Gemini 4 Argon.'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                        {argonOverride.enabled && (
+                            <div className="flex items-center gap-1 bg-purple-500/10 dark:bg-purple-950/40 p-1 rounded-xl border border-purple-500/20">
+                                {(['high', 'medium', 'low'] as const).map(tier => (
+                                    <button
+                                        key={tier}
+                                        onClick={async () => {
+                                            setArgonOverride({ enabled: true, tier });
+                                            if (isTauri()) {
+                                                await invoke('set_argon_override', { enabled: true, tier });
+                                            }
+                                            showToast(`Argon Reasoning Tier: ${tier.toUpperCase()}`, 'info');
+                                        }}
+                                        className={cn(
+                                            "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer",
+                                            argonOverride.tier === tier
+                                                ? "bg-purple-600 text-white shadow-sm"
+                                                : "text-purple-700 dark:text-purple-300 hover:bg-purple-500/20"
+                                        )}
+                                    >
+                                        {tier === 'high' ? 'HIGH (24.5k)' : tier === 'medium' ? 'MED (4k)' : 'LOW (1k)'}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        <button
+                            onClick={handleCycleArgon}
+                            className={cn(
+                                "px-3.5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 border shadow-sm",
+                                argonOverride.enabled
+                                    ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-500"
+                                    : "bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10"
+                            )}
+                        >
+                            {argonOverride.enabled ? 'Enabled ✨' : 'Enable Argon'}
+                        </button>
+                        <button
+                            onClick={() => navigate('/proxy')}
+                            className="p-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                            title="Go to full Proxy Routing"
+                        >
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
 
                 {/* 3. Hero Bento: Current Account & Best Candidates Twin Cards */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">

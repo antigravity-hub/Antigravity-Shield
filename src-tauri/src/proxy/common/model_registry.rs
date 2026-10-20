@@ -29,6 +29,11 @@ impl ModelFamily {
     pub fn classify(name: &str) -> (Self, u32) {
         let lower = name.trim().to_lowercase();
 
+        // 0. Argon Reasoning Family (Pass-through directly, do NOT hijack into Flash)
+        if lower.contains("argon") {
+            return (ModelFamily::Unknown, 0);
+        }
+
         // 1. Image models
         if lower.contains("image") || lower.contains("imagen") {
             if lower.contains("flash") {
@@ -67,7 +72,9 @@ impl ModelFamily {
 
         // 5. Gemini Flash Family (including OpenAI light aliases: gpt-4o-mini, gpt-3.5)
         if lower.contains("flash")
-            || lower.contains("mini")
+            || lower.contains("gpt-4o-mini")
+            || lower.contains("-mini")
+            || lower.ends_with("-mini")
             || lower.starts_with("gpt-3.5")
             || lower.starts_with("gemini-flash")
         {
