@@ -13,10 +13,6 @@ import {
     Code,
     Sparkles,
     Terminal,
-    Cpu,
-    Zap,
-    Flame,
-    Rocket
 } from 'lucide-react';
 import { AppConfig, ProxyConfig } from '../../types/config';
 
@@ -60,7 +56,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
     onResetMapping,
     onUpdateCustomMapping,
     onRemoveCustomMapping,
-    onUpdateProxyConfig,
+    // onUpdateProxyConfig,
     selectedProtocol,
     onSelectProtocol,
     selectedModelId,
@@ -77,14 +73,10 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
     const [editingValue, setEditingValue] = useState('');
 
     const customMapping = appConfig?.proxy?.custom_mapping || {};
-    const argonOverride = appConfig?.proxy?.ide_argon_override || { enabled: false, tier: 'high' };
 
     // Standard built-in normalized aliases
     const builtInAliases = [
-        { from: 'gemini-4-argon-high', to: 'gemini-4-argon', note: 'High capability Argon tier' },
-        { from: 'gemini-4-argon-medium', to: 'gemini-4-argon', note: 'Medium latency Argon tier' },
-        { from: 'gemini-4-argon-low', to: 'gemini-4-argon', note: 'Low latency Argon tier' },
-        { from: 'gemini-4-pro', to: 'gemini-4-argon', note: 'Redirects exhausted Pro to Argon' },
+        { from: 'gemini-4-pro', to: 'gemini-3.1-pro', note: 'Standard Pro fallback' },
         { from: 'gemini-3.5-flash', to: 'gemini-3.8-flash', note: 'Deprecated Google fallback' },
         { from: 'gemini-3.8-flash', to: 'gemini-3-flash', note: 'Standard Cursor / Windsurf alias' },
         { from: 'gemini-3.8-flash-medium', to: 'gemini-3-flash', note: 'Medium latency tier' },
@@ -120,173 +112,6 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
 
     return (
         <div className="space-y-5 animate-in fade-in duration-200">
-            {/* ⚡ IDE Gemini 4 Argon Brain Override Hero Card */}
-            <div
-                className="relative overflow-hidden rounded-2xl p-5 border transition-all duration-300 shadow-sm"
-                style={{
-                    borderColor: argonOverride.enabled ? 'var(--color-accent)' : 'rgba(148, 163, 184, 0.2)',
-                    background: argonOverride.enabled
-                        ? 'linear-gradient(135deg, var(--color-badge-bg) 0%, rgba(12, 16, 14, 0.02) 100%)'
-                        : undefined,
-                }}
-            >
-                {/* Background ambient glow if active */}
-                {argonOverride.enabled && (
-                    <div
-                        className="absolute -right-16 -top-16 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none"
-                        style={{ backgroundColor: 'var(--color-accent)' }}
-                    />
-                )}
-
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="space-y-1.5 max-w-xl">
-                        <div className="flex items-center gap-2">
-                            <div
-                                className="p-2 rounded-xl border flex items-center justify-center shadow-sm"
-                                style={{
-                                    backgroundColor: 'var(--color-badge-bg)',
-                                    borderColor: 'var(--color-badge-border)',
-                                    color: 'var(--color-accent)',
-                                }}
-                            >
-                                <Sparkles size={18} />
-                            </div>
-                            <div>
-                                <div className="flex items-center gap-2">
-                                    <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                                        IDE Argon Brain Override
-                                        <span
-                                            className="text-[10px] font-mono px-2 py-0.5 rounded-full border uppercase tracking-wider font-semibold"
-                                            style={{
-                                                backgroundColor: 'var(--color-badge-bg)',
-                                                borderColor: 'var(--color-badge-border)',
-                                                color: 'var(--color-accent)',
-                                            }}
-                                        >
-                                            Gemini 4 Argon
-                                        </span>
-                                    </h3>
-                                </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Route Antigravity IDE Flash chat traffic seamlessly into Gemini 4 Argon with configurable deep reasoning.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Master Switch Toggle */}
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 text-xs font-medium">
-                            <span
-                                className={`w-2 h-2 rounded-full ${
-                                    argonOverride.enabled ? 'animate-pulse bg-emerald-500' : 'bg-gray-400'
-                                }`}
-                            />
-                            <span className={argonOverride.enabled ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-500'}>
-                                {argonOverride.enabled ? 'Brain Hijack Active' : 'Native Pass-through'}
-                            </span>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const newEnabled = !argonOverride.enabled;
-                                onUpdateProxyConfig({
-                                    ide_argon_override: {
-                                        enabled: newEnabled,
-                                        tier: argonOverride.tier || 'high',
-                                    },
-                                });
-                                if ((window as any).__TAURI__?.core?.invoke) {
-                                    (window as any).__TAURI__.core.invoke('set_argon_override', {
-                                        enabled: newEnabled,
-                                        tier: argonOverride.tier || 'high',
-                                    }).catch(() => {});
-                                }
-                            }}
-                            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                argonOverride.enabled ? '' : 'bg-gray-300 dark:bg-slate-700'
-                            }`}
-                            style={argonOverride.enabled ? { backgroundColor: 'var(--color-primary-btn)' } : undefined}
-                        >
-                            <span
-                                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                    argonOverride.enabled ? 'translate-x-5' : 'translate-x-0'
-                                }`}
-                            />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Reasoning Tier Selectors (Visible when enabled) */}
-                {argonOverride.enabled && (
-                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300 font-medium">
-                            <Cpu size={14} style={{ color: 'var(--color-accent)' }} />
-                            <span>Target Reasoning Tier:</span>
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-2">
-                            {[
-                                {
-                                    id: 'high',
-                                    label: 'High (24.5k)',
-                                    budget: '24,576 Tokens',
-                                    desc: 'Deep Architectural Coding',
-                                    icon: Rocket,
-                                },
-                                {
-                                    id: 'medium',
-                                    label: 'Medium (4k)',
-                                    budget: '4,000 Tokens',
-                                    desc: 'Balanced Daily Work',
-                                    icon: Zap,
-                                },
-                                {
-                                    id: 'low',
-                                    label: 'Low (1k)',
-                                    budget: '1,024 Tokens',
-                                    desc: 'Fast Prototyping',
-                                    icon: Flame,
-                                },
-                            ].map((tierItem) => {
-                                const isSelected = (argonOverride.tier || 'high').toLowerCase() === tierItem.id;
-                                const IconComp = tierItem.icon;
-                                return (
-                                    <button
-                                        key={tierItem.id}
-                                        type="button"
-                                        onClick={() => {
-                                            onUpdateProxyConfig({
-                                                ide_argon_override: {
-                                                    enabled: true,
-                                                    tier: tierItem.id as 'high' | 'medium' | 'low',
-                                                },
-                                            });
-                                            if ((window as any).__TAURI__?.core?.invoke) {
-                                                (window as any).__TAURI__.core.invoke('set_argon_override', {
-                                                    enabled: true,
-                                                    tier: tierItem.id,
-                                                }).catch(() => {});
-                                            }
-                                        }}
-                                        className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
-                                            isSelected
-                                                ? 'text-white shadow-sm'
-                                                : 'bg-gray-100 dark:bg-[#141916] text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#1a201c]'
-                                        }`}
-                                        style={isSelected ? { backgroundColor: 'var(--color-primary-btn)' } : undefined}
-                                        title={`${tierItem.desc} • ${tierItem.budget}`}
-                                    >
-                                        <IconComp size={13} />
-                                        <span>{tierItem.label}</span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
-            </div>
-
             {/* Presets Toolbar Bento */}
             <div className="bg-white dark:bg-[#0c100e] rounded-2xl p-5 border border-gray-100 dark:border-slate-800/80 shadow-sm space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">

@@ -164,31 +164,6 @@ pub fn resolve_model_route(
         return forwarded.value().clone();
     }
 
-    // 0.5. IDE Gemini 4 Argon Brain Override
-    // Automatically routes IDE Flash chat requests to Gemini 4 Argon with configurable thinking tier
-    let argon_cfg = crate::proxy::config::get_argon_override_config();
-    if argon_cfg.enabled {
-        let lower = original_model.to_lowercase();
-        let is_flash_or_ide = lower.contains("flash")
-            || lower.contains("placeholder_m31")
-            || (lower.starts_with("gemini-3") && !lower.contains("pro") && !lower.contains("image"))
-            || lower.starts_with("gemini-2.5-flash");
-        let is_image = lower.contains("image");
-
-        if is_flash_or_ide && !is_image {
-            let target_model = match argon_cfg.tier.to_lowercase().as_str() {
-                "low" => "gemini-4-argon-low",
-                "medium" => "gemini-4-argon-medium",
-                _ => "gemini-4-argon-high",
-            };
-            crate::modules::logger::log_info(&format!(
-                "[Argon-Brain-Hijack] Intercepted IDE chat model '{}' -> '{}' (Tier: {})",
-                original_model, target_model, argon_cfg.tier
-            ));
-            return target_model.to_string();
-        }
-    }
-
     // 1. 精确匹配 (次高优先级)
     if let Some(target) = custom_mapping.get(original_model) {
         crate::modules::logger::log_info(&format!(
@@ -478,51 +453,5 @@ mod tests {
         assert_eq!(resolve_model_route("random-model", &custom), "catch-all");
         // Multi-wildcard: "a*b*c" (3)
         assert_eq!(resolve_model_route("a-test-b-foo-c", &custom), "multi-wild");
-    }
-
-    #[test]
-    fn test_argon_ide_brain_override() {
-        let custom = HashMap::new();
-
-        // 1. Initially disabled
-        crate::proxy::config::update_argon_override_config(crate::proxy::config::IdeArgonOverrideConfig {
-            enabled: false,
-            tier: "high".to_string(),
-        });
-        assert_eq!(resolve_model_route("gemini-3.8-flash", &custom), "gemini-3-flash");
-
-        // 2. Enable High tier
-        crate::proxy::config::update_argon_override_config(crate::proxy::config::IdeArgonOverrideConfig {
-            enabled: true,
-            tier: "high".to_string(),
-        });
-        assert_eq!(resolve_model_route("gemini-3.8-flash", &custom), "gemini-4-argon-high");
-        assert_eq!(resolve_model_route("gemini-3.8-flash-medium", &custom), "gemini-4-argon-high");
-        assert_eq!(resolve_model_route("gemini-3-flash", &custom), "gemini-4-argon-high");
-        assert_eq!(resolve_model_route("MODEL_PLACEHOLDER_M319", &custom), "gemini-4-argon-high");
-
-        // 3. Switch to Medium tier
-        crate::proxy::config::update_argon_override_config(crate::proxy::config::IdeArgonOverrideConfig {
-            enabled: true,
-            tier: "medium".to_string(),
-        });
-        assert_eq!(resolve_model_route("gemini-3.8-flash", &custom), "gemini-4-argon-medium");
-
-        // 4. Switch to Low tier
-        crate::proxy::config::update_argon_override_config(crate::proxy::config::IdeArgonOverrideConfig {
-            enabled: true,
-            tier: "low".to_string(),
-        });
-        assert_eq!(resolve_model_route("gemini-3.8-flash", &custom), "gemini-4-argon-low");
-
-        // 5. Image models must NOT be hijacked
-        assert_eq!(resolve_model_route("gemini-3.1-flash-image", &custom), "gemini-3.1-flash-image");
-
-        // 6. Reset back to disabled
-        crate::proxy::config::update_argon_override_config(crate::proxy::config::IdeArgonOverrideConfig {
-            enabled: false,
-            tier: "high".to_string(),
-        });
-        assert_eq!(resolve_model_route("gemini-3.8-flash", &custom), "gemini-3-flash");
     }
 }
