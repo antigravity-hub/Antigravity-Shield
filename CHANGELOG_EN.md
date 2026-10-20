@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.2.0 (2026-10-20)**:
+        -   **Gemini 4 Argon Support & Dynamic Hub Identity**: Dynamically synthesizes official Hub client metadata for upstream Google endpoints, unlocking the complete 38-model catalog (including `gemini-4-argon` and tier variants). Implemented runtime thinking budget floor clamp (>= 1024) to eliminate upstream Google 400 errors.
+        -   **In-Place 503 Overload Self-Healing**: Resilient retry state machine automatically clamps thinking budget to 4000 upon receiving upstream 503/529 overload errors and retries in-place on the same account, preserving 100% prefix cache continuity.
+        -   **Agent Toolchain Probes & Context Introspection**: Added standard `/props`, `/v1/props`, `/version`, and `/v1/version` endpoints matching llama.cpp server specification for Hermes Agent and vLLM compatibility, alongside proprietary `/shield/context` telemetry.
+        -   **Streaming State Machine Finish Guard**: Guaranteed terminal chunks with explicit `finish_reason` in OpenAI streaming transformer for flawless Cline and OpenCode agent integration.
     *   **v6.1.1 (2026-10-16)**:
         -   **Quota Warmup Resilience & Production Endpoint Consolidation**: Eradicated deprecated daily-cloudcode sandbox endpoint that triggered frequent TCP connection resets. Dynamically prioritizes high-tier Flash models (`gemini-2.5-flash`, `gemini-3.0-flash`, `gemini-2.5-pro`) for account quota warmups, guaranteeing stable 5-hour rolling reset deductions and eliminating false-positive warmup flapping.
         -   **Ecosystem Modals Transition & React Portal Polish**: Properly nested `AnimatePresence` inside `createPortal` across `McpTab`, `RulesTab`, and `SkillsTab` dialogs, fixing exit animations and unmounting glitches when closing modals inside transformed tab layouts.
