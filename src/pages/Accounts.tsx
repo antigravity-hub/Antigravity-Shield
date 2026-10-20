@@ -3,6 +3,7 @@
 import {
   ArrowUpDown,
   Bot,
+  Calendar,
   Clock,
   Download,
   LayoutGrid,
@@ -88,7 +89,14 @@ function Accounts() {
     const saved = localStorage.getItem('accounts_view_mode');
     return (saved === 'list' || saved === 'grid') ? saved : 'list';
   });
-  const quotaWindow: QuotaWindow = 'weekly';
+  const [quotaWindow, setQuotaWindow] = useState<QuotaWindow>(() => {
+    const saved = localStorage.getItem('accounts_quota_window');
+    return (saved === '5h' || saved === 'weekly') ? saved : '5h';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('accounts_quota_window', quotaWindow);
+  }, [quotaWindow]);
 
   const [quotaProvider, setQuotaProvider] = useState<QuotaProvider>(() => {
     const saved = localStorage.getItem('accounts_quota_provider');
@@ -1075,8 +1083,41 @@ function Accounts() {
             </button>
           </div>
 
-          {/* 模型提供商切换 (Gemini / Claude) */}
+          {/* 配额窗口与模型族切换控制组 (5H / Weekly & Gemini / Claude) */}
           <div className="flex gap-1 bg-gray-100/80 dark:bg-base-200 p-1 rounded-xl shrink-0 items-center border border-gray-200/50 dark:border-white/5">
+            {/* 5H 与 Weekly 窗口切换 */}
+            <div className="flex items-center gap-0.5">
+              <button
+                className={cn(
+                  "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 shrink-0",
+                  quotaWindow === '5h'
+                    ? "bg-white dark:bg-base-100 shadow-sm ring-1 ring-black/5"
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
+                )}
+                style={quotaWindow === '5h' ? { color: 'var(--color-accent)' } : undefined}
+                onClick={() => setQuotaWindow('5h')}
+                title={t('accounts.quota_window_5h', '5-Hour Rolling Quota')}
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>5H</span>
+              </button>
+              <button
+                className={cn(
+                  "px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1 shrink-0",
+                  quotaWindow === 'weekly'
+                    ? "bg-white dark:bg-base-100 shadow-sm ring-1 ring-black/5"
+                    : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-base-content hover:bg-white/40"
+                )}
+                style={quotaWindow === 'weekly' ? { color: 'var(--color-accent)' } : undefined}
+                onClick={() => setQuotaWindow('weekly')}
+                title={t('accounts.quota_window_weekly', '7-Day Weekly Quota')}
+              >
+                <Calendar className="w-3.5 h-3.5" />
+                <span>{t('accounts.quota_window_weekly_short', 'Weekly')}</span>
+              </button>
+            </div>
+
+            <div className="w-px h-3.5 bg-gray-300 dark:bg-gray-700/80 mx-0.5 shrink-0" />
             {/* Gemini / Claude 模型提供商切换 */}
             <div className="flex items-center gap-0.5">
               <button
