@@ -12,6 +12,10 @@ export interface CanonicalFamilyDto {
 
 const ALIAS_TO_CANONICAL: Record<string, { id: string; name: string; group: string }> = {
     // Gemini 4
+    'gemini-4-argon': { id: 'gemini-4-argon', name: 'Gemini 4 Argon', group: 'Gemini 4' },
+    'gemini-4-argon-high': { id: 'gemini-4-argon-high', name: 'Gemini 4 Argon High', group: 'Gemini 4' },
+    'gemini-4-argon-medium': { id: 'gemini-4-argon-medium', name: 'Gemini 4 Argon Medium', group: 'Gemini 4' },
+    'gemini-4-argon-low': { id: 'gemini-4-argon-low', name: 'Gemini 4 Argon Low', group: 'Gemini 4' },
     'gemini-4-flash': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },
     'gemini-4.0-flash': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },
     'gemini-4-flash-high': { id: 'gemini-4-flash', name: 'Gemini 4 Flash', group: 'Gemini 4' },

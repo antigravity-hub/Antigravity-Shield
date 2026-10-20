@@ -28,6 +28,46 @@ export interface ModelConfig {
  */
 export const MODEL_CONFIG: Record<string, ModelConfig> = {
     // Gemini 4.x 系列
+    'gemini-4-argon': {
+        label: 'Gemini 4 Argon',
+        shortLabel: 'G4 Argon',
+        protectedKey: 'gemini-pro',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.pro_high',
+        i18nDescKey: 'proxy.model.pro_high',
+        group: 'Gemini 4',
+        tags: ['argon', 'thinking'],
+    },
+    'gemini-4-argon-high': {
+        label: 'Gemini 4 Argon High',
+        shortLabel: 'G4 Argon High',
+        protectedKey: 'gemini-pro',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.pro_high',
+        i18nDescKey: 'proxy.model.pro_high',
+        group: 'Gemini 4',
+        tags: ['argon', 'thinking'],
+    },
+    'gemini-4-argon-medium': {
+        label: 'Gemini 4 Argon Medium',
+        shortLabel: 'G4 Argon Med',
+        protectedKey: 'gemini-pro',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.pro_high',
+        i18nDescKey: 'proxy.model.pro_high',
+        group: 'Gemini 4',
+        tags: ['argon', 'thinking'],
+    },
+    'gemini-4-argon-low': {
+        label: 'Gemini 4 Argon Low',
+        shortLabel: 'G4 Argon Low',
+        protectedKey: 'gemini-pro',
+        Icon: Gemini.Color,
+        i18nKey: 'proxy.model.pro_high',
+        i18nDescKey: 'proxy.model.pro_high',
+        group: 'Gemini 4',
+        tags: ['argon', 'thinking'],
+    },
     'gemini-4-flash': {
         label: 'Gemini 4 Flash',
         shortLabel: 'G4 Flash',

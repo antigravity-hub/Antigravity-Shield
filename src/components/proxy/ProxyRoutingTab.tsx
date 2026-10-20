@@ -75,6 +75,9 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
 
     // Standard built-in normalized aliases
     const builtInAliases = [
+        { from: 'gemini-4-argon-high', to: 'gemini-4-argon', note: 'High capability Argon tier' },
+        { from: 'gemini-4-argon-medium', to: 'gemini-4-argon', note: 'Medium latency Argon tier' },
+        { from: 'gemini-4-argon-low', to: 'gemini-4-argon', note: 'Low latency Argon tier' },
         { from: 'gemini-3.8-flash', to: 'gemini-3-flash', note: 'Standard Cursor / Windsurf alias' },
         { from: 'gemini-3.8-flash-medium', to: 'gemini-3-flash', note: 'Medium latency tier' },
         { from: 'gemini-3.8-flash-high', to: 'gemini-3-flash', note: 'High capability alias' },

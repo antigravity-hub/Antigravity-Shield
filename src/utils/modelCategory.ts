@@ -9,8 +9,8 @@ export function categorizeModel(name: string): ModelCategory {
     const isGemini = n.startsWith('gemini-');
     const isImage = (isGemini && n.includes('image')) || n.startsWith('image') || n.startsWith('imagen');
     if (isImage) return n.includes('flash') ? 'gemini-flash-image' : 'gemini-pro-image';
+    if (isGemini && (n.includes('argon') || n.includes('pro'))) return 'gemini-pro';
     if (isGemini && n.includes('flash')) return 'gemini-flash';
-    if (isGemini && n.includes('pro')) return 'gemini-pro';
     if (n.includes('claude') || n.includes('opus') || n.includes('sonnet') || n.includes('haiku')) return 'claude';
     return 'other';
 }
@@ -21,6 +21,10 @@ export interface ModelDisplayNameInput {
 }
 
 const DEFAULT_MODEL_LABELS: Record<string, string> = {
+    'gemini-4-argon': 'Gemini 4 Argon',
+    'gemini-4-argon-high': 'Gemini 4 Argon High',
+    'gemini-4-argon-medium': 'Gemini 4 Argon Medium',
+    'gemini-4-argon-low': 'Gemini 4 Argon Low',
     'gemini-4-flash': 'Gemini 4 Flash',
     'gemini-4-flash-thinking': 'Gemini 4 Flash (Thinking)',
     'gemini-4-pro': 'Gemini 4 Pro',

@@ -266,6 +266,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 ))
                             ) : (
                                 <>
+                                    <option value="gemini-4-argon">Gemini 4 Argon (gemini-4-argon)</option>
                                     <option value="gemini-3.8-flash">Gemini 3.8 Flash (gemini-3.8-flash)</option>
                                     <option value="gemini-3.5-flash">Gemini 3.5 Flash (gemini-3.5-flash)</option>
                                     <option value="gemini-2.5-flash">Gemini 2.5 Flash (gemini-2.5-flash)</option>
