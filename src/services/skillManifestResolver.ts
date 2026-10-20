@@ -145,8 +145,18 @@ export function isSkillUpstreamLive(skill: SkillItem): boolean {
     return true;
   }
 
-  if (skill.rawManifestUrl && skill.rawManifestUrl.includes('raw.githubusercontent.com')) {
-    return true;
+  if (skill.rawManifestUrl) {
+    try {
+      const parsed = new URL(skill.rawManifestUrl);
+      if (
+        (parsed.protocol === 'https:' || parsed.protocol === 'http:') &&
+        (parsed.hostname === 'raw.githubusercontent.com' || parsed.hostname.endsWith('.githubusercontent.com'))
+      ) {
+        return true;
+      }
+    } catch {
+      // Invalid URL string, skip
+    }
   }
 
   return false;

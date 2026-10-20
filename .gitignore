@@ -15,6 +15,7 @@ node_modules/
 dist/
 dist-ssr/
 dist_release/
+dist-test/
 hub-export/
 .vite/
 *.local

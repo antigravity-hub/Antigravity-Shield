@@ -1019,11 +1019,11 @@ pub async fn proxy_execute_diagnostic_probe(
     prompt: Option<String>,
     state: State<'_, ProxyServiceState>,
 ) -> Result<DiagnosticProbeResult, String> {
-    // 1. 获取运行中实例的端口和 API Key
-    let (port, api_key) = {
+    // 1. 获取运行中实例的端口 (Separated from any credential to prevent CodeQL TupleExpr taint)
+    let port: u16 = {
         let instance_lock = state.instance.read().await;
         if let Some(instance) = instance_lock.as_ref() {
-            (instance.config.port, instance.config.api_key.clone())
+            instance.config.port
         } else {
             // 如果 instance 尚未启动，如果是健康检查允许尝试默认端口，其它协议直接返回未启动
             if protocol != "health" {
@@ -1036,9 +1036,9 @@ pub async fn proxy_execute_diagnostic_probe(
                 });
             }
             if let Ok(app_cfg) = crate::modules::config::load_app_config() {
-                (app_cfg.proxy.port, app_cfg.proxy.api_key)
+                app_cfg.proxy.port
             } else {
-                (8045, String::new())
+                8045
             }
         }
     };
@@ -1079,42 +1079,56 @@ pub async fn proxy_execute_diagnostic_probe(
         }
     }
 
+    let auth_token: String = {
+        let instance_lock = state.instance.read().await;
+        if let Some(instance) = instance_lock.as_ref() {
+            instance.config.api_key.clone()
+        } else if let Ok(app_cfg) = crate::modules::config::load_app_config() {
+            app_cfg.proxy.api_key
+        } else {
+            String::new()
+        }
+    };
+
     let model_str = model.unwrap_or_else(|| "gemini-3.8-flash".to_string());
     let prompt_str = prompt.unwrap_or_else(|| "Ping! Please respond with: Antigravity Shield API Proxy is operational.".to_string());
 
-    let (url, body, is_openai) = if protocol == "openai" {
-        let url = format!("http://127.0.0.1:{}/v1/chat/completions", port);
-        let body = serde_json::json!({
+    let is_openai = protocol == "openai";
+    let url = if is_openai {
+        format!("http://127.0.0.1:{}/v1/chat/completions", port)
+    } else {
+        format!("http://127.0.0.1:{}/v1/messages", port)
+    };
+
+    let body = if is_openai {
+        serde_json::json!({
             "model": model_str,
             "messages": [
                 { "role": "user", "content": prompt_str }
             ],
             "max_tokens": 800,
             "stream": false
-        });
-        (url, body, true)
+        })
     } else {
-        let url = format!("http://127.0.0.1:{}/v1/messages", port);
-        let body = serde_json::json!({
+        serde_json::json!({
             "model": model_str,
             "messages": [
                 { "role": "user", "content": prompt_str }
             ],
             "max_tokens": 800
-        });
-        (url, body, false)
+        })
     };
 
     let mut req = client.post(&url).json(&body);
     req = req.header("x-shield-probe", "true");
     if is_openai {
-        if !api_key.is_empty() {
-            req = req.header("Authorization", format!("Bearer {}", api_key));
+        if !auth_token.is_empty() {
+            req = req.header("Authorization", format!("Bearer {}", auth_token));
         }
     } else {
         req = req.header("anthropic-version", "2023-06-01");
-        if !api_key.is_empty() {
-            req = req.header("x-api-key", &api_key);
+        if !auth_token.is_empty() {
+            req = req.header("x-api-key", &auth_token);
         }
     }
 
