@@ -24,6 +24,146 @@ interface UpdateNotificationProps {
 
 type UpdateState = 'checking' | 'available' | 'downloading' | 'ready' | 'error' | 'none' | 'manual';
 
+// Helper to parse markdown inline tokens (**bold**, `code`, [link](url), *italic*) into React elements
+const renderInlineTokens = (text: string): React.ReactNode => {
+  if (!text) return text;
+  const parts: React.ReactNode[] = [];
+  const regex = /(\[.*?\]\(https?:\/\/[^\s)]+\)|\*\*.*?\*\*|`[^`]+`|\*[^*]+\*)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    const matchIndex = match.index;
+    if (matchIndex > lastIndex) {
+      parts.push(text.slice(lastIndex, matchIndex));
+    }
+    const token = match[0];
+
+    const linkMatch = token.match(/^\[(.*?)\]\((https?:\/\/[^\s)]+)\)$/);
+    if (linkMatch) {
+      parts.push(
+        <a
+          key={matchIndex}
+          href={linkMatch[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-0.5"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    } else if (token.startsWith('**') && token.endsWith('**') && token.length >= 4) {
+      parts.push(
+        <strong key={matchIndex} className="font-semibold text-gray-900 dark:text-white">
+          {token.slice(2, -2)}
+        </strong>
+      );
+    } else if (token.startsWith('`') && token.endsWith('`') && token.length >= 2) {
+      parts.push(
+        <code
+          key={matchIndex}
+          className="px-1.5 py-0.5 mx-0.5 rounded font-mono text-[11px] bg-gray-200/70 dark:bg-slate-700/80 text-blue-600 dark:text-blue-300 border border-gray-300/40 dark:border-slate-600/40"
+        >
+          {token.slice(1, -1)}
+        </code>
+      );
+    } else if (token.startsWith('*') && token.endsWith('*') && token.length >= 2) {
+      parts.push(
+        <em key={matchIndex} className="italic text-gray-700 dark:text-gray-300">
+          {token.slice(1, -1)}
+        </em>
+      );
+    } else {
+      parts.push(token);
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+};
+
+// Custom parser to cleanly render changelog headers, lists, and quotes
+const renderChangelogMarkdown = (content: string) => {
+  const lines = content.split('\n');
+  const elements: React.ReactNode[] = [];
+
+  lines.forEach((line, idx) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      return;
+    }
+
+    const clean = trimmed.replace(/^[*\-+]\s+/, '').trim();
+
+    // 1. H1 / H2 headers (# or ##)
+    if (clean.startsWith('## ') || clean.startsWith('# ')) {
+      const title = clean.replace(/^#{1,2}\s+/, '');
+      elements.push(
+        <div key={idx} className="pt-2.5 pb-0.5 first:pt-0">
+          <div className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white flex items-center gap-1.5 pb-1 border-b border-gray-200/70 dark:border-slate-700/60">
+            {renderInlineTokens(title)}
+          </div>
+        </div>
+      );
+      return;
+    }
+
+    // 2. H3 headers (###)
+    if (clean.startsWith('### ')) {
+      const title = clean.replace(/^###\s+/, '');
+      elements.push(
+        <div key={idx} className="pt-2 pb-0.5 first:pt-0">
+          <div className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+            {renderInlineTokens(title)}
+          </div>
+        </div>
+      );
+      return;
+    }
+
+    // 3. H4 headers (####)
+    if (clean.startsWith('#### ')) {
+      const title = clean.replace(/^####\s+/, '');
+      elements.push(
+        <div key={idx} className="pt-1.5 pb-0.5">
+          <div className="text-[11px] font-semibold text-gray-800 dark:text-gray-200">
+            {renderInlineTokens(title)}
+          </div>
+        </div>
+      );
+      return;
+    }
+
+    // 4. Blockquotes (> ...)
+    if (clean.startsWith('>')) {
+      const quoteText = clean.replace(/^>\s*/, '');
+      elements.push(
+        <div key={idx} className="pl-2.5 my-1 border-l-2 border-blue-500/50 text-xs italic text-gray-600 dark:text-gray-400">
+          {renderInlineTokens(quoteText)}
+        </div>
+      );
+      return;
+    }
+
+    // 5. Standard bullet points / content lines
+    elements.push(
+      <div key={idx} className="flex items-start gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+        <div className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 flex-1">
+          {renderInlineTokens(clean)}
+        </div>
+      </div>
+    );
+  });
+
+  return elements;
+};
+
 export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
@@ -371,28 +511,8 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
               </div>
               <div className="p-3.5 rounded-xl bg-gray-50/90 dark:bg-slate-800/70 border border-gray-200/70 dark:border-slate-700/60 max-h-48 overflow-y-auto text-xs text-gray-700 dark:text-gray-200 leading-relaxed font-sans select-text scrollbar-thin">
                 {hasRealNotes ? (
-                  <div className="space-y-2">
-                    {rawNotes.split('\n').filter((line: string) => line.trim().length > 0).map((line: string, idx: number) => {
-                      const cleanLine = line.replace(/^[*\-+]\s+/, '').trim();
-                      const boldMatch = cleanLine.match(/^\*\*(.*?)\*\*:(.*)$/);
-                      if (boldMatch) {
-                        return (
-                          <div key={idx} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
-                            <div className="text-xs leading-relaxed text-gray-700 dark:text-gray-200">
-                              <span className="font-semibold text-gray-900 dark:text-white">{boldMatch[1]}:</span>
-                              <span className="ml-1 text-gray-600 dark:text-gray-300">{boldMatch[2].replace(/`([^`]+)`/g, '$1')}</span>
-                            </div>
-                          </div>
-                        );
-                      }
-                      return (
-                        <div key={idx} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
-                          <span className="text-xs leading-relaxed text-gray-600 dark:text-gray-300">{cleanLine.replace(/\*\*/g, '')}</span>
-                        </div>
-                      );
-                    })}
+                  <div className="space-y-1.5">
+                    {renderChangelogMarkdown(rawNotes)}
                   </div>
                 ) : isLoadingNotes ? (
                   <div className="flex items-center gap-2 py-4 justify-center text-xs text-gray-500 dark:text-gray-400">
@@ -730,8 +850,8 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
             </p>
 
             {updateState === 'available' && hasRealNotes && (
-              <div className="p-2.5 rounded-xl bg-gray-50/80 dark:bg-slate-800/60 border border-gray-200/60 dark:border-slate-700/60 text-xs text-gray-700 dark:text-gray-300 max-h-28 overflow-y-auto whitespace-pre-line leading-relaxed select-text scrollbar-thin">
-                {rawNotes}
+              <div className="p-2.5 rounded-xl bg-gray-50/80 dark:bg-slate-800/60 border border-gray-200/60 dark:border-slate-700/60 text-xs text-gray-700 dark:text-gray-300 max-h-36 overflow-y-auto space-y-1.5 leading-relaxed select-text scrollbar-thin">
+                {renderChangelogMarkdown(rawNotes)}
               </div>
             )}
           </div>
