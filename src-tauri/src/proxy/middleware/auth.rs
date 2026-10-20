@@ -40,7 +40,15 @@ async fn auth_middleware_internal(
     let path = request.uri().path().to_string();
 
     // 过滤心跳和健康检查请求,避免日志噪音
-    let is_health_check = path == "/healthz" || path == "/api/health" || path == "/health";
+    let is_health_check = path == "/healthz"
+        || path == "/api/health"
+        || path == "/health"
+        || path == "/props"
+        || path == "/v1/props"
+        || path == "/version"
+        || path == "/v1/version"
+        || path == "/shield/context"
+        || path == "/v1/shield/context";
     let is_internal_endpoint = path.starts_with("/internal/");
     let is_toolkit_endpoint = path.starts_with("/api/toolkit/") || path.starts_with("/toolkit/");
     if !path.contains("event_logging") && !is_health_check {

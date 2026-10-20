@@ -201,7 +201,7 @@ async fn fetch_project_id(
         .header(rquest::header::CONTENT_TYPE, "application/json")
         .header(
             rquest::header::USER_AGENT,
-            crate::constants::NATIVE_OAUTH_USER_AGENT.as_str(),
+            crate::constants::UPSTREAM_HUB_USER_AGENT.as_str(),
         )
         .headers(get_quota_device_headers(account_id))
         .json(&meta)
@@ -326,7 +326,7 @@ pub async fn fetch_quota_with_cache(
                 .bearer_auth(access_token)
                 .header(
                     rquest::header::USER_AGENT,
-                    crate::constants::NATIVE_OAUTH_USER_AGENT.as_str(),
+                    crate::constants::UPSTREAM_HUB_USER_AGENT.as_str(),
                 )
                 .headers(get_quota_device_headers(account_id))
                 .json(&current_payload)
@@ -603,7 +603,7 @@ async fn fetch_quota_summary(
             .bearer_auth(access_token)
             .header(
                 rquest::header::USER_AGENT,
-                crate::constants::NATIVE_OAUTH_USER_AGENT.as_str(),
+                crate::constants::UPSTREAM_HUB_USER_AGENT.as_str(),
             )
             .headers(get_quota_device_headers(account_id))
             .json(&payload)

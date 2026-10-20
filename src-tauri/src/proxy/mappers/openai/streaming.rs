@@ -125,6 +125,7 @@ where
         let mut emitted_tool_calls = std::collections::HashSet::new();
         let mut final_usage: Option<super::models::OpenAIUsage> = None;
         let mut error_occurred = false;
+        let mut saw_finish_reason = false;
         let mut tool_call_index = 0;
 
         let mut heartbeat_interval = tokio::time::interval(std::time::Duration::from_secs(15));
@@ -387,6 +388,7 @@ where
                                                             }]
                                                         });
                                                         if finish_reason.is_some() {
+                                                            saw_finish_reason = true;
                                                             if let Some(ref usage) = final_usage {
                                                                 openai_chunk["usage"] = serde_json::to_value(usage).unwrap();
                                                             }
@@ -440,6 +442,31 @@ where
         }
 
         if !error_occurred {
+            // [Terminal finish_reason Completion Guard for Cline / OpenCode]
+            // If the upstream stream completed without emitting an explicit finish_reason
+            // (e.g. abrupt stream close or only usage metadata frame), synthesize a valid terminal chunk
+            // so client state machines do not fail with 'finish=unknown'.
+            if !saw_finish_reason {
+                let terminal_reason = if !emitted_tool_calls.is_empty() {
+                    "tool_calls"
+                } else {
+                    "stop"
+                };
+                let terminal_chunk = json!({
+                    "id": &stream_id,
+                    "object": "chat.completion.chunk",
+                    "created": created_ts,
+                    "model": &model,
+                    "choices": [{
+                        "index": 0,
+                        "delta": {},
+                        "finish_reason": terminal_reason
+                    }]
+                });
+                let sse_out = format!("data: {}\n\n", serde_json::to_string(&terminal_chunk).unwrap_or_default());
+                yield Ok::<Bytes, String>(Bytes::from(sse_out));
+            }
+
             if let Some(ref usage) = final_usage {
                 let usage_chunk = json!({
                     "id": &stream_id,

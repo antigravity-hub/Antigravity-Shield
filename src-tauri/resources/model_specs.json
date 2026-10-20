@@ -39,6 +39,26 @@
             "max_output_tokens": 32768,
             "thinking_budget": 0,
             "is_thinking": false
+        },
+        "gemini-4-argon": {
+            "max_output_tokens": 65536,
+            "thinking_budget": 24576,
+            "is_thinking": true
+        },
+        "gemini-4-argon-high": {
+            "max_output_tokens": 65536,
+            "thinking_budget": 24576,
+            "is_thinking": true
+        },
+        "gemini-4-argon-medium": {
+            "max_output_tokens": 65536,
+            "thinking_budget": 4000,
+            "is_thinking": true
+        },
+        "gemini-4-argon-low": {
+            "max_output_tokens": 65536,
+            "thinking_budget": 1024,
+            "is_thinking": true
         }
     },
     "aliases": {

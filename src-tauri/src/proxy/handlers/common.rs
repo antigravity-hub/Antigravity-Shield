@@ -457,3 +457,58 @@ pub async fn handle_detect_model(
 
     Json(response).into_response()
 }
+
+/// Toolchain Props (llama.cpp server compatibility for Hermes Agent, llama.cpp, vLLM)
+/// GET /props or /v1/props?model=<optional>
+pub async fn handle_toolchain_props(
+    axum::extract::Query(params): axum::extract::Query<std::collections::HashMap<String, String>>,
+) -> impl IntoResponse {
+    let model = params.get("model").map(|s| s.as_str()).unwrap_or("gemini-2.5-flash");
+    let max_output = crate::proxy::model_specs::get_max_output_tokens(model, None);
+    let ctx_len: u64 = if model.contains("120b") {
+        32768
+    } else if model.contains("claude") {
+        200000
+    } else {
+        1048576
+    };
+
+    Json(json!({
+        "default_generation_settings": {
+            "n_ctx": ctx_len,
+            "n_predict": max_output,
+            "model": model,
+            "system_prompt": "",
+            "chat_template": ""
+        },
+        "total_slots": 1,
+        "model": model,
+        "engine": "antigravity-shield"
+    }))
+}
+
+/// Toolchain Version (vLLM / llama.cpp / client probing compatibility)
+/// GET /version or /v1/version
+pub async fn handle_toolchain_version() -> impl IntoResponse {
+    Json(json!({
+        "version": crate::constants::CURRENT_VERSION.as_str(),
+        "app": "antigravity-shield",
+        "engine": "shield-gateway"
+    }))
+}
+
+/// Shield Proprietary Introspection & Context Telemetry Endpoint
+/// GET /shield/context or /v1/shield/context
+pub async fn handle_shield_context() -> impl IntoResponse {
+    Json(json!({
+        "app": "Antigravity-Shield",
+        "version": crate::constants::CURRENT_VERSION.as_str(),
+        "status": "operational",
+        "protocols": ["openai", "claude", "gemini", "llama.cpp", "hermes"],
+        "default_context_length": 1048576,
+        "max_completion_tokens": 65536,
+        "argon_support": true,
+        "elastic_503_healing": true
+    }))
+}
+

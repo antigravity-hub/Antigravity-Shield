@@ -4440,11 +4440,25 @@ pub async fn handle_list_models(
     let data: Vec<_> = model_ids
         .into_iter()
         .map(|id| {
+            let max_output = crate::proxy::model_specs::get_max_output_tokens(&id, None);
+            let ctx_len: u64 = if id.contains("120b") {
+                32768
+            } else if id.contains("claude") {
+                200000
+            } else {
+                1048576
+            };
             json!({
                 "id": id,
                 "object": "model",
                 "created": 1706745600,
-                "owned_by": "antigravity"
+                "owned_by": "antigravity-shield",
+                "context_length": ctx_len,
+                "max_context_length": ctx_len,
+                "max_input_tokens": ctx_len,
+                "max_model_len": ctx_len,
+                "max_tokens": max_output,
+                "max_completion_tokens": max_output
             })
         })
         .collect();
@@ -4452,6 +4466,33 @@ pub async fn handle_list_models(
     Json(json!({
         "object": "list",
         "data": data
+    }))
+}
+
+/// Retrieve a single model metadata with context length
+/// GET /v1/models/:model
+pub async fn handle_get_model(
+    axum::extract::Path(model): axum::extract::Path<String>,
+) -> impl IntoResponse {
+    let max_output = crate::proxy::model_specs::get_max_output_tokens(&model, None);
+    let ctx_len: u64 = if model.contains("120b") {
+        32768
+    } else if model.contains("claude") {
+        200000
+    } else {
+        1048576
+    };
+    Json(json!({
+        "id": model,
+        "object": "model",
+        "created": 1706745600,
+        "owned_by": "antigravity-shield",
+        "context_length": ctx_len,
+        "max_context_length": ctx_len,
+        "max_input_tokens": ctx_len,
+        "max_model_len": ctx_len,
+        "max_tokens": max_output,
+        "max_completion_tokens": max_output
     }))
 }
 

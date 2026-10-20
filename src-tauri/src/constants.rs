@@ -222,6 +222,34 @@ pub static USER_AGENT: LazyLock<String> = LazyLock::new(|| {
     )
 });
 
+/// Official Hub Changelist ID for upstream model discovery
+pub const OFFICIAL_HUB_CL: &str = "986210228";
+
+/// Build dynamic official Hub User-Agent to ensure all 38 models (including Argon) are visible
+/// Format: "antigravity/hub/{version} (aidev_client; os_type={os}; arch={arch}; cl={cl})"
+pub fn build_upstream_hub_user_agent() -> String {
+    let os_type = match std::env::consts::OS {
+        "windows" => "windows",
+        "macos" => "darwin",
+        "linux" => "linux",
+        _ => "linux",
+    };
+    let arch = match std::env::consts::ARCH {
+        "x86_64" => "amd64",
+        "aarch64" => "arm64",
+        _ => "amd64",
+    };
+    let version = CURRENT_VERSION.as_str();
+    format!(
+        "antigravity/hub/{} (aidev_client; os_type={}; arch={}; cl={})",
+        version, os_type, arch, OFFICIAL_HUB_CL
+    )
+}
+
+/// Dynamic LazyLock for upstream Hub User-Agent
+pub static UPSTREAM_HUB_USER_AGENT: LazyLock<String> = LazyLock::new(build_upstream_hub_user_agent);
+
+
 #[cfg(test)]
 mod tests {
     use super::*;

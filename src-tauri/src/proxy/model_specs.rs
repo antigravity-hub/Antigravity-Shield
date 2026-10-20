@@ -88,3 +88,39 @@ pub fn is_thinking_model(model_id: &str) -> bool {
     }
     model_id.contains("-thinking") || model_id.contains("thinking")
 }
+
+/// Enforce runtime minimum thinking budget floor for models (especially Gemini 4 Argon).
+/// Upstream Google throws: "400 Thinking level is unsupported: THINKING_LEVEL_MINIMAL"
+/// if non-zero thinking budget is < 1024.
+pub fn clamp_runtime_thinking_budget(model_id: &str, requested_budget: i64) -> i64 {
+    if requested_budget <= 0 {
+        return requested_budget;
+    }
+    let lower = model_id.to_lowercase();
+    if (lower.contains("argon") || lower.contains("gemini-4")) && requested_budget < 1024 {
+        tracing::warn!(
+            model = %model_id,
+            original_budget = requested_budget,
+            "Enforcing runtime thinking budget floor of 1024 for Argon to prevent Google 400 error"
+        );
+        1024
+    } else {
+        requested_budget
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_argon_thinking_budget_floor() {
+        assert_eq!(clamp_runtime_thinking_budget("gemini-4-argon", 0), 0);
+        assert_eq!(clamp_runtime_thinking_budget("gemini-4-argon", -1), -1);
+        assert_eq!(clamp_runtime_thinking_budget("gemini-4-argon", 32), 1024);
+        assert_eq!(clamp_runtime_thinking_budget("gemini-4-argon-low", 100), 1024);
+        assert_eq!(clamp_runtime_thinking_budget("gemini-4-argon", 4000), 4000);
+        assert_eq!(clamp_runtime_thinking_budget("gemini-2.5-flash", 100), 100);
+    }
+}
+

@@ -871,6 +871,7 @@ pub fn transform_openai_request(
                 );
                 final_budget = 24576;
             }
+            final_budget = crate::proxy::model_specs::clamp_runtime_thinking_budget(mapped_model, final_budget);
 
             gen_config["thinkingConfig"] = json!({
                 "includeThoughts": true,

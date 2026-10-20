@@ -313,4 +313,103 @@ mod tests {
         assert_eq!(response_text.source, RetryDelaySource::ResponseText);
         assert_eq!(response_text.actual_wait_ms(), 4000);
     }
+
+    #[test]
+    fn test_is_server_overloaded() {
+        assert!(is_server_overloaded(503, "Service Unavailable"));
+        assert!(is_server_overloaded(529, "Site overloaded"));
+        assert!(is_server_overloaded(500, "The model is overloaded. Please try again."));
+        assert!(!is_server_overloaded(429, "RESOURCE_EXHAUSTED: quota exceeded"));
+        assert!(!is_server_overloaded(404, "Not Found"));
+    }
+
+    #[test]
+    fn test_try_degrade_thinking_budget() {
+        let mut b1 = serde_json::json!({
+            "generationConfig": {
+                "thinkingConfig": {
+                    "thinkingBudget": 24576
+                }
+            }
+        });
+        assert!(try_degrade_thinking_budget(&mut b1));
+        assert_eq!(b1["generationConfig"]["thinkingConfig"]["thinkingBudget"], 4000);
+
+        let mut b2 = serde_json::json!({
+            "request": {
+                "generationConfig": {
+                    "thinkingConfig": {
+                        "thinkingBudget": -1
+                    }
+                }
+            }
+        });
+        assert!(try_degrade_thinking_budget(&mut b2));
+        assert_eq!(b2["request"]["generationConfig"]["thinkingConfig"]["thinkingBudget"], 4000);
+
+        let mut b3 = serde_json::json!({
+            "generationConfig": {
+                "thinkingConfig": {
+                    "thinkingBudget": 2048
+                }
+            }
+        });
+        assert!(!try_degrade_thinking_budget(&mut b3));
+        assert_eq!(b3["generationConfig"]["thinkingConfig"]["thinkingBudget"], 2048);
+    }
 }
+
+/// Check if the upstream server is reporting an overload condition (503 / 529 / model overloaded)
+pub fn is_server_overloaded(status_code: u16, error_text: &str) -> bool {
+    if status_code == 503 || status_code == 529 {
+        return true;
+    }
+    let lower = error_text.to_lowercase();
+    lower.contains("model is overloaded")
+        || lower.contains("server is overloaded")
+        || lower.contains("the model is overloaded")
+        || lower.contains("resource_exhausted: model is overloaded")
+}
+
+/// Attempt to degrade thinking budget in-place to 4000 (Medium tier) to resolve 503/529 overload
+/// without triggering cross-account failover which discards the upstream Prefix Cache.
+/// Returns true if thinking budget was degraded; false if it was already <= 4000 or absent.
+pub fn try_degrade_thinking_budget(body: &mut serde_json::Value) -> bool {
+    let mut modified = false;
+
+    // Helper to inspect and degrade thinkingBudget in a JSON object
+    let mut check_and_degrade = |target: &mut serde_json::Value| -> bool {
+        if let Some(tb) = target.get_mut("thinkingBudget") {
+            if let Some(v) = tb.as_i64() {
+                if v == -1 || v > 4000 {
+                    *tb = serde_json::json!(4000);
+                    return true;
+                }
+            }
+        }
+        false
+    };
+
+    // Case 1: body["generationConfig"]["thinkingConfig"]
+    if let Some(tc) = body.pointer_mut("/generationConfig/thinkingConfig") {
+        if check_and_degrade(tc) {
+            modified = true;
+        }
+    }
+
+    // Case 2: body["request"]["generationConfig"]["thinkingConfig"] (wrapped)
+    if let Some(tc) = body.pointer_mut("/request/generationConfig/thinkingConfig") {
+        if check_and_degrade(tc) {
+            modified = true;
+        }
+    }
+
+    if modified {
+        tracing::info!(
+            "[Elastic-Self-Healing] Degraded thinking budget to 4000 in-place to recover from 503 Overload while preserving Prefix Cache"
+        );
+    }
+
+    modified
+}
+
