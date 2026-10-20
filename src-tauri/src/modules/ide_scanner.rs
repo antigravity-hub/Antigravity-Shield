@@ -593,7 +593,7 @@ pub fn get_vsix_version(vsix_path: &Path) -> Option<String> {
         }
     }
 
-    Some("2.7.8".to_string())
+    Some("2.7.9".to_string())
 }
 
 /// Returns the highest installed version of antigravity-toolkit extension in target directories
