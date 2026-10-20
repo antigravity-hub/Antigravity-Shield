@@ -650,6 +650,8 @@ pub fn run() {
             commands::proxy::generate_api_key,
             commands::proxy::reload_proxy_accounts,
             commands::proxy::update_model_mapping,
+            commands::proxy::get_argon_override,
+            commands::proxy::set_argon_override,
             commands::proxy::check_proxy_health,
             commands::proxy::get_proxy_pool_config,
             commands::proxy::fetch_zai_models,

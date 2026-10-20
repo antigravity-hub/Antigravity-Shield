@@ -26,6 +26,10 @@ export interface ProxyConfig {
     image_thinking_mode?: 'enabled' | 'disabled'; // [NEW] 图像思维模式开关
     only_raw_quota_models?: boolean; // [NEW] 是否只暴露真实配额模型
     proxy_pool?: ProxyPoolConfig;
+    ide_argon_override?: {
+        enabled: boolean;
+        tier: 'high' | 'medium' | 'low';
+    };
 }
 
 // ============================================================================

@@ -122,6 +122,60 @@ pub fn update_image_thinking_mode(mode: Option<String>) {
 }
 
 // ============================================================================
+// IDE Gemini 4 Argon Brain Override 配置存储
+// ============================================================================
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct IdeArgonOverrideConfig {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default = "default_argon_tier")]
+    pub tier: String,
+}
+
+fn default_argon_tier() -> String {
+    "high".to_string()
+}
+
+impl Default for IdeArgonOverrideConfig {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            tier: "high".to_string(),
+        }
+    }
+}
+
+static GLOBAL_ARGON_OVERRIDE: OnceLock<RwLock<IdeArgonOverrideConfig>> = OnceLock::new();
+
+pub fn get_argon_override_config() -> IdeArgonOverrideConfig {
+    GLOBAL_ARGON_OVERRIDE
+        .get()
+        .and_then(|lock| lock.read().ok())
+        .map(|cfg| cfg.clone())
+        .unwrap_or_default()
+}
+
+pub fn update_argon_override_config(config: IdeArgonOverrideConfig) {
+    if let Some(lock) = GLOBAL_ARGON_OVERRIDE.get() {
+        if let Ok(mut cfg) = lock.write() {
+            *cfg = config.clone();
+            tracing::info!(
+                "[Argon-Override] Global config updated: enabled={}, tier={}",
+                config.enabled,
+                config.tier
+            );
+        }
+    } else {
+        let _ = GLOBAL_ARGON_OVERRIDE.set(RwLock::new(config.clone()));
+        tracing::info!(
+            "[Argon-Override] Global config initialized: enabled={}, tier={}",
+            config.enabled,
+            config.tier
+        );
+    }
+}
+
+// ============================================================================
 // 全局压缩等级配置存储
 // ============================================================================
 static GLOBAL_COMPRESSION_LEVEL: OnceLock<RwLock<String>> = OnceLock::new();
@@ -691,6 +745,10 @@ pub struct ProxyConfig {
     /// 代理池配置
     #[serde(default)]
     pub proxy_pool: ProxyPoolConfig,
+
+    /// IDE Gemini 4 Argon Brain Override
+    #[serde(default)]
+    pub ide_argon_override: IdeArgonOverrideConfig,
 }
 
 /// 上游代理配置
@@ -730,6 +788,7 @@ impl Default for ProxyConfig {
             proxy_pool: ProxyPoolConfig::default(),
             image_thinking_mode: None,
             image_scheduler: ImageSchedulerConfig::default(),
+            ide_argon_override: IdeArgonOverrideConfig::default(),
         }
     }
 }

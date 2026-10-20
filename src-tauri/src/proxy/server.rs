@@ -720,7 +720,11 @@ impl AxumServer {
                 "/accounts/:accountId/refresh",
                 post(admin_refresh_account_by_id),
             )
-            .route("/sync-active", post(admin_toolkit_sync_active));
+            .route("/sync-active", post(admin_toolkit_sync_active))
+            .route(
+                "/argon-override",
+                get(admin_toolkit_get_argon_override).post(admin_toolkit_set_argon_override),
+            );
 
         // 2. 构建管理 API (强制鉴权)
         let admin_routes = Router::new()
@@ -2952,6 +2956,61 @@ async fn admin_toolkit_status() -> impl IntoResponse {
 
 async fn admin_detect_installed_ides() -> impl IntoResponse {
     Json(crate::modules::ide_scanner::detect_all_ides())
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AdminArgonOverrideDto {
+    pub enabled: bool,
+    pub tier: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub target_model: Option<String>,
+}
+
+async fn admin_toolkit_get_argon_override() -> impl IntoResponse {
+    let cfg = crate::proxy::config::get_argon_override_config();
+    let target = match cfg.tier.to_lowercase().as_str() {
+        "low" => "gemini-4-argon-low",
+        "medium" => "gemini-4-argon-medium",
+        _ => "gemini-4-argon-high",
+    };
+    Json(AdminArgonOverrideDto {
+        enabled: cfg.enabled,
+        tier: cfg.tier,
+        target_model: Some(target.to_string()),
+    })
+}
+
+async fn admin_toolkit_set_argon_override(
+    Json(payload): Json<AdminArgonOverrideDto>,
+) -> impl IntoResponse {
+    let tier = match payload.tier.to_lowercase().as_str() {
+        "low" => "low".to_string(),
+        "medium" => "medium".to_string(),
+        _ => "high".to_string(),
+    };
+    let new_cfg = crate::proxy::config::IdeArgonOverrideConfig {
+        enabled: payload.enabled,
+        tier: tier.clone(),
+    };
+    crate::proxy::config::update_argon_override_config(new_cfg.clone());
+
+    if let Ok(mut app_cfg) = crate::modules::config::load_app_config() {
+        app_cfg.proxy.ide_argon_override = new_cfg;
+        let _ = crate::modules::config::save_app_config(&app_cfg);
+    }
+
+    let target = match tier.as_str() {
+        "low" => "gemini-4-argon-low",
+        "medium" => "gemini-4-argon-medium",
+        _ => "gemini-4-argon-high",
+    };
+
+    Json(serde_json::json!({
+        "status": "ok",
+        "enabled": payload.enabled,
+        "tier": tier,
+        "target_model": target
+    }))
 }
 
 #[derive(Deserialize)]

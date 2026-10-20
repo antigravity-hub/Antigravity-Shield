@@ -462,6 +462,8 @@ pub async fn save_config(
         crate::proxy::update_global_system_prompt_config(config.proxy.global_system_prompt.clone());
         // [NEW] 更新全局图像思维模式配置
         crate::proxy::update_image_thinking_mode(config.proxy.image_thinking_mode.clone());
+        // [NEW] 更新 IDE Argon Override 配置
+        crate::proxy::config::update_argon_override_config(config.proxy.ide_argon_override.clone());
         // [NEW] 更新全局压缩等级配置
         crate::proxy::config::update_global_compression_level(
             config.proxy.experimental.compression_level.clone(),

@@ -294,6 +294,8 @@ pub async fn ensure_admin_server(
         config.experimental.compression_level.clone(),
         config.experimental.enable_usage_scaling,
     );
+    // [NEW] 初始化 IDE Argon Override 配置
+    crate::proxy::config::update_argon_override_config(config.ide_argon_override.clone());
 
     Ok(())
 }
@@ -1312,5 +1314,36 @@ pub async fn proxy_execute_diagnostic_probe(
             })
         }
     }
+}
+
+/// 获取当前 IDE Argon Override 配置
+#[tauri::command]
+pub async fn get_argon_override() -> Result<crate::proxy::config::IdeArgonOverrideConfig, String> {
+    Ok(crate::proxy::config::get_argon_override_config())
+}
+
+/// 更新 IDE Argon Override 配置并持久化
+#[tauri::command]
+pub async fn set_argon_override(
+    enabled: bool,
+    tier: String,
+) -> Result<crate::proxy::config::IdeArgonOverrideConfig, String> {
+    let tier = match tier.to_lowercase().as_str() {
+        "low" => "low".to_string(),
+        "medium" => "medium".to_string(),
+        _ => "high".to_string(),
+    };
+    let new_cfg = crate::proxy::config::IdeArgonOverrideConfig {
+        enabled,
+        tier,
+    };
+    crate::proxy::config::update_argon_override_config(new_cfg.clone());
+
+    if let Ok(mut app_cfg) = crate::modules::config::load_app_config() {
+        app_cfg.proxy.ide_argon_override = new_cfg.clone();
+        let _ = crate::modules::config::save_app_config(&app_cfg);
+    }
+
+    Ok(new_cfg)
 }
 

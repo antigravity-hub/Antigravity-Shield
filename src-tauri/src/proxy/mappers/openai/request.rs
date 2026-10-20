@@ -220,7 +220,9 @@ pub fn transform_openai_request(
             || mapped_model_lower.contains("gemini-3-pro")
             || mapped_model_lower.contains("gemini-3.1-pro")
             || mapped_model_lower.contains("gemini-pro")
-            || mapped_model_lower.contains("-pro-agent"))
+            || mapped_model_lower.contains("-pro-agent")
+            || mapped_model_lower.contains("argon")
+            || mapped_model_lower.contains("gemini-4"))
         && !mapped_model_lower.contains("claude");
     // [FIX #2167] gemini-*-flash 支持 thinking，functionCall 必须携带 thoughtSignature
     // [FEATURE] 同时注入 includeThoughts:true 使 Gemini 返回 thought:true chunk，客户端可显示思维链

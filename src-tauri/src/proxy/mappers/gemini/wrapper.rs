@@ -297,6 +297,8 @@ pub fn wrap_request_v2(
     if lower_model.contains("flash")
         || lower_model.contains("pro")
         || lower_model.contains("thinking")
+        || lower_model.contains("argon")
+        || lower_model.contains("gemini-4")
     {
         // [NEW] Extract OpenAI-style max_tokens before mutably borrowing gen_config
         let req_max_tokens = inner_request.get("max_tokens").and_then(|v| v.as_u64());
@@ -305,6 +307,8 @@ pub fn wrap_request_v2(
         let is_claude = lower_model.contains("claude");
         let is_preview = lower_model.contains("preview");
         let should_inject = lower_model.contains("thinking")
+            || lower_model.contains("argon")
+            || lower_model.contains("gemini-4")
             || (lower_model.contains("gemini-2.0-pro") && !is_preview)
             || (lower_model.contains("gemini-3-pro") && !is_preview)
             || (lower_model.contains("gemini-3.1-pro") && !is_preview);
