@@ -354,9 +354,23 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                 const tier = account.quota.subscription_tier.toLowerCase();
                                 if (tier.includes('ultra')) {
                                     return (
-                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[9px] font-bold shadow-sm">
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[9px] font-bold shadow-sm" title="Google AI Ultra Tier">
                                             <Gem className="w-2.5 h-2.5 fill-current" />
                                             ULTRA
+                                        </span>
+                                    );
+                                } else if (tier.includes('paid')) {
+                                    return (
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[9px] font-bold shadow-sm" title="Google AI Pro (Paid Subscription)">
+                                            <Diamond className="w-2.5 h-2.5 fill-current" />
+                                            PRO (PAID)
+                                        </span>
+                                    );
+                                } else if (tier.includes('trial')) {
+                                    return (
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[9px] font-bold shadow-sm" title="Google AI Pro (Long Promotional Trial)">
+                                            <Diamond className="w-2.5 h-2.5" />
+                                            PRO (TRIAL)
                                         </span>
                                     );
                                 } else if (tier.includes('pro')) {
