@@ -4,8 +4,20 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
 // 动态官方废弃模型转发表 (old_model_id -> new_model_id)
-pub static DYNAMIC_MODEL_FORWARDING_RULES: Lazy<DashMap<String, String>> =
-    Lazy::new(|| DashMap::new());
+pub static DYNAMIC_MODEL_FORWARDING_RULES: Lazy<DashMap<String, String>> = Lazy::new(|| {
+    let map = DashMap::new();
+    // Deprecated by Google upstream (Google rejects 3.5 Flash) -> auto-forward to 3.8 Flash
+    map.insert("gemini-3.5-flash".to_string(), "gemini-3.8-flash".to_string());
+    map.insert("gemini-3.5-flash-low".to_string(), "gemini-3.8-flash-low".to_string());
+    map.insert("gemini-3.5-flash-medium".to_string(), "gemini-3.8-flash-medium".to_string());
+    map.insert("gemini-3.5-flash-high".to_string(), "gemini-3.8-flash-high".to_string());
+    map.insert("gemini-3.5-flash-extra-low".to_string(), "gemini-3.8-flash-low".to_string());
+    map.insert("gemini-3.5-flash-lite".to_string(), "gemini-3.1-flash-lite".to_string());
+    // Gemini 4 Pro quota exhaustion fallback to working Gemini 4 Argon
+    map.insert("gemini-4-pro".to_string(), "gemini-4-argon".to_string());
+    map.insert("gemini-4.0-pro".to_string(), "gemini-4-argon".to_string());
+    map
+});
 
 pub fn update_dynamic_forwarding_rules(old_model: String, new_model: String) {
     if !DYNAMIC_MODEL_FORWARDING_RULES.contains_key(&old_model) {

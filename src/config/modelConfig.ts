@@ -78,16 +78,6 @@ export const MODEL_CONFIG: Record<string, ModelConfig> = {
         group: 'Gemini 4',
         tags: ['flash'],
     },
-    'gemini-4-pro': {
-        label: 'Gemini 4 Pro',
-        shortLabel: 'G4 Pro',
-        protectedKey: 'gemini-pro',
-        Icon: Gemini.Color,
-        i18nKey: 'proxy.model.pro_high',
-        i18nDescKey: 'proxy.model.pro_high',
-        group: 'Gemini 4',
-        tags: ['pro'],
-    },
     'gemini-4.0-flash': {
         label: 'Gemini 4 Flash',
         shortLabel: 'G4 Flash',
@@ -97,16 +87,6 @@ export const MODEL_CONFIG: Record<string, ModelConfig> = {
         i18nDescKey: 'proxy.model.flash_preview',
         group: 'Gemini 4',
         tags: ['flash'],
-    },
-    'gemini-4.0-pro': {
-        label: 'Gemini 4 Pro',
-        shortLabel: 'G4 Pro',
-        protectedKey: 'gemini-pro',
-        Icon: Gemini.Color,
-        i18nKey: 'proxy.model.pro_high',
-        i18nDescKey: 'proxy.model.pro_high',
-        group: 'Gemini 4',
-        tags: ['pro'],
     },
 
     // Gemini 3.x 系列
@@ -181,16 +161,6 @@ export const MODEL_CONFIG: Record<string, ModelConfig> = {
         i18nDescKey: 'proxy.model.pro_image_1_1',
         group: 'Gemini 3',
         tags: ['image'],
-    },
-    'gemini-3.5-flash': {
-        label: 'Gemini 3.5 Flash',
-        shortLabel: 'G3.5 Flash',
-        protectedKey: 'gemini-flash',
-        Icon: Gemini.Color,
-        i18nKey: 'proxy.model.flash_preview',
-        i18nDescKey: 'proxy.model.flash_preview',
-        group: 'Gemini 3',
-        tags: ['flash'],
     },
     'gemini-3.7-flash': {
         label: 'Gemini 3.7 Flash',

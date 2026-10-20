@@ -78,6 +78,8 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
         { from: 'gemini-4-argon-high', to: 'gemini-4-argon', note: 'High capability Argon tier' },
         { from: 'gemini-4-argon-medium', to: 'gemini-4-argon', note: 'Medium latency Argon tier' },
         { from: 'gemini-4-argon-low', to: 'gemini-4-argon', note: 'Low latency Argon tier' },
+        { from: 'gemini-4-pro', to: 'gemini-4-argon', note: 'Redirects exhausted Pro to Argon' },
+        { from: 'gemini-3.5-flash', to: 'gemini-3.8-flash', note: 'Deprecated Google fallback' },
         { from: 'gemini-3.8-flash', to: 'gemini-3-flash', note: 'Standard Cursor / Windsurf alias' },
         { from: 'gemini-3.8-flash-medium', to: 'gemini-3-flash', note: 'Medium latency tier' },
         { from: 'gemini-3.8-flash-high', to: 'gemini-3-flash', note: 'High capability alias' },
