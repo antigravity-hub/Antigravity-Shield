@@ -115,7 +115,7 @@ export const FleetVelocityGauge: React.FC<FleetVelocityGaugeProps> = ({
     if (viewMode === 'active' && currentAccount) {
       return calculateAccountBurnVelocity(currentAccount);
     }
-    return calculateFleetBurnVelocity(accounts);
+    return calculateFleetBurnVelocity(accounts, undefined, currentAccount?.id);
   }, [viewMode, accounts, currentAccount]);
 
   // Format projected date nicely with day of week & time

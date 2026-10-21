@@ -298,6 +298,10 @@
       "cooldown_active": "مهلت انتظار: {{seconds}} ثانیه",
       "tooltip": "وضعیت زنده استعلام‌شده از سرورهای گوگل کلودکد"
     },
+    "family_group": "گروه خانوادگی (Family Group)",
+    "family_group_badge": "گروه خانوادگی",
+    "family_group_desc": "حساب‌های متصل به یک سهمیه اشتراکی فمیلی گوگل",
+    "family_badge": "فمیلی",
     "account": "حساب",
     "search_placeholder": "جستجوی ایمیل...",
     "all": "همه",

@@ -14,6 +14,8 @@
  * - Normalized gauge angle (0 to 180 deg)
  */
 
+import { getDistinctCapacityUnits } from './familyGroup';
+
 export interface BurnVelocityMetrics {
   sustainabilityRatio: number; // S: <1 means burning faster than time; >1 means surplus
   hourlyBurnRatePct: number; // % consumed per hour
@@ -290,7 +292,8 @@ export function calculateAccountBurnVelocity(
  */
 export function calculateFleetBurnVelocity(
   accounts: AccountLike[],
-  now = Date.now()
+  now = Date.now(),
+  currentAccountId?: string | null
 ): BurnVelocityMetrics {
   if (!accounts || accounts.length === 0) {
     return {
@@ -324,8 +327,10 @@ export function calculateFleetBurnVelocity(
   // Fallback to all accounts if every account is currently disabled/blocked
   const targetAccounts = activeAccounts.length > 0 ? activeAccounts : accounts;
 
+  // Deduplicate pooled family accounts into single capacity units so family pools are not counted multiple times
+  const distinctCapacityAccounts = getDistinctCapacityUnits(targetAccounts, currentAccountId);
 
-  // 2. Extract baseline parameters for each account
+  // 2. Extract baseline parameters for each distinct capacity unit (family pool or independent account)
   interface AccountSimItem {
     id: string;
     quotaPct: number;
@@ -339,7 +344,7 @@ export function calculateFleetBurnVelocity(
   let totalTimeRemHours = 0;
   let totalBurnRate = 0;
 
-  for (const acc of targetAccounts) {
+  for (const acc of distinctCapacityAccounts) {
     const m = calculateAccountBurnVelocity(acc, now);
     totalQuotaRem += m.quotaRemainingPct;
     totalTimeRemPct += m.timeRemainingPct;

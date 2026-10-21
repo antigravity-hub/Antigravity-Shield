@@ -290,6 +290,10 @@
     "export_accounts_desc": "Export encrypted backup of active accounts"
   },
   "accounts": {
+    "family_group": "家庭群組 (Family Group)",
+    "family_group_badge": "家庭群組",
+    "family_group_desc": "共享同一個 Google One 家庭配額池的帳號",
+    "family_badge": "家庭",
     "account": "帳號",
     "search_placeholder": "搜尋信箱...",
     "all": "全部",

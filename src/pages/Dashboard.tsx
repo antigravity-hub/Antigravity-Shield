@@ -25,6 +25,7 @@ import AntigravityRtlCard from '../components/settings/AntigravityRtlCard';
 import { isRtlRegionTimezone } from '../utils/timezone';
 import VerificationRequiredBanner from '../components/common/VerificationRequiredBanner';
 import FleetVelocityGauge from '../components/dashboard/FleetVelocityGauge';
+import { getDistinctCapacityUnits } from '../utils/familyGroup';
 
 function Dashboard() {
     const { t } = useTranslation();
@@ -48,24 +49,25 @@ function Dashboard() {
         loadConfig();
     }, []);
 
-    // 计算统计data
+    // 计算统计data (Family groups counted as 1 distinct pooled capacity unit)
     const stats = useMemo(() => {
+        const capacityUnits = getDistinctCapacityUnits(accounts, currentAccount?.id);
         const getGeminiProQuota = (a: Account) =>
             findQuotaModel(a.quota?.models, 'gemini-pro')?.percentage || 0;
 
-        const geminiQuotas = accounts
+        const geminiQuotas = capacityUnits
             .map(a => getGeminiProQuota(a))
             .filter(q => q > 0);
 
-        const geminiImageQuotas = accounts
+        const geminiImageQuotas = capacityUnits
             .map(a => findImageQuotaModel(a.quota?.models)?.percentage || 0)
             .filter(q => q > 0);
 
-        const claudeQuotas = accounts
+        const claudeQuotas = capacityUnits
             .map(a => findQuotaModel(a.quota?.models, 'claude')?.percentage || 0)
             .filter(q => q > 0);
 
-        const lowQuotaCount = accounts.filter(a => {
+        const lowQuotaCount = capacityUnits.filter(a => {
             if (a.quota?.is_forbidden) return false;
             const gemini = getGeminiProQuota(a);
             const claude = findQuotaModel(a.quota?.models, 'claude')?.percentage || 0;
@@ -85,7 +87,7 @@ function Dashboard() {
                 : 0,
             lowQuota: lowQuotaCount,
         };
-    }, [accounts]);
+    }, [accounts, currentAccount?.id]);
 
     const isSwitchingRef = useRef(false);
 

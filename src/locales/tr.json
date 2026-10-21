@@ -290,6 +290,10 @@
     "export_accounts_desc": "Export encrypted backup of active accounts"
   },
   "accounts": {
+    "family_group": "Aile Grubu (Family Group)",
+    "family_group_badge": "Aile Grubu",
+    "family_group_desc": "Aynı Google One aile kota havuzunu paylaşan hesaplar",
+    "family_badge": "Aile",
     "account": "Hesap",
     "search_placeholder": "E-posta ara...",
     "all": "Tümü",

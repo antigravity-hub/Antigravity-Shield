@@ -6,7 +6,7 @@
  * Account Table Component
  * Supports drag-and-drop reordering of accounts
  */
-import { useMemo, useState } from 'react';
+import { useMemo, useState, Fragment } from 'react';
 import {
     DndContext,
     closestCenter,
@@ -44,6 +44,7 @@ import {
     Copy,
     QrCode,
     AlertTriangle,
+    Users,
 } from 'lucide-react';
 import type { Account, ModelQuota } from '../../types/account';
 import { useTranslation } from 'react-i18next';
@@ -54,6 +55,7 @@ import { WeeklyCountdown } from './WeeklyCountdown';
 import { MODEL_CONFIG, sortModels, getModelProtectionKey, resolveQuotaModels, ensurePinnedImageSelector, getModelShortDisplayName } from '../../config/modelConfig';
 import { categorizeModel } from '../../utils/modelCategory';
 import { getAccountFiveHourReset, isAccountQuotaExhausted } from '../../utils/quota';
+import { clusterAccountsByFamily } from '../../utils/familyGroup';
 import { cn } from '../../utils/cn';
 import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
@@ -119,6 +121,8 @@ interface SortableRowProps {
     showLastUsed?: boolean;
     columnOrder: string[];
     autoSort?: boolean;
+    isFamilyMember?: boolean;
+    isLastInFamily?: boolean;
 }
 
 interface AccountRowContentProps {
@@ -142,6 +146,7 @@ interface AccountRowContentProps {
     quotaProvider?: 'gemini' | 'claude';
     showLastUsed?: boolean;
     columnOrder: string[];
+    isFamilyMember?: boolean;
 }
 
 // ============================================================================
@@ -206,6 +211,8 @@ function SortableAccountRow({
     showLastUsed,
     columnOrder,
     autoSort = false,
+    isFamilyMember = false,
+    isLastInFamily = false,
 }: SortableRowProps) {
     const { t } = useTranslation();
     const hasAnyActiveTarget = useAccountStore((state) => state.hasAnyActiveTarget);
@@ -220,19 +227,22 @@ function SortableAccountRow({
         isDragging: isSortableDragging,
     } = useSortable({ id: account.id, disabled: autoSort });
 
-    const style = {
+    const style: React.CSSProperties = {
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isSortableDragging ? 0.5 : 1,
         zIndex: isSortableDragging ? 1000 : 'auto',
+        borderColor: isFamilyMember ? 'var(--color-badge-border)' : undefined,
     };
 
     return (
         <tr
             ref={setNodeRef}
-            style={style as React.CSSProperties}
+            style={style}
             className={cn(
                 "group transition-colors border-b border-gray-100 dark:border-base-200",
+                isFamilyMember && "border-l-2 border-r-2 border-dashed bg-[rgba(var(--color-accent-rgb,147,233,190),0.02)]",
+                isFamilyMember && isLastInFamily && "border-b-2 border-dashed",
                 account.validation_blocked && "bg-amber-500/[0.06] dark:bg-amber-950/20 border-l-4 border-l-amber-500",
                 isAnyActive && !account.validation_blocked && "bg-[rgba(var(--color-accent-rgb),0.04)]",
                 isDragging && "bg-[rgba(var(--color-accent-rgb),0.12)] shadow-lg",
@@ -289,6 +299,7 @@ function SortableAccountRow({
                 quotaProvider={quotaProvider}
                 showLastUsed={showLastUsed}
                 columnOrder={columnOrder}
+                isFamilyMember={isFamilyMember}
             />
         </tr>
     );
@@ -319,6 +330,7 @@ function AccountRowContent({
     quotaProvider = 'gemini',
     showLastUsed,
     columnOrder,
+    isFamilyMember,
 }: AccountRowContentProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
@@ -429,6 +441,20 @@ function AccountRowContent({
                 </span>
 
                 <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                    {isFamilyMember && (
+                        <span 
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-extrabold border select-none"
+                            style={{
+                                backgroundColor: 'var(--color-badge-bg)',
+                                color: 'var(--color-accent)',
+                                borderColor: 'var(--color-badge-border)',
+                            }}
+                            title={t('accounts.family_group_desc', 'Accounts sharing the same pooled family quota')}
+                        >
+                            <Users className="w-2.5 h-2.5" />
+                            {t('accounts.family_badge', 'Family')}
+                        </span>
+                    )}
                     {isPlatformActive && (
                         <span 
                             className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-extrabold border"
@@ -1176,6 +1202,8 @@ function AccountTable({
         );
     }
 
+    const { accountFamilyMap } = useMemo(() => clusterAccountsByFamily(accounts), [accounts]);
+
     return (
         <DndContext
             sensors={sensors}
@@ -1204,34 +1232,87 @@ function AccountTable({
                     </thead>
                     <SortableContext items={accountIds} strategy={verticalListSortingStrategy}>
                         <tbody className="divide-y divide-gray-100 dark:divide-base-200">
-                            {accounts.map((account) => (
-                                <SortableAccountRow
-                                    key={account.id}
-                                    account={account}
-                                    selected={selectedIds.has(account.id)}
-                                    isRefreshing={refreshingIds.has(account.id)}
-                                    isCurrent={account.id === currentAccountId}
-                                    isSwitching={account.id === switchingAccountId}
-                                    switchingTarget={account.id === switchingAccountId ? switchingTarget : null}
-                                    isDragging={account.id === activeId}
-                                    onSelect={() => onToggleSelect(account.id)}
-                                    onSwitch={(targetIde?: string) => onSwitch(account.id, targetIde)}
-                                    onRefresh={() => onRefresh(account.id)}
-                                    onViewDevice={() => onViewDevice(account.id)}
-                                    onViewDetails={() => onViewDetails(account.id)}
-                                    onExport={() => onExport(account.id)}
-                                    onDelete={() => onDelete(account.id)}
-                                    onToggleProxy={() => onToggleProxy(account.id)}
-                                    onWarmup={onWarmup ? () => onWarmup(account.id) : undefined}
-                                    onUpdateLabel={onUpdateLabel ? (label: string) => onUpdateLabel(account.id, label) : undefined}
-                                    onViewError={() => onViewError(account.id)}
-                                    quotaWindow={quotaWindow}
-                                    quotaProvider={quotaProvider}
-                                    showLastUsed={showLastUsed}
-                                    columnOrder={columnOrder}
-                                    autoSort={autoSort}
-                                />
-                            ))}
+                            {accounts.map((account) => {
+                                const family = accountFamilyMap.get(account.id);
+                                const isFamilyMember = Boolean(family && family.isFamily);
+                                const familyMembersInView = isFamilyMember
+                                    ? accounts.filter((a) => family!.accountIds.includes(a.id))
+                                    : [];
+                                const isFirstInFamily = isFamilyMember && familyMembersInView[0]?.id === account.id;
+                                const isLastInFamily = isFamilyMember && familyMembersInView[familyMembersInView.length - 1]?.id === account.id;
+
+                                return (
+                                    <Fragment key={account.id}>
+                                        {isFirstInFamily && (
+                                            <tr
+                                                key={`family-header-${family!.id}`}
+                                                className="border-t-2 border-l-2 border-r-2 border-dashed transition-colors"
+                                                style={{
+                                                    borderColor: 'var(--color-badge-border)',
+                                                    backgroundColor: 'rgba(var(--color-accent-rgb, 147, 233, 190), 0.04)',
+                                                }}
+                                            >
+                                                <td colSpan={3 + columnOrder.length} className="py-1 px-3">
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <span
+                                                                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white dark:bg-[#121714] border shadow-2xs select-none"
+                                                                style={{
+                                                                    borderColor: 'var(--color-badge-border)',
+                                                                    color: 'var(--color-accent)',
+                                                                }}
+                                                            >
+                                                                <Users className="w-3 h-3" style={{ color: 'var(--color-accent)' }} />
+                                                                <span>{t('accounts.family_group', 'Family Group')}</span>
+                                                                <span
+                                                                    className="text-[9px] font-mono px-1 rounded font-semibold"
+                                                                    style={{
+                                                                        backgroundColor: 'var(--color-badge-bg)',
+                                                                        color: 'var(--color-accent)',
+                                                                    }}
+                                                                >
+                                                                    {familyMembersInView.length}
+                                                                </span>
+                                                            </span>
+                                                            <span className="text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline">
+                                                                {t('accounts.family_group_desc', 'Accounts sharing the same pooled family quota')}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                        <SortableAccountRow
+                                            key={account.id}
+                                            account={account}
+                                            selected={selectedIds.has(account.id)}
+                                            isRefreshing={refreshingIds.has(account.id)}
+                                            isCurrent={account.id === currentAccountId}
+                                            isSwitching={account.id === switchingAccountId}
+                                            switchingTarget={account.id === switchingAccountId ? switchingTarget : null}
+                                            isDragging={account.id === activeId}
+                                            onSelect={() => onToggleSelect(account.id)}
+                                            onSwitch={(targetIde?: string) => onSwitch(account.id, targetIde)}
+                                            onRefresh={() => onRefresh(account.id)}
+                                            onViewDevice={() => onViewDevice(account.id)}
+                                            onViewDetails={() => onViewDetails(account.id)}
+                                            onExport={() => onExport(account.id)}
+                                            onDelete={() => onDelete(account.id)}
+                                            onToggleProxy={() => onToggleProxy(account.id)}
+                                            onWarmup={onWarmup ? () => onWarmup(account.id) : undefined}
+                                            onUpdateLabel={onUpdateLabel ? (label: string) => onUpdateLabel(account.id, label) : undefined}
+                                            onViewError={() => onViewError(account.id)}
+                                            quotaWindow={quotaWindow}
+                                            quotaProvider={quotaProvider}
+                                            showLastUsed={showLastUsed}
+                                            columnOrder={columnOrder}
+                                            autoSort={autoSort}
+                                            isFamilyMember={isFamilyMember}
+                                            isLastInFamily={isLastInFamily}
+                                        />
+                                    </Fragment>
+                                );
+                            })}
                         </tbody>
                     </SortableContext>
                 </table>

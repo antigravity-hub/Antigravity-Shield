@@ -298,6 +298,10 @@
       "cooldown_active": "Cooldown: {{seconds}}s",
       "tooltip": "Live status verified against Google Cloud Code upstream"
     },
+    "family_group": "Family Group",
+    "family_group_badge": "Family Group",
+    "family_group_desc": "Accounts sharing the same pooled family quota",
+    "family_badge": "Family",
     "account": "Account",
     "search_placeholder": "Search email...",
     "all": "All",

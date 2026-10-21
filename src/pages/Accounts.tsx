@@ -42,6 +42,7 @@ import { cn } from "../utils/cn";
 import { isTauri } from "../utils/env";
 import { request as invoke } from "../utils/request";
 import { getAccountWeeklyReset, isAccountQuotaExhausted } from "../utils/quota";
+import { reorderAccountsPreservingFamily } from "../utils/familyGroup";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { CONTAINER_MAX_WIDTH } from "../constants/layout";
@@ -407,8 +408,9 @@ function Accounts() {
 
   // Sort logic (Auto Sort: 优先可用account -> 排除已耗尽account排到末尾 -> 5H 剩余quota从高到低 -> 次级按周quota比例 -> 同级按 Weekly Reset 倒计时从多到少)
   const sortedAccounts = useMemo(() => {
+    let result: Account[] = [];
     if (!autoSort) {
-      return [...filteredAccounts].sort((a, b) => {
+      result = [...filteredAccounts].sort((a, b) => {
         const isUsableA = !a.disabled && !a.proxy_disabled && !a.quota?.is_forbidden && !a.validation_blocked;
         const isUsableB = !b.disabled && !b.proxy_disabled && !b.quota?.is_forbidden && !b.validation_blocked;
         if (isUsableA !== isUsableB) {
@@ -419,36 +421,39 @@ function Accounts() {
         if (exhA !== exhB) return exhA ? 1 : -1;
         return 0;
       });
+    } else {
+      result = [...filteredAccounts].sort((a, b) => {
+        const scoreA = getAccountQuotaScores(a);
+        const scoreB = getAccountQuotaScores(b);
+
+        // 0. Usable accounts first (disabled/error accounts to the very bottom)
+        if (scoreA.isUsable !== scoreB.isUsable) {
+          return scoreA.isUsable ? -1 : 1;
+        }
+
+        // 0.5. Exhausted accounts (0% 5h and 0% weekly) move to the bottom of usable accounts
+        const exhA = isAccountQuotaExhausted(a);
+        const exhB = isAccountQuotaExhausted(b);
+        if (exhA !== exhB) {
+          return exhA ? 1 : -1;
+        }
+
+        // 1. Primary: 5H Quota percentage (higher is better)
+        if (scoreB.fiveHourScore !== scoreA.fiveHourScore) {
+          return scoreB.fiveHourScore - scoreA.fiveHourScore;
+        }
+
+        // 2. Secondary: Weekly Quota percentage (higher is better)
+        if (scoreB.weeklyQuotaScore !== scoreA.weeklyQuotaScore) {
+          return scoreB.weeklyQuotaScore - scoreA.weeklyQuotaScore;
+        }
+
+        // 3. Tertiary (Tie-breaker): Weekly Reset hours (higher is better: e.g. 162h > 91h > 40h > 22h)
+        return scoreB.weeklyResetHours - scoreA.weeklyResetHours;
+      });
     }
-    return [...filteredAccounts].sort((a, b) => {
-      const scoreA = getAccountQuotaScores(a);
-      const scoreB = getAccountQuotaScores(b);
 
-      // 0. Usable accounts first (disabled/error accounts to the very bottom)
-      if (scoreA.isUsable !== scoreB.isUsable) {
-        return scoreA.isUsable ? -1 : 1;
-      }
-
-      // 0.5. Exhausted accounts (0% 5h and 0% weekly) move to the bottom of usable accounts
-      const exhA = isAccountQuotaExhausted(a);
-      const exhB = isAccountQuotaExhausted(b);
-      if (exhA !== exhB) {
-        return exhA ? 1 : -1;
-      }
-
-      // 1. Primary: 5H Quota percentage (higher is better)
-      if (scoreB.fiveHourScore !== scoreA.fiveHourScore) {
-        return scoreB.fiveHourScore - scoreA.fiveHourScore;
-      }
-
-      // 2. Secondary: Weekly Quota percentage (higher is better)
-      if (scoreB.weeklyQuotaScore !== scoreA.weeklyQuotaScore) {
-        return scoreB.weeklyQuotaScore - scoreA.weeklyQuotaScore;
-      }
-
-      // 3. Tertiary (Tie-breaker): Weekly Reset hours (higher is better: e.g. 162h > 91h > 40h > 22h)
-      return scoreB.weeklyResetHours - scoreA.weeklyResetHours;
-    });
+    return reorderAccountsPreservingFamily(result);
   }, [filteredAccounts, autoSort, quotaProvider]);
 
   // Pagination Logic
