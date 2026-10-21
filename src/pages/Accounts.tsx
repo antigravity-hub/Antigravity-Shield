@@ -528,15 +528,19 @@ function Accounts() {
       const targetAcc = accounts.find((a) => a.id === accountId);
       if (targetAcc?.validation_blocked) {
         await clearAccountValidation(accountId);
-        await refreshQuota(accountId);
-        showToast(
-          t("accounts.toast.validation_cleared", "Account validation block cleared and refreshed"),
-          "success"
-        );
-      } else {
-        await refreshQuota(accountId);
-        showToast(t("common.success"), "success");
       }
+      await refreshQuota(accountId);
+      if (targetAcc?.proxy_disabled) {
+        // If account was marked proxy_disabled (e.g. from prior TOS/suspension),
+        // auto-reinstate it in the proxy pool and reload fresh accounts state!
+        try {
+          await toggleProxyStatus(accountId, true);
+          await fetchAccounts();
+        } catch (e) {
+          console.warn("[Accounts] Failed to auto-reinstate proxy status:", e);
+        }
+      }
+      showToast(t("common.success"), "success");
     } catch (error) {
       showToast(`${t("common.error")}: ${error}`, "error");
     } finally {

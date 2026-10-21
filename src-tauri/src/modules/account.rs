@@ -2076,6 +2076,32 @@ pub fn update_account_quota(account_id: &str, quota: QuotaData) -> Result<(), St
                     account.proxy_disabled_reason = None;
                     account.proxy_disabled_at = None;
                 }
+
+                // [AUTO-RECOVERY] If account was previously marked proxy_disabled due to TOS/403 suspension,
+                // and the quota API call just succeeded without forbidden errors, automatically reinstate it!
+                if account.proxy_disabled
+                    && !q.is_forbidden
+                    && account
+                        .proxy_disabled_reason
+                        .as_ref()
+                        .map_or(false, |r| {
+                            r.contains("TOS Violation")
+                                || r.contains("Terms of Service")
+                                || r.contains("Forbidden")
+                                || r.contains("403")
+                        })
+                {
+                    crate::modules::logger::log_info(&format!(
+                        "[Quota] Account {} successfully recovered from Google suspension! Auto-reinstating proxy.",
+                        account.email
+                    ));
+                    account.proxy_disabled = false;
+                    account.proxy_disabled_reason = None;
+                    account.proxy_disabled_at = None;
+                    account.validation_blocked = false;
+                    account.validation_blocked_reason = None;
+                    account.validation_url = None;
+                }
             }
         }
     }
@@ -2109,6 +2135,8 @@ pub fn update_account_quota(account_id: &str, quota: QuotaData) -> Result<(), St
         if let Ok(mut index) = load_account_index() {
             if let Some(summary) = index.accounts.iter_mut().find(|a| a.id == account_id) {
                 summary.protected_models = account.protected_models.clone();
+                summary.proxy_disabled = account.proxy_disabled;
+                summary.validation_blocked = account.validation_blocked;
                 let _ = save_account_index(&index);
             }
         }
