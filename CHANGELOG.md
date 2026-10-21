@@ -3,6 +3,10 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.2.1 (2026-10-21)**:
+        -   **Accurate Subscription Tier Classification (`PRO (TRIAL)` vs `PRO (PAID)` vs `ULTRA`)**: Resolved subscription tier ambiguity by inspecting Google's authoritative `currentTier` object in `quota.rs` rather than promotional upgrade offers (`paidTier`). Added dedicated badge indicators across account cards and status HUDs to clearly separate promotional long trials from genuine paid Pro and Ultra accounts.
+        -   **Safe On-Demand Gemini 4 Argon Pipeline**: Purged forced Argon brain rewrites and persistent alert banners from the proxy gateway and UI. Gemini 4 Argon models are now dynamically queried and surfaced strictly on-demand for accounts with active upstream quota allocations (`disabled: false`), protecting trial users from 429 quota exhaustion errors.
+        -   **Embedded Toolkit v2.8.0 Integration**: Packaged and synchronized the official Antigravity Toolkit extension `v2.8.0` directly into Tauri embedded binary resources (`antigravity-toolkit.vsix`), delivering unified tier recognition across the IDE and Shield.
     *   **v6.2.0 (2026-10-20)**:
         -   **Gemini 4 Argon Support & Dynamic Hub Identity**: Dynamically synthesizes official Hub client metadata for upstream Google endpoints, unlocking the complete 38-model catalog (including `gemini-4-argon` and tier variants). Implemented runtime thinking budget floor clamp (>= 1024) to eliminate upstream Google 400 errors.
         -   **In-Place 503 Overload Self-Healing**: Resilient retry state machine automatically clamps thinking budget to 4000 upon receiving upstream 503/529 overload errors and retries in-place on the same account, preserving 100% prefix cache continuity.
