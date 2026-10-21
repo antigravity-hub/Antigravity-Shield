@@ -248,6 +248,10 @@
       "cooldown_active": "Espera: {{seconds}}s",
       "tooltip": "Status em tempo real verificado com o Google Cloud Code upstream"
     },
+    "family_group": "Grupo Familiar (Family Group)",
+    "family_group_badge": "Grupo Familiar",
+    "family_group_desc": "Contas compartilhando a mesma cota familiar do Google One",
+    "family_badge": "Família",
     "account": "Conta",
     "search_placeholder": "Pesquisar e-mail...",
     "all": "Todas",

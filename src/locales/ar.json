@@ -289,6 +289,10 @@
     "export_accounts_desc": "Export encrypted backup of active accounts"
   },
   "accounts": {
+    "family_group": "مجموعة العائلة (Family Group)",
+    "family_group_badge": "مجموعة العائلة",
+    "family_group_desc": "حسابات تتشارك في نفس رصيد حصة العائلة من Google One",
+    "family_badge": "عائلة",
     "account": "الحساب",
     "search_placeholder": "بحث عن بريد إلكتروني...",
     "all": "الكل",

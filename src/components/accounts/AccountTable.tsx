@@ -55,7 +55,7 @@ import { WeeklyCountdown } from './WeeklyCountdown';
 import { MODEL_CONFIG, sortModels, getModelProtectionKey, resolveQuotaModels, ensurePinnedImageSelector, getModelShortDisplayName } from '../../config/modelConfig';
 import { categorizeModel } from '../../utils/modelCategory';
 import { getAccountFiveHourReset, isAccountQuotaExhausted } from '../../utils/quota';
-import { clusterAccountsByFamily } from '../../utils/familyGroup';
+import { clusterAccountsByFamily, FamilyGroup } from '../../utils/familyGroup';
 import { cn } from '../../utils/cn';
 import { getValidationBlockedStatusLabel } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
@@ -95,6 +95,7 @@ interface AccountTableProps {
     quotaProvider?: 'gemini' | 'claude';
     showLastUsed?: boolean;
     autoSort?: boolean;
+    accountFamilyMap?: Map<string, FamilyGroup>;
 }
 
 interface SortableRowProps {
@@ -147,6 +148,7 @@ interface AccountRowContentProps {
     showLastUsed?: boolean;
     columnOrder: string[];
     isFamilyMember?: boolean;
+    isLastInFamily?: boolean;
 }
 
 // ============================================================================
@@ -241,8 +243,7 @@ function SortableAccountRow({
             style={style}
             className={cn(
                 "group transition-colors border-b border-gray-100 dark:border-base-200",
-                isFamilyMember && "border-l-2 border-r-2 border-dashed bg-[rgba(var(--color-accent-rgb,147,233,190),0.02)]",
-                isFamilyMember && isLastInFamily && "border-b-2 border-dashed",
+                isFamilyMember && "bg-[rgba(var(--color-accent-rgb,147,233,190),0.02)]",
                 account.validation_blocked && "bg-amber-500/[0.06] dark:bg-amber-950/20 border-l-4 border-l-amber-500",
                 isAnyActive && !account.validation_blocked && "bg-[rgba(var(--color-accent-rgb),0.04)]",
                 isDragging && "bg-[rgba(var(--color-accent-rgb),0.12)] shadow-lg",
@@ -253,7 +254,11 @@ function SortableAccountRow({
             )}
         >
             {/* Drag Handle */}
-            <td className="pl-2 py-1 w-8 align-middle">
+            <td className={cn(
+                "pl-2 py-1 w-8 align-middle",
+                isFamilyMember && "border-l-2 border-dashed border-[var(--color-badge-border)]",
+                isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+            )}>
                 <div
                     {...(autoSort ? {} : attributes)}
                     {...(autoSort ? {} : listeners)}
@@ -269,7 +274,10 @@ function SortableAccountRow({
                 </div>
             </td>
             {/* Checkbox */}
-            <td className="px-2 py-1 w-10 align-middle">
+            <td className={cn(
+                "px-2 py-1 w-10 align-middle",
+                isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+            )}>
                 <input
                     type="checkbox"
                     className="checkbox checkbox-sm rounded border-2 border-gray-400 dark:border-gray-500 checked:border-blue-600 checked:bg-blue-600 [--chkbg:theme(colors.blue.600)] [--chkfg:white]"
@@ -300,6 +308,7 @@ function SortableAccountRow({
                 showLastUsed={showLastUsed}
                 columnOrder={columnOrder}
                 isFamilyMember={isFamilyMember}
+                isLastInFamily={isLastInFamily}
             />
         </tr>
     );
@@ -331,6 +340,7 @@ function AccountRowContent({
     showLastUsed,
     columnOrder,
     isFamilyMember,
+    isLastInFamily,
 }: AccountRowContentProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
@@ -431,7 +441,10 @@ function AccountRowContent({
     });
 
     const renderEmailCell = () => (
-        <td key="email" className="px-2 py-1 align-middle min-w-[160px] max-w-[260px]">
+        <td key="email" className={cn(
+            "px-2 py-1 align-middle min-w-[160px] max-w-[260px]",
+            isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+        )}>
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                 <span className={cn(
                     "font-medium text-sm truncate max-w-[180px] xl:max-w-[240px] inline-block transition-colors",
@@ -647,7 +660,10 @@ function AccountRowContent({
         const hasValidationUrl = Boolean(validationUrl);
 
         return (
-            <td key="models" className="px-2 py-1 align-middle min-w-[260px]">
+            <td key="models" className={cn(
+                "px-2 py-1 align-middle min-w-[260px]",
+                isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+            )}>
                 {isTos ? (
                     <div className="flex items-center justify-between gap-2.5 py-1.5 px-3 rounded-xl border bg-red-500/10 dark:bg-red-900/20 border-red-500/30 dark:border-red-500/30 shadow-sm animate-fadeIn">
                         <div className="flex items-center gap-2 min-w-0">
@@ -846,7 +862,10 @@ function AccountRowContent({
     const renderFiveHourCell = () => {
         if (account.validation_blocked) {
             return (
-                <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]">
+                <td key="five_hour" className={cn(
+                    "px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]",
+                    isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+                )}>
                     <span className="text-[11px] text-amber-600/70 dark:text-amber-400/70 font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
                         —
                     </span>
@@ -857,7 +876,10 @@ function AccountRowContent({
         const fiveHour = getAccountFiveHourReset(account, quotaProvider);
         if (!fiveHour.isAvailable) {
             return (
-                <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]">
+                <td key="five_hour" className={cn(
+                    "px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]",
+                    isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+                )}>
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
                         N/A (Free)
                     </span>
@@ -877,7 +899,10 @@ function AccountRowContent({
             : readyTooltip;
 
         return (
-            <td key="five_hour" className="px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]">
+            <td key="five_hour" className={cn(
+                "px-2 py-1 align-middle whitespace-nowrap w-[86px] min-w-[80px]",
+                isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+            )}>
                 <div className="flex items-center gap-1.5" title={isWarmed ? warmedTooltip : (isReady ? readyTooltip : countdownTooltip)}>
                     {isWarmed ? (
                         <div className="flex items-center gap-1">
@@ -909,7 +934,10 @@ function AccountRowContent({
     const renderWeeklyCell = () => {
         if (account.validation_blocked) {
             return (
-                <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[114px]">
+                <td key="weekly" className={cn(
+                    "px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[114px]",
+                    isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+                )}>
                     <span className="text-[11px] text-amber-600/70 dark:text-amber-400/70 font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
                         —
                     </span>
@@ -918,14 +946,20 @@ function AccountRowContent({
         }
 
         return (
-            <td key="weekly" className="px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[114px]">
+            <td key="weekly" className={cn(
+                "px-2 py-1 align-middle whitespace-nowrap w-[118px] min-w-[114px]",
+                isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+            )}>
                 <WeeklyCountdown account={account} provider={quotaProvider} layout="table" />
             </td>
         );
     };
 
     const renderLastUsedCell = () => (
-        <td key="last_used" className="px-2 py-1 align-middle w-[85px] min-w-[80px]">
+        <td key="last_used" className={cn(
+            "px-2 py-1 align-middle w-[85px] min-w-[80px]",
+            isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
+        )}>
             <div className="flex flex-col">
                 <span className="text-xs font-medium text-gray-600 dark:text-gray-400 font-mono whitespace-nowrap">
                     {new Date(account.last_used * 1000).toLocaleDateString()}
@@ -957,7 +991,9 @@ function AccountRowContent({
                         ? "bg-slate-50 dark:bg-[#0c1422]"
                         : "bg-white dark:bg-base-100",
                 !isAnyActive && !isExhausted && "group-hover:bg-gray-50 dark:group-hover:bg-base-200",
-                isAnyActive && "group-hover:bg-emerald-50/80 dark:group-hover:bg-[#0a2f26]"
+                isAnyActive && "group-hover:bg-emerald-50/80 dark:group-hover:bg-[#0a2f26]",
+                isFamilyMember && "border-r-2 border-dashed border-[var(--color-badge-border)]",
+                isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
             )}>
                 <AccountActionControls
                     account={account}
@@ -1017,6 +1053,7 @@ function AccountTable({
     quotaProvider = 'gemini',
     showLastUsed = false,
     autoSort = false,
+    accountFamilyMap: propAccountFamilyMap,
 }: AccountTableProps) {
     const { t } = useTranslation();
 
@@ -1202,7 +1239,10 @@ function AccountTable({
         );
     }
 
-    const { accountFamilyMap } = useMemo(() => clusterAccountsByFamily(accounts), [accounts]);
+    const accountFamilyMap = useMemo(() => {
+        if (propAccountFamilyMap) return propAccountFamilyMap;
+        return clusterAccountsByFamily(accounts).accountFamilyMap;
+    }, [propAccountFamilyMap, accounts]);
 
     return (
         <DndContext
@@ -1240,23 +1280,27 @@ function AccountTable({
                                     : [];
                                 const isFirstInFamily = isFamilyMember && familyMembersInView[0]?.id === account.id;
                                 const isLastInFamily = isFamilyMember && familyMembersInView[familyMembersInView.length - 1]?.id === account.id;
+                                const totalFamilyCount = family ? family.accountIds.length : familyMembersInView.length;
 
                                 return (
                                     <Fragment key={account.id}>
                                         {isFirstInFamily && (
                                             <tr
                                                 key={`family-header-${family!.id}`}
-                                                className="border-t-2 border-l-2 border-r-2 border-dashed transition-colors"
-                                                style={{
-                                                    borderColor: 'var(--color-badge-border)',
-                                                    backgroundColor: 'rgba(var(--color-accent-rgb, 147, 233, 190), 0.04)',
-                                                }}
+                                                className="transition-colors"
                                             >
-                                                <td colSpan={3 + columnOrder.length} className="py-1 px-3">
+                                                <td
+                                                    colSpan={3 + columnOrder.length}
+                                                    className="py-1 px-3 border-t-2 border-l-2 border-r-2 border-dashed"
+                                                    style={{
+                                                        borderColor: 'var(--color-badge-border)',
+                                                        backgroundColor: 'rgba(var(--color-accent-rgb, 147, 233, 190), 0.04)',
+                                                    }}
+                                                >
                                                     <div className="flex items-center justify-between gap-2">
                                                         <div className="flex items-center gap-2">
                                                             <span
-                                                                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white dark:bg-[#121714] border shadow-2xs select-none"
+                                                                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white dark:bg-base-100 border shadow-2xs select-none"
                                                                 style={{
                                                                     borderColor: 'var(--color-badge-border)',
                                                                     color: 'var(--color-accent)',
@@ -1271,7 +1315,7 @@ function AccountTable({
                                                                         color: 'var(--color-accent)',
                                                                     }}
                                                                 >
-                                                                    {familyMembersInView.length}
+                                                                    {totalFamilyCount}
                                                                 </span>
                                                             </span>
                                                             <span className="text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline">

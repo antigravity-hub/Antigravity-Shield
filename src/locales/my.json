@@ -109,6 +109,10 @@
     }
   },
   "accounts": {
+    "family_group": "မိသားစုအုပ်စု (Family Group)",
+    "family_group_badge": "မိသားစုအုပ်စု",
+    "family_group_desc": "တူညီသော Google One မိသားစု ခွဲတမ်းကို မျှဝေသုံးစွဲနေသော အကောင့်များ",
+    "family_badge": "မိသားစု",
     "account": "အကောင့်",
     "search_placeholder": "အီးမေးလ် ရှာရန်...",
     "all": "Semua",

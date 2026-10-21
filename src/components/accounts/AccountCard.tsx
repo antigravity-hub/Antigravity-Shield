@@ -3,7 +3,7 @@
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
 import { useMemo, useState } from 'react';
-import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy, QrCode, AlertTriangle } from 'lucide-react';
+import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy, QrCode, AlertTriangle, Users } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
 import { cn } from '../../utils/cn';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +40,7 @@ interface AccountCardProps {
     onViewError: () => void;
     quotaWindow?: '5h' | 'weekly';
     quotaProvider?: 'gemini' | 'claude';
+    isFamilyMember?: boolean;
 }
 
 // Use unified model configuration
@@ -50,7 +51,7 @@ const DEFAULT_MODELS = Object.entries(MODEL_CONFIG).map(([id, config]) => ({
     Icon: config.Icon
 }));
 
-function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, isRefreshing, isSwitching = false, switchingTarget, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow, quotaProvider = 'gemini' }: AccountCardProps) {
+function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, isRefreshing, isSwitching = false, switchingTarget, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice, onWarmup, onUpdateLabel, onViewError, quotaWindow, quotaProvider = 'gemini', isFamilyMember }: AccountCardProps) {
     const { t } = useTranslation();
     const { config, showAllQuotas } = useConfigStore();
     const isTargetActiveForAccount = useAccountStore((state) => state.isTargetActiveForAccount);
@@ -248,6 +249,20 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                     </h3>
                     <div className="flex items-center justify-between w-full gap-2">
                         <div className="flex items-center gap-1.5 flex-wrap">
+                            {isFamilyMember && (
+                                <span
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-extrabold border select-none"
+                                    style={{
+                                        backgroundColor: 'var(--color-badge-bg)',
+                                        color: 'var(--color-badge-text)',
+                                        borderColor: 'var(--color-badge-border)',
+                                    }}
+                                    title={t('accounts.family_group_desc', 'Accounts sharing the same pooled family quota')}
+                                >
+                                    <Users className="w-2.5 h-2.5" style={{ color: 'var(--color-accent)' }} />
+                                    {t('accounts.family_badge', 'Family')}
+                                </span>
+                            )}
                             {isPlatformActive && (
                                 <span 
                                     className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-extrabold border"

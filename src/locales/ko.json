@@ -120,6 +120,10 @@
     }
   },
   "accounts": {
+    "family_group": "가족 그룹 (Family Group)",
+    "family_group_badge": "가족 그룹",
+    "family_group_desc": "동일한 Google One 가족 풀 할당량을 공유하는 계정",
+    "family_badge": "가족",
     "account": "계정",
     "search_placeholder": "이메일 검색...",
     "all": "전체",

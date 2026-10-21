@@ -120,6 +120,10 @@
     }
   },
   "accounts": {
+    "family_group": "ファミリーグループ (Family Group)",
+    "family_group_badge": "ファミリーグループ",
+    "family_group_desc": "同じGoogle Oneファミリー共有クォータプールを共有しているアカウント",
+    "family_badge": "ファミリー",
     "account": "アカウント",
     "search_placeholder": "メールを検索...",
     "all": "すべて",

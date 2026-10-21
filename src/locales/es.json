@@ -120,6 +120,10 @@
     }
   },
   "accounts": {
+    "family_group": "Grupo familiar (Family Group)",
+    "family_group_badge": "Grupo familiar",
+    "family_group_desc": "Cuentas que comparten la misma cuota familiar agrupada de Google One",
+    "family_badge": "Familia",
     "account": "Cuenta",
     "search_placeholder": "Buscar correo...",
     "all": "Todas",

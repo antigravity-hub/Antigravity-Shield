@@ -24,12 +24,15 @@ export interface AccountFamilyInfo {
 export interface QuotaFingerprint {
     weeklyResetSec: number | null;
     fiveHourResetSec: number | null;
+    weeklyFraction: number | null;
+    fiveHourFraction: number | null;
     modelResets: Record<string, number>;
+    modelFractions: Record<string, number>;
     subscriptionTier?: string;
 }
 
 /**
- * Extracts normalized epoch-second timestamps for weekly, 5h, and model-level quota resets.
+ * Extracts normalized epoch-second timestamps and fractions for weekly, 5h, and model-level quota resets.
  */
 export function extractAccountQuotaFingerprint(account: Account): QuotaFingerprint {
     const weeklyInfo = getAccountWeeklyReset(account, 'gemini');
@@ -45,11 +48,19 @@ export function extractAccountQuotaFingerprint(account: Account): QuotaFingerpri
     const weeklyResetSec = toSec(weeklyInfo.resetTime);
     const fiveHourResetSec = toSec(fiveHourInfo.resetTime);
 
+    let weeklyFraction: number | null = null;
+    let fiveHourFraction: number | null = null;
     const modelResets: Record<string, number> = {};
+    const modelFractions: Record<string, number> = {};
+
     for (const m of account.quota?.models || []) {
         const sec = toSec(m.reset_time);
+        const name = m.name.toLowerCase();
         if (sec !== null) {
-            modelResets[m.name.toLowerCase()] = sec;
+            modelResets[name] = sec;
+        }
+        if (typeof m.percentage === 'number') {
+            modelFractions[name] = m.percentage / 100;
         }
     }
 
@@ -57,9 +68,19 @@ export function extractAccountQuotaFingerprint(account: Account): QuotaFingerpri
     for (const group of account.quota?.quota_groups || []) {
         for (const bucket of group.buckets || []) {
             const sec = toSec(bucket.reset_time);
+            const bId = (bucket.bucket_id || bucket.window || '').toLowerCase();
+            const bWindow = (bucket.window || '').toLowerCase();
             if (sec !== null) {
-                const bId = (bucket.bucket_id || bucket.window || '').toLowerCase();
                 modelResets[`bucket:${bId}`] = sec;
+            }
+            if (typeof bucket.remaining_fraction === 'number') {
+                modelFractions[`bucket:${bId}`] = bucket.remaining_fraction;
+                if (bId.includes('week') || bWindow.includes('week')) {
+                    weeklyFraction = bucket.remaining_fraction;
+                }
+                if (bId.includes('5h') || bWindow.includes('5h') || (!bId.includes('week') && bWindow.includes('hour'))) {
+                    fiveHourFraction = bucket.remaining_fraction;
+                }
             }
         }
     }
@@ -67,7 +88,10 @@ export function extractAccountQuotaFingerprint(account: Account): QuotaFingerpri
     return {
         weeklyResetSec,
         fiveHourResetSec,
+        weeklyFraction,
+        fiveHourFraction,
         modelResets,
+        modelFractions,
         subscriptionTier: account.quota?.subscription_tier?.toLowerCase(),
     };
 }
@@ -84,21 +108,35 @@ export function areAccountsInSameFamily(a: Account, b: Account): boolean {
     const fpA = extractAccountQuotaFingerprint(a);
     const fpB = extractAccountQuotaFingerprint(b);
 
-    // If both have weekly resets and they do NOT match, they cannot be in the same Google Family
+    // Negative guard 1: If both have weekly resets and they do NOT match down to the second, NOT family
     if (fpA.weeklyResetSec !== null && fpB.weeklyResetSec !== null) {
         if (Math.abs(fpA.weeklyResetSec - fpB.weeklyResetSec) > 1) {
             return false;
         }
     }
 
-    // If both have 5-hour resets and they do NOT match, they cannot be in the same Google Family
+    // Negative guard 2: If both have 5-hour resets and they do NOT match down to the second, NOT family
     if (fpA.fiveHourResetSec !== null && fpB.fiveHourResetSec !== null) {
         if (Math.abs(fpA.fiveHourResetSec - fpB.fiveHourResetSec) > 1) {
             return false;
         }
     }
 
-    // Rule 1: Both have valid weekly reset AND 5-hour reset matching down to the second (tolerance <= 1s)
+    // Negative guard 3: If both have weekly remaining fractions and they differ by > 0.05, NOT pooled
+    if (fpA.weeklyFraction !== null && fpB.weeklyFraction !== null) {
+        if (Math.abs(fpA.weeklyFraction - fpB.weeklyFraction) > 0.05) {
+            return false;
+        }
+    }
+
+    // Negative guard 4: If both have 5-hour remaining fractions and they differ by > 0.05, NOT pooled
+    if (fpA.fiveHourFraction !== null && fpB.fiveHourFraction !== null) {
+        if (Math.abs(fpA.fiveHourFraction - fpB.fiveHourFraction) > 0.05) {
+            return false;
+        }
+    }
+
+    // Rule 1 (Primary - User spec): Both have valid weekly reset AND 5-hour reset matching down to the second (<= 1s)
     if (fpA.weeklyResetSec !== null && fpB.weeklyResetSec !== null && fpA.fiveHourResetSec !== null && fpB.fiveHourResetSec !== null) {
         const weeklyMatch = Math.abs(fpA.weeklyResetSec - fpB.weeklyResetSec) <= 1;
         const fiveHourMatch = Math.abs(fpA.fiveHourResetSec - fpB.fiveHourResetSec) <= 1;
@@ -115,31 +153,38 @@ export function areAccountsInSameFamily(a: Account, b: Account): boolean {
             for (const [modelName, secA] of Object.entries(fpA.modelResets)) {
                 const secB = fpB.modelResets[modelName];
                 if (secB !== undefined && Math.abs(secA - secB) <= 1) {
-                    return true;
+                    // Check quota fraction correlation on this model if available
+                    const fracA = fpA.modelFractions[modelName];
+                    const fracB = fpB.modelFractions[modelName];
+                    if (fracA !== undefined && fracB !== undefined) {
+                        if (Math.abs(fracA - fracB) <= 0.05) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
                 }
-            }
-            // Check paid tier match (Pro / Ultra subscription periods align to the exact second)
-            const isPaidA = fpA.subscriptionTier?.includes('pro') || fpA.subscriptionTier?.includes('ultra');
-            const isPaidB = fpB.subscriptionTier?.includes('pro') || fpB.subscriptionTier?.includes('ultra');
-            if (isPaidA && isPaidB && fpA.subscriptionTier === fpB.subscriptionTier) {
-                return true;
             }
         }
     }
 
-    // Rule 3: Both have 5-hour reset matching down to the second AND primary model matching
+    // Rule 3: Both have 5-hour reset matching down to the second AND model reset matching
     if (fpA.fiveHourResetSec !== null && fpB.fiveHourResetSec !== null) {
         const fiveHourMatch = Math.abs(fpA.fiveHourResetSec - fpB.fiveHourResetSec) <= 1;
         if (fiveHourMatch) {
-            let sharedModelMatches = 0;
             for (const [modelName, secA] of Object.entries(fpA.modelResets)) {
                 const secB = fpB.modelResets[modelName];
                 if (secB !== undefined && Math.abs(secA - secB) <= 1) {
-                    sharedModelMatches++;
+                    const fracA = fpA.modelFractions[modelName];
+                    const fracB = fpB.modelFractions[modelName];
+                    if (fracA !== undefined && fracB !== undefined) {
+                        if (Math.abs(fracA - fracB) <= 0.05) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
                 }
-            }
-            if (sharedModelMatches >= 1) {
-                return true;
             }
         }
     }
@@ -312,13 +357,34 @@ export function getDistinctCapacityUnits<T extends { id?: string; quota?: any }>
         seenFamilies.add(group.id);
 
         // Pick representative account for this family pool:
-        // 1. If the current active account is in this family, prefer it
-        // 2. Otherwise pick the member present in accounts
+        // 1. Prefer member with valid, non-empty, non-forbidden quota models
+        // 2. If current active account is in this family and has valid quota, prefer it
+        // 3. Otherwise pick the member with the freshest quota update (latest last_updated timestamp)
         const familyMembersInList = accounts.filter((a) => group.accountIds.includes(a.id || ''));
-        const representative =
-            (currentAccountId && familyMembersInList.find((a) => a.id === currentAccountId)) ||
-            familyMembersInList[0] ||
-            acc;
+        const membersWithValidQuota = familyMembersInList.filter(
+            (m) => m.quota && Array.isArray(m.quota.models) && m.quota.models.length > 0 && !m.quota.is_forbidden
+        );
+
+        let representative: T;
+        if (membersWithValidQuota.length > 0) {
+            const activeMember = currentAccountId
+                ? membersWithValidQuota.find((m) => m.id === currentAccountId)
+                : null;
+            if (activeMember) {
+                representative = activeMember;
+            } else {
+                representative = membersWithValidQuota.reduce((freshest, curr) => {
+                    const freshestTime = freshest.quota?.last_updated || 0;
+                    const currTime = curr.quota?.last_updated || 0;
+                    return currTime > freshestTime ? curr : freshest;
+                });
+            }
+        } else {
+            representative =
+                (currentAccountId && familyMembersInList.find((a) => a.id === currentAccountId)) ||
+                familyMembersInList[0] ||
+                acc;
+        }
 
         capacityUnits.push(representative);
     }

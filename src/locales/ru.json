@@ -120,6 +120,10 @@
     }
   },
   "accounts": {
+    "family_group": "Семейная группа (Family Group)",
+    "family_group_badge": "Семейная группа",
+    "family_group_desc": "Аккаунты, использующие общий пул семейной квоты Google One",
+    "family_badge": "Семья",
     "account": "Аккаунт",
     "search_placeholder": "Поиск почты...",
     "all": "Все",

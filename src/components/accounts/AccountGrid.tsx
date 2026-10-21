@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Users } from 'lucide-react';
 import { Account } from '../../types/account';
 import AccountCard from './AccountCard';
-import { clusterAccountsByFamily } from '../../utils/familyGroup';
+import { clusterAccountsByFamily, FamilyGroup } from '../../utils/familyGroup';
 
 interface AccountGridProps {
     accounts: Account[];
@@ -29,6 +29,7 @@ interface AccountGridProps {
     onViewError: (accountId: string) => void;
     quotaWindow?: '5h' | 'weekly';
     quotaProvider?: 'gemini' | 'claude';
+    accountFamilyMap?: Map<string, FamilyGroup>;
 }
 
 function AccountGrid({
@@ -51,21 +52,22 @@ function AccountGrid({
     onViewError,
     quotaWindow,
     quotaProvider,
+    accountFamilyMap,
 }: AccountGridProps) {
     const { t } = useTranslation();
 
     const displayChunks = useMemo(() => {
         if (accounts.length === 0) return [];
-        const { accountFamilyMap } = clusterAccountsByFamily(accounts);
+        const familyMap = accountFamilyMap || clusterAccountsByFamily(accounts).accountFamilyMap;
         const chunks: Array<
             | { type: 'single'; account: Account }
-            | { type: 'family'; familyId: string; accounts: Account[] }
+            | { type: 'family'; familyId: string; accounts: Account[]; totalFamilySize: number }
         > = [];
 
         const seenFamilyIds = new Set<string>();
 
         for (const account of accounts) {
-            const family = accountFamilyMap.get(account.id);
+            const family = familyMap.get(account.id);
             if (family && family.isFamily) {
                 if (seenFamilyIds.has(family.id)) {
                     continue;
@@ -77,6 +79,7 @@ function AccountGrid({
                     type: 'family',
                     familyId: family.id,
                     accounts: membersInView,
+                    totalFamilySize: family.accountIds.length,
                 });
             } else {
                 chunks.push({
@@ -87,7 +90,7 @@ function AccountGrid({
         }
 
         return chunks;
-    }, [accounts]);
+    }, [accounts, accountFamilyMap]);
 
     if (accounts.length === 0) {
         return (
@@ -125,6 +128,7 @@ function AccountGrid({
                             onViewError={() => onViewError(account.id)}
                             quotaWindow={quotaWindow}
                             quotaProvider={quotaProvider}
+                            isFamilyMember={false}
                         />
                     );
                 }
@@ -141,7 +145,7 @@ function AccountGrid({
                     >
                         {/* Corner Badge on the dashed border line */}
                         <div
-                            className="absolute -top-3 start-4 px-2.5 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 shadow-sm bg-white dark:bg-[#121714] border select-none"
+                            className="absolute -top-3 start-4 px-2.5 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 shadow-sm bg-white dark:bg-base-100 border select-none"
                             style={{
                                 borderColor: 'var(--color-badge-border)',
                                 color: 'var(--color-accent)',
@@ -184,6 +188,7 @@ function AccountGrid({
                                     onViewError={() => onViewError(account.id)}
                                     quotaWindow={quotaWindow}
                                     quotaProvider={quotaProvider}
+                                    isFamilyMember={true}
                                 />
                             ))}
                         </div>

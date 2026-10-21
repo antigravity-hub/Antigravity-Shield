@@ -42,7 +42,7 @@ import { cn } from "../utils/cn";
 import { isTauri } from "../utils/env";
 import { request as invoke } from "../utils/request";
 import { getAccountWeeklyReset, isAccountQuotaExhausted } from "../utils/quota";
-import { reorderAccountsPreservingFamily } from "../utils/familyGroup";
+import { reorderAccountsPreservingFamily, clusterAccountsByFamily } from "../utils/familyGroup";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { CONTAINER_MAX_WIDTH } from "../constants/layout";
@@ -455,6 +455,12 @@ function Accounts() {
 
     return reorderAccountsPreservingFamily(result);
   }, [filteredAccounts, autoSort, quotaProvider]);
+
+  // Full family clustering map so family relationships are preserved across pagination boundaries
+  const { accountFamilyMap } = useMemo(
+    () => clusterAccountsByFamily(sortedAccounts),
+    [sortedAccounts]
+  );
 
   // Pagination Logic
   const paginatedAccounts = useMemo(() => {
@@ -1507,6 +1513,7 @@ function Accounts() {
                 quotaProvider={quotaProvider}
                 showLastUsed={showLastUsed}
                 autoSort={autoSort}
+                accountFamilyMap={accountFamilyMap}
               />
             </div>
           </div>
@@ -1537,6 +1544,7 @@ function Accounts() {
               onViewError={(id: string) => setErrorAccountId(id)}
               quotaWindow={quotaWindow}
               quotaProvider={quotaProvider}
+              accountFamilyMap={accountFamilyMap}
             />
           </div>
         )}
