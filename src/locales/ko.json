@@ -168,7 +168,10 @@
       "validation_required": "확인 필요",
       "risk_controlled": "위험 제어 / 속도 제한",
       "oauth_reauth_required": "OAuth 재인증 필요",
-      "violation_blocked": "위반으로 차단됨"
+      "violation_blocked": "위반으로 차단됨",
+      "region_restricted": "Region Restricted (400)",
+      "subscription_required": "License Required (403 #3501)",
+      "reauth_required": "Session Expired (401)"
     },
     "error_details": "오류 상세 정보",
     "error_status": "오류 상태",
@@ -353,7 +356,24 @@
       "batch_warmup_msg": "선택한 {{count}}개 계정에 대해 즉시 웜업을 트리거하시겠습니까?"
     },
     "switch_to_agy": "Antigravity CLI (agy)로 전환",
-    "drag_column_to_reorder": "열 머리글을 드래그하여 순서 변경"
+    "drag_column_to_reorder": "열 머리글을 드래그하여 순서 변경",
+    "error_dialog": {
+      "region_badge": "Region Geofence (400)",
+      "region_title": "Unsupported Geographic Region / IP Geofence",
+      "region_desc": "Google Gemini blocked this request because the exit IP node is located in an unsupported country or datacenter. Switch your VPN/Proxy outbound server to the United States, Germany, Japan, or Singapore, then click Re-check.",
+      "region_recommended": "Recommended Regions:",
+      "copy_proxy_advice": "Copy Proxy Recommendation",
+      "proxy_advice_copied": "Proxy advice copied to clipboard",
+      "subscription_badge": "License Required (403 #3501)",
+      "subscription_title": "Google One AI Premium / License Required",
+      "subscription_desc": "This account does not have an active Google One AI Premium or Gemini Advanced license (Error #3501). Pro models require an active subscription, or you can switch this workspace to Flash models.",
+      "subscription_btn": "Explore Google AI Premium",
+      "reauth_badge": "Session Expired (401 invalid_grant)",
+      "reauth_title": "OAuth Session Expired or Revoked",
+      "reauth_desc": "Google revoked this OAuth session (refresh token expired, account password changed, or signed out from another device). Re-authenticating this account will immediately restore access.",
+      "reauth_advice_copied": "Re-authentication advice copied to clipboard",
+      "copy_reauth_advice": "Copy Re-auth Command"
+    }
   },
   "settings": {
     "save": "설정 저장",

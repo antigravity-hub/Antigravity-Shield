@@ -147,7 +147,10 @@
     "status": {
       "forbidden": "403 Bị cấm",
       "disabled": "Tài khoản bị vô hiệu hóa",
-      "proxy_disabled": "Proxy bị vô hiệu hóa"
+      "proxy_disabled": "Proxy bị vô hiệu hóa",
+      "region_restricted": "Region Restricted (400)",
+      "subscription_required": "License Required (403 #3501)",
+      "reauth_required": "Session Expired (401)"
     },
     "error_details": "Chi tiết lỗi",
     "error_status": "Trạng thái lỗi",
@@ -305,7 +308,24 @@
       "batch_warmup_msg": "Bạn có chắc muốn chạy tác vụ làm nóng cho {{count}} tài khoản đã chọn ngay bây giờ?"
     },
     "switch_to_agy": "Switch to Antigravity CLI (agy)",
-    "drag_column_to_reorder": "Kéo tiêu đề cột để sắp xếp lại"
+    "drag_column_to_reorder": "Kéo tiêu đề cột để sắp xếp lại",
+    "error_dialog": {
+      "region_badge": "Region Geofence (400)",
+      "region_title": "Unsupported Geographic Region / IP Geofence",
+      "region_desc": "Google Gemini blocked this request because the exit IP node is located in an unsupported country or datacenter. Switch your VPN/Proxy outbound server to the United States, Germany, Japan, or Singapore, then click Re-check.",
+      "region_recommended": "Recommended Regions:",
+      "copy_proxy_advice": "Copy Proxy Recommendation",
+      "proxy_advice_copied": "Proxy advice copied to clipboard",
+      "subscription_badge": "License Required (403 #3501)",
+      "subscription_title": "Google One AI Premium / License Required",
+      "subscription_desc": "This account does not have an active Google One AI Premium or Gemini Advanced license (Error #3501). Pro models require an active subscription, or you can switch this workspace to Flash models.",
+      "subscription_btn": "Explore Google AI Premium",
+      "reauth_badge": "Session Expired (401 invalid_grant)",
+      "reauth_title": "OAuth Session Expired or Revoked",
+      "reauth_desc": "Google revoked this OAuth session (refresh token expired, account password changed, or signed out from another device). Re-authenticating this account will immediately restore access.",
+      "reauth_advice_copied": "Re-authentication advice copied to clipboard",
+      "copy_reauth_advice": "Copy Re-auth Command"
+    }
   },
   "settings": {
     "save": "Lưu Cài đặt",

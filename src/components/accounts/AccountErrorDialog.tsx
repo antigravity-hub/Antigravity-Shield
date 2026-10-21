@@ -2,7 +2,11 @@
  * Antigravity Shield — AI Proxy & Fleet Management Engine
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
-import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, ChevronRight, BookOpen, Sparkles, Send, QrCode } from 'lucide-react';
+import {
+    Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal,
+    ChevronDown, ChevronRight, BookOpen, Sparkles, Send, QrCode,
+    Globe, MapPin, CreditCard, KeyRound, RotateCcw, ShieldAlert
+} from 'lucide-react';
 import { QRCode } from 'antd';
 import { Account } from '../../types/account';
 import { formatDate } from '../../utils/format';
@@ -74,13 +78,54 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
     const { url: rawExtractedUrl, label: actionLabel } = extractActionInfo(rawReason);
     const actionUrl = directUrl || rawExtractedUrl;
 
-    // Identify error type
-    const isViolation = rawReason.toLowerCase().includes('terms of service') || rawReason.toLowerCase().includes('violation');
-    const isVerificationNeeded = !isViolation && (
+    const lowerReason = rawReason.toLowerCase();
+
+    // 1. Region / Location Geofence (400 / FAILED_PRECONDITION / location not supported)
+    const isRegionRestricted = lowerReason.includes('user location is not supported') ||
+        lowerReason.includes('location is not supported') ||
+        lowerReason.includes('geofenced') ||
+        lowerReason.includes('region restricted') ||
+        lowerReason.includes('country is not supported') ||
+        (lowerReason.includes('failed_precondition') && (lowerReason.includes('location') || lowerReason.includes('region')));
+
+    // 2. Subscription / License Required (403 #3501)
+    const isSubscriptionRequired = !isRegionRestricted && (
+        lowerReason.includes('subscription_required') ||
+        lowerReason.includes('subscription required') ||
+        lowerReason.includes('#3501') ||
+        lowerReason.includes('3501') ||
+        lowerReason.includes('valid license') ||
+        lowerReason.includes('request a license') ||
+        lowerReason.includes('google one ai premium')
+    );
+
+    // 3. OAuth Token Revoked / Expired (401 invalid_grant)
+    const isTokenRevoked = !isRegionRestricted && !isSubscriptionRequired && (
+        lowerReason.includes('invalid_grant') ||
+        lowerReason.includes('token has been expired or revoked') ||
+        lowerReason.includes('token revoked') ||
+        lowerReason.includes('token expired') ||
+        lowerReason.includes('invalid_token') ||
+        lowerReason.includes('oauth_reauth_required')
+    );
+
+    // 4. Terms of Service Violation / Account Disabled
+    const isViolation = !isRegionRestricted && !isSubscriptionRequired && !isTokenRevoked && (
+        lowerReason.includes('terms of service') ||
+        lowerReason.includes('tos_violation') ||
+        lowerReason.includes('consumer_suspended') ||
+        lowerReason.includes('account_disabled') ||
+        lowerReason.includes('violation') ||
+        (Boolean(directUrl) && (directUrl!.includes('forms.gle') || directUrl!.toLowerCase().includes('appeal')))
+    );
+
+    // 5. Human Identity Verification Challenge
+    const isVerificationNeeded = !isRegionRestricted && !isSubscriptionRequired && !isTokenRevoked && !isViolation && (
         isValidationBlocked ||
-        rawReason.toLowerCase().includes('verify your account') ||
-        rawReason.toLowerCase().includes('further action') ||
-        rawReason.toLowerCase().includes('validation required') ||
+        lowerReason.includes('verify your account') ||
+        lowerReason.includes('further action') ||
+        lowerReason.includes('validation required') ||
+        lowerReason.includes('validation_required') ||
         Boolean(actionUrl)
     );
 
@@ -137,46 +182,64 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                     </div>
                 </div>
 
-                {/* Status */}
+                {/* Status Badges */}
                 <div>
                     <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-1.5 ml-1">
                         {t('accounts.error_status')}
                     </label>
                     <div className="flex flex-wrap gap-2">
-                        {isForbidden && !isViolation && !isVerificationNeeded && !isValidationBlocked && (
-                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold ring-1 ring-red-200/50 dark:ring-red-900/20">
-                                <Lock className="w-3 h-3" />
-                                {t('accounts.status.forbidden')}
+                        {isRegionRestricted && (
+                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 text-xs font-bold ring-1 ring-amber-300/50 dark:ring-amber-800/40">
+                                <Globe className="w-3.5 h-3.5" />
+                                {t('accounts.status.region_restricted', 'Region Restricted (400)')}
+                            </span>
+                        )}
+                        {isSubscriptionRequired && (
+                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 text-xs font-bold ring-1 ring-purple-300/50 dark:ring-purple-800/40">
+                                <CreditCard className="w-3.5 h-3.5" />
+                                {t('accounts.status.subscription_required', 'License Required (403 #3501)')}
+                            </span>
+                        )}
+                        {isTokenRevoked && (
+                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300 text-xs font-bold ring-1 ring-rose-300/50 dark:ring-rose-800/40">
+                                <KeyRound className="w-3.5 h-3.5" />
+                                {t('accounts.status.reauth_required', 'Session Expired (401)')}
                             </span>
                         )}
                         {isViolation && (
                             <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold ring-1 ring-red-200/50 dark:ring-red-900/20">
-                                <Lock className="w-3 h-3" />
+                                <ShieldAlert className="w-3.5 h-3.5" />
                                 {t('accounts.status.violation_blocked', 'Disabled due to policy violation')}
+                            </span>
+                        )}
+                        {!isViolation && (isValidationBlocked || isVerificationNeeded) && (
+                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-xs font-bold ring-1 ring-blue-200/50 dark:ring-blue-900/20">
+                                <Clock className="w-3.5 h-3.5" />
+                                {t('accounts.status.validation_required', 'Account validation required')}
+                            </span>
+                        )}
+                        {isForbidden && !isRegionRestricted && !isSubscriptionRequired && !isTokenRevoked && !isViolation && !isVerificationNeeded && !isValidationBlocked && (
+                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 text-xs font-bold ring-1 ring-red-200/50 dark:ring-red-900/20">
+                                <Lock className="w-3.5 h-3.5" />
+                                {t('accounts.status.forbidden')}
                             </span>
                         )}
                         {isDisabled && (
                             <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 text-xs font-bold ring-1 ring-rose-200/50 dark:ring-rose-900/20">
-                                <Ban className="w-3 h-3" />
+                                <Ban className="w-3.5 h-3.5" />
                                 {t('accounts.status.disabled')}
                             </span>
                         )}
                         {isProxyDisabled && (
                             <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 text-xs font-bold ring-1 ring-orange-200/50 dark:ring-orange-900/20">
-                                <Ban className="w-3 h-3" />
+                                <Ban className="w-3.5 h-3.5" />
                                 {t('accounts.status.proxy_disabled')}
-                            </span>
-                        )}
-                        {!isViolation && (isValidationBlocked || isVerificationNeeded) && (
-                            <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs font-bold ring-1 ring-amber-200/50 dark:ring-amber-900/20">
-                                <Clock className="w-3 h-3" />
-                                {t('accounts.status.validation_required', 'Account validation required')}
                             </span>
                         )}
                     </div>
                 </div>
 
-                {/* Reason */}
+                {/* Reason Display */}
                 <div>
                     <div className="flex items-center justify-between mb-1.5 ml-1">
                         <label className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">
@@ -190,7 +253,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                             {showRaw ? t('common.show_parsed', 'Show Parsed') : t('common.show_raw', 'Show Raw')}
                         </button>
                     </div>
-                    <div className="text-xs text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/20 break-all leading-relaxed font-mono shadow-inner min-h-[80px] max-h-[40vh] overflow-y-auto scrollbar-thin scrollbar-thumb-red-200 dark:scrollbar-thumb-red-800">
+                    <div className="text-xs text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-900/10 p-4 rounded-xl border border-red-100 dark:border-red-900/20 break-all leading-relaxed font-mono shadow-inner min-h-[70px] max-h-[35vh] overflow-y-auto scrollbar-thin scrollbar-thumb-red-200 dark:scrollbar-thumb-red-800">
                         {showRaw ? (
                             <pre className="whitespace-pre-wrap break-all">{rawReason}</pre>
                         ) : (
@@ -198,66 +261,219 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                         )}
                     </div>
 
-                    {/* Action Buttons for Verification / Appeal */}
-                    {actionUrl && !showRaw && (
-                        <div className={`mt-3 p-3.5 rounded-xl border ${
-                            isViolation
-                                ? 'border-red-200 dark:border-red-800/60 bg-red-50/70 dark:bg-red-950/30'
-                                : 'border-blue-200 dark:border-blue-800/60 bg-blue-50/70 dark:bg-blue-950/30'
-                        }`}>
-                            <div className="flex items-start gap-2.5">
-                                <Sparkles className={`w-4 h-4 mt-0.5 shrink-0 ${isViolation ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'}`} />
-                                <div className="space-y-2 flex-1 min-w-0">
+                    {/* SMART DIAGNOSIS CARD 1: Region / Location Restriction */}
+                    {isRegionRestricted && !showRaw && (
+                        <div className="mt-3 p-4 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-gradient-to-br from-amber-50/90 via-amber-50/40 to-white dark:from-amber-950/40 dark:via-base-200/50 dark:to-base-100 shadow-sm">
+                            <div className="flex items-start gap-3">
+                                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20 shrink-0">
+                                    <Globe className="w-5 h-5" />
+                                </div>
+                                <div className="space-y-2.5 flex-1 min-w-0">
                                     <div className="flex items-center justify-between gap-2 flex-wrap">
-                                        <div className={`text-xs font-bold ${isViolation ? 'text-red-900 dark:text-red-200' : 'text-blue-900 dark:text-blue-200'}`}>
-                                            {isViolation
-                                                ? t('accounts.appeal_title', 'Google Policy Violation: Submit Official Appeal')
-                                                : t('accounts.verification_method_1_title', 'Method 1 (Fastest & Recommended): Verify in Browser or Scan with Another Phone')}
+                                        <div className="text-xs font-bold text-amber-900 dark:text-amber-200">
+                                            {t('accounts.error_dialog.region_title', 'Unsupported Geographic Region / IP Geo-fence')}
                                         </div>
-                                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                                            isViolation
-                                                ? 'bg-red-200 dark:bg-red-900/60 text-red-800 dark:text-red-200'
-                                                : 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
-                                        }`}>
-                                            {isViolation ? t('accounts.status.appeal_required', 'Appeal Required') : t('accounts.verification_guide.card_badge', 'Proven Solution')}
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-200 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 ring-1 ring-amber-300 dark:ring-amber-800">
+                                            {t('accounts.error_dialog.region_badge', 'Region Geofence (400)')}
                                         </span>
                                     </div>
-                                    <p className={`text-[11px] leading-relaxed ${isViolation ? 'text-red-700 dark:text-red-300' : 'text-blue-700 dark:text-blue-300'}`}>
-                                        {isViolation
-                                            ? t('accounts.appeal_desc', 'This account was disabled by Google for automated requests/TOS violation. Click below to submit an official appeal to Google to reinstate this account.')
-                                            : t('accounts.verification_method_1_desc', 'Open this direct verification link in your browser. If desktop verification loops or fails, scan or open the link on another mobile phone (preferably on cellular data) — Google trusts second devices and usually validates instantly without phone SMS!')}
+                                    <p className="text-[11px] leading-relaxed text-amber-800 dark:text-amber-300">
+                                        {t('accounts.error_dialog.region_desc', 'Google Gemini blocked this request because the exit IP node is located in an unsupported country or datacenter. Switch your VPN/Proxy outbound server to the United States, Germany, Japan, or Singapore, then click Re-check.')}
+                                    </p>
+                                    <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                                        <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                                            {t('accounts.error_dialog.region_recommended', 'Recommended Regions:')}
+                                        </span>
+                                        {['🇺🇸 United States', '🇩🇪 Germany', '🇯🇵 Japan', '🇸🇬 Singapore'].map((reg) => (
+                                            <span key={reg} className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white dark:bg-base-300 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-base-200 shadow-2xs">
+                                                <MapPin className="w-2.5 h-2.5 mr-1 text-amber-500" />
+                                                {reg}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <div className="pt-1 flex flex-wrap gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopyText(
+                                                'Switch proxy/VPN exit node to United States, Germany, Japan, or Singapore, then click Re-check in Shield.',
+                                                t('accounts.error_dialog.proxy_advice_copied', 'Proxy advice copied to clipboard')
+                                            )}
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-all shadow-md active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <Copy className="w-3.5 h-3.5" />
+                                            <span>{t('accounts.error_dialog.copy_proxy_advice', 'Copy Proxy Recommendation')}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SMART DIAGNOSIS CARD 2: Subscription / License Required (#3501) */}
+                    {isSubscriptionRequired && !showRaw && (
+                        <div className="mt-3 p-4 rounded-xl border border-purple-200 dark:border-purple-800/60 bg-gradient-to-br from-purple-50/90 via-purple-50/40 to-white dark:from-purple-950/40 dark:via-base-200/50 dark:to-base-100 shadow-sm">
+                            <div className="flex items-start gap-3">
+                                <div className="p-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 ring-1 ring-purple-500/20 shrink-0">
+                                    <CreditCard className="w-5 h-5" />
+                                </div>
+                                <div className="space-y-2.5 flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                                        <div className="text-xs font-bold text-purple-900 dark:text-purple-200">
+                                            {t('accounts.error_dialog.subscription_title', 'Google One AI Premium / License Required')}
+                                        </div>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-200 dark:bg-purple-900/60 text-purple-900 dark:text-purple-200 ring-1 ring-purple-300 dark:ring-purple-800">
+                                            {t('accounts.error_dialog.subscription_badge', 'License Required (403 #3501)')}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] leading-relaxed text-purple-800 dark:text-purple-300">
+                                        {t('accounts.error_dialog.subscription_desc', 'This account does not have an active Google One AI Premium or Gemini Advanced license (Error #3501). Pro models require an active subscription, or you can switch this workspace to Flash models.')}
+                                    </p>
+                                    <div className="pt-1 flex flex-wrap gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => openExternalUrl('https://one.google.com/explore-plan/ai-premium')}
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all shadow-md active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                            <span>{t('accounts.error_dialog.subscription_btn', 'Explore Google AI Premium')}</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopyText(
+                                                'Switch workspace models in Antigravity to Gemini 2.5 Flash to bypass subscription requirement #3501.',
+                                                t('common.copied', 'Copied to clipboard')
+                                            )}
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-white dark:bg-base-300 hover:bg-gray-100 dark:hover:bg-base-200 text-gray-800 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-700 transition-all active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <Copy className="w-3.5 h-3.5" />
+                                            <span>{t('common.copy_advice', 'Copy Model Switch Advice')}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SMART DIAGNOSIS CARD 3: Session Revoked / Re-Authentication Required (401) */}
+                    {isTokenRevoked && !showRaw && (
+                        <div className="mt-3 p-4 rounded-xl border border-rose-200 dark:border-rose-800/60 bg-gradient-to-br from-rose-50/90 via-rose-50/40 to-white dark:from-rose-950/40 dark:via-base-200/50 dark:to-base-100 shadow-sm">
+                            <div className="flex items-start gap-3">
+                                <div className="p-2 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 shrink-0">
+                                    <KeyRound className="w-5 h-5" />
+                                </div>
+                                <div className="space-y-2.5 flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                                        <div className="text-xs font-bold text-rose-900 dark:text-rose-200">
+                                            {t('accounts.error_dialog.reauth_title', 'OAuth Session Expired or Revoked')}
+                                        </div>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-200 dark:bg-rose-900/60 text-rose-900 dark:text-rose-200 ring-1 ring-rose-300 dark:ring-rose-800">
+                                            {t('accounts.error_dialog.reauth_badge', 'Session Expired (401 invalid_grant)')}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] leading-relaxed text-rose-800 dark:text-rose-300">
+                                        {t('accounts.error_dialog.reauth_desc', 'Google revoked this OAuth session (refresh token expired, account password changed, or signed out from another device). Re-authenticating this account will immediately restore access.')}
+                                    </p>
+                                    <div className="pt-1 flex flex-wrap gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopyText('gcloud auth login --update-adc', t('accounts.error_dialog.reauth_advice_copied', 'Re-authentication advice copied to clipboard'))}
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all shadow-md active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <RotateCcw className="w-3.5 h-3.5" />
+                                            <span>{t('accounts.error_dialog.copy_reauth_advice', 'Copy Re-auth Command')}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SMART DIAGNOSIS CARD 4: Terms of Service Violation / Appeal */}
+                    {isViolation && !showRaw && (
+                        <div className="mt-3 p-4 rounded-xl border border-red-200 dark:border-red-800/60 bg-gradient-to-br from-red-50/90 via-red-50/40 to-white dark:from-red-950/40 dark:via-base-200/50 dark:to-base-100 shadow-sm">
+                            <div className="flex items-start gap-3">
+                                <div className="p-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 ring-1 ring-red-500/20 shrink-0">
+                                    <ShieldAlert className="w-5 h-5" />
+                                </div>
+                                <div className="space-y-2.5 flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                                        <div className="text-xs font-bold text-red-900 dark:text-red-200">
+                                            {t('accounts.appeal_title', 'Google Policy Violation: Submit Official Appeal')}
+                                        </div>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-red-200 dark:bg-red-900/60 text-red-800 dark:text-red-200 ring-1 ring-red-300 dark:ring-red-800">
+                                            {t('accounts.status.appeal_required', 'Appeal Required')}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] leading-relaxed text-red-700 dark:text-red-300">
+                                        {t('accounts.appeal_desc', 'This account was disabled by Google for automated requests/TOS violation. Click below to submit an official appeal to Google to reinstate this account.')}
+                                    </p>
+                                    <div className="pt-1 flex flex-wrap gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => openExternalUrl(actionUrl || 'https://forms.gle/hGzM9MEUv2azZsrb9')}
+                                            className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all shadow-md active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                            <span>{t('accounts.go_to_appeal', 'Submit Appeal to Google')}</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopyUrl(actionUrl || 'https://forms.gle/hGzM9MEUv2azZsrb9')}
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-white dark:bg-base-300 hover:bg-gray-100 dark:hover:bg-base-200 text-gray-800 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-700 transition-all active:scale-[0.98] cursor-pointer"
+                                        >
+                                            <Copy className="w-3.5 h-3.5" />
+                                            <span>{t('accounts.copy_appeal_url', 'Copy Appeal URL')}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* SMART DIAGNOSIS CARD 5: Human Identity Verification Challenge */}
+                    {isVerificationNeeded && actionUrl && !showRaw && (
+                        <div className="mt-3 p-4 rounded-xl border border-blue-200 dark:border-blue-800/60 bg-gradient-to-br from-blue-50/90 via-blue-50/40 to-white dark:from-blue-950/40 dark:via-base-200/50 dark:to-base-100 shadow-sm">
+                            <div className="flex items-start gap-3">
+                                <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/20 shrink-0">
+                                    <Sparkles className="w-5 h-5" />
+                                </div>
+                                <div className="space-y-2.5 flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                                        <div className="text-xs font-bold text-blue-900 dark:text-blue-200">
+                                            {t('accounts.verification_method_1_title', 'Method 1 (Fastest & Recommended): Verify in Browser or Scan with Another Phone')}
+                                        </div>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 ring-1 ring-blue-300 dark:ring-blue-700">
+                                            {t('accounts.verification_guide.card_badge', 'Proven Solution')}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] leading-relaxed text-blue-700 dark:text-blue-300">
+                                        {t('accounts.verification_method_1_desc', 'Open this direct verification link in your browser. If desktop verification loops or fails, scan or open the link on another mobile phone (preferably on cellular data) — Google trusts second devices and usually validates instantly without phone SMS!')}
                                     </p>
                                     <div className="pt-1 flex flex-wrap gap-2">
                                         <button
                                             type="button"
                                             onClick={() => openExternalUrl(actionUrl)}
-                                            className={`flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-lg transition-all shadow-md active:scale-[0.98] cursor-pointer text-white ${
-                                                isViolation
-                                                    ? 'bg-red-600 hover:bg-red-700 shadow-red-500/20'
-                                                    : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/20'
-                                            }`}
+                                            className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all shadow-md active:scale-[0.98] cursor-pointer"
                                         >
                                             <ExternalLink className="w-3.5 h-3.5" />
-                                            <span>{isViolation ? t('accounts.go_to_appeal', 'Submit Appeal to Google') : (actionLabel || t('accounts.verify_in_browser_btn', 'Verify in Browser'))}</span>
+                                            <span>{actionLabel || t('accounts.verify_in_browser_btn', 'Verify in Browser')}</span>
                                         </button>
-                                        {!isViolation && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowQrCode(!showQrCode)}
-                                                className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/40 dark:hover:bg-blue-900/60 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-300 dark:border-blue-700 transition-all active:scale-[0.98] cursor-pointer"
-                                                title={t('accounts.scan_with_phone_tooltip', 'Show QR code to scan with another mobile phone')}
-                                            >
-                                                <QrCode className="w-3.5 h-3.5" />
-                                                <span>{showQrCode ? t('common.hide_qr', 'Hide QR') : t('accounts.scan_qr_btn', 'Scan with Phone')}</span>
-                                            </button>
-                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowQrCode(!showQrCode)}
+                                            className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/40 dark:hover:bg-blue-900/60 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-300 dark:border-blue-700 transition-all active:scale-[0.98] cursor-pointer"
+                                            title={t('accounts.scan_with_phone_tooltip', 'Show QR code to scan with another mobile phone')}
+                                        >
+                                            <QrCode className="w-3.5 h-3.5" />
+                                            <span>{showQrCode ? t('common.hide_qr', 'Hide QR') : t('accounts.scan_qr_btn', 'Scan with Phone')}</span>
+                                        </button>
                                         <button
                                             type="button"
                                             onClick={() => handleCopyUrl(actionUrl)}
                                             className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold bg-white dark:bg-base-300 hover:bg-gray-100 dark:hover:bg-base-200 text-gray-800 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-700 transition-all active:scale-[0.98] cursor-pointer"
                                         >
                                             <Copy className="w-3.5 h-3.5" />
-                                            <span>{isViolation ? t('accounts.copy_appeal_url', 'Copy Appeal URL') : t('accounts.copy_validation_url', 'Copy Validation URL')}</span>
+                                            <span>{t('accounts.copy_validation_url', 'Copy Validation URL')}</span>
                                         </button>
                                     </div>
 
@@ -369,8 +585,8 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                         </div>
                     )}
 
-                    {/* Terminal Fix Guide */}
-                    {(isForbidden || isVerificationNeeded) && !showRaw && (
+                    {/* Terminal Quick Fix Guide */}
+                    {(isForbidden || isVerificationNeeded || isTokenRevoked) && !showRaw && (
                         <div className="mt-4 border border-blue-100 dark:border-blue-900/40 rounded-xl overflow-hidden shadow-sm">
                             <button
                                 onClick={() => setShowGuide(!showGuide)}
@@ -378,7 +594,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                             >
                                 <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-bold text-xs">
                                     <Terminal className="w-4 h-4" />
-                                    <span>{t('accounts.fix_guide.title', 'Terminal Self-Fix Guide (Fix 403 Forbidden)')}</span>
+                                    <span>{t('accounts.fix_guide.title', 'Terminal Quick Fix (Resolves internal 403s)')}</span>
                                 </div>
                                 {showGuide ? <ChevronDown className="w-4 h-4 text-blue-500" /> : <ChevronRight className="w-4 h-4 text-blue-500" />}
                             </button>
@@ -427,7 +643,16 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                         <ul className="list-disc pl-4 space-y-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium marker:text-gray-300">
                                             <li><Trans i18nKey="accounts.fix_guide.tip1" components={{ 1: <code /> }}>If still 403, run <code /> in terminal to reset environment variables.</Trans></li>
                                             <li><Trans i18nKey="accounts.fix_guide.tip2" components={{ 1: <strong /> }}>In production, using a <strong /> JSON key is recommended for headless stability.</Trans></li>
-                                            <li><Trans i18nKey="accounts.fix_guide.tip3" components={{ 1: <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 hover:underline" /> }}>若操作failed，请前往 <a /> 中的 Generative Language API 查看是否被冻结权限。若是，说明account触发了风控，建议让account冷却 72 h后再次尝试。</Trans></li>
+                                            <li>
+                                                <Trans
+                                                    i18nKey="accounts.fix_guide.tip3"
+                                                    components={{
+                                                        1: <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 hover:underline" />
+                                                    }}
+                                                >
+                                                    If it still fails, check the Generative Language API in <a href="https://console.cloud.google.com/">Google Cloud Console</a> to see if permissions are frozen. If so, your account is under risk control. Please let the account cool down for 72 hours before trying again.
+                                                </Trans>
+                                            </li>
                                             <li><Trans i18nKey="accounts.fix_guide.tip4" components={{ 1: <code /> }}>You can also test with <code />; re-authorizing in-app will usually resolve issues.</Trans></li>
                                         </ul>
                                     </div>
@@ -437,7 +662,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                     )}
                 </div>
 
-                {/* Time */}
+                {/* Time Display */}
                 <div className="flex items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500 pl-1">
                     <Clock size={12} strokeWidth={2.5} />
                     <span>

@@ -334,7 +334,10 @@
       "validation_blocked": "Verification Required",
       "risk_controlled": "Risk / Rate Limited",
       "oauth_reauth_required": "OAuth Re-auth Required",
-      "violation_blocked": "Blocked due to Violation"
+      "violation_blocked": "Blocked due to Violation",
+      "region_restricted": "地區受限 (400)",
+      "subscription_required": "需要訂閱許可 (403 #3501)",
+      "reauth_required": "工作階段已過期 (401)"
     },
     "error_details": "錯誤詳情",
     "error_status": "錯誤狀態",
@@ -592,7 +595,24 @@
     "recheck_tooltip": "清除封鎖狀態並重新檢查帳號配額",
     "go_to_appeal": "Go to Appeal",
     "copy_appeal_url": "Copy Appeal URL",
-    "drag_disabled_autosort": "自動排序啟用期間已停用手動拖曳重排"
+    "drag_disabled_autosort": "自動排序啟用期間已停用手動拖曳重排",
+    "error_dialog": {
+      "region_badge": "地區限制 (400)",
+      "region_title": "不支援的地理區域 / IP 地理圍欄",
+      "region_desc": "Google Gemini 攔截了此請求，原因是出口 IP 位於不支援的地區或資料中心。請將 VPN/代理節點切換至美國、德國、日本或新加坡，然後點擊重新檢查。",
+      "region_recommended": "推薦地區:",
+      "copy_proxy_advice": "複製代理建議",
+      "proxy_advice_copied": "代理建議已複製到剪貼簿",
+      "subscription_badge": "需要許可 (403 #3501)",
+      "subscription_title": "需要 Google One AI Premium / 訂閱許可",
+      "subscription_desc": "此帳號沒有有效的 Google One AI Premium 或 Gemini Advanced 訂閱（錯誤碼 #3501）。Pro 模型需要有效訂閱，或者您可以切換工作區至 Flash 模型。",
+      "subscription_btn": "查看 Google AI Premium 方案",
+      "reauth_badge": "工作階段失效 (401 invalid_grant)",
+      "reauth_title": "OAuth 權杖已過期或被撤銷",
+      "reauth_desc": "Google 已撤銷此 OAuth 工作階段（權杖過期、密碼已修改或從其他裝置登出）。重新授權此帳號即可立即恢復存取權限。",
+      "reauth_advice_copied": "重新認證指令已複製到剪貼簿",
+      "copy_reauth_advice": "複製重新認證指令"
+    }
   },
   "settings": {
     "save": "儲存設定",

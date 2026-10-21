@@ -348,7 +348,10 @@
       "validation_blocked": "Verification Required",
       "risk_controlled": "Risk / Rate Limited",
       "oauth_reauth_required": "OAuth Re-auth Required",
-      "violation_blocked": "Blocked due to Violation"
+      "violation_blocked": "Blocked due to Violation",
+      "region_restricted": "Region Restricted (400)",
+      "subscription_required": "License Required (403 #3501)",
+      "reauth_required": "Session Expired (401)"
     },
     "error_details": "Error Details",
     "error_status": "Error Status",
@@ -579,7 +582,24 @@
     "recheck_tooltip": "Clear block status and re-check account quota",
     "go_to_appeal": "Go to Appeal",
     "copy_appeal_url": "Copy Appeal URL",
-    "drag_disabled_autosort": "Manual reordering disabled while Auto Sort is active"
+    "drag_disabled_autosort": "Manual reordering disabled while Auto Sort is active",
+    "error_dialog": {
+      "region_badge": "Region Geofence (400)",
+      "region_title": "Unsupported Geographic Region / IP Geofence",
+      "region_desc": "Google Gemini blocked this request because the exit IP node is located in an unsupported country or datacenter. Switch your VPN/Proxy outbound server to the United States, Germany, Japan, or Singapore, then click Re-check.",
+      "region_recommended": "Recommended Regions:",
+      "copy_proxy_advice": "Copy Proxy Recommendation",
+      "proxy_advice_copied": "Proxy advice copied to clipboard",
+      "subscription_badge": "License Required (403 #3501)",
+      "subscription_title": "Google One AI Premium / License Required",
+      "subscription_desc": "This account does not have an active Google One AI Premium or Gemini Advanced license (Error #3501). Pro models require an active subscription, or you can switch this workspace to Flash models.",
+      "subscription_btn": "Explore Google AI Premium",
+      "reauth_badge": "Session Expired (401 invalid_grant)",
+      "reauth_title": "OAuth Session Expired or Revoked",
+      "reauth_desc": "Google revoked this OAuth session (refresh token expired, account password changed, or signed out from another device). Re-authenticating this account will immediately restore access.",
+      "reauth_advice_copied": "Re-authentication advice copied to clipboard",
+      "copy_reauth_advice": "Copy Re-auth Command"
+    }
   },
   "settings": {
     "save": "Save Settings",
