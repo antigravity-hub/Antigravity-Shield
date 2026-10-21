@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::proxy::monitor::ProxyRequestLog;
 use rusqlite::{params, Connection};
 use std::path::PathBuf;
@@ -508,8 +511,8 @@ pub fn get_token_usage_by_ip(limit: usize, hours: i64) -> Result<Vec<IpTokenStat
     // Convert 'hours' to milliseconds
     let since = chrono::Utc::now().timestamp_millis() - (hours * 3600 * 1000);
 
-    // [FIX] 不再从 request_logs 表获取 username，因为该字段可能为空
-    // 先获取 IP 统计数据，然后再单独查询每个 IP 的用户名
+    // [FIX] 不再从 request_logs 表get username，因为该字段可能为empty
+    // 先get IP 统计data，然后再单独查询每个 IP 的user名
     let mut stmt = conn
         .prepare(
             "SELECT
@@ -543,8 +546,8 @@ pub fn get_token_usage_by_ip(limit: usize, hours: i64) -> Result<Vec<IpTokenStat
         let (client_ip, total_tokens, input_tokens, output_tokens, request_count) =
             row.map_err(|e| e.to_string())?;
 
-        // 从 user_token_db 获取该 IP 关联的用户名
-        // 这比从 request_logs 获取更可靠，因为 token_ip_bindings 表在每次 User Token 使用时都会更新
+        // 从 user_token_db get该 IP 关联的user名
+        // 这比从 request_logs get更可靠，因为 token_ip_bindings 表在每次 User Token 使用时都会update
         let username =
             crate::modules::user_token_db::get_username_for_ip(&client_ip).unwrap_or(None);
 

@@ -1,12 +1,15 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use super::super::tool_adapter::{append_hint_to_schema, ToolAdapter};
 use serde_json::Value;
 
 /// Pencil MCP 工具适配器
 ///
 /// 为 Pencil 绘图工具提供特定的 Schema 优化:
-/// 1. 处理非标准的视觉属性字段 (cornerRadius, strokeWidth 等)
+/// 1. handle非标准的视觉属性字段 (cornerRadius, strokeWidth 等)
 /// 2. 优化文件路径参数的描述
-/// 3. 添加 Pencil 特定的使用提示
+/// 3. add Pencil 特定的使用hint
 pub struct PencilAdapter;
 
 impl ToolAdapter for PencilAdapter {
@@ -16,7 +19,7 @@ impl ToolAdapter for PencilAdapter {
 
     fn pre_process(&self, schema: &mut Value) -> Result<(), String> {
         if let Value::Object(map) = schema {
-            // 1. 处理视觉属性字段
+            // 1. handle视觉属性字段
             self.handle_visual_properties(map);
 
             // 2. 优化文件路径参数
@@ -62,7 +65,7 @@ impl PencilAdapter {
         }
     }
 
-    /// 优化文件路径相关参数的描述
+    /// Optimize文件路径相关参数的描述
     fn optimize_path_parameters(&self, map: &mut serde_json::Map<String, Value>) {
         if let Some(Value::Object(props)) = map.get_mut("properties") {
             for (key, value) in props.iter_mut() {
@@ -126,7 +129,7 @@ mod tests {
 
         adapter.pre_process(&mut schema).unwrap();
 
-        // 验证 cornerRadius 的 description 被添加
+        // Verify cornerRadius 的 description 被add
         assert!(schema["properties"]["cornerRadius"]["description"].is_string());
         let desc = schema["properties"]["cornerRadius"]["description"]
             .as_str()

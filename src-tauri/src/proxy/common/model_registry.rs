@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Dynamic Model Registry & Semantic Family Resolver
 // Zero-Disk I/O, In-Memory TTL Caching, Autonomous Google API Discovery
 

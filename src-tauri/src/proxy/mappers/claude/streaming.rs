@@ -1,4 +1,7 @@
-// Claude 流式响应转换 (Gemini SSE → Claude SSE)
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// Claude 流式response转换 (Gemini SSE → Claude SSE)
 // 对应 StreamingState + PartProcessor
 
 use super::models::*;
@@ -164,7 +167,7 @@ pub fn remap_function_call_args(name: &str, args: &mut Value) {
     }
 }
 
-/// 块类型枚举
+/// 块type枚举
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BlockType {
     None,
@@ -198,7 +201,7 @@ impl SignatureManager {
     }
 }
 
-/// 流式状态机
+/// 流式status机
 pub struct StreamingState {
     block_type: BlockType,
     pub block_index: usize,
@@ -209,7 +212,7 @@ pub struct StreamingState {
     trailing_signature: Option<String>,
     pub web_search_query: Option<String>,
     pub grounding_chunks: Option<Vec<serde_json::Value>>,
-    // [IMPROVED] Error recovery 状态追踪 (prepared for future use)
+    // [IMPROVED] Error recovery status追踪 (prepared for future use)
     #[allow(dead_code)]
     parse_error_count: usize,
     #[allow(dead_code)]
@@ -250,7 +253,7 @@ impl StreamingState {
             trailing_signature: None,
             web_search_query: None,
             grounding_chunks: None,
-            // [IMPROVED] 初始化 error recovery 字段
+            // [IMPROVED] init error recovery 字段
             parse_error_count: 0,
             last_valid_state: None,
             model_name: None,
@@ -359,7 +362,7 @@ impl StreamingState {
         chunks
     }
 
-    /// 结束当前内容块
+    /// 结束current内容块
     pub fn end_block(&mut self) -> Vec<Bytes> {
         if self.block_type == BlockType::None {
             return vec![];
@@ -422,7 +425,7 @@ impl StreamingState {
         // [FIX] 只有当还没有发送过任何块时, 才能以 thinking 块结束(作为消息的开头)
         // 实际上, 对于 Claude 协议, 如果已经发送过 Text, 就不能在此追加 Thinking。
         // 这里的解决方案是: 只存储签名, 不再发送非法的末尾 Thinking 块。
-        // 签名会通过 SignatureCache 在下一轮请求中自动恢复。
+        // 签名会通过 SignatureCache 在下一轮request中自动恢复。
         if let Some(signature) = self.trailing_signature.take() {
             tracing::info!(
                 "[Streaming] Captured trailing signature (len: {}), caching for session.",
@@ -436,7 +439,7 @@ impl StreamingState {
         if self.web_search_query.is_some() || self.grounding_chunks.is_some() {
             let mut grounding_text = String::new();
 
-            // 1. 处理搜索词
+            // 1. handle搜索词
             if let Some(query) = &self.web_search_query {
                 if !query.is_empty() {
                     grounding_text.push_str("\n\n---\n**🔍 已为您搜索：** ");
@@ -444,7 +447,7 @@ impl StreamingState {
                 }
             }
 
-            // 2. 处理来源链接
+            // 2. handle来源链接
             if let Some(chunks) = &self.grounding_chunks {
                 let mut links = Vec::new();
                 for (i, chunk) in chunks.iter().enumerate() {
@@ -539,17 +542,17 @@ impl StreamingState {
         chunks
     }
 
-    /// 标记使用了工具
+    /// Flag使用了工具
     pub fn mark_tool_used(&mut self) {
         self.used_tool = true;
     }
 
-    /// Get: 当前块类型
+    /// Get: current块type
     pub fn current_block_type(&self) -> BlockType {
         self.block_type
     }
 
-    /// Get: 当前块索引
+    /// Get: current块索引
     pub fn current_block_index(&self) -> usize {
         self.block_index
     }
@@ -559,22 +562,22 @@ impl StreamingState {
         self.signatures.store(signature);
     }
 
-    /// 设置 trailing signature
+    /// Set trailing signature
     pub fn set_trailing_signature(&mut self, signature: Option<String>) {
         self.trailing_signature = signature;
     }
 
-    /// Get:  trailing signature (仅用于检查)
+    /// Get:  trailing signature (仅用于check)
     pub fn has_trailing_signature(&self) -> bool {
         self.trailing_signature.is_some()
     }
 
-    /// Process:  SSE 解析错误，实现优雅降级
+    /// Process:  SSE 解析error，实现优雅降级
     ///
-    /// 当 SSE stream 中发生解析错误时:
-    /// 1. 安全关闭当前 block
-    /// 2. 递增错误计数器
-    /// 3. 在 debug 模式下输出错误信息
+    /// 当 SSE stream 中发生解析error时:
+    /// 1. 安全关闭current block
+    /// 2. 递增error计数器
+    /// 3. 在 debug 模式下输出errorinfo
     #[allow(dead_code)] // Prepared for future error recovery implementation
     pub fn handle_parse_error(&mut self, raw_data: &str) -> Vec<Bytes> {
         let mut chunks = Vec::new();
@@ -587,13 +590,13 @@ impl StreamingState {
             raw_data.len()
         );
 
-        // 安全关闭当前 block
+        // 安全关闭current block
         if self.block_type != BlockType::None {
             self.last_valid_state = Some(self.block_type);
             chunks.extend(self.end_block());
         }
 
-        // Debug 模式下输出详细错误信息
+        // Debug 模式下输出详细errorinfo
         #[cfg(debug_assertions)]
         {
             let preview = if raw_data.len() > 100 {
@@ -604,9 +607,9 @@ impl StreamingState {
             tracing::debug!("[SSE-Parser] Failed chunk preview: {}", preview);
         }
 
-        // 错误率过高时发出警告并尝试发送错误信号
+        // error率过高时发出warning并尝试发送error信号
         if self.parse_error_count > 3 {
-            // 降低阈值,更早通知用户
+            // 降低阈值,更早通知user
             tracing::error!(
                 "[SSE-Parser] High error rate detected ({} errors). Stream may be corrupted.",
                 self.parse_error_count
@@ -621,7 +624,7 @@ impl StreamingState {
                     "type": "error",
                     "error": {
                         "type": "overloaded_error", // Use standard type
-                        "message": "网络连接不稳定，请检查您的网络或代理设置。",
+                        "message": "网络连接不稳定，请check您的网络或代理set。",
                     }
                 }),
             ));
@@ -630,21 +633,21 @@ impl StreamingState {
         chunks
     }
 
-    /// Reset: 错误状态 (recovery 后调用)
+    /// Reset: errorstatus (recovery 后调用)
     #[allow(dead_code)]
     pub fn reset_error_state(&mut self) {
         self.parse_error_count = 0;
         self.last_valid_state = None;
     }
 
-    /// Get: 错误计数 (用于监控)
+    /// Get: error计数 (用于监控)
     #[allow(dead_code)]
     pub fn get_error_count(&self) -> usize {
         self.parse_error_count
     }
 }
 
-/// Part 处理器
+/// Part handle器
 pub struct PartProcessor<'a> {
     state: &'a mut StreamingState,
 }
@@ -679,9 +682,9 @@ impl<'a> PartProcessor<'a> {
             }
         });
 
-        // 1. FunctionCall 处理
+        // 1. FunctionCall handle
         if let Some(fc) = &part.function_call {
-            // 先处理 trailingSignature (B4/C3 场景)
+            // 先handle trailingSignature (B4/C3 场景)
             if self.state.has_trailing_signature() {
                 chunks.extend(self.state.end_block());
                 if let Some(trailing_sig) = self.state.trailing_signature.take() {
@@ -711,7 +714,7 @@ impl<'a> PartProcessor<'a> {
             return chunks;
         }
 
-        // 2. Text 处理
+        // 2. Text handle
         if let Some(text) = &part.text {
             if part.thought.unwrap_or(false) {
                 // Thinking
@@ -722,7 +725,7 @@ impl<'a> PartProcessor<'a> {
             }
         }
 
-        // 3. InlineData (Image) 处理
+        // 3. InlineData (Image) handle
         if let Some(img) = &part.inline_data {
             let mime_type = &img.mime_type;
             let data = &img.data;
@@ -835,7 +838,7 @@ impl<'a> PartProcessor<'a> {
     fn process_text(&mut self, text: &str, signature: Option<String>) -> Vec<Bytes> {
         let mut chunks = Vec::new();
 
-        // 空 text 带签名 - 暂存
+        // empty text 带签名 - 暂存
         if text.is_empty() {
             if signature.is_some() {
                 self.state.set_trailing_signature(signature);
@@ -870,11 +873,11 @@ impl<'a> PartProcessor<'a> {
             }
         }
 
-        // 非空 text 带签名 - 立即处理
+        // 非empty text 带签名 - 立即handle
         if signature.is_some() {
             // [FIX] 为保护签名, 签名所在的 Text 块直接发送
-            // 注意: 不得在此开启 thinking 块, 因为之前可能已有非 thinking 内容。
-            // 这种情况下, 我们只需确签被缓存在状态中。
+            // Note: 不得在此开启 thinking 块, 因为之前可能已有非 thinking 内容。
+            // 这种情况下, 我们只需确签被缓存在status中。
             self.state.store_signature(signature);
 
             chunks.extend(
@@ -920,7 +923,7 @@ impl<'a> PartProcessor<'a> {
 
                             let tool_chunks = self.process_function_call(&fc, None);
 
-                            // 清理缓冲区并重置状态
+                            // 清理缓冲区并resetstatus
                             self.state.mcp_xml_buffer.clear();
                             self.state.in_mcp_xml = false;
 
@@ -945,7 +948,7 @@ impl<'a> PartProcessor<'a> {
                             // Process: 标签之后可能存在的非 XML 文本
                             let suffix = &buffer[close_idx + end_tag.len()..];
                             if !suffix.is_empty() {
-                                // 递归处理后缀内容
+                                // 递归handle后缀内容
                                 chunks.extend(self.process_text(suffix, None));
                             }
 
@@ -1236,12 +1239,12 @@ impl<'a> PartProcessor<'a> {
             }
         }
 
-        // 1. 发送 content_block_start (input 为空对象)
+        // 1. 发送 content_block_start (input 为empty对象)
         let mut tool_use = json!({
             "type": "tool_use",
             "id": tool_id,
             "name": tool_name,
-            "input": {} // 必须为空，参数通过 delta 发送
+            "input": {} // 必须为empty，参数通过 delta 发送
         });
 
         if let Some(ref sig) = signature {

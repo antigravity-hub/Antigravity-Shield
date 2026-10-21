@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Toast, { ToastType } from './Toast';

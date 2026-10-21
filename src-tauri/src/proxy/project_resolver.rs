@@ -1,7 +1,10 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde_json::Value;
 
-/// 使用 Antigravity 的 loadCodeAssist API 获取 project_id
-/// 这是获取 cloudaicompanionProject 的正确方式
+/// 使用 Antigravity 的 loadCodeAssist API get project_id
+/// 这是get cloudaicompanionProject 的正确方式
 pub async fn fetch_project_id(access_token: &str) -> Result<String, String> {
     const ENDPOINTS: [&str; 2] = [
         "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist",
@@ -29,7 +32,7 @@ pub async fn fetch_project_id(access_token: &str) -> Result<String, String> {
         {
             Ok(res) => res,
             Err(e) => {
-                last_error = format!("loadCodeAssist 请求失败 ({}): {}", url, e);
+                last_error = format!("loadCodeAssist requestfailed ({}): {}", url, e);
                 continue;
             }
         };
@@ -37,14 +40,14 @@ pub async fn fetch_project_id(access_token: &str) -> Result<String, String> {
         if !response.status().is_success() {
             let status = response.status();
             let body = response.text().await.unwrap_or_default();
-            last_error = format!("loadCodeAssist 返回错误 {} ({}): {}", status, url, body);
+            last_error = format!("loadCodeAssist returnerror {} ({}): {}", status, url, body);
             continue;
         }
 
         let data: Value = match response.json().await {
             Ok(d) => d,
             Err(e) => {
-                last_error = format!("解析响应失败 ({}): {}", url, e);
+                last_error = format!("解析responsefailed ({}): {}", url, e);
                 continue;
             }
         };
@@ -59,6 +62,6 @@ pub async fn fetch_project_id(access_token: &str) -> Result<String, String> {
         return Err(last_error);
     }
 
-    // If 没有返回 project_id，说明账号无资格，返回错误以触发 token_manager 的稳定兜底逻辑
-    Err("账号无资格获取官方 cloudaicompanionProject".to_string())
+    // If 没有return project_id，说明accountnone资格，returnerror以触发 token_manager 的稳定兜底逻辑
+    Err("accountnone资格get官方 cloudaicompanionProject".to_string())
 }

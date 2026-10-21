@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use base64::Engine;
 use serde_json::{json, Value};
 use tokio::time::Duration;

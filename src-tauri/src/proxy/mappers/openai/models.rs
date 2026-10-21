@@ -1,4 +1,7 @@
-// OpenAI 数据模型
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// OpenAI datamodel
 
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -50,7 +53,7 @@ pub struct OpenAIRequest {
     pub image_size: Option<String>,
 }
 
-/// Thinking 配置 (兼容 Anthropic 和 OpenAI 扩展协议)
+/// Thinking config (兼容 Anthropic 和 OpenAI 扩展协议)
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ThinkingConfig {
     #[serde(rename = "type")]
@@ -141,7 +144,7 @@ pub struct AudioUrlContent {
 /// OpenAI `input_audio` 内容块: base64 音频 + 格式标识
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct OpenAIInputAudio {
-    /// base64 编码的音频数据 (也兼容传入 data: URL)
+    /// base64 编码的音频data (也兼容传入 data: URL)
     pub data: String,
     /// "wav" | "mp3" | "m4a" | "ogg" | "flac" | "aiff" ... 亦接受完整 MIME
     #[serde(default, skip_serializing_if = "Option::is_none", alias = "mimeType", alias = "mime_type")]
@@ -149,7 +152,7 @@ pub struct OpenAIInputAudio {
 }
 
 impl OpenAIInputAudio {
-    /// 归一化后的 Gemini MIME 类型
+    /// 归一化后的 Gemini MIME type
     pub fn mime_type(&self) -> String {
         crate::proxy::audio::normalize_audio_mime(self.format.as_deref().unwrap_or("mp3"))
     }

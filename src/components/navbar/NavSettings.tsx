@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { Sun, Moon, LogOut, Minimize2, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LanguageDropdown, MoreDropdown } from './NavDropdowns';
@@ -17,9 +21,9 @@ interface NavSettingsProps {
 }
 
 /**
- * 设置按钮组件 - 独立处理响应式
+ * set按钮组件 - 独立handleresponse式
  *
- * 响应式策略:
+ * response式策略:
  * - ≥ 768px (md): 独立按钮(主题 + 语言)
  * - < 768px: 更多下拉菜单
  */
@@ -45,7 +49,7 @@ export function NavSettings({
         <>
             {/* 独立按钮 (≥ 480px) */}
             <div className="hidden min-[480px]:flex items-center gap-2">
-                {/* Antigravity Toolkit 状态指示器 */}
+                {/* Antigravity Toolkit status指示器 */}
                 <NavToolkitBadge />
 
                 {/* 赞助与支持按钮 / Support Button */}
@@ -57,7 +61,7 @@ export function NavSettings({
                     <Heart className="w-5 h-5 text-rose-500/80 dark:text-rose-400/80 group-hover:text-rose-500 dark:group-hover:text-rose-400 fill-rose-500/15 group-hover:fill-rose-500/40 transition-all duration-200 group-hover:scale-110" />
                 </button>
 
-                {/* 迷你视图切换按钮 */}
+                {/* 迷你视图Switch button */}
                 <button
                     onClick={async () => {
                         setMiniView(true);
@@ -69,7 +73,7 @@ export function NavSettings({
                     <Minimize2 className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                 </button>
 
-                {/* 主题切换按钮 */}
+                {/* 主题Switch button */}
                 <button
                     onClick={onThemeToggle}
                     className="w-10 h-10 rounded-full bg-gray-100 dark:bg-base-200 hover:bg-gray-200 dark:hover:bg-base-100 flex items-center justify-center transition-colors"
@@ -82,7 +86,7 @@ export function NavSettings({
                     )}
                 </button>
 
-                {/* 7 种 UI 奢华主题高亮色选择器 */}
+                {/* 7 UI luxury accent theme color selector */}
                 <AccentColorPicker />
 
                 {/* 语言切换下拉菜单 */}

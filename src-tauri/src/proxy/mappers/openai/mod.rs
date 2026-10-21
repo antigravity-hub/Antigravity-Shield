@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // OpenAI mapper 模块
 // 负责 OpenAI ↔ Gemini 协议转换
 

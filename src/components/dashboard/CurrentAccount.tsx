@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { CheckCircle, Mail, Diamond, Gem, Circle, Tag, Lock, Clock, Users, ArrowUpRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Account } from '../../types/account';
@@ -149,7 +153,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                             }
                         })()}
 
-                        {/* 自定义标签 */}
+                        {/* Custom label */}
                         {account.custom_label && (
                             <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-orange-500/10 text-orange-600 dark:text-orange-400 text-[10px] font-bold border border-orange-500/20">
                                 <Tag className="w-2.5 h-2.5" />
@@ -180,7 +184,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
 
                 {/* Quota Progress Rows */}
                 <div className="space-y-3.5">
-                    {/* Gemini Pro 配额 */}
+                    {/* Gemini Pro quota */}
                     {geminiProModel && (
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
@@ -216,7 +220,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                         </div>
                     )}
 
-                    {/* Gemini 3 Pro Image 配额 */}
+                    {/* Gemini 3 Pro Image quota */}
                     {geminiImageModel && (
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
@@ -253,7 +257,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                         </div>
                     )}
 
-                    {/* Gemini Flash 配额 */}
+                    {/* Gemini Flash quota */}
                     {geminiFlashModel && (
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">
@@ -289,7 +293,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                         </div>
                     )}
 
-                    {/* Claude 配额 */}
+                    {/* Claude quota */}
                     {claudeModel && (
                         <div className="space-y-1">
                             <div className="flex justify-between items-baseline">

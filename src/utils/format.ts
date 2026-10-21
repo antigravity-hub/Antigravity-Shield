@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN, zhTW, enUS, ja, tr, vi, ptBR, faIR } from 'date-fns/locale';
 
@@ -58,11 +62,11 @@ export function getTimeRemainingColor(dateStr: string | undefined): string {
     const now = new Date();
     const diffMs = targetDate.getTime() - now.getTime();
 
-    if (diffMs <= 0) return 'success'; // 已经过期的也算成功（即将重置或已重置）
+    if (diffMs <= 0) return 'success'; // 已经过期的也算success（即将reset或已reset）
 
     const diffHrs = diffMs / (1000 * 60 * 60);
 
-    if (diffHrs < 1) return 'success';   // < 1h: 绿色 (快重置了)
+    if (diffHrs < 1) return 'success';   // < 1h: 绿色 (快reset了)
     if (diffHrs < 6) return 'warning';   // 1-6h: 琥珀色 (等待中)
     return 'neutral';                   // > 6h: 灰色 (长等待)
 }

@@ -1,5 +1,8 @@
-// Stream 收集器 - 将 SSE 流转换为完整的 JSON 响应
-// 用于非 Stream 请求的自动转换
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// Stream 收集器 - 将 SSE 流转换为完整的 JSON response
+// 用于非 Stream request的自动转换
 
 use super::models::*;
 use bytes::Bytes;
@@ -7,7 +10,7 @@ use futures::StreamExt;
 use serde_json::{json, Value};
 use std::io;
 
-/// SSE 事件类型
+/// SSE 事件type
 #[derive(Debug, Clone)]
 struct SseEvent {
     event_type: String,
@@ -28,7 +31,7 @@ fn parse_sse_line(line: &str) -> Option<(String, String)> {
 /// 将 SSE Stream 收集为完整的 Claude Response
 ///
 /// 此函数接收一个 SSE 字节流，解析所有事件，并重建完整的 ClaudeResponse 对象。
-/// 这使得非 Stream 客户端可以透明地享受 Stream 模式的配额优势。
+/// 这使得非 Stream 客户端可以透明地享受 Stream 模式的quota优势。
 pub async fn collect_stream_to_json<S>(mut stream: S) -> Result<ClaudeResponse, String>
 where
     S: futures::Stream<Item = Result<Bytes, io::Error>> + Unpin,
@@ -44,7 +47,7 @@ where
 
         for line in text.lines() {
             if line.is_empty() {
-                // 空行表示事件结束
+                // empty行表示事件结束
                 if !current_data.is_empty() {
                     if let Ok(data) = serde_json::from_str::<Value>(&current_data) {
                         events.push(SseEvent {
@@ -93,7 +96,7 @@ where
     for event in events {
         match event.event_type.as_str() {
             "message_start" => {
-                // 提取基本信息
+                // 提取基本info
                 if let Some(message) = event.data.get("message") {
                     if let Some(id) = message.get("id").and_then(|v| v.as_str()) {
                         response.id = id.to_string();
@@ -166,7 +169,7 @@ where
             }
 
             "content_block_stop" => {
-                // 完成当前块
+                // 完成current块
                 if !current_text.is_empty() {
                     response.content.push(ContentBlock::Text {
                         text: current_text.clone(),
@@ -227,7 +230,7 @@ where
             }
 
             "error" => {
-                // 错误事件
+                // error事件
                 let error_data = event.data.get("error").unwrap_or(&event.data);
                 let message = error_data
                     .get("message")
@@ -237,7 +240,7 @@ where
             }
 
             _ => {
-                // 忽略未知事件类型
+                // 忽略未知事件type
             }
         }
     }
@@ -259,7 +262,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_collect_simple_text_response() {
-        // 模拟一个简单的文本响应 SSE 流
+        // 模拟一个简单的文本response SSE 流
         let sse_data = vec![
             "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_123\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-3-5-sonnet\",\"content\":[],\"stop_reason\":null,\"usage\":{\"input_tokens\":10,\"output_tokens\":0}}}\n\n",
             "event: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}}\n\n",
@@ -323,7 +326,7 @@ mod tests {
         } = &response.content[0]
         {
             assert_eq!(thinking, "I am thinking");
-            // 验证签名是否被正确提取
+            // Verify签名是否被正确提取
             assert_eq!(signature.as_deref(), Some("sig_123456"));
         } else {
             panic!("Expected Thinking block");
@@ -332,7 +335,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_collect_empty_stream_fallback() {
-        // [FIX #3359] 模拟仅包含 message_start 和 message_stop 的空内容流（如单点探测请求）
+        // [FIX #3359] 模拟仅包含 message_start 和 message_stop 的empty内容流（如单点探测request）
         let sse_data = vec![
             "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_empty\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"gemini-3.7-flash\",\"content\":[],\"stop_reason\":null,\"usage\":{\"input_tokens\":1,\"output_tokens\":0}}}\n\n",
             "event: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\"},\"usage\":{\"output_tokens\":0}}\n\n",

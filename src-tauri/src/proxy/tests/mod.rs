@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 pub mod comprehensive;
 pub mod quota_protection;
 pub mod rate_limit_404_tests;

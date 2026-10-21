@@ -1,19 +1,22 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Ultra Priority Tests for High-End Models (Opus 4.6/4.5)
 //!
-//! 这些测试验证高端模型（如 Claude Opus 4.6/4.5）优先使用 Ultra 账号的逻辑。
+//! 这些测试validate高端model（如 Claude Opus 4.6/4.5）优先使用 Ultra account的逻辑。
 //!
 //! ## 背景
-//! 用户的账号池包含大量 Gemini Pro 账号和少量 Ultra 账号。当请求 Claude Opus 4.6 模型时，
-//! 系统按配额优先的策略可能会选择 Pro 账号，但 Pro 账号无法访问 Opus 4.6，导致 API 返回错误。
+//! user的account池包含大量 Gemini Pro account和少量 Ultra account。当request Claude Opus 4.6 model时，
+//! 系统按quota优先的策略可能会选择 Pro account，但 Pro accountnone法访问 Opus 4.6，导致 API returnerror。
 //!
 //! ## 解决方案
-//! 当用户请求高端模型时，优先选择 Ultra 账号；只有 Ultra 账号都不可用时才降级到 Pro/Free 账号。
+//! 当userrequest高端model时，优先选择 Ultra account；只有 Ultra account都不可用时才降级到 Pro/Free account。
 //!
 //! ## 测试覆盖
-//! - `test_is_ultra_required_model`: 验证模型识别逻辑
-//! - `test_ultra_priority_for_high_end_models`: 验证 Ultra 优先于 Pro（即使 Pro 配额更高）
-//! - `test_ultra_accounts_sorted_by_quota`: 验证同为 Ultra 时按配额排序
-//! - `test_full_sorting_mixed_accounts`: 验证混合账号池的完整排序
+//! - `test_is_ultra_required_model`: validatemodel识别逻辑
+//! - `test_ultra_priority_for_high_end_models`: validate Ultra 优先于 Pro（即使 Pro quota更高）
+//! - `test_ultra_accounts_sorted_by_quota`: validate同为 Ultra 时按quota排序
+//! - `test_full_sorting_mixed_accounts`: validate混合account池的完整排序
 
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
@@ -31,7 +34,7 @@ fn create_test_token(
     supported_models: Vec<&str>,
 ) -> ProxyToken {
     let mut model_quotas = HashMap::new();
-    // 模拟配额：所有支持的模型都给予相同的剩余配额
+    // 模拟quota：所有支持的model都给予相同的剩余quota
     for m in supported_models {
         model_quotas.insert(m.to_string(), remaining_quota.unwrap_or(100));
     }
@@ -59,23 +62,23 @@ fn create_test_token(
     }
 }
 
-/// 需要 Ultra 账号的高端模型列表
+/// 需要 Ultra account的高端model列表
 const ULTRA_REQUIRED_MODELS: &[&str] = &[
     "claude-opus-4-6",
     "claude-opus-4-5",
     "opus", // 通配匹配
 ];
 
-/// Check: 模型是否需要 Ultra 账号
+/// Check: model是否需要 Ultra account
 fn is_ultra_required_model(model: &str) -> bool {
     let lower = model.to_lowercase();
     ULTRA_REQUIRED_MODELS.iter().any(|m| lower.contains(m))
 }
 
-/// 测试 is_ultra_required_model 辅助函数
+/// 测试 is_ultra_required_model Helper functions
 #[test]
 fn test_is_ultra_required_model() {
-    // 应该识别为高端模型
+    // 应该识别为高端model
     assert!(is_ultra_required_model("claude-opus-4-6"));
     assert!(is_ultra_required_model("claude-opus-4-5"));
     assert!(is_ultra_required_model("Claude-Opus-4-6")); // 大小写不敏感
@@ -84,7 +87,7 @@ fn test_is_ultra_required_model() {
     assert!(is_ultra_required_model("opus-4-6-latest"));
     assert!(is_ultra_required_model("models/claude-opus-4-6"));
 
-    // 应该识别为普通模型
+    // 应该识别为普通model
     assert!(!is_ultra_required_model("claude-sonnet-4-6"));
     assert!(!is_ultra_required_model("claude-sonnet"));
     assert!(!is_ultra_required_model("gemini-1.5-flash"));
@@ -92,7 +95,7 @@ fn test_is_ultra_required_model() {
     assert!(!is_ultra_required_model("claude-haiku"));
 }
 
-/// 模拟 token_manager.rs 中的Sort logic (更新后：始终 Tier 优先)
+/// 模拟 token_manager.rs 中的Sort logic (update后：始终 Tier 优先)
 fn compare_tokens_for_model(a: &ProxyToken, b: &ProxyToken, _target_model: &str) -> Ordering {
     let tier_priority = |tier: &Option<String>| {
         let t = tier.as_deref().unwrap_or("").to_lowercase();
@@ -114,7 +117,7 @@ fn compare_tokens_for_model(a: &ProxyToken, b: &ProxyToken, _target_model: &str)
     }
 
     // Priority 1: Quota (higher is better)
-    // 注意：这里简化了，直接取 remaining_quota，实际上生产代码取的是 model_quotas.get(target)
+    // Note：这里简化了，直接取 remaining_quota，实际上生产代码取的是 model_quotas.get(target)
     let quota_a = a.remaining_quota.unwrap_or(0);
     let quota_b = b.remaining_quota.unwrap_or(0);
     let quota_cmp = quota_b.cmp(&quota_a);
@@ -142,11 +145,11 @@ fn filter_tokens_by_capability(tokens: Vec<ProxyToken>, target_model: &str) -> V
         .collect()
 }
 
-/// 测试高端模型排序：Ultra 账号优先于 Pro 账号（即使 Pro 配额更高）
+/// 测试高端model排序：Ultra account优先于 Pro account（即使 Pro quota更高）
 #[test]
 fn test_ultra_priority_for_high_end_models() {
-    // 创建测试账号：Ultra 低配额 vs Pro 高配额
-    // Ultra 账号支持 Opus 4.6
+    // 创建测试account：Ultra 低quota vs Pro 高quota
+    // Ultra account支持 Opus 4.6
     let ultra_low_quota = create_test_token(
         "ultra@test.com",
         Some("ULTRA"),
@@ -155,7 +158,7 @@ fn test_ultra_priority_for_high_end_models() {
         Some(20),
         vec!["claude-opus-4-6", "claude-sonnet-4-6"],
     );
-    // Pro 账号不支持 Opus 4.6 (假设)
+    // Pro account不支持 Opus 4.6 (假设)
     let pro_high_quota = create_test_token(
         "pro@test.com",
         Some("PRO"),
@@ -165,7 +168,7 @@ fn test_ultra_priority_for_high_end_models() {
         vec!["claude-sonnet-4-6"],
     );
 
-    // 1. 验证过滤逻辑
+    // 1. validate过滤逻辑
     let tokens = vec![ultra_low_quota.clone(), pro_high_quota.clone()];
     let filtered = filter_tokens_by_capability(tokens, "claude-opus-4-6");
     assert_eq!(
@@ -175,8 +178,8 @@ fn test_ultra_priority_for_high_end_models() {
     );
     assert_eq!(filtered[0].email, "ultra@test.com");
 
-    // 2. 验证Sort logic (针对 Sonnet，两者都支持)
-    // 即使 Pro 配额更高，由于新策略是 "Ultra First"，Ultra 仍然排在前面
+    // 2. validateSort logic (针对 Sonnet，两者都支持)
+    // 即使 Pro quota更高，由于新策略是 "Ultra First"，Ultra 仍然排在前面
     assert_eq!(
         compare_tokens_for_model(&ultra_low_quota, &pro_high_quota, "claude-sonnet-4-6"),
         Ordering::Less, // Ultra 排在前面
@@ -186,7 +189,7 @@ fn test_ultra_priority_for_high_end_models() {
 
 #[test]
 fn test_capability_filtering() {
-    // Ultra 账号：有 Opus 4.6
+    // Ultra account：有 Opus 4.6
     let ultra = create_test_token(
         "ultra@test.com",
         Some("ULTRA"),
@@ -195,7 +198,7 @@ fn test_capability_filtering() {
         Some(100),
         vec!["claude-opus-4-6"],
     );
-    // Pro 账号：无 Opus 4.6
+    // Pro account：none Opus 4.6
     let pro = create_test_token(
         "pro@test.com",
         Some("PRO"),
@@ -205,7 +208,7 @@ fn test_capability_filtering() {
         vec!["claude-sonnet-3-5"],
     );
 
-    // Future Pro 账号：有 Opus 4.6 (模拟未来可能开放)
+    // Future Pro account：有 Opus 4.6 (模拟未来可能开放)
     let future_pro = create_test_token(
         "future_pro@test.com",
         Some("PRO"),
@@ -217,10 +220,10 @@ fn test_capability_filtering() {
 
     let pool = vec![ultra.clone(), pro.clone(), future_pro.clone()];
 
-    // 1. 请求 Opus 4.6
+    // 1. request Opus 4.6
     let filtered_opus = filter_tokens_by_capability(pool.clone(), "claude-opus-4-6");
     assert_eq!(filtered_opus.len(), 2, "Should retain Ultra and Future Pro");
-    // 验证 Pro 被移除
+    // Verify Pro 被移除
     assert!(!filtered_opus.iter().any(|t| t.email == "pro@test.com"));
 
     // 2. 排序 filtered_opus: Ultra 应该排在 Future Pro 前面 (Tier Priority)
@@ -233,7 +236,7 @@ fn test_capability_filtering() {
     assert_eq!(sorted_opus[1].email, "future_pro@test.com");
 }
 
-/// 测试排序：同为 Ultra 时按配额排序
+/// 测试排序：同为 Ultra 时按quota排序
 #[test]
 fn test_ultra_accounts_sorted_by_quota() {
     let ultra_high = create_test_token(
@@ -253,7 +256,7 @@ fn test_ultra_accounts_sorted_by_quota() {
         vec!["claude-opus-4-6"],
     );
 
-    // Opus 4.6: 同为 Ultra，高配额优先
+    // Opus 4.6: 同为 Ultra，高quota优先
     assert_eq!(
         compare_tokens_for_model(&ultra_high, &ultra_low, "claude-opus-4-6"),
         Ordering::Less, // ultra_high 排在前面
@@ -261,14 +264,14 @@ fn test_ultra_accounts_sorted_by_quota() {
     );
 }
 
-/// 测试完整排序场景：混合账号池
+/// 测试完整排序场景：混合account池
 #[test]
 fn test_full_sorting_mixed_accounts() {
     fn sort_tokens_for_model(tokens: &mut Vec<ProxyToken>, target_model: &str) {
         tokens.sort_by(|a, b| compare_tokens_for_model(a, b, target_model));
     }
 
-    // 创建混合账号池 (全部支持所有模型，简化测试)
+    // 创建混合account池 (all支持所有model，简化测试)
     let supported = vec!["claude-opus-4-6", "claude-sonnet-4-6"];
     let ultra_high = create_test_token(
         "ultra_high@test.com",
@@ -311,7 +314,7 @@ fn test_full_sorting_mixed_accounts() {
         supported.clone(),
     );
 
-    // 高端模型 (Opus 4.6) 排序
+    // 高端model (Opus 4.6) 排序
     let mut tokens_opus = vec![
         pro_high.clone(),
         free.clone(),
@@ -322,7 +325,7 @@ fn test_full_sorting_mixed_accounts() {
     sort_tokens_for_model(&mut tokens_opus, "claude-opus-4-6");
 
     let emails_opus: Vec<&str> = tokens_opus.iter().map(|t| t.email.as_str()).collect();
-    // 期望顺序: Ultra(高配额) > Ultra(低配额) > Pro(高配额) > Pro(低配额) > Free
+    // 期望顺序: Ultra(高quota) > Ultra(低quota) > Pro(高quota) > Pro(低quota) > Free
     assert_eq!(
         emails_opus,
         vec![
@@ -335,7 +338,7 @@ fn test_full_sorting_mixed_accounts() {
         "Opus 4.6 should sort Ultra first, then by quota within each tier"
     );
 
-    // 普通模型 (Sonnet) 排序
+    // 普通model (Sonnet) 排序
     let mut tokens_sonnet = vec![
         pro_high.clone(),
         free.clone(),

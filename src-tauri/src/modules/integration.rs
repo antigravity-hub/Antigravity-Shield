@@ -1,10 +1,13 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::models::Account;
 use crate::modules::{db, device, process, version};
 use std::fs;
 use std::process::Command;
 
 pub trait SystemIntegration: Send + Sync {
-    /// 当切换账号时执行的系统层操作（如杀进程、写入文件、注入数据库）
+    /// 当Switch account时执行的系统层操作（如杀进程、写入文件、注入data库）
     async fn on_account_switch(
         &self,
         account: &crate::models::Account,
@@ -175,7 +178,7 @@ impl SystemIntegration for DesktopIntegration {
                     }
                 }
                 Err(e) => {
-                    // If 探测失败，为防止对最新版由于没有 storage.json 造成报错阻断，默认作为新凭据注入
+                    // If 探测failed，为防止对最新版由于没有 storage.json 造成报错阻断，default作为新凭据注入
                     use_keyring = true;
                     crate::modules::logger::log_warn(&format!(
                         "[Desktop] Failed to detect Antigravity version ({}), defaulting to system Keyring for robustness.",
@@ -190,14 +193,14 @@ impl SystemIntegration for DesktopIntegration {
             // 2.1 写入系统 Keychain/Keyring
             write_to_system_keyring(account)?;
 
-            // 2.2 原生应用可能没有 storage.json，但如果有的话，我们也可以尝试安全地写入设备 Profile，以兼容指纹信息
+            // 2.2 原生应用可能没有 storage.json，但如果有的话，我们也可以尝试安全地写入设备 Profile，以兼容指纹info
             if let Ok(storage_path) = device::get_storage_path(target_ide) {
                 if let Some(ref profile) = account.device_profile {
                     let _ = device::write_profile(&storage_path, profile);
                 }
             }
 
-            // 2.3 同样更新 SQLite 数据库（如果存在 state.vscdb），以保证双重一致性
+            // 2.3 同样update SQLite data库（如果存在 state.vscdb），以保证双重一致性
             if let Ok(db_path) = db::get_db_path(target_ide) {
                 if db_path.exists() {
                     let _ = db::inject_token(
@@ -219,7 +222,7 @@ impl SystemIntegration for DesktopIntegration {
             }
         } else {
             // ================== 原有 Antigravity 旧版或定制 IDE 逻辑 (< 2.0.0) ==================
-            // 2.1 获取存储路径
+            // 2.1 get存储路径
             let storage_path = device::get_storage_path(target_ide)?;
 
             // 2.2 写入设备 Profile
@@ -227,7 +230,7 @@ impl SystemIntegration for DesktopIntegration {
                 device::write_profile(&storage_path, profile)?;
             }
 
-            // 2.3 数据库处理与 Token 注入
+            // 2.3 data库handle与 Token 注入
             let db_path = db::get_db_path(target_ide)?;
             if db_path.exists() {
                 let backup_path = db_path.with_extension("vscdb.backup");
@@ -247,7 +250,7 @@ impl SystemIntegration for DesktopIntegration {
                 target_ide,
             )?;
 
-            // 2.4 同步 Service Machine ID 到数据库
+            // 2.4 同步 Service Machine ID 到data库
             if let Some(ref profile) = account.device_profile {
                 let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
             }
@@ -369,7 +372,7 @@ pub fn show_os_notification(title: &str, body: &str) {
 
 /// 辅助方法：向宿主操作系统的 Keychain/Credentials Manager 写入 Token
 pub(crate) fn write_to_system_keyring(account: &crate::models::Account) -> Result<(), String> {
-    // 1. 构建 Token 的 JSON Payload，并将过期时间戳格式化为符合 RFC3339 的带微秒格式
+    // 1. 构建 Token 的 JSON Payload，并将过期时间戳格式化为符合 RFC3339 的带微s格式
     let expiry_datetime = chrono::DateTime::from_timestamp(account.token.expiry_timestamp, 0)
         .unwrap_or_else(|| chrono::Utc::now());
     let expiry_str = expiry_datetime.to_rfc3339_opts(chrono::SecondsFormat::Micros, true);
@@ -423,7 +426,7 @@ pub(crate) fn write_to_system_keyring(account: &crate::models::Account) -> Resul
             ])
             .output();
 
-        // 写入新的 (-A 参数允许所有本地应用免密码、无感直接读取凭据)
+        // 写入新的 (-A 参数允许所有本地应用免密码、none感直接读取凭据)
         let output = Command::new("security")
             .args([
                 "add-generic-password",
@@ -591,7 +594,7 @@ pub(crate) fn write_to_system_keyring(account: &crate::models::Account) -> Resul
         "[Desktop] Successfully wrote token to system credential store.",
     );
 
-    // 同步写入 ~/.gemini/ 目录下的文件凭据，兼容 SSH 会话、容器环境和无 Keyring/D-Bus 场景
+    // Synchronize写入 ~/.gemini/ 目录下的文件凭据，兼容 SSH 会话、容器环境和none Keyring/D-Bus 场景
     if let Err(e) = write_to_file_credentials(account) {
         crate::modules::logger::log_warn(&format!(
             "[Desktop] File credential sync warning: {}",
@@ -603,7 +606,7 @@ pub(crate) fn write_to_system_keyring(account: &crate::models::Account) -> Resul
 }
 
 /// 辅助方法：同步写入本地文件凭据 (~/.gemini/oauth_creds.json 以及 ~/.gemini/google_accounts.json)
-/// 用于在 SSH 会话、容器环境或无系统 Keyring / D-Bus 的场景下保障 CLI/工具的凭据兼容性
+/// 用于在 SSH 会话、容器环境或none系统 Keyring / D-Bus 的场景下保障 CLI/工具的凭据兼容性
 pub(crate) fn write_to_file_credentials(account: &crate::models::Account) -> Result<(), String> {
     let home = match dirs::home_dir() {
         Some(h) => h,
@@ -836,7 +839,7 @@ fn parse_keyring_payload(payload_str: &str) -> Result<crate::modules::migration:
     })
 }
 
-/// Headless/Docker 实现：仅执行数据层操作，忽略 UI 和进程控制
+/// Headless/Docker 实现：仅执行data层操作，忽略 UI 和进程控制
 pub struct HeadlessIntegration;
 
 impl SystemIntegration for HeadlessIntegration {
@@ -857,7 +860,7 @@ impl SystemIntegration for HeadlessIntegration {
             account.email
         ));
         // Docker 模式下通常不直接控制宿主机的 VS Code 进程
-        // If 需要同步配置 to 某个 volume，可以在此处添加逻辑
+        // If 需要同步config to 某个 volume，可以在此处add逻辑
         Ok(())
     }
 

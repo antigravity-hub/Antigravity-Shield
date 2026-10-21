@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules;
 use tauri::{
     image::Image,
@@ -89,7 +92,7 @@ pub fn create_tray(app: &tauri::AppHandle) -> tauri::Result<()> {
                     }
                 }
                 "quit" => {
-                    // 先停止 Admin Server 和反代服务，避免进程残留和端口占用
+                    // 先停止 Admin Server 和反代service，避免进程残留和端口占用
                     let state = app.state::<crate::commands::proxy::ProxyServiceState>();
                     let admin_server = state.admin_server.clone();
                     let instance = state.instance.clone();

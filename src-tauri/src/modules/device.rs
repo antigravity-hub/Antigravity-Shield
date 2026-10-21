@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::models::DeviceProfile;
 use crate::modules::{logger, process};
 use chrono::Local;

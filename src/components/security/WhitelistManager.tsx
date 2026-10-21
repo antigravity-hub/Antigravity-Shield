@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { request as invoke } from '../../utils/request';
@@ -61,14 +65,14 @@ export const WhitelistManager: React.FC<Props> = ({ refreshKey }) => {
     };
 
     const handleRemove = async (ipPattern: string) => {
-        // 乐观更新：立即从UI中移除
+        // 乐观update：立即从UI中移除
         setEntries(prev => prev.filter(e => e.ip_pattern !== ipPattern));
 
         try {
             await invoke('remove_ip_from_whitelist', { ipPattern: ipPattern });
         } catch (e) {
             console.error('Failed to remove from whitelist', e);
-            // If 删除失败，重新加载数据恢复UI
+            // If deletefailed，重新加载data恢复UI
             loadWhitelist();
         }
     };

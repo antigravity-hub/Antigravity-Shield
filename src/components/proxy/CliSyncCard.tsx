@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -103,7 +107,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
         if (app === 'Codex' || app === 'OpenCode') {
             return base.endsWith('/v1') ? base : `${base}/v1`;
         }
-        // Claude 和 Gemini 的 SDK 通常会自动处理版本路径或不需要 /v1
+        // Claude 和 Gemini 的 SDK 通常会自动handle版本路径或不需要 /v1
         return base.replace(/\/v1$/, '');
     }, [proxyUrl]);
 
@@ -318,7 +322,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
                         </div>
                     </div>
 
-                    {/* Claude, Codex, Gemini 的模型选择 */}
+                    {/* Claude, Codex, Gemini 的model选择 */}
                     {(status?.installed || app === 'OpenCode') && (app === 'Claude' || app === 'Codex' || app === 'Gemini') && (
                         <div className="space-y-1">
                             <div className="text-[9px] text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider px-1">
@@ -334,7 +338,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
                         </div>
                     )}
 
-                    {/* OpenCode 独有的账号同步选项 - Allow even if not installed */}
+                    {/* OpenCode 独有的account同步选项 - Allow even if not installed */}
                     {app === 'OpenCode' && (
                         <div className="flex items-center gap-2 p-2 bg-gray-50/50 dark:bg-gray-900/20 rounded-lg">
                             <input
@@ -484,7 +488,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
                     </div>
                 </div>
             )}
-            {/* 恢复默认/备份确认弹窗 */}
+            {/* 恢复default/备份确认弹窗 */}
             <ModalDialog
                 isOpen={!!restoreConfirmApp}
                 title={statuses[restoreConfirmApp!]?.has_backup
@@ -500,7 +504,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
                 isDestructive={true}
             />
 
-            {/* 同步配置确认弹窗 (Issue #756) */}
+            {/* 同步config确认弹窗 (Issue #756) */}
             <ModalDialog
                 isOpen={!!syncConfirmApp}
                 title={t('proxy.cli_sync.sync_confirm_title')}
@@ -520,7 +524,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
                 isDestructive={true}
             />
 
-            {/* Droid 模型添加弹窗 */}
+            {/* Droid modeladd弹窗 */}
             {droidSyncModal && (
                 <DroidSyncModal
                     proxyUrl={proxyUrl}
@@ -531,7 +535,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
                 />
             )}
 
-            {/* OpenCode 模型选择弹窗 */}
+            {/* OpenCode model选择弹窗 */}
             {openCodeSyncModal && (
                 <OpenCodeSyncModal
                     proxyUrl={proxyUrl}

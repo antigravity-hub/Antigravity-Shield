@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Gemini Stream Collector
 // Used for auto-converting streaming responses to JSON for non-streaming requests
 

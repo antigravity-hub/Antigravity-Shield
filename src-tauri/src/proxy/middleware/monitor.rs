@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::proxy::middleware::auth::UserTokenIdentity;
 use crate::proxy::monitor::ProxyRequestLog;
 use crate::proxy::server::AppState;
@@ -417,8 +420,8 @@ pub async fn monitor_middleware(
 
     let request_body_str;
 
-    // [FIX] 从请求 extensions 提取 UserTokenIdentity (由 Auth 中间件注入)
-    // 必须在处理 request body 之前提取，因为 into_parts() 后需要保留这个值
+    // [FIX] 从request extensions 提取 UserTokenIdentity (由 Auth 中间件注入)
+    // 必须在handle request body 之前提取，因为 into_parts() 后需要保留这个值
     let user_token_identity = request.extensions().get::<UserTokenIdentity>().cloned();
 
     let request = if method == "POST" {
@@ -465,7 +468,7 @@ pub async fn monitor_middleware(
 
     let response = next.run(request).await;
 
-    // user_token_identity 已在上面从请求 extensions 中提取
+    // user_token_identity 已在上面从request extensions 中提取
 
     let duration = start.elapsed().as_millis() as u64;
     let status = response.status().as_u16();

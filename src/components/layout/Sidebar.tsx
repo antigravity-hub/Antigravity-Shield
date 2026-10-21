@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -67,7 +71,7 @@ export const Sidebar: React.FC = () => {
       items: [
         {
           path: '/ecosystem',
-          label: t('nav.ecosystem', 'Skills & MCP Hub'),
+          label: t('nav.ecosystem', 'Skills & MCP'),
           icon: Layers,
           badge: 'PRO',
           isNew: true,
@@ -305,7 +309,7 @@ export const Sidebar: React.FC = () => {
               )}
             </button>
 
-            {/* 7 种 UI 奢华主题高亮色选择器 */}
+            {/* 7 UI luxury accent theme color selector */}
             <AccentColorPicker compact={true} dropUp={true} />
 
             {/* Language Switcher */}

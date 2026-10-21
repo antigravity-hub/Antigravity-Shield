@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 export type AccentColorId = 
     | 'seafoam'   // Seafoam Green / زمرد دریایی (دیفالت)
     | 'amber'     // Amber Gold / کهربایی

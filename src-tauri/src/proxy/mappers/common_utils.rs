@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Common utilities for request mapping across all protocols
 // Provides unified grounding/networking logic
 
@@ -113,8 +116,8 @@ pub fn resolve_request_config(
         || mapped_model.contains("claude-4");
 
     // Determine if we should enable networking
-    // [FIX] 禁用基于模型的自动联网逻辑，防止图像请求被联网搜索结果覆盖。
-    // 仅在用户显式请求联网时启用：1) -online 后缀 2) 携带联网工具定义
+    // [FIX] disabled基于model的自动联网逻辑，防止图像request被联网搜索结果覆盖。
+    // 仅在user显式request联网时enabled：1) -online 后缀 2) 携带联网工具定义
     let enable_networking = is_online_suffix || has_networking_tool;
 
     // The final model to send upstream should be the MAPPED model,
@@ -215,7 +218,7 @@ fn parse_image_config_with_normalized_params(
     if let Some(parsed_ratio) = size.and_then(image_aspect_ratio_from_size) {
         aspect_ratio = parsed_ratio;
     } else {
-        // 2. 回退到模型后缀解析（保持向后兼容）
+        // 2. 回退到model后缀解析（保持向后兼容）
         if model_name.contains("-21x9") || model_name.contains("-21-9") {
             aspect_ratio = "21:9";
         } else if model_name.contains("-16x9") || model_name.contains("-16-9") {
@@ -250,7 +253,7 @@ fn parse_image_config_with_normalized_params(
         if let Some(image_size) = quality.and_then(image_size_from_quality) {
             config.insert("imageSize".to_string(), json!(image_size));
         } else {
-            // 4. 回退到模型后缀解析（保持向后兼容）
+            // 4. 回退到model后缀解析（保持向后兼容）
             let is_hd = model_name.contains("-4k") || model_name.contains("-hd");
             let is_2k = model_name.contains("-2k");
             let is_1k = model_name.contains("-1k") || model_name.contains("-standard");
@@ -462,7 +465,7 @@ pub fn inject_google_search_tool(body: &mut Value, mapped_model: Option<&str>) {
     }
 }
 
-/// 深度迭代清理客户端发送的 [undefined] 脏字符串，防止 Gemini 接口校验失败
+/// 深度迭代清理客户端发送的 [undefined] 脏字符串，防止 Gemini 接口校验failed
 pub fn deep_clean_undefined(value: &mut Value, depth: usize) {
     if depth > 10 {
         return;
@@ -477,7 +480,7 @@ pub fn deep_clean_undefined(value: &mut Value, depth: usize) {
                     true
                 }
             });
-            // 递归处理嵌套
+            // 递归handle嵌套
             for v in map.values_mut() {
                 deep_clean_undefined(v, depth + 1);
             }
@@ -1024,7 +1027,7 @@ pub fn sanitize_system_prompt_for_tokens(text: &str) -> String {
     use regex::Regex;
     let mut cleaned = text.to_string();
 
-    // [CACHE] Step 1: 剥离动态内容（时间戳、UUID），确保跨请求的前缀一致性
+    // [CACHE] Step 1: 剥离动态内容（时间戳、UUID），确保跨request的前缀一致性
     // 这对 Gemini 隐式前缀缓存命中至关重要
     let time_patterns = [
         r"(?im)^Current (date|time)(\s+is)?\s*:.*$",

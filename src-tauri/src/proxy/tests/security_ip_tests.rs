@@ -1,12 +1,15 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! IP Security Module Tests
 //! IP 安全监控功能的综合测试套件
 //!
 //! 测试目标:
-//! 1. 验证 IP 黑/白名单功能的正确性
-//! 2. 验证 CIDR 匹配逻辑
-//! 3. 验证过期时间处理
-//! 4. 验证不影响主流程性能
-//! 5. 验证数据库操作的原子性和一致性
+//! 1. validate IP 黑/白名单功能的正确性
+//! 2. validate CIDR 匹配逻辑
+//! 3. validate过期时间handle
+//! 4. validate不影响主流程性能
+//! 5. validatedata库操作的原子性和一致性
 
 #[cfg(test)]
 mod security_db_tests {
@@ -18,7 +21,7 @@ mod security_db_tests {
     };
     use std::time::{SystemTime, UNIX_EPOCH};
 
-    /// 辅助函数：获取当前时间戳
+    /// Helper functions：getcurrent时间戳
     fn now_timestamp() -> i64 {
         SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -26,7 +29,7 @@ mod security_db_tests {
             .as_secs() as i64
     }
 
-    /// 辅助函数：清理测试环境
+    /// Helper functions：清理测试环境
     fn cleanup_test_data() {
         // 清理黑名单
         if let Ok(entries) = get_blacklist() {
@@ -45,12 +48,12 @@ mod security_db_tests {
     }
 
     // ============================================================================
-    // 测试类别 1: 数据库初始化
+    // 测试类别 1: data库init
     // ============================================================================
 
     #[test]
     fn test_db_initialization() {
-        // 验证数据库初始化不会 panic
+        // Verifydata库init不会 panic
         let result = init_db();
         assert!(
             result.is_ok(),
@@ -61,7 +64,7 @@ mod security_db_tests {
 
     #[test]
     fn test_db_multiple_initializations() {
-        // 验证多次初始化不会出错 (幂等性)
+        // Verify多次init不会出错 (幂等性)
         for _ in 0..3 {
             let result = init_db();
             assert!(
@@ -80,7 +83,7 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加 IP 到黑名单
+        // Add IP to blacklist
         let result = add_to_blacklist("192.168.1.100", Some("Test block"), None, "test");
         assert!(
             result.is_ok(),
@@ -88,12 +91,12 @@ mod security_db_tests {
             result.err()
         );
 
-        // 验证 IP 在黑名单中
+        // Verify IP 在黑名单中
         let is_blocked = is_ip_in_blacklist("192.168.1.100");
         assert!(is_blocked.is_ok());
         assert!(is_blocked.unwrap(), "IP should be in blacklist");
 
-        // 验证其他 IP 不在黑名单中
+        // Verify其他 IP 不在黑名单中
         let is_other_blocked = is_ip_in_blacklist("192.168.1.101");
         assert!(is_other_blocked.is_ok());
         assert!(
@@ -109,17 +112,17 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加 IP
+        // add IP
         let entry = add_to_blacklist("10.0.0.5", Some("Temp block"), None, "test").unwrap();
 
-        // 验证存在
+        // Verify存在
         assert!(is_ip_in_blacklist("10.0.0.5").unwrap());
 
         // 移除
         let remove_result = remove_from_blacklist(&entry.id);
         assert!(remove_result.is_ok());
 
-        // 验证已移除
+        // Verify已移除
         assert!(!is_ip_in_blacklist("10.0.0.5").unwrap());
 
         cleanup_test_data();
@@ -130,11 +133,11 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加带有详细信息的条目
+        // add带有详细info的条目
         let _ = add_to_blacklist(
             "172.16.0.50",
             Some("Abuse detected"),
-            Some(now_timestamp() + 3600), // 1小时后过期
+            Some(now_timestamp() + 3600), // 1h后过期
             "admin",
         );
 
@@ -163,10 +166,10 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加 CIDR 范围到黑名单
+        // add CIDR 范围到黑名单
         let _ = add_to_blacklist("192.168.1.0/24", Some("Block subnet"), None, "test");
 
-        // 验证该子网内的 IP 都被阻止
+        // Verify该子网内的 IP 都被阻止
         assert!(
             is_ip_in_blacklist("192.168.1.1").unwrap(),
             "192.168.1.1 should match /24"
@@ -180,7 +183,7 @@ mod security_db_tests {
             "192.168.1.254 should match /24"
         );
 
-        // 验证子网外的 IP 不被阻止
+        // Verify子网外的 IP 不被阻止
         assert!(
             !is_ip_in_blacklist("192.168.2.1").unwrap(),
             "192.168.2.1 should not match"
@@ -260,7 +263,7 @@ mod security_db_tests {
     }
 
     // ============================================================================
-    // 测试类别 4: 过期时间处理
+    // 测试类别 4: 过期时间handle
     // ============================================================================
 
     #[test]
@@ -268,17 +271,17 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加一个已过期的条目
+        // add一个已过期的条目
         let _ = add_to_blacklist(
             "expired.test.ip",
             Some("Already expired"),
-            Some(now_timestamp() - 60), // 1分钟前过期
+            Some(now_timestamp() - 60), // 1min前过期
             "test",
         );
 
         // 过期条目应该被自动清理
         let is_blocked = is_ip_in_blacklist("expired.test.ip");
-        // 注意：取决于实现，过期条目可能在查询时被清理
+        // Note：取决于实现，过期条目可能在查询时被清理
         // 根据 security_db.rs 的实现，get_blacklist_entry_for_ip 会先清理过期条目
         assert!(!is_blocked.unwrap(), "Expired entry should be cleaned up");
 
@@ -290,11 +293,11 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加一个未过期的条目
+        // add一个未过期的条目
         let _ = add_to_blacklist(
             "not.expired.ip",
             Some("Will expire later"),
-            Some(now_timestamp() + 3600), // 1小时后过期
+            Some(now_timestamp() + 3600), // 1h后过期
             "test",
         );
 
@@ -309,11 +312,11 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加永久封禁 (无过期时间)
+        // add永久封禁 (none过期时间)
         let _ = add_to_blacklist(
             "permanent.block.ip",
             Some("Permanent ban"),
-            None, // 无过期时间
+            None, // none过期时间
             "test",
         );
 
@@ -332,11 +335,11 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加 IP 到白名单
+        // Add IP to whitelist
         let result = add_to_whitelist("10.0.0.1", Some("Trusted server"));
         assert!(result.is_ok());
 
-        // 验证 IP 在白名单中
+        // Verify IP 在白名单中
         assert!(is_ip_in_whitelist("10.0.0.1").unwrap());
         assert!(!is_ip_in_whitelist("10.0.0.2").unwrap());
 
@@ -348,14 +351,14 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加 CIDR 范围到白名单
+        // add CIDR 范围到白名单
         let _ = add_to_whitelist("192.168.0.0/16", Some("Internal network"));
 
-        // 验证子网内的 IP 都被允许
+        // Verify子网内的 IP 都被允许
         assert!(is_ip_in_whitelist("192.168.1.1").unwrap());
         assert!(is_ip_in_whitelist("192.168.255.255").unwrap());
 
-        // 验证子网外的 IP 不在白名单
+        // Verify子网外的 IP 不在白名单
         assert!(!is_ip_in_whitelist("10.0.0.1").unwrap());
 
         cleanup_test_data();
@@ -461,7 +464,7 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加一些测试数据
+        // add一些测试data
         for i in 0..5 {
             let log = IpAccessLog {
                 id: uuid::Uuid::new_v4().to_string(),
@@ -484,7 +487,7 @@ mod security_db_tests {
             let _ = save_ip_access_log(&log);
         }
 
-        // 添加黑名单和白名单条目
+        // add黑名单和白名单条目
         let _ = add_to_blacklist("stats.black.1", None, None, "test");
         let _ = add_to_blacklist("stats.black.2", None, None, "test");
         let _ = add_to_whitelist("stats.white.1", None);
@@ -515,11 +518,11 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加一条 "旧" 日志 (模拟 2 天前)
+        // add一条 "旧" 日志 (模拟 2 d前)
         let old_log = IpAccessLog {
             id: uuid::Uuid::new_v4().to_string(),
             client_ip: "old.log.ip".to_string(),
-            timestamp: now_timestamp() - (2 * 24 * 3600), // 2 天前
+            timestamp: now_timestamp() - (2 * 24 * 3600), // 2 d前
             method: Some("GET".to_string()),
             path: Some("/old".to_string()),
             user_agent: None,
@@ -532,7 +535,7 @@ mod security_db_tests {
         };
         let _ = save_ip_access_log(&old_log);
 
-        // 添加一条新日志
+        // add一条新日志
         let new_log = IpAccessLog {
             id: uuid::Uuid::new_v4().to_string(),
             client_ip: "new.log.ip".to_string(),
@@ -549,16 +552,16 @@ mod security_db_tests {
         };
         let _ = save_ip_access_log(&new_log);
 
-        // 清理 1 天前的日志
+        // 清理 1 d前的日志
         let deleted = cleanup_old_ip_logs(1);
         assert!(deleted.is_ok());
         assert!(deleted.unwrap() >= 1, "Should delete at least 1 old log");
 
-        // 验证新日志仍然存在
+        // Verify新日志仍然存在
         let logs = get_ip_access_logs(10, 0, Some("new.log.ip"), false).unwrap();
         assert!(!logs.is_empty(), "New log should still exist");
 
-        // 验证旧日志已被清理
+        // Verify旧日志已被清理
         let old_logs = get_ip_access_logs(10, 0, Some("old.log.ip"), false).unwrap();
         assert!(old_logs.is_empty(), "Old log should be cleaned up");
 
@@ -579,11 +582,11 @@ mod security_db_tests {
         let handles: Vec<_> = (0..10)
             .map(|i| {
                 thread::spawn(move || {
-                    // 每个线程添加不同的 IP
+                    // 每个线程add不同的 IP
                     let ip = format!("concurrent.test.{}", i);
                     let _ = add_to_blacklist(&ip, Some("Concurrent test"), None, "test");
 
-                    // 验证自己添加的 IP
+                    // Verify自己add的 IP
                     is_ip_in_blacklist(&ip).unwrap_or(false)
                 })
             })
@@ -591,7 +594,7 @@ mod security_db_tests {
 
         let results: Vec<bool> = handles.into_iter().map(|h| h.join().unwrap()).collect();
 
-        // 所有线程都应该成功
+        // 所有线程都应该success
         assert!(
             results.iter().all(|&r| r),
             "All concurrent adds should succeed"
@@ -601,7 +604,7 @@ mod security_db_tests {
     }
 
     // ============================================================================
-    // 测试类别 10: 边界情况和错误处理
+    // 测试类别 10: 边界情况和errorhandle
     // ============================================================================
 
     #[test]
@@ -609,11 +612,11 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 第一次添加应该成功
+        // 第一次add应该success
         let result1 = add_to_blacklist("duplicate.test.ip", Some("First"), None, "test");
         assert!(result1.is_ok());
 
-        // 第二次添加相同 IP 应该失败 (UNIQUE constraint)
+        // 第二次add相同 IP 应该failed (UNIQUE constraint)
         let result2 = add_to_blacklist("duplicate.test.ip", Some("Second"), None, "test");
         assert!(result2.is_err(), "Duplicate IP should fail");
 
@@ -625,10 +628,10 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 空 IP 模式应该仍然可以添加 (取决于业务需求)
+        // empty IP 模式应该仍然可以add (取决于业务需求)
         // 这里只测试不会 panic
         let result = add_to_blacklist("", Some("Empty IP"), None, "test");
-        // 结果可能成功或失败，但不应该 panic
+        // 结果可能success或failed，但不应该 panic
         let _ = result;
 
         cleanup_test_data();
@@ -657,7 +660,7 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 添加一个黑名单条目
+        // add一个黑名单条目
         let _ = add_to_blacklist("hit.count.test", Some("Count test"), None, "test");
 
         // 多次查询应该增加 hit_count
@@ -684,15 +687,15 @@ mod security_db_tests {
 
 #[cfg(test)]
 mod ip_filter_middleware_tests {
-    // 注意：中间件测试需要模拟 HTTP 请求，这里提供测试框架
-    // 实际的集成测试应该在启动完整服务后进行
+    // Note：中间件测试需要模拟 HTTP request，这里提供测试框架
+    // 实际的集成测试应该在启动完整service后进行
 
-    /// 验证 IP 提取逻辑的正确性
+    /// Verify IP 提取逻辑的正确性
     #[test]
     fn test_ip_extraction_priority() {
         // X-Forwarded-For 应该优先于 X-Real-IP
         // X-Real-IP 应该优先于 ConnectInfo
-        // 这里只验证逻辑概念，实际测试需要构造 HTTP 请求
+        // 这里只validate逻辑概念，实际测试需要构造 HTTP request
 
         // 场景 1: X-Forwarded-For 有多个 IP，取第一个
         let xff_header = "203.0.113.1, 198.51.100.2, 192.0.2.3";
@@ -722,7 +725,7 @@ mod performance_benchmarks {
     fn benchmark_blacklist_lookup() {
         let _ = init_db();
 
-        // 清理并添加 100 个黑名单条目
+        // 清理并add 100 个黑名单条目
         if let Ok(entries) = get_blacklist() {
             for entry in entries {
                 let _ = crate::modules::security_db::remove_from_blacklist(&entry.id);
@@ -762,14 +765,14 @@ mod performance_benchmarks {
     fn benchmark_cidr_matching() {
         let _ = init_db();
 
-        // 清理并添加 CIDR 规则
+        // 清理并add CIDR 规则
         if let Ok(entries) = get_blacklist() {
             for entry in entries {
                 let _ = crate::modules::security_db::remove_from_blacklist(&entry.id);
             }
         }
 
-        // 添加 20 个 CIDR 规则
+        // add 20 个 CIDR 规则
         for i in 0..20 {
             let _ = add_to_blacklist(
                 &format!("10.{}.0.0/16", i),

@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useTranslation } from "react-i18next";
 import { BrainCircuit } from "lucide-react";
 import { ProxyConfig } from "../../types/config";
@@ -49,7 +53,7 @@ export default function AdvancedThinking({
                     />
                 </div>
 
-                {/* 3. 全局系统提示词 (Global System Prompt) */}
+                {/* 3. 全局系统hint词 (Global System Prompt) */}
                 <div className="pt-4">
                     <GlobalSystemPrompt
                         config={config?.global_system_prompt || { enabled: false, content: '' }}

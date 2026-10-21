@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Log Module Bridge - Captures tracing logs and emits them to the frontend via Tauri Events.
 //! Uses a global ring buffer that can be attached to Tauri after app initialization.
 
@@ -164,7 +167,7 @@ where
     S: Subscriber,
 {
     fn on_event(&self, event: &Event<'_>, _ctx: Context<'_, S>) {
-        // [FIX] 如果调试控制台未启用，直接跳过所有处理，避免性能损耗
+        // [FIX] 如果调试控制台未enabled，直接跳过所有handle，避免性能损耗
         if !LOG_BRIDGE_ENABLED.load(Ordering::Relaxed) {
             return;
         }

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules::logger;
 use chrono::Utc;
 use serde::{Deserialize, Serialize};

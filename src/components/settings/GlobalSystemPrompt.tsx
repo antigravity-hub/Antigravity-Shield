@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useTranslation } from "react-i18next";
 import { GlobalSystemPromptConfig } from "../../types/config";
 
@@ -46,7 +50,7 @@ export default function GlobalSystemPrompt({
                 </div>
             </div>
 
-            {/* 编辑区域 (仅在启用时显示) */}
+            {/* 编辑区域 (仅在enabled时显示) */}
             {config.enabled && (
                 <div className="space-y-3">
                     <textarea

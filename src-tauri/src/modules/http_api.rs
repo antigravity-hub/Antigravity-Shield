@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! HTTP API Module
 //! Provides local HTTP interfaces for external programs (e.g., VS Code extension) to call.
 
@@ -9,7 +12,7 @@ use axum::{
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-// 预留 HTTP API 模块，当前未在主流程中启用
+// 预留 HTTP API 模块，current未在主流程中enabled
 
 use std::collections::HashMap;
 use std::sync::Arc;

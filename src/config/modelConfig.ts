@@ -1,20 +1,24 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { Gemini, Claude, OpenAI } from '@lobehub/icons';
 
 /**
- * 模型配置接口
+ * modelconfig接口
  */
 export interface ModelConfig {
-    /** 模型完整显示名称 (作为回退或默认展示) */
+    /** model完整显示名称 (作为回退或default展示) */
     label: string;
-    /** 模型简短标签 (用于列表/卡片) */
+    /** model简短标签 (用于列表/卡片) */
     shortLabel: string;
-    /** 保护模型的键名 */
+    /** 保护model的键名 */
     protectedKey: string;
-    /** 模型图标组件 */
+    /** model图标组件 */
     Icon: React.ComponentType<any>;
     /** 国际化键名 (用于动态名称) */
     i18nKey: string;
-    /** 描述信息键名 (用于详细说明) */
+    /** 描述info键名 (用于详细说明) */
     i18nDescKey: string;
     /** 所属系列/分组 */
     group: string;
@@ -23,8 +27,8 @@ export interface ModelConfig {
 }
 
 /**
- * 模型配置映射
- * 键为模型 ID，值为模型配置
+ * modelconfig映射
+ * 键为model ID，值为modelconfig
  */
 export const MODEL_CONFIG: Record<string, ModelConfig> = {
     // Gemini 4.x 系列
@@ -332,19 +336,19 @@ export const MODEL_CONFIG: Record<string, ModelConfig> = {
 };
 
 /**
- * 获取所有模型 ID 列表
+ * get所有model ID 列表
  */
 export const getAllModelIds = (): string[] => Object.keys(MODEL_CONFIG);
 
 /**
- * 根据模型 ID 获取配置
+ * 根据model ID getconfig
  */
 export const getModelConfig = (modelId: string): ModelConfig | undefined => {
     return MODEL_CONFIG[modelId.toLowerCase()];
 };
 
 /**
- * 模型排序权重配置
+ * model排序权重config
  * 数字越小，优先级越高
  */
 const MODEL_SORT_WEIGHTS = {
@@ -374,7 +378,7 @@ const MODEL_SORT_WEIGHTS = {
 };
 
 /**
- * 获取模型的排序权重
+ * getmodel的排序权重
  */
 function getModelSortWeight(modelId: string): number {
     const id = modelId.toLowerCase();
@@ -421,9 +425,9 @@ function getModelSortWeight(modelId: string): number {
 }
 
 /**
- * 对模型列表进行排序
- * @param models 模型列表
- * @returns 排序后的模型列表
+ * 对model列表进行排序
+ * @param models model列表
+ * @returns 排序后的model列表
  */
 export function sortModels<T extends { id: string }>(models: T[]): T[] {
     return [...models].sort((a, b) => {
@@ -440,7 +444,7 @@ export function sortModels<T extends { id: string }>(models: T[]): T[] {
     });
 }
 
-// ── 模型分类与保护键（实现在 src/utils/modelCategory.ts，此处只 re-export）───
+// ── model分类与保护键（实现在 src/utils/modelCategory.ts，此处只 re-export）───
 
 export {
     categorizeModel,
@@ -461,6 +465,6 @@ export {
 
 import { registerKnownModels } from '../utils/modelCategory';
 
-// 自动将配置中包含的所有模型键注册到动态模型库
+// 自动将config中包含的所有model键注册到动态model库
 registerKnownModels(Object.keys(MODEL_CONFIG));
 

@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { Ban, Lock, Clock, ExternalLink, Copy, FileText, Terminal, ChevronDown, ChevronRight, BookOpen, Sparkles, Send, QrCode } from 'lucide-react';
 import { QRCode } from 'antd';
 import { Account } from '../../types/account';
@@ -30,7 +34,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
 
     const rawReason = account.validation_blocked_reason || account.disabled_reason || account.quota?.forbidden_reason || account.proxy_disabled_reason || '';
 
-    // 深度解析解析错误消息
+    // Deep parsing of error message
     const extractErrorMessage = (raw: string) => {
         const trimmed = raw.trim();
         if (!trimmed) return raw;
@@ -42,7 +46,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                     innerParsed = JSON.parse(parsed.error);
                 } catch (_) { }
             }
-            // 按照优先级尝试提取消息
+            // Extract message by priority
             const msg = innerParsed?.error?.message
                 || parsed?.error?.message
                 || (Array.isArray(parsed?.error?.details) ? parsed.error.details[0]?.message : null)
@@ -50,7 +54,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                 || raw;
             return String(msg);
         } catch (_) {
-            // 不处理
+            // Skip handling
         }
         return raw;
     };
@@ -70,7 +74,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
     const { url: rawExtractedUrl, label: actionLabel } = extractActionInfo(rawReason);
     const actionUrl = directUrl || rawExtractedUrl;
 
-    // 识别错误类型
+    // Identify error type
     const isViolation = rawReason.toLowerCase().includes('terms of service') || rawReason.toLowerCase().includes('violation');
     const isVerificationNeeded = !isViolation && (
         isValidationBlocked ||
@@ -80,7 +84,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
         Boolean(actionUrl)
     );
 
-    // 复制功能
+    // Clipboard copy handler
     const handleCopyUrl = (url: string) => {
         copyToClipboard(url);
         showToast(t('accounts.validation_url_copied', 'Validation link copied to clipboard'), 'success');
@@ -423,7 +427,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                         <ul className="list-disc pl-4 space-y-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium marker:text-gray-300">
                                             <li><Trans i18nKey="accounts.fix_guide.tip1" components={{ 1: <code /> }}>If still 403, run <code /> in terminal to reset environment variables.</Trans></li>
                                             <li><Trans i18nKey="accounts.fix_guide.tip2" components={{ 1: <strong /> }}>In production, using a <strong /> JSON key is recommended for headless stability.</Trans></li>
-                                            <li><Trans i18nKey="accounts.fix_guide.tip3" components={{ 1: <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 hover:underline" /> }}>若操作失败，请前往 <a /> 中的 Generative Language API 查看是否被冻结权限。若是，说明账号触发了风控，建议让账号冷却 72 小时后再次尝试。</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.tip3" components={{ 1: <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 hover:underline" /> }}>若操作failed，请前往 <a /> 中的 Generative Language API 查看是否被冻结权限。若是，说明account触发了风控，建议让account冷却 72 h后再次尝试。</Trans></li>
                                             <li><Trans i18nKey="accounts.fix_guide.tip4" components={{ 1: <code /> }}>You can also test with <code />; re-authorizing in-app will usually resolve issues.</Trans></li>
                                         </ul>
                                     </div>

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules::security_db;
 use crate::proxy::server::AppState;
 use axum::{
@@ -17,10 +20,10 @@ pub async fn ip_filter_middleware(
     let client_ip = extract_client_ip(&request);
 
     if let Some(ip) = &client_ip {
-        // 读取安全配置
+        // 读取安全config
         let security_config = state.security.read().await;
 
-        // 1. 检查白名单 (如果启用白名单模式,只允许白名单 IP)
+        // 1. check白名单 (如果enabled白名单模式,只允许白名单 IP)
         if security_config.security_monitor.whitelist.enabled {
             match security_db::is_ip_in_whitelist(ip) {
                 Ok(true) => {
@@ -29,7 +32,7 @@ pub async fn ip_filter_middleware(
                     return next.run(request).await;
                 }
                 Ok(false) => {
-                    // 不在白名单中,且启用了白名单模式,拒绝访问
+                    // 不在白名单中,且enabled了白名单模式,拒绝访问
                     tracing::warn!("[IP Filter] IP {} not in whitelist, blocking", ip);
                     return create_blocked_response(
                         ip,
@@ -41,7 +44,7 @@ pub async fn ip_filter_middleware(
                 }
             }
         } else {
-            // 白名单优先模式: 如果在白名单中,跳过黑名单检查
+            // 白名单优先模式: 如果在白名单中,跳过黑名单check
             if security_config
                 .security_monitor
                 .whitelist
@@ -53,7 +56,7 @@ pub async fn ip_filter_middleware(
                         return next.run(request).await;
                     }
                     Ok(false) => {
-                        // 继续检查黑名单
+                        // 继续check黑名单
                     }
                     Err(e) => {
                         tracing::error!("[IP Filter] Failed to check whitelist: {}", e);
@@ -62,7 +65,7 @@ pub async fn ip_filter_middleware(
             }
         }
 
-        // 2. 检查黑名单
+        // 2. check黑名单
         if security_config.security_monitor.blacklist.enabled {
             match security_db::get_blacklist_entry_for_ip(ip) {
                 Ok(Some(entry)) => {
@@ -143,11 +146,11 @@ pub async fn ip_filter_middleware(
         tracing::warn!("[IP Filter] Unable to extract client IP from request");
     }
 
-    // 放行请求
+    // 放行request
     next.run(request).await
 }
 
-/// 从请求中提取客户端 IP
+/// 从request中提取客户端 IP
 fn extract_client_ip(request: &Request) -> Option<String> {
     // 1. 优先从 X-Forwarded-For 提取 (取第一个 IP)
     request
@@ -164,8 +167,8 @@ fn extract_client_ip(request: &Request) -> Option<String> {
                 .map(|s| s.to_string())
         })
         .or_else(|| {
-            // 3. 最后尝试从 ConnectInfo 获取 (TCP 连接 IP)
-            // 这可以解决本地开发/测试时没有代理头导致 IP 获取失败的问题
+            // 3. 最后尝试从 ConnectInfo get (TCP 连接 IP)
+            // 这可以解决本地开发/测试时没有代理头导致 IP getfailed的问题
             request
                 .extensions()
                 .get::<axum::extract::ConnectInfo<std::net::SocketAddr>>()
@@ -173,7 +176,7 @@ fn extract_client_ip(request: &Request) -> Option<String> {
         })
 }
 
-/// 创建被封禁的响应
+/// 创建被封禁的response
 fn create_blocked_response(ip: &str, message: &str) -> Response {
     let body = serde_json::json!({
         "error": {

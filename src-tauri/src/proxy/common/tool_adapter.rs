@@ -1,9 +1,12 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde_json::Value;
 
 /// MCP 工具适配器 trait
 ///
-/// 为不同的 MCP 工具提供定制化的 Schema 处理策略。
-/// 每个工具可以实现自己的适配器来处理特定的需求。
+/// 为不同的 MCP 工具提供定制化的 Schema handle策略。
+/// 每个工具可以实现自己的适配器来handle特定的需求。
 pub trait ToolAdapter: Send + Sync {
     /// 判断该适配器是否匹配给定的工具名称
     ///
@@ -11,23 +14,23 @@ pub trait ToolAdapter: Send + Sync {
     /// * `tool_name` - 工具名称,通常格式为 "mcp__provider__function"
     ///
     /// # Returns
-    /// If 匹配返回 true,否则返回 false
+    /// If 匹配return true,otherwisereturn false
     fn matches(&self, tool_name: &str) -> bool;
 
-    /// 在通用清洗前执行的预处理
+    /// 在通用清洗前执行的预handle
     ///
-    /// 可以在这里添加工具特定的字段处理、提示添加等
+    /// 可以在这里add工具特定的字段handle、hintadd等
     ///
     /// # Arguments
-    /// * `schema` - 待处理的 JSON Schema
+    /// * `schema` - 待handle的 JSON Schema
     ///
     /// # Returns
-    /// 成功返回 Ok(()), 失败返回错误信息
+    /// Successreturn Ok(()), failedreturnerrorinfo
     fn pre_process(&self, _schema: &mut Value) -> Result<(), String> {
         Ok(())
     }
 
-    /// 在通用清洗后执行的后处理
+    /// 在通用清洗后执行的后handle
     ///
     /// 可以在这里进行最终的调整和优化
     ///
@@ -35,13 +38,13 @@ pub trait ToolAdapter: Send + Sync {
     /// * `schema` - 已清洗的 JSON Schema
     ///
     /// # Returns
-    /// 成功返回 Ok(()), 失败返回错误信息
+    /// Successreturn Ok(()), failedreturnerrorinfo
     fn post_process(&self, _schema: &mut Value) -> Result<(), String> {
         Ok(())
     }
 }
 
-/// 辅助函数: 向 Schema 的 description 字段追加提示
+/// Helper functions: 向 Schema 的 description 字段追加hint
 pub fn append_hint_to_schema(schema: &mut Value, hint: &str) {
     if let Value::Object(map) = schema {
         let desc_val = map

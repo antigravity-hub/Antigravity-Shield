@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { LayoutDashboard, Users, Network, Activity, BarChart3, Settings, Lock, Layers } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useConfigStore } from '../../stores/useConfigStore';
@@ -11,8 +15,8 @@ import { CONTAINER_MAX_WIDTH } from '../../constants/layout';
 /**
  * Navbar 主组件
  * 
- * 职责: 只负责布局 and 状态管理,不处理响应式细节
- * 响应式逻辑由各个子组件独立处理
+ * 职责: 只负责布局 and State management,不handleresponse式细节
+ * response式逻辑由各个子组件独立handle
  */
 function Navbar() {
     const { t, i18n } = useTranslation();
@@ -102,12 +106,12 @@ function Navbar() {
                         <NavLogo />
                     </div>
 
-                    {/* 导航菜单 - 自己处理响应式 */}
+                    {/* 导航菜单 - 自己handleresponse式 */}
                     <div className="flex-1 flex justify-center">
                         <NavMenu navItems={navItems} />
                     </div>
 
-                    {/* 设置按钮 - 自己处理响应式 */}
+                    {/* set按钮 - 自己handleresponse式 */}
                     <NavSettings
                         theme={(config?.theme as 'light' | 'dark') || 'light'}
                         currentLanguage={config?.language || 'en'}

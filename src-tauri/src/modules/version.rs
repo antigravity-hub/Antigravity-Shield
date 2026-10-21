@@ -1,9 +1,12 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules::process;
 #[cfg(any(target_os = "macos", target_os = "linux"))]
 use std::fs;
 use std::path::PathBuf;
 
-/// Antigravity 版本信息
+/// Antigravity 版本info
 #[derive(Debug, Clone)]
 pub struct AntigravityVersion {
     pub short_version: String,
@@ -37,11 +40,11 @@ fn extract_semver(raw: &str) -> Option<String> {
 
 /// 检测 Antigravity 版本（跨平台）
 pub fn get_antigravity_version(target_ide: Option<&str>) -> Result<AntigravityVersion, String> {
-    // 1. 获取 Antigravity 可执行文件路径（复用现有功能）
+    // 1. get Antigravity 可执行文件路径（复用现有功能）
     let exe_path = process::get_antigravity_executable_path(target_ide)
         .ok_or("Unable to locate Antigravity executable")?;
 
-    // 2. 根据平台读取版本信息
+    // 2. 根据平台读取版本info
     #[cfg(target_os = "macos")]
     {
         get_version_macos(&exe_path)
@@ -103,13 +106,13 @@ fn get_version_macos(exe_path: &PathBuf) -> Result<AntigravityVersion, String> {
     })
 }
 
-/// Windows: 从可执行文件元数据读取版本
+/// Windows: 从可执行文件元data读取版本
 #[cfg(target_os = "windows")]
 fn get_version_windows(exe_path: &PathBuf) -> Result<AntigravityVersion, String> {
     use crate::utils::command::CommandExtWrapper;
     use std::process::Command;
 
-    // Windows: 使用 PowerShell 读取文件版本信息
+    // Windows: 使用 PowerShell 读取文件版本info
     let mut cmd = Command::new("powershell");
     let output = cmd
         .creation_flags_windows()
@@ -161,7 +164,7 @@ fn get_version_linux(exe_path: &PathBuf) -> Result<AntigravityVersion, String> {
         }
     }
 
-    // 方法2 (兜底): 尝试执行 --version (仅在无法从 package.json 获取时执行)
+    // 方法2 (兜底): 尝试执行 --version (仅在none法从 package.json get时执行)
     let output = Command::new(exe_path).arg("--version").output();
 
     if let Ok(result) = output {

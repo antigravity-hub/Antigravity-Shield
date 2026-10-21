@@ -49,7 +49,7 @@ fn should_enable_tray() -> bool {
     #[cfg(target_os = "linux")]
     {
         if is_wayland_session() && !env_flag_enabled("ANTIGRAVITY_FORCE_TRAY") {
-            // 智能自适应检测：检查系统中是否存在有效的 AppIndicator / StatusNotifier 动态链接库
+            // 智能自适应检测：check系统中是否存在有效的 AppIndicator / StatusNotifier 动态链接库
             let has_appindicator = [
                 "/usr/lib/x86_64-linux-gnu/libayatana-appindicator3.so.1",
                 "/usr/lib/x86_64-linux-gnu/libappindicator3.so.1",
@@ -258,8 +258,8 @@ pub fn run() {
             match modules::config::load_app_config() {
                 Ok(mut config) => {
                     let mut modified = false;
-                    // Headless/docker 默认允许 LAN 访问（绑定 0.0.0.0）
-                    // 若设置 ABV_BIND_LOCAL_ONLY，则仅绑定 127.0.0.1
+                    // Headless/docker default允许 LAN 访问（绑定 0.0.0.0）
+                    // 若set ABV_BIND_LOCAL_ONLY，则仅绑定 127.0.0.1
                     let bind_local_only = std::env::var("ABV_BIND_LOCAL_ONLY")
                         .map(|v| matches!(v.to_lowercase().as_str(), "1" | "true" | "yes" | "on"))
                         .unwrap_or(false);
@@ -279,7 +279,7 @@ pub fn run() {
                     }
 
                     // [NEW] 支持通过环境变量注入 API Key
-                    // 优先级：ABV_API_KEY > API_KEY > 配置文件
+                    // 优先级：ABV_API_KEY > API_KEY > config文件
                     let env_key = std::env::var("ABV_API_KEY")
                         .or_else(|_| std::env::var("API_KEY"))
                         .ok();
@@ -293,7 +293,7 @@ pub fn run() {
                     }
 
                     // [NEW] 支持通过环境变量注入 Web UI 密码
-                    // 优先级：ABV_WEB_PASSWORD > WEB_PASSWORD > 配置文件
+                    // 优先级：ABV_WEB_PASSWORD > WEB_PASSWORD > config文件
                     let env_web_password = std::env::var("ABV_WEB_PASSWORD")
                         .or_else(|_| std::env::var("WEB_PASSWORD"))
                         .ok();
@@ -307,7 +307,7 @@ pub fn run() {
                     }
 
                     // [NEW] 支持通过环境变量注入鉴权模式
-                    // 优先级：ABV_AUTH_MODE > AUTH_MODE > 配置文件
+                    // 优先级：ABV_AUTH_MODE > AUTH_MODE > config文件
                     let env_auth_mode = std::env::var("ABV_AUTH_MODE")
                         .or_else(|_| std::env::var("AUTH_MODE"))
                         .ok();
@@ -461,7 +461,7 @@ pub fn run() {
                 info!("Main window explicitly shown and focused");
             }
 
-            // 立即启动管理服务器 (8045)，以便 Web 端能访问
+            // 立即启动管理service器 (8045)，以便 Web 端能访问
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 // Load config
@@ -506,7 +506,7 @@ pub fn run() {
                         }
                     }
                     Err(e) => {
-                        // Config: 加载失败不能再被静默吞掉：否则重启后“服务没起来”时无任何痕迹可查。
+                        // Config: 加载failed不能再被静默吞掉：otherwise重启后“service没起来”时none任何痕迹可查。
                         error!(
                             "Failed to load app config at startup: {}. Admin server and proxy service were NOT started. \
                              Fix or reset the config file and restart the app.",
@@ -532,7 +532,7 @@ pub fn run() {
             // [PHASE 1] 已整合至 Axum 端口 (8045)，不再单独启动 19527 端口
             info!("Management API integrated into main proxy server (port 8045)");
 
-            // 确保开机自启状态与 Windows 注册表 / 系统保持一致并自动修复阻断项
+            // 确保开机自启status与 Windows 注册表 / 系统保持一致并自动修复阻断项
             if let Ok(cfg) = modules::config::load_app_config() {
                 if cfg.auto_launch {
                     let _ = commands::autostart::set_system_autostart(app.handle(), true);

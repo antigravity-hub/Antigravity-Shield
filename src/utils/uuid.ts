@@ -1,4 +1,8 @@
 /**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
+/**
  * Generates a UUID (Universally Unique Identifier) v4.
  * 
  * This function attempts to use the native `crypto.randomUUID()` API first.

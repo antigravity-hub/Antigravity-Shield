@@ -1,8 +1,11 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Gemini v1internal 包装/解包
 use serde_json::{json, Value};
 use tracing::{debug, error, info};
 
-/// 包装请求体为 v1internal 格式
+/// 包装request体为 v1internal 格式
 pub fn wrap_request_v2(
     body: &Value,
     project_id: &str,
@@ -12,13 +15,13 @@ pub fn wrap_request_v2(
     token: Option<&crate::proxy::token_manager::ProxyToken>, // [NEW] 动态规格注入
     token_manager: Option<&std::sync::Arc<crate::proxy::TokenManager>>,
 ) -> Value {
-    // 优先使用传入的 mapped_model，其次尝试从 body 获取
+    // 优先使用传入的 mapped_model，其次尝试从 body get
     let original_model = body
         .get("model")
         .and_then(|v| v.as_str())
         .unwrap_or(mapped_model);
 
-    // If  mapped_model 是空的，则使用 original_model
+    // If  mapped_model 是empty的，则使用 original_model
     let final_model_name = if !mapped_model.is_empty() {
         mapped_model
     } else {
@@ -192,7 +195,7 @@ pub fn wrap_request_v2(
             if let Some(parts) = content.get_mut("parts").and_then(|p| p.as_array_mut()) {
                 for part in parts {
                     if let Some(obj) = part.as_object_mut() {
-                        // 1. 处理 functionCall (Assistant 请求调用工具)
+                        // 1. handle functionCall (Assistant request调用工具)
                         if let Some(fc) = obj.get_mut("functionCall") {
                             if fc.get("id").is_none() && is_target_claude {
                                 let name =
@@ -208,11 +211,11 @@ pub fn wrap_request_v2(
                             }
                         }
 
-                        // 2. 处理 functionResponse (User 回复工具结果)
+                        // 2. handle functionResponse (User 回复工具结果)
                         if let Some(fr) = obj.get_mut("functionResponse") {
                             if fr.get("id").is_none() && is_target_claude {
-                                // 启发：如果客户端（如 OpenCode）在响应时没带 ID，说明它收到响应时就没 ID。
-                                // 我们在这里生成的 ID 必须与我们在 inject_ids_to_response 中注入响应的 ID 一致。
+                                // 启发：如果客户端（如 OpenCode）在response时没带 ID，说明它收到response时就没 ID。
+                                // 我们在这里生成的 ID 必须与我们在 inject_ids_to_response 中注入response的 ID 一致。
                                 let name =
                                     fr.get("name").and_then(|n| n.as_str()).unwrap_or("unknown");
                                 let count = name_counters.entry(name.to_string()).or_insert(0);
@@ -226,7 +229,7 @@ pub fn wrap_request_v2(
                             }
                         }
 
-                        // 3. 处理 thoughtSignature / thought_signature
+                        // 3. handle thoughtSignature / thought_signature
                         if obj.contains_key("functionCall") {
                             let sig_opt = obj
                                 .get("thoughtSignature")
@@ -334,7 +337,7 @@ pub fn wrap_request_v2(
                 );
 
                 // [FIX] 统一注入到 generationConfig.thinkingConfig
-                // 使用动态规格提供的默认预算
+                // 使用动态规格提供的default预算
                 let default_budget =
                     crate::proxy::model_specs::get_thinking_budget(final_model_name, token);
 
@@ -492,8 +495,8 @@ pub fn wrap_request_v2(
         }
     }
 
-    // [NEW] 按模型对 maxOutputTokens 进行三层限额 (Dynamic > Static Default > 65535)
-    // 修复: gemini-cli 等客户端发送的 131072 超过部分模型支持的上限，导致 v1internal 返回 400 INVALID_ARGUMENT
+    // [NEW] 按model对 maxOutputTokens 进行三层限额 (Dynamic > Static Default > 65535)
+    // Fix: gemini-cli 等客户端发送的 131072 超过部分model支持的上限，导致 v1internal return 400 INVALID_ARGUMENT
     {
         let final_cap = crate::proxy::model_specs::get_max_output_tokens(final_model_name, token);
         let gen_config = inner_request
@@ -594,7 +597,7 @@ pub fn wrap_request_v2(
 
     // Inject googleSearch tool if needed
     if config.inject_google_search {
-        // [NEW] 阶段 7.3: 如果是 WebSearch 类型，注入官方特定属性 (maxResultCount: 5)
+        // [NEW] 阶段 7.3: if is WebSearch type，注入官方特定属性 (maxResultCount: 5)
         if config.request_type == "web_search" {
             if let Some(obj) = inner_request.as_object_mut() {
                 let tools_entry = obj.entry("tools").or_insert_with(|| json!([]));
@@ -641,7 +644,7 @@ pub fn wrap_request_v2(
             // 3. Clean generationConfig (remove responseMimeType, responseModalities etc.)
             let gen_config = obj.entry("generationConfig").or_insert_with(|| json!({}));
             if let Some(gen_obj) = gen_config.as_object_mut() {
-                // [NEW] 根据全局配置决定是否保留 thinkingConfig
+                // [NEW] 根据全局config决定是否保留 thinkingConfig
                 let image_thinking_mode = crate::proxy::config::get_image_thinking_mode();
                 tracing::debug!("[Gemini-Wrap] Image thinking mode: {}", image_thinking_mode);
 
@@ -675,7 +678,7 @@ pub fn wrap_request_v2(
             **Proactiveness**"
         };
 
-        // [HYBRID] 检查是否已有 systemInstruction
+        // [HYBRID] check是否已有 systemInstruction
         if let Some(system_instruction) = inner_request.get_mut("systemInstruction") {
             // [NEW] 补全 role: user
             if let Some(obj) = system_instruction.as_object_mut() {
@@ -699,7 +702,7 @@ pub fn wrap_request_v2(
                         parts_array.insert(0, json!({"text": antigravity_identity}));
                     }
 
-                    // [NEW] 注入全局系统提示词 (紧跟 Antigravity 身份之后，用户指令之前)
+                    // [NEW] 注入全局系统hint词 (紧跟 Antigravity 身份之后，user指令之前)
                     let global_prompt_config = crate::proxy::config::get_global_system_prompt();
                     if global_prompt_config.enabled
                         && !global_prompt_config.content.trim().is_empty()
@@ -718,7 +721,7 @@ pub fn wrap_request_v2(
         } else {
             // 没有 systemInstruction,创建一个新的
             let mut parts = vec![json!({"text": antigravity_identity})];
-            // [NEW] 注入全局系统提示词
+            // [NEW] 注入全局系统hint词
             let global_prompt_config = crate::proxy::config::get_global_system_prompt();
             if global_prompt_config.enabled && !global_prompt_config.content.trim().is_empty() {
                 parts.push(json!({"text": global_prompt_config.content}));
@@ -756,7 +759,7 @@ pub fn wrap_request_v2(
         }
     }
 
-    // [ADDED v4.1.24] 注入基于账号的稳定 sessionId
+    // [ADDED v4.1.24] 注入基于account的稳定 sessionId
     if let Some(account_id_str) = account_id {
         inner_request["sessionId"] = json!(crate::proxy::common::session::derive_session_id(
             account_id_str
@@ -766,13 +769,13 @@ pub fn wrap_request_v2(
     let sid = session_id.unwrap_or("default");
 
     // [NEW] 1. 深度对齐 requestId 格式 (官方格式: agent/{timestamp_ms}/{random_hex_8bytes})
-    // 每次请求生成完全唯一的 ID，避免重试时的幂等性冲突导致 Google 返回旧缓存
+    // 每次request生成完全唯一的 ID，避免retry时的幂等性冲突导致 Google return旧缓存
     let timestamp_ms = chrono::Utc::now().timestamp_millis();
     let random_hex = &uuid::Uuid::new_v4().simple().to_string()[..8]; // 移除对外部 hex crate 的依赖
     let official_request_id = format!("agent/{}/{}", timestamp_ms, random_hex);
 
     // [NEW] 2. 动态 userAgent 仿真 (支持 jetski)
-    // 根据账号属性或域名判断。Go Worker 中企业/GCP 账号通常使用 jetski 指纹。
+    // 根据account属性或域名判断。Go Worker 中企业/GCP account通常使用 jetski 指纹。
     let is_enterprise = if let Some(t) = token {
         !t.email.ends_with("@gmail.com") && !t.email.ends_with("@googlemail.com")
     } else {
@@ -791,7 +794,7 @@ pub fn wrap_request_v2(
         "antigravity"
     };
 
-    // [NEW] 如果是 loadCodeAssist 请求，注入 metadata 字段对齐官方
+    // [NEW] if is loadCodeAssist request，注入 metadata 字段对齐官方
     if final_model_name == "loadCodeAssist" || inner_request.get("metadata").is_some() {
         let metadata = inner_request
             .as_object_mut()
@@ -807,13 +810,13 @@ pub fn wrap_request_v2(
 
     // [NEW] 3. 条件注入 enabledCreditTypes
     // 这是官方 Worker 极高权重的一个指纹字段。
-    // 只有在非图像生成请求（即 agent 类型请求）时注入，避免图像生成场景出现 Credit 判定异常。
-    // 特别注意：这是 Google 识别“官方客户端”的重要凭证之一。
+    // 只有在非图像生成request（即 agent typerequest）时注入，避免图像生成场景出现 Credit 判定exception。
+    // 特别note：这是 Google 识别“官方客户端”的重要凭证之一。
     let is_agent_request = config.request_type != "image_gen";
 
     // [CACHE] 重建 inner_request 字段顺序——稳定前缀在前，动态内容在后
-    // 遵循 Google 官方建议："将较大且常见的内容放置在提示的开头"
-    // systemInstruction (~稳定的系统提示词) → tools → toolConfig → generationConfig → contents (动态)
+    // 遵循 Google 官方建议："将较大且常见的内容放置在hint的开头"
+    // systemInstruction (~稳定的系统hint词) → tools → toolConfig → generationConfig → contents (动态)
     let mut reordered_inner = json!({});
     // 1. systemInstruction (稳定)
     if let Some(si) = inner_request.get("systemInstruction") {
@@ -936,15 +939,15 @@ mod test_fixes {
     }
 }
 
-/// 解包响应（提取 response 字段）
+/// 解包response（提取 response 字段）
 pub fn unwrap_response(response: &Value) -> Value {
     response.get("response").unwrap_or(response).clone()
 }
 
-/// [NEW v3.3.18] 为 Claude 模型的 Gemini 响应自动注入 Tool ID
+/// [NEW v3.3.18] 为 Claude model的 Gemini response自动注入 Tool ID
 ///
 /// 目点是为了让客户端（如 OpenCode/Vercel AI SDK）能感知到 ID，
-/// 并在下一轮对话中原样带回，从而满足 Google v1internal 对 Claude 模型的校验。
+/// 并在下一轮对话中原样带回，从而满足 Google v1internal 对 Claude model的校验。
 pub fn inject_ids_to_response(response: &mut Value, model_name: &str) {
     if !model_name.to_lowercase().contains("claude") {
         return;
@@ -1255,7 +1258,7 @@ mod tests {
 
         let result = wrap_request(&body, "test-proj", "gemini-pro", None, None, None);
 
-        // 验证 systemInstruction
+        // Verify systemInstruction
         let sys = result
             .get("request")
             .unwrap()
@@ -1497,8 +1500,8 @@ mod tests {
         #[test]
         fn test_claude_no_root_thinking_injection() {
             let _lock = super::TEST_MUTEX.lock().unwrap_or_else(|e| e.into_inner());
-            // 验证 Claude 模型不会在根目录注入 thinking，而是注入到 generationConfig.thinkingConfig
-            // 并且 budget 默认为 16000
+            // Verify Claude model不会在根目录注入 thinking，而是注入到 generationConfig.thinkingConfig
+            // 并且 budget default为 16000
 
             // 使用 Auto 模式避免干扰
             crate::proxy::config::update_thinking_budget_config(
@@ -1538,7 +1541,7 @@ mod tests {
                 .get("thinkingConfig")
                 .expect("thinkingConfig should be injected");
 
-            // 3. 验证 Claude 默认预算为 16000
+            // 3. validate Claude default预算为 16000
             let budget = thinking_config["thinkingBudget"]
                 .as_u64()
                 .expect("thinkingBudget should be a number");
@@ -1554,7 +1557,7 @@ mod tests {
             crate::proxy::config::update_thinking_budget_config(
                 crate::proxy::config::ThinkingBudgetConfig::default(),
             );
-            // 验证 Gemini 模型注入默认预算 24576
+            // Verify Gemini model注入default预算 24576
             let body = json!({
                 "model": "gemini-2.0-flash-thinking-exp",
                 "contents": [{"role": "user", "parts": [{"text": "hi"}]}]
@@ -1665,7 +1668,7 @@ mod tests {
 
     #[test]
     fn test_mixed_tools_injection_gemini_native() {
-        // 验证 Gemini Native 协议在 Gemini 2.0+ 下支持混合工具
+        // Verify Gemini Native 协议在 Gemini 2.0+ 下支持混合工具
         let body = json!({
             "contents": [{"parts": [{"text": "Hello"}]}],
             "tools": [{"functionDeclarations": [{"name": "get_weather", "parameters": {"type": "OBJECT", "properties": {"location": {"type": "STRING"}}}}]}],
@@ -1683,7 +1686,7 @@ mod tests {
 
         // 我们改为直接测试涉及的 wrap_request 逻辑片段。
         // 由于测试 wrap_request 比较复杂（涉及外部 config），
-        // 我们可以直接验证 inject_google_search_tool 在 native 格式下的表现。
+        // 我们可以直接validate inject_google_search_tool 在 native 格式下的表现。
 
         let mut inner_request = body.clone();
         crate::proxy::mappers::common_utils::inject_google_search_tool(

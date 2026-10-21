@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules::config::load_app_config;
 use once_cell::sync::Lazy;
 use rquest::{Client, Proxy};

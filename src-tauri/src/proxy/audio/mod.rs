@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use base64::{engine::general_purpose, Engine as _};
 use serde_json::{json, Value};
 use std::path::Path;
@@ -5,12 +8,12 @@ use std::path::Path;
 pub struct AudioProcessor;
 
 impl AudioProcessor {
-    /// 检测音频 MIME 类型
+    /// 检测音频 MIME type
     pub fn detect_mime_type(filename: &str) -> Result<String, String> {
         let ext = Path::new(filename)
             .extension()
             .and_then(|s| s.to_str())
-            .ok_or("无法获取文件扩展名")?;
+            .ok_or("none法get文件扩展名")?;
 
         match ext.to_lowercase().as_str() {
             "mp3" => Ok("audio/mp3".to_string()),
@@ -23,7 +26,7 @@ impl AudioProcessor {
         }
     }
 
-    /// 将音频数据编码为 Base64
+    /// 将音频data编码为 Base64
     pub fn encode_to_base64(audio_data: &[u8]) -> String {
         general_purpose::STANDARD.encode(audio_data)
     }
@@ -35,7 +38,7 @@ impl AudioProcessor {
     }
 }
 
-/// 将 OpenAI 的音频格式标识 (如 "wav" / "mp3" / "audio/wav") 归一化为 Gemini 需要的 MIME 类型
+/// 将 OpenAI 的音频格式标识 (如 "wav" / "mp3" / "audio/wav") 归一化为 Gemini 需要的 MIME type
 pub fn normalize_audio_mime(format: &str) -> String {
     let f = format.trim().to_lowercase();
     let bare = f.strip_prefix("audio/").unwrap_or(&f);
@@ -50,7 +53,7 @@ pub fn normalize_audio_mime(format: &str) -> String {
     }
 }
 
-/// 根据文件路径/URL 的扩展名推断音频 MIME，失败时回退到 audio/mp3
+/// 根据文件路径/URL 的扩展名推断音频 MIME，failed时回退到 audio/mp3
 fn mime_from_path(path: &str) -> String {
     let clean = path.split(['?', '#']).next().unwrap_or(path);
     AudioProcessor::detect_mime_type(clean).unwrap_or_else(|_| "audio/mp3".to_string())
@@ -118,7 +121,7 @@ pub fn audio_part_from_source(src: &str, declared_mime: Option<&str>) -> Option<
                 return Some(json!({ "inlineData": { "mimeType": mime, "data": b64 } }));
             }
             Err(e) => {
-                tracing::warn!("[Audio] 读取本地音频失败 {}: {}", file_path, e);
+                tracing::warn!("[Audio] 读取本地音频failed {}: {}", file_path, e);
                 return None;
             }
         }

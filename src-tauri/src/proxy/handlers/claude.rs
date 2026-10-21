@@ -1,4 +1,7 @@
-// Claude 协议处理器
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// Claude 协议handle器
 
 use axum::{
     body::Body,
@@ -382,15 +385,15 @@ fn apply_variant(
     Some(spec)
 }
 
-/// Process:  Claude messages 请求
+/// Process:  Claude messages request
 ///
-/// Process:  Chat 消息请求流程
+/// Process:  Chat 消息request流程
 pub async fn handle_messages(
     State(state): State<AppState>,
     headers: HeaderMap,
     Json(body): Json<Value>,
 ) -> Response {
-    // [FIX] 保存原始请求体的完整副本，用于日志记录
+    // [FIX] save原始request体的完整副本，用于日志记录
     // 这确保了即使结构体定义遗漏字段，日志也能完整记录所有参数
     let original_body = body.clone();
 
@@ -399,7 +402,7 @@ pub async fn handle_messages(
         body.to_string().len()
     );
 
-    // 生成随机 Trace ID 用户追踪
+    // 生成随机 Trace ID user追踪
     let trace_id: String =
         rand::Rng::sample_iter(rand::thread_rng(), &rand::distributions::Alphanumeric)
             .take(6)
@@ -425,7 +428,7 @@ pub async fn handle_messages(
     // Core Antigravity Shield native proxy relies exclusively on high-performance Cloud Code PA pipeline.
     let google_accounts = state.token_manager.len();
 
-    // [CRITICAL REFACTOR] 优先解析请求以获取模型信息(用于智能兜底判断)
+    // [CRITICAL REFACTOR] 优先解析request以getmodelinfo(用于智能兜底判断)
     let mut request: crate::proxy::mappers::claude::models::ClaudeRequest =
         match serde_json::from_value(body.clone()) {
             Ok(r) => r,
@@ -445,7 +448,7 @@ pub async fn handle_messages(
         };
 
     // [Task #6] Apply OpenCode variants thinking hints from raw JSON
-    // 由于此时还没拿到账号，先用模型默认限额兜底
+    // 由于此时还没拿到account，先用modeldefault限额兜底
     let temp_cap = model_specs::get_thinking_budget(&request.model, None);
     let thinking_hint = extract_thinking_hint(&original_body);
     apply_thinking_hints(&mut request, &thinking_hint, &trace_id, temp_cap);
@@ -477,7 +480,7 @@ pub async fn handle_messages(
             "protocol": "anthropic",
             "trace_id": trace_id,
             "original_model": request.model,
-            "request": original_body,  // 使用原始请求体，不是结构体序列化
+            "request": original_body,  // 使用原始request体，不是结构体序列化
         });
         debug_logger::write_debug_payload(
             &debug_cfg,
@@ -488,7 +491,7 @@ pub async fn handle_messages(
         .await;
     }
 
-    // [Issue #703 Fix] 智能兜底判断:需要归一化模型名用于配额保护检查
+    // [Issue #703 Fix] 智能兜底判断:需要归一化model名用于quota保护check
     let normalized_model =
         crate::proxy::common::model_mapping::normalize_to_standard_id(&request.model)
             .unwrap_or_else(|| request.model.clone());
@@ -496,7 +499,7 @@ pub async fn handle_messages(
     let use_zai = false;
 
     // [CRITICAL FIX] 预先清理所有消息中的 cache_control 字段 (Issue #744)
-    // 必须在序列化之前处理，以确保 z.ai 和 Google Flow 都不受历史消息缓存标记干扰
+    // 必须在序列化之前handle，以确保 z.ai 和 Google Flow 都不受历史消息缓存标记干扰
     clean_cache_control_from_messages(&mut request.messages);
 
     // [FIX #813] 合并连续的同角色消息 (Consecutive User Messages)
@@ -536,12 +539,12 @@ pub async fn handle_messages(
         experimental_cfg.compression_level.clone()
     };
 
-    // ===== [Issue #467 Fix] 拦截 Claude Code Warmup 请求 =====
-    // Claude Code 会每 10 秒发送一次 warmup 请求来保持连接热身，
-    // 这些请求会消耗大量配额。检测到 warmup 请求后直接返回模拟响应。
+    // ===== [Issue #467 Fix] 拦截 Claude Code Warmup request =====
+    // Claude Code 会每 10 s发送一次 warmup request来保持连接热身，
+    // 这些request会消耗大量quota。检测到 warmup request后直接return模拟response。
     if is_warmup_request(&request) {
         tracing::info!(
-            "[{}] 🔥 拦截 Warmup 请求，返回模拟响应（节省配额）",
+            "[{}] 🔥 拦截 Warmup request，return模拟response（节省quota）",
             trace_id
         );
         return create_warmup_response(&request, request.stream);
@@ -550,7 +553,7 @@ pub async fn handle_messages(
     // Google Flow 继续使用 request 对象
     // (后续代码不需要再次 filter_invalid_thinking_blocks)
 
-    // [NEW] 获取上下文控制配置
+    // [NEW] get上下文控制config
     let experimental = state.experimental.read().await;
     let scaling_enabled = experimental.enable_usage_scaling;
     let threshold_l1 = experimental.context_compression_threshold_l1;
@@ -558,9 +561,9 @@ pub async fn handle_messages(
     let threshold_l3 = experimental.context_compression_threshold_l3;
 
     // Get: 最新一条“有意义”的消息内容（用于日志记录和后台任务检测）
-    // 策略：反向遍历，首先筛选出所有角色为 "user" 的消息，然后从中找到第一条非 "Warmup" 且非空的文本消息
+    // 策略：反向遍历，首先筛选出所有角色为 "user" 的消息，然后从中找到第一条非 "Warmup" 且非empty的文本消息
     // Get: 最新一条“有意义”的消息内容（用于日志记录和后台任务检测）
-    // 策略：反向遍历，首先筛选出所有和用户相关的消息 (role="user")
+    // 策略：反向遍历，首先筛选出所有和user相关的消息 (role="user")
     // 然后提取其文本内容，跳过 "Warmup" 或系统预设的 reminder
     let meaningful_msg = request
         .messages
@@ -584,8 +587,8 @@ pub async fn handle_messages(
                 }
             };
 
-            // 过滤规则：
-            // 1. 忽略空消息
+            // Filter规则：
+            // 1. 忽略empty消息
             // 2. 忽略 "Warmup" 消息
             // 3. 忽略 <system-reminder> 标签的消息
             if content.trim().is_empty()
@@ -622,7 +625,7 @@ pub async fn handle_messages(
         request.tools.is_some()
     );
 
-    // DEBUG 级别: 详细的调试信息
+    // DEBUG 级别: 详细的调试info
     debug!(
         "========== [{}] CLAUDE REQUEST DEBUG START ==========",
         trace_id
@@ -640,7 +643,7 @@ pub async fn handle_messages(
     );
     debug!("[{}] Content Preview: {:.100}...", trace_id, latest_msg);
 
-    // 输出每一条消息的详细信息
+    // 输出每一条消息的详细info
     for (idx, msg) in request.messages.iter().enumerate() {
         let content_preview = match &msg.content {
             crate::proxy::mappers::claude::models::MessageContent::String(s) => {
@@ -673,10 +676,10 @@ pub async fn handle_messages(
         trace_id
     );
 
-    // 1. 获取 会话 ID (已废弃基于内容的哈希，改用 TokenManager 内部的时间窗口锁定)
+    // 1. get 会话 ID (已废弃基于内容的哈希，改用 TokenManager 内部的时间窗口locked)
     let _session_id: Option<&str> = None;
 
-    // 2. 获取 UpstreamClient
+    // 2. get UpstreamClient
     let upstream = state.upstream.clone();
 
     // 3. 准备闭包
@@ -695,7 +698,7 @@ pub async fn handle_messages(
     let mut force_rotate = false;
 
     for attempt in 0..max_attempts {
-        // 2. 模型路由解析
+        // 2. model路由解析
         let mut mapped_model = crate::proxy::common::model_mapping::resolve_model_route(
             &request_for_body.model,
             &*state.custom_mapping.read().await,
@@ -761,29 +764,29 @@ pub async fn handle_messages(
         info!("✓ Using account: {} (type: {})", email, config.request_type);
 
         // ===== 【优化】后台任务智能检测与降级 =====
-        // 使用新的检测系统，支持 5 大类关键词和多 Flash 模型策略
+        // 使用新的检测系统，支持 5 大类关键词和多 Flash model策略
         let background_task_type = detect_background_task_type(&request_for_body);
 
-        // 传递映射后的模型名
+        // 传递映射后的model名
         let mut request_with_mapped = request_for_body.clone();
 
         if let Some(task_type) = background_task_type {
-            // 检测到后台任务,强制降级到 Flash 模型
+            // 检测到后台任务,强制降级到 Flash model
             let virtual_model_id = select_background_model(task_type);
 
-            // [FIX] 必须根据虚拟 ID Re-resolve 路由，以支持用户自定义映射 (如 internal-task -> gemini-3)
-            // 否则会直接使用 generic ID 导致下游无法识别或只能使用静态默认值
+            // [FIX] 必须根据虚拟 ID Re-resolve 路由，以支持user自定义映射 (如 internal-task -> gemini-3)
+            // Otherwise会直接使用 generic ID 导致下游none法识别或只能使用静态default值
             let resolved_model = crate::proxy::common::model_mapping::resolve_model_route(
                 virtual_model_id,
                 &*state.custom_mapping.read().await,
             );
 
             info!(
-                "[{}][AUTO] 检测到后台任务 (类型: {:?}), 路由重定向: {} -> {} (最终物理模型: {})",
+                "[{}][AUTO] 检测到后台任务 (type: {:?}), 路由重定向: {} -> {} (最终物理model: {})",
                 trace_id, task_type, mapped_model, virtual_model_id, resolved_model
             );
 
-            // 覆盖用户自定义映射 (同时更新变量和 Request 对象)
+            // 覆盖user自定义映射 (同时update变量和 Request 对象)
             mapped_model = resolved_model.clone();
             request_with_mapped.model = resolved_model;
 
@@ -791,7 +794,7 @@ pub async fn handle_messages(
             // 1. 移除工具定义（后台任务不需要工具）
             request_with_mapped.tools = None;
 
-            // 2. 移除 Thinking 配置（Flash 模型不支持）
+            // 2. 移除 Thinking config（Flash model不支持）
             request_with_mapped.thinking = None;
 
             // 3. 清理历史消息中的 Thinking Block，防止 Invalid Argument
@@ -1041,7 +1044,7 @@ pub async fn handle_messages(
 
         // 4. 上游调用 - 自动转换逻辑
         let client_wants_stream = request.stream;
-        // [AUTO-CONVERSION] 非 Stream 请求自动转换为 Stream 以享受更宽松的配额
+        // [AUTO-CONVERSION] 非 Stream request自动转换为 Stream 以享受更宽松的quota
         let force_stream_internally = !client_wants_stream;
         let actual_stream = client_wants_stream || force_stream_internally;
 
@@ -1144,14 +1147,14 @@ pub async fn handle_messages(
         }
 
         let response = call_result.response;
-        // [NEW] 提取实际请求的上游端点 URL，用于日志记录和排查
+        // [NEW] 提取实际request的上游端点 URL，用于日志记录和排查
         let upstream_url = response.url().to_string();
         let status = response.status();
         last_status = status;
 
-        // 成功
+        // Success
         if status.is_success() {
-            // [智能限流] 请求成功，重置该账号的连续失败计数
+            // [智能限流] requestsuccess，reset该account的连续failed计数
             token_manager.mark_account_success(&email);
 
             // Determine context limit based on model
@@ -1159,7 +1162,7 @@ pub async fn handle_messages(
                 &request_with_mapped.model,
             );
 
-            // Process: 流式响应
+            // Process: 流式response
             if actual_stream {
                 let meta = json!({
                     "protocol": "anthropic",
@@ -1281,7 +1284,7 @@ pub async fn handle_messages(
                                 }
                             }));
 
-                        // [NEW] 针对 Claude 流增加 60 秒空闲超时保护
+                        // [NEW] 针对 Claude 流增加 60 sempty闲超时保护
                         let combined_stream = async_stream::stream! {
                             let mut s = Box::pin(combined_stream);
                             loop {
@@ -1299,7 +1302,7 @@ pub async fn handle_messages(
 
                         // 判断客户端期望的格式
                         if client_wants_stream {
-                            // 客户端本就要 Stream，直接返回 SSE
+                            // 客户端本就要 Stream，直接return SSE
                             return Response::builder()
                                 .status(StatusCode::OK)
                                 .header(header::CONTENT_TYPE, "text/event-stream")
@@ -1315,7 +1318,7 @@ pub async fn handle_messages(
                                 .body(Body::from_stream(combined_stream))
                                 .unwrap();
                         } else {
-                            // 客户端要非 Stream，需要收集完整响应并转换为 JSON
+                            // 客户端要非 Stream，需要收集完整response并转换为 JSON
                             use crate::proxy::mappers::claude::collect_stream_to_json;
 
                             match collect_stream_to_json(Box::pin(combined_stream)).await {
@@ -1359,7 +1362,7 @@ pub async fn handle_messages(
                     }
                 }
             } else {
-                // Process: 非流式响应
+                // Process: 非流式response
                 let bytes = match response.bytes().await {
                     Ok(b) => b,
                     Err(e) => {
@@ -1387,7 +1390,7 @@ pub async fn handle_messages(
                 // 解包 response 字段（v1internal 格式）
                 let raw = gemini_resp.get("response").unwrap_or(&gemini_resp);
 
-                // 转换为 Gemini Response 结构
+                // Transform为 Gemini Response 结构
                 let gemini_response: crate::proxy::mappers::claude::models::GeminiResponse =
                     match serde_json::from_value(raw.clone()) {
                         Ok(r) => r,
@@ -1406,7 +1409,7 @@ pub async fn handle_messages(
                         &request_with_mapped.model,
                     );
 
-                // 转换
+                // Transform
                 // [FIX #765] Pass session_id and model_name for signature caching
                 let s_id_owned = session_id.map(|s| s.to_string());
                 // [FIX #3379] Extract registered tool names for non-streaming leakage recovery
@@ -1415,7 +1418,7 @@ pub async fn handle_messages(
                     .as_ref()
                     .map(|tools| tools.iter().filter_map(|t| t.name.clone()).collect())
                     .unwrap_or_default();
-                // 转换
+                // Transform
                 let claude_response = match transform_response(
                     &gemini_response,
                     scaling_enabled,
@@ -1464,7 +1467,7 @@ pub async fn handle_messages(
             }
         }
 
-        // 1. 立即提取状态码和 headers（防止 response 被 move）
+        // 1. 立即提取status码和 headers（防止 response 被 move）
         let status_code = status.as_u16();
         last_status = status;
         let retry_after = response
@@ -1473,7 +1476,7 @@ pub async fn handle_messages(
             .and_then(|h| h.to_str().ok())
             .map(|s| s.to_string());
 
-        // 2. 获取错误文本并转移 Response 所有权
+        // 2. geterror文本并转移 Response 所有权
         let error_text = response
             .text()
             .await
@@ -1503,8 +1506,8 @@ pub async fn handle_messages(
             .await;
         }
 
-        // 3. 标记限流状态(用于 UI 显示) - 使用异步版本以支持实时配额刷新
-        // 🆕 传入实际使用的模型,实现模型级别限流,避免不同Model quotas互相影响
+        // 3. 标记限流status(用于 UI 显示) - 使用异步版本以支持实时quota刷新
+        // 🆕 传入实际使用的model,实现model级别限流,避免不同Model quotas互相影响
         if status_code == 429
             || status_code == 529
             || status_code == 503
@@ -1522,7 +1525,7 @@ pub async fn handle_messages(
                 .await;
         }
 
-        // 4. 处理 400 错误 (Thinking 签名失效 或 块顺序错误)
+        // 4. handle 400 error (Thinking 签名失效 或 块顺序error)
         // [FIX 2026-08-28] Use case-insensitive matching and cover Google's exact phrasing:
         // "Invalid thought signature." / "thoughtSignature" / "thought_signature"
         let lower_err = error_text.to_lowercase();
@@ -1555,7 +1558,7 @@ pub async fn handle_messages(
                 trace_id
             );
 
-            // [NEW] 追加修复提示词到最后一条用户消息
+            // [NEW] 追加修复hint词到最后一条user消息
             if let Some(last_msg) = request_for_body.messages.last_mut() {
                 if last_msg.role == "user" {
                     let repair_prompt = "\n\n[System Recovery] Your previous output contained an invalid signature. Please regenerate the response without the corrupted signature block.";
@@ -1576,9 +1579,9 @@ pub async fn handle_messages(
                 }
             }
 
-            // [IMPROVED] 不再禁用 Thinking 模式！
-            // 既然我们已经将历史 Thinking Block 转换为 Text，那么当前请求可以视为一个新的 Thinking 会话
-            // 保持 thinking 配置开启，让模型重新生成思维，避免退化为简单的 "OK" 回复
+            // [IMPROVED] 不再disabled Thinking 模式！
+            // 既然我们已经将历史 Thinking Block 转换为 Text，那么currentrequest可以视为一个新的 Thinking 会话
+            // 保持 thinking config开启，让model重新生成思维，避免退化为简单的 "OK" 回复
             // request_for_body.thinking = None;
 
             // 清理历史消息中的所有 Thinking Block，将其转换为 Text 以保留上下文
@@ -1590,7 +1593,7 @@ pub async fn handle_messages(
                     for block in blocks.drain(..) {
                         match block {
                             crate::proxy::mappers::claude::models::ContentBlock::Thinking { thinking, .. } => {
-                                // 降级为 text
+                                // Fallback degradation为 text
                                 if !thinking.is_empty() {
                                     tracing::debug!("[Fallback] Converting thinking block to text (len={})", thinking.len());
                                     new_blocks.push(crate::proxy::mappers::claude::models::ContentBlock::Text {
@@ -1615,7 +1618,7 @@ pub async fn handle_messages(
                 &mut request_for_body.messages,
             );
 
-            // 清理模型名中的 -thinking 后缀
+            // 清理model名中的 -thinking 后缀
             if request_for_body.model.contains("claude-") {
                 let mut m = request_for_body.model.clone();
                 m = m.replace("-thinking", "");
@@ -1631,8 +1634,8 @@ pub async fn handle_messages(
                 request_for_body.model = m;
             }
 
-            // [FIX] 强制重试：因为我们已经清理了 thinking block，所以这是一个新的、可以重试的请求
-            // 不要使用 determine_retry_strategy，因为它会因为 retried_without_thinking=true 而返回 NoRetry
+            // [FIX] 强制retry：因为我们已经清理了 thinking block，所以这是一个新的、可以retry的request
+            // 不要使用 determine_retry_strategy，因为它会因为 retried_without_thinking=true 而return NoRetry
             if apply_retry_strategy(
                 RetryStrategy::FixedDelay(Duration::from_millis(200)),
                 attempt,
@@ -1646,14 +1649,14 @@ pub async fn handle_messages(
             }
         }
 
-        // 5. 统一处理所有可重试错误
-        // [REMOVED] 不再特殊处理 QUOTA_EXHAUSTED,允许账号轮换
-        // 原逻辑会在第一个账号配额耗尽时直接返回,导致"平衡"模式无法切换账号
+        // 5. 统一handle所有可retryerror
+        // [REMOVED] 不再特殊handle QUOTA_EXHAUSTED,允许account轮换
+        // 原逻辑会在第一个accountquota耗尽时直接return,导致"平衡"模式none法Switch account
 
         // [HARDENED M1] 403 细分分类与安全隔离：
-        // 1. VALIDATION_REQUIRED: 设置 10 分钟临时验证锁与内存隔离，提取 validation_url，不注销账号
+        // 1. VALIDATION_REQUIRED: set 10 min临时validate锁与内存隔离，提取 validation_url，不注销account
         // 2. 永久违规 (Permanent Policy Violation): 仅在明确检测到封号/违规时写入 is_forbidden
-        // 3. 其它 403: 实行 5 分钟内存冷却隔离 (in-memory quarantine)，绝不覆写磁盘 disabled=true
+        // 3. 其它 403: 实行 5 min内存冷却隔离 (in-memory quarantine)，绝不覆写磁盘 disabled=true
         if status_code == 403 {
             let forbidden_kind = crate::proxy::token_manager::classify_forbidden_error(&error_text);
             match forbidden_kind {
@@ -1699,7 +1702,7 @@ pub async fn handle_messages(
             }
         }
 
-        // 确定重试策略
+        // 确定retry策略
         let retry_strategy =
             determine_retry_strategy(status_code, &error_text, retried_without_thinking);
 
@@ -1713,7 +1716,7 @@ pub async fn handle_messages(
         )
         .await
         {
-            // 判断是否需要轮换账号
+            // 判断是否需要轮换account
             if !should_rotate_account(status_code, Some(&retry_strategy)) {
                 debug!(
                     "[{}] Keeping same account for status {} (Grace Retry or Server Issue)",
@@ -1725,7 +1728,7 @@ pub async fn handle_messages(
             }
             continue;
         } else {
-            // 5. 增强的 400 错误处理: Prompt Too Long 友好提示
+            // 5. 增强的 400 errorhandle: Prompt Too Long 友好hint
             if status_code == 400
                 && (error_text.contains("too long")
                     || error_text.contains("exceeds")
@@ -1746,7 +1749,7 @@ pub async fn handle_messages(
                 ).into_response();
             }
 
-            // 不可重试的错误，直接返回
+            // 不可retry的error，直接return
             error!(
                 "[{}] Non-retryable error {}: {}",
                 trace_id, status_code, error_text
@@ -1784,7 +1787,7 @@ pub async fn handle_messages(
             _ => "api_error",
         };
 
-        // [FIX] 403 时返回 503，避免 Claude Code 客户端退出到登录页
+        // [FIX] 403 时return 503，避免 Claude Code 客户端退出到登录页
         let response_status = if last_status.as_u16() == 403 {
             StatusCode::SERVICE_UNAVAILABLE
         } else {
@@ -1817,7 +1820,7 @@ pub async fn handle_messages(
             _ => "api_error",
         };
 
-        // [FIX] 403 时返回 503，避免 Claude Code 客户端退出到登录页
+        // [FIX] 403 时return 503，避免 Claude Code 客户端退出到登录页
         let response_status = if last_status.as_u16() == 403 {
             StatusCode::SERVICE_UNAVAILABLE
         } else {
@@ -1835,7 +1838,7 @@ pub async fn handle_messages(
     }
 }
 
-/// 列出可用模型
+/// 列出可用model
 pub async fn handle_list_models(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -1958,15 +1961,15 @@ mod tests {
 }
 */
 
-// ===== 后台任务检测辅助函数 =====
+// ===== 后台任务检测Helper functions =====
 
-/// 后台任务类型
+/// 后台任务type
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum BackgroundTaskType {
     TitleGeneration,    // 标题生成
     SimpleSummary,      // 简单摘要
     ContextCompression, // 上下文压缩
-    PromptSuggestion,   // 提示建议
+    PromptSuggestion,   // hint建议
     SystemMessage,      // 系统消息
     EnvironmentProbe,   // 环境探测
 }
@@ -2023,7 +2026,7 @@ const PROBE_KEYWORDS: &[&str] = &[
     "test connection",
 ];
 
-/// 检测后台任务并返回任务类型
+/// 检测后台任务并return任务type
 fn detect_background_task_type(request: &ClaudeRequest) -> Option<BackgroundTaskType> {
     let last_user_msg = extract_last_user_message_for_detection(request)?;
     let preview = last_user_msg.chars().take(500).collect::<String>();
@@ -2060,12 +2063,12 @@ fn detect_background_task_type(request: &ClaudeRequest) -> Option<BackgroundTask
     None
 }
 
-/// 辅助函数：关键词匹配
+/// Helper functions：关键词匹配
 fn matches_keywords(text: &str, keywords: &[&str]) -> bool {
     keywords.iter().any(|kw| text.contains(kw))
 }
 
-/// 辅助函数：提取最后一条用户消息（用于检测）
+/// Helper functions：提取最后一条user消息（用于检测）
 fn extract_last_user_message_for_detection(request: &ClaudeRequest) -> Option<String> {
     request
         .messages
@@ -2098,7 +2101,7 @@ fn extract_last_user_message_for_detection(request: &ClaudeRequest) -> Option<St
         })
 }
 
-/// 根据后台任务类型选择合适的模型
+/// 根据后台任务type选择合适的model
 fn select_background_model(task_type: BackgroundTaskType) -> &'static str {
     match task_type {
         BackgroundTaskType::TitleGeneration => INTERNAL_BACKGROUND_TASK,
@@ -2110,14 +2113,14 @@ fn select_background_model(task_type: BackgroundTaskType) -> &'static str {
     }
 }
 
-// ===== [Issue #467 Fix] Warmup 请求拦截 =====
+// ===== [Issue #467 Fix] Warmup request拦截 =====
 
-/// 检测是否为 Warmup 请求
+/// 检测是否为 Warmup request
 ///
-/// Claude Code 每 10 秒发送一次 warmup 请求，特征包括：
-/// 1. 用户消息内容以 "Warmup" 开头或包含 "Warmup"
-/// 2. tool_result 内容为 "Warmup" 错误
-/// 3. 消息循环模式：助手发送工具调用，用户返回 Warmup 错误
+/// Claude Code 每 10 s发送一次 warmup request，特征包括：
+/// 1. user消息内容以 "Warmup" 开头或包含 "Warmup"
+/// 2. tool_result 内容为 "Warmup" error
+/// 3. 消息循环模式：助手发送工具调用，userreturn Warmup error
 fn is_warmup_request(request: &ClaudeRequest) -> bool {
     // [FIX] Only check the LATEST message for Warmup characteristics.
     // Scanning history (take(10)) caused a "poisoned session" bug where one historical Warmup
@@ -2169,15 +2172,15 @@ fn is_warmup_request(request: &ClaudeRequest) -> bool {
     false
 }
 
-/// 创建 Warmup 请求的模拟响应
+/// 创建 Warmup request的模拟response
 ///
-/// Return: 一个简单的响应，不消耗上游配额
+/// Return: 一个简单的response，不消耗上游quota
 fn create_warmup_response(request: &ClaudeRequest, is_stream: bool) -> Response {
     let model = &request.model;
     let message_id = format!("msg_warmup_{}", chrono::Utc::now().timestamp_millis());
 
     if is_stream {
-        // 流式响应：发送标准的 SSE 事件序列
+        // 流式response：发送标准的 SSE 事件序列
         let events = vec![
             // message_start
             format!(
@@ -2207,7 +2210,7 @@ fn create_warmup_response(request: &ClaudeRequest, is_stream: bool) -> Response 
             .body(Body::from(body))
             .unwrap()
     } else {
-        // 非流式响应
+        // 非流式response
         let response = json!({
             "id": message_id,
             "type": "message",

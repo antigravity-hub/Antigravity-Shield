@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -707,7 +711,7 @@ export const ApiKeyFun: React.FC = () => {
                                     });
                                     const hasClaude = models.some(m => m.toLowerCase().includes('claude'));
                                     
-                                    // 默认都显示，除非明确检测到只支持其中一种
+                                    // default都显示，除非明确检测到只支持其中一种
                                     const showCodex = !hasModels || hasGpt || (!hasGpt && !hasClaude);
                                     const showClaude = !hasModels || hasClaude || (!hasGpt && !hasClaude);
 

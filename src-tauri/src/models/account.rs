@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use super::{quota::QuotaData, token::TokenData};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
@@ -13,14 +16,14 @@ pub struct LiveLimitStatus {
     pub message: Option<String>,
 }
 
-/// 账号数据结构
+/// accountdata结构
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Account {
     pub id: String,
     pub email: String,
     pub name: Option<String>,
     pub token: TokenData,
-    /// 可选的设备指纹，用于切换账号时固定机器信息
+    /// 可选的设备指纹，用于Switch account时固定机器info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device_profile: Option<DeviceProfile>,
     /// 设备指纹历史（生成/采集时记录），不含基线
@@ -45,22 +48,22 @@ pub struct Account {
     /// Unix timestamp when the proxy was disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_disabled_at: Option<i64>,
-    /// 受配额保护禁用的模型列表 [NEW #621]
+    /// 受quota保护disabled的model列表 [NEW #621]
     #[serde(default, skip_serializing_if = "HashSet::is_empty")]
     pub protected_models: HashSet<String>,
     /// Temporary live upstream throttles observed from actual generation requests.
     #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub live_limited_models: HashMap<String, LiveLimitStatus>,
-    /// [NEW] 403 验证阻止状态 (VALIDATION_REQUIRED)
+    /// [NEW] 403 validate阻止status (VALIDATION_REQUIRED)
     #[serde(default)]
     pub validation_blocked: bool,
-    /// [NEW] 验证阻止截止时间戳
+    /// [NEW] validate阻止截止时间戳
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validation_blocked_until: Option<i64>,
-    /// [NEW] 验证阻止原因
+    /// [NEW] validate阻止原因
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validation_blocked_reason: Option<String>,
-    /// [NEW] 验证链接 URL (#1522)
+    /// [NEW] validate链接 URL (#1522)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validation_url: Option<String>,
     pub created_at: i64,
@@ -71,10 +74,10 @@ pub struct Account {
     /// 代理绑定时间
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_bound_at: Option<i64>,
-    /// 用户自定义标签
+    /// userCustom label
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_label: Option<String>,
-    /// 当前激活的环境目标 (platform / ide / agy)
+    /// current激活的环境目标 (platform / ide / agy)
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub active_targets: Vec<String>,
 }
@@ -125,7 +128,7 @@ impl Account {
     }
 }
 
-/// 各环境当前激活的账号映射
+/// 各环境current激活的account映射
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ActiveTargetAccounts {
     pub platform: Option<String>,
@@ -133,7 +136,7 @@ pub struct ActiveTargetAccounts {
     pub agy: Option<String>,
 }
 
-/// 账号索引数据（accounts.json）
+/// account索引data（accounts.json）
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountIndex {
     pub version: String,
@@ -149,7 +152,7 @@ pub struct AccountIndex {
     pub active_cli_account_id: Option<String>,
 }
 
-/// 账号摘要信息
+/// account摘要info
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountSummary {
     pub id: String,
@@ -163,7 +166,7 @@ pub struct AccountSummary {
     pub validation_blocked: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validation_blocked_reason: Option<String>,
-    /// 受保护的模型列表 [NEW] 供 UI 显示锁定图标
+    /// 受保护的model列表 [NEW] 供 UI 显示locked图标
     #[serde(default, skip_serializing_if = "HashSet::is_empty")]
     pub protected_models: HashSet<String>,
     pub created_at: i64,
@@ -210,14 +213,14 @@ pub struct DeviceProfileVersion {
     pub is_current: bool,
 }
 
-/// 导出账号项（用于备份/迁移）
+/// Export accounts项（用于备份/迁移）
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountExportItem {
     pub email: String,
     pub refresh_token: String,
 }
 
-/// 导出账号响应
+/// Export accountsresponse
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AccountExportResponse {
     pub accounts: Vec<AccountExportItem>,

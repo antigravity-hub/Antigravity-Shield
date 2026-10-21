@@ -78,7 +78,7 @@ function Accounts() {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 监听来自 BestAccounts 等组件跳转传来的特定账号 email
+  // 监听来自 BestAccounts 等组件跳转传来的特定account email
   useEffect(() => {
     const targetEmail = (location.state as { email?: string } | null)?.email;
     if (targetEmail) {
@@ -236,7 +236,7 @@ function Accounts() {
   const [localPageSize, setLocalPageSize] = useState<number | null>(() => {
     const saved = localStorage.getItem("accounts_page_size");
     return saved ? parseInt(saved) : null;
-  }); // 本地分页大小状态
+  }); // 本地分页大小status
 
   // Save page size preference
   useEffect(() => {
@@ -247,12 +247,12 @@ function Accounts() {
 
   // 动态计算分页条数
   const ITEMS_PER_PAGE = useMemo(() => {
-    // 优先使用本地设置的分页大小
+    // 优先使用本地set的分页大小
     if (localPageSize && localPageSize > 0) {
       return localPageSize;
     }
 
-    // 其次使用用户配置的固定值
+    // 其次使用userconfig的固定值
     if (config?.accounts_page_size && config.accounts_page_size > 0) {
       return config.accounts_page_size;
     }
@@ -262,8 +262,8 @@ function Accounts() {
 
     if (viewMode === "list") {
       const headerHeight = 36; // 缩深后的表头高度
-      const rowHeight = 72; // 包含多行模型信息后的实际行高
-      // 计算能容纳多少行, 默认最低 10 行
+      const rowHeight = 72; // 包含多行modelinfo后的实际行高
+      // 计算能容纳多少行, default最低 10 行
       const autoFitCount = Math.floor(
         (containerSize.height - headerHeight) / rowHeight,
       );
@@ -304,7 +304,7 @@ function Accounts() {
     return accounts.filter((a) => a.email.toLowerCase().includes(lowQuery));
   }, [accounts, searchQuery]);
 
-  // 计算各筛选状态下的数量 (基于搜索结果)
+  // 计算各筛选status下的数量 (基于搜索结果)
   const filterCounts = useMemo(() => {
     return {
       all: searchedAccounts.length,
@@ -321,7 +321,7 @@ function Accounts() {
     };
   }, [searchedAccounts]);
 
-  // 过滤和搜索最终结果
+  // Filter和搜索最终结果
   const filteredAccounts = useMemo(() => {
     let result = searchedAccounts;
 
@@ -405,7 +405,7 @@ function Accounts() {
     };
   };
 
-  // Sort logic (Auto Sort: 优先可用账号 -> 排除已耗尽账号排到末尾 -> 5H 剩余配额从高到低 -> 次级按周配额比例 -> 同级按 Weekly Reset 倒计时从多到少)
+  // Sort logic (Auto Sort: 优先可用account -> 排除已耗尽account排到末尾 -> 5H 剩余quota从高到低 -> 次级按周quota比例 -> 同级按 Weekly Reset 倒计时从多到少)
   const sortedAccounts = useMemo(() => {
     if (!autoSort) {
       return [...filteredAccounts].sort((a, b) => {
@@ -461,7 +461,7 @@ function Accounts() {
     setCurrentPage(page);
   };
 
-  // 清空选择当过滤改变 并重置分页
+  // 清empty选择当过滤改变 并reset分页
   useEffect(() => {
     setSelectedIds(new Set());
     setCurrentPage(1);
@@ -478,7 +478,7 @@ function Accounts() {
   };
 
   const handleToggleAll = () => {
-    // 全选当前页的所有项
+    // 全选current页的所有项
     const currentIds = paginatedAccounts.map((a) => a.id);
     const allSelected = currentIds.every((id) => selectedIds.has(id));
 
@@ -1091,7 +1091,7 @@ function Accounts() {
             </button>
           </div>
 
-          {/* 配额窗口与模型族切换控制组 (5H / Weekly & Gemini / Claude) */}
+          {/* quota窗口与model族切换控制组 (5H / Weekly & Gemini / Claude) */}
           <div className="flex gap-1 bg-gray-100/80 dark:bg-base-200 p-1 rounded-xl shrink-0 items-center border border-gray-200/50 dark:border-white/5">
             {/* 5H 与 Weekly 窗口切换 */}
             <div className="flex items-center gap-0.5">
@@ -1126,7 +1126,7 @@ function Accounts() {
             </div>
 
             <div className="w-px h-3.5 bg-gray-300 dark:bg-gray-700/80 mx-0.5 shrink-0" />
-            {/* Gemini / Claude 模型提供商切换 */}
+            {/* Gemini / Claude model提供商切换 */}
             <div className="flex items-center gap-0.5">
               <button
                 className={cn(
@@ -1165,7 +1165,7 @@ function Accounts() {
 
           {/* 过滤按钮组 */}
           <div className="flex gap-0.5 bg-gray-100/80 dark:bg-base-200 p-1 rounded-xl border border-gray-200/50 dark:border-white/5 shrink-0">
-            {/* 全部 */}
+            {/* all */}
             <button
               className={cn(
                 "px-2 md:px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1 md:gap-1.5 whitespace-nowrap shrink-0",
@@ -1255,9 +1255,9 @@ function Accounts() {
           </div>
         </div>
 
-        {/* 第二行: 操作按钮组与数据新鲜度状态 */}
+        {/* 第二行: Action buttons组与data新鲜度status */}
         <div className="flex flex-wrap items-center justify-between gap-2">
-          {/* 左侧操作按钮组 */}
+          {/* 左侧Action buttons组 */}
           <div className="flex flex-wrap items-center gap-1.5">
             <AddAccountDialog onAdd={handleAddAccount} showText={false} />
 
@@ -1450,7 +1450,7 @@ function Accounts() {
             </button>
           </div>
 
-          {/* 右侧: 数据新鲜度指示器 (Data Freshness Indicator) */}
+          {/* 右侧: data新鲜度指示器 (Data Freshness Indicator) */}
           <div 
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-100/90 dark:bg-slate-800/90 border border-gray-200/60 dark:border-slate-600/40 text-[11px] font-medium text-gray-500 dark:text-slate-300 select-none shadow-2xs shrink-0 ml-auto"
             title={t("accounts.sync_freshness.tooltip", "Live status verified against Google Cloud Code upstream")}
@@ -1537,7 +1537,7 @@ function Accounts() {
         )}
       </div>
 
-      {/* 极简分页 - 无边框浮动样式 */}
+      {/* 极简分页 - none边框浮动样式 */}
       {filteredAccounts.length > 0 && (
         <div className="flex-none">
           <Pagination
@@ -1657,7 +1657,7 @@ function Accounts() {
       />
 
 
-      {/* 账号错误详情弹窗 */}
+      {/* accounterror详情弹窗 */}
       <AccountErrorDialog
         account={accounts.find(a => a.id === errorAccountId) || null}
         onClose={() => setErrorAccountId(null)}

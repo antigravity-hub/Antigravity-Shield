@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import React, { useState, useEffect } from 'react';
 import { Lock, Key, AlertCircle, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -7,8 +11,8 @@ import { FlagIcon } from './FlagIcon';
 
 /**
  * AdminAuthGuard
- * 针对 Docker/Web 模式的强制鉴权保护层。
- * 如果检测到没有存储的 API Key 或后端返回 401，将拦截 UI 并要求输入 Key。
+ * Mandatory authentication protection layer for Docker/Web modes。
+ * 如果检测到没有存储的 API Key 或后端return 401，将拦截 UI 并要求输入 Key。
  */
 export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t, i18n } = useTranslation();
@@ -68,7 +72,7 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
             sessionStorage.setItem('abv_admin_auth_token', encryptSensitiveData(trimmedKey));
             sessionStorage.removeItem('abv_admin_api_key');
 
-            // 调用一个需要认证的 API 来验证密码是否正确
+            // 调用一个需要认证的 API 来validate密码是否正确
             const response = await fetch('/api/accounts', {
                 method: 'GET',
                 headers: {
@@ -79,23 +83,23 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
             });
 
             if (response.ok || response.status === 204) {
-                // 验证成功
+                // Verifysuccess
                 localStorage.removeItem('abv_admin_auth_token');
                 localStorage.removeItem('abv_admin_api_key');
                 setIsAuthenticated(true);
                 window.location.reload();
             } else if (response.status === 401) {
-                // 密码错误
+                // 密码error
                 sessionStorage.removeItem('abv_admin_auth_token');
                 sessionStorage.removeItem('abv_admin_api_key');
                 setError(t('login.error_invalid_key'));
             } else {
-                // 其他错误，但可能密码是对的
+                // 其他error，但可能密码是对的
                 setIsAuthenticated(true);
                 window.location.reload();
             }
         } catch (err) {
-            // 网络错误等
+            // 网络error等
             sessionStorage.removeItem('abv_admin_auth_token');
             sessionStorage.removeItem('abv_admin_api_key');
             setError(t('login.error_network'));
@@ -132,7 +136,7 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-base-300 flex items-center justify-center p-4 relative">
-            {/* 语言切换按钮 */}
+            {/* 语言Switch button */}
             <div className="absolute top-8 right-8">
                 <div className="relative">
                     <button

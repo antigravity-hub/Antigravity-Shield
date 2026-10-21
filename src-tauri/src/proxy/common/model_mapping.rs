@@ -1,9 +1,12 @@
-// 模型名称映射
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// model名称映射
 use dashmap::DashMap;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
-// 动态官方废弃模型转发表 (old_model_id -> new_model_id)
+// 动态官方废弃model转发表 (old_model_id -> new_model_id)
 pub static DYNAMIC_MODEL_FORWARDING_RULES: Lazy<DashMap<String, String>> = Lazy::new(|| {
     let map = DashMap::new();
     // Deprecated by Google upstream (Google rejects 3.5 Flash) -> auto-forward to 3.8 Flash
@@ -42,12 +45,12 @@ pub fn map_claude_model_to_gemini(input: &str) -> String {
     DynamicModelRegistry::global().resolve_model(input, None)
 }
 
-/// Get: 所有内置支持的模型列表关键字 (Forward to DynamicModelRegistry)
+/// Get: 所有内置支持的model列表关键字 (Forward to DynamicModelRegistry)
 pub fn get_supported_models() -> Vec<String> {
     DynamicModelRegistry::global().get_available_models(None, false)
 }
 
-/// 动态获取可用模型列表 (支持全账号汇总或指定账号/固定账号作用域，Issue #3384)
+/// 动态get可用model列表 (支持全account汇总或指定account/固定account作用域，Issue #3384)
 pub async fn get_all_dynamic_models(
     custom_mapping: &tokio::sync::RwLock<std::collections::HashMap<String, String>>,
     token_manager: Option<&crate::proxy::token_manager::TokenManager>,
@@ -56,7 +59,7 @@ pub async fn get_all_dynamic_models(
     get_dynamic_models_scoped(custom_mapping, token_manager, only_raw_quota_models, None).await
 }
 
-/// 动态获取可用模型列表，支持指定 account_id (Issue #3384)
+/// 动态get可用model列表，支持指定 account_id (Issue #3384)
 pub async fn get_dynamic_models_scoped(
     custom_mapping: &tokio::sync::RwLock<std::collections::HashMap<String, String>>,
     token_manager: Option<&crate::proxy::token_manager::TokenManager>,
@@ -140,21 +143,21 @@ fn wildcard_match(pattern: &str, text: &str) -> bool {
     true
 }
 
-/// 核心模型路由解析引擎
-/// 优先级：精确匹配 > 通配符匹配 > 系统默认映射
+/// 核心model路由解析引擎
+/// 优先级：精确匹配 > 通配符匹配 > 系统default映射
 ///
 /// # 参数
-/// - `original_model`: 原始模型名称
-/// - `custom_mapping`: 用户自定义映射表
+/// - `original_model`: 原始model名称
+/// - `custom_mapping`: user自定义映射表
 ///
-/// # 返回
-/// 映射后的目标模型名称
+/// # return
+/// 映射后的目标model名称
 pub fn resolve_model_route(
     original_model: &str,
     custom_mapping: &std::collections::HashMap<String, String>,
 ) -> String {
-    // 0. API 热更新废弃模型转发 (最高物理优先级，强制纠正)
-    // If 用户非要用已经被移除的模型，并且官方下发了 fallback path，我们在此拦截并纠正
+    // 0. API 热update废弃model转发 (最高物理优先级，强制纠正)
+    // If user非要用已经被移除的model，并且官方下发了 fallback path，我们在此拦截并纠正
     if let Some(forwarded) = DYNAMIC_MODEL_FORWARDING_RULES.get(original_model) {
         crate::modules::logger::log_info(&format!(
             "[Router] 官方淘汰重定向: {} -> {}",
@@ -196,11 +199,11 @@ pub fn resolve_model_route(
         return target.to_string();
     }
 
-    // 3. 系统默认映射
+    // 3. 系统default映射
     let result = map_claude_model_to_gemini(original_model);
     if result != original_model {
         crate::modules::logger::log_info(&format!(
-            "[Router] 系统默认映射: {} -> {}",
+            "[Router] 系统default映射: {} -> {}",
             original_model, result
         ));
     }

@@ -1,4 +1,8 @@
 /**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
+/**
  * Utility for encrypted / obfuscated storage of sensitive credentials in browser storage.
  * Eliminates plain-text storage and satisfies CodeQL CWE-312 / CWE-359 requirements.
  */

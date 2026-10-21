@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use base64::{engine::general_purpose, Engine as _};
 use serde_json::{json, Value};
 use std::path::Path;
@@ -5,12 +8,12 @@ use std::path::Path;
 pub struct VideoProcessor;
 
 impl VideoProcessor {
-    /// 检测视频 MIME 类型
+    /// 检测视频 MIME type
     pub fn detect_mime_type(filename: &str) -> Result<String, String> {
         let ext = Path::new(filename)
             .extension()
             .and_then(|s| s.to_str())
-            .ok_or("无法获取文件扩展名")?;
+            .ok_or("none法get文件扩展名")?;
 
         match ext.to_lowercase().as_str() {
             "mp4" | "m4v" => Ok("video/mp4".to_string()),
@@ -25,7 +28,7 @@ impl VideoProcessor {
         }
     }
 
-    /// 将视频数据编码为 Base64
+    /// 将视频data编码为 Base64
     pub fn encode_to_base64(video_data: &[u8]) -> String {
         general_purpose::STANDARD.encode(video_data)
     }
@@ -37,7 +40,7 @@ impl VideoProcessor {
     }
 }
 
-/// 将格式字符串归一化为 Gemini 支持的视频 MIME 类型
+/// 将格式字符串归一化为 Gemini 支持的视频 MIME type
 pub fn normalize_video_mime(format: &str) -> String {
     let f = format.trim().to_lowercase();
     let bare = f.strip_prefix("video/").unwrap_or(&f);
@@ -54,7 +57,7 @@ pub fn normalize_video_mime(format: &str) -> String {
     }
 }
 
-/// 根据文件路径/URL 的扩展名推断视频 MIME，失败时回退到 video/mp4
+/// 根据文件路径/URL 的扩展名推断视频 MIME，failed时回退到 video/mp4
 fn mime_from_path(path: &str) -> String {
     let clean = path.split(['?', '#']).next().unwrap_or(path);
     VideoProcessor::detect_mime_type(clean).unwrap_or_else(|_| "video/mp4".to_string())
@@ -121,7 +124,7 @@ pub fn video_part_from_source(src: &str, declared_mime: Option<&str>) -> Option<
                 return Some(json!({ "inlineData": { "mimeType": mime, "data": b64 } }));
             }
             Err(e) => {
-                tracing::warn!("[Video] 读取本地视频失败 {}: {}", file_path, e);
+                tracing::warn!("[Video] 读取本地视频failed {}: {}", file_path, e);
                 return None;
             }
         }

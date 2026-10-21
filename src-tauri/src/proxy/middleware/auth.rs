@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // API Key 认证中间件
 use axum::{
     extract::Request,
@@ -39,7 +42,7 @@ async fn auth_middleware_internal(
     let method = request.method().clone();
     let path = request.uri().path().to_string();
 
-    // 过滤心跳和健康检查请求,避免日志噪音
+    // Filter心跳和健康checkrequest,避免日志噪音
     let is_health_check = path == "/healthz"
         || path == "/api/health"
         || path == "/health"
@@ -65,12 +68,12 @@ async fn auth_middleware_internal(
     let security = security.read().await.clone();
     let effective_mode = security.effective_auth_mode();
 
-    // 权限检查逻辑
+    // 权限check逻辑
     if !force_strict {
         // AI 代理接口 (v1/chat/completions 等)
         if matches!(effective_mode, ProxyAuthMode::Off) {
             // [FIX] 即使 auth_mode=Off，也需要尝试识别 User Token 以记录使用情况
-            // 先检查是否携带了 User Token
+            // 先check是否携带了 User Token
             let api_key = request
                 .headers()
                 .get(header::AUTHORIZATION)
@@ -84,7 +87,7 @@ async fn auth_middleware_internal(
                 });
 
             if let Some(token) = api_key {
-                // 尝试验证是否为 User Token（不阻止请求，只记录）
+                // 尝试validate是否为 User Token（不阻止request，只记录）
                 if let Ok(Some(user_token)) =
                     crate::modules::user_token_db::get_token_by_value(token)
                 {
@@ -93,7 +96,7 @@ async fn auth_middleware_internal(
                         token: user_token.token,
                         username: user_token.username,
                     };
-                    // 注入 identity 到请求
+                    // 注入 identity 到request
                     let (mut parts, body) = request.into_parts();
                     parts.extensions.insert(identity);
                     let request = Request::from_parts(parts, body);
@@ -169,7 +172,7 @@ async fn auth_middleware_internal(
     if authorized {
         Ok(next.run(request).await)
     } else if !force_strict && api_key.is_some() {
-        // 尝试验证 UserToken
+        // 尝试validate UserToken
         let token = api_key.unwrap();
 
         // 提取 IP (复用逻辑)
@@ -187,10 +190,10 @@ async fn auth_middleware_internal(
             })
             .unwrap_or_else(|| "127.0.0.1".to_string()); // Default fallback
 
-        // 验证 Token
+        // Verify Token
         match crate::modules::user_token_db::validate_token(token, &client_ip) {
             Ok((true, _)) => {
-                // Token 有效，查询信息以便传递
+                // Token 有效，查询info以便传递
                 if let Ok(Some(user_token)) =
                     crate::modules::user_token_db::get_token_by_value(token)
                 {
@@ -200,16 +203,16 @@ async fn auth_middleware_internal(
                         username: user_token.username,
                     };
 
-                    // [FIX] 将身份信息注入到请求 extensions 中，而不是响应
-                    // 这样 monitor_middleware 在处理请求时就能获取到 identity
+                    // [FIX] 将身份info注入到request extensions 中，而不是response
+                    // 这样 monitor_middleware 在handlerequest时就能get到 identity
                     // 因为中间件执行顺序：auth (外层) -> monitor (内层) -> handler
-                    // 响应返回时：handler -> monitor -> auth
+                    // responsereturn时：handler -> monitor -> auth
                     // If 注入到 response，monitor 执行时 identity 还不存在
                     let (mut parts, body) = request.into_parts();
                     parts.extensions.insert(identity);
                     let request = Request::from_parts(parts, body);
 
-                    // 执行请求
+                    // 执行request
                     let response = next.run(request).await;
 
                     Ok(response)
@@ -246,7 +249,7 @@ async fn auth_middleware_internal(
     }
 }
 
-/// 用户令牌身份信息 (传递给 Monitor 使用)
+/// user令牌身份info (传递给 Monitor 使用)
 #[derive(Clone, Debug)]
 pub struct UserTokenIdentity {
     pub token_id: String,
@@ -271,14 +274,14 @@ mod tests {
             security_monitor: crate::proxy::config::SecurityMonitorConfig::default(),
         }));
 
-        // 模拟请求 - 管理接口使用正确的管理密码
+        // 模拟request - 管理接口使用正确的管理密码
         let req = Request::builder()
             .header("Authorization", "Bearer admin123")
             .uri("/admin/stats")
             .body(axum::body::Body::empty())
             .unwrap();
 
-        // 此测试由于涉及 Next 中间件调用比较复杂,主要验证核心逻辑
+        // 此测试由于涉及 Next 中间件调用比较复杂,主要validate核心逻辑
         // 我们在 auth_middleware_internal 基础上做了逻辑校验即可
     }
 

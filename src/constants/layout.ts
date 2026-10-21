@@ -1,4 +1,8 @@
 /**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
+/**
  * Centralized Layout Constants & Styling Tokens
  *
  * Defines the responsive grid, viewport boundaries, and max-widths across all views.

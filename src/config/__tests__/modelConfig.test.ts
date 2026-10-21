@@ -1,4 +1,8 @@
 /**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
+/**
  * Standalone assertion script for categorizeModel and getModelProtectionKey.
  *
  * Imports from the standalone utils module (no @lobehub/icons dependency,

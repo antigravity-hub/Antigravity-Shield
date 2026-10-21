@@ -1,5 +1,9 @@
 /**
- * 模型分类工具函数（无 React / icons 依赖，可在 Node 环境直接导入）
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
+/**
+ * model分类Utility functions（none React / icons 依赖，可在 Node 环境直接导入）
  */
 
 export type ModelCategory = 'gemini-pro' | 'gemini-flash' | 'gemini-pro-image' | 'gemini-flash-image' | 'claude' | 'other';
@@ -52,14 +56,14 @@ const DEFAULT_MODEL_LABELS: Record<string, string> = {
 
 const dynamicKnownModels = new Set<string>();
 
-// 默认填入预设模型列表中的所有模型键
+// default填入预设model列表中的所有model键
 for (const key of Object.keys(DEFAULT_MODEL_LABELS)) {
     dynamicKnownModels.add(key.trim().toLowerCase());
 }
 
 /**
- * 动态注册已知模型（来自配置、API 响应或账号配额）
- * 保证系统永远能感知到最新发布的模型，无需代码硬编码发版。
+ * 动态注册已知model（来自config、API response或accountquota）
+ * 保证系统永远能感知到最新发布的model，none需代码硬编码发版。
  */
 export function registerKnownModels(modelNames: (string | undefined | null)[] | string): void {
     const names = Array.isArray(modelNames) ? modelNames : [modelNames];
@@ -74,21 +78,21 @@ export function registerKnownModels(modelNames: (string | undefined | null)[] | 
 }
 
 /**
- * 判断是否为基础通用代际配额桶（如 gemini-3-flash, gemini-3-pro-high, gemini-pro-agent 等）
- * 这些名称代表整个代际家族的通用配额槽位，而非特定锁定的微版本。
+ * 判断是否为基础通用代际quota桶（如 gemini-3-flash, gemini-3-pro-high, gemini-pro-agent 等）
+ * 这些名称代表整个代际家族的通用quota槽位，而非特定locked的微版本。
  */
 export function isBaseQuotaBucket(name: string): boolean {
     const n = name.trim().toLowerCase();
     if (n === 'gemini-pro-agent' || n === 'gemini-flash-agent') return true;
 
     // 匹配如 gemini-3-flash, gemini-3-pro, gemini-3-flash-agent, gemini-3-pro-high, gemini-4-flash 等基础代际名称
-    // 不匹配带有具体小数微版本的模型（如 gemini-3.8-flash, gemini-3.5-flash, gemini-2.5-flash, gemini-3.1-flash-image）
+    // 不匹配带有具体小数微版本的model（如 gemini-3.8-flash, gemini-3.5-flash, gemini-2.5-flash, gemini-3.1-flash-image）
     const match = n.match(/^gemini-(\d+)-(flash|pro)(?:-(high|low|agent))?$/);
     return Boolean(match);
 }
 
 /**
- * 动态获取指定类别中版本最高、性能最强的旗舰代表模型标识
+ * 动态get指定类别中版本最高、性能最强的旗舰代表model标识
  * 支持 majorVersion 参数限制在相同代际（如 Gemini 3 桶提升到 3.8，Gemini 4 桶提升到 4.x）
  */
 export function getLatestModelForCategory(category: ModelCategory, majorVersion?: number): string | undefined {
@@ -109,8 +113,8 @@ export function getLatestModelForCategory(category: ModelCategory, majorVersion?
 }
 
 /**
- * 智能自动格式化模型显示名称：
- * 将未知或新发布的 Gemini/Claude 模型名称（如 gemini-3.8-flash, gemini-4-flash）自动格式化为美观的标签（Gemini 4 Flash），无需手动录入。
+ * 智能自动格式化model显示名称：
+ * 将未知或新发布的 Gemini/Claude model名称（如 gemini-3.8-flash, gemini-4-flash）自动格式化为美观的标签（Gemini 4 Flash），none需手动录入。
  */
 export function autoFormatModelName(name: string): string {
     return name
@@ -138,7 +142,7 @@ export function getModelDisplayName(
         const rawName = model.name ? model.name.trim().toLowerCase() : '';
         const explicitDisplayName = model.display_name?.trim();
 
-        // If 显式传入了 display_name，并且不是陈旧的通用基础桶名称或 Google API 的异常旧别名
+        // If 显式传入了 display_name，并且不是陈旧的通用基础桶名称或 Google API 的exception旧别名
         if (explicitDisplayName) {
             const isStaleBaseDisplayName =
                 rawName === 'gemini-3-flash' && explicitDisplayName.toLowerCase() === 'gemini 3 flash';
@@ -150,7 +154,7 @@ export function getModelDisplayName(
         }
 
         if (rawName) {
-            // If 是通用代际配额桶，动态探测并提升为同代际下已知最高版本的旗舰模型标签
+            // If 是通用代际quota桶，动态探测并提升为同代际下已知最高版本的旗舰model标签
             if (isBaseQuotaBucket(rawName)) {
                 const category = categorizeModel(rawName);
                 const genMatch = rawName.match(/gemini-(\d+)/);
@@ -172,7 +176,7 @@ export function getModelDisplayName(
 }
 
 /**
- * 获取紧凑短名称（如 G3.8 Flash, G3.1 Pro, G3 Image, Claude 4.6），适合紧凑卡片/表格展示。
+ * get紧凑短名称（如 G3.8 Flash, G3.1 Pro, G3 Image, Claude 4.6），适合紧凑卡片/表格展示。
  */
 export function getModelShortDisplayName(
     model: ModelDisplayNameInput | null | undefined,
@@ -189,7 +193,7 @@ export function getModelShortDisplayName(
 }
 
 /**
- * 提取模型版本号（如 gemini-4-flash -> 4.0, gemini-3.8-flash -> 3.8, gemini-3-flash -> 3.0, gemini-pro-agent -> 3.1 等）
+ * 提取model版本号（如 gemini-4-flash -> 4.0, gemini-3.8-flash -> 3.8, gemini-3-flash -> 3.0, gemini-pro-agent -> 3.1 等）
  */
 export function extractModelScore(name: string): number {
     const n = name.toLowerCase();
@@ -220,16 +224,16 @@ export function extractModelScore(name: string): number {
     } else if (n.includes('agent')) {
         tierBonus = 0.05;
     } else if (n.includes('extra-low')) {
-        tierBonus = -0.5; // 严厉降低辅助微弱模型的优先级
+        tierBonus = -0.5; // 严厉降低辅助微弱model的优先级
     } else if (n.includes('low') || n.includes('lite')) {
-        tierBonus = -0.4; // 严厉降低 Lite/Low 辅助模型的权重，确保主力旗舰绝不被篡位
+        tierBonus = -0.4; // 严厉降低 Lite/Low 辅助model的权重，确保主力旗舰绝不被篡位
     }
 
-    // 优先选择标准主力模型，降低 thinking 衍生后缀的优先级，避免在卡片/列表中被 thinking 过滤器误杀
+    // 优先选择标准主力model，降低 thinking 衍生后缀的优先级，避免在卡片/列表中被 thinking 过滤器误杀
     if (!n.includes('thinking')) {
         tierBonus += 0.01;
     }
-    // Claude 家族中优先以 sonnet 作为默认代表模型
+    // Claude 家族中优先以 sonnet 作为default代表model
     if (n.includes('sonnet')) {
         tierBonus += 0.02;
     }
@@ -238,8 +242,8 @@ export function extractModelScore(name: string): number {
 }
 
 /**
- * 动态查找配额模型：按类别筛选候选模型，并自动选出版本最高、性能规格最强的旗舰模型。
- * 完全自适应 Google AI / Gemini API 发布的任意新版本模型（如 3.8, 3.9, 4.0 等）。
+ * 动态查找quotamodel：按类别筛选候选model，并自动选出版本最高、性能规格最强的旗舰model。
+ * 完全自适应 Google AI / Gemini API 发布的任意新版本model（如 3.8, 3.9, 4.0 等）。
  */
 export function findQuotaModel<T extends { name: string }>(
     models: T[] | undefined,
@@ -247,14 +251,14 @@ export function findQuotaModel<T extends { name: string }>(
 ): T | undefined {
     if (!models || models.length === 0) return undefined;
 
-    // 动态注册观察到的所有模型
+    // 动态注册观察到的所有model
     for (const m of models) {
         if (m && m.name) {
             dynamicKnownModels.add(m.name.trim().toLowerCase());
         }
     }
 
-    // 筛选出属于该类别的所有模型
+    // 筛选出属于该类别的所有model
     const candidates = models.filter(m => categorizeModel(m.name) === category);
     if (candidates.length === 0) return undefined;
 
@@ -274,8 +278,8 @@ export function getModelProtectionKey(name: string): string | null {
 }
 
 /**
- * 在任意图片类别中查找第一个实际模型。
- * 用于让新旧 image selector 共享同一配额槽位。
+ * 在任意图片类别中查找第一个实际model。
+ * 用于让新旧 image selector 共享同一quota槽位。
  */
 export function findImageQuotaModel<T extends { name: string }>(
     models: T[] | undefined,
@@ -287,7 +291,7 @@ export function findImageQuotaModel<T extends { name: string }>(
     });
 }
 
-/** 账号管理 pin 列表缺省图像选择器时补入代表 Image，与仪表盘对齐。 */
+/** account管理 pin 列表缺省图像选择器时补入代表 Image，与仪表盘对齐。 */
 export const DEFAULT_IMAGE_PIN_SELECTOR = 'gemini-3.1-flash-image';
 
 export function ensurePinnedImageSelector(selectorIds: string[] | undefined): string[] {

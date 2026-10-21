@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // OpenAI 流式转换
 use bytes::{Bytes, BytesMut};
 use chrono::Utc;
@@ -152,7 +155,7 @@ where
                                             }
 
                                             if let Some(candidates) = actual_data.get("candidates").and_then(|c| c.as_array()) {
-                                                // [DEBUG] 打印原始 candidate 以排查空回复问题
+                                                // [DEBUG] 打印原始 candidate 以排查empty回复问题
                                                 if candidates.len() > 0 {
                                                      tracing::debug!("[Stream-Debug] Raw Candidate: {:?}", candidates[0]);
                                                 }
@@ -315,8 +318,8 @@ where
                                                         _ => f,
                                                     });
 
-                                                    // [FIX #1575] 如果发射了工具调用，强制设置为 tool_calls
-                                                    // 解决 Gemini 返回 STOP 但有工具调用时，OpenAI 客户端认为对话已结束的问题
+                                                    // [FIX #1575] 如果发射了工具调用，强制set为 tool_calls
+                                                    // 解决 Gemini return STOP 但有工具调用时，OpenAI 客户端认为对话已结束的问题
                                                     let finish_reason = if !emitted_tool_calls.is_empty() && gemini_finish_reason.is_some() {
                                                         Some("tool_calls")
                                                     } else {

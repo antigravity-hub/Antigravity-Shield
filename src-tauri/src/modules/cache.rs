@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Antigravity cache clearing module
 //!
 //! Provides functionality to clear Antigravity application cache directories

@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { SkillItem, McpServerItem, RuleItem, WorkspaceExclusion } from '../types/ecosystem';
 import { resolveSkillManifest } from './skillManifestResolver';
 import {

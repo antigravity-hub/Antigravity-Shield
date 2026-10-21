@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -12,8 +15,8 @@ pub struct ProxyRequestLog {
     pub url: String,
     pub status: u16,
     pub duration: u64,                // ms
-    pub model: Option<String>,        // 客户端请求的模型名
-    pub mapped_model: Option<String>, // 实际路由后使用的模型名
+    pub model: Option<String>,        // 客户端request的model名
+    pub mapped_model: Option<String>, // 实际路由后使用的model名
     pub account_email: Option<String>,
     pub client_ip: Option<String>, // 客户端 IP 地址
     pub error: Option<String>,
@@ -22,7 +25,7 @@ pub struct ProxyRequestLog {
     pub input_tokens: Option<u32>,
     pub output_tokens: Option<u32>,
     pub cached_tokens: Option<u32>,
-    pub protocol: Option<String>, // 协议类型: "openai", "anthropic", "gemini"
+    pub protocol: Option<String>, // 协议type: "openai", "anthropic", "gemini"
     pub username: Option<String>, // User token username
 }
 

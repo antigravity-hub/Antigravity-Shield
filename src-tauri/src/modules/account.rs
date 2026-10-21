@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde::Serialize;
 use serde_json;
 use std::collections::HashMap;
@@ -2130,7 +2133,7 @@ pub fn update_account_quota(account_id: &str, quota: QuotaData) -> Result<(), St
     // Save account first
     save_account(&account)?;
 
-    // [FIX] 同时更新索引文件中的摘要信息，确保列表页图标即时刷新
+    // [FIX] 同时update索引文件中的摘要info，确保列表页图标即时刷新
     {
         if let Ok(mut index) = load_account_index() {
             if let Some(summary) = index.accounts.iter_mut().find(|a| a.id == account_id) {

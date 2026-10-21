@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::process::Stdio;
@@ -31,7 +34,7 @@ impl Default for TunnelMode {
     }
 }
 
-/// Cloudflared配置
+/// Cloudflaredconfig
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CloudflaredConfig {
     #[serde(default)]
@@ -55,12 +58,12 @@ impl Default for CloudflaredConfig {
             mode: TunnelMode::Quick,
             port: 8045,
             token: None,
-            use_http2: true, // 默认启用http2，更稳定
+            use_http2: true, // defaultenabledhttp2，更稳定
         }
     }
 }
 
-/// Cloudflared状态
+/// Cloudflaredstatus
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CloudflaredStatus {
     pub installed: bool,
@@ -82,7 +85,7 @@ impl Default for CloudflaredStatus {
     }
 }
 
-/// Cloudflared管理器状态
+/// Cloudflared管理器status
 pub struct CloudflaredManager {
     process: Arc<RwLock<Option<Child>>>,
     status: Arc<RwLock<CloudflaredStatus>>,
@@ -135,12 +138,12 @@ impl CloudflaredManager {
         }
     }
 
-    /// Get: 当前状态
+    /// Get: currentstatus
     pub async fn get_status(&self) -> CloudflaredStatus {
         self.status.read().await.clone()
     }
 
-    /// Update: 状态
+    /// Update: status
     async fn update_status(&self, f: impl FnOnce(&mut CloudflaredStatus)) {
         let mut status = self.status.write().await;
         f(&mut status);
@@ -248,8 +251,8 @@ impl CloudflaredManager {
 
         let mut cmd = Command::new(&self.bin_path);
 
-        // 设置工作目录
-        // 设置工作目录
+        // Set工作目录
+        // Set工作目录
         if let Some(bin_dir) = self.bin_path.parent() {
             cmd.current_dir(bin_dir);
             debug!("[cloudflared] Working directory: {:?}", bin_dir);
@@ -259,14 +262,14 @@ impl CloudflaredManager {
             TunnelMode::Quick => {
                 cmd.arg("tunnel").arg("--url").arg(&local_url);
 
-                // 注意：--no-autoupdate 参数在较新版本的 cloudflared 中已不被支持，会导致进程立即退出
+                // Note：--no-autoupdate 参数在较新版本的 cloudflared 中已不被支持，会导致进程立即退出
                 // cmd.arg("--no-autoupdate");
 
                 if config.use_http2 {
                     cmd.arg("--protocol").arg("http2");
                 }
 
-                // 注意：--loglevel 参数在此上下文中也会导致 Incorrect Usage 错误，故移除以使用默认值
+                // Note：--loglevel 参数在此上下文中也会导致 Incorrect Usage error，故移除以使用default值
                 // cmd.arg("--loglevel").arg("info");
 
                 info!("[cloudflared] Command args: tunnel --url {} ...", local_url);
@@ -275,14 +278,14 @@ impl CloudflaredManager {
                 if let Some(token) = &config.token {
                     cmd.arg("tunnel").arg("run").arg("--token").arg(token);
 
-                    // 注意：--no-autoupdate 参数不被支持
+                    // Note：--no-autoupdate 参数不被支持
                     // cmd.arg("--no-autoupdate");
 
                     if config.use_http2 {
                         cmd.arg("--protocol").arg("http2");
                     }
 
-                    // 注意：--loglevel 参数不被支持
+                    // Note：--loglevel 参数不被支持
                     // cmd.arg("--loglevel").arg("info");
 
                     info!("[cloudflared] Command args: tunnel run --token [HIDDEN] ...");
@@ -445,7 +448,7 @@ where
 /// 从日志行提取隧道URL
 /// 支持两种模式：
 /// 1. 快速隧道：直接提取 .trycloudflare.com URL
-/// 2. 命名隧道：从 ingress 配置中解析 hostname
+/// 2. 命名隧道：从 ingress config中解析 hostname
 fn extract_tunnel_url(line: &str) -> Option<String> {
     // 快速隧道模式：直接查找 trycloudflare.com URL
     if let Some(url) = line

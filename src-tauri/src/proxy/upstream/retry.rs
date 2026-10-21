@@ -1,4 +1,7 @@
-// 429 重试策略
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// 429 retry策略
 // Duration 解析
 
 use once_cell::sync::Lazy;
@@ -101,7 +104,7 @@ impl ParsedRetryDelay {
     }
 }
 
-/// 从 Retry-After 或 429 错误中提取原始 retry delay (深度递归解析)
+/// 从 Retry-After 或 429 error中提取原始 retry delay (深度递归解析)
 pub fn parse_retry_delay(error_text: &str, retry_after: Option<&str>) -> Option<u64> {
     parse_retry_delay_with_source(error_text, retry_after).map(|delay| delay.raw_ms)
 }
@@ -126,7 +129,7 @@ pub fn parse_retry_delay_with_source(
         }
     }
 
-    // 2. 结构化 JSON 字段优先，避免把 JSON 中的 retryDelay 当作响应文字。
+    // 2. 结构化 JSON 字段优先，避免把 JSON 中的 retryDelay 当作response文字。
     if let Ok(json) = serde_json::from_str(error_text) {
         if let Some(raw_ms) = extract_structured_delay_recursive(&json, 0, false) {
             return Some(ParsedRetryDelay {
@@ -136,7 +139,7 @@ pub fn parse_retry_delay_with_source(
         }
     }
 
-    // 3. 仅从响应文字中提取自然语言时长。
+    // 3. 仅从response文字中提取自然语言时长。
     for re in RE_TEXT_DELAY_PATTERNS.iter() {
         if let Some(cap) = re.captures(error_text) {
             if let Some(delay) = parse_duration_ms(&cap[1]) {
@@ -181,7 +184,7 @@ fn extract_structured_delay_recursive(
 
     match value {
         serde_json::Value::Object(map) => {
-            // Check: 当前对象是否本身就是一个 Duration 对象 (seconds/nanos)
+            // Check: current对象是否本身就是一个 Duration 对象 (seconds/nanos)
             if let Some(d) = parse_structured_duration_object(value) {
                 return Some(d);
             }
@@ -220,7 +223,7 @@ fn extract_structured_delay_recursive(
     None
 }
 
-/// 解析强类型的 Duration 对象 (Google 格式: {seconds: 1, nanos: 0})
+/// 解析强type的 Duration 对象 (Google 格式: {seconds: 1, nanos: 0})
 fn parse_structured_duration_object(value: &serde_json::Value) -> Option<u64> {
     let obj = value.as_object()?;
     let seconds = obj
@@ -241,7 +244,7 @@ fn parse_structured_duration_object(value: &serde_json::Value) -> Option<u64> {
     None
 }
 
-/// 解析各种可能包含时长信息的 Value
+/// 解析各种可能包含时长info的 Value
 fn parse_structured_duration_value(value: &serde_json::Value) -> Option<u64> {
     match value {
         serde_json::Value::String(s) => parse_duration_ms(s),
@@ -251,8 +254,8 @@ fn parse_structured_duration_value(value: &serde_json::Value) -> Option<u64> {
     }
 }
 
-/// [NEW] 判断是否应当执行 Grace Retry (原地重试)
-/// 当 429 报错提示的重置时间在 5s 内，则原地重试比切换账号更有利。
+/// [NEW] 判断是否应当执行 Grace Retry (原地retry)
+/// 当 429 报错hint的reset时间在 5s 内，则原地retry比Switch account更有利。
 pub fn should_grace_retry(duration_ms: u64) -> bool {
     duration_ms > 0 && duration_ms <= 5000
 }

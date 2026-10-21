@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { ArrowRightLeft, RefreshCw, Trash2, Download, Info, Lock, Ban, Diamond, Gem, Circle, Clock, Check, ToggleLeft, ToggleRight, Fingerprint } from 'lucide-react';
 import { Account } from '../../types/account';
 import { getQuotaColor, formatTimeRemaining, getTimeRemainingColor } from '../../utils/format';
@@ -26,7 +30,7 @@ interface AccountRowProps {
 
 function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSwitching = false, onSwitch, onRefresh, onViewDetails, onExport, onDelete, onToggleProxy, onViewDevice }: AccountRowProps) {
     const { t } = useTranslation();
-    // [重构] 按优先级查找配额模型
+    // [Refactor] Find quota model by priority
     const geminiProModel = findQuotaModel(account.quota?.models, 'gemini-pro');
     const geminiFlashModel = findQuotaModel(account.quota?.models, 'gemini-flash');
 
@@ -49,7 +53,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
     const claudeModel = findQuotaModel(account.quota?.models, 'claude');
     const isDisabled = Boolean(account.disabled);
 
-    // 颜色映射，避免动态类名被 Tailwind purge
+    // Color map to prevent dynamic class purging in Tailwind
     const getColorClass = (percentage: number) => {
         const color = getQuotaColor(percentage);
         switch (color) {
@@ -76,7 +80,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
             (isRefreshing || isDisabled) && "opacity-70",
             (isDisabled || account.proxy_disabled) && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
         )}>
-            {/* 序号 */}
+            {/* Index */}
             <td className="pl-6 py-1 w-12">
                 <input
                     type="checkbox"
@@ -87,7 +91,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                 />
             </td>
 
-            {/* 邮箱 */}
+            {/* Email */}
             <td className="px-4 py-1">
                 <div className="flex items-center gap-3">
                     <span className={cn(
@@ -330,7 +334,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                 )}
             </td>
 
-            {/* 最后使用 */}
+            {/* Last used */}
             <td className="px-4 py-1">
                 <div className="flex flex-col">
                     <span className="text-xs font-medium text-gray-600 dark:text-gray-400 font-mono whitespace-nowrap">

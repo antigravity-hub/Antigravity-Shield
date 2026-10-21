@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Github, User, ExternalLink, RefreshCw, Heart, LayoutDashboard, Users, Network, Activity, BarChart3, Settings as SettingsIcon, Lock, CheckCircle2, Globe, Sparkles, Loader2, RotateCcw, Zap, Bell } from 'lucide-react';
@@ -93,7 +97,7 @@ function Settings() {
             enabled: false,
             backoff_steps: [30, 60, 120, 300, 600]
         },
-        hidden_menu_items: [],  // 菜单显示设置：默认不隐藏任何菜单项
+        hidden_menu_items: [],  // 菜单显示set：default不隐藏任何菜单项
 
     });
 
@@ -131,12 +135,12 @@ function Settings() {
     useEffect(() => {
         loadConfig();
 
-        // Get: 真实数据目录路径
+        // Get: 真实data目录路径
         invoke<string>('get_data_dir_path')
             .then(path => setDataDirPath(path))
             .catch(err => console.error('Failed to get data dir:', err));
 
-        // 加载更新设置
+        // 加载updateset
         invoke<{ auto_check: boolean; last_check_time: number; check_interval_hours: number }>('get_update_settings')
             .then(settings => {
                 setFormData(prev => ({
@@ -147,7 +151,7 @@ function Settings() {
             })
             .catch(err => console.error('Failed to load update settings:', err));
 
-        // Get: 真实的开机自启状态
+        // Get: 真实的开机自启status
         invoke<boolean>('is_auto_launch_enabled')
             .then(enabled => {
                 setFormData(prev => ({ ...prev, auto_launch: enabled }));
@@ -177,11 +181,11 @@ function Settings() {
         }
     }, [config]);
 
-    // Delete: 自动启用调试控制台的逻辑 - 改为用户手动控制
+    // Delete: 自动enabled调试控制台的逻辑 - 改为user手动控制
 
     const handleSave = async () => {
         try {
-            // 校验：如果启用了上游代理但没有填写地址，给出提示
+            // 校验：如果enabled了上游代理但没有填写地址，给出hint
             const proxyEnabled = formData.proxy?.upstream_proxy?.enabled;
             const proxyUrl = formData.proxy?.upstream_proxy?.url?.trim();
             if (proxyEnabled && !proxyUrl) {
@@ -192,7 +196,7 @@ function Settings() {
             await saveConfig(formData);
             showToast(t('common.saved'), 'success');
 
-            // If 修改了代理配置，提示用户需要重启
+            // If 修改了代理config，hintuser需要重启
             if (proxyEnabled && proxyUrl) {
                 showToast(t('proxy.config.upstream_proxy.restart_hint'), 'info');
             }
@@ -584,7 +588,7 @@ function Settings() {
     return (
         <div className="h-full w-full overflow-y-auto">
             <div className={`p-5 space-y-4 ${CONTAINER_MAX_WIDTH}`}>
-                {/* 顶部工具栏：Tab 导航和保存按钮 */}
+                {/* 顶部工具栏：Tab 导航和save按钮 */}
                 <div className="flex justify-between items-center">
                     {/* Tab 导航 - Apple iOS 玻璃拟态滑动胶囊 */}
                     <div className="relative flex flex-wrap items-center gap-1 bg-gray-100/90 dark:bg-base-200/90 rounded-full p-1 w-fit border border-gray-200/60 dark:border-base-300/60 shadow-inner">
@@ -629,7 +633,7 @@ function Settings() {
                     </button>
                 </div>
 
-                {/* 设置表单 - Apple iOS 弹簧平滑切换 */}
+                {/* set表单 - Apple iOS 弹簧平滑切换 */}
                 <div className="bg-white dark:bg-base-100 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-base-200">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -640,7 +644,7 @@ function Settings() {
                             transition={{ type: 'spring', damping: 30, stiffness: 350, mass: 0.75 }}
                             className="w-full will-change-[transform,opacity]"
                         >
-                            {/* 通用设置 */}
+                            {/* 通用set */}
                             {activeTab === 'general' && (
                                 <div className="space-y-6">
                             <h2 className="text-lg font-semibold text-gray-900 dark:text-base-content">{t('settings.general.title')}</h2>
@@ -776,7 +780,7 @@ function Settings() {
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{t('settings.general.auto_launch_desc')}</p>
                             </div>
 
-                            {/* 自动检查更新 */}
+                            {/* 自动Check for updates */}
                             <>
                                 <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-base-200 rounded-lg border border-gray-100 dark:border-base-300">
                                     <div>
@@ -809,7 +813,7 @@ function Settings() {
                                     </label>
                                 </div>
 
-                                {/* 检查间隔 */}
+                                {/* check间隔 */}
                                 {formData.auto_check_update && (
                                     <div className="ml-4">
                                         <label className="block text-sm font-medium text-gray-900 dark:text-base-content mb-2">{t('settings.general.update_check_interval')}</label>
@@ -839,7 +843,7 @@ function Settings() {
                                     </div>
                                 )}
 
-                                {/* 菜单显示设置 */}
+                                {/* 菜单显示set */}
                                 <div className="border-t border-gray-200 dark:border-base-200 pt-6 mt-6">
                                     <h3 className="font-medium text-gray-900 dark:text-base-content mb-3">{t('settings.menu.title')}</h3>
                                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -937,10 +941,10 @@ function Settings() {
                         </div>
                     )}
 
-                    {/* 账号设置 */}
+                    {/* accountset */}
                     {activeTab === 'account' && (
                         <div className="space-y-4 animate-in fade-in duration-500">
-                            {/* 自动刷新配额 */}
+                            {/* 自动Refresh quota */}
                             <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-blue-200 transition-all duration-300 shadow-sm">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
@@ -989,7 +993,7 @@ function Settings() {
                                 </div>
                             </div>
 
-                            {/* 自动获取当前账号 */}
+                            {/* 自动getcurrentaccount */}
                             <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-emerald-200 transition-all duration-300 shadow-sm">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
@@ -1027,7 +1031,7 @@ function Settings() {
                                 )}
                             </div>
 
-                            {/* 配额耗尽时自动轮换 (Auto-Switch on Quota Depletion) */}
+                            {/* quota耗尽时自动轮换 (Auto-Switch on Quota Depletion) */}
                             <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-amber-200 transition-all duration-300 shadow-sm space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
@@ -1236,7 +1240,7 @@ function Settings() {
                                 )}
                             </div>
 
-                            {/* 7天周配额智能预热 (Smart Warmup) */}
+                            {/* 7d周quota智能预热 (Smart Warmup) */}
                             <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-orange-200 transition-all duration-300 shadow-sm">
                                 <SmartWarmup
                                     config={formData.scheduled_warmup}
@@ -1256,7 +1260,7 @@ function Settings() {
                                 />
                             </div>
 
-                            {/* 配额保护 (Quota Protection) */}
+                            {/* quota保护 (Quota Protection) */}
                             <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-rose-200 transition-all duration-300 shadow-sm">
                                 <QuotaProtection
                                     config={formData.quota_protection}
@@ -1285,7 +1289,7 @@ function Settings() {
                                 />
                             </div>
 
-                            {/* 配额关注列表 (Pinned Quota Models) */}
+                            {/* quota关注列表 (Pinned Quota Models) */}
                             <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-indigo-200 transition-all duration-300 shadow-sm">
                                 <PinnedQuotaModels
                                     config={formData.pinned_quota_models}
@@ -1298,11 +1302,11 @@ function Settings() {
                         </div>
                     )}
 
-                    {/* 高级设置 */}
+                    {/* 高级set */}
                     {activeTab === 'advanced' && (
                         <>
                             <div className="space-y-4">
-                                {/* 默认导出路径 */}
+                                {/* default导出路径 */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-900 dark:text-base-content mb-1">{t('settings.advanced.export_path')}</label>
                                     <div className="flex gap-2">
@@ -1336,7 +1340,7 @@ function Settings() {
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{t('settings.advanced.default_export_path_desc')}</p>
                                 </div>
 
-                                {/* 数据目录 */}
+                                {/* data目录 */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-900 dark:text-base-content mb-1">{t('settings.advanced.data_dir')}</label>
                                     <div className="flex gap-2">
@@ -1678,7 +1682,7 @@ function Settings() {
                     )}
 
 
-                    {/* 调试设置 */}
+                    {/* 调试set */}
                     {activeTab === 'debug' && (
                         <div className="space-y-4 animate-in fade-in duration-500">
                             {/* 标题和开关 */}
@@ -1705,7 +1709,7 @@ function Settings() {
                                 </label>
                             </div>
 
-                            {/* 控制台或提示 */}
+                            {/* 控制台或hint */}
                             {isEnabled ? (
                                 <div className="h-[calc(100vh-320px)] min-h-[400px]">
                                     <DebugConsole embedded />
@@ -1725,7 +1729,7 @@ function Settings() {
                         </div>
                     )}
 
-                    {/* 代理设置 */}
+                    {/* 代理set */}
                     {activeTab === 'proxy' && (
                         <div className="space-y-4 animate-in fade-in duration-300">
                             {/* [NEW] No-TUN Antigravity Proxy Router & Auto-Discovery */}
@@ -1778,7 +1782,7 @@ function Settings() {
                                 }}
                             />
 
-                            {/* [FIX #1701] 恢复全局上游代理设置 */}
+                            {/* [FIX #1701] 恢复全局上游代理set */}
                             <div className="group bg-white dark:bg-base-100 rounded-xl p-5 border border-gray-100 dark:border-base-200 hover:border-blue-200 transition-all duration-300 shadow-sm relative overflow-hidden">
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 -mr-12 -mt-12 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors"></div>
                                 <div className="flex items-center justify-between mb-5 relative z-10">

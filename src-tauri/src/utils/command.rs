@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use std::process::Command as StdCommand;
 use tokio::process::Command as TokioCommand;
 

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Claude mapper 模块
 // 负责 Claude ↔ Gemini 协议转换
 
@@ -58,7 +61,7 @@ where
         let mut buffer = BytesMut::new();
 
         loop {
-            // [NEW] 60秒心跳保活: 延长超时时间以增加网络抖动容错
+            // [NEW] 60s心跳保活: 延长超时时间以增加网络抖动容错
             let next_chunk = tokio::time::timeout(
                 std::time::Duration::from_secs(60),
                 gemini_stream.next()
@@ -216,7 +219,7 @@ where
     })
 }
 
-/// Process: 单行 SSE 数据
+/// Process: 单行 SSE data
 fn process_sse_line(
     line: &str,
     state: &mut StreamingState,
@@ -579,11 +582,11 @@ mod tests {
         }
         let output = all_chunks.join("");
 
-        // 4. 验证恢复逻辑
+        // 4. validate恢复逻辑
         // 必须包含 Thinking
         assert!(output.contains("Thinking..."));
 
-        // 必须包含恢复的系统提示
+        // 必须包含恢复的系统hint
         assert!(output.contains("Recovered by Antigravity"));
 
         // 必须包含模拟的 Usage

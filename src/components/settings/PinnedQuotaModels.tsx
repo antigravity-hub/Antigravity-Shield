@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useMemo } from 'react';
 import { Pin, Check, Layers, Cpu, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +55,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
         let newModels: string[];
 
         if (currentModels.includes(model)) {
-            // 至少保留一个模型
+            // 至少保留一个model
             if (currentModels.length <= 1) return;
             newModels = currentModels.filter(m => m !== model);
         } else {
@@ -64,7 +68,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
     const { accounts } = useAccountStore();
     const uniqueIds = new Set<string>();
 
-    // 先收集所有已知模型的 id 和 protectedKey，防止他们作为未知的 "动态抽出模型" 出现
+    // 先收集所有已知model的 id 和 protectedKey，防止他们作为未知的 "动态抽出model" 出现
     Object.entries(MODEL_CONFIG).forEach(([id, cfg]) => {
         uniqueIds.add(id.toLowerCase());
         if (cfg.protectedKey) {
@@ -74,10 +78,10 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
 
     const addedDisplayLabels = new Set<string>();
 
-    // 基础内置配置模型
+    // 基础内置configmodel
     const baseModels: ModelOption[] = Object.entries(MODEL_CONFIG)
         .filter(([id, cfg]) => {
-            // 隐藏思考变体（由主模型或关注项代理）
+            // 隐藏思考变体（由主model或关注项代理）
             if (id.includes('thinking')) return false;
             // 隐藏内部微层级与冗余别名（如 -tiered, -agent）
             if (id.includes('tiered') || id.includes('agent')) return false;
@@ -101,14 +105,14 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
             };
         });
 
-    // 提取所有账号的历史动态模型
+    // 提取所有account的历史动态model
     const dynamicModels: ModelOption[] = accounts.flatMap(a => a.quota?.models || [])
         .filter(m => {
             const id = m.name.toLowerCase();
             if (id.includes('thinking')) return false;
-            // 过滤内部子层级和遥测指标 (-low, -medium, -high, -tiered, -extra-low)
+            // Filter内部子层级和遥测指标 (-low, -medium, -high, -tiered, -extra-low)
             if (/-(low|medium|high|tiered|extra-low)$/i.test(id)) return false;
-            // 查重：避免内置里已经包含的模型或同名 id 重复
+            // 查重：避免内置里已经包含的model或同名 id 重复
             if (uniqueIds.has(id)) return false;
             uniqueIds.add(id);
             return true;
@@ -148,7 +152,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
         }
     });
 
-    // 过滤与分组逻辑 (Filter & Grouping)
+    // Filter与分组逻辑 (Filter & Grouping)
     const filteredOptions = useMemo(() => {
         return modelOptions.filter(m => {
             if (selectedFamily !== 'all' && m.group !== selectedFamily) return false;
@@ -295,7 +299,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                 </div>
             </div>
 
-            {/* 分组展示模型 (Grouped Model Sections) */}
+            {/* 分组展示model (Grouped Model Sections) */}
             <div className="mt-5 space-y-6">
                 {Object.keys(groupedOptions).length === 0 ? (
                     <div className="p-8 text-center bg-gray-50 dark:bg-slate-900/40 rounded-xl border border-dashed border-gray-200 dark:border-slate-800 text-gray-400 text-xs">
@@ -306,7 +310,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                         const pinnedInGroup = models.filter(m => config.models?.includes(m.id)).length;
                         return (
                             <div key={groupName} className="space-y-2.5">
-                                {/* 分组标题与状态栏 */}
+                                {/* 分组标题与status栏 */}
                                 <div className="flex items-center justify-between px-1">
                                     <div className="flex items-center gap-2">
                                         {groupName.includes('Gemini') ? (
@@ -331,7 +335,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                                     )}
                                 </div>
 
-                                {/* 该分组内的模型卡片网格 */}
+                                {/* 该分组内的model卡片网格 */}
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
                                     {models.map((model) => {
                                         const isSelected = config.models?.includes(model.id);

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Global thought_signature storage shared by all endpoints
 // Used to capture and replay signatures for Gemini 3+ function calls when clients don't pass them back.
 

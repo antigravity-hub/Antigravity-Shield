@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 export interface UpstreamProxyConfig {
     enabled: boolean;
     url: string;
@@ -24,7 +28,7 @@ export interface ProxyConfig {
     thinking_budget?: ThinkingBudgetConfig;
     global_system_prompt?: GlobalSystemPromptConfig;
     image_thinking_mode?: 'enabled' | 'disabled'; // [NEW] 图像思维模式开关
-    only_raw_quota_models?: boolean; // [NEW] 是否只暴露真实配额模型
+    only_raw_quota_models?: boolean; // [NEW] 是否只暴露真实quotamodel
     proxy_pool?: ProxyPoolConfig;
     ide_argon_override?: {
         enabled: boolean;
@@ -142,21 +146,21 @@ export interface AppConfig {
     antigravity_cli_executable?: string; // [NEW] 手动指定的 Antigravity CLI (agy) 路径
     antigravity_args?: string[]; // [NEW] Antigravity 启动参数
     auto_launch?: boolean; // 开机自动启动
-    auto_check_update?: boolean; // 自动检查更新
-    update_check_interval?: number; // Update: 检查间隔（小时）
-    accounts_page_size?: number; // 账号列表每页显示数量,默认 0 表示自动计算
+    auto_check_update?: boolean; // 自动Check for updates
+    update_check_interval?: number; // Update: check间隔（h）
+    accounts_page_size?: number; // account列表每页显示数量,default 0 表示自动计算
     hidden_menu_items?: string[]; // 隐藏的菜单项路径列表
     scheduled_warmup: ScheduledWarmupConfig;
-    quota_protection: QuotaProtectionConfig; // [NEW] 配额保护配置
-    pinned_quota_models: PinnedQuotaModelsConfig; // [NEW] 配额关注列表
-    circuit_breaker: CircuitBreakerConfig; // [NEW] 熔断器配置
+    quota_protection: QuotaProtectionConfig; // [NEW] quota保护config
+    pinned_quota_models: PinnedQuotaModelsConfig; // [NEW] quota关注列表
+    circuit_breaker: CircuitBreakerConfig; // [NEW] 熔断器config
     proxy: ProxyConfig;
     cloudflared: CloudflaredConfig;
-    auto_switch_on_quota?: boolean; // 配额耗尽时自动轮换账号
-    auto_switch_threshold_percentage?: number; // 自动轮换阈值百分比 (默认 5%)
-    overlay_notifications_enabled?: boolean; // 启用悬浮HUD倒计时通知
+    auto_switch_on_quota?: boolean; // quota耗尽时自动轮换account
+    auto_switch_threshold_percentage?: number; // 自动轮换阈值百分比 (default 5%)
+    overlay_notifications_enabled?: boolean; // enabled悬浮HUD倒计时通知
     overlay_position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'; // 悬浮窗位置
-    auto_switch_countdown_secs?: number; // 自动轮换倒计时秒数
+    auto_switch_countdown_secs?: number; // 自动轮换倒计时s数
     navigation_layout?: 'sidebar' | 'topbar'; // 导航布局模式 (Apple macOS Sidebar vs Top Navbar)
     accent_color?: string; // 7 种 UI 奢华主题高亮色 (seafoam, cyan, violet, amber, rose, emerald, sunset)
 }
@@ -204,7 +208,7 @@ export interface ProxyEntry {
     health_check_url?: string;
     last_check_time?: number;
     is_healthy: boolean;
-    latency?: number; // [NEW] 延迟 (毫秒)
+    latency?: number; // [NEW] 延迟 (毫s)
 }
 
 // export type ProxyPoolMode = 'global' | 'per_account' | 'hybrid'; // [REMOVED]

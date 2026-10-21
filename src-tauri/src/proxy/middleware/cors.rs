@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // CORS 中间件
 use axum::http::Method;
 use tower_http::cors::{Any, CorsLayer};
@@ -27,7 +30,7 @@ mod tests {
     #[test]
     fn test_cors_layer_creation() {
         let _layer = cors_layer();
-        // Layer 创建成功
+        // Layer 创建success
         assert!(true);
     }
 }

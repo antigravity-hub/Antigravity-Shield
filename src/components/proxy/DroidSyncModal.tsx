@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshCw, X, Bot } from 'lucide-react';
@@ -238,7 +242,7 @@ export function DroidSyncModal({ apiKey, getFormattedProxyUrl, onClose, onSyncDo
                     </div>
                 </div>
 
-                {/* 模型选择区 */}
+                {/* model选择区 */}
                 <div className="px-5 pb-3 shrink-0 border-b border-gray-100 dark:border-base-200">
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">

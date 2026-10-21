@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::proxy::server::AppState;
 use axum::{
     extract::State,
@@ -10,12 +13,12 @@ use std::collections::HashSet;
 use tokio::time::{sleep, Duration};
 use tracing::{debug, info};
 
-// ===== 统一重试与退避策略 =====
+// ===== 统一retry与退避策略 =====
 
-/// 重试策略枚举
+/// retry策略枚举
 #[derive(Debug, Clone)]
 pub enum RetryStrategy {
-    /// 不重试，直接返回错误
+    /// 不retry，直接returnerror
     NoRetry,
     /// 固定延迟
     FixedDelay(Duration),
@@ -23,7 +26,7 @@ pub enum RetryStrategy {
     LinearBackoff { base_ms: u64 },
     /// 指数退避：base_ms * 2^attempt，上限 max_ms
     ExponentialBackoff { base_ms: u64, max_ms: u64 },
-    /// [NEW] 原地重试 (Grace Retry)：在当前账号上小窗口等待后直接重试，不计入常规切换
+    /// [NEW] 原地retry (Grace Retry)：在currentaccount上小窗口等待后直接retry，不计入常规切换
     GraceRetry(Duration),
     /// [NEW M4] 代理故障转移与节点轮换
     ProxyFailover,
@@ -100,7 +103,7 @@ impl FailureStatusTracker {
     }
 }
 
-/// 根据错误状态码和错误信息确定重试策略
+/// 根据errorstatus码和errorinfo确定retry策略
 pub fn determine_retry_strategy(
     status_code: u16,
     error_text: &str,
@@ -139,7 +142,7 @@ fn determine_retry_strategy_inner(
     // 400 signature errors must be case-insensitive and cover all Google variants.
     let lower = error_text.to_lowercase();
     match status_code {
-        // 400 错误：仅在特定 Thinking 签名失败时重试一次
+        // 400 error：仅在特定 Thinking 签名failed时retry一次
         400 if !retried_without_thinking
             && (lower.contains("invalid thought signature")
                 || lower.contains("invalid `signature`")
@@ -153,7 +156,7 @@ fn determine_retry_strategy_inner(
             RetryStrategy::FixedDelay(Duration::from_millis(200))
         }
 
-        // [HARDENED M4 / Issue #3301, #3377] 400 地理位置不支持错误，触发代理故障转移与节点轮换
+        // [HARDENED M4 / Issue #3301, #3377] 400 地理位置不支持error，触发代理故障转移与节点轮换
         400 if lower.contains("user location is not supported")
             || lower.contains("location is not supported")
             || lower.contains("geofenced")
@@ -168,15 +171,15 @@ fn determine_retry_strategy_inner(
             RetryStrategy::ProxyFailover
         }
 
-        // 429 限流错误
+        // 429 限流error
         429 => {
-            // 优先使用服务端返回的 Retry-After / quotaResetDelay
+            // 优先使用service端return的 Retry-After / quotaResetDelay
             if let Some(parsed_delay) = crate::proxy::upstream::retry::parse_retry_delay_with_source(
                 error_text,
                 retry_after,
             ) {
                 let delay_ms = parsed_delay.raw_ms;
-                // 短期原账号重试已使用时，立即回到现有换号逻辑
+                // 短期原accountretry已使用时，立即回到现有换号逻辑
                 if crate::proxy::upstream::retry::should_grace_retry(delay_ms) {
                     if allow_grace_retry {
                         let actual_delay = parsed_delay.actual_wait_ms();
@@ -199,7 +202,7 @@ fn determine_retry_strategy_inner(
             }
         }
 
-        // [HARDENED M4] 代理网关/连接错误
+        // [HARDENED M4] 代理网关/连接error
         407 | 502 | 504 => {
             tracing::warn!("🛡️ [Proxy-Fallback] Gateway/Transport error {} detected. Triggering ProxyFailover.", status_code);
             tokio::spawn(async move {
@@ -208,7 +211,7 @@ fn determine_retry_strategy_inner(
             RetryStrategy::ProxyFailover
         }
 
-        // 503 服务不可用 / 529 服务器过载
+        // 503 service不可用 / 529 service器过载
         503 | 529 => {
             // 指数退避：起始 10s，上限 60s (针对 Google 边缘节点过载)
             RetryStrategy::ExponentialBackoff {
@@ -217,20 +220,20 @@ fn determine_retry_strategy_inner(
             }
         }
 
-        // 500 服务器内部错误
+        // 500 service器内部error
         500 => {
             // 线性退避：起始 3s
             RetryStrategy::LinearBackoff { base_ms: 3000 }
         }
 
-        // 401/403 认证/权限错误：切换账号前给予极短缓冲
+        // 401/403 认证/权限error：Switch account前给予极短缓冲
         401 | 403 => RetryStrategy::FixedDelay(Duration::from_millis(200)),
 
-        // 404 资源未找到：Google Cloud Code API 的 404 通常是账号级别的间歇性问题
-        // (灰度发布、账号权限不同步等)，轮换账号往往能解决
+        // 404 资源未找到：Google Cloud Code API 的 404 通常是account级别的间歇性问题
+        // (灰度发布、account权限不同步等)，轮换account往往能解决
         404 => RetryStrategy::FixedDelay(Duration::from_millis(300)),
 
-        // 其他错误：不重试
+        // 其他error：不retry
         _ => RetryStrategy::NoRetry,
     }
 }
@@ -298,7 +301,7 @@ mod tests {
     }
 }
 
-/// 执行退避策略并返回是否应该继续重试
+/// 执行退避策略并return是否应该继续retry
 pub async fn apply_retry_strategy(
     strategy: RetryStrategy,
     attempt: usize,
@@ -374,7 +377,7 @@ pub async fn apply_retry_strategy(
                 duration.as_millis()
             );
             sleep(duration).await;
-            true // 原地重试在 handlers 层面通过 should_rotate_account 判断是否切换
+            true // 原地retry在 handlers 层面通过 should_rotate_account 判断是否切换
         }
 
         RetryStrategy::ProxyFailover => {
@@ -388,20 +391,20 @@ pub async fn apply_retry_strategy(
     }
 }
 
-/// 判断是否应该轮换账号
+/// 判断是否应该轮换account
 pub fn should_rotate_account(status_code: u16, strategy: Option<&RetryStrategy>) -> bool {
-    // [NEW] 如果识别为 Grace Retry，则显式要求不轮换账号
+    // [NEW] 如果识别为 Grace Retry，则显式要求不轮换account
     if let Some(RetryStrategy::GraceRetry(_)) = strategy {
         return false;
     }
 
-    // [NEW M4] 如果是 ProxyFailover，在同一账号下尝试代理节点切换，不强制丢弃或轮换账号
+    // [NEW M4] if is ProxyFailover，在同一account下尝试代理节点切换，不强制丢弃或轮换account
     if let Some(RetryStrategy::ProxyFailover) = strategy {
         return false;
     }
 
     match status_code {
-        // 这些错误是账号级别或特定节点配额的，需要轮换
+        // 这些error是account级别或特定节点quota的，需要轮换
         429 | 401 | 403 | 404 | 500 => true,
         // 503/529 通常是后端过载，切号效果有限，暂不轮换
         503 | 529 => false,

@@ -1,4 +1,7 @@
-// Claude 非流式响应转换 (Gemini → Claude)
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// Claude 非流式response转换 (Gemini → Claude)
 // 对应 NonStreamingProcessor
 
 use super::models::*;
@@ -145,7 +148,7 @@ fn remap_function_call_args(tool_name: &str, args: &mut serde_json::Value) {
     }
 }
 
-/// 非流式响应处理器
+/// 非Streaming response handling器
 pub struct NonStreamingProcessor {
     content_blocks: Vec<ContentBlock>,
     text_builder: String,
@@ -185,7 +188,7 @@ impl NonStreamingProcessor {
         self.registered_tool_names = names;
     }
 
-    /// Process:  Gemini 响应并转换为 Claude 响应
+    /// Process:  Gemini response并转换为 Claude response
     pub fn process(
         &mut self,
         gemini_response: &GeminiResponse,
@@ -220,7 +223,7 @@ impl NonStreamingProcessor {
         self.flush_thinking();
         self.flush_text();
 
-        // Process:  trailingSignature (空 text 带签名)
+        // Process:  trailingSignature (empty text 带签名)
         if let Some(signature) = self.trailing_signature.take() {
             self.content_blocks.push(ContentBlock::Thinking {
                 thinking: String::new(),
@@ -229,7 +232,7 @@ impl NonStreamingProcessor {
             });
         }
 
-        // 构建响应
+        // 构建response
         self.build_response(gemini_response)
     }
 
@@ -273,7 +276,7 @@ impl NonStreamingProcessor {
             }
         }
 
-        // 1. FunctionCall 处理
+        // 1. FunctionCall handle
         if let Some(fc) = &part.function_call {
             self.flush_thinking();
             self.flush_text();
@@ -326,7 +329,7 @@ impl NonStreamingProcessor {
             return;
         }
 
-        // 2. Text 处理
+        // 2. Text handle
         if let Some(text) = &part.text {
             if part.thought.unwrap_or(false) {
                 // Thinking part
@@ -349,7 +352,7 @@ impl NonStreamingProcessor {
             } else {
                 // 普通 Text
                 if text.is_empty() {
-                    // 空 text 带签名 - 暂存到 trailingSignature
+                    // empty text 带签名 - 暂存到 trailingSignature
                     if signature.is_some() {
                         self.trailing_signature = signature;
                     }
@@ -370,7 +373,7 @@ impl NonStreamingProcessor {
 
                 self.text_builder.push_str(text);
 
-                // 非空 text 带签名 - 立即刷新并输出空 thinking 块
+                // 非empty text 带签名 - 立即刷新并输出empty thinking 块
                 if let Some(sig) = signature {
                     self.flush_text();
                     self.content_blocks.push(ContentBlock::Thinking {
@@ -382,7 +385,7 @@ impl NonStreamingProcessor {
             }
         }
 
-        // 3. InlineData (Image) 处理
+        // 3. InlineData (Image) handle
         if let Some(img) = &part.inline_data {
             self.flush_thinking();
 
@@ -396,11 +399,11 @@ impl NonStreamingProcessor {
         }
     }
 
-    /// Process:  Grounding 元数据 (Web Search 结果)
+    /// Process:  Grounding 元data (Web Search 结果)
     fn process_grounding(&mut self, grounding: &GroundingMetadata) {
         let mut grounding_text = String::new();
 
-        // 1. 处理搜索词
+        // 1. handle搜索词
         if let Some(queries) = &grounding.web_search_queries {
             if !queries.is_empty() {
                 grounding_text.push_str("\n\n---\n**🔍 已为您搜索：** ");
@@ -408,7 +411,7 @@ impl NonStreamingProcessor {
             }
         }
 
-        // 2. 处理来源链接 (Chunks)
+        // 2. handle来源链接 (Chunks)
         if let Some(chunks) = &grounding.grounding_chunks {
             let mut links = Vec::new();
             for (i, chunk) in chunks.iter().enumerate() {
@@ -532,7 +535,7 @@ impl NonStreamingProcessor {
                 let end_tag = format!("</{}>", tool_name);
 
                 if let Some(close_idx) = current_text.find(&end_tag) {
-                    // 1. 处理标签前的文本
+                    // 1. handle标签前的文本
                     if start_idx > 0 {
                         self.content_blocks.push(ContentBlock::Text {
                             text: current_text[..start_idx].to_string(),
@@ -553,12 +556,12 @@ impl NonStreamingProcessor {
                     });
                     self.has_tool_call = true;
 
-                    // 3. 继续处理剩余文本
+                    // 3. 继续handle剩余文本
                     current_text = current_text[close_idx + end_tag.len()..].to_string();
                     continue;
                 }
             }
-            // If  XML 格式不完整, 退出循环并按普通文本处理
+            // If  XML 格式不完整, 退出循环并按普通文本handle
             break;
         }
 
@@ -570,7 +573,7 @@ impl NonStreamingProcessor {
 
     /// 刷新 thinking builder
     fn flush_thinking(&mut self) {
-        // If 既没有内容也没有签名，直接返回
+        // If 既没有内容也没有签名，直接return
         if self.thinking_builder.is_empty() && self.thinking_signature.is_none() {
             return;
         }
@@ -586,7 +589,7 @@ impl NonStreamingProcessor {
         self.thinking_builder.clear();
     }
 
-    /// 构建最终响应
+    /// 构建最终response
     fn build_response(&self, gemini_response: &GeminiResponse) -> ClaudeResponse {
         let finish_reason = gemini_response
             .candidates

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Structure Codex system/developer instructions for Gemini without rewriting them.
 //!
 //! This module only classifies existing Codex prompt blocks into Antigravity-like

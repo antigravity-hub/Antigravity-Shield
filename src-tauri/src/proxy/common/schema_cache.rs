@@ -1,5 +1,8 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 #![allow(dead_code)]
-// 预留缓存实现，当前未在生产路径启用
+// 预留缓存实现，current未在生产路径enabled
 
 use once_cell::sync::Lazy;
 use serde_json::Value;
@@ -12,7 +15,7 @@ use std::time::Instant;
 struct CacheEntry {
     /// 清洗后的 Schema
     schema: Value,
-    /// 最后使用时间
+    /// Last used time
     last_used: Instant,
     /// 命中次数
     hit_count: usize,
@@ -29,7 +32,7 @@ struct SchemaCache {
 /// 缓存统计
 #[derive(Default, Clone, Debug)]
 pub struct CacheStats {
-    /// 总请求次数
+    /// 总request次数
     pub total_requests: usize,
     /// 缓存命中次数
     pub cache_hits: usize,
@@ -111,7 +114,7 @@ impl SchemaCache {
         self.stats.clone()
     }
 
-    /// 清空缓存
+    /// 清empty缓存
     fn clear(&mut self) {
         self.cache.clear();
         self.stats = CacheStats::default();
@@ -170,7 +173,7 @@ pub fn clean_json_schema_cached(schema: &mut Value, tool_name: &str) {
     }
 }
 
-/// Get: 缓存统计信息
+/// Get: 缓存统计info
 pub fn get_cache_stats() -> CacheStats {
     SCHEMA_CACHE
         .read()
@@ -178,7 +181,7 @@ pub fn get_cache_stats() -> CacheStats {
         .unwrap_or_default()
 }
 
-/// 清空缓存
+/// 清empty缓存
 pub fn clear_cache() {
     if let Ok(mut cache) = SCHEMA_CACHE.write() {
         cache.clear();
@@ -221,7 +224,7 @@ mod tests {
         clean_json_schema_cached(&mut schema2, tool_name);
 
         let stats = get_cache_stats();
-        // 验证有缓存命中
+        // Verify有缓存命中
         assert!(
             stats.cache_hits > 0,
             "Expected cache hits, got: {:?}",
@@ -241,7 +244,7 @@ mod tests {
             clean_json_schema_cached(&mut schema, &tool_name);
         }
 
-        // 验证缓存大小被限制
+        // Verify缓存大小被限制
         let stats = get_cache_stats();
         assert!(stats.total_requests > 0);
     }

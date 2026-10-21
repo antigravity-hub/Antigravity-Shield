@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::utils::protobuf;
 use rusqlite::Connection;
 use std::path::PathBuf;
@@ -257,7 +260,7 @@ fn clear_enterprise_project_preference(conn: &Connection) -> Result<(), String> 
     Ok(())
 }
 
-/// 注入 Service Machine ID 到数据库，解决 VS Code 缓存指纹不匹配导致 Token 失效的问题
+/// 注入 Service Machine ID 到data库，解决 VS Code 缓存指纹不匹配导致 Token 失效的问题
 pub fn write_service_machine_id(
     db_path: &std::path::Path,
     service_machine_id: &str,

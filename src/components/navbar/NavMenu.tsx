@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { NavigationDropdown } from './NavDropdowns';
@@ -9,9 +13,9 @@ interface NavMenuProps {
 }
 
 /**
- * 导航菜单组件 - 独立处理响应式
+ * 导航菜单组件 - 独立handleresponse式
  * 
- * 响应式策略:
+ * response式策略:
  * - ≥ 768px (md): 文字胶囊
  * - 640px - 768px: 图标胶囊 (Logo 显示文字)
  * - 480px - 640px: 图标胶囊 (Logo 隐藏文字)
@@ -22,7 +26,7 @@ export function NavMenu({ navItems }: NavMenuProps) {
     const location = useLocation();
     const { isMenuItemHidden } = useConfigStore();
 
-    // 过滤隐藏的菜单项
+    // Filter隐藏的菜单项
     const visibleNavItems = navItems.filter(item => !isMenuItemHidden(item.path));
 
     return (

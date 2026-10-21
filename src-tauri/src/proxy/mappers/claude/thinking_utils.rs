@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use super::models::{ContentBlock, Message, MessageContent};
 use crate::proxy::SignatureCache;
 use tracing::{debug, info, warn};

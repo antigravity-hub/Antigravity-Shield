@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +11,7 @@ interface PaginationProps {
     onPageChange: (page: number) => void;
     totalItems: number;
     itemsPerPage: number;
-    onPageSizeChange?: (pageSize: number) => void;  // 新增:分页大小变更回调
+    onPageSizeChange?: (pageSize: number) => void;  // Page size change handler回调
     pageSizeOptions?: number[];  // 新增:可选的分页大小选项
 }
 

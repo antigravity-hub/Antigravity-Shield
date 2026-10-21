@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde::{Deserialize, Serialize};
 
 fn default_is_gcp_tos() -> bool {
@@ -12,7 +15,7 @@ pub struct TokenData {
     pub expiry_timestamp: i64,
     pub token_type: String,
     pub email: Option<String>,
-    /// Google Cloud 项目ID，用于 API 请求标识
+    /// Google Cloud 项目ID，用于 API request标识
     #[serde(skip_serializing_if = "Option::is_none")]
     pub project_id: Option<String>,
     /// OAuth client key used to obtain/refresh this token

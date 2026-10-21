@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // image_pool.rs - Multimodal & Imagen 3 Token Bucket RPM Smoother & Image Pool
 // Hardened rate pacing, explicit quota reset persistence, and bounded fair queueing.
 

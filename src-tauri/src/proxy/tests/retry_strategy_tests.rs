@@ -1,5 +1,8 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! 测试 determine_retry_strategy 和 should_rotate_account 的所有分支，
-//! 重点覆盖 404 重试与账号轮换逻辑。
+//! 重点覆盖 404 retry与account轮换逻辑。
 
 use crate::proxy::handlers::common::{
     determine_retry_strategy, should_rotate_account, RetryStrategy,

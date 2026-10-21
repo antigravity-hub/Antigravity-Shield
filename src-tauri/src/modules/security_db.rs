@@ -1,5 +1,8 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Security Database Module
-//! 安全监控相关的数据库操作
+//! 安全监控相关的data库操作
 
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
@@ -64,13 +67,13 @@ pub struct IpRanking {
     pub is_blocked: bool,
 }
 
-/// Get: 安全数据库路径
+/// Get: 安全data库路径
 pub fn get_security_db_path() -> Result<PathBuf, String> {
     let data_dir = crate::modules::account::get_data_dir()?;
     Ok(data_dir.join("security.db"))
 }
 
-/// 连接数据库
+/// 连接data库
 fn connect_db() -> Result<Connection, String> {
     let db_path = get_security_db_path()?;
     let conn = Connection::open(db_path).map_err(|e| e.to_string())?;
@@ -89,7 +92,7 @@ fn connect_db() -> Result<Connection, String> {
     Ok(conn)
 }
 
-/// Initialize: 安全数据库
+/// Initialize: 安全data库
 pub fn init_db() -> Result<(), String> {
     let conn = connect_db()?;
 
@@ -381,7 +384,7 @@ pub fn cleanup_old_ip_logs(days: i64) -> Result<usize, String> {
 // 黑名单操作
 // ============================================================================
 
-/// 添加 IP 到黑名单
+/// Add IP to blacklist
 pub fn add_to_blacklist(
     ip_pattern: &str,
     reason: Option<&str>,
@@ -551,7 +554,7 @@ fn cidr_match(ip: &str, cidr: &str) -> bool {
 // 白名单操作
 // ============================================================================
 
-/// 添加 IP 到白名单
+/// Add IP to whitelist
 pub fn add_to_whitelist(
     ip_pattern: &str,
     description: Option<&str>,
@@ -646,7 +649,7 @@ pub fn is_ip_in_whitelist(ip: &str) -> Result<bool, String> {
     Ok(false)
 }
 
-/// 清空所有 IP 访问日志
+/// 清empty所有 IP 访问日志
 pub fn clear_ip_access_logs() -> Result<(), String> {
     let conn = connect_db()?;
     conn.execute("DELETE FROM ip_access_logs", [])

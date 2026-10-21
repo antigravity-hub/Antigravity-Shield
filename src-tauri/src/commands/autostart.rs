@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Autostart 命令
 use tauri::Emitter;
 use tauri_plugin_autostart::ManagerExt;
@@ -53,30 +56,30 @@ pub fn set_system_autostart(app: &tauri::AppHandle, enable: bool) -> Result<(), 
     if enable {
         manager
             .enable()
-            .map_err(|e| format!("启用自动启动失败: {}", e))?;
+            .map_err(|e| format!("enabled自动启动failed: {}", e))?;
 
         #[cfg(target_os = "windows")]
         sync_windows_startup_approved(true);
 
-        crate::modules::logger::log_info("已启用系统开机自动启动并同步注册表批准状态");
+        crate::modules::logger::log_info("已enabled系统开机自动启动并同步注册表批准status");
     } else {
         match manager.disable() {
             Ok(_) => {
                 #[cfg(target_os = "windows")]
                 sync_windows_startup_approved(false);
 
-                crate::modules::logger::log_info("已禁用开机自动启动");
+                crate::modules::logger::log_info("已disabled开机自动启动");
             }
             Err(e) => {
                 let err_msg = e.to_string();
-                // 在 Windows 上，如果注册表项不存在，disable() 会返回 "系统找不到指定的文件" (os error 2)
+                // 在 Windows 上，如果注册表项不存在，disable() 会return "系统找不到指定的文件" (os error 2)
                 if err_msg.contains("os error 2") || err_msg.contains("找不到指定的文件") {
                     #[cfg(target_os = "windows")]
                     sync_windows_startup_approved(false);
 
-                    crate::modules::logger::log_info("开机自启项已不存在，视为禁用成功");
+                    crate::modules::logger::log_info("开机自启项已不存在，视为disabledsuccess");
                 } else {
-                    return Err(format!("禁用自动启动失败: {}", e));
+                    return Err(format!("disabled自动启动failed: {}", e));
                 }
             }
         }
@@ -89,7 +92,7 @@ pub fn set_system_autostart(app: &tauri::AppHandle, enable: bool) -> Result<(), 
 pub async fn toggle_auto_launch(app: tauri::AppHandle, enable: bool) -> Result<(), String> {
     set_system_autostart(&app, enable)?;
 
-    // 同步持久化到 gui_config.json
+    // Synchronize持久化到 gui_config.json
     if let Ok(mut config) = crate::modules::config::load_app_config() {
         if config.auto_launch != enable {
             config.auto_launch = enable;

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::models::QuotaData;
 use crate::modules::config;
 use rquest;
@@ -77,7 +80,7 @@ pub fn calculate_safe_percentage(remaining_fraction: f64) -> i32 {
     }
 }
 
-// ---- retrieveUserQuotaSummary 响应反序列化结构 ----
+// ---- retrieveUserQuotaSummary response反序列化结构 ----
 
 #[derive(Debug, Deserialize)]
 struct QuotaSummaryResponse {
@@ -345,7 +348,7 @@ pub async fn fetch_quota_with_cache(
                     if let Err(_) = response.error_for_status_ref() {
                         let status = response.status();
 
-                        // [FIX] 403 Forbidden 处理：如果是带有 project_id 的请求，尝试剥离后重试
+                        // [FIX] 403 Forbidden handle：if is带有 project_id 的request，尝试剥离后retry
                         if status == rquest::StatusCode::FORBIDDEN {
                             if current_payload.get("project").is_some() && !retry_without_project {
                                 crate::modules::logger::log_warn(&format!(
@@ -356,7 +359,7 @@ pub async fn fetch_quota_with_cache(
                                 continue;
                             }
 
-                            // [HARDENED M1] 隔离配额查询 403 错误：记录瞬时告警，严禁标记账号为 is_forbidden (Issue #2209, #3074)
+                            // [HARDENED M1] 隔离quota查询 403 error：记录瞬时告警，严禁标记account为 is_forbidden (Issue #2209, #3074)
                             let text = response.text().await.unwrap_or_default();
 
                             // Check for Google account verification requirement (VALIDATION_REQUIRED)
@@ -661,7 +664,7 @@ async fn fetch_quota_summary(
                         "QuotaSummary API {} returned {}, trying next endpoint",
                         ep_url, status
                     ));
-                    // 4xx (非 429) 通常所有端点行为一致,直接退出避免无谓重试
+                    // 4xx (非 429) 通常所有端点行为一致,直接退出避免none谓retry
                     if status.is_client_error() && status != rquest::StatusCode::TOO_MANY_REQUESTS {
                         return None;
                     }
@@ -1116,7 +1119,7 @@ pub async fn warm_up_all_accounts() -> Result<String, String> {
 
     loop {
         let all_accounts = crate::modules::account::list_accounts().unwrap_or_default();
-        // [FIX] 过滤掉禁用反代的账号
+        // [FIX] 过滤掉disabled反代的account
         let target_accounts: Vec<_> = all_accounts
             .into_iter()
             .filter(|a| !a.disabled && !a.proxy_disabled)
@@ -1160,7 +1163,7 @@ pub async fn warm_up_all_accounts() -> Result<String, String> {
 
             for handle in handles {
                 if let Ok(Some((id, email, token, pid, Some((fresh_quota, _))))) = handle.await {
-                    // [HARDENED M1] 预热阶段跳过禁用账号，不主动修改账号文件或索引
+                    // [HARDENED M1] 预热阶段跳过disabledaccount，不主动修改account文件或索引
                     if fresh_quota.is_forbidden {
                         crate::modules::logger::log_warn(&format!(
                             "[Warmup] Account {} has forbidden status, skipping warmup without modifying account state",
@@ -1320,7 +1323,7 @@ pub async fn warm_up_account(account_id: &str) -> Result<String, String> {
             .await
             .map_err(|e| format!("Failed to fetch quota: {}", e))?;
 
-    // [HARDENED M1] 预热阶段仅做被动校验，不可将配额 403 升级为持久化封禁
+    // [HARDENED M1] 预热阶段仅做被动校验，不可将quota 403 升级为持久化封禁
     if fresh_quota.is_forbidden {
         crate::modules::logger::log_warn(&format!(
             "[Warmup] Account {} has forbidden status, skipping warmup without modifying account state",

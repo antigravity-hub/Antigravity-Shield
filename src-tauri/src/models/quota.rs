@@ -1,12 +1,15 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde::{Deserialize, Serialize};
 
-/// 单个配额桶 (对应 retrieveUserQuotaSummary 里的一个 bucket)
+/// 单个quota桶 (对应 retrieveUserQuotaSummary 里的一个 bucket)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuotaBucket {
     /// 桶 ID,如 "gemini-weekly" / "gemini-5h" / "3p-weekly" / "3p-5h"
     #[serde(alias = "bucketId")]
     pub bucket_id: String,
-    /// 窗口类型: "weekly" / "5h"
+    /// 窗口type: "weekly" / "5h"
     pub window: String,
     /// 剩余比例 0.0-1.0
     #[serde(alias = "remainingFraction")]
@@ -20,7 +23,7 @@ pub struct QuotaBucket {
     pub description: Option<String>,
 }
 
-/// 一个模型组 (如 Gemini Models / Claude and GPT models)
+/// 一个model组 (如 Gemini Models / Claude and GPT models)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuotaGroup {
     #[serde(alias = "displayName")]
@@ -30,7 +33,7 @@ pub struct QuotaGroup {
     pub buckets: Vec<QuotaBucket>,
 }
 
-/// Model quotas信息
+/// Model quotasinfo
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ModelQuota {
     pub name: String,
@@ -57,7 +60,7 @@ pub struct ModelQuota {
     pub supported_mime_types: Option<std::collections::HashMap<String, bool>>,
 }
 
-/// 配额数据结构
+/// quotadata结构
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuotaData {
     pub models: Vec<ModelQuota>,
@@ -65,16 +68,16 @@ pub struct QuotaData {
     pub last_updated: i64,
     #[serde(default, alias = "isForbidden")]
     pub is_forbidden: bool,
-    /// 禁止访问的原因 (403 详细信息)
+    /// 禁止访问的原因 (403 详细info)
     #[serde(default, alias = "forbiddenReason")]
     pub forbidden_reason: Option<String>,
     /// 订阅等级 (FREE/PRO/ULTRA)
     #[serde(default, alias = "subscriptionTier")]
     pub subscription_tier: Option<String>,
-    /// 模型淘汰重定向规则表 (old_model_id -> new_model_id)
+    /// model淘汰重定向规则表 (old_model_id -> new_model_id)
     #[serde(default, alias = "modelForwardingRules")]
     pub model_forwarding_rules: std::collections::HashMap<String, String>,
-    /// 按模型组的配额摘要 (weekly + 5h 双窗口),来自 retrieveUserQuotaSummary
+    /// 按model组的quota摘要 (weekly + 5h 双窗口),来自 retrieveUserQuotaSummary
     #[serde(default, alias = "quotaGroups")]
     pub quota_groups: Option<Vec<QuotaGroup>>,
 }

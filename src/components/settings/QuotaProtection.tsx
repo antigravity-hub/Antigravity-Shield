@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { Shield, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { QuotaProtectionConfig } from '../../types/config';
@@ -13,7 +17,7 @@ const QuotaProtection = ({ config, onChange }: QuotaProtectionProps) => {
 
     const handleEnabledChange = (enabled: boolean) => {
         let newConfig = { ...config, enabled };
-        // If 开启保护且勾选列表为空，则默认勾选 claude
+        // If 开启保护且勾选列表为empty，则default勾选 claude
         if (enabled && (!config.monitored_models || config.monitored_models.length === 0)) {
             newConfig.monitored_models = ['claude'];
         }
@@ -89,10 +93,10 @@ const QuotaProtection = ({ config, onChange }: QuotaProtectionProps) => {
                 </label>
             </div>
 
-            {/* 展开的详情设置部分 */}
+            {/* 展开的详情set部分 */}
             {config.enabled && (
                 <div className="mt-5 pt-5 border-t border-gray-100 dark:border-base-200 space-y-6 animate-in slide-in-from-top-1 duration-200">
-                    {/* 百分比设置 */}
+                    {/* 百分比set */}
                     <div className="flex items-center gap-4">
                         <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             {t('settings.quota_protection.threshold_label')}
@@ -110,7 +114,7 @@ const QuotaProtection = ({ config, onChange }: QuotaProtectionProps) => {
                         </div>
                     </div>
 
-                    {/* 监控模型勾选 */}
+                    {/* 监控model勾选 */}
                     <div className="space-y-3">
                         <div className="flex flex-col gap-1">
                             <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -149,7 +153,7 @@ const QuotaProtection = ({ config, onChange }: QuotaProtectionProps) => {
                         </div>
                     </div>
 
-                    {/* 示例提示卡片 */}
+                    {/* 示例hint卡片 */}
                     <div className="flex items-start gap-3 p-3 bg-blue-50/50 dark:bg-gray-800/50 rounded-xl border border-blue-100/50 dark:border-base-300">
                         <div className="text-blue-500 mt-0.5">
                             <span className="text-sm">💡</span>

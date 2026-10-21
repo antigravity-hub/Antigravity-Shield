@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Rate Limiter
 // 确保 API 调用间隔 ≥ 500ms
 
@@ -40,7 +43,7 @@ mod tests {
         let limiter = RateLimiter::new(500);
         let start = Instant::now();
 
-        limiter.wait().await; // 第一次调用，立即返回
+        limiter.wait().await; // 第一次调用，立即return
         let elapsed1 = start.elapsed().as_millis();
         assert!(elapsed1 < 50);
 

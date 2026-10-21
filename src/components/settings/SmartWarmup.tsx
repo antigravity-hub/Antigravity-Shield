@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, Check } from 'lucide-react';
@@ -28,7 +32,7 @@ const SmartWarmup: React.FC<SmartWarmupProps> = ({ config, onChange }) => {
 
     const handleEnabledChange = (enabled: boolean) => {
         let newConfig = { ...config, enabled };
-        // If 开启预热且勾选列表为空，则默认勾选所有核心模型
+        // If 开启预热且勾选列表为empty，则default勾选所有核心model
         if (enabled && (!config.monitored_models || config.monitored_models.length === 0)) {
             newConfig.monitored_models = warmupModelsOptions.map(o => o.id);
         }

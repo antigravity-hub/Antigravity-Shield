@@ -1,7 +1,10 @@
-//! 测试 RateLimitTracker::parse_from_error 对 404 状态码的处理逻辑：
-//! - 短时锁定（5s）
-//! - 不累加失败计数
-//! - 与 5xx 锁定时长的差异
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+//! 测试 RateLimitTracker::parse_from_error 对 404 status码的handle逻辑：
+//! - 短时locked（5s）
+//! - 不累加failed计数
+//! - 与 5xx locked时长的差异
 
 use crate::proxy::rate_limit::{RateLimitReason, RateLimitTracker};
 
@@ -26,7 +29,7 @@ fn test_404_does_not_accumulate_failure_count() {
     let tracker = RateLimitTracker::new();
     let backoff_steps = vec![60, 300, 1800, 7200];
 
-    // 连续多次 404，锁定时间应始终为 5s（不像 429 QuotaExhausted 那样递增）
+    // 连续多次 404，locked时间应始终为 5s（不像 429 QuotaExhausted 那样递增）
     for i in 1..=5 {
         // 清除上一次的限流记录，模拟轮换后再次遇到 404
         tracker.clear("acc_404_repeat");

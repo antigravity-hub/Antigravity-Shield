@@ -1,4 +1,7 @@
-// OpenAI 协议响应转换模块
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// OpenAI 协议response转换模块
 use super::models::*;
 use serde_json::Value;
 
@@ -324,7 +327,7 @@ pub fn transform_openai_response(
                         });
                     }
 
-                    // 图片处理 (响应中直接返回图片的情况)
+                    // 图片handle (response中直接return图片的情况)
                     if let Some(img) = part.get("inlineData") {
                         let mime_type = img
                             .get("mimeType")
@@ -369,11 +372,11 @@ pub fn transform_openai_response(
                 }
             }
 
-            // 提取并处理该候选结果的联网搜索引文 (Grounding Metadata)
+            // 提取并handle该候选结果的联网搜索引文 (Grounding Metadata)
             if let Some(grounding) = candidate.get("groundingMetadata") {
                 let mut grounding_text = String::new();
 
-                // 1. 处理搜索词
+                // 1. handle搜索词
                 if let Some(queries) = grounding.get("webSearchQueries").and_then(|q| q.as_array())
                 {
                     let query_list: Vec<&str> = queries.iter().filter_map(|v| v.as_str()).collect();
@@ -383,7 +386,7 @@ pub fn transform_openai_response(
                     }
                 }
 
-                // 2. 处理来源链接 (Chunks)
+                // 2. handle来源链接 (Chunks)
                 if let Some(chunks) = grounding.get("groundingChunks").and_then(|c| c.as_array()) {
                     let mut links = Vec::new();
                     for (i, chunk) in chunks.iter().enumerate() {
@@ -491,14 +494,14 @@ pub fn transform_openai_response(
         }
     }
 
-    // If  candidates 为空，但存在 promptFeedback（被安全拦截），伪造一个被拒绝的 choice
+    // If  candidates 为empty，但存在 promptFeedback（被安全拦截），伪造一个被拒绝的 choice
     if choices.is_empty() {
         if let Some(feedback) = raw.get("promptFeedback") {
             let reason = feedback
                 .get("blockReason")
                 .and_then(|v| v.as_str())
                 .unwrap_or("UNKNOWN");
-            let refusal_msg = format!("请求由于安全策略被拦截 (blockReason: {})", reason);
+            let refusal_msg = format!("request由于安全策略被拦截 (blockReason: {})", reason);
             choices.push(Choice {
                 index: 0,
                 message: OpenAIMessage {

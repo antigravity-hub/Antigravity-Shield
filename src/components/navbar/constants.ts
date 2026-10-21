@@ -1,6 +1,10 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import type { LucideIcon } from 'lucide-react';
 
-// 类型定义
+// Type definitions
 export interface NavItem {
     path: string;
     label: string;
@@ -14,7 +18,7 @@ export interface Language {
     short: string;
 }
 
-// 语言配置
+// 语言config
 export const LANGUAGES: Language[] = [
     { code: 'zh', label: '简体中文', short: 'ZH' },
     { code: 'zh-TW', label: '繁體中文', short: 'TW' },
@@ -31,7 +35,7 @@ export const LANGUAGES: Language[] = [
     { code: 'fa', label: 'فارسی', short: 'FA' },
 ];
 
-// 工具函数
+// Utility functions
 export const isActive = (pathname: string, itemPath: string): boolean => {
     if (itemPath === '/') {
         return pathname === '/';

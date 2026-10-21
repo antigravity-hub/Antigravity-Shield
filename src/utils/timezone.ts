@@ -1,4 +1,8 @@
 /**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
+/**
  * Timezone and Locale detection utility for RTL / Regional Features.
  * Determines if the system's timezone belongs to Iran or Arabic-speaking countries.
  */

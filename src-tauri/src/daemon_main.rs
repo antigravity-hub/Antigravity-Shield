@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // daemon_main.rs - Standalone Headless CLI AI Gateway Daemon (v5.7.1)
 // Decoupled from graphical desktop subsystems (X11/Wayland) for Linux, VPS, and Docker.
 

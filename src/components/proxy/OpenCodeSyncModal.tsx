@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshCw, X, CodeXml } from 'lucide-react';
@@ -54,7 +58,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
         setPreviewModels(newEntries);
     }, [antigravityModels, apiKey]);
 
-    // 初始加载 opencode 配置（json 或 jsonc，由后端探测决定实际文件）
+    // 初始加载 opencode config（json 或 jsonc，由后端探测决定实际文件）
     useEffect(() => {
         let cancelled = false;
         invoke<string>('get_opencode_config_content', { request: { fileName: 'opencode.json' } })
@@ -233,7 +237,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                     </div>
                 </div>
 
-                {/* 模型选择区 */}
+                {/* model选择区 */}
                 <div className="px-5 pb-3 shrink-0 border-b border-gray-100 dark:border-base-200">
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">

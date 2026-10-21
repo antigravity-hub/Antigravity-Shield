@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ThinkingBudgetConfig, ThinkingBudgetMode, ThinkingEffort } from "../../types/config";
@@ -18,16 +22,16 @@ export default function ThinkingBudget({
 }: ThinkingBudgetProps) {
     const { t } = useTranslation();
 
-    // 使用本地 state 管理输入值，允许临时的无效输入
+    // 使用本地 state 管理输入值，允许临时的none效输入
     const [inputValue, setInputValue] = useState(String(config.custom_value));
 
-    // 同步外部 config 变化
+    // Synchronize外部 config 变化
     useEffect(() => {
         setInputValue(String(config.custom_value));
     }, [config.custom_value]);
 
     const handleModeChange = (mode: ThinkingBudgetMode) => {
-        // 切换到 adaptive 模式时，如果未设置 effort，默认设置为 high
+        // 切换到 adaptive 模式时，如果Not set effort，defaultset为 high
         if (mode === 'adaptive' && !config.effort) {
             onChange({ ...config, mode, effort: 'high' });
         } else {
@@ -39,7 +43,7 @@ export default function ThinkingBudget({
         onChange({ ...config, effort });
     };
 
-    // 输入时只更新本地 state
+    // 输入时只update本地 state
     const handleInputChange = (val: string) => {
         setInputValue(val);
     };

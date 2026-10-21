@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // [NEW v4.1.24] Tools for deriving stable session identifiers
 
 /// From account ID string to a stable negative signed integer session ID

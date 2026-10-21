@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::env;
@@ -176,7 +179,7 @@ pub fn check_droid_installed() -> (bool, Option<String>) {
     }
 }
 
-/// 统计已有 customModels 中有多少由 Antigravity 添加的（id 以 custom:AG- 开头）
+/// 统计已有 customModels 中有多少由 Antigravity add的（id 以 custom:AG- 开头）
 fn count_synced_models(json: &Value) -> (usize, Option<String>) {
     let mut count = 0;
     let mut first_url = None;

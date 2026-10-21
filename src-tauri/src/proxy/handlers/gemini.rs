@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Gemini Handler
 use axum::{
     extract::State,
@@ -70,7 +73,7 @@ pub async fn handle_generate(
     State(state): State<AppState>,
     Path(model_action): Path<String>,
     headers: HeaderMap,          // [NEW] Extract headers for adapter detection
-    Json(mut body): Json<Value>, // 改为 mut 以支持修复提示词注入
+    Json(mut body): Json<Value>, // 改为 mut 以支持修复hint词注入
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     // 解析 model:method
     let (model_name, method) = if let Some((m, action)) = model_action.rsplit_once(':') {
@@ -95,7 +98,7 @@ pub async fn handle_generate(
         debug!("[{}] Client Adapter detected", trace_id);
     }
 
-    // 1. 验证方法
+    // 1. validate方法
     // [NEW] :countTokens 冒号语法，直接代理到上游 v1internal:countTokens
     if method == "countTokens" {
         return execute_count_tokens(state, model_name, body).await;
@@ -133,7 +136,7 @@ pub async fn handle_generate(
         // debug!("[AutoConverter] Converting non-stream request to stream");
     }
 
-    // 2. 获取 UpstreamClient 和 TokenManager
+    // 2. get UpstreamClient 和 TokenManager
     let upstream = state.upstream.clone();
     let image_scheduler = state.image_scheduler.clone();
     let request_timeout = state.request_timeout;
@@ -155,7 +158,7 @@ pub async fn handle_generate(
         max_attempts,
         retry_credentials.is_some(),
     ) {
-        // 3. 模型路由解析
+        // 3. model路由解析
         let mapped_model = crate::proxy::common::model_mapping::resolve_model_route(
             &model_name,
             &*state.custom_mapping.read().await,
@@ -187,11 +190,11 @@ pub async fn handle_generate(
             Some(&body), // [NEW] Pass request body for imageConfig parsing
         );
 
-        // 4. 获取 Token (使用准确的 request_type)
+        // 4. get Token (使用准确的 request_type)
         // 提取 SessionId (粘性指纹)
         let session_id = SessionManager::extract_gemini_session_id(&body, &model_name);
 
-        // 关键：根据 force_rotate 标志决定是否轮换账号（支持 Grace Retry 原地重试）
+        // 关键：根据 force_rotate 标志决定是否轮换account（支持 Grace Retry 原地retry）
         let (access_token, project_id, email, account_id, _wait_ms) =
             if let Some(credentials) = retry_credentials.take() {
                 credentials
@@ -244,9 +247,9 @@ pub async fn handle_generate(
         last_email = Some(email.clone());
         info!("✓ Using account: {} (type: {})", email, config.request_type);
 
-        // 5. 包装请求 (project injection)
+        // 5. 包装request (project injection)
         // [FIX #765] Pass session_id to wrap_request for signature injection
-        // [NEW] 获取完整 Token 对象以注入动态规格 (dynamic > static default > 65535)
+        // [NEW] get完整 Token 对象以注入动态规格 (dynamic > static default > 65535)
         let token_obj = token_manager.get_token_by_id(&account_id);
         let wrapped_body = wrap_request_v2(
             &body,
@@ -355,7 +358,7 @@ pub async fn handle_generate(
         }
 
         let response = call_result.response;
-        // [NEW] 提取实际请求的上游端点 URL，用于日志记录和排查
+        // [NEW] 提取实际request的上游端点 URL，用于日志记录和排查
         let upstream_url = response.url().to_string();
         let status = response.status();
 
@@ -367,7 +370,7 @@ pub async fn handle_generate(
             .map(|s| s.to_string());
 
         if status.is_success() {
-            // 6. 响应处理
+            // 6. responsehandle
             if is_stream {
                 use axum::body::Body;
                 use axum::response::Response;
@@ -399,7 +402,7 @@ pub async fn handle_generate(
                 let mut retry_gemini = false;
 
                 // [NEW] 实施双阶段超时：第一阶段为 FirstChunkTimeout (300s / 5min)
-                // 这精准对齐了官方 Worker 在模型冷启动（Initialization）阶段的极度耐心
+                // 这精准对齐了官方 Worker 在model冷启动（Initialization）阶段的极度耐心
                 match tokio::time::timeout(
                     std::time::Duration::from_secs(300),
                     response_stream.next(),
@@ -450,8 +453,8 @@ pub async fn handle_generate(
                     let mut stream_failed = false;
 
                     loop {
-                        // [NEW] 阶段 6.2: 补全 __cloudCodeMeta 响应元数据透传
-                        // 官方 Worker 会将 TraceID 作为 SSE 流的第 0 个数据包下发
+                        // [NEW] 阶段 6.2: 补全 __cloudCodeMeta response元data透传
+                        // 官方 Worker 会将 TraceID 作为 SSE 流的第 0 个data包下发
                         if !meta_sent {
                             if let Some(tid) = &cloud_code_trace_id {
                                 let meta_pkg = serde_json::json!({
@@ -685,7 +688,7 @@ pub async fn handle_generate(
                 .into_response());
         }
 
-        // Process: 错误并重试
+        // Process: error并retry
         failure_statuses.record(status);
         let status_code = status.as_u16();
         let retry_after = response
@@ -722,9 +725,9 @@ pub async fn handle_generate(
         }
 
         // [HARDENED M1] 403 细分分类与安全隔离：
-        // 1. VALIDATION_REQUIRED: 设置 10 分钟临时验证锁与内存隔离，提取 validation_url，不注销账号
+        // 1. VALIDATION_REQUIRED: set 10 min临时validate锁与内存隔离，提取 validation_url，不注销account
         // 2. 永久违规 (Permanent Policy Violation): 仅在明确检测到封号/违规时写入 is_forbidden
-        // 3. 其它 403: 实行 5 分钟内存冷却隔离 (in-memory quarantine)，绝不覆写磁盘 disabled=true
+        // 3. 其它 403: 实行 5 min内存冷却隔离 (in-memory quarantine)，绝不覆写磁盘 disabled=true
         if status_code == 403 {
             if let Some(acc_id) = token_manager.get_account_id_by_email(&email) {
                 let forbidden_kind = crate::proxy::token_manager::classify_forbidden_error(&error_text);
@@ -773,7 +776,7 @@ pub async fn handle_generate(
             }
         }
 
-        // 确定重试策略
+        // 确定retry策略
         let strategy = retry_state.determine_strategy(
             &account_id,
             status_code,
@@ -834,7 +837,7 @@ pub async fn handle_generate(
                 }
             }
 
-            // 判断是否需要轮换账号
+            // 判断是否需要轮换account
             if !should_rotate_account(status_code, Some(&strategy)) {
                 debug!(
                 "[{}] Keeping same account for status {} (Gemini server-side issue or Grace Retry)",
@@ -848,7 +851,7 @@ pub async fn handle_generate(
             continue;
         }
 
-        // [NEW] 处理 400 错误 (Thinking 签名失效)
+        // [NEW] handle 400 error (Thinking 签名失效)
         if status_code == 400
             && (error_text.contains("Invalid `signature`")
                 || error_text.contains("thinking.signature")
@@ -860,7 +863,7 @@ pub async fn handle_generate(
                 email
             );
 
-            // 追加修复提示词到请求体的最后一条内容
+            // 追加修复hint词到request体的最后一条内容
             if let Some(contents) = body.get_mut("contents").and_then(|v| v.as_array_mut()) {
                 if let Some(last_content) = contents.last_mut() {
                     if let Some(parts) =
@@ -874,10 +877,10 @@ pub async fn handle_generate(
                 }
             }
 
-            continue; // 重试
+            continue; // retry
         }
 
-        // 404 等由于模型配置或路径错误的 HTTP 异常，直接报错，不进行无效轮换
+        // 404 等由于modelconfig或路径error的 HTTP exception，直接报错，不进行none效轮换
         error!(
             "Gemini Upstream non-retryable error {}: {}",
             status_code, error_text
@@ -900,7 +903,7 @@ pub async fn handle_generate(
             .into_response());
     }
 
-    // 所有尝试均失败：仅当全部结构化失败状态均为 429 时返回 429
+    // 所有尝试均failed：仅当all结构化failedstatus均为 429 时return 429
     let final_status = failure_statuses.final_status();
 
     if let Some(email) = last_email {
@@ -938,7 +941,7 @@ pub async fn handle_list_models(
                 .map(|s| s.to_string())
         });
 
-    // Get: 动态模型列表（与 /v1/models 一致）
+    // Get: 动态model列表（与 /v1/models 一致）
     let only_raw = *state.only_raw_quota_models.read().await;
     let model_ids = get_dynamic_models_scoped(
         &state.custom_mapping,
@@ -948,7 +951,7 @@ pub async fn handle_list_models(
     )
     .await;
 
-    // 转换为 Gemini API 格式
+    // Transform为 Gemini API 格式
     let models: Vec<_> = model_ids
         .into_iter()
         .map(|id| {
@@ -992,20 +995,20 @@ pub async fn handle_count_tokens(
 
 /// 核心 countTokens 实现：透明代理到上游 v1internal:countTokens
 ///
-/// Get: 有效 OAuth Token，将标准 Gemini 请求体包装为 v1internal 格式后转发，
+/// Get: 有效 OAuth Token，将标准 Gemini request体包装为 v1internal 格式后转发，
 /// Return: 真实的 token 计数，而不是硬编码的 0
 pub async fn execute_count_tokens(
     state: AppState,
     model_name: String,
     body: Value,
 ) -> Result<Response, (StatusCode, String)> {
-    // 1. 模型路由解析
+    // 1. model路由解析
     let mapped_model = crate::proxy::common::model_mapping::resolve_model_route(
         &model_name,
         &*state.custom_mapping.read().await,
     );
 
-    // 2. 解析请求配置并获取 Token
+    // 2. 解析requestconfig并get Token
     let config = crate::proxy::mappers::common_utils::resolve_request_config(
         &model_name,
         &mapped_model,
@@ -1035,9 +1038,9 @@ pub async fn execute_count_tokens(
         })?;
 
     // 3. 包装为 v1internal 格式
-    // [已验证] countTokens 与 generateContent 不同: 顶层只允许 "request" 键,
+    // [已validate] countTokens 与 generateContent 不同: 顶层只允许 "request" 键,
     // 携带 model/project 会被上游 400 拒绝 (Unknown name "model"/"project");
-    // request 内的 safetySettings 同样不被接受 (对齐 CLIProxyAPI 的处理)
+    // request 内的 safetySettings 同样不被接受 (对齐 CLIProxyAPI 的handle)
     let mut inner_body = body;
     if let Some(obj) = inner_body.as_object_mut() {
         obj.remove("safetySettings");
@@ -1078,7 +1081,7 @@ pub async fn execute_count_tokens(
         .await
         .map_err(|e| (StatusCode::BAD_GATEWAY, format!("Parse error: {}", e)))?;
 
-    // 5. 提取 totalTokens (兼容 wrapped / unwrapped 两种响应格式)
+    // 5. 提取 totalTokens (兼容 wrapped / unwrapped 两种response格式)
     let total_tokens = gemini_resp
         .get("response")
         .and_then(|r| r.get("totalTokens"))
@@ -1086,7 +1089,7 @@ pub async fn execute_count_tokens(
         .and_then(|v| v.as_i64())
         .unwrap_or(0);
 
-    // 6. 返回标准 Gemini REST 响应
+    // 6. return标准 Gemini REST response
     Ok((
         StatusCode::OK,
         [

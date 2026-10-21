@@ -1,4 +1,7 @@
-// Gemini v1internal 数据模型
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// Gemini v1internal datamodel
 use serde::{Deserialize, Serialize};
 
 #[allow(dead_code)]

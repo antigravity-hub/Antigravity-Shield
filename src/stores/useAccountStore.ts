@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { create } from 'zustand';
 import { Account } from '../types/account';
 import * as accountService from '../services/accountService';
@@ -318,7 +322,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
 
     /**
      * Reorder account list
-     * 采用乐观更新策略：先更新本地状态再调用后端持久化，以提供流畅的拖拽体验
+     * Optimistic update strategy: update local state first then persist to backend for smooth UX
      */
     reorderAccounts: async (accountIds: string[]) => {
         const { accounts } = get();

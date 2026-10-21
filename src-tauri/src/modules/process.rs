@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
@@ -1458,7 +1461,7 @@ fn check_standard_locations(target_ide: Option<&str>) -> Option<std::path::PathB
 
 /// Get:  Antigravity CLI (agy) 的安装/可执行文件路径
 pub fn get_antigravity_cli_executable_path() -> Option<std::path::PathBuf> {
-    // 1. 优先从配置查询
+    // 1. 优先从config查询
     if let Ok(config) = crate::modules::config::load_app_config() {
         if let Some(ref p) = config.antigravity_cli_executable {
             let path = std::path::PathBuf::from(p);
@@ -1468,7 +1471,7 @@ pub fn get_antigravity_cli_executable_path() -> Option<std::path::PathBuf> {
         }
     }
 
-    // 2. 检查标准用户本地目录 (Windows: %LOCALAPPDATA%\agy\bin\agy.exe 或 ~/.local/bin/agy)
+    // 2. check标准user本地目录 (Windows: %LOCALAPPDATA%\agy\bin\agy.exe 或 ~/.local/bin/agy)
     #[cfg(target_os = "windows")]
     {
         if let Ok(local_appdata) = std::env::var("LOCALAPPDATA") {

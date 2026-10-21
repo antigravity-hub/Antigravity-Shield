@@ -1,9 +1,12 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde_json::json;
 use crate::proxy::mappers::claude::models::ClaudeRequest;
 
 #[test]
 fn test_claude_request_deserialization_leak() {
-    // 模拟一个包含 cache_control: null 的请求
+    // 模拟一个包含 cache_control: null 的request
     let incoming_json = json!({
         "model": "claude-3-5-sonnet-20241022",
         "messages": [

@@ -1,6 +1,10 @@
 /**
- * 账号表格组件
- * 支持拖拽排序功能，用户可以通过拖拽行来调整账号顺序
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
+/**
+ * Account Table Component
+ * Supports drag-and-drop reordering of accounts
  */
 import { useMemo, useState } from 'react';
 import {
@@ -61,7 +65,7 @@ import { showToast } from '../common/ToastContainer';
 
 
 // ============================================================================
-// 类型定义
+// Type definitions
 // ============================================================================
 
 interface AccountTableProps {
@@ -82,7 +86,7 @@ interface AccountTableProps {
     onToggleProxy: (accountId: string) => void;
     onWarmup?: (accountId: string) => void;
     onUpdateLabel?: (accountId: string, label: string) => void;
-    /** 拖拽排序回调，当用户完成拖拽时触发 */
+    /** Drag-sort callback invoked when user finishes dragging */
     onReorder?: (accountIds: string[]) => void;
     onViewError: (accountId: string) => void;
     quotaWindow?: '5h' | 'weekly';
@@ -141,7 +145,7 @@ interface AccountRowContentProps {
 }
 
 // ============================================================================
-// 辅助函数
+// Helper functions
 // ============================================================================
 
 
@@ -171,12 +175,12 @@ function isModelProtected(protectedModels: string[] | undefined, modelName: stri
 }
 
 // ============================================================================
-// 子组件
+// Subcomponents
 // ============================================================================
 
 /**
- * 可拖拽的表格行组件
- * 使用 @dnd-kit/sortable 实现拖拽功能
+ * Draggable table row component
+ * Implements drag-and-drop using @dnd-kit/sortable
  */
 function SortableAccountRow({
     account,
@@ -246,7 +250,7 @@ function SortableAccountRow({
                     className={cn(
                         "flex items-center justify-center w-6 h-6 transition-colors rounded select-none",
                         autoSort
-                            ? "cursor-not-allowed text-gray-300 dark:text-gray-600 opacity-40 pointer-events-none"
+                            ? "cursor-not-allowed text-gray-300 dark:text-gray-600 opacity-40"
                             : "cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     )}
                     title={autoSort ? t('accounts.drag_disabled_autosort', 'Manual reordering disabled while Auto Sort is active') : t('accounts.drag_to_reorder')}
@@ -291,8 +295,8 @@ function SortableAccountRow({
 }
 
 /**
- * 账号行内容组件
- * 渲染邮箱、配额、最后使用时间和操作按钮等列
+ * Account row content component
+ * Renders email, quota, last used timestamp, and action buttons
  */
 function AccountRowContent({
     account,
@@ -326,7 +330,7 @@ function AccountRowContent({
     const isExhausted = isAccountQuotaExhausted(account);
     const validationBlockedLabel = getValidationBlockedStatusLabel(account.validation_blocked_reason, t);
 
-    // 自定义标签编辑状态
+    // Custom label editing state
     const [isEditingLabel, setIsEditingLabel] = useState(false);
     const [labelInput, setLabelInput] = useState(account.custom_label || '');
 
@@ -350,12 +354,12 @@ function AccountRowContent({
         }
     };
 
-    // Get: 要显示的模型列表
+    // Get: List of models to display
     const pinnedModels = ensurePinnedImageSelector(
         config?.pinned_quota_models?.models || Object.keys(MODEL_CONFIG),
     );
 
-    // 根据 show_all 状态决定显示哪些模型
+    // Filter models based on show_all flag
     const uniqueLabels = new Set<string>();
     const displayModels = sortModels(
         (showAllQuotas
@@ -958,7 +962,7 @@ function AccountRowContent({
 // ============================================================================
 
 /**
- * 账号表格组件
+ * Account Table Component
  * 支持拖拽排序、多选、批量操作等功能
  */
 const DEFAULT_COLUMN_ORDER = ['email', 'models', 'five_hour', 'weekly', 'last_used'];
@@ -1029,7 +1033,7 @@ function AccountTable({
         });
     };
 
-    // Config: 拖拽传感器
+    // Config: Drag sensor
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: { distance: 8 }, // 需要移动 8px 才触发拖拽

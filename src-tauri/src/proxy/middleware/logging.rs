@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // 日志中间件
 // 直接使用 tower_http::trace::TraceLayer::new_for_http() 在路由中
 

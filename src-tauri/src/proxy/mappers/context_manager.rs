@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Context Manager Module
 //!
 //! Responsible for estimating token usage and purifying context (stripping thinking blocks)

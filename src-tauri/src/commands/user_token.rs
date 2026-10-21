@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules::user_token_db::{self, TokenIpBinding, UserToken};
 use serde::{Deserialize, Serialize};
 
@@ -9,7 +12,7 @@ pub struct CreateTokenRequest {
     pub max_ips: i32,
     pub curfew_start: Option<String>,
     pub curfew_end: Option<String>,
-    pub custom_expires_at: Option<i64>, // 自定义过期时间戳 (秒)
+    pub custom_expires_at: Option<i64>, // 自定义过期时间戳 (s)
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -84,20 +87,20 @@ pub struct UserTokenStats {
     pub today_requests: i64,
 }
 
-/// Get: 简单的统计信息
+/// Get: 简单的统计info
 #[tauri::command]
 pub async fn get_user_token_summary() -> Result<UserTokenStats, String> {
     let tokens = user_token_db::list_tokens()?;
     let active_tokens = tokens.iter().filter(|t| t.enabled).count();
 
-    // 统计唯一用户
+    // 统计唯一user
     let mut users = std::collections::HashSet::new();
     for t in &tokens {
         users.insert(t.username.clone());
     }
 
-    // 这里简单返回一些数据，请求数最好从数据库聚合查询
-    // 目前仅作为演示，请求数暂不精确统计今日的
+    // 这里简单return一些data，request数最好从data库聚合查询
+    // 目前仅作为演示，request数暂不精确统计今日的
 
     Ok(UserTokenStats {
         total_tokens: tokens.len(),

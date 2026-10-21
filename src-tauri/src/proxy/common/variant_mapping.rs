@@ -1,11 +1,14 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Canonical model + variant → real model ID + real params.
 //!
-//! OpenCode 配置 canonical 模型（如 `gemini-3.5-flash`）带 variants（low/medium/high）。
-//! 收到请求后，AM 根据 canonical + 档位映射到目标模型 ID
+//! OpenCode config canonical model（如 `gemini-3.5-flash`）带 variants（low/medium/high）。
+//! 收到request后，AM 根据 canonical + 档位映射到目标model ID
 //! （如 `gemini-3-flash-agent`），并用已校准的 thinkingBudget / maxOutputTokens
-//! 替换客户端传来的值，保证中转请求参数与上游服务一致。
+//! 替换客户端传来的值，保证中转request参数与上游service一致。
 //!
-//! 所有数值为已校准的目标模型参数。
+//! 所有数值为已校准的目标model参数。
 
 /// Variant tier inferred from the client's `thinking.budget_tokens`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

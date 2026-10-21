@@ -1,4 +1,7 @@
-// 工具函数
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// Utility functions
 
 pub fn generate_random_id() -> String {
     use rand::Rng;
@@ -9,8 +12,8 @@ pub fn generate_random_id() -> String {
         .collect()
 }
 
-/// 根据模型名称推测功能类型
-// 注意：此函数已弃用，请改用 mappers::common_utils::resolve_request_config
+/// 根据model名称推测功能type
+// Note：此函数已弃用，请改用 mappers::common_utils::resolve_request_config
 pub fn _deprecated_infer_quota_group(model: &str) -> String {
     if model.to_lowercase().starts_with("claude") {
         "claude".to_string()

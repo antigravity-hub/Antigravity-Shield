@@ -1,9 +1,12 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules::cloudflared::{CloudflaredConfig, CloudflaredManager, CloudflaredStatus};
 use std::sync::Arc;
 use tauri::State;
 use tokio::sync::RwLock;
 
-/// Cloudflared服务状态管理
+/// CloudflaredserviceState management
 #[derive(Clone)]
 pub struct CloudflaredState {
     pub manager: Arc<RwLock<Option<CloudflaredManager>>>,
@@ -24,7 +27,7 @@ impl Default for CloudflaredState {
 }
 
 impl CloudflaredState {
-    /// 确保管理器已初始化
+    /// 确保管理器已init
     pub async fn ensure_manager(&self) -> Result<(), String> {
         let mut lock = self.manager.write().await;
         if lock.is_none() {
@@ -103,7 +106,7 @@ pub async fn cloudflared_stop(
     }
 }
 
-/// Get: cloudflared状态
+/// Get: cloudflaredstatus
 #[tauri::command]
 pub async fn cloudflared_get_status(
     state: State<'_, CloudflaredState>,

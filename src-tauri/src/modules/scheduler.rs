@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::models::Account;
 use crate::modules::{account, config, logger, quota};
 use chrono::{DateTime, Utc};

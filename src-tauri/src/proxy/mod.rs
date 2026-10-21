@@ -1,4 +1,7 @@
-// proxy 模块 - API 反代服务
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// proxy 模块 - API 反代service
 
 // 现有模块 (保留)
 pub mod config;
@@ -8,20 +11,20 @@ pub mod server;
 pub mod token_manager;
 
 // 新架构模块
-pub mod audio; // 音频处理模块
+pub mod audio; // 音频handle模块
 pub mod cache_manager; // Context Cache 管理 (前缀哈希 → cache_id 映射)
-pub mod cli_sync; // CLI 配置同步 (v3.3.35)
+pub mod cli_sync; // CLI config同步 (v3.3.35)
 pub mod common; // 公共工具
 pub mod debug_logger;
-pub mod droid_sync; // Droid (Factory CLI) 配置同步
-pub mod handlers; // API 端点处理器
+pub mod droid_sync; // Droid (Factory CLI) config同步
+pub mod handlers; // API 端点handle器
 pub mod http_session_store; // HTTP多轮对话会话历史存储
 pub mod image_pool; // Multimodal & Imagen 3 Token Bucket RPM Smoother (v5.7.1)
 pub mod mappers; // 协议转换器
 pub mod middleware; // Axum 中间件
-pub mod model_specs; // 模型规格管理 (v4.1.29)
+pub mod model_specs; // model规格管理 (v4.1.29)
 pub mod monitor; // 监控
-pub mod opencode_sync; // OpenCode 配置同步
+pub mod opencode_sync; // OpenCode config同步
 pub mod providers; // Extra upstream providers (z.ai, etc.)
 pub mod proxy_pool; // 代理池管理器
 pub mod rate_limit; // 限流跟踪
@@ -29,7 +32,7 @@ pub mod session_manager; // 会话指纹管理
 pub mod signature_cache; // Signature Cache (v3.3.16)
 pub mod sticky_config; // 粘性Routing & scheduling configuration
 pub mod upstream; // 上游客户端
-pub mod video; // 视频处理模块
+pub mod video; // 视频handle模块
 pub mod zai_vision_mcp; // Built-in Vision MCP server state
 pub mod zai_vision_tools; // Built-in Vision MCP tools (z.ai vision API) // 调试日志
 

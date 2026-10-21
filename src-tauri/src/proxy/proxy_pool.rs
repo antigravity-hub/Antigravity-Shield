@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::proxy::config::{ProxyEntry, ProxyPoolConfig, ProxySelectionStrategy};
 use dashmap::DashMap;
 use futures::{stream, StreamExt};
@@ -25,22 +28,22 @@ pub fn init_global_proxy_pool(config: Arc<RwLock<ProxyPoolConfig>>) -> Arc<Proxy
     manager
 }
 
-/// 全局报告代理失败快捷函数
+/// 全局报告代理failed快捷函数
 pub async fn report_global_proxy_failure(proxy_id: &str, reason: &str) {
     if let Some(manager) = get_global_proxy_pool() {
         manager.report_transport_failure(proxy_id, reason).await;
     }
 }
 
-/// 全局报告代理成功快捷函数
+/// 全局报告代理success快捷函数
 pub async fn report_global_proxy_success(proxy_id: &str) {
     if let Some(manager) = get_global_proxy_pool() {
         manager.report_transport_success(proxy_id).await;
     }
 }
 
-/// 代理配置 (用于构建 reqwest Client)
-/// 注意：重命名为 PoolProxyConfig 以避免与 config::ProxyConfig 冲突
+/// 代理config (用于构建 reqwest Client)
+/// Note：重命名为 PoolProxyConfig 以避免与 config::ProxyConfig 冲突
 #[derive(Debug, Clone)]
 pub struct PoolProxyConfig {
     pub proxy: rquest::Proxy,
@@ -54,7 +57,7 @@ pub struct ProxyPoolManager {
     /// 代理使用计数 (proxy_id -> count)
     usage_counter: Arc<DashMap<String, usize>>,
 
-    /// 账号到代理的绑定 (account_id -> proxy_id)
+    /// account到代理的绑定 (account_id -> proxy_id)
     account_bindings: Arc<DashMap<String, String>>,
 
     /// 轮询索引 (用于 RoundRobin 策略)
@@ -63,11 +66,11 @@ pub struct ProxyPoolManager {
 
 impl ProxyPoolManager {
     pub fn new(config: Arc<RwLock<ProxyPoolConfig>>) -> Self {
-        // 从配置中加载已保存的绑定关系
+        // 从config中加载已save的绑定关系
         let account_bindings = Arc::new(DashMap::new());
 
-        // 使用 blocking 方式读取配置（因为 new 不是 async）
-        // 注意：这里使用 try_read 避免死锁
+        // 使用 blocking 方式读取config（因为 new 不是 async）
+        // Note：这里使用 try_read 避免死锁
         if let Ok(cfg) = config.try_read() {
             for (account_id, proxy_id) in &cfg.account_bindings {
                 account_bindings.insert(account_id.clone(), proxy_id.clone());
@@ -88,11 +91,11 @@ impl ProxyPoolManager {
         }
     }
 
-    /// [NEW] 为指定账号获取“最终生效”的 HttpClient
+    /// [NEW] 为指定accountget“最终生效”的 HttpClient
     /// 逻辑：
-    /// 1. 账号显式绑定代理优先 (Account-Proxy Binding)
-    /// 2. 如果无绑定，且开启了“自动全局”，取池中第一个节点
-    /// 3. 如果以上均无，则检查全局上游代理 (Upstream Proxy) [由调用方 fallback]
+    /// 1. account显式绑定代理优先 (Account-Proxy Binding)
+    /// 2. 如果none绑定，且开启了“自动全局”，取池中第一个节点
+    /// 3. 如果以上均none，则check全局上游代理 (Upstream Proxy) [由调用方 fallback]
     pub async fn get_effective_client(
         &self,
         account_id: Option<&str>,
@@ -102,11 +105,11 @@ impl ProxyPoolManager {
             .emulation(Emulation::Chrome123)
             .timeout(Duration::from_secs(timeout_secs));
 
-        // 尝试获取代理配置
+        // 尝试get代理config
         let proxy_opt = if let Some(acc_id) = account_id {
             self.get_proxy_for_account(acc_id).await.ok().flatten()
         } else {
-            // 没有 account_id 的通用请求，如果代理池启用，则默认从中选择节点作为出口
+            // 没有 account_id 的通用request，如果代理池enabled，则default从中选择节点作为出口
             let config = self.config.read().await;
             if config.enabled {
                 let res = self.select_proxy_from_pool(&config).await.ok().flatten();
@@ -116,7 +119,7 @@ impl ProxyPoolManager {
                         p.entry_id
                     );
                 } else {
-                    // [FIX #1583] 明确记录池中无可用代理的情况
+                    // [FIX #1583] 明确记录池中none可用代理的情况
                     tracing::warn!("[Proxy] Route: Generic Request -> No available proxy in pool, falling back to upstream or direct");
                 }
                 res
@@ -130,7 +133,7 @@ impl ProxyPoolManager {
             builder = builder.proxy(proxy_cfg.proxy);
             // Already logged more detail in get_proxy_for_account or pool selection
         } else {
-            // Fallback 到应用配置的单上游代理
+            // Fallback 到应用config的单上游代理
             if let Ok(app_cfg) = crate::modules::config::load_app_config() {
                 let up = app_cfg.proxy.upstream_proxy;
                 if up.enabled && !up.url.is_empty() {
@@ -154,21 +157,21 @@ impl ProxyPoolManager {
         builder.build().unwrap_or_else(|_| Client::new())
     }
 
-    /// [NEW] 为指定账号获取“最终生效”的无特征 Standard HttpClient (专门用于纯净场景，如 OAuth 退还)
+    /// [NEW] 为指定accountget“最终生效”的none特征 Standard HttpClient (专门用于纯净场景，如 OAuth 退还)
     pub async fn get_effective_standard_client(
         &self,
         account_id: Option<&str>,
         timeout_secs: u64,
     ) -> Client {
         let mut builder = Client::builder()
-            // 无 Emulation 设置，走纯正的基础 TLS 指纹
+            // none Emulation set，走纯正的基础 TLS 指纹
             .timeout(Duration::from_secs(timeout_secs));
 
-        // 尝试获取代理配置
+        // 尝试get代理config
         let proxy_opt = if let Some(acc_id) = account_id {
             self.get_proxy_for_account(acc_id).await.ok().flatten()
         } else {
-            // 没有 account_id 的通用请求，如果代理池启用，则默认从中选择节点作为出口
+            // 没有 account_id 的通用request，如果代理池enabled，则default从中选择节点作为出口
             let config = self.config.read().await;
             if config.enabled {
                 let res = self.select_proxy_from_pool(&config).await.ok().flatten();
@@ -192,7 +195,7 @@ impl ProxyPoolManager {
         if let Some(proxy_cfg) = proxy_opt {
             builder = builder.proxy(proxy_cfg.proxy);
         } else {
-            // Fallback 到应用配置的单上游代理
+            // Fallback 到应用config的单上游代理
             if let Ok(app_cfg) = crate::modules::config::load_app_config() {
                 let up = app_cfg.proxy.upstream_proxy;
                 if up.enabled && !up.url.is_empty() {
@@ -216,7 +219,7 @@ impl ProxyPoolManager {
         builder.build().unwrap_or_else(|_| Client::new())
     }
 
-    /// 为账号获取代理
+    /// 为accountget代理
     pub async fn get_proxy_for_account(
         &self,
         account_id: &str,
@@ -227,7 +230,7 @@ impl ProxyPoolManager {
             return Ok(None);
         }
 
-        // 1. 优先使用账号绑定 (专属 IP)
+        // 1. 优先使用account绑定 (专属 IP)
         if let Some(proxy) = self.get_bound_proxy(account_id, &config).await? {
             tracing::info!(
                 "[Proxy] Route: Account {} -> Proxy {} (Bound)",
@@ -237,7 +240,7 @@ impl ProxyPoolManager {
             return Ok(Some(proxy));
         }
 
-        // 2. 否则从池中策略选择 (公用池)
+        // 2. otherwise从池中策略选择 (公用池)
         let res = self.select_proxy_from_pool(&config).await?;
         if let Some(ref p) = res {
             tracing::info!(
@@ -249,7 +252,7 @@ impl ProxyPoolManager {
         Ok(res)
     }
 
-    /// Get: 账号绑定的代理
+    /// Get: account绑定的代理
     async fn get_bound_proxy(
         &self,
         account_id: &str,
@@ -258,7 +261,7 @@ impl ProxyPoolManager {
         if let Some(proxy_id) = self.account_bindings.get(account_id) {
             if let Some(entry) = config.proxies.iter().find(|p| p.id == *proxy_id.value()) {
                 if entry.enabled {
-                    // If 开启了自动故障转移且代理不健康，则返回 None (将回退到其他策略或失败)
+                    // If 开启了自动故障转移且代理不健康，则return None (将回退到其他策略或failed)
                     if config.auto_failover && !entry.is_healthy {
                         return Ok(None);
                     }
@@ -274,7 +277,7 @@ impl ProxyPoolManager {
         &self,
         config: &ProxyPoolConfig,
     ) -> Result<Option<PoolProxyConfig>, String> {
-        // [FIX] 专属隔离逻辑：剔除所有已被绑定的代理，保护专属 IP 账号的安全
+        // [FIX] 专属隔离逻辑：剔除所有已被绑定的代理，保护专属 IP account的安全
         let bound_ids: std::collections::HashSet<String> = self
             .account_bindings
             .iter()
@@ -291,7 +294,7 @@ impl ProxyPoolManager {
                 if config.auto_failover && !p.is_healthy {
                     return false;
                 }
-                // If 该代理已被某个账号“专属绑定”，则不再参与公用轮询
+                // If 该代理已被某个account“专属绑定”，则不再参与公用轮询
                 if bound_ids.contains(&p.id) {
                     return false;
                 }
@@ -300,7 +303,7 @@ impl ProxyPoolManager {
             .collect();
 
         if healthy_proxies.is_empty() {
-            // If 所有代理都被绑定了，或者池本身为空，尝试返回池中开启了且不依赖绑定的代理
+            // If 所有代理都被绑定了，或者池本身为empty，尝试return池中开启了且不依赖绑定的代理
             // (这里可以根据业务进一步调整，目前保持严谨隔离)
             return Ok(None);
         }
@@ -358,7 +361,7 @@ impl ProxyPoolManager {
         self.select_by_priority(proxies)
     }
 
-    /// 构建 rquest::Proxy 配置
+    /// 构建 rquest::Proxy config
     fn build_proxy_config(&self, entry: &ProxyEntry) -> Result<PoolProxyConfig, String> {
         let raw_url = crate::proxy::config::normalize_proxy_url(&entry.url);
 
@@ -372,7 +375,7 @@ impl ProxyPoolManager {
                 };
                 let pass = u.password().map(|p| p.to_string());
 
-                // 清理 URL 中的凭据以防特定底层库解析异常
+                // 清理 URL 中的凭据以防特定底层库解析exception
                 let _ = u.set_username("");
                 let _ = u.set_password(None);
 
@@ -405,7 +408,7 @@ impl ProxyPoolManager {
         })
     }
 
-    /// 绑定账号到代理
+    /// 绑定account到代理
     pub async fn bind_account_to_proxy(
         &self,
         account_id: String,
@@ -418,7 +421,7 @@ impl ProxyPoolManager {
                 return Err(format!("Proxy {} not found", proxy_id));
             }
 
-            // Check: 代理最大账号数限制
+            // Check: 代理最大account数限制
             if let Some(entry) = config.proxies.iter().find(|p| p.id == proxy_id) {
                 if let Some(max) = entry.max_accounts {
                     if max > 0 {
@@ -442,7 +445,7 @@ impl ProxyPoolManager {
         self.account_bindings
             .insert(account_id.clone(), proxy_id.clone());
 
-        // 持久化到配置文件
+        // 持久化到config文件
         self.persist_bindings().await;
 
         tracing::info!(
@@ -453,17 +456,17 @@ impl ProxyPoolManager {
         Ok(())
     }
 
-    /// 解绑账号代理
+    /// 解绑account代理
     pub async fn unbind_account_proxy(&self, account_id: String) {
         self.account_bindings.remove(&account_id);
 
-        // 持久化到配置文件
+        // 持久化到config文件
         self.persist_bindings().await;
 
         tracing::info!("[ProxyPool] Unbound account {}", account_id);
     }
 
-    /// Get: 账号当前绑定的代理ID
+    /// Get: accountcurrent绑定的代理ID
     pub fn get_account_binding(&self, account_id: &str) -> Option<String> {
         self.account_bindings
             .get(account_id)
@@ -499,12 +502,12 @@ impl ProxyPoolManager {
         );
     }
 
-    /// 持久化绑定关系到配置文件
+    /// 持久化绑定关系到config文件
     async fn persist_bindings(&self) {
-        // Get: 当前绑定快照
+        // Get: current绑定快照
         let bindings = self.get_all_bindings_snapshot();
 
-        // Update: 配置中的绑定关系
+        // Update: config中的绑定关系
         {
             let mut config = self.config.write().await;
             config.account_bindings = bindings;
@@ -520,12 +523,12 @@ impl ProxyPoolManager {
         }
     }
 
-    /// Get: 内部配置引用
+    /// Get: 内部config引用
     pub fn config(&self) -> &Arc<RwLock<ProxyPoolConfig>> {
         &self.config
     }
 
-    /// [HARDENED M4] 记录代理节点传输或地理位置失败，触发动态故障转移
+    /// [HARDENED M4] 记录代理节点传输或地理位置failed，触发动态故障转移
     pub async fn report_transport_failure(&self, proxy_id: &str, reason: &str) {
         tracing::warn!(
             "[ProxyPool] Recording transport/geo failure for proxy {}: {}",
@@ -534,7 +537,7 @@ impl ProxyPoolManager {
         );
         let mut config = self.config.write().await;
         if proxy_id == "active_node" {
-            // If 传入泛型 active_node，标记当前首个健康节点失败
+            // If 传入泛型 active_node，标记current首个健康节点failed
             if let Some(proxy) = config.proxies.iter_mut().find(|p| p.enabled && p.is_healthy) {
                 proxy.is_healthy = false;
                 proxy.last_check_time = Some(chrono::Utc::now().timestamp());
@@ -559,7 +562,7 @@ impl ProxyPoolManager {
         self.round_robin_index.fetch_add(1, Ordering::Relaxed);
     }
 
-    /// [HARDENED M4] 记录代理节点传输成功，恢复健康状态
+    /// [HARDENED M4] 记录代理节点传输success，恢复健康status
     pub async fn report_transport_success(&self, proxy_id: &str) {
         let mut config = self.config.write().await;
         if let Some(proxy) = config.proxies.iter_mut().find(|p| p.id == proxy_id) {
@@ -568,13 +571,13 @@ impl ProxyPoolManager {
         }
     }
 
-    /// [HARDENED M4] 获取当前健康代理节点数量
+    /// [HARDENED M4] getcurrent健康代理节点数量
     pub async fn get_healthy_count(&self) -> usize {
         let config = self.config.read().await;
         config.proxies.iter().filter(|p| p.enabled && p.is_healthy).count()
     }
 
-    /// [HARDENED M4] 触发动态故障转移并获取下一个可用代理
+    /// [HARDENED M4] 触发动态故障转移并get下一个可用代理
     pub async fn trigger_failover(&self, failed_proxy_id: &str, reason: &str) -> Option<PoolProxyConfig> {
         self.report_transport_failure(failed_proxy_id, reason).await;
         let config = self.config.read().await;
@@ -612,7 +615,7 @@ impl ProxyPoolManager {
         }
     }
 
-    /// 批量检查代理健康状态
+    /// 批量check代理健康status
     pub async fn health_check(&self) -> Result<(), String> {
         let proxies_to_check: Vec<ProxyEntry> = {
             let config = self.config.read().await;
@@ -649,7 +652,7 @@ impl ProxyPoolManager {
             .collect::<Vec<_>>()
             .await;
 
-        // 统一更新状态
+        // 统一updatestatus
         let mut config = self.config.write().await;
         for (id, is_healthy, latency) in results {
             if let Some(proxy) = config.proxies.iter_mut().find(|p| p.id == id) {
@@ -662,7 +665,7 @@ impl ProxyPoolManager {
         Ok(())
     }
 
-    /// Check: 单个代理健康状态
+    /// Check: 单个代理健康status
     async fn check_proxy_health(&self, entry: &ProxyEntry) -> (bool, Option<u64>) {
         const DEFAULT_HEALTH_CHECK_URL: &str = "https://cp.cloudflare.com/generate_204";
 
@@ -676,7 +679,7 @@ impl ProxyPoolManager {
             DEFAULT_HEALTH_CHECK_URL
         };
 
-        // 尝试构建 Client，如果失败直接视为不健康
+        // 尝试构建 Client，如果failed直接视为不健康
         let proxy_res = self.build_proxy_config(entry);
         if let Err(e) = proxy_res {
             tracing::error!("Proxy {} build config failed: {}", entry.url, e);
@@ -721,7 +724,7 @@ impl ProxyPoolManager {
         }
     }
 
-    /// 启动健康检查循环
+    /// 启动健康check循环
     pub fn start_health_check_loop(self: Arc<Self>) {
         tokio::spawn(async move {
             tracing::info!("Starting proxy pool health check loop...");

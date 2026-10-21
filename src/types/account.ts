@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 export interface Account {
     id: string;
     email: string;
@@ -14,7 +18,7 @@ export interface Account {
     proxy_disabled_at?: number;
     protected_models?: string[];
     live_limited_models?: Record<string, LiveLimitStatus>;
-    custom_label?: string;  // 用户自定义标签
+    custom_label?: string;  // userCustom label
     active_targets?: string[]; // 激活的环境列表 ['platform', 'ide', 'agy']
     validation_blocked?: boolean;
     validation_blocked_until?: number;
@@ -54,8 +58,8 @@ export interface QuotaData {
     is_forbidden?: boolean;
     forbidden_reason?: string;
     subscription_tier?: string;  // Subscription tier: FREE/PRO/ULTRA
-    model_forwarding_rules?: Record<string, string>; // 废弃模型转发表
-    quota_groups?: QuotaGroup[]; // 按模型组的配额摘要 (weekly + 5h 双窗口)
+    model_forwarding_rules?: Record<string, string>; // 废弃model转发表
+    quota_groups?: QuotaGroup[]; // 按model组的quota摘要 (weekly + 5h 双窗口)
 }
 
 export interface ModelQuota {

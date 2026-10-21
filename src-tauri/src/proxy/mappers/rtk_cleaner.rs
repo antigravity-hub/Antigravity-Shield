@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! RTK Cleaner Module (Decoupled & Non-destructive)
 //!
 //! Preserves raw tool and terminal output without destructive line omission or CPU-heavy regex scanning.

@@ -1,4 +1,7 @@
-// 错误处理
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// errorhandle
 use thiserror::Error;
 use axum::{http::StatusCode, Json, response::IntoResponse};
 

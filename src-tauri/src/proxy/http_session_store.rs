@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // HTTP 会话历史存储
 // 为 /v1/responses POST 提供 previous_response_id 链式历史支持
 // 这样即使客户端用 HTTP 而不是 WebSocket，也能实现多轮对话
@@ -9,7 +12,7 @@ use std::sync::{Arc, OnceLock};
 use std::time::{Duration, Instant};
 use tokio::sync::Mutex;
 
-const SESSION_TTL_SECS: u64 = 3600; // 1小时过期
+const SESSION_TTL_SECS: u64 = 3600; // 1h过期
 
 #[derive(Debug, Clone)]
 pub struct HttpSessionEntry {
@@ -17,7 +20,7 @@ pub struct HttpSessionEntry {
     pub input_items: Vec<Value>,
     /// 系统指令
     pub instructions: String,
-    /// 模型名
+    /// model名
     pub model: String,
     /// 上次访问时间（用于TTL淘汰）
     pub last_accessed: Instant,
@@ -151,7 +154,7 @@ pub async fn get_session_with_parent(
     store().lock().await.get(previous_response_id)
 }
 
-/// Save: 新的会话状态（以 response_id 为 key）
+/// Save: 新的会话status（以 response_id 为 key）
 pub async fn save_session(response_id: String, entry: HttpSessionEntry) {
     store().lock().await.insert(response_id, entry);
 }
@@ -181,7 +184,7 @@ pub struct PreparedSessionInput {
     pub reset_parent: bool,
 }
 
-/// 合并请求历史，并在客户端回放完整历史时仅提取新增项。
+/// 合并request历史，并在客户端回放完整历史时仅提取新增项。
 pub fn prepare_session_input(
     history: Vec<Value>,
     new_input: Vec<Value>,
@@ -333,7 +336,7 @@ pub fn merge_history_with_new_input(
             "[Session] Compaction detected in new input. Overwriting stale history (new items: {})",
             new_input.len()
         );
-        // 过滤掉 compaction 本身
+        // Filter掉 compaction 本身
         let mut filtered = Vec::new();
         for item in new_input {
             let t = item.get("type").and_then(|v| v.as_str()).unwrap_or("");
@@ -360,7 +363,7 @@ pub fn merge_history_with_new_input(
         history.push(item);
     }
 
-    // 修复工具调用（确保function_call_output前有对应的function_call）
+    // Fix工具调用（确保function_call_output前有对应的function_call）
     repair_tool_calls(&mut history, tool_call_cache);
 
     // 去重

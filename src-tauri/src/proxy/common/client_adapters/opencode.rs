@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use super::super::client_adapter::{
     get_user_agent, ClientAdapter, Protocol, SignatureBufferStrategy,
 };
@@ -13,7 +16,7 @@ use axum::http::{HeaderMap, HeaderValue};
 ///
 /// 该适配器提供以下定制策略：
 /// 1. FIFO 签名管理策略（适应多并发工具调用）
-/// 2. 标准化 SSE 错误格式（通过客户端的 Zod 类型检查）
+/// 2. 标准化 SSE error格式（通过客户端的 Zod typecheck）
 /// 3. 自动注入 `context-1m-2025-08-07` beta header
 pub struct OpencodeAdapter;
 
@@ -30,7 +33,7 @@ impl ClientAdapter for OpencodeAdapter {
     }
 
     fn let_it_crash(&self) -> bool {
-        // Opencode 倾向于快速失败，减少不必要的重试
+        // Opencode 倾向于快速failed，减少不必要的retry
         true
     }
 

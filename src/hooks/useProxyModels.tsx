@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useMemo, useEffect, useState } from 'react';
 import { MODEL_CONFIG } from '../config/modelConfig';
 import { useAccountStore } from '../stores/useAccountStore';
@@ -153,7 +157,7 @@ export const useProxyModels = () => {
             const group = mapped ? mapped.group : (config.group || 'Other');
 
             // Skip legacy marketing adjective labels
-            if (['Melhor Raciocínio', 'Visualização Flash', 'Geração de Imagem (1:1)', 'Alto Desempenho', '最高推理', '快速响应'].includes(canonicalName)) {
+            if (['Melhor Raciocínio', 'Visualização Flash', 'Geração de Imagem (1:1)', 'Alto Desempenho', '最高推理', '快速response'].includes(canonicalName)) {
                 continue;
             }
 

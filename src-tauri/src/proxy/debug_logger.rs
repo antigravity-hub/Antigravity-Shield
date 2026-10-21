@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use futures::StreamExt;
 use serde_json::Value;
 use std::path::PathBuf;
@@ -163,7 +166,7 @@ pub fn is_enabled(cfg: &DebugLoggingConfig) -> bool {
     cfg.enabled || crate::modules::log_bridge::is_log_bridge_enabled()
 }
 
-/// 解析 SSE 流式数据，提取 thinking 和正文内容
+/// 解析 SSE 流式data，提取 thinking 和正文内容
 fn parse_sse_stream(raw: &str) -> (String, String) {
     let mut thinking_parts: Vec<String> = Vec::new();
     let mut content_parts: Vec<String> = Vec::new();
@@ -265,7 +268,7 @@ where
             "truncated": capture.truncated(),
         });
 
-        // 只有在有内容时才添加对应字段
+        // 只有在有内容时才add对应字段
         if !thinking_content.is_empty() {
             payload["thinking_content"] = serde_json::Value::String(thinking_content);
         }

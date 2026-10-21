@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Upload, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';

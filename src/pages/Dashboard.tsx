@@ -48,7 +48,7 @@ function Dashboard() {
         loadConfig();
     }, []);
 
-    // 计算统计数据
+    // 计算统计data
     const stats = useMemo(() => {
         const getGeminiProQuota = (a: Account) =>
             findQuotaModel(a.quota?.models, 'gemini-pro')?.percentage || 0;
@@ -98,7 +98,7 @@ function Dashboard() {
             await switchAccount(accountId);
             showToast(t('dashboard.toast.switch_success'), 'success');
         } catch (error) {
-            console.error('切换账号失败:', error);
+            console.error('Switch accountfailed:', error);
             showToast(`${t('dashboard.toast.switch_error')}: ${error}`, 'error');
         } finally {
             setTimeout(() => {
@@ -120,7 +120,7 @@ function Dashboard() {
         setIsRefreshing(true);
         try {
             await refreshQuota(currentAccount.id);
-            // 刷新成功后重新获取最新数据
+            // 刷新success后重新get最新data
             await fetchCurrentAccount();
             showToast(t('dashboard.toast.refresh_success'), 'success');
         } catch (error) {

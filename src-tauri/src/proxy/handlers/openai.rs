@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // OpenAI Handler
 use axum::{
     extract::Json, extract::State, http::StatusCode, response::IntoResponse, response::Response,
@@ -11,7 +14,7 @@ use crate::proxy::mappers::openai::{
     transform_openai_request, transform_openai_response, OpenAIContent, OpenAIContentBlock,
     OpenAIMessage, OpenAIRequest, OpenAIResponse,
 };
-// use crate::proxy::upstream::client::UpstreamClient; // 通过 state 获取
+// use crate::proxy::upstream::client::UpstreamClient; // 通过 state get
 use crate::proxy::debug_logger;
 use crate::proxy::server::AppState;
 use crate::proxy::upstream::client::mask_email;
@@ -1720,14 +1723,14 @@ pub async fn handle_chat_completions(
         debug_logger::is_enabled(&debug_cfg).then(|| debug_value_without_inline_data(&body));
 
     // [NEW] 自动检测并转换 Responses 格式
-    // If 请求包含 instructions 或 input 但没有 messages，则认为是 Responses 格式
+    // If request包含 instructions 或 input 但没有 messages，则认为是 Responses 格式
     let is_responses_format = !body.get("messages").is_some()
         && (body.get("instructions").is_some() || body.get("input").is_some());
 
     if is_responses_format {
         debug!("Detected Responses API format, converting to Chat Completions format");
 
-        // 转换 instructions 为 system message
+        // Transform instructions 为 system message
         if let Some(instructions) = body.get("instructions").and_then(|v| v.as_str()) {
             if !instructions.is_empty() {
                 let system_msg = json!({
@@ -1747,7 +1750,7 @@ pub async fn handle_chat_completions(
             }
         }
 
-        // 转换 input 为 user message（如果存在）
+        // Transform input 为 user message（如果存在）
         if let Some(input) = body.get("input") {
             let user_msg = if input.is_string() {
                 json!({
@@ -1755,7 +1758,7 @@ pub async fn handle_chat_completions(
                     "content": input.as_str().unwrap_or("")
                 })
             } else {
-                // input 是数组格式，暂时简化处理
+                // input 是数组格式，暂时简化handle
                 json!({
                     "role": "user",
                     "content": input.to_string()
@@ -1886,7 +1889,7 @@ pub async fn handle_chat_completions(
     let client_tool_names =
         crate::proxy::mappers::openai::request::extract_client_tool_names(&openai_req.tools);
 
-    // 1. 获取 UpstreamClient (Clone handle)
+    // 1. get UpstreamClient (Clone handle)
     let upstream = state.upstream.clone();
     let image_scheduler = state.image_scheduler.clone();
     let request_timeout = state.request_timeout;
@@ -1902,7 +1905,7 @@ pub async fn handle_chat_completions(
     let mut failure_statuses = FailureStatusTracker::default();
     let mut used_attempts = 0;
 
-    // 2. 模型路由解析 (移到循环外以支持在所有路径返回 X-Mapped-Model)
+    // 2. model路由解析 (移到循环外以支持在所有路径return X-Mapped-Model)
     let mapped_model = crate::proxy::common::model_mapping::resolve_model_route(
         &openai_req.model,
         &*state.custom_mapping.read().await,
@@ -1931,8 +1934,8 @@ pub async fn handle_chat_completions(
         // 3. 提取 SessionId (粘性指纹)
         let session_id = SessionManager::extract_openai_session_id(&openai_req);
 
-        // 4. 获取 Token (使用准确的 request_type)
-        // 关键：在重试尝试时根据 force_rotate 决定是否轮换账号
+        // 4. get Token (使用准确的 request_type)
+        // 关键：在retry尝试时根据 force_rotate 决定是否轮换account
         let (access_token, project_id, email, account_id, _wait_ms) =
             if let Some(credentials) = retry_credentials.take() {
                 credentials
@@ -1982,7 +1985,7 @@ pub async fn handle_chat_completions(
                 }
             };
 
-        // [NEW v4.1.29] 获取完整 Token 对象用于动态规格查询
+        // [NEW v4.1.29] get完整 Token 对象用于动态规格查询
         let proxy_token = token_manager.get_token_by_id(&account_id);
         let mapped_model = token_manager
             .resolve_dynamic_model_for_account(&account_id, &mapped_model)
@@ -1991,7 +1994,7 @@ pub async fn handle_chat_completions(
         last_email = Some(email.clone());
         info!("✓ Using account: {} (type: {})", email, config.request_type);
 
-        // 4. 转换请求 (返回内容包含 session_id, message_count, prefix_hash)
+        // 4. 转换request (return内容包含 session_id, message_count, prefix_hash)
         let (gemini_body, session_id, message_count, _prefix_hash) = transform_openai_request(
             &openai_req,
             &project_id,
@@ -2026,7 +2029,7 @@ pub async fn handle_chat_completions(
             serialized_json_len(&gemini_body)
         );
 
-        // 5. 发送请求
+        // 5. 发送request
         let client_wants_stream = openai_req.stream;
         let force_stream_internally = !client_wants_stream;
         let actual_stream = client_wants_stream || force_stream_internally;
@@ -2117,11 +2120,11 @@ pub async fn handle_chat_completions(
         }
 
         let response = call_result.response;
-        // [NEW] 提取实际请求的上游端点 URL，用于日志记录和排查
+        // [NEW] 提取实际request的上游端点 URL，用于日志记录和排查
         let upstream_url = response.url().to_string();
         let status = response.status();
         if status.is_success() {
-            // 5. 处理流式 vs 非流式
+            // 5. handle流式 vs 非流式
             if actual_stream {
                 use axum::body::Body;
                 use axum::response::Response;
@@ -2225,7 +2228,7 @@ pub async fn handle_chat_completions(
                     )
                     .chain(openai_stream);
 
-                // [NEW] 针对 OpenAI 流增加 300 秒空闲超时保护
+                // [NEW] 针对 OpenAI 流增加 300 sempty闲超时保护
                 let image_permit_for_stream = image_permit.take();
                 let track_image_success = config.request_type == "image_gen";
                 let image_success_manager = token_manager.clone();
@@ -2292,7 +2295,7 @@ pub async fn handle_chat_completions(
                 );
 
                 if client_wants_stream {
-                    // [MULTI-TURN] 保存本次对话的 messages 到 session store（/v1/chat/completions）
+                    // [MULTI-TURN] save本次对话的 messages 到 session store（/v1/chat/completions）
                     {
                         let save_msgs = openai_req
                             .messages
@@ -2320,7 +2323,7 @@ pub async fn handle_chat_completions(
                             crate::proxy::http_session_store::save_session(rid, entry).await;
                         });
                     }
-                    // 客户端请求流式，返回 SSE
+                    // 客户端request流式，return SSE
                     let body = Body::from_stream(combined_stream);
                     return Ok(Response::builder()
                         .header("Content-Type", "text/event-stream")
@@ -2333,8 +2336,8 @@ pub async fn handle_chat_completions(
                         .unwrap()
                         .into_response());
                 } else {
-                    // 客户端请求非流式，但内部强制转为流式
-                    // 收集流数据并聚合为 JSON
+                    // 客户端request非流式，但内部强制转为流式
+                    // 收集流data并聚合为 JSON
                     use crate::proxy::mappers::openai::collector::collect_stream_to_json;
 
                     match collect_stream_to_json(combined_stream).await {
@@ -2389,8 +2392,8 @@ pub async fn handle_chat_completions(
                 .await
                 .map_err(|e| (StatusCode::BAD_GATEWAY, format!("Parse error: {}", e)))?;
 
-            // [CACHE] 从 Gemini 响应中提取缓存信息，关闭反馈循环
-            // 兼容两种格式: cachedContentTokenCount (旧), total_cached_tokens (新)
+            // [CACHE] 从 Gemini response中提取缓存info，关闭反馈循环
+            // Compatibility两种格式: cachedContentTokenCount (旧), total_cached_tokens (新)
             if let Some(usage) = gemini_resp.get("usageMetadata") {
                 let cached = usage
                     .get("total_cached_tokens")
@@ -2450,7 +2453,7 @@ pub async fn handle_chat_completions(
                 .into_response());
         }
 
-        // Process: 特定错误并重试
+        // Process: 特定error并retry
         failure_statuses.record(status);
         let status_code = status.as_u16();
         let retry_after = response
@@ -2464,7 +2467,7 @@ pub async fn handle_chat_completions(
             .unwrap_or_else(|_| format!("HTTP {}", status_code));
         last_error = format!("HTTP {}: {}", status_code, error_text);
 
-        // [New] 打印错误报文日志
+        // [New] 打印error报文日志
         tracing::error!(
             "[OpenAI-Upstream] Error Response {}: {}",
             status_code,
@@ -2493,7 +2496,7 @@ pub async fn handle_chat_completions(
             .await;
         }
 
-        // 确定重试策略
+        // 确定retry策略
         let strategy = retry_state.determine_strategy(
             &account_id,
             status_code,
@@ -2525,7 +2528,7 @@ pub async fn handle_chat_completions(
                 .await;
         }
 
-        // 3. 标记限流状态(用于 UI 显示)
+        // 3. 标记限流status(用于 UI 显示)
         if config.request_type != "image_gen" && should_mark_limited {
             // [FIX] Use async version with model parameter for fine-grained rate limiting
             token_manager
@@ -2540,9 +2543,9 @@ pub async fn handle_chat_completions(
         }
 
         // [HARDENED M1] 403 细分分类与安全隔离：
-        // 1. VALIDATION_REQUIRED: 设置 10 分钟临时验证锁与内存隔离，提取 validation_url，不注销账号
+        // 1. VALIDATION_REQUIRED: set 10 min临时validate锁与内存隔离，提取 validation_url，不注销account
         // 2. 永久违规 (Permanent Policy Violation): 仅在明确检测到封号/违规时写入 is_forbidden
-        // 3. 其它 403: 实行 5 分钟内存冷却隔离 (in-memory quarantine)，绝不覆写磁盘 disabled=true
+        // 3. 其它 403: 实行 5 min内存冷却隔离 (in-memory quarantine)，绝不覆写磁盘 disabled=true
         if status_code == 403 {
             if let Some(acc_id) = token_manager.get_account_id_by_email(&email) {
                 let forbidden_kind = crate::proxy::token_manager::classify_forbidden_error(&error_text);
@@ -2621,7 +2624,7 @@ pub async fn handle_chat_completions(
                 }
             }
 
-            // 判断是否需要轮换账号
+            // 判断是否需要轮换account
             if !should_rotate_account(status_code, Some(&strategy)) {
                 debug!(
                     "[{}] Keeping same account for status {} (Grace Retry or Server Issue)",
@@ -2642,7 +2645,7 @@ pub async fn handle_chat_completions(
             continue;
         }
 
-        // [NEW] 处理 400 错误 (Thinking 签名失效)
+        // [NEW] handle 400 error (Thinking 签名失效)
         if status_code == 400
             && (error_text.contains("Invalid `signature`")
                 || error_text.contains("thinking.signature")
@@ -2654,7 +2657,7 @@ pub async fn handle_chat_completions(
                 email
             );
 
-            // 追加修复提示词到最后一条用户消息
+            // 追加修复hint词到最后一条user消息
             if let Some(last_msg) = openai_req.messages.last_mut() {
                 if last_msg.role == "user" {
                     let repair_prompt = "\n\n[System Recovery] Your previous output contained an invalid signature. Please regenerate the response without the corrupted signature block.";
@@ -2676,10 +2679,10 @@ pub async fn handle_chat_completions(
                 }
             }
 
-            continue; // 重试
+            continue; // retry
         }
 
-        // 404 等由于模型配置或路径错误的 HTTP 异常，直接报错，不进行无效轮换
+        // 404 等由于modelconfig或路径error的 HTTP exception，直接报错，不进行none效轮换
         error!(
             "OpenAI Upstream non-retryable error {} on account {}: {}",
             status_code, email, error_text
@@ -2702,7 +2705,7 @@ pub async fn handle_chat_completions(
             .into_response());
     }
 
-    // 所有尝试均失败：仅当全部结构化失败状态均为 429 时返回 429
+    // 所有尝试均failed：仅当all结构化failedstatus均为 429 时return 429
     let final_status = failure_statuses.final_status();
 
     if let Some(email) = last_email {
@@ -2727,50 +2730,50 @@ pub async fn handle_chat_completions(
 const APPLY_PATCH_CHAT_PATH_SYSTEM_GUIDANCE_ZH: &str = concat!(
     "[apply_patch chat-path 指引 — 由 codex-app-transfer adapter 注入,因为上游 lark 语法约束在 chat function-call provider 上不可用]\n",
     "\n",
-    "**务必使用 `apply_patch` tool 写文件内容** —— 新建文件、单行编辑、整文件重写都一样。**绝不使用 shell `cat <<EOF > file` / `printf '<content>' > file` / `echo '<content>' > file` / 任何 `>` 重定向来写实际文件内容** —— 这样做会绕过 Codex diff UI 和审计 trail。**同样,绝不使用 `sed -i` / `perl -i` / `ed`、或 shell 按行号删除(如 `sed -i 'N,Md' file`)来编辑或删除已有文件内容** —— 就地 shell 编辑器绕过 diff UI,且对多次编辑间的行号漂移很脆弱(按过期行号删会切错、损坏文件)。(新建或空文件用 `*** Add File: <path>` —— 不要用 shell 重定向。)**优先外科式针对性编辑**:要改/替换已有内容时,只发改动那几行的 `-`(旧)和 `+`(新),保持每个 hunk 最小;且**不要**把增删空行作为编辑的一部分,除非空行本身就是改动(空行 `+`/`-` 位置歧义、可能静默 apply 失败)。**删除内容 —— 即便是跨很多行的大段连续块 —— 也用 apply_patch hunk 里的 `-` 行表达,或用 `*** Delete File: <path>` 删整个文件;不要因为块大就改用 `sed`/`python` 按行范围删除。** 对同一文件的多处不相邻编辑可以放进**一次** apply_patch 调用、分成多个 hunk。**不要**整段重新生成再追加,**不要**因为改了一部分就整文件重写。整文件替换(同一 patch 内 `*** Delete File: <path>` + `*** Add File: <path>`、每行前缀 `+`)**仅限**真正需要时:新建全新内容,或几乎每行都不同。\n",
+    "**务必使用 `apply_patch` tool 写文件内容** —— 新建文件、单行编辑、整文件重写都一样。**绝不使用 shell `cat <<EOF > file` / `printf '<content>' > file` / `echo '<content>' > file` / 任何 `>` 重定向来写实际文件内容** —— 这样做会绕过 Codex diff UI 和审计 trail。**同样,绝不使用 `sed -i` / `perl -i` / `ed`、或 shell 按行号delete(如 `sed -i 'N,Md' file`)来编辑或delete已有文件内容** —— 就地 shell 编辑器绕过 diff UI,且对多次编辑间的行号漂移很脆弱(按过期行号删会切错、损坏文件)。(新建或empty文件用 `*** Add File: <path>` —— 不要用 shell 重定向。)**优先外科式针对性编辑**:要改/替换已有内容时,只发改动那几行的 `-`(旧)和 `+`(新),保持每个 hunk 最小;且**不要**把增删empty行作为编辑的一部分,除非empty行本身就是改动(empty行 `+`/`-` 位置歧义、可能静默 apply failed)。**delete内容 —— 即便是跨很多行的大段连续块 —— 也用 apply_patch hunk 里的 `-` 行表达,或用 `*** Delete File: <path>` 删整个文件;不要因为块大就改用 `sed`/`python` 按行范围delete。** 对同一文件的多处不相邻编辑可以放进**一次** apply_patch 调用、分成多个 hunk。**不要**整段重新生成再追加,**不要**因为改了一部分就整文件重写。整文件替换(同一 patch 内 `*** Delete File: <path>` + `*** Add File: <path>`、每行前缀 `+`)**仅限**真正需要时:新建全新内容,或几乎每行都不同。\n",
     "\n",
     "调用 `apply_patch` tool 时,遵循以下基于非 OpenAI chat provider 实战观察总结的规则:\n",
     "\n",
-    "1. 推荐的 Update File 形式是**最简形态**:仅 `-line`(要删的行,byte-exact)和 `+line`(新行)直接跟在 `*** Update File: <path>` 之后 —— 无 `@@`、无 context 行。",
-    "凡是 `-` 行在文件里**唯一**时(简单单行编辑、配置改动、function 签名等绝大多数场景皆是)就用这个形态。例:\n",
+    "1. 推荐的 Update File 形式是**最简形态**:仅 `-line`(要删的行,byte-exact)和 `+line`(新行)直接跟在 `*** Update File: <path>` 之后 —— none `@@`、none context 行。",
+    "凡是 `-` 行在文件里**唯一**时(简单单行编辑、config改动、function 签名等绝大多数场景皆是)就用这个形态。例:\n",
     "  *** Update File: src/config.py\n",
     "  -DEBUG = False\n",
     "  +DEBUG = True\n",
-    "若 `-` 行单独**有歧义**(同一行文本在文件多处出现),在上方/下方加空格前缀的 context 行(` line`)钉住它。",
+    "若 `-` 行单独**有歧义**(同一行文本在文件多处出现),在上方/下方加empty格前缀的 context 行(` line`)钉住它。",
     "若 context 行也不足以消歧,再在独立行上加**单端** `@@ <header>` 标记(`@@ class Foo`、`@@ def bar():`、`@@ fn main() {`)。",
     "**绝不加尾随 `@@`**(`@@ <header> @@` 是错的)—— Codex Desktop 的 V4A applier 会把尾随 `@@` 当字面文本,报 `Failed to find context '... @@'`。",
     "深层嵌套消歧时用**多个** `@@` 行各占一行(例如 `@@ class Outer\\n@@ def inner():`),每条都是单端。\n",
     "\n",
-    "2. Add File **不用** `@@` 标记、**不用** hunk。`*** Add File: <path>` 之后,新文件**每一行内容**(包括空行,写成单个 `+` 占一行)都前缀 `+`。没 `+` 前缀的原始源码(例如直接写 `def main():`)会触发 `'def main():' is not a valid hunk header` 错误。",
+    "2. Add File **不用** `@@` 标记、**不用** hunk。`*** Add File: <path>` 之后,新文件**每一行内容**(包括empty行,写成单个 `+` 占一行)都前缀 `+`。没 `+` 前缀的原始源码(例如直接写 `def main():`)会触发 `'def main():' is not a valid hunk header` error。",
     "但结构标记 `*** Begin Patch` / `*** Add File:` / `*** End Patch` **不是内容,不加前缀**。尤其**绝不给终止符加前缀**(`+*** End Patch` 是错的):带 `+` 的终止符会被当成内容行,在新建文件末尾留下一行字面 `*** End Patch`。\n",
     "\n",
-    "3. 每个 `-` 行和空格前缀的 context 行**必须**跟文件 byte-for-byte 一致(同样的前导 whitespace,不能 trim 尾随空格,字符完全相同)。不确定时先用 shell 跑 `cat <path>` 或 `sed -n '1,80p' <path>` 查一下,再用真实字节组 patch。靠猜会触发 `Failed to find context '<your guess>'` 错误。\n",
+    "3. 每个 `-` 行和empty格前缀的 context 行**必须**跟文件 byte-for-byte 一致(同样的前导 whitespace,不能 trim 尾随empty格,字符完全相同)。不确定时先用 shell 跑 `cat <path>` 或 `sed -n '1,80p' <path>` 查一下,再用真实字节组 patch。靠猜会触发 `Failed to find context '<your guess>'` error。\n",
     "\n",
-    "3a. 行前缀是**单字符**,前缀和内容之间**没有空格**:写 `-DEBUG = False`(不是 `- DEBUG = False`)、`+DEBUG = True`(不是 `+ DEBUG = True`),context 行 ` keepme`(单个前导空格)。Codex Desktop V4A applier 可能容忍多余空格,但其它 apply_patch 实现严格 —— 前缀写紧凑。\n",
+    "3a. 行前缀是**单字符**,前缀和内容之间**没有empty格**:写 `-DEBUG = False`(不是 `- DEBUG = False`)、`+DEBUG = True`(不是 `+ DEBUG = True`),context 行 ` keepme`(单个前导empty格)。Codex Desktop V4A applier 可能容忍多余empty格,但其它 apply_patch 实现严格 —— 前缀写紧凑。\n",
     "\n",
-    "4. **不要**在同一 patch 内对同一路径同时用 `*** Add File: <path>` 和 `*** Update File: <path>`。Update 步骤会在 Add 步骤落盘前读文件,看到空文件后失败。要么 (a) 让 `*** Add File:` 一次性写最终内容,要么 (b) 拆成两个独立的 `apply_patch` 调用。\n",
+    "4. **不要**在同一 patch 内对同一路径同时用 `*** Add File: <path>` 和 `*** Update File: <path>`。Update 步骤会在 Add 步骤落盘前读文件,看到empty文件后failed。要么 (a) 让 `*** Add File:` 一次性写最终内容,要么 (b) 拆成两个独立的 `apply_patch` 调用。\n",
     "\n",
-    "5. 新建或空文件用 `*** Add File: <path>`、每行前缀 `+`(不要用 `*** Update File:`,也不要用 shell 重定向)。\n",
+    "5. 新建或empty文件用 `*** Add File: <path>`、每行前缀 `+`(不要用 `*** Update File:`,也不要用 shell 重定向)。\n",
     "\n",
     "6. 多行文件里,**没有**对应 `-` 行的孤立 `+` 行会**追加**在上文 context 之下 —— **不会**替换任何已有行。要修改已有行,**必须**同时包含 `-` 行(删旧内容)和 `+` 行(加新内容)。",
-    "空格前缀的 context 行是拿来**跟文件匹配**的、绝不新增 —— 它必须已存在于文件中。要引入全新行,前缀 `+`;把文件里还没有的行写成 context(或不加前缀)会得到一个无实际改动、apply 失败或 `Failed to find context` 的 hunk。\n",
+    "empty格前缀的 context 行是拿来**跟文件匹配**的、绝不新增 —— 它必须已存在于文件中。要引入全新行,前缀 `+`;把文件里还没有的行写成 context(或不加前缀)会得到一个none实际改动、apply failed或 `Failed to find context` 的 hunk。\n",
     "\n",
-    "7. Update 报 `Failed to find context` 时,说明 `-`/context 行跟文件 byte 对不上 —— 重新 `cat <path>` / `sed -n` 读文件、把这些行改成完全一致,再重试**同一个**针对性 Update。**不要**升级成整文件重写/重新追加,把编辑保持在改动的那几行。",
-    "在**一次**回合里对**同一文件**做多处编辑时,每个已应用的 hunk 都会改变文件内容 —— 把相关编辑放进**一个** patch 的多个 hunk,或在多次独立调用之间重新读文件。某个 `-` 行不再匹配,可能是它**已经被删掉**(被前一个 hunk、或本回合更早的编辑)—— 重发同一删除前先确认它还在,别盲目重试。\n",
+    "7. Update 报 `Failed to find context` 时,说明 `-`/context 行跟文件 byte 对不上 —— 重新 `cat <path>` / `sed -n` 读文件、把这些行改成完全一致,再retry**同一个**针对性 Update。**不要**升级成整文件重写/重新追加,把编辑保持在改动的那几行。",
+    "在**一次**回合里对**同一文件**做多处编辑时,每个已应用的 hunk 都会改变文件内容 —— 把相关编辑放进**一个** patch 的多个 hunk,或在多次独立调用之间重新读文件。某个 `-` 行不再匹配,可能是它**已经被删掉**(被前一个 hunk、或本回合更早的编辑)—— 重发同一delete前先确认它还在,别盲目retry。\n",
     "\n",
-    "8. `*** Begin Patch` **必须**是 `input` 字符串的字面第一行 —— 不能有前导空格,前面不能有其它内容,绝不能直接写 `*** Add File:` 或任何操作 header。漏了会触发 `invalid patch: The first line of the patch must be '*** Begin Patch'`。\n",
+    "8. `*** Begin Patch` **必须**是 `input` 字符串的字面第一行 —— 不能有前导empty格,前面不能有其它内容,绝不能直接写 `*** Add File:` 或任何操作 header。漏了会触发 `invalid patch: The first line of the patch must be '*** Begin Patch'`。\n",
     "\n",
-    "9. `*** Update File: <old>` + `*** Move to: <new>` **要求**至少一个 hunk(带 `-`/`+` 行或 `*** End of File` 标记)。空的 Update+Move 块会报 `Update file hunk for path '<old>' is empty`。**纯重命名不改内容**时,在同一 patch 内用 `*** Delete File: <old>` + `*** Add File: <new>`(把原内容每行前缀 `+` 复制过去)。**重命名同时改内容**时,保留 Update+Move 并写真实的 `-`/`+` hunk。\n",
+    "9. `*** Update File: <old>` + `*** Move to: <new>` **要求**至少一个 hunk(带 `-`/`+` 行或 `*** End of File` 标记)。empty的 Update+Move 块会报 `Update file hunk for path '<old>' is empty`。**纯重命名不改内容**时,在同一 patch 内用 `*** Delete File: <old>` + `*** Add File: <new>`(把原内容每行前缀 `+` 复制过去)。**重命名同时改内容**时,保留 Update+Move 并写真实的 `-`/`+` hunk。\n",
     "\n",
-    "10. 编辑 memory 文件(如 `~/.codex/memories/MEMORY.md`)要格外小心:并发进程可能在你上次读它、到你的 patch 落地之间重写该文件。打 patch **前立即** `cat` 该文件,让每个 `-`/context 行都是**当前**文件里存在的行,并用最小唯一锚点(如单个 `@@ <section header>` + 只写你实际改的那几行)。过期的 `-` 行 —— 内容已被并发固化(consolidation)改掉 —— 会报 `Failed to find context`;失败时重新读、按当前字节重建,而不是重试过期 patch。\n",
+    "10. 编辑 memory 文件(如 `~/.codex/memories/MEMORY.md`)要格外小心:并发进程可能在你上次读它、到你的 patch 落地之间重写该文件。打 patch **前立即** `cat` 该文件,让每个 `-`/context 行都是**current**文件里存在的行,并用最小唯一锚点(如单个 `@@ <section header>` + 只写你实际改的那几行)。过期的 `-` 行 —— 内容已被并发固化(consolidation)改掉 —— 会报 `Failed to find context`;failed时重新读、按current字节重建,而不是retry过期 patch。\n",
     "\n",
-    "遵循这些规则可以避免 retry 风暴,提升首次尝试的成功率。"
+    "遵循这些规则可以避免 retry 风暴,提升首次尝试的success率。"
 );
 
-const WEB_TOOLS_SYSTEM_GUIDANCE_ZH: &str = "联网获取信息时(实时事实 / 价格 / 文档 / 新闻 / 版本号 / 任何你不确定或可能已过时的内容),**优先用 `web_search` 和 `web_fetch` 工具,不要用 shell 的 curl / wget / python 去抓 URL 或搜索引擎**。本机对外网访问受限,shell 直连通常被防火墙 / 反爬拦截(返回空或 403),会白费多轮尝试、最后只能靠可能过时的记忆作答;而这两个工具经代理(浏览器 TLS 指纹 + headless 渲染)能真正抓到。用法:先 `web_search(query)` 找信息源,再用 `web_fetch(url)` 读该页**完整正文**(返回全文、自己读)。之前抓过的某 URL 若在对话历史里被折叠 / 压缩、需要回看完整原文, 用 `read_url_local(url)` 从本地缓存取回, 不必重新联网。";
+const WEB_TOOLS_SYSTEM_GUIDANCE_ZH: &str = "联网getinfo时(实时事实 / 价格 / 文档 / 新闻 / 版本号 / 任何你不确定或可能已过时的内容),**优先用 `web_search` 和 `web_fetch` 工具,不要用 shell 的 curl / wget / python 去抓 URL 或搜索引擎**。本机对外网访问受限,shell 直连通常被防火墙 / 反爬拦截(returnempty或 403),会白费多轮尝试、最后只能靠可能过时的记忆作答;而这两个工具经代理(浏览器 TLS 指纹 + headless 渲染)能真正抓到。用法:先 `web_search(query)` 找info源,再用 `web_fetch(url)` 读该页**完整正文**(return全文、自己读)。之前抓过的某 URL 若在对话历史里被折叠 / 压缩、需要回看完整原文, 用 `read_url_local(url)` 从本地缓存取回, 不必重新联网。";
 
 const CHINESE_LANGUAGE_DIRECTIVE: &str =
-    "**请始终使用简体中文回复用户**(代码、命令、标识符、文件路径等技术内容保持原文,不要翻译)。";
+    "**请始终使用简体中文回复user**(代码、命令、标识符、文件路径等技术内容保持原文,不要翻译)。";
 
 fn tools_register_apply_patch(body: &Value) -> bool {
     let Some(tools) = body.get("tools").and_then(Value::as_array) else {
@@ -2842,7 +2845,7 @@ pub async fn handle_completions(
 
     // [MULTI-TURN] 支持 previous_response_id 链式历史恢复
     // 当客户端通过 HTTP POST /v1/responses 传入 previous_response_id 时，
-    // 从服务器端 session store 取出上一轮的历史，合并到本轮的 input 中
+    // 从service器端 session store 取出上一轮的历史，合并到本轮的 input 中
     let previous_response_id = body
         .get("previous_response_id")
         .and_then(|v| v.as_str())
@@ -2861,7 +2864,7 @@ pub async fn handle_completions(
                 _ => None,
             })
             .unwrap_or_default();
-        // 完整回放先裁掉最新用户轮次之前的内联媒体，再执行硬限制校验。
+        // 完整回放先裁掉最新user轮次之前的内联媒体，再执行硬限制校验。
         omit_media_before_latest_user_turn(&mut existing_input);
 
         let merged = if let Some(ref prev_id) = previous_response_id {
@@ -3209,7 +3212,7 @@ pub async fn handle_completions(
     // Handle "instructions" + "input" (Codex style) -> system + user messages
     // This is critical because `transform_openai_request` expects `messages` to be populated.
 
-    // [FIX] 检查是否已经有 messages (被第一次标准化处理过)
+    // [FIX] check是否已经有 messages (被第一次标准化handle过)
     let has_codex_fields = body.get("instructions").is_some() || body.get("input").is_some();
     let already_normalized = body
         .get("messages")
@@ -3249,7 +3252,7 @@ pub async fn handle_completions(
                     .unwrap_or(false);
 
                 if is_message_array {
-                    // 深度识别：像处理 messages 一样处理 input 数组，并自动映射 Responses API 的工具流
+                    // 深度识别：像handle messages 一样handle input 数组，并自动映射 Responses API 的工具流
                     for item in arr {
                         if let Some(obj) = item.as_object() {
                             let item_type = responses_input_item_type(item);
@@ -3327,7 +3330,7 @@ pub async fn handle_completions(
                         messages.push(item.clone());
                     }
                 } else {
-                    // 降级处理：传统的字符串或混合内容拼接
+                    // Fallback degradationhandle：传统的字符串或混合内容拼接
                     let content = arr
                         .iter()
                         .map(|v| {
@@ -3391,7 +3394,7 @@ pub async fn handle_completions(
     }
 
     // [FIX] 在 openai_req 反序列化之前，从 body 中捕获原始 input 和 instructions
-    // 用于后续 session 保存时，保留完整的工具调用历史（而非从 openai_req.messages 重建丢失信息）
+    // 用于后续 session save时，保留完整的工具调用历史（而非从 openai_req.messages 重建丢失info）
     let normalized_interaction_ledger = body.get("_interaction_ledger").cloned();
     let (session_save_input, session_save_instructions) = if let Some(obj) = body.as_object_mut() {
         let input = bounded_session_input.take().unwrap_or_default();
@@ -3677,7 +3680,7 @@ pub async fn handle_completions(
         max_attempts,
         retry_credentials.is_some(),
     ) {
-        // 3. 模型配置解析
+        // 3. modelconfig解析
         // 将 OpenAI 工具转为 Value 数组以便探测联网
         let tools_val: Option<Vec<Value>> = openai_req
             .tools
@@ -3837,7 +3840,7 @@ pub async fn handle_completions(
         let upstream_url = response.url().to_string();
         let status = response.status();
         if status.is_success() {
-            // [智能限流] 请求成功，重置该账号的连续失败计数
+            // [智能限流] requestsuccess，reset该account的连续failed计数
             token_manager.mark_account_success(&email);
 
             if list_response {
@@ -3970,7 +3973,7 @@ pub async fn handle_completions(
                         converted_meta,
                     );
 
-                    // 仅当转换器产生 response.completed 时保存本轮增量及必要输出。
+                    // 仅当转换器产生 response.completed 时save本轮增量及必要输出。
                     if let Some(completion_rx) = session_completion_rx {
                         let save_parent = session_parent;
                         let save_input = session_save_input;
@@ -4334,7 +4337,7 @@ pub async fn handle_completions(
             error_text
         );
 
-        // 3. 标记限流状态(用于 UI 显示)
+        // 3. 标记限流status(用于 UI 显示)
         if status_code == 429 || status_code == 529 || status_code == 503 || status_code == 500 {
             token_manager
                 .mark_rate_limited_async(
@@ -4377,7 +4380,7 @@ pub async fn handle_completions(
             force_rotate = should_rotate_account(status_code, Some(&strategy));
             continue;
         } else {
-            // 不可重试
+            // 不可retry
             return (
                 status,
                 [
@@ -4390,7 +4393,7 @@ pub async fn handle_completions(
         }
     }
 
-    // 所有尝试均失败
+    // 所有尝试均failed
     let final_status = failure_statuses.final_status();
     if let Some(email) = last_email {
         (
@@ -4497,7 +4500,7 @@ pub async fn handle_get_model(
 }
 
 /// OpenAI Images API: POST /v1/images/generations
-/// Process: 图像生成请求，转换为 Gemini API 格式
+/// Process: 图像生成request，转换为 Gemini API 格式
 pub async fn handle_chat_redirection(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -4663,7 +4666,7 @@ pub async fn handle_images_generations_internal(
     state: AppState,
     body: Value,
 ) -> Result<(String, Value), (StatusCode, String, Option<String>)> {
-    // 1. 解析请求参数
+    // 1. 解析request参数
     let prompt = body.get("prompt").and_then(|v| v.as_str()).ok_or((
         StatusCode::BAD_REQUEST,
         "Missing 'prompt' field".to_string(),
@@ -4709,7 +4712,7 @@ pub async fn handle_images_generations_internal(
         "[Images] Received generation request"
     );
 
-    // 2. 使用 common_utils 解析图片配置（统一逻辑，支持动态计算宽高比和 quality 映射）
+    // 2. 使用 common_utils 解析图片config（统一逻辑，支持动态计算宽高比和 quality 映射）
     let (image_config, clean_model_name) =
         crate::proxy::mappers::common_utils::try_parse_image_config_with_params(
             model, size, quality, image_size,
@@ -4728,8 +4731,8 @@ pub async fn handle_images_generations_internal(
     }
     let contents_parts = build_image_contents(final_prompt, &input_images, None);
 
-    // 4. 并发发送请求
-    // 注意：不再在外部获取 Token，而是移入 Task 内部并在重试时获取
+    // 4. 并发发送request
+    // Note：不再在外部get Token，而是移入 Task 内部并在retry时get
     let upstream = state.upstream.clone();
     let token_manager = state.token_manager.clone();
     let image_scheduler = state.image_scheduler.clone();
@@ -4747,7 +4750,7 @@ pub async fn handle_images_generations_internal(
         let upstream = upstream.clone();
         let token_manager = token_manager.clone();
         let contents_parts = contents_parts.clone();
-        let image_config = image_config.clone(); // 使用解析后的完整配置
+        let image_config = image_config.clone(); // 使用解析后的完整config
         let _response_format = response_format.to_string();
 
         let model_to_use = clean_model_name.clone();
@@ -4833,7 +4836,7 @@ pub async fn handle_images_generations_internal(
                         }],
                         "generationConfig": {
                             "candidateCount": 1, // 强制单张
-                            "imageConfig": image_config // ✅ 使用完整配置（包含 aspectRatio 和 imageSize）
+                            "imageConfig": image_config // ✅ 使用完整config（包含 aspectRatio 和 imageSize）
                         },
                         "safetySettings": [
                             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "OFF" },
@@ -5070,7 +5073,7 @@ pub async fn handle_images_generations_internal(
         return Err((status, error_msg, attempted));
     }
 
-    // 部分成功时记录警告
+    // 部分success时记录warning
     if !errors.is_empty() {
         tracing::warn!(
             "[Images] Partial success: {} out of {} requests succeeded. Errors: {}",
@@ -5086,13 +5089,13 @@ pub async fn handle_images_generations_internal(
         n
     );
 
-    // 6. 构建 OpenAI 格式响应
+    // 6. 构建 OpenAI 格式response
     let openai_response = json!({
         "created": chrono::Utc::now().timestamp(),
         "data": images
     });
 
-    // [FIX] 图像生成成功后触发配额刷新 (Issue #1995)
+    // [FIX] 图像生成success后触发quota刷新 (Issue #1995)
     tokio::spawn(async move {
         let _ = account::refresh_all_quotas_logic().await;
     });
@@ -5249,8 +5252,8 @@ pub async fn handle_images_edits(
     }
     let contents_parts = build_image_contents(final_prompt, &input_images, mask_data.as_ref());
 
-    // 4. 并发发送请求
-    // 注意：不再在外部获取 Token，而是移入 Task 内部
+    // 4. 并发发送request
+    // Note：不再在外部get Token，而是移入 Task 内部
     let upstream = state.upstream.clone();
     let token_manager = state.token_manager.clone();
     let image_scheduler = state.image_scheduler.clone();
@@ -5282,7 +5285,7 @@ pub async fn handle_images_edits(
                 max_attempts,
                 retry_credentials.is_some(),
             ) {
-                // 4.1 获取 Token
+                // 4.1 get Token
                 let (access_token, project_id, email, account_id, _wait_ms) =
                     if let Some(credentials) = retry_credentials.take() {
                         credentials
@@ -5361,7 +5364,7 @@ pub async fn handle_images_edits(
                                     false,
                                 )
                             });
-                            // 429/500/503 等错误进行标记和重试
+                            // 429/500/503 等error进行标记和retry
                             let should_mark_limited =
                                 status_code == 429 || status_code == 503 || status_code == 500;
                             let needs_quota_refresh = if should_mark_limited {
@@ -6020,7 +6023,7 @@ fn normalize_response_subsequent_request(
 
     // [FIX] 始终走完整的 merge 逻辑，废弃 transcript replacement 分支
     // 旧逻辑在检测到 function_call/assistant 时直接替换整个历史，导致多轮对话历史丢失
-    // 正确做法：last_request.input + last_response_output + new payload.input 全部合并
+    // 正确做法：last_request.input + last_response_output + new payload.input all合并
     let mut last_request = state.last_request.take().expect("checked above");
     let mut merged_input = last_request
         .as_object_mut()
@@ -6031,13 +6034,13 @@ fn normalize_response_subsequent_request(
         })
         .unwrap_or_default();
 
-    // 上一轮请求的 input 已按所有权移入 merged_input。
+    // 上一轮request的 input 已按所有权移入 merged_input。
     // 2. 上一轮 response 的 output items（assistant 回复、工具调用等）
     if let Value::Array(items) = std::mem::take(&mut state.last_response_output) {
         merged_input.extend(items);
     }
 
-    // 3. 本轮新的 input items（用户消息、工具调用结果等）
+    // 3. 本轮新的 input items（user消息、工具调用结果等）
     let current_input = payload
         .as_object_mut()
         .and_then(|obj| obj.remove("input"))
@@ -6646,7 +6649,7 @@ async fn translate_openai_chunk_to_ws(
                                 ),
                             );
                             if !tc_name.is_empty() {
-                                // 临时插入一个包含 name 的 Value，最终会被 finalize_ws_events 里的完整 Value 覆盖
+                                // Temporary插入一个包含 name 的 Value，最终会被 finalize_ws_events 里的完整 Value 覆盖
                                 insert_cached_tool_call(call_id, json!({ "name": tc_name }));
                             }
                         }

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::commands::proxy::ProxyServiceState;
 use std::collections::HashMap;
 use tauri::State;

@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useMemo, useState } from 'react';
 import { Lock, Ban, Diamond, Gem, Circle, X, Check, Clock, Bot, Sparkles, Tag, BookOpen, RefreshCw, ExternalLink, Copy, QrCode, AlertTriangle } from 'lucide-react';
 import { Account, ModelQuota } from '../../types/account';
@@ -38,7 +42,7 @@ interface AccountCardProps {
     quotaProvider?: 'gemini' | 'claude';
 }
 
-// 使用统一的模型配置
+// Use unified model configuration
 const DEFAULT_MODELS = Object.entries(MODEL_CONFIG).map(([id, config]) => ({
     id,
     label: config.label,
@@ -60,7 +64,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
     const isCliActive = isTargetActiveForAccount(account.id, 'agy');
     const isAnyActive = hasAnyActiveTarget(account.id) || propIsCurrent;
 
-    // 自定义标签编辑状态
+    // Custom label editing state
     const [isEditingLabel, setIsEditingLabel] = useState(false);
     const [labelInput, setLabelInput] = useState(account.custom_label || '');
 
@@ -93,9 +97,9 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
 
         // Get all models from account (source of truth)
         const accountModels = account.quota?.models?.map(m => {
-            // 注意：DEFAULT_MODELS 现在应该包含 shortLabel，我们需要确保它被正确映射
-            // 但 DEFAULT_MODELS 是从 MODEL_CONFIG 生成的，我们需要确保它包含 shortLabel
-            // 这里为了安全，直接从 MODEL_CONFIG 获取
+            // Note: Ensure shortLabel is mapped properly
+            // DEFAULT_MODELS is derived from MODEL_CONFIG, ensure shortLabel is present
+            // Extract directly from MODEL_CONFIG for type safety
             const fullConfig = MODEL_CONFIG[m.name.toLowerCase()];
             return {
                 id: m.name,
@@ -121,7 +125,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                 models = selections
                     .map(sel => sel.model ? accountModels.find(am => am.data === sel.model) : undefined)
                     .filter((m): m is typeof accountModels[number] => m !== undefined);
-                // 也保留无配额数据的 pinned 模型（显示 0%）
+                // Retain pinned models without quota data (display 0%)
                 for (const sel of selections) {
                     if (!sel.model) {
                         const selectorConfig = MODEL_CONFIG[sel.selectorId.toLowerCase()];
@@ -138,16 +142,16 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                 }
             } else {
                 // Default fallback: show known default models, plus we show all dynamic pinned models
-                // 暂时退化：如果没有 config 就不阻拦了？不，没有 pinned 就显示内置+有 display_name 的。
+                // Fallback: show built-in models and models with display_name if none pinned
                 models = accountModels.filter(m => DEFAULT_MODELS.some(d => d.id === m.id) || m.data.display_name);
             }
         }
 
-        // 应用排序并过滤过期模型
+        // Apply sorting and filter out legacy models
         return sortModels(models).filter(m => m.id !== 'claude-sonnet-4-6-thinking' && m.id !== 'claude-sonnet-4-5-thinking' && m.id !== 'claude-opus-4-5-thinking');
     }, [config, account, showAllQuotas]);
 
-    // 解析周配额项 (当处于 weekly 视图时)
+    // Parse weekly quota items (in weekly view mode)
     const weeklyItems = useMemo(() => {
         if (quotaWindow !== 'weekly') return [];
         return (account.quota?.quota_groups || []).flatMap(group => {
@@ -169,7 +173,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
         });
     }, [quotaWindow, account.quota?.quota_groups, t]);
 
-    // 解析 5H 配额项 (当处于 5h 视图时)
+    // Parse 5-hour quota items (in 5h view mode)
     const fiveHourItems = useMemo(() => {
         if (quotaWindow !== '5h') return [];
         return (account.quota?.quota_groups || []).flatMap(group => {
@@ -194,7 +198,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
         });
     }, [quotaWindow, account.quota?.quota_groups]);
 
-    // 5H 倒计时计算
+    // 5-hour countdown calculation
     const fiveHourResetInfo = useMemo(() => {
         if (quotaWindow !== '5h') return null;
         const cycle = getAccountFiveHourReset(account, quotaProvider);
@@ -393,7 +397,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                     );
                                 }
                             })()}
-                            {/* 自定义标签 */}
+                            {/* Custom label */}
                             {account.custom_label && (
                                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 text-[9px] font-bold shadow-sm border border-orange-200/50 dark:border-orange-800/50">
                                     <Tag className="w-2.5 h-2.5" />
@@ -409,7 +413,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
             </div>
 
 
-            {/* 配额展示 */}
+            {/* Quota display */}
             <div className="flex-1 px-2 mb-2 overflow-y-auto scrollbar-none">
                 {(() => {
                     const isTos = isAccountTosViolation(account);
@@ -630,7 +634,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                 ))}
             </div>
 
-            {/* 配额重置倒计时: 5H 模式展示 5小时滚动重置，Weekly 模式展示周阶梯 */}
+            {/* Quota reset countdown: 5H rolling reset or weekly reset ladder */}
             <div className="px-2 pb-2">
                 {account.validation_blocked ? (
                     <div className="flex items-center justify-center p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600/80 dark:text-amber-400/80 text-xs font-mono font-bold">
@@ -698,7 +702,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
 
             {/* Footer: Actions Only */}
             <div className="flex-none flex items-center justify-center pt-2 pb-1 border-t border-gray-100 dark:border-base-200">
-                {/* 标签编辑弹出框 */}
+                {/* Label editing popover dialog */}
                 {isEditingLabel && (
                     <div className="absolute inset-0 bg-white/95 dark:bg-base-100/95 rounded-xl z-10 flex items-center justify-center p-4">
                         <div className="flex items-center gap-2 w-full max-w-xs">

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use serde::{Deserialize, Serialize};
 
 // Google OAuth runtime credential resolver
@@ -432,7 +435,7 @@ async fn exchange_code_once(
                 (
                     None,
                     format!(
-                        "Token exchange request failed: {}. 请检查你的网络代理设置，确保可以稳定连接 Google 服务。",
+                        "Token exchange request failed: {}. 请check你的网络代理set，确保可以稳定连接 Google service。",
                         e
                     ),
                 )
@@ -585,7 +588,7 @@ async fn refresh_access_token_once(
                 (
                     None,
                     format!(
-                        "Refresh request failed: {}. 无法连接 Google 授权服务器，请检查代理设置。",
+                        "Refresh request failed: {}. none法连接 Google 授权service器，请check代理set。",
                         e
                     ),
                 )
@@ -631,7 +634,7 @@ pub async fn refresh_access_token_with_client(
         let mut last_attempt_err = None;
         let mut recovered_token = None;
 
-        // 对同一个 OAuth Client 最多执行 2 次尝试（首次遇 invalid_grant 进行 500ms 短退避重试确认）
+        // 对同一个 OAuth Client 最多执行 2 次尝试（首次遇 invalid_grant 进行 500ms 短退避retry确认）
         for retry_count in 0..2 {
             if retry_count > 0 {
                 tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;

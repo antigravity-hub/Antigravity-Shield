@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::modules::skills::{self, SkillItem};
 
 /// Scan and return all locally installed skills with Zero-Leak sanitization.

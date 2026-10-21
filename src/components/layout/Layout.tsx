@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { Outlet } from 'react-router-dom';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import Navbar from '../navbar/Navbar';
@@ -43,7 +47,7 @@ function Layout() {
 
     return (
         <div className="h-screen flex bg-[#FAFBFC] dark:bg-[#060807] text-slate-900 dark:text-slate-100 overflow-hidden">
-            {/* 全局窗口拖拽区域 - 使用 JS 手动触发拖拽，解决 HTML 属性失效问题 */}
+            {/* Global window drag region - uses JS drag trigger to prevent HTML attribute dropping */}
             <div
                 className="fixed top-0 left-0 right-36 h-9"
                 style={{

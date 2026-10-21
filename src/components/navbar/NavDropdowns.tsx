@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, MoreVertical, Sun, Moon, LogOut, Minimize2, Heart } from 'lucide-react';
@@ -126,7 +130,7 @@ export function NavigationDropdown({
     isActive,
     getCurrentNavItem,
     onNavigate,
-    showLabel = true // 默认显示文字
+    showLabel = true // default显示文字
 }: NavigationDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -141,7 +145,7 @@ export function NavigationDropdown({
     const currentItem = getCurrentNavItem();
     const CurrentIcon = currentItem?.icon;
 
-    // If 没有当前项,不渲染
+    // If 没有current项,不渲染
     if (!currentItem || !CurrentIcon) return null;
 
     return (

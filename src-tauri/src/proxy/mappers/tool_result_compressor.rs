@@ -1,8 +1,11 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! 工具结果输出压缩模块
 //!
 //! 提供智能压缩功能:
 //! - 浏览器快照压缩 (头+尾保留)
-//! - 大文件提示压缩 (提取关键信息)
+//! - 大文件hint压缩 (提取关键info)
 //! - 通用截断 (200,000 字符限制)
 
 use regex::Regex;
@@ -27,8 +30,8 @@ const SNAPSHOT_TAIL_RATIO: f64 = 0.3;
 
 /// 压缩工具结果文本
 ///
-/// 根据内容类型自动选择最佳压缩策略:
-/// 1. 大文件提示 → 提取关键信息
+/// 根据内容type自动选择最佳压缩策略:
+/// 1. 大文件hint → 提取关键info
 /// 2. 浏览器快照 → 头+尾保留
 /// 3. 其他 → 简单截断
 pub fn compact_tool_result_text(text: &str, max_chars: usize) -> String {
@@ -36,7 +39,7 @@ pub fn compact_tool_result_text(text: &str, max_chars: usize) -> String {
         return text.to_string();
     }
 
-    // [NEW] 针对可能的 HTML 内容进行深度预处理
+    // [NEW] 针对可能的 HTML 内容进行深度预handle
     let cleaned_text =
         if text.contains("<html") || text.contains("<body") || text.contains("<!DOCTYPE") {
             let cleaned = deep_clean_html(text);
@@ -54,7 +57,7 @@ pub fn compact_tool_result_text(text: &str, max_chars: usize) -> String {
         return cleaned_text;
     }
 
-    // 1. 检测大文件提示模式
+    // 1. 检测大文件hint模式
     if let Some(compacted) = compact_saved_output_notice(&cleaned_text, max_chars) {
         debug!(
             "[ToolCompressor] Detected saved output notice, compacted to {} chars",
@@ -82,12 +85,12 @@ pub fn compact_tool_result_text(text: &str, max_chars: usize) -> String {
     truncate_text_safe(&cleaned_text, max_chars)
 }
 
-/// 压缩"输出已保存到文件"类型的提示
+/// 压缩"输出已save到文件"type的hint
 ///
 /// 检测模式: "result (N characters) exceeds maximum allowed tokens. Output saved to <path>"
-/// 策略: 提取关键信息(文件路径、字符数、格式说明)
+/// 策略: 提取关键info(文件路径、字符数、格式说明)
 ///
-/// 根据提示内容类型自动提取关键信息
+/// 根据hint内容type自动提取关键info
 fn compact_saved_output_notice(text: &str, max_chars: usize) -> Option<String> {
     // 正则匹配: result (N characters) exceeds maximum allowed tokens. Output saved to <path>
     let re = Regex::new(
@@ -148,7 +151,7 @@ fn compact_saved_output_notice(text: &str, max_chars: usize) -> Option<String> {
 /// 检测: "page snapshot" 或 "页面快照" 或大量 "ref=" 引用
 /// 策略: 保留头部 70% + 尾部 30%,中间省略
 ///
-/// 使用头+尾保留策略压缩较长的页面快照数据
+/// 使用头+尾保留策略压缩较长的页面快照data
 fn compact_browser_snapshot(text: &str, max_chars: usize) -> Option<String> {
     // 检测是否是浏览器快照
     let is_snapshot = text.to_lowercase().contains("page snapshot")
@@ -260,12 +263,12 @@ fn deep_clean_html(html: &str) -> String {
         result = re.replace_all(&result, "[script omitted]").to_string();
     }
 
-    // 3. 移除 inline Base64 数据 (如 src="data:image/png;base64,...")
+    // 3. 移除 inline Base64 data (如 src="data:image/png;base64,...")
     if let Ok(re) = Regex::new(r#"(?i)data:[^;/]+/[^;]+;base64,[A-Za-z0-9+/=]+"#) {
         result = re.replace_all(&result, "[base64 omitted]").to_string();
     }
 
-    // 4. 移除冗余的空白字符
+    // 4. 移除冗余的empty白字符
     if let Ok(re) = Regex::new(r"\n\s*\n") {
         result = re.replace_all(&result, "\n").to_string();
     }
@@ -278,7 +281,7 @@ fn deep_clean_html(html: &str) -> String {
 /// Process: 逻辑:
 /// 1. 移除 base64 图片 (避免体积过大)
 /// 2. 压缩文本内容 (使用智能压缩策略)
-/// 3. 限制总字符数 (默认 200,000)
+/// 3. 限制总字符数 (default 200,000)
 ///
 /// 清理并截断工具调用结果内容块
 pub fn sanitize_tool_result_blocks(blocks: &mut Vec<Value>) {
@@ -314,7 +317,7 @@ pub fn sanitize_tool_result_blocks(blocks: &mut Vec<Value>) {
                 compacted.len()
             );
         } else {
-            // 保留其他类型的块 (例如图片), 但受总长度块数限制, 此处不单独截断
+            // 保留其他type的块 (例如图片), 但受总长度块数限制, 此处不单独截断
             cleaned_blocks.push(block.clone());
             used_chars += 100; // 估算非文本块大小
         }
@@ -342,7 +345,7 @@ mod tests {
     fn test_truncate_text() {
         let text = "a".repeat(300_000);
         let result = truncate_text_safe(&text, 200_000);
-        assert!(result.len() < 210_000); // 包含截断提示
+        assert!(result.len() < 210_000); // 包含截断hint
         assert!(result.contains("[truncated"));
         assert!(result.contains("100000 chars]"));
     }

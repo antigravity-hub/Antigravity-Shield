@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! Context Cache Manager — Multi-Layer Split Cache
 //!
 //! 维护三层独立缓存，遵循 Antigravity SignatureCache 的多层级模式。
@@ -7,15 +10,15 @@
 //!   Layer 1 (SI Cache):        raw_instructions → sanitized_text
 //!     跨 session 复用：相同 system prompt 的不同对话共享 sanitized 结果
 //!   Layer 2 (Tools Cache):     raw_tools_json → processed_tools
-//!     跨 session 复用：相同 tool schema 的不同对话共享处理结果
+//!     跨 session 复用：相同 tool schema 的不同对话共享handle结果
 //!   Layer 3 (Prefix Tracker):  combined_key → PrefixTrackingEntry
 //!     追踪 (Layer1 + Layer2) 组合的生命周期，用于 cachedContent 注入和命中统计
 //!
 //! 缓存生命周期:
-//! 1. 请求到达 → 计算 Layer 1 key → 查找或 sanitize systemInstruction
+//! 1. request到达 → 计算 Layer 1 key → 查找或 sanitize systemInstruction
 //! 2. 计算 Layer 2 key → 查找或构建 tools
 //! 3. 计算 Layer 3 key → 查找是否已有 cache_name → 注入 cachedContent
-//! 4. 响应到达 → 若 cachedContentTokenCount > 0 → 更新 Layer 3 统计
+//! 4. response到达 → 若 cachedContentTokenCount > 0 → update Layer 3 统计
 //! 5. 过期条目在 insert 时被动淘汰 (LRU on limit breach)
 
 use dashmap::DashMap;
@@ -30,7 +33,7 @@ const PREFIX_TRACKER_LIMIT: usize = 500;
 // ===== TTL Constants =====
 /// Layer 1 & 2 TTL: 30 min — 比最终内容缓存更长，因为不随 session 变化
 const LAYER_12_TTL: Duration = Duration::from_secs(30 * 60);
-/// Layer 3 TTL: 1 hour — 对齐 Gemini 显式缓存默认 TTL
+/// Layer 3 TTL: 1 hour — 对齐 Gemini 显式缓存default TTL
 const LAYER_3_TTL: Duration = Duration::from_secs(3600);
 
 // ===== Layer 1: System Instruction Cache =====
@@ -40,7 +43,7 @@ const LAYER_3_TTL: Duration = Duration::from_secs(3600);
 struct SiCacheEntry {
     /// 清洗后的 system instruction 文本
     sanitized_text: String,
-    /// 创建/更新时间
+    /// 创建/update时间
     timestamp: Instant,
     /// 命中次数
     hit_count: u64,
@@ -53,7 +56,7 @@ struct SiCacheEntry {
 struct ToolsCacheEntry {
     /// Process: 后的 tools JSON (序列化为字符串，使用时反序列化)
     tools_json: String,
-    /// 创建/更新时间
+    /// 创建/update时间
     timestamp: Instant,
     /// 命中次数
     hit_count: u64,
@@ -76,15 +79,15 @@ struct PrefixTrackingEntry {
     expires_at: Instant,
     /// 隐式缓存命中次数 (cachedContentTokenCount > 0)
     implicit_hit_count: u64,
-    /// 显式缓存命中次数 (成功注入 cachedContent)
+    /// 显式缓存命中次数 (success注入 cachedContent)
     explicit_hit_count: u64,
-    /// 模型名
+    /// model名
     model: String,
 }
 
 // ===== Stats =====
 
-/// 分层统计信息
+/// 分层统计info
 #[derive(Debug, Clone, Default)]
 pub struct LayerStats {
     /// Layer 1: SI 缓存统计
@@ -103,7 +106,7 @@ pub struct LayerStats {
     pub total_implicit_hits: u64,
     /// 总显式缓存命中次数
     pub total_explicit_hits: u64,
-    /// 当前活跃条目数
+    /// currentactive条目数
     pub active_si_entries: usize,
     pub active_tools_entries: usize,
     pub active_prefix_entries: usize,
@@ -160,7 +163,7 @@ impl CacheManager {
 
     /// 查找已缓存的 sanitized system instruction
     ///
-    /// Return:  Some(sanitized_text) 如果缓存有效，否则 None
+    /// Return:  Some(sanitized_text) 如果缓存有效，otherwise None
     pub fn lookup_si(&self, raw_hash: &str) -> Option<String> {
         if let Ok(mut stats) = self.si_stats.write() {
             stats.0 += 1; // total
@@ -260,7 +263,7 @@ impl CacheManager {
 
     /// 查找已缓存的 processed tools
     ///
-    /// Return:  Some(tools_json_string) 如果缓存有效，否则 None
+    /// Return:  Some(tools_json_string) 如果缓存有效，otherwise None
     pub fn lookup_tools(&self, raw_hash: &str) -> Option<String> {
         if let Ok(mut stats) = self.tools_stats.write() {
             stats.0 += 1;
@@ -357,7 +360,7 @@ impl CacheManager {
     /// 计算稳定的组合前缀哈希
     ///
     /// 输入: systemInstruction 和 tools 的 JSON 字符串
-    /// 使用 Layer 1 + Layer 2 的独立 hash 组合，而非原始数据
+    /// 使用 Layer 1 + Layer 2 的独立 hash 组合，而非原始data
     pub fn compute_prefix_hash(si_json: &str, tools_json: &str) -> String {
         let si_hash = Self::sha256_hex(si_json.as_bytes());
         let tools_hash = if tools_json.is_empty() {
@@ -371,7 +374,7 @@ impl CacheManager {
 
     /// 查找前缀跟踪条目中的 cache_name
     ///
-    /// Return:  Some(cache_name) 如果存在有效缓存，否则 None
+    /// Return:  Some(cache_name) 如果存在有效缓存，otherwise None
     pub fn lookup_prefix(&self, hash: &str) -> Option<String> {
         if let Ok(mut stats) = self.prefix_stats.write() {
             stats.0 += 1;
@@ -427,9 +430,9 @@ impl CacheManager {
         None
     }
 
-    /// 插入或更新 Layer 3 条目
+    /// 插入或update Layer 3 条目
     ///
-    /// cache_name: Gemini 返回的缓存资源名。目前使用 hash 本身作为 fallback。
+    /// cache_name: Gemini return的缓存资源名。目前使用 hash 本身作为 fallback。
     /// si_hash / tools_hash: 关联的 Layer 1/2 key，用于追踪
     pub fn insert_prefix(
         &self,
@@ -475,7 +478,7 @@ impl CacheManager {
         }
     }
 
-    /// 记录一次隐式缓存命中（来自响应的 cachedContentTokenCount > 0）
+    /// 记录一次隐式缓存命中（来自response的 cachedContentTokenCount > 0）
     pub fn record_implicit_hit(&self, hash: &str) {
         if let Some(mut entry) = self.prefix_tracker.get_mut(hash) {
             entry.implicit_hit_count += 1;
@@ -577,7 +580,7 @@ impl CacheManager {
         total
     }
 
-    /// 清空所有层缓存和统计
+    /// 清empty所有层缓存和统计
     pub fn clear(&self) {
         self.si_cache.clear();
         self.tools_cache.clear();

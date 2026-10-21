@@ -1,8 +1,11 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 //! User Token Database Module
-//! UserToken 数据库操作模块
+//! UserToken data库操作模块
 
 #![allow(dead_code)]
-// 用户令牌存储，部分接口留作后续扩展
+// user令牌存储，部分接口留作后续扩展
 
 use chrono::{FixedOffset, Local, Timelike, Utc};
 use rusqlite::{params, Connection, OptionalExtension};
@@ -10,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use uuid::Uuid;
 
-/// 用户令牌结构体
+/// user令牌结构体
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserToken {
     pub id: String,
@@ -55,21 +58,21 @@ pub struct TokenUsageLog {
     pub status: u16,
 }
 
-/// Get: 数据库路径
+/// Get: data库路径
 pub fn get_db_path() -> Result<PathBuf, String> {
     let mut path = crate::modules::account::get_data_dir()?;
     path.push("user_tokens.db");
     Ok(path)
 }
 
-/// 连接数据库
+/// 连接data库
 pub fn connect_db() -> Result<Connection, String> {
     let path = get_db_path()?;
     let conn = Connection::open(&path).map_err(|e| format!("Failed to open database: {}", e))?;
     Ok(conn)
 }
 
-/// Initialize: 数据库
+/// Initialize: data库
 pub fn init_db() -> Result<(), String> {
     let conn = connect_db()?;
 
@@ -96,7 +99,7 @@ pub fn init_db() -> Result<(), String> {
     )
     .map_err(|e| format!("Failed to create user_tokens table: {}", e))?;
 
-    // 尝试添加新列 (用于旧数据库迁移，忽略已存在的错误)
+    // 尝试add新列 (用于旧data库迁移，忽略已存在的error)
     let _ = conn.execute("ALTER TABLE user_tokens ADD COLUMN expires_type TEXT", []);
     let _ = conn.execute("ALTER TABLE user_tokens ADD COLUMN expires_at INTEGER", []);
     let _ = conn.execute(
@@ -159,8 +162,8 @@ pub fn init_db() -> Result<(), String> {
     );
     let _ = conn.execute("CREATE INDEX IF NOT EXISTS idx_token_usage_logs_request_time ON token_usage_logs(request_time)", []);
 
-    // [FIX Issue #1719] 数据清洗：修复旧版本升级导致的 NULL 字段
-    // 这些字段在旧版本中可能不存在，ALTER TABLE 添加后默认为 NULL，导致反序列化失败
+    // [FIX Issue #1719] data清洗：修复旧版本升级导致的 NULL 字段
+    // 这些字段在旧版本中可能不存在，ALTER TABLE add后default为 NULL，导致反序列化failed
     let _ = conn.execute("UPDATE user_tokens SET expires_type = 'never' WHERE expires_type IS NULL OR expires_type = ''", []);
     let _ = conn.execute(
         "UPDATE user_tokens SET max_ips = 0 WHERE max_ips IS NULL",
@@ -190,7 +193,7 @@ pub fn create_token(
     max_ips: i32,
     curfew_start: Option<String>,
     curfew_end: Option<String>,
-    custom_expires_at: Option<i64>, // 自定义过期时间戳 (秒)
+    custom_expires_at: Option<i64>, // 自定义过期时间戳 (s)
 ) -> Result<UserToken, String> {
     let conn = connect_db()?;
     let id = Uuid::new_v4().to_string();
@@ -280,8 +283,8 @@ pub fn list_tokens() -> Result<Vec<UserToken>, String> {
                 token: row.get("token")?,
                 username: row.get("username")?,
                 description: row.get("description")?,
-                enabled: row.get("enabled").unwrap_or(true), // 防御性默认值
-                expires_type: row.get("expires_type").unwrap_or("never".to_string()), // 防御性默认值
+                enabled: row.get("enabled").unwrap_or(true), // 防御性default值
+                expires_type: row.get("expires_type").unwrap_or("never".to_string()), // 防御性default值
                 expires_at: row.get("expires_at").unwrap_or(None),
                 max_ips: row.get("max_ips").unwrap_or(0),
                 curfew_start: row.get("curfew_start").unwrap_or(None),
@@ -303,7 +306,7 @@ pub fn list_tokens() -> Result<Vec<UserToken>, String> {
     Ok(tokens)
 }
 
-/// Get: 单个令牌信息
+/// Get: 单个令牌info
 pub fn get_token_by_id(id: &str) -> Result<Option<UserToken>, String> {
     let conn = connect_db()?;
     let mut stmt = conn
@@ -336,7 +339,7 @@ pub fn get_token_by_id(id: &str) -> Result<Option<UserToken>, String> {
     Ok(token)
 }
 
-/// 根据 Token 值获取令牌信息
+/// 根据 Token 值get令牌info
 pub fn get_token_by_value(token: &str) -> Result<Option<UserToken>, String> {
     let conn = connect_db()?;
     let mut stmt = conn
@@ -369,7 +372,7 @@ pub fn get_token_by_value(token: &str) -> Result<Option<UserToken>, String> {
     Ok(token)
 }
 
-/// Update: 令牌状态/备注等
+/// Update: 令牌status/备注等
 pub fn update_token(
     id: &str,
     username: Option<String>,
@@ -506,7 +509,7 @@ pub fn get_token_ips(token_id: &str) -> Result<Vec<TokenIpBinding>, String> {
     Ok(bindings)
 }
 
-/// 记录/更新令牌使用情况 (同时处理 user_tokens 和 token_ip_bindings)
+/// 记录/update令牌使用情况 (同时handle user_tokens 和 token_ip_bindings)
 pub fn record_token_usage_and_ip(
     token_id: &str,
     ip: &str,
@@ -522,7 +525,7 @@ pub fn record_token_usage_and_ip(
         .map_err(|e| format!("Failed to create transaction: {}", e))?;
     let now = Utc::now().timestamp();
 
-    // 1. 更新 user_tokens 主表
+    // 1. update user_tokens 主表
     tx.execute(
         "UPDATE user_tokens SET 
             last_used_at = ?1, 
@@ -533,7 +536,7 @@ pub fn record_token_usage_and_ip(
     )
     .map_err(|e| format!("Failed to update user_tokens stats: {}", e))?;
 
-    // 2. 更新或插入 token_ip_bindings 表
+    // 2. update或插入 token_ip_bindings 表
     let binding_exists: bool = tx.query_row(
         "SELECT EXISTS(SELECT 1 FROM token_ip_bindings WHERE token_id = ?1 AND ip_address = ?2)",
         params![token_id, ip],
@@ -586,13 +589,13 @@ pub fn record_token_usage_and_ip(
     Ok(())
 }
 
-/// Check:  Token 是否有效 (包含过期时间检查和 IP 限制检查)
+/// Check:  Token 是否有效 (包含过期时间check和 IP 限制check)
 /// Return: : (是否有效, 拒绝原因)
 pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>), String> {
     let token_opt = get_token_by_value(token_str)?;
 
     if let Some(token) = token_opt {
-        // 1. 检查过期时间
+        // 1. check过期时间
         if token.expires_type != "never" {
             if let Some(expires_at) = token.expires_at {
                 if expires_at < Utc::now().timestamp() {
@@ -607,11 +610,11 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
             }
         }
 
-        // 2. 检查 IP 限制
+        // 2. check IP 限制
         if token.max_ips > 0 {
             let conn = connect_db()?;
 
-            // Check: 当前 IP 是否已绑定
+            // Check: current IP 是否已绑定
             let is_bound: bool = conn.query_row(
                 "SELECT EXISTS(SELECT 1 FROM token_ip_bindings WHERE token_id = ?1 AND ip_address = ?2)",
                 params![token.id, ip],
@@ -619,7 +622,7 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
             ).unwrap_or(false);
 
             if !is_bound {
-                // If 未绑定，检查是否达到上限
+                // If 未绑定，check是否达到上限
                 let current_ip_count: i32 = conn
                     .query_row(
                         "SELECT COUNT(*) FROM token_ip_bindings WHERE token_id = ?1",
@@ -634,10 +637,10 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
             }
         }
 
-        // 3. 检查宵禁时间 (Curfew)
-        // 逻辑：如果当前北京时间在 start 和 end 之间，则拒绝
+        // 3. check宵禁时间 (Curfew)
+        // 逻辑：如果current北京时间在 start 和 end 之间，则拒绝
         // 格式：HH:MM
-        // 使用固定 UTC+8 (北京时间)，不依赖服务器本地时区
+        // 使用固定 UTC+8 (北京时间)，不依赖service器本地时区
         if let (Some(start_str), Some(end_str)) = (&token.curfew_start, &token.curfew_end) {
             if !start_str.is_empty() && !end_str.is_empty() {
                 let beijing_offset = FixedOffset::east_opt(8 * 3600).unwrap();
@@ -645,7 +648,7 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
                 let current_time_str =
                     format!("{:02}:{:02}", now_beijing.hour(), now_beijing.minute());
 
-                // 跨午夜处理: start > end (e.g. 23:00 to 06:00)
+                // 跨午夜handle: start > end (e.g. 23:00 to 06:00)
                 // 正常: start < end (e.g. 09:00 to 18:00)
                 let is_curfew = if start_str > end_str {
                     current_time_str >= *start_str || current_time_str < *end_str
@@ -669,8 +672,8 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
     }
 }
 
-/// Get:  IP 关联的用户名 (用于 IP 管理页面)
-/// Return: 最近一次使用该 IP 的 Token 所属的用户名
+/// Get:  IP 关联的user名 (用于 IP 管理页面)
+/// Return: 最近一次使用该 IP 的 Token 所属的user名
 pub fn get_username_for_ip(ip: &str) -> Result<Option<String>, String> {
     let conn = connect_db()?;
     let result: Option<String> = conn

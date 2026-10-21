@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import platformLogo from '../../assets/icons/antigravity-agentic.png';
 import ideLogo from '../../assets/icons/antigravity-ide.png';
 import cliLogo from '../../assets/icons/antigravity-cli.png';

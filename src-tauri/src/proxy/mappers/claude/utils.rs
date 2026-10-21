@@ -1,13 +1,16 @@
-// Claude 辅助函数
-// JSON Schema 清理、签名处理等
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
+// Claude Helper functions
+// JSON Schema 清理、签名handle等
 
 // 已移除未使用的 Value 导入
 
-/// 将 JSON Schema 中的类型名称转为大写 (Gemini 要求)
+/// 将 JSON Schema 中的type名称转为大写 (Gemini 要求)
 /// 例如: "string" -> "STRING", "integer" -> "INTEGER"
 // 已移除未使用的 uppercase_schema_types 函数
 
-/// 根据模型名称获取上下文 Token 限制
+/// 根据model名称get上下文 Token 限制
 pub fn get_context_limit_for_model(model: &str) -> u32 {
     if model.contains("pro") {
         2_097_152 // 2M for Pro
@@ -27,13 +30,13 @@ pub fn to_claude_usage(
     let cached_tokens = usage_metadata.cached_content_token_count.unwrap_or(0);
 
     // 【改进的智能阈值回归算法】
-    // 目标：既利用 Gemini 大窗口，又能在高用量时让 Claude Code 正确触发 compact 提示
+    // 目标：既利用 Gemini 大窗口，又能在高用量时让 Claude Code 正确触发 compact hint
     //
     // 分阶段策略：
     // - 0-50%:  激进压缩，享受大上下文
     // - 50-70%: 开始加速回升
     // - 70-85%: 快速回升到显示 70%+
-    // - 85%+:   接近 1:1 显示，确保触发 Claude Code 的 compact 提示
+    // - 85%+:   接近 1:1 显示，确保触发 Claude Code 的 compact hint
     let total_raw = prompt_tokens;
 
     // [FIX] Restore low token threshold - don't scale if under 30k tokens
@@ -57,12 +60,12 @@ pub fn to_claude_usage(
             (display_ratio * TARGET_MAX) as u32
         } else if ratio <= 0.85 {
             // 阶段3 (70-85%): 快速回升到显示 70%
-            // 这个阶段让用户开始注意到上下文在增长
+            // 这个阶段让user开始note到上下文在增长
             let progress = (ratio - 0.7) / 0.15;
             let display_ratio = 0.5 + progress * 0.2;
             (display_ratio * TARGET_MAX) as u32
         } else {
-            // 阶段4 (85%+): 接近 1:1 显示，触发 Claude Code 的 compact 提示
+            // 阶段4 (85%+): 接近 1:1 显示，触发 Claude Code 的 compact hint
             // 85% 真实 → 70% 显示
             // 100% 真实 → 97% 显示
             let progress = (ratio - 0.85) / 0.15;
@@ -73,7 +76,7 @@ pub fn to_claude_usage(
         total_raw
     };
 
-    // 【调试日志】方便手动验证
+    // 【调试日志】方便手动validate
     if scaling_enabled && total_raw > 30_000 {
         let ratio = total_raw as f64 / context_limit as f64;
         let display_ratio = scaled_total as f64 / 195_000.0;

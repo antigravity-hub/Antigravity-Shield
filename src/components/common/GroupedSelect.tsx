@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +21,7 @@ interface GroupedSelectProps {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
-    allowCustomInput?: boolean; // 新增: 是否允许自定义输入
+    allowCustomInput?: boolean; // Whether custom input is allowed
 }
 
 export default function GroupedSelect({
@@ -27,7 +31,7 @@ export default function GroupedSelect({
     placeholder = 'Select...',
     className = '',
     disabled = false,
-    allowCustomInput = false // 新增: 默认不允许自定义输入
+    allowCustomInput = false // 新增: default不允许自定义输入
 }: GroupedSelectProps) {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +52,7 @@ export default function GroupedSelect({
         return acc;
     }, {} as Record<string, SelectOption[]>);
 
-    // Get: 当前选中项的标签
+    // Get: current选中项的标签
     const selectedOption = options.find(opt => opt.value === value);
     const selectedLabel = selectedOption?.label || value || placeholder;
 
@@ -67,7 +71,7 @@ export default function GroupedSelect({
     // 点击外部关闭下拉菜单
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            // 修复: 检查点击是否在容器或下拉菜单内部
+            // Fix: check点击是否在容器或下拉菜单内部
             const target = event.target as Node;
             const isClickInsideContainer = containerRef.current?.contains(target);
             const isClickInsideDropdown = dropdownRef.current?.contains(target);

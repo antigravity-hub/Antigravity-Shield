@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // 上游客户端实现
 // 基于高性能通讯接口封装
 
@@ -8,22 +11,22 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use tokio::time::Duration;
 
-/// 端点降级尝试的记录信息
+/// 端点降级尝试的记录info
 #[derive(Debug, Clone)]
 pub struct FallbackAttemptLog {
     /// 尝试的端点 URL
     pub endpoint_url: String,
-    /// HTTP 状态码 (网络错误时为 None)
+    /// HTTP status码 (网络error时为 None)
     pub status: Option<u16>,
-    /// 错误描述
+    /// error描述
     pub error: String,
 }
 
-/// 上游调用结果，包含响应和降级尝试记录
+/// 上游调用结果，包含response和降级尝试记录
 pub struct UpstreamCallResult {
-    /// 最终的 HTTP 响应
+    /// 最终的 HTTP response
     pub response: Response,
-    /// 降级过程中失败的端点尝试记录 (成功时为空)
+    /// Fallback degradation过程中failed的端点尝试记录 (success时为empty)
     pub fallback_attempts: Vec<FallbackAttemptLog>,
 }
 
@@ -43,7 +46,7 @@ pub fn mask_email(email: &str) -> String {
     }
 }
 
-/// [NEW] 错误日志脱敏：抹除报错信息中的 access_token, proxy_url 等敏感凭证
+/// [NEW] error日志脱敏：抹除报错info中的 access_token, proxy_url 等敏感凭证
 pub fn sanitize_error_for_log(error_text: &str) -> String {
     // 抹除常见敏感 key 的值
     let re = regex::Regex::new(r#"(?i)(access_token|refresh_token|id_token|authorization|api_key|secret|password|proxy_url|http_proxy|https_proxy)\s*[:=]\s*[^"'\\\s,}\]]+"#).unwrap();
@@ -284,9 +287,9 @@ impl UpstreamClient {
             .emulation(rquest_util::Emulation::Chrome123)
             // Connection settings (优化连接复用，减少建立开销)
             .connect_timeout(Duration::from_secs(20))
-            .pool_max_idle_per_host(20) // 每主机最多 20 个空闲连接 (对齐官方指纹)
-            .pool_idle_timeout(Duration::from_secs(90)) // 空闲连接保持 90 秒
-            .tcp_keepalive(Duration::from_secs(60)) // TCP 保活探测 60 秒
+            .pool_max_idle_per_host(20) // 每主机最多 20 个empty闲连接 (对齐官方指纹)
+            .pool_idle_timeout(Duration::from_secs(90)) // empty闲连接保持 90 s
+            .tcp_keepalive(Duration::from_secs(60)) // TCP 保活探测 60 s
             // 强制开启 HTTP/2 协议，并支持在 SOCKS/HTTPS 代理下通过 ALPN 强制降级/协商
             .timeout(Duration::from_secs(600));
 
@@ -439,7 +442,7 @@ impl UpstreamClient {
     }
 
     /// [FIX #765] 调用 v1internal API，支持透传额外的 Headers
-    /// [ENHANCED] 返回 UpstreamCallResult，包含降级尝试记录，用于 debug 日志
+    /// [ENHANCED] return UpstreamCallResult，包含降级尝试记录，用于 debug 日志
     pub async fn call_v1_internal_with_headers(
         &self,
         method: &str,
@@ -513,14 +516,14 @@ impl UpstreamClient {
 
         let mut has_triggered_downgrade = false;
 
-        // [TEMPORARY FIX #3074] 针对 403 SERVICE_DISABLED 的自动降级重试逻辑
-        // 我们包装一层循环，以便在检测到特定错误时移除 Header 并重试
+        // [TEMPORARY FIX #3074] 针对 403 SERVICE_DISABLED 的自动降级retry逻辑
+        // 我们包装一层循环，以便在检测到特定error时移除 Header 并retry
         loop {
             let mut last_err: Option<String> = None;
             let mut fallback_attempts: Vec<FallbackAttemptLog> = Vec::new();
             let mut should_retry_without_header = false;
 
-            // 遍历所有端点，失败时自动切换
+            // 遍历所有端点，failed时自动切换
             for (idx, base_url) in V1_INTERNAL_BASE_URL_FALLBACKS.iter().enumerate() {
                 let url = Self::build_url(base_url, method, query_string);
                 let has_next = idx + 1 < V1_INTERNAL_BASE_URL_FALLBACKS.len();
@@ -531,7 +534,7 @@ impl UpstreamClient {
 
                 // [FIX] 仅对流式接口 (streamGenerateContent) 使用分块传输仿真
                 // 对其他接口 (如 generateContent, loadCodeAssist) 发送正常的固定长度 Body
-                // 否则图像生成会因为缺少 Content-Length 而被 Google 服务端拒绝或限流 (429)
+                // Otherwise图像生成会因为缺少 Content-Length 而被 Google service端拒绝或限流 (429)
                 if method == "streamGenerateContent" {
                     let stream_bytes = body_bytes.clone();
                     req_builder = req_builder.body(rquest::Body::wrap_stream(
@@ -567,8 +570,8 @@ impl UpstreamClient {
                             });
                         }
 
-                        // [NEW] 检测 403 错误 (Issue #3074)
-                        // 只要带有项目 Header 且返回 403，我们就尝试降级重试一次
+                        // [NEW] 检测 403 error (Issue #3074)
+                        // 只要带有项目 Header 且return 403，我们就尝试降级retry一次
                         if status == StatusCode::FORBIDDEN
                             && !has_triggered_downgrade
                             && headers.contains_key("x-goog-user-project")
@@ -581,7 +584,7 @@ impl UpstreamClient {
                             break;
                         }
 
-                        // If 有下一个端点且当前错误可重试，则切换
+                        // If 有下一个端点且currenterror可retry，则切换
                         if has_next && Self::should_try_next_endpoint(status) {
                             let err_msg = format!("Upstream {} returned {}", base_url, status);
                             tracing::warn!(
@@ -600,7 +603,7 @@ impl UpstreamClient {
                             continue;
                         }
 
-                        // 不可重试的错误或已是最后一个端点，直接返回
+                        // 不可retry的error或已是最后一个端点，直接return
                         return Ok(UpstreamCallResult {
                             response: resp,
                             fallback_attempts,
@@ -609,7 +612,7 @@ impl UpstreamClient {
                     Err(e) => {
                         let msg = format!("HTTP request failed at {}: {}", base_url, e);
                         tracing::debug!("{}", msg);
-                        // [NEW] 记录网络错误的降级尝试
+                        // [NEW] 记录网络error的降级尝试
                         fallback_attempts.push(FallbackAttemptLog {
                             endpoint_url: url.clone(),
                             status: None,
@@ -634,33 +637,33 @@ impl UpstreamClient {
                 continue;
             }
 
-            // If 没有触发降级且所有端点都尝试过，返回最后的错误
+            // If 没有触发降级且所有端点都尝试过，return最后的error
             return Err(last_err.unwrap_or_else(|| "All endpoints failed".to_string()));
         }
     }
 
-    /// 调用 v1internal API（带 429 重试,支持闭包）
+    /// 调用 v1internal API（带 429 retry,支持闭包）
     ///
-    /// 带容错和重试的核心请求逻辑
+    /// 带容错和retry的核心request逻辑
     ///
     /// # Arguments
     /// * `method` - API method (e.g., "generateContent")
     /// * `query_string` - Optional query string (e.g., "?alt=sse")
-    /// * `get_credentials` - 闭包，获取凭证（支持账号轮换）
-    /// * `build_body` - 闭包，接收 project_id 构建请求体
-    /// * `max_attempts` - 最大重试次数
+    /// * `get_credentials` - 闭包，get凭证（支持account轮换）
+    /// * `build_body` - 闭包，接收 project_id 构建request体
+    /// * `max_attempts` - 最大retry次数
     ///
     /// # Returns
     /// HTTP Response
-    // 已移除弃用的重试方法 (call_v1_internal_with_retry)
+    // 已移除弃用的retry方法 (call_v1_internal_with_retry)
 
     // 已移除弃用的辅助方法 (parse_retry_delay)
 
     // 已移除弃用的辅助方法 (parse_duration_ms)
 
-    /// Get: 可用模型列表
+    /// Get: 可用model列表
     ///
-    /// Get: 远端模型列表，支持多端点自动 Fallback
+    /// Get: 远端model列表，支持多端点自动 Fallback
     #[allow(dead_code)] // API ready for future model discovery feature
     pub async fn fetch_available_models(
         &self,
