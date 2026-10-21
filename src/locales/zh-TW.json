@@ -111,7 +111,8 @@
     "more": "More",
     "toolkit_active": "Toolkit Active",
     "toolkit_waiting": "Toolkit Waiting",
-    "toolkit_install": "Install Toolkit"
+    "toolkit_install": "Install Toolkit",
+    "ecosystem": "技能與 MCP"
   },
   "dashboard": {
     "hello": "你好, 使用者 👋",
@@ -158,7 +159,7 @@
     "view_token_stats": "Token Stats",
     "view_token_stats_tooltip": "View Token Statistics & Consumption Limits",
     "velocity_gauge": {
-      "title": "Quota Consumption & Runway Forecast",
+      "title": "配額消耗與續航預測",
       "fleet_view": "Entire Fleet",
       "active_view": "Active Account",
       "expand": "Expand Radar",
@@ -171,19 +172,19 @@
       "per_hour": "/ hr",
       "more_than_7_days": "> 7 Days",
       "more_than_7d": "> 7d",
-      "session_suffix": "(Session)",
-      "deficit_title": "Projected Quota Deficit: ~{{hours}}h Shortfall",
-      "surplus_title": "Sustainable Consumption — Quota Safe",
-      "deficit_desc": "At velocity <strong>{{burnRate}}% / hr</strong>, quota depletes on <strong>{{date}}</strong> — approximately <span className=\"font-bold underline text-rose-500\">{{hours}}h before reset</span>.",
-      "surplus_desc": "Current pace (<strong>{{burnRate}}% / hr</strong>) is sustainable with <span className=\"font-bold text-emerald-500\">+{{hours}}h surplus runway</span> past reset.",
-      "session_exhausted_title": "5-Hour Session Quota Exhausted (0% Remaining)",
-      "session_risk_title": "Projected Session Depletion: ~{{duration}} Shortfall",
-      "session_safe_title": "Session Quota Sustainable until Reset ({{time}})",
+      "session_suffix": "（會話）",
+      "deficit_title": "預計配額赤字：提早 ~{{hours}} 小時耗盡",
+      "surplus_title": "可持續消耗 — 配額充足安全",
+      "deficit_desc": "以當前速率（<strong>{{burnRate}}% / 小時</strong>），配額將在 <strong>{{date}}</strong> 耗盡 — 約提早 <span className=\"font-bold underline text-rose-500\">{{hours}} 小時</span> 於週期重置。",
+      "surplus_desc": "當前消耗速率（<strong>{{burnRate}}% / 小時</strong>）健康可持續，距離週期重置擁有 <span className=\"font-bold text-emerald-500\">+{{hours}} 小時盈餘續航</span>。",
+      "session_exhausted_title": "5小時會話配額已耗盡（剩餘 0%）",
+      "session_risk_title": "預計會話配額耗盡：剩餘 ~{{duration}}",
+      "session_safe_title": "會話配額可持續至重置時間（{{time}}）",
       "session_exhausted_badge": "⏳ 5H Quota Exhausted (0%)",
       "session_depletion_badge": "⏳ Depletion in {{duration}} ({{time}})",
       "session_sustainable_badge": "⏳ Sustainable until Reset ({{time}})",
-      "session_risk_desc": "Based on current burn rate, the 5-hour quota will deplete in <strong>{{duration}}</strong> (around <strong>{{time}}</strong>).",
-      "session_safe_desc": "Session consumption is steady and will safely reach the next reset at <strong>{{time}}</strong>.",
+      "session_risk_desc": "基於當前消耗速率，5小時會話配額將在 <strong>{{duration}}</strong> 後（約 <strong>{{time}}</strong>）耗盡。",
+      "session_safe_desc": "當前會話消耗速率均衡，配額足以支撐至下一次重置時間（<strong>{{time}}</strong>）。",
       "duration_hours_mins": "{{hours}}h {{mins}}m",
       "duration_mins": "{{mins}}m",
       "tag_strong_sell": "STRONG SELL",
@@ -586,7 +587,8 @@
     "recheck_btn": "Re-check",
     "recheck_tooltip": "Clear block status and re-check account quota",
     "go_to_appeal": "Go to Appeal",
-    "copy_appeal_url": "Copy Appeal URL"
+    "copy_appeal_url": "Copy Appeal URL",
+    "drag_disabled_autosort": "啟用自動排序時禁用手動拖拽排序"
   },
   "settings": {
     "save": "儲存設定",
@@ -1640,7 +1642,8 @@
     "mandatory_title": "Critical Update Required",
     "mandatory_desc": "This release introduces critical protocol upgrades and anti-403 security safeguards. Updating is mandatory to prevent account suspensions and service interruptions.",
     "btn_grace_period": "30-Min Grace Period (Finish Task)",
-    "grace_period_activated": "30-minute grace period activated. Please update your system soon."
+    "grace_period_activated": "30-minute grace period activated. Please update your system soon.",
+    "reason_title": "更新內容及修復原因"
   },
   "login": {
     "title": "安全存取控制",
@@ -2001,5 +2004,123 @@
     "overlay_depleted_badge": "Depleted",
     "overlay_waiting": "Receiving Shield telemetry...",
     "overlay_default_model": "AI Model"
+  },
+  "ecosystem": {
+    "active_first": "優先活躍",
+    "architecture_docs": "架構文件",
+    "file_path": "檔案路徑",
+    "github_repo": "GitHub 倉庫",
+    "install_instruction": "安裝指引",
+    "installing": "正在安裝...",
+    "local_path": "本機路徑",
+    "local_shield_title": "Antigravity Shield 本機規則庫",
+    "official_maker": "官方認證",
+    "one_click_install": "一鍵安裝",
+    "preview_content": "預覽規則內容",
+    "private_and_local": "私有本機運行",
+    "read_only": "唯讀規則",
+    "security_audits": "安全稽核",
+    "view_on_skills_sh": "在 skills.sh 查看",
+    "zero_leak_banner": "零洩漏沙箱保護",
+    "zero_leak_isolated": "零洩漏完全隔離",
+    "source": {
+      "all": "全部來源",
+      "local": "本機規則",
+      "skills_sh": "skills.sh 規則生態"
+    },
+    "status": {
+      "active": "已啟用",
+      "inactive": "未啟用"
+    },
+    "mcp": {
+      "active": "活躍",
+      "diagnostics": "MCP 診斷中心",
+      "exposed_tools": "已暴露工具",
+      "filter_all": "全部",
+      "filter_disabled": "已停用",
+      "filter_healthy": "健康",
+      "filter_needs_config": "需設定",
+      "health_overview": "MCP 健康狀態概覽",
+      "inactive": "未運行",
+      "requirements": "執行環境需求",
+      "status_connected": "連線正常",
+      "status_disabled": "已停用",
+      "status_error": "連線錯誤",
+      "status_needs_config": "等待設定",
+      "status_testing": "正在診斷...",
+      "summary_healthy": "健康服務",
+      "summary_inactive": "未啟用服務",
+      "test_all": "全面測試",
+      "testing_all": "診斷執行中...",
+      "tools_count": "{{count}} 項工具",
+      "add_server": "添加 MCP 服務",
+      "add_modal_title": "注册新 MCP 服務",
+      "test": "測試服務連接",
+      "configure": "設定环境变量与参数"
+    },
+    "title": "Agent 生態枢纽",
+    "subtitle": "管理、設定并監控 Agent 技能、Model Context Protocol (MCP) 服務及行为規則",
+    "search_placeholder": "搜索工具、触发词、服務...",
+    "tabs": {
+      "skills": "Agent 技能",
+      "mcp": "MCP 服務",
+      "rules": "規則与 Prompt"
+    },
+    "skills": {
+      "create": "創建技能",
+      "create_modal_title": "定义自定义 Agent 技能"
+    },
+    "rules": {
+      "create": "添加指导規則"
+    },
+    "no_skills": "没有找到匹配的技能",
+    "inspect": "查看 SKILL.md"
+  },
+  "sidebar": {
+    "collapse": "收起側邊欄",
+    "expand": "展開側邊欄",
+    "sections": {
+      "core": "核心功能",
+      "ecosystem": "工具生態",
+      "monitoring": "運行遥測",
+      "system": "系統設置"
+    }
+  },
+  "theme": {
+    "dark": "深色模式",
+    "light": "淺色模式",
+    "system": "跟隨系統",
+    "accent_palette": "UI 主題高亮色盤",
+    "choose_accent": "選擇界面强調色",
+    "accents": {
+      "seafoam": {
+        "name": "海泡石綠 (Seafoam Green)",
+        "desc": "经典品牌標志 • 平衡、現代与宁静"
+      },
+      "cyan": {
+        "name": "天青蔚藍 (Azure Sky)",
+        "desc": "極客高科技青藍 • 現代代碼编辑器美学"
+      },
+      "violet": {
+        "name": "薰衣草紫 (Lavender Violet)",
+        "desc": "优雅奢华与深层专注"
+      },
+      "amber": {
+        "name": "琥珀流金 (Amber Gold)",
+        "desc": "温暖黑曜石蜜色 • 高端终端质感"
+      },
+      "rose": {
+        "name": "紅宝玫瑰 (Ruby Rose)",
+        "desc": "充满活力与高能表現"
+      },
+      "emerald": {
+        "name": "翡翠碧綠 (Jade Emerald)",
+        "desc": "经典透亮矩阵綠"
+      },
+      "sunset": {
+        "name": "晚霞珊瑚 (Sunset Coral)",
+        "desc": "热烈地平线 • 鲜明醒目"
+      }
+    }
   }
 }

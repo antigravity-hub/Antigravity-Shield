@@ -194,7 +194,7 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
             // 改进错误信息显示
             let errorMsg = String(error);
 
-            // 如果是 refresh_token 缺失错误,显示完整信息(包含解决方案)
+            // If 是 refresh_token 缺失错误,显示完整信息(包含解决方案)
             if (errorMsg.includes('Refresh Token') || errorMsg.includes('refresh_token')) {
                 setMessage(errorMsg);
             } else if (errorMsg.includes('Tauri') || errorMsg.toLowerCase().includes('environment') || errorMsg.includes('环境')) {
@@ -345,7 +345,7 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
                 if (popup.closed) {
                     clearInterval(timer);
                     window.removeEventListener('message', handleMessage);
-                    if (statusRef.current === 'loading') { // 如果还在 loading 状态就关闭了，说明取消了
+                    if (statusRef.current === 'loading') { // If 还在 loading 状态就关闭了，说明取消了
                         setStatus('idle');
                         setMessage('');
                     }
@@ -458,7 +458,7 @@ function AddAccountDialog({ onAdd, showText = true }: AddAccountDialogProps) {
         }
     };
 
-    // 状态提示组件
+    // State: 提示组件
     const StatusAlert = () => {
         if (status === 'idle' || !message) return null;
 

@@ -11,7 +11,7 @@ pub struct QuotaBucket {
     /// 剩余比例 0.0-1.0
     #[serde(alias = "remainingFraction")]
     pub remaining_fraction: f64,
-    /// 重置时间 (RFC3339)
+    /// Reset: 时间 (RFC3339)
     #[serde(alias = "resetTime")]
     pub reset_time: String,
     #[serde(skip_serializing_if = "Option::is_none", alias = "displayName")]
@@ -30,7 +30,7 @@ pub struct QuotaGroup {
     pub buckets: Vec<QuotaBucket>,
 }
 
-/// 模型配额信息
+/// Model quotas信息
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ModelQuota {
     pub name: String,

@@ -40,7 +40,7 @@ pub struct WarmupResponse {
     pub error: Option<String>,
 }
 
-/// 处理预热请求
+/// Process: 预热请求
 pub async fn handle_warmup(
     State(state): State<AppState>,
     Json(req): Json<WarmupRequest>,
@@ -197,7 +197,7 @@ pub async fn handle_warmup(
         Err(_) => false,
     };
 
-    // 如果流式未成功（网络报错或 HTTP 非 2xx），回退尝试非流式请求 (403 绝不回退)
+    // If 流式未成功（网络报错或 HTTP 非 2xx），回退尝试非流式请求 (403 绝不回退)
     let need_fallback = if is_forbidden {
         tracing::warn!(
             "[Warmup-API] 🛑 Upstream 403 Forbidden detected for {}. Skipping all fallbacks to protect account from automated abuse detection.",
@@ -234,7 +234,7 @@ pub async fn handle_warmup(
         }
     }
 
-    // 如果指定模型未成功且非 403，自动回退到最稳定的 gemini-2.5-flash
+    // If 指定模型未成功且非 403，自动回退到最稳定的 gemini-2.5-flash
     let still_failed = if is_forbidden {
         false
     } else {

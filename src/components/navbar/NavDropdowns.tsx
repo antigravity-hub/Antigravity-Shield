@@ -141,7 +141,7 @@ export function NavigationDropdown({
     const currentItem = getCurrentNavItem();
     const CurrentIcon = currentItem?.icon;
 
-    // 如果没有当前项,不渲染
+    // If 没有当前项,不渲染
     if (!currentItem || !CurrentIcon) return null;
 
     return (

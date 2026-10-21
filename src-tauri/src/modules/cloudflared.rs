@@ -108,7 +108,7 @@ impl CloudflaredManager {
         }
     }
 
-    /// 检查是否已安装
+    /// Check: 是否已安装
     pub async fn check_installed(&self) -> (bool, Option<String>) {
         if !self.bin_path.exists() {
             return (false, None);
@@ -135,12 +135,12 @@ impl CloudflaredManager {
         }
     }
 
-    /// 获取当前状态
+    /// Get: 当前状态
     pub async fn get_status(&self) -> CloudflaredStatus {
         self.status.read().await.clone()
     }
 
-    /// 更新状态
+    /// Update: 状态
     async fn update_status(&self, f: impl FnOnce(&mut CloudflaredStatus)) {
         let mut status = self.status.write().await;
         f(&mut status);
@@ -225,7 +225,7 @@ impl CloudflaredManager {
 
     /// 启动隧道
     pub async fn start(&self, config: CloudflaredConfig) -> Result<CloudflaredStatus, String> {
-        // 检查是否已在运行
+        // Check: 是否已在运行
         {
             let proc = self.process.read().await;
             if proc.is_some() {
@@ -403,7 +403,7 @@ impl CloudflaredManager {
     }
 }
 
-/// 获取下载URL
+/// Get: 下载URL
 fn get_download_url() -> Result<String, String> {
     let os = std::env::consts::OS;
     let arch = std::env::consts::ARCH;

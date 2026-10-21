@@ -11,7 +11,7 @@ pub trait ToolAdapter: Send + Sync {
     /// * `tool_name` - 工具名称,通常格式为 "mcp__provider__function"
     ///
     /// # Returns
-    /// 如果匹配返回 true,否则返回 false
+    /// If 匹配返回 true,否则返回 false
     fn matches(&self, tool_name: &str) -> bool;
 
     /// 在通用清洗前执行的预处理

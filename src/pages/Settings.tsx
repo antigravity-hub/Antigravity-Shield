@@ -131,7 +131,7 @@ function Settings() {
     useEffect(() => {
         loadConfig();
 
-        // 获取真实数据目录路径
+        // Get: 真实数据目录路径
         invoke<string>('get_data_dir_path')
             .then(path => setDataDirPath(path))
             .catch(err => console.error('Failed to get data dir:', err));
@@ -147,14 +147,14 @@ function Settings() {
             })
             .catch(err => console.error('Failed to load update settings:', err));
 
-        // 获取真实的开机自启状态
+        // Get: 真实的开机自启状态
         invoke<boolean>('is_auto_launch_enabled')
             .then(enabled => {
                 setFormData(prev => ({ ...prev, auto_launch: enabled }));
             })
             .catch(err => console.error('Failed to get auto launch status:', err));
 
-        // 获取应用真实版本号
+        // Get: 应用真实版本号
         getAppVersion().then(v => setAppVersion(v));
 
         // 检测是否通过 Homebrew Cask 安装 (仅 Tauri 环境)
@@ -177,7 +177,7 @@ function Settings() {
         }
     }, [config]);
 
-    // 删除自动启用调试控制台的逻辑 - 改为用户手动控制
+    // Delete: 自动启用调试控制台的逻辑 - 改为用户手动控制
 
     const handleSave = async () => {
         try {
@@ -192,7 +192,7 @@ function Settings() {
             await saveConfig(formData);
             showToast(t('common.saved'), 'success');
 
-            // 如果修改了代理配置，提示用户需要重启
+            // If 修改了代理配置，提示用户需要重启
             if (proxyEnabled && proxyUrl) {
                 showToast(t('proxy.config.upstream_proxy.restart_hint'), 'info');
             }
@@ -871,18 +871,18 @@ function Settings() {
                                                                 ? [...hiddenItems, item.path]
                                                                 : hiddenItems.filter(p => p !== item.path);
 
-                                                            // 乐观更新 UI
+                                                            // Optimistically update UI
                                                             const newConfig = {
                                                                 ...formData,
                                                                 hidden_menu_items: newHiddenItems
                                                             };
                                                             setFormData(newConfig);
 
-                                                            // 尝试保存
+                                                            // Attempt save
                                                             try {
                                                                 await saveConfig(newConfig);
                                                             } catch (error) {
-                                                                // 保存失败，回滚到原始快照
+                                                                // Save failed, roll back to original snapshot
                                                                 setFormData(originalConfig);
                                                                 showToast(`${t('settings.save_failed_reverted', 'Failed to save, reverted settings')}: ${error}`, 'error');
                                                             }
@@ -1264,7 +1264,7 @@ function Settings() {
                                         const updates: any = {
                                             quota_protection: newConfig
                                         };
-                                        // 联动逻辑：开启配额保护时，强制开启后台自动刷新 (不仅仅是预热)
+                                        // Coordinated logic: when quota protection is enabled, enforce background auto-refresh
                                         if (newConfig.enabled) {
                                             updates.auto_refresh = true;
                                         }

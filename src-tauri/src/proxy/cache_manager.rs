@@ -51,7 +51,7 @@ struct SiCacheEntry {
 /// Layer 2 条目: raw tools JSON → processed tools
 #[derive(Debug, Clone)]
 struct ToolsCacheEntry {
-    /// 处理后的 tools JSON (序列化为字符串，使用时反序列化)
+    /// Process: 后的 tools JSON (序列化为字符串，使用时反序列化)
     tools_json: String,
     /// 创建/更新时间
     timestamp: Instant,
@@ -151,7 +151,7 @@ impl CacheManager {
         format!("{:x}", hasher.finalize())
     }
 
-    /// 检查 Instant 是否已过期
+    /// Check:  Instant 是否已过期
     fn is_expired(timestamp: Instant, ttl: Duration) -> bool {
         timestamp.elapsed() > ttl
     }
@@ -160,7 +160,7 @@ impl CacheManager {
 
     /// 查找已缓存的 sanitized system instruction
     ///
-    /// 返回 Some(sanitized_text) 如果缓存有效，否则 None
+    /// Return:  Some(sanitized_text) 如果缓存有效，否则 None
     pub fn lookup_si(&self, raw_hash: &str) -> Option<String> {
         if let Ok(mut stats) = self.si_stats.write() {
             stats.0 += 1; // total
@@ -260,7 +260,7 @@ impl CacheManager {
 
     /// 查找已缓存的 processed tools
     ///
-    /// 返回 Some(tools_json_string) 如果缓存有效，否则 None
+    /// Return:  Some(tools_json_string) 如果缓存有效，否则 None
     pub fn lookup_tools(&self, raw_hash: &str) -> Option<String> {
         if let Ok(mut stats) = self.tools_stats.write() {
             stats.0 += 1;
@@ -371,7 +371,7 @@ impl CacheManager {
 
     /// 查找前缀跟踪条目中的 cache_name
     ///
-    /// 返回 Some(cache_name) 如果存在有效缓存，否则 None
+    /// Return:  Some(cache_name) 如果存在有效缓存，否则 None
     pub fn lookup_prefix(&self, hash: &str) -> Option<String> {
         if let Ok(mut stats) = self.prefix_stats.write() {
             stats.0 += 1;
@@ -517,7 +517,7 @@ impl CacheManager {
 
     // ===== Stats & Management =====
 
-    /// 获取分层统计
+    /// Get: 分层统计
     pub fn get_layer_stats(&self) -> LayerStats {
         let si = self.si_stats.read().unwrap();
         let tools = self.tools_stats.read().unwrap();
@@ -600,7 +600,7 @@ impl CacheManager {
 use std::sync::LazyLock;
 static GLOBAL_CACHE_MANAGER: LazyLock<CacheManager> = LazyLock::new(CacheManager::new);
 
-/// 获取全局 CacheManager 单例
+/// Get: 全局 CacheManager 单例
 pub fn global_cache_manager() -> &'static CacheManager {
     &GLOBAL_CACHE_MANAGER
 }

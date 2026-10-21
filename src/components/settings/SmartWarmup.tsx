@@ -28,7 +28,7 @@ const SmartWarmup: React.FC<SmartWarmupProps> = ({ config, onChange }) => {
 
     const handleEnabledChange = (enabled: boolean) => {
         let newConfig = { ...config, enabled };
-        // 如果开启预热且勾选列表为空，则默认勾选所有核心模型
+        // If 开启预热且勾选列表为空，则默认勾选所有核心模型
         if (enabled && (!config.monitored_models || config.monitored_models.length === 0)) {
             newConfig.monitored_models = warmupModelsOptions.map(o => o.id);
         }

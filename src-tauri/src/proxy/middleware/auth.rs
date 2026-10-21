@@ -204,7 +204,7 @@ async fn auth_middleware_internal(
                     // 这样 monitor_middleware 在处理请求时就能获取到 identity
                     // 因为中间件执行顺序：auth (外层) -> monitor (内层) -> handler
                     // 响应返回时：handler -> monitor -> auth
-                    // 如果注入到 response，monitor 执行时 identity 还不存在
+                    // If 注入到 response，monitor 执行时 identity 还不存在
                     let (mut parts, body) = request.into_parts();
                     parts.extensions.insert(identity);
                     let request = Request::from_parts(parts, body);

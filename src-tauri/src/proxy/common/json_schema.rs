@@ -143,7 +143,7 @@ fn flatten_refs(
         return;
     }
 
-    // 检查并替换 $ref
+    // Check: 并替换 $ref
     if let Some(Value::String(ref_path)) = map.remove("$ref") {
         // 解析引用名 (例如 #/$defs/MyType -> MyType)
         let ref_name = ref_path.split('/').last().unwrap_or(&ref_path);
@@ -244,7 +244,7 @@ fn clean_json_schema_recursive(value: &mut Value, is_schema_node: bool, depth: u
 
             // 0.5 [NEW] 结构归一化 (Normalization)
             // 针对某些 MCP 工具（如 pencil）误用 items 定义对象属性的情况进行修复。
-            // 如果 type=object 或包含 properties，但又定义了 items，Gemini 会因为 items 只能出现在 array 中而报错。
+            // If  type=object 或包含 properties，但又定义了 items，Gemini 会因为 items 只能出现在 array 中而报错。
             // 我们将 items 的内容“对齐”到 properties 中。
             if map.get("type").and_then(|t| t.as_str()) == Some("object")
                 || map.contains_key("properties")
@@ -265,7 +265,7 @@ fn clean_json_schema_recursive(value: &mut Value, is_schema_node: bool, depth: u
             }
 
             // 1. [CRITICAL] 深度递归处理子项
-            // 处理 properties (对象)
+            // Process:  properties (对象)
             if let Some(Value::Object(props)) = map.get_mut("properties") {
                 // [FIX] Drop boolean / non-object sub-schemas. JSON Schema allows
                 // `prop: true|false`, but Gemini's Schema proto requires every property
@@ -310,7 +310,7 @@ fn clean_json_schema_recursive(value: &mut Value, is_schema_node: bool, depth: u
                 }
             }
 
-            // 处理 items (数组)
+            // Process:  items (数组)
             // [FIX] items must be a Schema object; drop bare boolean / invalid items
             // (JSON Schema allows boolean `items`, Gemini's Schema proto rejects it).
             if map.get("items").map(|i| !i.is_object()).unwrap_or(false) {
@@ -733,7 +733,7 @@ fn score_schema_option(val: &Value) -> i32 {
 }
 
 /// [NEW] 从 anyOf/oneOf 联合类型数组中选取最佳非 null Schema 分支
-/// 返回: (最佳Schema, 所有可能的类型列表)
+/// Return: : (最佳Schema, 所有可能的类型列表)
 /// 参考 CLIProxyAPI 的 selectBest 逻辑
 fn extract_best_schema_from_union(union_array: &Vec<Value>) -> Option<(Value, Vec<String>)> {
     let mut best_option: Option<&Value> = None;
@@ -1683,7 +1683,7 @@ mod tests {
             }
         });
 
-        // 如果没有深度限制，这里会发生栈溢出
+        // If 没有深度限制，这里会发生栈溢出
         // 有了深度限制，它应该能正常返回（尽管展开是不完整的）
         clean_json_schema(&mut schema);
 

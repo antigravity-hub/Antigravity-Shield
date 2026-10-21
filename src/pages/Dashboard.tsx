@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { save } from '@tauri-apps/plugin-dialog';
 import { AlertTriangle, ArrowRight, Bot, Download, RefreshCw, Sparkles, Users, ShieldCheck, Zap } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';

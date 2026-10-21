@@ -21,7 +21,7 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
     useEffect(() => {
         if (isTauri() || import.meta.env.DEV) return;
 
-        // 检查 Session 存储 (优先)
+        // Check:  Session 存储 (优先)
         const rawSession = sessionStorage.getItem('abv_admin_auth_token') || sessionStorage.getItem('abv_admin_api_key');
         if (rawSession) {
             const resolved = decryptSensitiveData(rawSession);
@@ -30,7 +30,7 @@ export const AdminAuthGuard: React.FC<{ children: React.ReactNode }> = ({ childr
             return;
         }
 
-        // 检查本地存储 (迁移逻辑)
+        // Check: 本地存储 (迁移逻辑)
         const rawLocal = localStorage.getItem('abv_admin_auth_token') || localStorage.getItem('abv_admin_api_key');
         if (rawLocal) {
             const resolved = decryptSensitiveData(rawLocal);

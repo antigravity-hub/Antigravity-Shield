@@ -59,6 +59,6 @@ pub async fn fetch_project_id(access_token: &str) -> Result<String, String> {
         return Err(last_error);
     }
 
-    // 如果没有返回 project_id，说明账号无资格，返回错误以触发 token_manager 的稳定兜底逻辑
+    // If 没有返回 project_id，说明账号无资格，返回错误以触发 token_manager 的稳定兜底逻辑
     Err("账号无资格获取官方 cloudaicompanionProject".to_string())
 }

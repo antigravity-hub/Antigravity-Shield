@@ -21,7 +21,7 @@ static SPECS: Lazy<SpecsConfig> = Lazy::new(|| {
     serde_json::from_str(json_str).expect("Failed to parse model_specs.json")
 });
 
-/// 获取归一化后的模型 ID (基于别名)
+/// Get: 归一化后的模型 ID (基于别名)
 pub fn resolve_alias(model_id: &str) -> String {
     SPECS
         .aliases
@@ -30,7 +30,7 @@ pub fn resolve_alias(model_id: &str) -> String {
         .unwrap_or_else(|| model_id.to_string())
 }
 
-/// 获取模型输出 Token 限额 (动态优先)
+/// Get: 模型输出 Token 限额 (动态优先)
 pub fn get_max_output_tokens(model_id: &str, token: Option<&ProxyToken>) -> u64 {
     let std_id = resolve_alias(model_id);
 
@@ -39,7 +39,7 @@ pub fn get_max_output_tokens(model_id: &str, token: Option<&ProxyToken>) -> u64 
         if let Some(&limit) = t.model_limits.get(&std_id) {
             return limit;
         }
-        // 如果原始 ID 没找到，尝试用归一化后的 ID 找
+        // If 原始 ID 没找到，尝试用归一化后的 ID 找
         if let Some(&limit) = t.model_limits.get(model_id) {
             return limit;
         }
@@ -56,7 +56,7 @@ pub fn get_max_output_tokens(model_id: &str, token: Option<&ProxyToken>) -> u64 
     65535
 }
 
-/// 获取思维链预算 (动态优先)
+/// Get: 思维链预算 (动态优先)
 pub fn get_thinking_budget(model_id: &str, _token: Option<&ProxyToken>) -> u64 {
     let std_id = resolve_alias(model_id);
 

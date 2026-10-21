@@ -78,7 +78,7 @@ pub struct RateLimitInfo {
 /// 失败计数过期时间：1小时（超过此时间未失败则重置计数）
 const FAILURE_COUNT_EXPIRY_SECONDS: u64 = 3600;
 
-/// 限流跟踪器
+/// Rate limit tracker
 pub struct RateLimitTracker {
     limits: DashMap<String, RateLimitInfo>,
     /// 连续失败计数（用于智能指数退避），带时间戳用于自动过期
@@ -103,7 +103,7 @@ impl RateLimitTracker {
         }
     }
 
-    /// 获取账号剩余的等待时间(秒)
+    /// Get: 账号剩余的等待时间(秒)
     /// 支持检查账号级和模型级锁
     pub fn get_remaining_wait(&self, account_id: &str, model: Option<&str>) -> u64 {
         let now = SystemTime::now();
@@ -379,14 +379,14 @@ impl RateLimitTracker {
                 }
             }
             None => {
-                // 获取连续失败次数，用于指数退避（带自动过期逻辑）
+                // Get: 连续失败次数，用于指数退避（带自动过期逻辑）
                 // [FIX] ServerError (5xx) 不累加 failure_count，避免污染 429 的退避阶梯
                 let failure_count = if reason != RateLimitReason::ServerError {
                     // 只有非 ServerError 才累加失败计数（用于指数退避）
                     let now = SystemTime::now();
                     // 这里我们使用 account_id 作为 key，不区分模型，
                     // 因为这里是为了计算连续"账号级"问题的退避。
-                    // 如果需要针对模型的连续失败计数，可能需要改变 failure_counts 的 key。
+                    // If 需要针对模型的连续失败计数，可能需要改变 failure_counts 的 key。
                     // 暂时保持 account_id，这样如果一个模型一直挂，也会增加计数，符合逻辑。
                     let mut entry = self
                         .failure_counts
@@ -552,7 +552,7 @@ impl RateLimitTracker {
             }
         }
 
-        // 如果无法从 JSON 解析，尝试从消息文本判断
+        // If 无法从 JSON 解析，尝试从消息文本判断
         let body_lower = body.to_lowercase();
         // [FIX] 优先判断分钟级限制，避免将 TPM 误判为 Quota
         let generic_resource_exhausted = body_lower.contains("resource has been exhausted")
@@ -664,7 +664,7 @@ impl RateLimitTracker {
         None
     }
 
-    /// 获取账号的限流信息
+    /// Get: 账号的限流信息
     pub fn get(&self, account_id: &str) -> Option<RateLimitInfo> {
         self.limits.get(account_id).map(|r| r.clone())
     }
@@ -685,14 +685,14 @@ impl RateLimitTracker {
         cleared
     }
 
-    /// 检查账号是否仍在限流中
-    /// 检查账号是否仍在限流中 (支持模型级)
+    /// Check: 账号是否仍在限流中
+    /// Check: 账号是否仍在限流中 (支持模型级)
     pub fn is_rate_limited(&self, account_id: &str, model: Option<&str>) -> bool {
         // Checking using get_remaining_wait which handles both global and model keys
         self.get_remaining_wait(account_id, model) > 0
     }
 
-    /// 获取距离限流重置还有多少秒
+    /// Get: 距离限流重置还有多少秒
     pub fn get_reset_seconds(&self, account_id: &str) -> Option<u64> {
         if let Some(info) = self.get(account_id) {
             info.reset_time
@@ -822,7 +822,7 @@ mod tests {
     #[test]
     fn test_safety_buffer() {
         let tracker = RateLimitTracker::new();
-        // 如果 API 返回 1s，我们强制设为 2s
+        // If  API 返回 1s，我们强制设为 2s
         tracker.parse_from_error("acc1", 429, Some("1"), "", None, &[]);
         let wait = tracker.get_remaining_wait("acc1", None);
         // Due to time passing, it might be 1 or 2

@@ -55,7 +55,7 @@ pub struct TokenUsageLog {
     pub status: u16,
 }
 
-/// 获取数据库路径
+/// Get: 数据库路径
 pub fn get_db_path() -> Result<PathBuf, String> {
     let mut path = crate::modules::account::get_data_dir()?;
     path.push("user_tokens.db");
@@ -69,7 +69,7 @@ pub fn connect_db() -> Result<Connection, String> {
     Ok(conn)
 }
 
-/// 初始化数据库
+/// Initialize: 数据库
 pub fn init_db() -> Result<(), String> {
     let conn = connect_db()?;
 
@@ -303,7 +303,7 @@ pub fn list_tokens() -> Result<Vec<UserToken>, String> {
     Ok(tokens)
 }
 
-/// 获取单个令牌信息
+/// Get: 单个令牌信息
 pub fn get_token_by_id(id: &str) -> Result<Option<UserToken>, String> {
     let conn = connect_db()?;
     let mut stmt = conn
@@ -369,7 +369,7 @@ pub fn get_token_by_value(token: &str) -> Result<Option<UserToken>, String> {
     Ok(token)
 }
 
-/// 更新令牌状态/备注等
+/// Update: 令牌状态/备注等
 pub fn update_token(
     id: &str,
     username: Option<String>,
@@ -469,7 +469,7 @@ pub fn renew_token(id: &str, expires_type: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// 删除令牌
+/// Delete: 令牌
 pub fn delete_token(id: &str) -> Result<(), String> {
     let conn = connect_db()?;
     conn.execute("DELETE FROM user_tokens WHERE id = ?1", params![id])
@@ -477,7 +477,7 @@ pub fn delete_token(id: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// 获取令牌的所有 IP 绑定
+/// Get: 令牌的所有 IP 绑定
 pub fn get_token_ips(token_id: &str) -> Result<Vec<TokenIpBinding>, String> {
     let conn = connect_db()?;
     let mut stmt = conn
@@ -586,8 +586,8 @@ pub fn record_token_usage_and_ip(
     Ok(())
 }
 
-/// 检查 Token 是否有效 (包含过期时间检查和 IP 限制检查)
-/// 返回: (是否有效, 拒绝原因)
+/// Check:  Token 是否有效 (包含过期时间检查和 IP 限制检查)
+/// Return: : (是否有效, 拒绝原因)
 pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>), String> {
     let token_opt = get_token_by_value(token_str)?;
 
@@ -611,7 +611,7 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
         if token.max_ips > 0 {
             let conn = connect_db()?;
 
-            // 检查当前 IP 是否已绑定
+            // Check: 当前 IP 是否已绑定
             let is_bound: bool = conn.query_row(
                 "SELECT EXISTS(SELECT 1 FROM token_ip_bindings WHERE token_id = ?1 AND ip_address = ?2)",
                 params![token.id, ip],
@@ -619,7 +619,7 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
             ).unwrap_or(false);
 
             if !is_bound {
-                // 如果未绑定，检查是否达到上限
+                // If 未绑定，检查是否达到上限
                 let current_ip_count: i32 = conn
                     .query_row(
                         "SELECT COUNT(*) FROM token_ip_bindings WHERE token_id = ?1",
@@ -669,8 +669,8 @@ pub fn validate_token(token_str: &str, ip: &str) -> Result<(bool, Option<String>
     }
 }
 
-/// 获取 IP 关联的用户名 (用于 IP 管理页面)
-/// 返回最近一次使用该 IP 的 Token 所属的用户名
+/// Get:  IP 关联的用户名 (用于 IP 管理页面)
+/// Return: 最近一次使用该 IP 的 Token 所属的用户名
 pub fn get_username_for_ip(ip: &str) -> Result<Option<String>, String> {
     let conn = connect_db()?;
     let result: Option<String> = conn

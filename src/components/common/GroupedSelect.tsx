@@ -48,11 +48,11 @@ export default function GroupedSelect({
         return acc;
     }, {} as Record<string, SelectOption[]>);
 
-    // 获取当前选中项的标签
+    // Get: 当前选中项的标签
     const selectedOption = options.find(opt => opt.value === value);
     const selectedLabel = selectedOption?.label || value || placeholder;
 
-    // 更新下拉菜单位置
+    // Update: 下拉菜单位置
     const updateDropdownPosition = () => {
         if (buttonRef.current) {
             const rect = buttonRef.current.getBoundingClientRect();

@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 pub mod commands;
 pub mod constants;
 pub mod error;
@@ -503,7 +506,7 @@ pub fn run() {
                         }
                     }
                     Err(e) => {
-                        // 配置加载失败不能再被静默吞掉：否则重启后“服务没起来”时无任何痕迹可查。
+                        // Config: 加载失败不能再被静默吞掉：否则重启后“服务没起来”时无任何痕迹可查。
                         error!(
                             "Failed to load app config at startup: {}. Admin server and proxy service were NOT started. \
                              Fix or reset the config file and restart the app.",

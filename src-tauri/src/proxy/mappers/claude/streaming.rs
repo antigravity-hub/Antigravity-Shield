@@ -418,7 +418,7 @@ impl StreamingState {
         // 关闭最后一个块
         chunks.extend(self.end_block());
 
-        // 处理 trailingSignature (B4/C3 场景)
+        // Process:  trailingSignature (B4/C3 场景)
         // [FIX] 只有当还没有发送过任何块时, 才能以 thinking 块结束(作为消息的开头)
         // 实际上, 对于 Claude 协议, 如果已经发送过 Text, 就不能在此追加 Thinking。
         // 这里的解决方案是: 只存储签名, 不再发送非法的末尾 Thinking 块。
@@ -432,7 +432,7 @@ impl StreamingState {
             // 不再追加 chunks.push(self.emit("content_block_start", ...))
         }
 
-        // 处理 grounding(web search) -> 转换为 Markdown 文本块
+        // Process:  grounding(web search) -> 转换为 Markdown 文本块
         if self.web_search_query.is_some() || self.grounding_chunks.is_some() {
             let mut grounding_text = String::new();
 
@@ -544,12 +544,12 @@ impl StreamingState {
         self.used_tool = true;
     }
 
-    /// 获取当前块类型
+    /// Get: 当前块类型
     pub fn current_block_type(&self) -> BlockType {
         self.block_type
     }
 
-    /// 获取当前块索引
+    /// Get: 当前块索引
     pub fn current_block_index(&self) -> usize {
         self.block_index
     }
@@ -564,12 +564,12 @@ impl StreamingState {
         self.trailing_signature = signature;
     }
 
-    /// 获取 trailing signature (仅用于检查)
+    /// Get:  trailing signature (仅用于检查)
     pub fn has_trailing_signature(&self) -> bool {
         self.trailing_signature.is_some()
     }
 
-    /// 处理 SSE 解析错误，实现优雅降级
+    /// Process:  SSE 解析错误，实现优雅降级
     ///
     /// 当 SSE stream 中发生解析错误时:
     /// 1. 安全关闭当前 block
@@ -630,14 +630,14 @@ impl StreamingState {
         chunks
     }
 
-    /// 重置错误状态 (recovery 后调用)
+    /// Reset: 错误状态 (recovery 后调用)
     #[allow(dead_code)]
     pub fn reset_error_state(&mut self) {
         self.parse_error_count = 0;
         self.last_valid_state = None;
     }
 
-    /// 获取错误计数 (用于监控)
+    /// Get: 错误计数 (用于监控)
     #[allow(dead_code)]
     pub fn get_error_count(&self) -> usize {
         self.parse_error_count
@@ -654,7 +654,7 @@ impl<'a> PartProcessor<'a> {
         Self { state }
     }
 
-    /// 处理单个 part
+    /// Process: 单个 part
     pub fn process(&mut self, part: &GeminiPart) -> Vec<Bytes> {
         let mut chunks = Vec::new();
         // [FIX #545] Decode Base64 signature if present (Gemini sends Base64, Claude expects Raw)
@@ -735,11 +735,11 @@ impl<'a> PartProcessor<'a> {
         chunks
     }
 
-    /// 处理 Thinking
+    /// Process:  Thinking
     fn process_thinking(&mut self, text: &str, signature: Option<String>) -> Vec<Bytes> {
         let mut chunks = Vec::new();
 
-        // 处理之前的 trailingSignature
+        // Process: 之前的 trailingSignature
         if self.state.has_trailing_signature() {
             chunks.extend(self.state.end_block());
             if let Some(trailing_sig) = self.state.trailing_signature.take() {
@@ -831,7 +831,7 @@ impl<'a> PartProcessor<'a> {
         chunks
     }
 
-    /// 处理普通 Text
+    /// Process: 普通 Text
     fn process_text(&mut self, text: &str, signature: Option<String>) -> Vec<Bytes> {
         let mut chunks = Vec::new();
 
@@ -846,7 +846,7 @@ impl<'a> PartProcessor<'a> {
         // [FIX #859] Mark that we have received actual content (text)
         self.state.has_content = true;
 
-        // 处理之前的 trailingSignature
+        // Process: 之前的 trailingSignature
         if self.state.has_trailing_signature() {
             chunks.extend(self.state.end_block());
             if let Some(trailing_sig) = self.state.trailing_signature.take() {
@@ -924,7 +924,7 @@ impl<'a> PartProcessor<'a> {
                             self.state.mcp_xml_buffer.clear();
                             self.state.in_mcp_xml = false;
 
-                            // 处理标签之前可能存在的非 XML 文本
+                            // Process: 标签之前可能存在的非 XML 文本
                             if start_idx > 0 {
                                 let prefix_text = &buffer[..start_idx];
                                 // 这里不能递归。直接 emit 之前的 text 块。
@@ -942,7 +942,7 @@ impl<'a> PartProcessor<'a> {
 
                             chunks.extend(tool_chunks);
 
-                            // 处理标签之后可能存在的非 XML 文本
+                            // Process: 标签之后可能存在的非 XML 文本
                             let suffix = &buffer[close_idx + end_tag.len()..];
                             if !suffix.is_empty() {
                                 // 递归处理后缀内容

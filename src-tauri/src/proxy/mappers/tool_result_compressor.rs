@@ -275,7 +275,7 @@ fn deep_clean_html(html: &str) -> String {
 
 /// 清理工具结果 content blocks
 ///
-/// 处理逻辑:
+/// Process: 逻辑:
 /// 1. 移除 base64 图片 (避免体积过大)
 /// 2. 压缩文本内容 (使用智能压缩策略)
 /// 3. 限制总字符数 (默认 200,000)

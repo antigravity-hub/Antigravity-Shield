@@ -216,7 +216,7 @@ where
     })
 }
 
-/// 处理单行 SSE 数据
+/// Process: 单行 SSE 数据
 fn process_sse_line(
     line: &str,
     state: &mut StreamingState,
@@ -282,7 +282,7 @@ fn process_sse_line(
         }
     }
 
-    // 处理所有 parts
+    // Process: 所有 parts
     if let Some(parts) = raw_json
         .get("candidates")
         .and_then(|c| c.get(0))
@@ -315,7 +315,7 @@ fn process_sse_line(
     }
     */
 
-    // 检查是否结束
+    // Check: 是否结束
     if let Some(finish_reason) = raw_json
         .get("candidates")
         .and_then(|c| c.get(0))

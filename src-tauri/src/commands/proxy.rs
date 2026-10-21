@@ -283,9 +283,9 @@ pub async fn ensure_admin_server(
         server_handle,
     });
 
-    // [NEW] 初始化全局 Thinking Budget 配置
+    // [NEW] 初始化全局 Thinking Budget configuration
     crate::proxy::update_thinking_budget_config(config.thinking_budget.clone());
-    // [NEW] 初始化全局系统提示词配置
+    // [NEW] 初始化Global system prompt configuration
     crate::proxy::update_global_system_prompt_config(config.global_system_prompt.clone());
     // [NEW] 初始化全局图像思维模式配置
     crate::proxy::update_image_thinking_mode(config.image_thinking_mode.clone());
@@ -325,7 +325,7 @@ pub async fn stop_proxy(state: State<'_, ProxyServiceState>) -> Result<(), Strin
     stop_proxy_service(state).await
 }
 
-/// 获取反代服务状态
+/// Get: 反代服务状态
 #[tauri::command]
 pub async fn get_proxy_status(state: State<'_, ProxyServiceState>) -> Result<ProxyStatus, String> {
     // 优先检查启动标志，避免被写锁阻塞
@@ -357,7 +357,7 @@ pub async fn get_proxy_status(state: State<'_, ProxyServiceState>) -> Result<Pro
             }),
         },
         Err(_) => {
-            // 如果拿不到锁，说明正在进行写操作（可能是正在启动或停止中）
+            // If 拿不到锁，说明正在进行写操作（可能是正在启动或停止中）
             Ok(ProxyStatus {
                 running: false,
                 port: 0,
@@ -368,7 +368,7 @@ pub async fn get_proxy_status(state: State<'_, ProxyServiceState>) -> Result<Pro
     }
 }
 
-/// 获取反代服务统计
+/// Get: 反代服务统计
 #[tauri::command]
 pub async fn get_proxy_stats(state: State<'_, ProxyServiceState>) -> Result<ProxyStats, String> {
     let monitor_lock = state.monitor.read().await;
@@ -379,7 +379,7 @@ pub async fn get_proxy_stats(state: State<'_, ProxyServiceState>) -> Result<Prox
     }
 }
 
-/// 获取反代请求日志
+/// Get: 反代请求日志
 #[tauri::command]
 pub async fn get_proxy_logs(
     state: State<'_, ProxyServiceState>,
@@ -416,7 +416,7 @@ pub async fn clear_proxy_logs(state: State<'_, ProxyServiceState>) -> Result<(),
     Ok(())
 }
 
-/// 获取反代请求日志 (分页)
+/// Get: 反代请求日志 (分页)
 #[tauri::command]
 pub async fn get_proxy_logs_paginated(
     limit: Option<usize>,
@@ -425,13 +425,13 @@ pub async fn get_proxy_logs_paginated(
     crate::modules::proxy_db::get_logs_summary(limit.unwrap_or(20), offset.unwrap_or(0))
 }
 
-/// 获取单条日志的完整详情
+/// Get: 单条日志的完整详情
 #[tauri::command]
 pub async fn get_proxy_log_detail(log_id: String) -> Result<ProxyRequestLog, String> {
     crate::modules::proxy_db::get_log_detail(&log_id)
 }
 
-/// 获取日志总数
+/// Get: 日志总数
 #[tauri::command]
 pub async fn get_proxy_logs_count() -> Result<u64, String> {
     crate::modules::proxy_db::get_logs_count()
@@ -468,7 +468,7 @@ pub async fn export_proxy_logs_json(file_path: String, json_data: String) -> Res
     Ok(count)
 }
 
-/// 获取带搜索条件的日志数量
+/// Get: 带搜索条件的日志数量
 #[tauri::command]
 pub async fn get_proxy_logs_count_filtered(
     filter: String,
@@ -477,7 +477,7 @@ pub async fn get_proxy_logs_count_filtered(
     crate::modules::proxy_db::get_logs_count_filtered(&filter, errors_only)
 }
 
-/// 获取带搜索条件的分页日志
+/// Get: 带搜索条件的分页日志
 #[tauri::command]
 pub async fn get_proxy_logs_filtered(
     filter: String,
@@ -522,7 +522,7 @@ pub async fn reload_proxy_accounts(state: State<'_, ProxyServiceState>) -> Resul
     reload_proxy_accounts_state(&state).await
 }
 
-/// 更新模型映射表 (热更新)
+/// Update: 模型映射表 (热更新)
 #[tauri::command]
 pub async fn update_model_mapping(
     config: ProxyConfig,
@@ -664,7 +664,7 @@ pub async fn fetch_zai_models(
     Ok(models)
 }
 
-/// 获取当前调度配置
+/// Get: 当前Routing & scheduling configuration
 #[tauri::command]
 pub async fn get_proxy_scheduling_config(
     state: State<'_, ProxyServiceState>,
@@ -677,7 +677,7 @@ pub async fn get_proxy_scheduling_config(
     }
 }
 
-/// 更新调度配置
+/// Update: Routing & scheduling configuration
 #[tauri::command]
 pub async fn update_proxy_scheduling_config(
     state: State<'_, ProxyServiceState>,
@@ -756,7 +756,7 @@ pub async fn set_preferred_account(
     }
 }
 
-/// 获取当前优先使用的账号ID
+/// Get: 当前优先使用的账号ID
 #[tauri::command]
 pub async fn get_preferred_account(
     state: State<'_, ProxyServiceState>,
@@ -825,7 +825,7 @@ pub async fn check_proxy_health(
     }
 }
 
-/// 获取当前内存中的代理池状态
+/// Get: 当前内存中的代理池状态
 #[tauri::command]
 pub async fn get_proxy_pool_config(
     state: State<'_, ProxyServiceState>,
@@ -1027,7 +1027,7 @@ pub async fn proxy_execute_diagnostic_probe(
         if let Some(instance) = instance_lock.as_ref() {
             instance.config.port
         } else {
-            // 如果 instance 尚未启动，如果是健康检查允许尝试默认端口，其它协议直接返回未启动
+            // If  instance 尚未启动，如果是健康检查允许尝试默认端口，其它协议直接返回未启动
             if protocol != "health" {
                 return Ok(DiagnosticProbeResult {
                     success: false,
@@ -1316,13 +1316,13 @@ pub async fn proxy_execute_diagnostic_probe(
     }
 }
 
-/// 获取当前 IDE Argon Override 配置
+/// Get: 当前 IDE Argon Override 配置
 #[tauri::command]
 pub async fn get_argon_override() -> Result<crate::proxy::config::IdeArgonOverrideConfig, String> {
     Ok(crate::proxy::config::get_argon_override_config())
 }
 
-/// 更新 IDE Argon Override 配置并持久化
+/// Update:  IDE Argon Override 配置并持久化
 #[tauri::command]
 pub async fn set_argon_override(
     enabled: bool,

@@ -93,7 +93,7 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                        {/* 订阅类型 */}
+                        {/* Subscription tier */}
                         {account.quota?.subscription_tier && (() => {
                             const tier = account.quota.subscription_tier.toLowerCase();
                             if (tier.includes('ultra')) {
@@ -120,7 +120,11 @@ function CurrentAccount({ account, onSwitch }: CurrentAccountProps) {
                                         title="Google AI Pro (Long Promotional Trial)"
                                     >
                                         <Diamond className="w-2.5 h-2.5" />
-                                        PRO (TRIAL)
+                                        PRO
+                                        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs">
+                                            <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+                                            trial
+                                        </span>
                                     </span>
                                 );
                             } else if (tier.includes('pro')) {

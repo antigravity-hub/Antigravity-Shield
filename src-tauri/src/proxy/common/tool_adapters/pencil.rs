@@ -27,7 +27,7 @@ impl ToolAdapter for PencilAdapter {
 }
 
 impl PencilAdapter {
-    /// 处理 Pencil 特有的视觉属性字段
+    /// Process:  Pencil 特有的视觉属性字段
     fn handle_visual_properties(&self, map: &mut serde_json::Map<String, Value>) {
         // Pencil 使用的非标准视觉属性
         let visual_props = ["cornerRadius", "strokeWidth", "opacity", "rotation"];
@@ -39,7 +39,7 @@ impl PencilAdapter {
             }
         }
 
-        // 处理 properties 中的视觉属性
+        // Process:  properties 中的视觉属性
         if let Some(Value::Object(props)) = map.get_mut("properties") {
             for (key, value) in props.iter_mut() {
                 if visual_props.contains(&key.as_str()) {

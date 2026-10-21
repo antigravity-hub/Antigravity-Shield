@@ -228,7 +228,7 @@
     "view_token_stats": "Token Stats",
     "view_token_stats_tooltip": "View Token Statistics & Consumption Limits",
     "velocity_gauge": {
-      "title": "Quota Consumption & Runway Forecast",
+      "title": "配额消耗与续航预测",
       "fleet_view": "Entire Fleet",
       "active_view": "Active Account",
       "expand": "Expand Radar",
@@ -241,19 +241,19 @@
       "per_hour": "/ hr",
       "more_than_7_days": "> 7 Days",
       "more_than_7d": "> 7d",
-      "session_suffix": "(Session)",
-      "deficit_title": "Projected Quota Deficit: ~{{hours}}h Shortfall",
-      "surplus_title": "Sustainable Consumption — Quota Safe",
-      "deficit_desc": "At velocity <strong>{{burnRate}}% / hr</strong>, quota depletes on <strong>{{date}}</strong> — approximately <span className=\"font-bold underline text-rose-500\">{{hours}}h before reset</span>.",
-      "surplus_desc": "Current pace (<strong>{{burnRate}}% / hr</strong>) is sustainable with <span className=\"font-bold text-emerald-500\">+{{hours}}h surplus runway</span> past reset.",
-      "session_exhausted_title": "5-Hour Session Quota Exhausted (0% Remaining)",
-      "session_risk_title": "Projected Session Depletion: ~{{duration}} Shortfall",
-      "session_safe_title": "Session Quota Sustainable until Reset ({{time}})",
+      "session_suffix": "（会话）",
+      "deficit_title": "预计配额赤字：提早 ~{{hours}} 小时耗尽",
+      "surplus_title": "可持续消耗 — 配额充足安全",
+      "deficit_desc": "以当前速率（<strong>{{burnRate}}% / 小时</strong>），配额将在 <strong>{{date}}</strong> 耗尽 — 约提早 <span className=\"font-bold underline text-rose-500\">{{hours}} 小时</span> 于周期重置。",
+      "surplus_desc": "当前消耗速率（<strong>{{burnRate}}% / 小时</strong>）健康可持续，距离周期重置拥有 <span className=\"font-bold text-emerald-500\">+{{hours}} 小时盈余续航</span>。",
+      "session_exhausted_title": "5小时会话配额已耗尽（剩余 0%）",
+      "session_risk_title": "预计会话配额耗尽：剩余 ~{{duration}}",
+      "session_safe_title": "会话配额可持续至重置时间（{{time}}）",
       "session_exhausted_badge": "⏳ 5H Quota Exhausted (0%)",
       "session_depletion_badge": "⏳ Depletion in {{duration}} ({{time}})",
       "session_sustainable_badge": "⏳ Sustainable until Reset ({{time}})",
-      "session_risk_desc": "Based on current burn rate, the 5-hour quota will deplete in <strong>{{duration}}</strong> (around <strong>{{time}}</strong>).",
-      "session_safe_desc": "Session consumption is steady and will safely reach the next reset at <strong>{{time}}</strong>.",
+      "session_risk_desc": "基于当前消耗速率，5小时会话配额将在 <strong>{{duration}}</strong> 后（约 <strong>{{time}}</strong>）耗尽。",
+      "session_safe_desc": "当前会话消耗速率均衡，配额足以支撑至下一次重置时间（<strong>{{time}}</strong>）。",
       "duration_hours_mins": "{{hours}}h {{mins}}m",
       "duration_mins": "{{mins}}m",
       "tag_strong_sell": "STRONG SELL",
@@ -586,7 +586,8 @@
     "verification_required_table_msg": "Verification required — see guide",
     "open_guide_btn": "View Guide",
     "recheck_btn": "Re-check",
-    "recheck_tooltip": "Clear block status and re-check account quota"
+    "recheck_tooltip": "Clear block status and re-check account quota",
+    "drag_disabled_autosort": "启用自动排序时禁用手动拖拽排序"
   },
   "settings": {
     "save": "保存设置",
@@ -1593,7 +1594,8 @@
       "launching_installer": "Download complete. Launching installer..."
     },
     "btn_direct_install": "Direct Auto-Install (Automatic)",
-    "btn_manual_browser": "Open Release Page in Browser"
+    "btn_manual_browser": "Open Release Page in Browser",
+    "reason_title": "更新内容及修复原因"
   },
   "login": {
     "title": "安全访问控制",
@@ -1980,13 +1982,59 @@
       "add_server": "添加 MCP 服务",
       "add_modal_title": "注册新 MCP 服务",
       "test": "测试服务连接",
-      "configure": "配置环境变量与参数"
+      "configure": "配置环境变量与参数",
+      "active": "活跃",
+      "diagnostics": "MCP 诊断中心",
+      "exposed_tools": "已暴露工具",
+      "filter_all": "全部",
+      "filter_disabled": "已禁用",
+      "filter_healthy": "健康",
+      "filter_needs_config": "需配置",
+      "health_overview": "MCP 健康状态概览",
+      "inactive": "未运行",
+      "requirements": "运行环境要求",
+      "status_connected": "连接正常",
+      "status_disabled": "已停用",
+      "status_error": "连接错误",
+      "status_needs_config": "等待配置",
+      "status_testing": "正在诊断...",
+      "summary_healthy": "健康服务",
+      "summary_inactive": "未激活服务",
+      "test_all": "全面测试",
+      "testing_all": "诊断执行中...",
+      "tools_count": "{{count}} 项工具"
     },
     "rules": {
       "create": "添加指导规则"
     },
     "no_skills": "没有找到匹配的技能",
-    "inspect": "查看 SKILL.md"
+    "inspect": "查看 SKILL.md",
+    "active_first": "优先活跃",
+    "architecture_docs": "架构文档",
+    "file_path": "文件路径",
+    "github_repo": "GitHub 仓库",
+    "install_instruction": "安装指引",
+    "installing": "正在安装...",
+    "local_path": "本地路径",
+    "local_shield_title": "Antigravity Shield 本地规则库",
+    "official_maker": "官方认证",
+    "one_click_install": "一键安装",
+    "preview_content": "预览规则内容",
+    "private_and_local": "私有本地运行",
+    "read_only": "只读规则",
+    "security_audits": "安全审计",
+    "view_on_skills_sh": "在 skills.sh 查看",
+    "zero_leak_banner": "零泄漏沙箱保护",
+    "zero_leak_isolated": "零泄露完全隔离",
+    "source": {
+      "all": "全部来源",
+      "local": "本地规则",
+      "skills_sh": "skills.sh 规则生态"
+    },
+    "status": {
+      "active": "已激活",
+      "inactive": "未激活"
+    }
   },
   "theme": {
     "accent_palette": "UI 主题高亮色盘",

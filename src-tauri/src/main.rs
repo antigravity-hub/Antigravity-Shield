@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 

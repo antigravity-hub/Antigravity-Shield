@@ -370,7 +370,7 @@ impl SignatureCache {
         None
     }
 
-    /// 删除指定会话的缓存签名
+    /// Delete: 指定会话的缓存签名
     #[allow(dead_code)] // 预留给管理接口或调试使用
     pub fn delete_session_signature(&self, session_id: &str) {
         if let Ok(mut cache) = self.session_signatures.lock() {

@@ -581,7 +581,7 @@ impl UpstreamClient {
                             break;
                         }
 
-                        // 如果有下一个端点且当前错误可重试，则切换
+                        // If 有下一个端点且当前错误可重试，则切换
                         if has_next && Self::should_try_next_endpoint(status) {
                             let err_msg = format!("Upstream {} returned {}", base_url, status);
                             tracing::warn!(
@@ -617,7 +617,7 @@ impl UpstreamClient {
                         });
                         last_err = Some(msg);
 
-                        // 如果是最后一个端点，退出循环
+                        // If 是最后一个端点，退出循环
                         if !has_next {
                             break;
                         }
@@ -626,7 +626,7 @@ impl UpstreamClient {
                 }
             }
 
-            // 处理降级逻辑
+            // Process: 降级逻辑
             if should_retry_without_header {
                 headers.remove("x-goog-user-project");
                 has_triggered_downgrade = true;
@@ -634,7 +634,7 @@ impl UpstreamClient {
                 continue;
             }
 
-            // 如果没有触发降级且所有端点都尝试过，返回最后的错误
+            // If 没有触发降级且所有端点都尝试过，返回最后的错误
             return Err(last_err.unwrap_or_else(|| "All endpoints failed".to_string()));
         }
     }
@@ -658,9 +658,9 @@ impl UpstreamClient {
 
     // 已移除弃用的辅助方法 (parse_duration_ms)
 
-    /// 获取可用模型列表
+    /// Get: 可用模型列表
     ///
-    /// 获取远端模型列表，支持多端点自动 Fallback
+    /// Get: 远端模型列表，支持多端点自动 Fallback
     #[allow(dead_code)] // API ready for future model discovery feature
     pub async fn fetch_available_models(
         &self,

@@ -2,13 +2,13 @@
 
 /// 分类流式响应错误并返回错误类型、英文消息和 i18n key
 ///
-/// 返回值: (错误类型, 英文错误消息, i18n_key)
+/// Return: 值: (错误类型, 英文错误消息, i18n_key)
 /// - 错误类型: 用于日志和错误码
 /// - 英文消息: fallback 消息,供非浏览器客户端使用
 /// - i18n_key: 前端翻译键,供浏览器客户端本地化
 /// 分类流式响应错误并返回错误类型、英文消息和 i18n key
 ///
-/// 返回值: (错误类型, 英文错误消息, i18n_key)
+/// Return: 值: (错误类型, 英文错误消息, i18n_key)
 pub fn classify_stream_error<E: std::fmt::Display>(
     error: &E,
 ) -> (&'static str, &'static str, &'static str) {

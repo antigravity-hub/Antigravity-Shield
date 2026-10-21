@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use crate::models::AppConfig;
 use crate::modules::{account, config, logger, migration, proxy_db, security_db, token_stats};
 use crate::proxy::TokenManager;
@@ -44,7 +47,7 @@ pub fn trigger_account_delete(account_id: &str) {
     tracing::debug!("[Proxy] Queued account {} for cache removal", account_id);
 }
 
-/// 获取并清空待重新加载的账号列表（供 TokenManager 调用，无锁快速排空）
+/// Get: 并清空待重新加载的账号列表（供 TokenManager 调用，无锁快速排空）
 pub fn take_pending_reload_accounts() -> Vec<String> {
     let pending = get_pending_reload_accounts();
     if pending.is_empty() {
@@ -64,7 +67,7 @@ pub fn take_pending_reload_accounts() -> Vec<String> {
     accounts
 }
 
-/// 获取并清空待删除的账号列表（供 TokenManager 调用，无锁快速排空）
+/// Get: 并清空待删除的账号列表（供 TokenManager 调用，无锁快速排空）
 pub fn take_pending_delete_accounts() -> Vec<String> {
     let pending = get_pending_delete_accounts();
     if pending.is_empty() {
@@ -440,7 +443,7 @@ impl AxumServer {
         tracing::debug!("模型映射 (Custom) 已全量热更新");
     }
 
-    /// 更新代理配置
+    /// Update: 代理配置
     pub async fn update_proxy(&self, new_config: crate::proxy::config::UpstreamProxyConfig) {
         {
             let mut proxy = self.proxy_state.write().await;
@@ -453,7 +456,7 @@ impl AxumServer {
         tracing::info!("Upstream proxy config hot-reloaded");
     }
 
-    /// 更新代理池配置
+    /// Update: 代理池配置
     pub async fn update_proxy_pool(&self, new_config: crate::proxy::config::ProxyPoolConfig) {
         {
             let mut pool = self.proxy_pool_state.write().await;
@@ -568,7 +571,7 @@ impl AxumServer {
                     Some(upstream_proxy.clone()),
                     Some(proxy_pool_manager.clone()),
                 ));
-                // 初始化 User-Agent 覆盖
+                // Initialize:  User-Agent 覆盖
                 if user_agent_override.is_some() {
                     u.set_user_agent_override(user_agent_override).await;
                 }
@@ -1809,37 +1812,37 @@ async fn admin_save_config(
     // 或者直接操作 AppState 里的各状态。
     // 在本重构中，各个状态已经在 AppState 中了。
 
-    // 更新模型映射
+    // Update: 模型映射
     {
         let mut mapping = state.custom_mapping.write().await;
         *mapping = new_config.clone().proxy.custom_mapping;
     }
 
-    // 更新上游代理
+    // Update: 上游代理
     {
         let mut proxy = state.upstream_proxy.write().await;
         *proxy = new_config.clone().proxy.upstream_proxy;
     }
 
-    // 更新安全策略
+    // Update: 安全策略
     {
         let mut security = state.security.write().await;
         *security = crate::proxy::ProxySecurityConfig::from_proxy_config(&new_config.proxy);
     }
 
-    // 更新 z.ai 配置
+    // Update:  z.ai 配置
     {
         let mut zai = state.zai.write().await;
         *zai = new_config.clone().proxy.zai;
     }
 
-    // 更新实验性配置
+    // Update: 实验性配置
     {
         let mut exp = state.experimental.write().await;
         *exp = new_config.clone().proxy.experimental;
     }
 
-    // 更新代理池配置（Web/Docker 保存配置时热更新）
+    // Update: 代理池配置（Web/Docker 保存配置时热更新）
     {
         let mut pool = state.proxy_pool_state.write().await;
         *pool = new_config.clone().proxy.proxy_pool;
@@ -1927,7 +1930,7 @@ async fn admin_trigger_proxy_health_check(
         )
     })?;
 
-    // 返回更新后的代理池配置（包含健康状态）
+    // Return: 更新后的代理池配置（包含健康状态）
     let config = state.proxy_pool_state.read().await;
     Ok(Json(serde_json::json!({
         "success": true,
@@ -4192,7 +4195,7 @@ async fn admin_prepare_oauth_url_web(
 
     let state_str = uuid::Uuid::new_v4().to_string();
 
-    // 初始化授权流状态，以及后台处理器
+    // Initialize: 授权流状态，以及后台处理器
     let (auth_url, mut code_rx) = crate::modules::oauth_server::prepare_oauth_flow_manually(
         redirect_uri.clone(),
         state_str.clone(),

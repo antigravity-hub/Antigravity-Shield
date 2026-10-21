@@ -1,7 +1,7 @@
 import { decryptSensitiveData } from './secureStorage';
 import { isTauri } from './env';
 
-// 命令到 API 的映射
+// Command to API route mapping
 const COMMAND_MAPPING: Record<string, { url: string; method: 'GET' | 'POST' | 'DELETE' | 'PATCH' }> = {
   // Accounts
   'list_accounts': { url: '/api/accounts', method: 'GET' },
@@ -188,7 +188,7 @@ const COMMAND_ALIASES: Record<string, string> = {
 export async function request<T>(cmd: string, args?: any): Promise<T> {
   const targetCmd = COMMAND_ALIASES[cmd] || cmd;
 
-  // 1. Tauri 环境：直接使用 invoke ...
+  // 1. Tauri environment: invoke native IPC commands
   if (isTauri()) {
     try {
       const { invoke } = await import('@tauri-apps/api/core');
@@ -208,7 +208,7 @@ export async function request<T>(cmd: string, args?: any): Promise<T> {
     }
   }
 
-  // 2. Web 环境：映射到 HTTP API
+  // 2. Web environment: map to local HTTP API endpoints
   const mapping = COMMAND_MAPPING[targetCmd] || COMMAND_MAPPING[cmd];
   if (!mapping) {
     console.error(`Command [${cmd}] is not yet mapped for Web mode. Failing.`);
@@ -219,13 +219,13 @@ export async function request<T>(cmd: string, args?: any): Promise<T> {
   // [FIX] 创建 args 副本，用于移除已使用的路径参数
   let bodyArgs = args ? { ...args } : undefined;
 
-  // 通用路径参数处理：替换 :key 为 args[key]
+  // Route parameter replacement: replace :key with args[key]
   if (args) {
     Object.keys(args).forEach(key => {
       const placeholder = `:${key}`;
       if (url.includes(placeholder)) {
         url = url.replace(placeholder, encodeURIComponent(String(args[key])));
-        // [FIX] 从 body 参数中移除已用于路径的参数
+        // [FIX] Remove path parameters from request body
         if (bodyArgs) {
           delete bodyArgs[key];
         }
@@ -268,7 +268,7 @@ export async function request<T>(cmd: string, args?: any): Promise<T> {
     const response = await fetch(url, options);
     if (!response.ok) {
       if (!isTauri() && response.status === 401) {
-        // [FIX #1163] 增加防抖锁，避免重复事件导致 UI 抖动
+        // [FIX #1163] Debounce lock to prevent redundant UI state thrashing
         const now = Date.now();
         const lastAuthError = (window as any)._lastAuthErrorTime || 0;
         if (now - lastAuthError > 2000) {
@@ -280,7 +280,7 @@ export async function request<T>(cmd: string, args?: any): Promise<T> {
       throw errorData.error || `HTTP Error ${response.status}`;
     }
 
-    // 如果是 204 No Content，直接返回 null
+    // Return null for 204 No Content response
     if (response.status === 204) {
       return null as unknown as T;
     }

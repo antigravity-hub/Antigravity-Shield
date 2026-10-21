@@ -10,7 +10,7 @@ use uuid::Uuid;
 
 use crate::proxy::{audio::AudioProcessor, server::AppState};
 
-/// 处理音频转录请求 (OpenAI Whisper API 兼容)
+/// Process: 音频转录请求 (OpenAI Whisper API 兼容)
 pub async fn handle_audio_transcription(
     State(state): State<AppState>,
     mut multipart: Multipart,
@@ -35,7 +35,7 @@ pub async fn handle_audio_transcription(
                     field
                         .bytes()
                         .await
-                        .map_err(|e| (StatusCode::BAD_REQUEST, format!("读取文件失败: {}", e)))?
+                        .map_err(|e| (StatusCode::BAD_REQUEST, format!("Failed to read file: {}", e)))?
                         .to_vec(),
                 );
             }

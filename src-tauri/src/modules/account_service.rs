@@ -55,7 +55,7 @@ impl AccountService {
                 if let Some(pid) = new_project_id {
                     account.token.project_id = Some(pid);
                 }
-                // 保存更新后的账号信息
+                // Save: 更新后的账号信息
                 if let Err(e) = modules::account::save_account(&account) {
                     modules::logger::log_warn(&format!(
                         "[Service] Failed to save quota for {}: {}",
@@ -83,7 +83,7 @@ impl AccountService {
         Ok(account)
     }
 
-    /// 删除账号逻辑
+    /// Delete: 账号逻辑
     pub fn delete_account(&self, account_id: &str) -> Result<(), String> {
         modules::delete_account(account_id)?;
         self.integration.update_tray();
@@ -104,7 +104,7 @@ impl AccountService {
         modules::list_accounts()
     }
 
-    /// 获取当前 ID
+    /// Get: 当前 ID
     pub fn get_current_id(&self) -> Result<Option<String>, String> {
         modules::get_current_account_id()
     }

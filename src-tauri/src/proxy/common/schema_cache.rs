@@ -56,12 +56,12 @@ impl SchemaCache {
         }
     }
 
-    /// 获取缓存条目
+    /// Get: 缓存条目
     fn get(&mut self, key: &str) -> Option<Value> {
         self.stats.total_requests += 1;
 
         if let Some(entry) = self.cache.get_mut(key) {
-            // 更新使用时间和命中次数
+            // Update: 使用时间和命中次数
             entry.last_used = Instant::now();
             entry.hit_count += 1;
             self.stats.cache_hits += 1;
@@ -74,7 +74,7 @@ impl SchemaCache {
 
     /// 插入缓存条目
     fn insert(&mut self, key: String, schema: Value) {
-        // 检查缓存大小,如果超过限制则清理
+        // Check: 缓存大小,如果超过限制则清理
         const MAX_CACHE_SIZE: usize = 1000;
         if self.cache.len() >= MAX_CACHE_SIZE {
             self.evict_lru();
@@ -106,7 +106,7 @@ impl SchemaCache {
         }
     }
 
-    /// 获取缓存统计
+    /// Get: 缓存统计
     fn stats(&self) -> CacheStats {
         self.stats.clone()
     }
@@ -132,7 +132,7 @@ fn compute_schema_hash(schema: &Value) -> String {
     let schema_str = schema.to_string();
     hasher.update(schema_str.as_bytes());
 
-    // 返回十六进制字符串的前 16 位 (足够唯一)
+    // Return: 十六进制字符串的前 16 位 (足够唯一)
     format!("{:x}", hasher.finalize())[..16].to_string()
 }
 
@@ -170,7 +170,7 @@ pub fn clean_json_schema_cached(schema: &mut Value, tool_name: &str) {
     }
 }
 
-/// 获取缓存统计信息
+/// Get: 缓存统计信息
 pub fn get_cache_stats() -> CacheStats {
     SCHEMA_CACHE
         .read()

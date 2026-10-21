@@ -721,7 +721,7 @@ pub fn transform_claude_request_in(
         "requestType": if config.request_type == "image_gen" { "image_gen" } else { "agent" },
     });
 
-    // 如果提供了 metadata.user_id，则复用为 sessionId
+    // If 提供了 metadata.user_id，则复用为 sessionId
     if let Some(metadata) = &claude_req.metadata {
         if let Some(user_id) = &metadata.user_id {
             body["request"]["sessionId"] = json!(user_id);
@@ -934,7 +934,7 @@ fn build_system_instruction(
         }
     }
 
-    // 如果用户没有提供 Antigravity 身份,则注入
+    // If 用户没有提供 Antigravity 身份,则注入
     if !user_has_antigravity {
         parts.push(json!({"text": antigravity_identity}));
     }
@@ -986,7 +986,7 @@ fn build_system_instruction(
         parts.push(json!({"text": mcp_xml_prompt}));
     }
 
-    // 如果用户没有提供任何系统提示词,添加结束标记
+    // If 用户没有提供任何系统提示词,添加结束标记
     if !user_has_antigravity {
         parts.push(json!({"text": "\n--- [SYSTEM_PROMPT_END] ---"}));
     }
@@ -1043,7 +1043,7 @@ fn build_contents(
                     ContentBlock::Text { text } => {
                         if text != "(no content)" && !text.trim().is_empty() {
                             // [NEW] 任务去重逻辑: 如果当前是 User 消息，且紧跟在 ToolResult 之后，
-                            // 检查该文本是否与上一轮任务描述完全一致。
+                            // Check: 该文本是否与上一轮任务描述完全一致。
                             if !is_assistant && *previous_was_tool_result {
                                 if let Some(last_task) = last_user_task_text_normalized {
                                     let current_normalized =
@@ -1583,7 +1583,7 @@ fn build_contents(
             });
 
             if !first_is_thought {
-                // 如果首项不符合思维块特征，强制补入一个
+                // If 首项不符合思维块特征，强制补入一个
                 parts.insert(
                     0,
                     json!({

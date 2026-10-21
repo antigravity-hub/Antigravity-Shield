@@ -87,7 +87,7 @@ const UserToken: React.FC = () => {
             return;
         }
 
-        // 验证自定义时间
+        // Validate custom expiration time
         if (newExpiresType === 'custom' && !newCustomExpires) {
             showToast(t('user_token.custom_expires_required') || 'Please select a custom expiration time', 'error');
             return;
@@ -95,7 +95,7 @@ const UserToken: React.FC = () => {
 
         setCreating(true);
         try {
-            // 计算自定义过期时间戳
+            // Calculate custom expiration timestamp
             const customExpiresAt = newExpiresType === 'custom' && newCustomExpires
                 ? Math.floor(new Date(newCustomExpires).getTime() / 1000)
                 : undefined;
@@ -165,7 +165,7 @@ const UserToken: React.FC = () => {
                     username: editUsername,
                     description: editDesc || undefined,
                     max_ips: editMaxIps,
-                    // 使用双层包装: undefined = 不更新, null = 清空, string = 设置值
+                    // Two-layer wrapper: undefined = keep, null = clear, string = set value
                     curfew_start: editCurfewStart === '' ? null : editCurfewStart,
                     curfew_end: editCurfewEnd === '' ? null : editCurfewEnd
                 }

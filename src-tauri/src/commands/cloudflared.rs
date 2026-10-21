@@ -35,7 +35,7 @@ impl CloudflaredState {
     }
 }
 
-/// 检查cloudflared是否已安装
+/// Check: cloudflared是否已安装
 #[tauri::command]
 pub async fn cloudflared_check(
     state: State<'_, CloudflaredState>,
@@ -103,7 +103,7 @@ pub async fn cloudflared_stop(
     }
 }
 
-/// 获取cloudflared状态
+/// Get: cloudflared状态
 #[tauri::command]
 pub async fn cloudflared_get_status(
     state: State<'_, CloudflaredState>,

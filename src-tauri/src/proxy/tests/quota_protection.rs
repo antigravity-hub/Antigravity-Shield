@@ -594,7 +594,7 @@ mod tests {
         // === 请求 3: 尝试使用账号 A，但被配额保护 ===
         let accounts = vec![account_a.clone()]; // 只有一个账号
 
-        // 检查绑定的账号是否被保护
+        // Check: 绑定的账号是否被保护
         let bound_id = session_bindings.get(session_id).unwrap();
         let bound_account = accounts.iter().find(|a| &a.account_id == bound_id).unwrap();
         let is_protected = bound_account.protected_models.contains(&normalized_target);
@@ -663,7 +663,7 @@ mod tests {
         // === 请求 3: 账号 A 被保护，应该解绑并切换到账号 B ===
         let accounts = vec![account_a.clone(), account_b.clone()];
 
-        // 检查绑定的账号
+        // Check: 绑定的账号
         let bound_id = session_bindings.get(session_id).unwrap();
         let bound_account = accounts.iter().find(|a| &a.account_id == bound_id).unwrap();
         let is_protected = bound_account.protected_models.contains(&normalized_target);
@@ -922,7 +922,7 @@ mod tests {
 
     // ==================================================================================
     // 测试 18: 排序使用目标模型 quota 而非 max quota
-    // 验证修复后的排序逻辑正确性
+    // 验证修复后的Sort logic正确性
     // ==================================================================================
 
     #[test]
@@ -1001,7 +1001,7 @@ mod tests {
         // 目标模型: claude
         let target_model = "claude";
 
-        // 使用修复后的排序逻辑：读取目标模型的 quota
+        // 使用修复后的Sort logic：读取目标模型的 quota
         tokens.sort_by(|a, b| {
             let quota_a =
                 crate::proxy::token_manager::TokenManager::get_model_quota_from_json_for_test(

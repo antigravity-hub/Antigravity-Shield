@@ -185,7 +185,7 @@ impl NonStreamingProcessor {
         self.registered_tool_names = names;
     }
 
-    /// 处理 Gemini 响应并转换为 Claude 响应
+    /// Process:  Gemini 响应并转换为 Claude 响应
     pub fn process(
         &mut self,
         gemini_response: &GeminiResponse,
@@ -194,7 +194,7 @@ impl NonStreamingProcessor {
     ) -> ClaudeResponse {
         self.scaling_enabled = scaling_enabled;
         self.context_limit = context_limit;
-        // 获取 parts
+        // Get:  parts
         let empty_parts = vec![];
         let parts = gemini_response
             .candidates
@@ -204,12 +204,12 @@ impl NonStreamingProcessor {
             .map(|content| &content.parts)
             .unwrap_or(&empty_parts);
 
-        // 处理所有 parts
+        // Process: 所有 parts
         for part in parts {
             self.process_part(part);
         }
 
-        // 处理 grounding(web search) -> 转换为 server_tool_use / web_search_tool_result
+        // Process:  grounding(web search) -> 转换为 server_tool_use / web_search_tool_result
         if let Some(candidate) = gemini_response.candidates.as_ref().and_then(|c| c.get(0)) {
             if let Some(grounding) = &candidate.grounding_metadata {
                 self.process_grounding(grounding);
@@ -220,7 +220,7 @@ impl NonStreamingProcessor {
         self.flush_thinking();
         self.flush_text();
 
-        // 处理 trailingSignature (空 text 带签名)
+        // Process:  trailingSignature (空 text 带签名)
         if let Some(signature) = self.trailing_signature.take() {
             self.content_blocks.push(ContentBlock::Thinking {
                 thinking: String::new(),
@@ -233,7 +233,7 @@ impl NonStreamingProcessor {
         self.build_response(gemini_response)
     }
 
-    /// 处理单个 part
+    /// Process: 单个 part
     fn process_part(&mut self, part: &GeminiPart) {
         let signature = part.thought_signature.as_ref().map(|sig| {
             use base64::Engine;
@@ -278,7 +278,7 @@ impl NonStreamingProcessor {
             self.flush_thinking();
             self.flush_text();
 
-            // 处理 trailingSignature (B4/C3 场景)
+            // Process:  trailingSignature (B4/C3 场景)
             if let Some(trailing_sig) = self.trailing_signature.take() {
                 self.content_blocks.push(ContentBlock::Thinking {
                     thinking: String::new(),
@@ -332,7 +332,7 @@ impl NonStreamingProcessor {
                 // Thinking part
                 self.flush_text();
 
-                // 处理 trailingSignature
+                // Process:  trailingSignature
                 if let Some(trailing_sig) = self.trailing_signature.take() {
                     self.flush_thinking();
                     self.content_blocks.push(ContentBlock::Thinking {
@@ -358,7 +358,7 @@ impl NonStreamingProcessor {
 
                 self.flush_thinking();
 
-                // 处理之前的 trailingSignature
+                // Process: 之前的 trailingSignature
                 if let Some(trailing_sig) = self.trailing_signature.take() {
                     self.flush_text();
                     self.content_blocks.push(ContentBlock::Thinking {
@@ -396,7 +396,7 @@ impl NonStreamingProcessor {
         }
     }
 
-    /// 处理 Grounding 元数据 (Web Search 结果)
+    /// Process:  Grounding 元数据 (Web Search 结果)
     fn process_grounding(&mut self, grounding: &GroundingMetadata) {
         let mut grounding_text = String::new();
 
@@ -558,7 +558,7 @@ impl NonStreamingProcessor {
                     continue;
                 }
             }
-            // 如果 XML 格式不完整, 退出循环并按普通文本处理
+            // If  XML 格式不完整, 退出循环并按普通文本处理
             break;
         }
 
@@ -570,7 +570,7 @@ impl NonStreamingProcessor {
 
     /// 刷新 thinking builder
     fn flush_thinking(&mut self) {
-        // 如果既没有内容也没有签名，直接返回
+        // If 既没有内容也没有签名，直接返回
         if self.thinking_builder.is_empty() && self.thinking_signature.is_none() {
             return;
         }

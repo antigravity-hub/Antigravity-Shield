@@ -112,7 +112,7 @@ pub fn inject_token(
 ) -> Result<String, String> {
     crate::modules::logger::log_info("Starting Token injection...");
 
-    // 如果使用的是本项目的内置 Client ID (antigravity_enterprise 实际上是标准版)
+    // If 使用的是本项目的内置 Client ID (antigravity_enterprise 实际上是标准版)
     // 则强制关闭 GCP TOS 标志，以确保 IDE 使用标准 Client ID 进行刷新
     if let Some(key) = oauth_client_key {
         if key == "antigravity_enterprise" {

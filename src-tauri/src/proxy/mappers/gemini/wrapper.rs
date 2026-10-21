@@ -18,7 +18,7 @@ pub fn wrap_request_v2(
         .and_then(|v| v.as_str())
         .unwrap_or(mapped_model);
 
-    // 如果 mapped_model 是空的，则使用 original_model
+    // If  mapped_model 是空的，则使用 original_model
     let final_model_name = if !mapped_model.is_empty() {
         mapped_model
     } else {
@@ -290,7 +290,7 @@ pub fn wrap_request_v2(
     }
 
     // [FIX Issue #1355] Gemini Flash thinking budget capping
-    // [CONFIGURABLE] 现在改为遵循全局 Thinking Budget 配置
+    // [CONFIGURABLE] 现在改为遵循全局 Thinking Budget configuration
     // [FIX #1557] Also apply to Pro/Thinking models to ensure budget processing
     // [FIX #1557] Auto-inject thinkingConfig if missing for these models
     let lower_model = final_model_name.to_lowercase();
@@ -563,7 +563,7 @@ pub fn wrap_request_v2(
                         for decl in decls_arr {
                             // 检测并转换字段名
                             if let Some(decl_obj) = decl.as_object_mut() {
-                                // 如果存在 parametersJsonSchema，将其重命名为 parameters
+                                // If 存在 parametersJsonSchema，将其重命名为 parameters
                                 if let Some(params_json_schema) =
                                     decl_obj.remove("parametersJsonSchema")
                                 {
@@ -686,7 +686,7 @@ pub fn wrap_request_v2(
 
             if let Some(parts) = system_instruction.get_mut("parts") {
                 if let Some(parts_array) = parts.as_array_mut() {
-                    // 检查第一个 part 是否已包含 Antigravity 身份
+                    // Check: 第一个 part 是否已包含 Antigravity 身份
                     let has_antigravity = parts_array
                         .get(0)
                         .and_then(|p| p.get("text"))

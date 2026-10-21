@@ -74,7 +74,7 @@ pub async fn add_account(
     // 自动刷新配额
     let _ = internal_refresh_account_quota(Some(&app), &mut account).await;
 
-    // 检查并自动预热（若处于100%恢复状态）
+    // Check: 并自动预热（若处于100%恢复状态）
     let account_for_warmup = account.clone();
     tokio::spawn(async move {
         crate::modules::scheduler::trigger_warmup_for_account(&account_for_warmup).await;
@@ -89,8 +89,8 @@ pub async fn add_account(
     Ok(account)
 }
 
-/// 删除账号
-/// 删除账号
+/// Delete: 账号
+/// Delete: 账号
 #[tauri::command]
 pub async fn delete_account(
     app: tauri::AppHandle,
@@ -133,7 +133,7 @@ pub async fn delete_accounts(
     Ok(())
 }
 
-/// 重新排序账号列表
+/// Reorder account list
 /// 根据传入的账号ID数组顺序更新账号排列
 #[tauri::command]
 pub async fn reorder_accounts(
@@ -179,7 +179,7 @@ pub async fn switch_account(
     Ok(())
 }
 
-/// 获取当前账号
+/// Get: 当前账号
 #[tauri::command]
 pub async fn get_current_account() -> Result<Option<Account>, String> {
     // println!("🚀 Backend Command: get_current_account called"); // Commented out to reduce noise for frequent calls, relies on frontend log for frequency
@@ -197,7 +197,7 @@ pub async fn get_current_account() -> Result<Option<Account>, String> {
     }
 }
 
-/// 获取各环境活跃账号映射
+/// Get: 各环境活跃账号映射
 #[tauri::command]
 pub async fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccounts, String> {
     modules::account::get_active_target_accounts()
@@ -223,9 +223,9 @@ pub async fn internal_refresh_account_quota(
     // 使用带重试的查询 (Shared logic)
     match modules::account::fetch_quota_with_retry(account).await {
         Ok(quota) => {
-            // 更新账号配额
+            // Update: 账号配额
             let _ = modules::update_account_quota(&account.id, quota.clone());
-            // 更新托盘菜单
+            // Update: 托盘菜单
             if let Some(h) = app {
                 crate::modules::tray::update_tray_menus(h);
                 use tauri::Emitter;
@@ -325,7 +325,7 @@ pub async fn refresh_all_quotas(
 ) -> Result<RefreshStats, String> {
     refresh_all_quotas_internal(&proxy_state, Some(app_handle)).await
 }
-/// 获取设备指纹（当前 storage.json + 账号绑定）
+/// Get: 设备指纹（当前 storage.json + 账号绑定）
 #[tauri::command]
 pub async fn get_device_profiles(
     account_id: String,
@@ -388,7 +388,7 @@ pub async fn restore_device_version(
     modules::restore_device_version(&account_id, &version_id)
 }
 
-/// 删除历史指纹（baseline 不可删）
+/// Delete: 历史指纹（baseline 不可删）
 #[tauri::command]
 pub async fn delete_device_version(account_id: String, version_id: String) -> Result<(), String> {
     modules::delete_device_version(&account_id, &version_id)
@@ -413,7 +413,7 @@ pub async fn load_config() -> Result<AppConfig, String> {
     modules::load_app_config()
 }
 
-/// 保存配置
+/// Save: 配置
 #[tauri::command]
 pub async fn save_config(
     app: tauri::AppHandle,
@@ -428,37 +428,37 @@ pub async fn save_config(
     // 热更新正在运行的服务
     let instance_lock = proxy_state.instance.read().await;
     if let Some(instance) = instance_lock.as_ref() {
-        // 更新模型映射
+        // Update: 模型映射
         instance.axum_server.update_mapping(&config.proxy).await;
-        // 更新仅暴露真实配额模型开关
+        // Update: 仅暴露真实配额模型开关
         instance
             .axum_server
             .update_only_raw_quota_models(config.proxy.only_raw_quota_models)
             .await;
-        // 更新上游代理
+        // Update: 上游代理
         instance
             .axum_server
             .update_proxy(config.proxy.upstream_proxy.clone())
             .await;
-        // 更新安全策略 (auth)
+        // Update: 安全策略 (auth)
         instance.axum_server.update_security(&config.proxy).await;
-        // 更新 z.ai 配置
+        // Update:  z.ai 配置
         instance.axum_server.update_zai(&config.proxy).await;
-        // 更新实验性配置
+        // Update: 实验性配置
         instance
             .axum_server
             .update_experimental(&config.proxy)
             .await;
-        // 更新调试日志配置
+        // Update: 调试日志配置
         instance
             .axum_server
             .update_debug_logging(&config.proxy)
             .await;
         // [NEW] 更新 User-Agent 配置
         instance.axum_server.update_user_agent(&config.proxy).await;
-        // 更新 Thinking Budget 配置
+        // Update:  Thinking Budget configuration
         crate::proxy::update_thinking_budget_config(config.proxy.thinking_budget.clone());
-        // [NEW] 更新全局系统提示词配置
+        // [NEW] 更新Global system prompt configuration
         crate::proxy::update_global_system_prompt_config(config.proxy.global_system_prompt.clone());
         // [NEW] 更新全局图像思维模式配置
         crate::proxy::update_image_thinking_mode(config.proxy.image_thinking_mode.clone());
@@ -474,12 +474,12 @@ pub async fn save_config(
             config.proxy.experimental.context_compression_threshold_l2,
             config.proxy.experimental.context_compression_threshold_l3,
         );
-        // 更新代理池配置
+        // Update: 代理池配置
         instance
             .axum_server
             .update_proxy_pool(config.proxy.proxy_pool.clone())
             .await;
-        // 更新熔断配置
+        // Update: 熔断配置
         instance
             .token_manager
             .update_circuit_breaker_config(config.circuit_breaker.clone())
@@ -810,18 +810,18 @@ fn validate_user_json_path(path: &str, must_exist: bool) -> Result<PathBuf, Stri
     Ok(resolved)
 }
 
-/// 保存文本文件 (绕过前端 Scope 限制)
+/// Save: 文本文件 (绕过前端 Scope 限制)
 #[tauri::command]
 pub async fn save_text_file(path: String, content: String) -> Result<(), String> {
     let path = validate_user_json_path(&path, false)?;
-    std::fs::write(&path, content).map_err(|e| format!("写入文件失败: {}", e))
+    std::fs::write(&path, content).map_err(|e| format!("Failed to write file: {}", e))
 }
 
 /// 读取文本文件 (绕过前端 Scope 限制)
 #[tauri::command]
 pub async fn read_text_file(path: String) -> Result<String, String> {
     let path = validate_user_json_path(&path, true)?;
-    std::fs::read_to_string(&path).map_err(|e| format!("读取文件失败: {}", e))
+    std::fs::read_to_string(&path).map_err(|e| format!("Failed to read file: {}", e))
 }
 
 /// 清理日志缓存
@@ -837,7 +837,7 @@ pub async fn clear_antigravity_cache() -> Result<modules::cache::ClearResult, St
     modules::cache::clear_antigravity_cache(None)
 }
 
-/// 获取 Antigravity 缓存路径列表（用于预览）
+/// Get:  Antigravity 缓存路径列表（用于预览）
 #[tauri::command]
 pub async fn get_antigravity_cache_paths() -> Result<Vec<String>, String> {
     Ok(modules::cache::get_existing_cache_paths()
@@ -926,7 +926,7 @@ pub async fn open_verification_guide_doc(app: tauri::AppHandle) -> Result<String
     Ok(path_str)
 }
 
-/// 获取数据目录绝对路径
+/// Get: 数据目录绝对路径
 #[tauri::command]
 pub async fn get_data_dir_path() -> Result<String, String> {
     let path = modules::account::get_data_dir()?;
@@ -987,7 +987,7 @@ pub async fn set_window_theme(window: tauri::Window, theme: String) -> Result<()
     window.set_theme(tauri_theme).map_err(|e| e.to_string())
 }
 
-/// 获取 Antigravity 可执行文件路径
+/// Get:  Antigravity 可执行文件路径
 #[tauri::command]
 pub async fn get_antigravity_path(bypass_config: Option<bool>) -> Result<String, String> {
     // 1. 优先从配置查询 (除非明确要求绕过)
@@ -1008,7 +1008,7 @@ pub async fn get_antigravity_path(bypass_config: Option<bool>) -> Result<String,
     }
 }
 
-/// 获取 Antigravity CLI (agy) 可执行文件路径
+/// Get:  Antigravity CLI (agy) 可执行文件路径
 #[tauri::command]
 pub async fn get_antigravity_cli_path(bypass_config: Option<bool>) -> Result<String, String> {
     // 1. 优先从配置查询 (除非明确要求绕过)
@@ -1029,7 +1029,7 @@ pub async fn get_antigravity_cli_path(bypass_config: Option<bool>) -> Result<Str
     }
 }
 
-/// 获取 Antigravity 启动参数
+/// Get:  Antigravity 启动参数
 #[tauri::command]
 pub async fn get_antigravity_args() -> Result<Vec<String>, String> {
     match crate::modules::process::get_args_from_running_process(None) {
@@ -1097,14 +1097,14 @@ pub async fn download_and_install_direct(
 }
 
 
-/// 获取更新设置
+/// Get: 更新设置
 #[tauri::command]
 pub async fn get_update_settings() -> Result<crate::modules::update_checker::UpdateSettings, String>
 {
     crate::modules::update_checker::load_update_settings()
 }
 
-/// 保存更新设置
+/// Save: 更新设置
 #[tauri::command]
 pub async fn save_update_settings(
     settings: crate::modules::update_checker::UpdateSettings,
@@ -1173,7 +1173,7 @@ pub async fn toggle_proxy_status(
     {
         let instance_lock = proxy_state.instance.read().await;
         if let Some(instance) = instance_lock.as_ref() {
-            // 如果禁用的是当前固定账号，则自动关闭固定模式（内存 + 配置持久化）
+            // If 禁用的是当前固定账号，则自动关闭固定模式（内存 + 配置持久化）
             if !enable {
                 let pref_id = instance.token_manager.get_preferred_account().await;
                 if pref_id.as_deref() == Some(&account_id) {
@@ -1214,7 +1214,7 @@ pub async fn warm_up_account(account_id: String) -> Result<String, String> {
     modules::quota::warm_up_account(&account_id).await
 }
 
-/// 更新账号自定义标签
+/// Update: 账号自定义标签
 #[tauri::command]
 pub async fn update_account_label(account_id: String, label: String) -> Result<(), String> {
     // 验证标签长度（按字符数计算，支持中文）
@@ -1279,13 +1279,13 @@ pub async fn clear_account_validation(account_id: String) -> Result<(), String> 
 // HTTP API 设置命令
 // ============================================================================
 
-/// 获取 HTTP API 设置
+/// Get:  HTTP API 设置
 #[tauri::command]
 pub async fn get_http_api_settings() -> Result<crate::modules::http_api::HttpApiSettings, String> {
     crate::modules::http_api::load_settings()
 }
 
-/// 保存 HTTP API 设置
+/// Save:  HTTP API 设置
 #[tauri::command]
 pub async fn save_http_api_settings(
     settings: crate::modules::http_api::HttpApiSettings,

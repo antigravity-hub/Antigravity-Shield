@@ -160,7 +160,7 @@ export const useDebugConsole = create<DebugConsoleState>((set, get) => ({
     setAutoScroll: (enabled: boolean) => set({ autoScroll: enabled }),
 
     startListening: async () => {
-        // Web 模式下不支持 Tauri 事件监听，跳过
+        // Tauri events not supported in web mode; skip
         if (!isTauri()) return;
 
         const { unlistenFn } = get();

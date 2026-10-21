@@ -88,6 +88,7 @@ interface AccountTableProps {
     quotaWindow?: '5h' | 'weekly';
     quotaProvider?: 'gemini' | 'claude';
     showLastUsed?: boolean;
+    autoSort?: boolean;
 }
 
 interface SortableRowProps {
@@ -113,6 +114,7 @@ interface SortableRowProps {
     quotaProvider?: 'gemini' | 'claude';
     showLastUsed?: boolean;
     columnOrder: string[];
+    autoSort?: boolean;
 }
 
 interface AccountRowContentProps {
@@ -199,6 +201,7 @@ function SortableAccountRow({
     quotaProvider = 'gemini',
     showLastUsed,
     columnOrder,
+    autoSort = false,
 }: SortableRowProps) {
     const { t } = useTranslation();
     const hasAnyActiveTarget = useAccountStore((state) => state.hasAnyActiveTarget);
@@ -211,7 +214,7 @@ function SortableAccountRow({
         transform,
         transition,
         isDragging: isSortableDragging,
-    } = useSortable({ id: account.id });
+    } = useSortable({ id: account.id, disabled: autoSort });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -235,18 +238,23 @@ function SortableAccountRow({
                 (isExhausted || account.disabled || account.proxy_disabled) && "opacity-60 grayscale bg-slate-50/70 dark:bg-slate-900/40 hover:opacity-85 transition-opacity"
             )}
         >
-            {/* 拖拽手柄 */}
+            {/* Drag Handle */}
             <td className="pl-2 py-1 w-8 align-middle">
                 <div
-                    {...attributes}
-                    {...listeners}
-                    className="flex items-center justify-center w-6 h-6 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
-                    title={t('accounts.drag_to_reorder')}
+                    {...(autoSort ? {} : attributes)}
+                    {...(autoSort ? {} : listeners)}
+                    className={cn(
+                        "flex items-center justify-center w-6 h-6 transition-colors rounded select-none",
+                        autoSort
+                            ? "cursor-not-allowed text-gray-300 dark:text-gray-600 opacity-40 pointer-events-none"
+                            : "cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    )}
+                    title={autoSort ? t('accounts.drag_disabled_autosort', 'Manual reordering disabled while Auto Sort is active') : t('accounts.drag_to_reorder')}
                 >
                     <GripVertical className="w-4 h-4" />
                 </div>
             </td>
-            {/* 复选框 */}
+            {/* Checkbox */}
             <td className="px-2 py-1 w-10 align-middle">
                 <input
                     type="checkbox"
@@ -342,7 +350,7 @@ function AccountRowContent({
         }
     };
 
-    // 获取要显示的模型列表
+    // Get: 要显示的模型列表
     const pinnedModels = ensurePinnedImageSelector(
         config?.pinned_quota_models?.models || Object.keys(MODEL_CONFIG),
     );
@@ -541,10 +549,17 @@ function AccountRowContent({
                                 </span>
                             );
                         } else if (tier.includes('pro')) {
+                            const isTrial = tier.includes('trial');
                             return (
-                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 via-teal-600 to-[#129a5f] text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
+                                <span className="relative inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 via-teal-600 to-[#129a5f] text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
                                     <Diamond className="w-2.5 h-2.5 fill-current" />
                                     {t('accounts.pro')}
+                                    {isTrial && (
+                                        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs" title="Trial Account">
+                                            <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+                                            trial
+                                        </span>
+                                    )}
                                 </span>
                             );
                         } else {
@@ -971,6 +986,7 @@ function AccountTable({
     quotaWindow,
     quotaProvider = 'gemini',
     showLastUsed = false,
+    autoSort = false,
 }: AccountTableProps) {
     const { t } = useTranslation();
 
@@ -1013,7 +1029,7 @@ function AccountTable({
         });
     };
 
-    // 配置拖拽传感器
+    // Config: 拖拽传感器
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: { distance: 8 }, // 需要移动 8px 才触发拖拽
@@ -1209,6 +1225,7 @@ function AccountTable({
                                     quotaProvider={quotaProvider}
                                     showLastUsed={showLastUsed}
                                     columnOrder={columnOrder}
+                                    autoSort={autoSort}
                                 />
                             ))}
                         </tbody>
@@ -1216,7 +1233,7 @@ function AccountTable({
                 </table>
             </div>
 
-            {/* 拖拽悬浮预览层 */}
+            {/* Drag overlay preview */}
             <DragOverlay>
                 {
                     activeAccount ? (

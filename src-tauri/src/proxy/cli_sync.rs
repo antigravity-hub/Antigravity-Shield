@@ -91,7 +91,7 @@ fn parse_where_output(output: &[u8]) -> Option<PathBuf> {
     None
 }
 
-/// 检查路径是否是 .cmd/.bat 文件
+/// Check: 路径是否是 .cmd/.bat 文件
 #[cfg(target_os = "windows")]
 fn is_cmd_file(path: &PathBuf) -> bool {
     path.extension()
@@ -103,7 +103,7 @@ fn is_cmd_file(path: &PathBuf) -> bool {
 /// 验证路径是否安全（防止命令注入）
 #[cfg(target_os = "windows")]
 fn is_safe_path(path: &PathBuf) -> bool {
-    // 检查路径是否存在且是文件
+    // Check: 路径是否存在且是文件
     if !path.exists() || !path.is_file() {
         return false;
     }
@@ -113,7 +113,7 @@ fn is_safe_path(path: &PathBuf) -> bool {
         return false;
     }
 
-    // 检查路径是否包含危险字符
+    // Check: 路径是否包含危险字符
     let path_str = path.to_string_lossy();
     let dangerous_chars = ['&', '|', ';', '<', '>', '(', ')', '`', '$', '^', '%', '!'];
     if path_str.chars().any(|c| dangerous_chars.contains(&c)) {
@@ -265,7 +265,7 @@ pub struct CliStatus {
     pub is_synced: bool,
     pub has_backup: bool,
     pub current_base_url: Option<String>,
-    pub files: Vec<String>, // 返回关联的文件名列表供前端展示
+    pub files: Vec<String>, // Return: 关联的文件名列表供前端展示
 }
 
 /// 检测 CLI 是否安装并获取版本
@@ -404,8 +404,8 @@ pub fn get_sync_status(app: &CliApp, proxy_url: &str) -> (bool, bool, Option<Str
             has_backup = true;
         }
 
-        // 如果物理文件不存在
-        // 如果物理文件不存在
+        // If 物理文件不存在
+        // If 物理文件不存在
         if !file.path.exists() {
             // Gemini 的 settings.json/config.json 只要有一个存在即可，或者都不存在（视为未同步）
             if app == &CliApp::Gemini
@@ -600,7 +600,7 @@ pub fn sync_config(
                             env_obj.remove("ANTHROPIC_DEFAULT_OPUS_MODEL");
                             env_obj.remove("ANTHROPIC_DEFAULT_SONNET_MODEL");
                         } else {
-                            // 如果 API Key 为空，则移除该键，避免设置为空字符串
+                            // If  API Key 为空，则移除该键，避免设置为空字符串
                             env_obj.remove("ANTHROPIC_API_KEY");
                             env_obj.remove("ANTHROPIC_AUTH_TOKEN");
                         }
@@ -863,11 +863,11 @@ pub async fn execute_cli_restore(app_type: CliApp) -> Result<(), String> {
         }
 
         if restored_count > 0 {
-            // 如果成功恢复了至少一个备份，就认为是恢复成功
+            // If 成功恢复了至少一个备份，就认为是恢复成功
             return Ok(());
         }
 
-        // 如果没有备份，则执行原来的逻辑：恢复为默认配置
+        // If 没有备份，则执行原来的逻辑：恢复为默认配置
         let default_url = app_type.default_url();
         // 恢复默认时清空 API Key，让用户重新授权或使用官方 Key
         sync_config(&app_type, default_url, "", None)

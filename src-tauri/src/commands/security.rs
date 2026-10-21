@@ -44,7 +44,7 @@ pub struct IpStatsResponse {
 
 // ==================== IP 访问日志命令 ====================
 
-/// 获取 IP 访问日志列表
+/// Get:  IP 访问日志列表
 #[tauri::command]
 pub async fn get_ip_access_logs(query: IpAccessLogQuery) -> Result<IpAccessLogResponse, String> {
     let offset = (query.page.max(1) - 1) * query.page_size;
@@ -62,7 +62,7 @@ pub async fn get_ip_access_logs(query: IpAccessLogQuery) -> Result<IpAccessLogRe
     Ok(IpAccessLogResponse { logs, total })
 }
 
-/// 获取 IP 统计信息
+/// Get:  IP 统计信息
 #[tauri::command]
 pub async fn get_ip_stats() -> Result<IpStatsResponse, String> {
     let stats = security_db::get_ip_stats()?;
@@ -84,7 +84,7 @@ pub async fn clear_ip_access_logs() -> Result<(), String> {
 
 // ==================== IP 黑名单命令 ====================
 
-/// 获取 IP 黑名单列表
+/// Get:  IP 黑名单列表
 #[tauri::command]
 pub async fn get_ip_blacklist() -> Result<Vec<security_db::IpBlacklistEntry>, String> {
     security_db::get_blacklist()
@@ -127,7 +127,7 @@ pub async fn remove_ip_from_blacklist(ip_pattern: String) -> Result<(), String> 
 /// 清空黑名单
 #[tauri::command]
 pub async fn clear_ip_blacklist() -> Result<(), String> {
-    // 获取所有黑名单条目并逐个删除
+    // Get: 所有黑名单条目并逐个删除
     let entries = security_db::get_blacklist()?;
     for entry in entries {
         security_db::remove_from_blacklist(&entry.ip_pattern)?;
@@ -135,7 +135,7 @@ pub async fn clear_ip_blacklist() -> Result<(), String> {
     Ok(())
 }
 
-/// 检查 IP 是否在黑名单中
+/// Check:  IP 是否在黑名单中
 #[tauri::command]
 pub async fn check_ip_in_blacklist(ip: String) -> Result<bool, String> {
     security_db::is_ip_in_blacklist(&ip)
@@ -143,7 +143,7 @@ pub async fn check_ip_in_blacklist(ip: String) -> Result<bool, String> {
 
 // ==================== IP 白名单命令 ====================
 
-/// 获取 IP 白名单列表
+/// Get:  IP 白名单列表
 #[tauri::command]
 pub async fn get_ip_whitelist() -> Result<Vec<security_db::IpWhitelistEntry>, String> {
     security_db::get_whitelist()
@@ -181,7 +181,7 @@ pub async fn remove_ip_from_whitelist(ip_pattern: String) -> Result<(), String> 
 /// 清空白名单
 #[tauri::command]
 pub async fn clear_ip_whitelist() -> Result<(), String> {
-    // 获取所有白名单条目并逐个删除
+    // Get: 所有白名单条目并逐个删除
     let entries = security_db::get_whitelist()?;
     for entry in entries {
         security_db::remove_from_whitelist(&entry.ip_pattern)?;
@@ -189,7 +189,7 @@ pub async fn clear_ip_whitelist() -> Result<(), String> {
     Ok(())
 }
 
-/// 检查 IP 是否在白名单中
+/// Check:  IP 是否在白名单中
 #[tauri::command]
 pub async fn check_ip_in_whitelist(ip: String) -> Result<bool, String> {
     security_db::is_ip_in_whitelist(&ip)
@@ -197,7 +197,7 @@ pub async fn check_ip_in_whitelist(ip: String) -> Result<bool, String> {
 
 // ==================== 安全配置命令 ====================
 
-/// 获取安全监控配置
+/// Get: 安全监控配置
 #[tauri::command]
 pub async fn get_security_config(
     app_state: State<'_, crate::commands::proxy::ProxyServiceState>,
@@ -214,7 +214,7 @@ pub async fn get_security_config(
     Ok(app_config.proxy.security_monitor)
 }
 
-/// 更新安全监控配置
+/// Update: 安全监控配置
 #[tauri::command]
 pub async fn update_security_config(
     config: crate::proxy::config::SecurityMonitorConfig,
@@ -246,7 +246,7 @@ pub async fn update_security_config(
 
 // ==================== 统计分析命令 ====================
 
-/// 获取 IP Token 消耗统计
+/// Get:  IP Token 消耗统计
 #[tauri::command]
 pub async fn get_ip_token_stats(
     limit: Option<usize>,
@@ -259,7 +259,7 @@ pub async fn get_ip_token_stats(
 
 /// 验证 IP 模式格式 (支持单个 IP 和 CIDR)
 fn is_valid_ip_pattern(pattern: &str) -> bool {
-    // 检查是否为 CIDR 格式
+    // Check: 是否为 CIDR 格式
     if pattern.contains('/') {
         let parts: Vec<&str> = pattern.split('/').collect();
         if parts.len() != 2 {

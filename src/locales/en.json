@@ -574,7 +574,8 @@
     "recheck_btn": "Re-check",
     "recheck_tooltip": "Clear block status and re-check account quota",
     "go_to_appeal": "Go to Appeal",
-    "copy_appeal_url": "Copy Appeal URL"
+    "copy_appeal_url": "Copy Appeal URL",
+    "drag_disabled_autosort": "Manual reordering disabled while Auto Sort is active"
   },
   "settings": {
     "save": "Save Settings",

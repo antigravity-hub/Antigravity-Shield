@@ -44,7 +44,7 @@ pub async fn create_user_token(request: CreateTokenRequest) -> Result<UserToken,
     )
 }
 
-/// 更新令牌
+/// Update: 令牌
 #[tauri::command]
 pub async fn update_user_token(id: String, request: UpdateTokenRequest) -> Result<(), String> {
     user_token_db::update_token(
@@ -58,7 +58,7 @@ pub async fn update_user_token(id: String, request: UpdateTokenRequest) -> Resul
     )
 }
 
-/// 删除令牌
+/// Delete: 令牌
 #[tauri::command]
 pub async fn delete_user_token(id: String) -> Result<(), String> {
     user_token_db::delete_token(&id)
@@ -70,7 +70,7 @@ pub async fn renew_user_token(id: String, expires_type: String) -> Result<(), St
     user_token_db::renew_token(&id, &expires_type)
 }
 
-/// 获取令牌 IP 绑定
+/// Get: 令牌 IP 绑定
 #[tauri::command]
 pub async fn get_token_ip_bindings(token_id: String) -> Result<Vec<TokenIpBinding>, String> {
     user_token_db::get_token_ips(&token_id)
@@ -84,7 +84,7 @@ pub struct UserTokenStats {
     pub today_requests: i64,
 }
 
-/// 获取简单的统计信息
+/// Get: 简单的统计信息
 #[tauri::command]
 pub async fn get_user_token_summary() -> Result<UserTokenStats, String> {
     let tokens = user_token_db::list_tokens()?;

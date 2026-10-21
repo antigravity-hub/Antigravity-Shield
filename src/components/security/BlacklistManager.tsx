@@ -89,7 +89,7 @@ export const BlacklistManager: React.FC<Props> = ({ refreshKey }) => {
             await invoke('remove_ip_from_blacklist', { ipPattern: ipPattern });
         } catch (e) {
             console.error('Failed to remove from blacklist', e);
-            // 如果删除失败，重新加载数据恢复UI
+            // If 删除失败，重新加载数据恢复UI
             loadBlacklist();
         }
     };

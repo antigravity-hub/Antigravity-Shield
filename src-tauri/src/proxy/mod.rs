@@ -27,7 +27,7 @@ pub mod proxy_pool; // 代理池管理器
 pub mod rate_limit; // 限流跟踪
 pub mod session_manager; // 会话指纹管理
 pub mod signature_cache; // Signature Cache (v3.3.16)
-pub mod sticky_config; // 粘性调度配置
+pub mod sticky_config; // 粘性Routing & scheduling configuration
 pub mod upstream; // 上游客户端
 pub mod video; // 视频处理模块
 pub mod zai_vision_mcp; // Built-in Vision MCP server state

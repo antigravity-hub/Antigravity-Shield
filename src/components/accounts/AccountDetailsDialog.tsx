@@ -34,13 +34,27 @@ export default function AccountDetailsDialog({ account, onClose, onViewError }: 
                         <div className="px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-base-200 border border-gray-200 dark:border-base-300 text-xs font-mono text-gray-500 dark:text-gray-400">
                             {account.email}
                         </div>
-                        {account.quota?.subscription_tier && (
-                            <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${account.quota.subscription_tier === 'ultra' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
-                                account.quota.subscription_tier === 'pro' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-gray-100 text-gray-600 dark:bg-base-300 dark:text-gray-400'
+                        {account.quota?.subscription_tier && (() => {
+                            const tier = account.quota.subscription_tier.toLowerCase();
+                            const isTrial = tier.includes('trial');
+                            const isUltra = tier.includes('ultra');
+                            const isPro = tier.includes('pro');
+                            return (
+                                <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                                    isUltra ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
+                                    isPro ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                                    'bg-gray-100 text-gray-600 dark:bg-base-300 dark:text-gray-400'
                                 }`}>
-                                {account.quota.subscription_tier}
-                            </div>
-                        )}
+                                    <span>{account.quota.subscription_tier}</span>
+                                    {isTrial && (
+                                        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs">
+                                            <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+                                            trial
+                                        </span>
+                                    )}
+                                </div>
+                            );
+                        })()}
                     </div>
                     <button
                         onClick={onClose}

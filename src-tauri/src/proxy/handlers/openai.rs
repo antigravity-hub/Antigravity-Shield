@@ -1720,7 +1720,7 @@ pub async fn handle_chat_completions(
         debug_logger::is_enabled(&debug_cfg).then(|| debug_value_without_inline_data(&body));
 
     // [NEW] 自动检测并转换 Responses 格式
-    // 如果请求包含 instructions 或 input 但没有 messages，则认为是 Responses 格式
+    // If 请求包含 instructions 或 input 但没有 messages，则认为是 Responses 格式
     let is_responses_format = !body.get("messages").is_some()
         && (body.get("instructions").is_some() || body.get("input").is_some());
 
@@ -1735,7 +1735,7 @@ pub async fn handle_chat_completions(
                     "content": instructions
                 });
 
-                // 初始化 messages 数组
+                // Initialize:  messages 数组
                 if !body.get("messages").is_some() {
                     body["messages"] = json!([]);
                 }
@@ -2450,7 +2450,7 @@ pub async fn handle_chat_completions(
                 .into_response());
         }
 
-        // 处理特定错误并重试
+        // Process: 特定错误并重试
         failure_statuses.record(status);
         let status_code = status.as_u16();
         let retry_after = response
@@ -2824,7 +2824,7 @@ fn web_tools_guidance_message() -> Value {
 
 // --- END Codex GUIDANCE PROMPTS ---
 
-/// 处理 Legacy Completions API (/v1/completions)
+/// Process:  Legacy Completions API (/v1/completions)
 /// 将 Prompt 转换为 Chat Message 格式，复用 handle_chat_completions
 pub async fn handle_completions(
     axum::extract::OriginalUri(uri): axum::extract::OriginalUri,
@@ -4497,7 +4497,7 @@ pub async fn handle_get_model(
 }
 
 /// OpenAI Images API: POST /v1/images/generations
-/// 处理图像生成请求，转换为 Gemini API 格式
+/// Process: 图像生成请求，转换为 Gemini API 格式
 pub async fn handle_chat_redirection(
     State(state): State<AppState>,
     headers: HeaderMap,

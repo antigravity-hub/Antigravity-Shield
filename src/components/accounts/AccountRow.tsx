@@ -131,7 +131,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                             </span>
                         )}
 
-                        {/* 订阅类型徽章 */}
+                        {/* Subscription tier badge */}
                         {account.quota?.subscription_tier && (() => {
                             const tier = account.quota.subscription_tier.toLowerCase();
                             if (tier.includes('ultra')) {
@@ -142,10 +142,17 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                     </span>
                                 );
                             } else if (tier.includes('pro')) {
+                                const isTrial = tier.includes('trial');
                                 return (
-                                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
+                                    <span className="relative inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
                                         <Diamond className="w-2.5 h-2.5 fill-current" />
                                         PRO
+                                        {isTrial && (
+                                            <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs" title="Trial Account">
+                                                <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+                                                trial
+                                            </span>
+                                        )}
                                     </span>
                                 );
                             } else {
@@ -161,7 +168,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                 </div>
             </td>
 
-            {/* 模型配额 */}
+            {/* Model quotas */}
             <td className="px-4 py-1">
                 {account.quota?.is_forbidden ? (
                     <div className="flex items-center gap-2 text-xs text-red-500 dark:text-red-400 bg-red-50/50 dark:bg-red-900/10 p-1.5 rounded-lg border border-red-100 dark:border-red-900/30">

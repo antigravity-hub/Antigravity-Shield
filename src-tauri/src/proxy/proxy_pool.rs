@@ -13,12 +13,12 @@ use std::sync::OnceLock;
 /// 全局代理池管理器单例
 pub static GLOBAL_PROXY_POOL: OnceLock<Arc<ProxyPoolManager>> = OnceLock::new();
 
-/// 获取全局代理池管理器
+/// Get: 全局代理池管理器
 pub fn get_global_proxy_pool() -> Option<Arc<ProxyPoolManager>> {
     GLOBAL_PROXY_POOL.get().cloned()
 }
 
-/// 初始化全局代理池管理器
+/// Initialize: 全局代理池管理器
 pub fn init_global_proxy_pool(config: Arc<RwLock<ProxyPoolConfig>>) -> Arc<ProxyPoolManager> {
     let manager = Arc::new(ProxyPoolManager::new(config));
     let _ = GLOBAL_PROXY_POOL.set(manager.clone());
@@ -249,7 +249,7 @@ impl ProxyPoolManager {
         Ok(res)
     }
 
-    /// 获取账号绑定的代理
+    /// Get: 账号绑定的代理
     async fn get_bound_proxy(
         &self,
         account_id: &str,
@@ -258,7 +258,7 @@ impl ProxyPoolManager {
         if let Some(proxy_id) = self.account_bindings.get(account_id) {
             if let Some(entry) = config.proxies.iter().find(|p| p.id == *proxy_id.value()) {
                 if entry.enabled {
-                    // 如果开启了自动故障转移且代理不健康，则返回 None (将回退到其他策略或失败)
+                    // If 开启了自动故障转移且代理不健康，则返回 None (将回退到其他策略或失败)
                     if config.auto_failover && !entry.is_healthy {
                         return Ok(None);
                     }
@@ -291,7 +291,7 @@ impl ProxyPoolManager {
                 if config.auto_failover && !p.is_healthy {
                     return false;
                 }
-                // 如果该代理已被某个账号“专属绑定”，则不再参与公用轮询
+                // If 该代理已被某个账号“专属绑定”，则不再参与公用轮询
                 if bound_ids.contains(&p.id) {
                     return false;
                 }
@@ -300,7 +300,7 @@ impl ProxyPoolManager {
             .collect();
 
         if healthy_proxies.is_empty() {
-            // 如果所有代理都被绑定了，或者池本身为空，尝试返回池中开启了且不依赖绑定的代理
+            // If 所有代理都被绑定了，或者池本身为空，尝试返回池中开启了且不依赖绑定的代理
             // (这里可以根据业务进一步调整，目前保持严谨隔离)
             return Ok(None);
         }
@@ -316,7 +316,7 @@ impl ProxyPoolManager {
         };
 
         if let Some(entry) = selected {
-            // 更新计数
+            // Update: 计数
             *self.usage_counter.entry(entry.id.clone()).or_insert(0) += 1;
             Ok(Some(self.build_proxy_config(entry)?))
         } else {
@@ -411,14 +411,14 @@ impl ProxyPoolManager {
         account_id: String,
         proxy_id: String,
     ) -> Result<(), String> {
-        // 检查代理是否存在
+        // Check: 代理是否存在
         {
             let config = self.config.read().await;
             if !config.proxies.iter().any(|p| p.id == proxy_id) {
                 return Err(format!("Proxy {} not found", proxy_id));
             }
 
-            // 检查代理最大账号数限制
+            // Check: 代理最大账号数限制
             if let Some(entry) = config.proxies.iter().find(|p| p.id == proxy_id) {
                 if let Some(max) = entry.max_accounts {
                     if max > 0 {
@@ -438,7 +438,7 @@ impl ProxyPoolManager {
             }
         }
 
-        // 更新内存中的绑定
+        // Update: 内存中的绑定
         self.account_bindings
             .insert(account_id.clone(), proxy_id.clone());
 
@@ -463,14 +463,14 @@ impl ProxyPoolManager {
         tracing::info!("[ProxyPool] Unbound account {}", account_id);
     }
 
-    /// 获取账号当前绑定的代理ID
+    /// Get: 账号当前绑定的代理ID
     pub fn get_account_binding(&self, account_id: &str) -> Option<String> {
         self.account_bindings
             .get(account_id)
             .map(|v| v.value().clone())
     }
 
-    /// 获取所有绑定关系的快照
+    /// Get: 所有绑定关系的快照
     pub fn get_all_bindings_snapshot(&self) -> std::collections::HashMap<String, String> {
         self.account_bindings
             .iter()
@@ -501,16 +501,16 @@ impl ProxyPoolManager {
 
     /// 持久化绑定关系到配置文件
     async fn persist_bindings(&self) {
-        // 获取当前绑定快照
+        // Get: 当前绑定快照
         let bindings = self.get_all_bindings_snapshot();
 
-        // 更新配置中的绑定关系
+        // Update: 配置中的绑定关系
         {
             let mut config = self.config.write().await;
             config.account_bindings = bindings;
         }
 
-        // 保存到磁盘
+        // Save: 到磁盘
         if let Ok(mut app_config) = crate::modules::config::load_app_config() {
             let config = self.config.read().await;
             app_config.proxy.proxy_pool = config.clone();
@@ -520,7 +520,7 @@ impl ProxyPoolManager {
         }
     }
 
-    /// 获取内部配置引用
+    /// Get: 内部配置引用
     pub fn config(&self) -> &Arc<RwLock<ProxyPoolConfig>> {
         &self.config
     }
@@ -534,7 +534,7 @@ impl ProxyPoolManager {
         );
         let mut config = self.config.write().await;
         if proxy_id == "active_node" {
-            // 如果传入泛型 active_node，标记当前首个健康节点失败
+            // If 传入泛型 active_node，标记当前首个健康节点失败
             if let Some(proxy) = config.proxies.iter_mut().find(|p| p.enabled && p.is_healthy) {
                 proxy.is_healthy = false;
                 proxy.last_check_time = Some(chrono::Utc::now().timestamp());
@@ -662,7 +662,7 @@ impl ProxyPoolManager {
         Ok(())
     }
 
-    /// 检查单个代理健康状态
+    /// Check: 单个代理健康状态
     async fn check_proxy_health(&self, entry: &ProxyEntry) -> (bool, Option<u64>) {
         const DEFAULT_HEALTH_CHECK_URL: &str = "https://cp.cloudflare.com/generate_204";
 

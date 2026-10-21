@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 
 
 import {
@@ -401,7 +405,7 @@ function Accounts() {
     };
   };
 
-  // 排序逻辑 (Auto Sort: 优先可用账号 -> 排除已耗尽账号排到末尾 -> 5H 剩余配额从高到低 -> 次级按周配额比例 -> 同级按 Weekly Reset 倒计时从多到少)
+  // Sort logic (Auto Sort: 优先可用账号 -> 排除已耗尽账号排到末尾 -> 5H 剩余配额从高到低 -> 次级按周配额比例 -> 同级按 Weekly Reset 倒计时从多到少)
   const sortedAccounts = useMemo(() => {
     if (!autoSort) {
       return [...filteredAccounts].sort((a, b) => {
@@ -955,7 +959,7 @@ function Accounts() {
       console.error("Import failed:", error);
       showToast(t("accounts.import_fail", { error: String(error) }), "error");
     } finally {
-      // 重置 input,允许重复选择同一文件
+      // Reset:  input,允许重复选择同一文件
       event.target.value = "";
     }
   };
@@ -990,11 +994,11 @@ function Accounts() {
       {/* Fleet Velocity & Predictive Runway Speedometer Gauge */}
       <FleetVelocityGauge accounts={accounts} currentAccount={currentAccount} className="mb-1" />
 
-      {/* 顶部工具栏: 搜索、过滤和操作按钮 (自适应双行布局，防止溢出) */}
+      {/* Top toolbar: search, filter, and action buttons (自适应双行布局，防止溢出) */}
       <div className="flex-none flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-2.5">
-        {/* 第一行: 搜索与过滤视图控制组 */}
+        {/* Row 1: Search and filter view controls */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* 搜索框 */}
+          {/* Search input */}
           <div className="relative flex-none w-36 sm:w-44 lg:w-48 transition-all focus-within:w-56">
             <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
             <input
@@ -1023,7 +1027,7 @@ function Accounts() {
             )}
           </div>
 
-          {/* 自动排序开关与最后使用时间列显示开关 */}
+          {/* Auto-sort and last-used column toggles */}
           <div className="flex gap-1 bg-gray-100/80 dark:bg-base-200 p-1 rounded-xl shrink-0 items-center border border-gray-200/50 dark:border-white/5">
             <button
               className={cn(
@@ -1059,7 +1063,7 @@ function Accounts() {
             </button>
           </div>
 
-          {/* 视图切换按钮组 */}
+          {/* View mode switcher */}
           <div className="flex gap-1 bg-gray-100 dark:bg-base-200 p-1 rounded-lg shrink-0">
             <button
               className={cn(
@@ -1464,7 +1468,7 @@ function Accounts() {
         </div>
       </div>
 
-      {/* 账号列表内容区域 */}
+      {/* Account list content area */}
       <div className="flex-1 min-h-0 relative" ref={containerRef}>
         {viewMode === "list" ? (
           <div className="h-full bg-white dark:bg-base-100 rounded-2xl shadow-sm border border-gray-100 dark:border-base-200 flex flex-col overflow-hidden">
@@ -1497,6 +1501,7 @@ function Accounts() {
                 quotaWindow={quotaWindow}
                 quotaProvider={quotaProvider}
                 showLastUsed={showLastUsed}
+                autoSort={autoSort}
               />
             </div>
           </div>
@@ -1543,7 +1548,7 @@ function Accounts() {
             itemsPerPage={ITEMS_PER_PAGE}
             onPageSizeChange={(newSize) => {
               setLocalPageSize(newSize);
-              setCurrentPage(1); // 重置到第一页
+              setCurrentPage(1); // Reset: 到第一页
             }}
             pageSizeOptions={[10, 20, 50, 100]}
           />

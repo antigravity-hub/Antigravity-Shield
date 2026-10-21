@@ -382,9 +382,9 @@ fn apply_variant(
     Some(spec)
 }
 
-/// 处理 Claude messages 请求
+/// Process:  Claude messages 请求
 ///
-/// 处理 Chat 消息请求流程
+/// Process:  Chat 消息请求流程
 pub async fn handle_messages(
     State(state): State<AppState>,
     headers: HeaderMap,
@@ -409,7 +409,7 @@ pub async fn handle_messages(
     let debug_cfg = state.debug_logging.read().await.clone();
 
     // [NEW] Detect Client Adapter
-    // 检查是否有匹配的客户端适配器（如 opencode）
+    // Check: 是否有匹配的客户端适配器（如 opencode）
     let client_adapter = CLIENT_ADAPTERS
         .iter()
         .find(|a| a.matches(&headers))
@@ -557,9 +557,9 @@ pub async fn handle_messages(
     let threshold_l2 = experimental.context_compression_threshold_l2;
     let threshold_l3 = experimental.context_compression_threshold_l3;
 
-    // 获取最新一条“有意义”的消息内容（用于日志记录和后台任务检测）
+    // Get: 最新一条“有意义”的消息内容（用于日志记录和后台任务检测）
     // 策略：反向遍历，首先筛选出所有角色为 "user" 的消息，然后从中找到第一条非 "Warmup" 且非空的文本消息
-    // 获取最新一条“有意义”的消息内容（用于日志记录和后台任务检测）
+    // Get: 最新一条“有意义”的消息内容（用于日志记录和后台任务检测）
     // 策略：反向遍历，首先筛选出所有和用户相关的消息 (role="user")
     // 然后提取其文本内容，跳过 "Warmup" 或系统预设的 reminder
     let meaningful_msg = request
@@ -598,7 +598,7 @@ pub async fn handle_messages(
             }
         });
 
-    // 如果经过过滤还是找不到（例如纯工具调用），则回退到最后一条消息的原始展示
+    // If 经过过滤还是找不到（例如纯工具调用），则回退到最后一条消息的原始展示
     let latest_msg = meaningful_msg.unwrap_or_else(|| {
         request
             .messages
@@ -646,7 +646,7 @@ pub async fn handle_messages(
             crate::proxy::mappers::claude::models::MessageContent::String(s) => {
                 let char_count = s.chars().count();
                 if char_count > 200 {
-                    // 【修复】使用 chars().take() 安全截取，避免 UTF-8 字符边界 panic
+                    // [FIX] 使用 chars().take() 安全截取，避免 UTF-8 字符边界 panic
                     let preview: String = s.chars().take(200).collect();
                     format!("{}... (total {} chars)", preview, char_count)
                 } else {
@@ -1159,7 +1159,7 @@ pub async fn handle_messages(
                 &request_with_mapped.model,
             );
 
-            // 处理流式响应
+            // Process: 流式响应
             if actual_stream {
                 let meta = json!({
                     "protocol": "anthropic",
@@ -1359,7 +1359,7 @@ pub async fn handle_messages(
                     }
                 }
             } else {
-                // 处理非流式响应
+                // Process: 非流式响应
                 let bytes = match response.bytes().await {
                     Ok(b) => b,
                     Err(e) => {
@@ -1504,7 +1504,7 @@ pub async fn handle_messages(
         }
 
         // 3. 标记限流状态(用于 UI 显示) - 使用异步版本以支持实时配额刷新
-        // 🆕 传入实际使用的模型,实现模型级别限流,避免不同模型配额互相影响
+        // 🆕 传入实际使用的模型,实现模型级别限流,避免不同Model quotas互相影响
         if status_code == 429
             || status_code == 529
             || status_code == 503
@@ -2171,7 +2171,7 @@ fn is_warmup_request(request: &ClaudeRequest) -> bool {
 
 /// 创建 Warmup 请求的模拟响应
 ///
-/// 返回一个简单的响应，不消耗上游配额
+/// Return: 一个简单的响应，不消耗上游配额
 fn create_warmup_response(request: &ClaudeRequest, is_stream: bool) -> Response {
     let model = &request.model;
     let message_id = format!("msg_warmup_{}", chrono::Utc::now().timestamp_millis());

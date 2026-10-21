@@ -30,7 +30,7 @@ pub fn strip_all_thinking_blocks(contents: Vec<Value>) -> Vec<Value> {
 pub fn close_tool_loop_for_thinking(contents: Vec<Value>) -> Vec<Value> {
     let mut stripped = strip_all_thinking_blocks(contents);
 
-    // 如果没有内容了，返回空
+    // If 没有内容了，返回空
     if stripped.is_empty() {
         return stripped;
     }

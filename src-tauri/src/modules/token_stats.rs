@@ -1,3 +1,6 @@
+// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Repository: https://github.com/antigravity-hub/Antigravity-Shield
+
 use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

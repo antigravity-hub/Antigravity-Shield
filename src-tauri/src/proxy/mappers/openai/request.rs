@@ -259,7 +259,7 @@ pub fn transform_openai_request(
     // [NEW] 决定是否开启 Thinking 功能:
     // 1. 模型名包含 -thinking 时自动开启
     // 2. 用户在请求中显式设置 thinking.type = "enabled" 时开启
-    // 如果是 Claude 思考模型且历史不兼容且没有可用签名来占位, 则禁用 Thinking 以防 400
+    // If 是 Claude 思考模型且历史不兼容且没有可用签名来占位, 则禁用 Thinking 以防 400
     let mut actual_include_thinking = is_thinking_model || user_enabled_thinking;
 
     // [REFACTORED] 使用 SignatureCache 获取 Session 级别的签名
@@ -463,7 +463,7 @@ pub fn transform_openai_request(
             } else if actual_include_thinking && role == "model" {
                 // [FIX] 解决 Claude 4.6 Thinking 模型的强制性校验:
                 // "Expected thinking... but found tool_use/text"
-                // 如果是思维模型且缺失 reasoning_content, 则注入占位符
+                // If 是思维模型且缺失 reasoning_content, 则注入占位符
                 tracing::debug!("[OpenAI-Thinking] Injecting placeholder thinking block for assistant message");
                 let mut thought_part = json!({
                     "text": "Applying tool decisions and generating response...",
@@ -844,7 +844,7 @@ pub fn transform_openai_request(
                 crate::proxy::config::ThinkingBudgetMode::Passthrough => user_budget,
                 crate::proxy::config::ThinkingBudgetMode::Custom => {
                     let mut custom_value = tb_config.custom_value as i64;
-                    // 如果自定义值超过了模型规格上限，则进行裁剪
+                    // If 自定义值超过了模型规格上限，则进行裁剪
                     if custom_value > default_budget as i64 {
                         tracing::warn!(
                             "[OpenAI-Request] Custom budget {} exceeds model spec limit {}, capping.",
@@ -1475,7 +1475,7 @@ mod tests {
         let budget_claude = result_claude["request"]["generationConfig"]["thinkingConfig"]
             ["thinkingBudget"]
             .as_i64();
-        // 如果不是 gemini模型且协议中没带 thinking 配置，可能会是 None 或 32000
+        // If 不是 gemini模型且协议中没带 thinking 配置，可能会是 None 或 32000
         // 在该测试环境下，由于模拟的是 OpenAI 格式转 Gemini 路径，如果没有 gemini 关键词通常不进入 thinking 逻辑
         // 我们只需确保 gemini 路径正确受限即可。
 

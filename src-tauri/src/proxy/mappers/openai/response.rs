@@ -257,7 +257,7 @@ pub fn transform_openai_response(
                         }
                     }
 
-                    // 检查该 part 是否是思考内容 (thought: true)
+                    // Check: 该 part 是否是思考内容 (thought: true)
                     let is_thought_part = part
                         .get("thought")
                         .and_then(|v| v.as_bool())
@@ -337,7 +337,7 @@ pub fn transform_openai_response(
                         }
                     }
 
-                    // 处理原生代码执行 (executableCode)
+                    // Process: 原生代码执行 (executableCode)
                     if let Some(exec_code) = part.get("executableCode") {
                         let lang = exec_code
                             .get("language")
@@ -353,7 +353,7 @@ pub fn transform_openai_response(
                         }
                     }
 
-                    // 处理代码执行结果 (codeExecutionResult)
+                    // Process: 代码执行结果 (codeExecutionResult)
                     if let Some(exec_result) = part.get("codeExecutionResult") {
                         let output = exec_result
                             .get("output")
@@ -491,7 +491,7 @@ pub fn transform_openai_response(
         }
     }
 
-    // 如果 candidates 为空，但存在 promptFeedback（被安全拦截），伪造一个被拒绝的 choice
+    // If  candidates 为空，但存在 promptFeedback（被安全拦截），伪造一个被拒绝的 choice
     if choices.is_empty() {
         if let Some(feedback) = raw.get("promptFeedback") {
             let reason = feedback

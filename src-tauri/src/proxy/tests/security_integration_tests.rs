@@ -93,7 +93,7 @@ mod integration_tests {
         assert!(security_db::is_ip_in_whitelist("10.0.0.50").unwrap());
 
         // 在实际中间件中，whitelist_priority=true 时，会先检查白名单
-        // 如果在白名单中，则跳过黑名单检查
+        // If 在白名单中，则跳过黑名单检查
         // 这里只验证数据正确性，中间件逻辑由 ip_filter.rs 保证
 
         cleanup_test_data();
@@ -114,7 +114,7 @@ mod integration_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 获取当前时间戳
+        // Get: 当前时间戳
         let now = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
@@ -205,7 +205,7 @@ mod integration_tests {
             "rate_limiter",
         );
 
-        // 获取封禁详情
+        // Get: 封禁详情
         let entry = security_db::get_blacklist_entry_for_ip("temp.ban.message")
             .unwrap()
             .unwrap();

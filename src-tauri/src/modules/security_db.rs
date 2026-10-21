@@ -64,7 +64,7 @@ pub struct IpRanking {
     pub is_blocked: bool,
 }
 
-/// 获取安全数据库路径
+/// Get: 安全数据库路径
 pub fn get_security_db_path() -> Result<PathBuf, String> {
     let data_dir = crate::modules::account::get_data_dir()?;
     Ok(data_dir.join("security.db"))
@@ -89,7 +89,7 @@ fn connect_db() -> Result<Connection, String> {
     Ok(conn)
 }
 
-/// 初始化安全数据库
+/// Initialize: 安全数据库
 pub fn init_db() -> Result<(), String> {
     let conn = connect_db()?;
 
@@ -174,7 +174,7 @@ pub fn init_db() -> Result<(), String> {
 // IP 访问日志操作
 // ============================================================================
 
-/// 保存 IP 访问日志
+/// Save:  IP 访问日志
 pub fn save_ip_access_log(log: &IpAccessLog) -> Result<(), String> {
     let conn = connect_db()?;
 
@@ -201,7 +201,7 @@ pub fn save_ip_access_log(log: &IpAccessLog) -> Result<(), String> {
     Ok(())
 }
 
-/// 获取 IP 访问日志 (分页)
+/// Get:  IP 访问日志 (分页)
 pub fn get_ip_access_logs(
     limit: usize,
     offset: usize,
@@ -277,7 +277,7 @@ pub fn get_ip_access_logs(
     Ok(logs)
 }
 
-/// 获取 IP 统计概览
+/// Get:  IP 统计概览
 pub fn get_ip_stats() -> Result<IpStats, String> {
     let conn = connect_db()?;
 
@@ -319,7 +319,7 @@ pub fn get_ip_stats() -> Result<IpStats, String> {
     })
 }
 
-/// 获取 TOP N IP 访问排行
+/// Get:  TOP N IP 访问排行
 pub fn get_top_ips(limit: usize, hours: i64) -> Result<Vec<IpRanking>, String> {
     let conn = connect_db()?;
 
@@ -350,7 +350,7 @@ pub fn get_top_ips(limit: usize, hours: i64) -> Result<Vec<IpRanking>, String> {
     let mut rankings = Vec::new();
     for r in rankings_iter {
         let mut ranking = r.map_err(|e| e.to_string())?;
-        // 检查是否在黑名单中
+        // Check: 是否在黑名单中
         ranking.is_blocked = is_ip_in_blacklist(&ranking.client_ip)?;
         rankings.push(ranking);
     }
@@ -421,7 +421,7 @@ pub fn remove_from_blacklist(id: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// 获取黑名单列表
+/// Get: 黑名单列表
 pub fn get_blacklist() -> Result<Vec<IpBlacklistEntry>, String> {
     let conn = connect_db()?;
 
@@ -454,12 +454,12 @@ pub fn get_blacklist() -> Result<Vec<IpBlacklistEntry>, String> {
     Ok(entries)
 }
 
-/// 检查 IP 是否在黑名单中
+/// Check:  IP 是否在黑名单中
 pub fn is_ip_in_blacklist(ip: &str) -> Result<bool, String> {
     get_blacklist_entry_for_ip(ip).map(|entry| entry.is_some())
 }
 
-/// 获取 IP 对应的黑名单条目（如果存在）
+/// Get:  IP 对应的黑名单条目（如果存在）
 pub fn get_blacklist_entry_for_ip(ip: &str) -> Result<Option<IpBlacklistEntry>, String> {
     let conn = connect_db()?;
     let now = chrono::Utc::now().timestamp();
@@ -586,7 +586,7 @@ pub fn remove_from_whitelist(id: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// 获取白名单列表
+/// Get: 白名单列表
 pub fn get_whitelist() -> Result<Vec<IpWhitelistEntry>, String> {
     let conn = connect_db()?;
 
@@ -616,7 +616,7 @@ pub fn get_whitelist() -> Result<Vec<IpWhitelistEntry>, String> {
     Ok(entries)
 }
 
-/// 检查 IP 是否在白名单中
+/// Check:  IP 是否在白名单中
 pub fn is_ip_in_whitelist(ip: &str) -> Result<bool, String> {
     let conn = connect_db()?;
 
@@ -654,7 +654,7 @@ pub fn clear_ip_access_logs() -> Result<(), String> {
     Ok(())
 }
 
-/// 获取 IP 访问日志总数
+/// Get:  IP 访问日志总数
 pub fn get_ip_access_logs_count(
     ip_filter: Option<&str>,
     blocked_only: bool,

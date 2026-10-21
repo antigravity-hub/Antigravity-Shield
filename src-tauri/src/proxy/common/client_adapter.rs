@@ -19,7 +19,7 @@ pub trait ClientAdapter: Send + Sync {
     /// * `headers` - 请求头，通常通过 User-Agent 等字段识别客户端
     ///
     /// # Returns
-    /// 如果匹配返回 true，否则返回 false
+    /// If 匹配返回 true，否则返回 false
     fn matches(&self, headers: &HeaderMap) -> bool;
 
     /// 是否绕过签名校验

@@ -1456,7 +1456,7 @@ fn check_standard_locations(target_ide: Option<&str>) -> Option<std::path::PathB
     None
 }
 
-/// 获取 Antigravity CLI (agy) 的安装/可执行文件路径
+/// Get:  Antigravity CLI (agy) 的安装/可执行文件路径
 pub fn get_antigravity_cli_executable_path() -> Option<std::path::PathBuf> {
     // 1. 优先从配置查询
     if let Ok(config) = crate::modules::config::load_app_config() {

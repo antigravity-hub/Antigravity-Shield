@@ -138,7 +138,7 @@ export function getModelDisplayName(
         const rawName = model.name ? model.name.trim().toLowerCase() : '';
         const explicitDisplayName = model.display_name?.trim();
 
-        // 如果显式传入了 display_name，并且不是陈旧的通用基础桶名称或 Google API 的异常旧别名
+        // If 显式传入了 display_name，并且不是陈旧的通用基础桶名称或 Google API 的异常旧别名
         if (explicitDisplayName) {
             const isStaleBaseDisplayName =
                 rawName === 'gemini-3-flash' && explicitDisplayName.toLowerCase() === 'gemini 3 flash';
@@ -150,7 +150,7 @@ export function getModelDisplayName(
         }
 
         if (rawName) {
-            // 如果是通用代际配额桶，动态探测并提升为同代际下已知最高版本的旗舰模型标签
+            // If 是通用代际配额桶，动态探测并提升为同代际下已知最高版本的旗舰模型标签
             if (isBaseQuotaBucket(rawName)) {
                 const category = categorizeModel(rawName);
                 const genMatch = rawName.match(/gemini-(\d+)/);

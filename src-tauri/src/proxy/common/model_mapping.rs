@@ -42,7 +42,7 @@ pub fn map_claude_model_to_gemini(input: &str) -> String {
     DynamicModelRegistry::global().resolve_model(input, None)
 }
 
-/// 获取所有内置支持的模型列表关键字 (Forward to DynamicModelRegistry)
+/// Get: 所有内置支持的模型列表关键字 (Forward to DynamicModelRegistry)
 pub fn get_supported_models() -> Vec<String> {
     DynamicModelRegistry::global().get_available_models(None, false)
 }
@@ -154,7 +154,7 @@ pub fn resolve_model_route(
     custom_mapping: &std::collections::HashMap<String, String>,
 ) -> String {
     // 0. API 热更新废弃模型转发 (最高物理优先级，强制纠正)
-    // 如果用户非要用已经被移除的模型，并且官方下发了 fallback path，我们在此拦截并纠正
+    // If 用户非要用已经被移除的模型，并且官方下发了 fallback path，我们在此拦截并纠正
     if let Some(forwarded) = DYNAMIC_MODEL_FORWARDING_RULES.get(original_model) {
         crate::modules::logger::log_info(&format!(
             "[Router] 官方淘汰重定向: {} -> {}",

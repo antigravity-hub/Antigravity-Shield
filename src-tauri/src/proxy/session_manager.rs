@@ -65,7 +65,7 @@ impl SessionManager {
         }
 
         if !content_found {
-            // 如果没找到有意义的内容，退化为对最后一条消息进行哈希
+            // If 没找到有意义的内容，退化为对最后一条消息进行哈希
             if let Some(last_msg) = request.messages.last() {
                 hasher.update(format!("{:?}", last_msg.content).as_bytes());
             }

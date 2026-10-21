@@ -3,7 +3,7 @@
 
 use crate::proxy::model_specs;
 
-/// 获取模型的输出 Token 限额
+/// Get: 模型的输出 Token 限额
 ///
 /// # 参数
 /// - `model_name`: 映射后的模型名

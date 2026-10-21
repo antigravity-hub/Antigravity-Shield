@@ -64,7 +64,7 @@ mod image_success_tests {
     }
 }
 
-/// 处理 generateContent 和 streamGenerateContent
+/// Process:  generateContent 和 streamGenerateContent
 /// 路径参数: model_name, method (e.g. "gemini-pro", "generateContent")
 pub async fn handle_generate(
     State(state): State<AppState>,
@@ -685,7 +685,7 @@ pub async fn handle_generate(
                 .into_response());
         }
 
-        // 处理错误并重试
+        // Process: 错误并重试
         failure_statuses.record(status);
         let status_code = status.as_u16();
         let retry_after = response
@@ -938,7 +938,7 @@ pub async fn handle_list_models(
                 .map(|s| s.to_string())
         });
 
-    // 获取动态模型列表（与 /v1/models 一致）
+    // Get: 动态模型列表（与 /v1/models 一致）
     let only_raw = *state.only_raw_quota_models.read().await;
     let model_ids = get_dynamic_models_scoped(
         &state.custom_mapping,
@@ -977,7 +977,7 @@ pub async fn handle_get_model(Path(model_name): Path<String>) -> impl IntoRespon
     }))
 }
 
-/// 处理 /countTokens 斜杠语法路由
+/// Process:  /countTokens 斜杠语法路由
 /// 委托给 execute_count_tokens，与 :countTokens 冒号语法共用同一实现
 pub async fn handle_count_tokens(
     State(state): State<AppState>,
@@ -992,8 +992,8 @@ pub async fn handle_count_tokens(
 
 /// 核心 countTokens 实现：透明代理到上游 v1internal:countTokens
 ///
-/// 获取有效 OAuth Token，将标准 Gemini 请求体包装为 v1internal 格式后转发，
-/// 返回真实的 token 计数，而不是硬编码的 0
+/// Get: 有效 OAuth Token，将标准 Gemini 请求体包装为 v1internal 格式后转发，
+/// Return: 真实的 token 计数，而不是硬编码的 0
 pub async fn execute_count_tokens(
     state: AppState,
     model_name: String,

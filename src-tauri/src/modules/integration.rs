@@ -11,7 +11,7 @@ pub trait SystemIntegration: Send + Sync {
         target_ide: Option<&str>,
     ) -> Result<(), String>;
 
-    /// 更新系统托盘（如果适用）
+    /// Update: 系统托盘（如果适用）
     fn update_tray(&self);
 
     /// 发送系统通知
@@ -158,7 +158,7 @@ impl SystemIntegration for DesktopIntegration {
             // 经典原生版：自动探测版本号
             match version::get_antigravity_version(target_ide) {
                 Ok(ver) => {
-                    // 如果版本号 >= 2.0.0
+                    // If 版本号 >= 2.0.0
                     if version::compare_version(&ver.short_version, "2.0.0")
                         != std::cmp::Ordering::Less
                     {
@@ -175,7 +175,7 @@ impl SystemIntegration for DesktopIntegration {
                     }
                 }
                 Err(e) => {
-                    // 如果探测失败，为防止对最新版由于没有 storage.json 造成报错阻断，默认作为新凭据注入
+                    // If 探测失败，为防止对最新版由于没有 storage.json 造成报错阻断，默认作为新凭据注入
                     use_keyring = true;
                     crate::modules::logger::log_warn(&format!(
                         "[Desktop] Failed to detect Antigravity version ({}), defaulting to system Keyring for robustness.",
@@ -412,7 +412,7 @@ pub(crate) fn write_to_system_keyring(account: &crate::models::Account) -> Resul
         let full_keyring_value = format!("go-keyring-base64:{}", encoded_payload);
 
         // 2.1 macOS Keychain Access
-        // 删除旧的
+        // Delete: 旧的
         let _ = Command::new("security")
             .args([
                 "delete-generic-password",
@@ -857,7 +857,7 @@ impl SystemIntegration for HeadlessIntegration {
             account.email
         ));
         // Docker 模式下通常不直接控制宿主机的 VS Code 进程
-        // 如果需要同步配置 to 某个 volume，可以在此处添加逻辑
+        // If 需要同步配置 to 某个 volume，可以在此处添加逻辑
         Ok(())
     }
 

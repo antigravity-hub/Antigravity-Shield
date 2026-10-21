@@ -595,7 +595,7 @@ pub fn contains_non_networking_tool(tools: &Option<Vec<Value>>) -> bool {
             {
                 is_networking = true;
             } else if tool.get("functionDeclarations").is_some() {
-                // 如果是 Gemini 风格的 functionDeclarations，进去看一眼
+                // If 是 Gemini 风格的 functionDeclarations，进去看一眼
                 if let Some(decls) = tool.get("functionDeclarations").and_then(|v| v.as_array()) {
                     for decl in decls {
                         if let Some(n) = decl.get("name").and_then(|v| v.as_str()) {

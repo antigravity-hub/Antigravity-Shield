@@ -1,3 +1,7 @@
+/**
+ * Antigravity Shield — AI Proxy & Fleet Management Engine
+ * Repository: https://github.com/antigravity-hub/Antigravity-Shield
+ */
 import { createHashRouter, RouterProvider, Navigate, useRouteError } from 'react-router-dom';
 
 import Layout from './components/layout/Layout';

@@ -33,34 +33,34 @@ export interface ProxyConfig {
 }
 
 // ============================================================================
-// Thinking Budget 配置 (控制 AI 深度思考时的 Token 预算)
+// Thinking Budget config (controls token budget for deep thinking)
 // ============================================================================
 
-/** Thinking Budget 处理模式 */
+/** Thinking Budget processing mode */
 export type ThinkingBudgetMode = 'auto' | 'passthrough' | 'custom' | 'adaptive'; // [NEW] 支持自适应模式
 
-/** Thinking Effort 等级 (仅 adaptive 模式) */
+/** Thinking Effort tier (adaptive mode only) */
 export type ThinkingEffort = 'low' | 'medium' | 'high';
 
-/** Thinking Budget 配置 */
+/** Thinking Budget configuration */
 export interface ThinkingBudgetConfig {
-    /** 模式选择 */
+    /** Mode selection */
     mode: ThinkingBudgetMode;
-    /** 自定义固定值（仅在 mode=custom 时生效），范围 1024-65536 */
+    /** Custom fixed budget (mode=custom only), range 1024-65536 */
     custom_value: number;
-    /** 思考强度 (仅在 mode=adaptive 时生效) */
+    /** Thinking intensity (mode=adaptive only) */
     effort?: ThinkingEffort;
 }
 
 // ============================================================================
-// 全局系统提示词配置
+// Global system prompt configuration
 // ============================================================================
 
-/** 全局系统提示词配置 */
+/** Global system prompt configuration */
 export interface GlobalSystemPromptConfig {
-    /** 是否启用 */
+    /** Whether enabled */
     enabled: boolean;
-    /** 提示词内容 */
+    /** System prompt content */
     content: string;
 }
 
@@ -143,7 +143,7 @@ export interface AppConfig {
     antigravity_args?: string[]; // [NEW] Antigravity 启动参数
     auto_launch?: boolean; // 开机自动启动
     auto_check_update?: boolean; // 自动检查更新
-    update_check_interval?: number; // 更新检查间隔（小时）
+    update_check_interval?: number; // Update: 检查间隔（小时）
     accounts_page_size?: number; // 账号列表每页显示数量,默认 0 表示自动计算
     hidden_menu_items?: string[]; // 隐藏的菜单项路径列表
     scheduled_warmup: ScheduledWarmupConfig;
@@ -162,7 +162,7 @@ export interface AppConfig {
 }
 
 // ============================================================================
-// Cloudflared (CF隧道) 类型定义
+// Cloudflared tunnel type definitions
 // ============================================================================
 
 export type TunnelMode = 'quick' | 'auth';
@@ -184,7 +184,7 @@ export interface CloudflaredStatus {
 }
 
 // ============================================================================
-// 代理池类型定义
+// Proxy pool type definitions
 // ============================================================================
 
 export interface ProxyAuth {

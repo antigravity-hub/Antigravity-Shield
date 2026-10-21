@@ -349,7 +349,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                     {t('accounts.exhausted', 'Quota Exhausted').toUpperCase()}
                                 </span>
                             )}
-                            {/* 订阅类型徽章 */}
+                            {/* Subscription tier badge */}
                             {account.quota?.subscription_tier && (() => {
                                 const tier = account.quota.subscription_tier.toLowerCase();
                                 if (tier.includes('ultra')) {
@@ -370,7 +370,11 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                     return (
                                         <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[9px] font-bold shadow-sm" title="Google AI Pro (Long Promotional Trial)">
                                             <Diamond className="w-2.5 h-2.5" />
-                                            PRO (TRIAL)
+                                            PRO
+                                            <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-0.5 shadow-2xs">
+                                                <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+                                                trial
+                                            </span>
                                         </span>
                                     );
                                 } else if (tier.includes('pro')) {

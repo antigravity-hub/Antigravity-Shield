@@ -8,7 +8,7 @@ use std::pin::Pin;
 use tracing::debug;
 use uuid::Uuid;
 
-/// 保存 thoughtSignature 到会话缓存
+/// Save:  thoughtSignature 到会话缓存
 pub fn store_thought_signature(sig: &str, session_id: &str, message_count: usize) {
     if sig.is_empty() {
         return;
@@ -1007,7 +1007,7 @@ where
                                                     }
                                                 }
 
-                                                // 处理 groundingMetadata (搜索引文)
+                                                // Process:  groundingMetadata (搜索引文)
                                                 if let Some(grounding) = candidate.get("groundingMetadata") {
                                                     let mut grounding_text = String::new();
                                                     if let Some(queries) = grounding.get("webSearchQueries").and_then(|q| q.as_array()) {

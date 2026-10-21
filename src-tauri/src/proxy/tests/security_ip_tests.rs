@@ -138,7 +138,7 @@ mod security_db_tests {
             "admin",
         );
 
-        // 获取条目详情
+        // Get: 条目详情
         let entry_result = get_blacklist_entry_for_ip("172.16.0.50");
         assert!(entry_result.is_ok());
 
@@ -370,7 +370,7 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 保存访问日志
+        // Save: 访问日志
         let log = IpAccessLog {
             id: uuid::Uuid::new_v4().to_string(),
             client_ip: "test.log.ip".to_string(),
@@ -409,7 +409,7 @@ mod security_db_tests {
         let _ = init_db();
         cleanup_test_data();
 
-        // 保存正常日志
+        // Save: 正常日志
         let normal_log = IpAccessLog {
             id: uuid::Uuid::new_v4().to_string(),
             client_ip: "normal.access.ip".to_string(),
@@ -426,7 +426,7 @@ mod security_db_tests {
         };
         let _ = save_ip_access_log(&normal_log);
 
-        // 保存被阻止的日志
+        // Save: 被阻止的日志
         let blocked_log = IpAccessLog {
             id: uuid::Uuid::new_v4().to_string(),
             client_ip: "blocked.access.ip".to_string(),
@@ -489,7 +489,7 @@ mod security_db_tests {
         let _ = add_to_blacklist("stats.black.2", None, None, "test");
         let _ = add_to_whitelist("stats.white.1", None);
 
-        // 获取统计
+        // Get: 统计
         let stats = get_ip_stats();
         assert!(stats.is_ok());
 
@@ -665,7 +665,7 @@ mod security_db_tests {
             let _ = get_blacklist_entry_for_ip("hit.count.test");
         }
 
-        // 检查 hit_count
+        // Check:  hit_count
         let blacklist = get_blacklist().unwrap();
         let entry = blacklist.iter().find(|e| e.ip_pattern == "hit.count.test");
         assert!(entry.is_some());

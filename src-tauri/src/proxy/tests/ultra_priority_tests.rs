@@ -66,7 +66,7 @@ const ULTRA_REQUIRED_MODELS: &[&str] = &[
     "opus", // 通配匹配
 ];
 
-/// 检查模型是否需要 Ultra 账号
+/// Check: 模型是否需要 Ultra 账号
 fn is_ultra_required_model(model: &str) -> bool {
     let lower = model.to_lowercase();
     ULTRA_REQUIRED_MODELS.iter().any(|m| lower.contains(m))
@@ -92,7 +92,7 @@ fn test_is_ultra_required_model() {
     assert!(!is_ultra_required_model("claude-haiku"));
 }
 
-/// 模拟 token_manager.rs 中的排序逻辑 (更新后：始终 Tier 优先)
+/// 模拟 token_manager.rs 中的Sort logic (更新后：始终 Tier 优先)
 fn compare_tokens_for_model(a: &ProxyToken, b: &ProxyToken, _target_model: &str) -> Ordering {
     let tier_priority = |tier: &Option<String>| {
         let t = tier.as_deref().unwrap_or("").to_lowercase();
@@ -175,7 +175,7 @@ fn test_ultra_priority_for_high_end_models() {
     );
     assert_eq!(filtered[0].email, "ultra@test.com");
 
-    // 2. 验证排序逻辑 (针对 Sonnet，两者都支持)
+    // 2. 验证Sort logic (针对 Sonnet，两者都支持)
     // 即使 Pro 配额更高，由于新策略是 "Ultra First"，Ultra 仍然排在前面
     assert_eq!(
         compare_tokens_for_model(&ultra_low_quota, &pro_high_quota, "claude-sonnet-4-6"),

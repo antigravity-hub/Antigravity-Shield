@@ -151,12 +151,12 @@ pub async fn get_session_with_parent(
     store().lock().await.get(previous_response_id)
 }
 
-/// 保存新的会话状态（以 response_id 为 key）
+/// Save: 新的会话状态（以 response_id 为 key）
 pub async fn save_session(response_id: String, entry: HttpSessionEntry) {
     store().lock().await.insert(response_id, entry);
 }
 
-/// 保存 Responses 本轮增量；父节点的 Arc 强引用保证分支共享祖先。
+/// Save:  Responses 本轮增量；父节点的 Arc 强引用保证分支共享祖先。
 pub async fn save_session_delta(
     response_id: String,
     parent: Option<SessionParent>,
@@ -315,7 +315,7 @@ pub fn prepare_session_input(
 
 /// 把上一轮的 response output items 转成 input items 追加到历史中
 /// 同时把新的 user input items 追加进去
-/// 返回合并后的 input items
+/// Return: 合并后的 input items
 pub fn merge_history_with_new_input(
     mut history: Vec<Value>,
     response_output: &[Value],

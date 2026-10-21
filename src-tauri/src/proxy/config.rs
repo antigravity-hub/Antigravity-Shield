@@ -21,12 +21,12 @@ pub fn normalize_proxy_url(url: &str) -> String {
 }
 
 // ============================================================================
-// 全局 Thinking Budget 配置存储
+// 全局 Thinking Budget configuration存储
 // 用于在 request transform 函数中访问配置（无需修改函数签名）
 // ============================================================================
 static GLOBAL_THINKING_BUDGET_CONFIG: OnceLock<RwLock<ThinkingBudgetConfig>> = OnceLock::new();
 
-/// 获取当前 Thinking Budget 配置
+/// Get: 当前 Thinking Budget configuration
 pub fn get_thinking_budget_config() -> ThinkingBudgetConfig {
     GLOBAL_THINKING_BUDGET_CONFIG
         .get()
@@ -35,7 +35,7 @@ pub fn get_thinking_budget_config() -> ThinkingBudgetConfig {
         .unwrap_or_default()
 }
 
-/// 更新全局 Thinking Budget 配置
+/// Update: 全局 Thinking Budget configuration
 pub fn update_thinking_budget_config(config: ThinkingBudgetConfig) {
     if let Some(lock) = GLOBAL_THINKING_BUDGET_CONFIG.get() {
         if let Ok(mut cfg) = lock.write() {
@@ -58,12 +58,12 @@ pub fn update_thinking_budget_config(config: ThinkingBudgetConfig) {
 }
 
 // ============================================================================
-// 全局系统提示词配置存储
+// Global system prompt configuration存储
 // 用户可在设置中配置一段全局提示词，自动注入到所有请求的 systemInstruction 中
 // ============================================================================
 static GLOBAL_SYSTEM_PROMPT_CONFIG: OnceLock<RwLock<GlobalSystemPromptConfig>> = OnceLock::new();
 
-/// 获取当前全局系统提示词配置
+/// Get: 当前Global system prompt configuration
 pub fn get_global_system_prompt() -> GlobalSystemPromptConfig {
     GLOBAL_SYSTEM_PROMPT_CONFIG
         .get()
@@ -72,7 +72,7 @@ pub fn get_global_system_prompt() -> GlobalSystemPromptConfig {
         .unwrap_or_default()
 }
 
-/// 更新全局系统提示词配置
+/// Update: Global system prompt configuration
 pub fn update_global_system_prompt_config(config: GlobalSystemPromptConfig) {
     if let Some(lock) = GLOBAL_SYSTEM_PROMPT_CONFIG.get() {
         if let Ok(mut cfg) = lock.write() {
@@ -275,13 +275,13 @@ pub fn update_global_thresholds(l1: f32, l2: f32, l3: f32) {
     }
 }
 
-/// 全局系统提示词配置
+/// Global system prompt configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GlobalSystemPromptConfig {
-    /// 是否启用全局系统提示词
+    /// Whether enabled全局系统提示词
     #[serde(default)]
     pub enabled: bool,
-    /// 系统提示词内容
+    /// 系统System prompt content
     #[serde(default)]
     pub content: String,
 }
@@ -497,10 +497,10 @@ impl Default for ThinkingBudgetMode {
     }
 }
 
-/// Thinking Budget 配置
+/// Thinking Budget configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ThinkingBudgetConfig {
-    /// 模式选择
+    /// Mode selection
     #[serde(default)]
     pub mode: ThinkingBudgetMode,
     /// 自定义固定值（仅在 mode=Custom 时生效）
@@ -553,7 +553,7 @@ impl Default for DebugLoggingConfig {
 /// IP 黑名单配置
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IpBlacklistConfig {
-    /// 是否启用黑名单
+    /// Whether enabled黑名单
     #[serde(default)]
     pub enabled: bool,
 
@@ -578,7 +578,7 @@ fn default_block_message() -> String {
 /// IP 白名单配置
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IpWhitelistConfig {
-    /// 是否启用白名单模式 (启用后只允许白名单IP访问)
+    /// Whether enabled白名单模式 (启用后只允许白名单IP访问)
     #[serde(default)]
     pub enabled: bool,
 
@@ -617,7 +617,7 @@ impl Default for SecurityMonitorConfig {
     }
 }
 
-/// 图片任务调度配置
+/// 图片任务Routing & scheduling configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImageSchedulerConfig {
     #[serde(default = "default_image_per_account_concurrency")]
@@ -639,7 +639,7 @@ fn default_image_per_account_concurrency() -> usize {
 /// 反代服务配置
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProxyConfig {
-    /// 是否启用反代服务
+    /// Whether enabled反代服务
     pub enabled: bool,
 
     /// 是否允许局域网访问
@@ -700,7 +700,7 @@ pub struct ProxyConfig {
     #[serde(default)]
     pub user_agent_override: Option<String>,
 
-    /// 账号调度配置 (粘性会话/限流重试)
+    /// 账号Routing & scheduling configuration (粘性会话/限流重试)
     #[serde(default)]
     pub scheduling: crate::proxy::sticky_config::StickySessionConfig,
 
@@ -722,12 +722,12 @@ pub struct ProxyConfig {
     #[serde(default)]
     pub saved_user_agent: Option<String>,
 
-    /// Thinking Budget 配置
+    /// Thinking Budget configuration
     /// 控制如何处理 AI 深度思考时的 Token 预算
     #[serde(default)]
     pub thinking_budget: ThinkingBudgetConfig,
 
-    /// 全局系统提示词配置
+    /// Global system prompt configuration
     /// 自动注入到所有 API 请求的 systemInstruction 中
     #[serde(default)]
     pub global_system_prompt: GlobalSystemPromptConfig,
@@ -754,7 +754,7 @@ pub struct ProxyConfig {
 /// 上游代理配置
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct UpstreamProxyConfig {
-    /// 是否启用
+    /// Whether enabled
     pub enabled: bool,
     /// 代理地址 (http://, https://, socks5://)
     pub url: String,
@@ -814,7 +814,7 @@ fn default_zai_haiku_model() -> String {
 }
 
 impl ProxyConfig {
-    /// 获取实际的监听地址
+    /// Get: 实际的监听地址
     /// - allow_lan_access = false: 返回 "127.0.0.1"（默认，隐私优先）
     /// - allow_lan_access = true: 返回 "0.0.0.0"（允许局域网访问）
     pub fn get_bind_address(&self) -> &str {
@@ -844,7 +844,7 @@ pub struct ProxyEntry {
     pub name: String,                     // 显示名称
     pub url: String,                      // 代理地址 (http://, https://, socks5://)
     pub auth: Option<ProxyAuth>,          // 认证信息 (可选)
-    pub enabled: bool,                    // 是否启用
+    pub enabled: bool,                    // Whether enabled
     pub priority: i32,                    // 优先级 (数字越小优先级越高)
     pub tags: Vec<String>,                // 标签 (如 "美国", "住宅IP")
     pub max_accounts: Option<usize>,      // 最大绑定账号数 (0 = 无限制)
@@ -858,7 +858,7 @@ pub struct ProxyEntry {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ProxyPoolConfig {
-    pub enabled: bool, // 是否启用代理池
+    pub enabled: bool, // Whether enabled代理池
     // pub mode: ProxyPoolMode,        // [REMOVED] 代理池模式，统一为 Hybrid 逻辑
     pub proxies: Vec<ProxyEntry>,         // 代理列表
     pub health_check_interval: u64,       // 健康检查间隔 (秒)
