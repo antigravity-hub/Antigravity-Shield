@@ -1,6 +1,7 @@
 {
   "common": {
     "app_name": "Antigravity Shield",
+    "ready": "Pronto",
     "loading": "Carregando...",
     "empty": "Vazio",
     "load_more": "Carregar mais",
@@ -45,39 +46,100 @@
     "delete_success": "Excluído com sucesso",
     "copied": "Copiado para a área de transferência",
     "none": "Nenhum",
-    "retry": "Tentar novamente",
+    "retry": "Tentar Novamente",
     "back": "Voltar",
     "reason": "Motivo",
     "show_raw": "Exibir Bruto",
     "show_parsed": "Exibir Formatado",
-    "hide_qr": "Ocultar QR",
+    "hide_qr": "Ocultar Código QR",
     "switch": "Alternar",
     "switch_best": "Alternar para a Melhor Conta",
-    "switch_best_title": "Alternar para a Melhor Conta",
+    "switch_best_title": "Alternar para a Melhor Conta Disponível",
     "select_target_title": "Selecionar Ambiente de Destino",
-    "no_alternative_account": "Nenhuma conta alternativa ativa com cota suficiente encontrada.",
+    "no_alternative_account": "Nenhuma conta alternativa ativa com cota suficiente foi encontrada.",
     "switch_confirm_prompt": "Deseja alternar para a melhor conta recomendada?",
     "confirm_proceed": "Sim, Continuar",
     "select_target_desc": "Selecione o ambiente de destino onde a cota deve ser ativada:",
     "switch_success": "Alternância concluída com sucesso",
     "claude_series": "Série Claude",
-    "maximize": "Tela Cheia",
-    "deselect_all": "Desmarcar Todos",
     "select_all": "Selecionar Todos",
+    "deselect_all": "Desmarcar Todos",
+    "more_actions": "Mais Ações",
+    "account_options": "Opções da Conta",
+    "off": "DESLIGADO",
+    "on": "LIGADO",
+    "copy_advice": "Copiar Sugestão de Modelo",
+    "fallback": "Alternativa (Fallback)",
+    "custom_model_placeholder": "Digite o ID do modelo personalizado...",
+    "or": "OU",
+    "uninstall": "Desinstalar",
+    "install": "Instalar",
+    "maximize": "Tela Cheia",
+    "expand": "Expandir",
+    "collapse": "Recolher",
+    "connected": "Conectado",
+    "waiting": "Aguardando",
+    "offline": "Offline",
+    "selected": "Selecionado(s)",
+    "all": "Todas as Famílias",
+    "all_tiers": "Todos os Níveis",
+    "no_matching_models": "Nenhum modelo corresponde ao filtro selecionado.",
+    "pinned": "Fixado",
     "optional": "Opcional",
     "actions": "Ações",
     "disable": "Desativar",
     "enable": "Ativar",
     "deleted": "Excluído com sucesso",
-    "selected": "Selecionado(s)",
-    "required": "Obrigatório",
+    "save_success": "Configurações salvas com sucesso",
+    "sync": "Sincronizar",
+    "default": "Padrão",
     "copy_failed": "Falha ao copiar para a área de transferência",
-    "create": "Criar"
+    "create": "Criar",
+    "accent": {
+      "7_palettes": "7 PALETAS"
+    },
+    "network": {
+      "id": "ID:"
+    },
+    "pagination": {
+      "pagination": "Paginação"
+    },
+    "verification": {
+      "antigravity_verification_guide": "Guia de Verificação Antigravity (PDF)"
+    },
+    "app": {
+      "page_not_found": "Página Não Encontrada",
+      "something_went_wrong": "Algo deu errado",
+      "unexpected_error": "Ocorreu um erro inesperado ao carregar esta visualização.",
+      "return_to_dashboard": "Voltar ao Painel"
+    },
+    "error_boundary": {
+      "title": "Erro na Interface do Aplicativo",
+      "reload": "Recarregar Aplicativo"
+    },
+    "flags": {
+      "fa": "Bandeira do Irã",
+      "zh": "Bandeira da China",
+      "zh_tw": "Bandeira de Taiwan",
+      "en": "Bandeira dos Estados Unidos",
+      "ja": "Bandeira do Japão",
+      "tr": "Bandeira da Turquia",
+      "vi": "Bandeira do Vietnã",
+      "pt": "Bandeira do Brasil",
+      "ko": "Bandeira da Coreia do Sul",
+      "ru": "Bandeira da Rússia",
+      "ar": "Bandeira da Arábia Saudita",
+      "es": "Bandeira da Espanha",
+      "my": "Bandeira da Malásia"
+    },
+    "remove": "Remover",
+    "no_account": "No Account"
   },
   "nav": {
     "dashboard": "Painel",
     "accounts": "Contas",
     "proxy": "Proxy da API",
+    "ecosystem": "Skills & MCP",
     "call_records": "Registros de Tráfego",
     "token_stats": "Estatísticas de Tokens",
     "security": "Gestão de IP",
@@ -85,7 +147,7 @@
     "settings": "Configurações",
     "theme_to_dark": "Alternar para Modo Escuro",
     "theme_to_light": "Alternar para Modo Claro",
-    "switch_to_english": "Alternar para Inglês",
+    "switch_to_english": "Mudar para Inglês",
     "switch_to_chinese": "Alternar para Chinês",
     "switch_to_traditional_chinese": "Alternar para Chinês Tradicional",
     "switch_to_english_short": "EN",
@@ -117,7 +179,15 @@
     "window_maximize": "Maximizar",
     "window_restore": "Restaurar",
     "window_close": "Fechar",
-    "more": "Mais"
+    "more": "Mais",
+    "toolkit_active": "Toolkit Active",
+    "toolkit_waiting": "Toolkit Waiting",
+    "toolkit_install": "Install Toolkit",
+    "toolkit_brand_title": "Extensão IDE",
+    "toolkit_modal": {
+      "antigravity_hub_antigravity_to": "antigravity-hub/antigravity-toolkit-extension"
+    },
+    "tagline": "Roteamento inteligente e proteção de cotas de IA"
   },
   "dashboard": {
     "hello": "Olá, Usuário 👋",
@@ -150,6 +220,10 @@
     "mode_both": "Todos os Modelos",
     "switch_to": "Alternar",
     "safe_window": "Janela Segura (>20m)",
+    "horizon_5h": "Past 5h",
+    "horizon_7d": "7-Day",
+    "view_token_stats": "Token Stats",
+    "view_token_stats_tooltip": "View Token Statistics & Consumption Limits",
     "toast": {
       "switch_success": "Alternância bem-sucedida!",
       "switch_error": "Falha ao alternar conta",
@@ -158,6 +232,51 @@
       "export_no_accounts": "Nenhuma conta para exportar",
       "export_success": "Exportação bem-sucedida! Arquivo salvo em: {{path}}",
       "export_error": "Falha na exportação"
+    },
+    "velocity_gauge": {
+      "title": "Consumo de Cota e Previsão de Duração",
+      "fleet_view": "Visão Geral da Frota",
+      "active_view": "Conta Ativa Atual",
+      "expand": "Expandir Previsão do Radar",
+      "collapse": "Recolher Previsão do Radar",
+      "caption": "Taxa de queima da cota restante em relação à janela de redefinição semanal",
+      "runway": "Tempo Restante Estimado",
+      "reset_in": "Redefinição em",
+      "reset_short": "Redefinir",
+      "burn_rate": "Taxa de Consumo",
+      "per_hour": "/ hora",
+      "more_than_7_days": "> 7 Dias",
+      "more_than_7d": "> 7d",
+      "session_suffix": "(Session)",
+      "deficit_title": "Projected Quota Deficit: ~{{hours}}h Shortfall",
+      "surplus_title": "Consumo Sustentável — Cota Segura",
+      "deficit_desc": "At velocity <strong>{{burnRate}}% / hr</strong>, quota depletes on <strong>{{date}}</strong> — approximately <span className=\"font-bold underline text-rose-500\">{{hours}}h before reset</span>.",
+      "surplus_desc": "Current pace (<strong>{{burnRate}}% / hr</strong>) is sustainable with <span className=\"font-bold text-emerald-500\">+{{hours}}h surplus runway</span> past reset.",
+      "session_exhausted_title": "5-Hour Session Quota Exhausted (0% Remaining)",
+      "session_risk_title": "Projected Session Depletion: ~{{duration}} Shortfall",
+      "session_safe_title": "Session Quota Sustainable until Reset ({{time}})",
+      "session_exhausted_badge": "⏳ Cota de sessão de 5h esgotada (0%)",
+      "session_depletion_badge": "⏳ Esgotamento previsto em ~{{duration}} ({{time}})",
+      "session_sustainable_badge": "⏳ Sustentável até a redefinição ({{time}})",
+      "session_risk_desc": "Based on current burn rate, the 5-hour quota will deplete in <strong>{{duration}}</strong> (around <strong>{{time}}</strong>).",
+      "session_safe_desc": "Session consumption is steady and will safely reach the next reset at <strong>{{time}}</strong>.",
+      "duration_hours_mins": "{{hours}}h {{mins}}m",
+      "duration_mins": "{{mins}}m",
+      "tag_strong_sell": "Crítico",
+      "tag_sell": "Alto Consumo",
+      "tag_neutral": "Equilibrado",
+      "tag_buy": "Seguro",
+      "tag_strong_buy": "Abundante",
+      "zone_critical": "Esgotamento Crítico",
+      "zone_high_burn": "Consumo Excessivo",
+      "zone_balanced": "Equilíbrio Estável",
+      "zone_safe": "Margem Segura",
+      "zone_surplus": "Excedente Amplo",
+      "arc_critical": "Crítico",
+      "arc_high": "Alto",
+      "arc_balanced": "Equilibrado",
+      "arc_safe": "Seguro",
+      "arc_surplus": "Excedente"
     },
     "health_pulse": {
       "title": "Pulso de Saúde da Internet e Gemini AI",
@@ -226,7 +345,10 @@
       "warp_installed_toast": "Cloudflare WARP instalado com sucesso em segundo plano!",
       "warp_connect_1click": "1-Clique Conectar WARP (Modo Proxy: 40000)",
       "warp_disconnect_btn": "Desconectar WARP",
-      "warp_download_started": "Download em segundo plano do Cloudflare WARP iniciado..."
+      "warp_download_started": "Download em segundo plano do Cloudflare WARP iniciado...",
+      "warp": "WARP",
+      "automatically_detect_open_prox": "Automatically detect open proxy ports (10810, 10809, 10808, 40000) and route Antigravity IDE traffic",
+      "apply_vpn_proxy_title": "Apply {{name}} proxy ({{proxy}}) to Antigravity IDE"
     },
     "verification_required_title": "Contas que Requerem Verificação do Google (Verificação Necessária)",
     "account_unit": "contas",
@@ -237,7 +359,31 @@
     "verify_in_google": "Página Direta de Verificação do Google",
     "google_link": "Google",
     "view_guide_pdf": "Ver Guia em PDF",
-    "verify_account_prompt": "Verifique sua conta para continuar."
+    "verify_account_prompt": "Verifique sua conta para continuar.",
+    "hello_user": "Hello, {{name}} 👋",
+    "shield_active": "Shield Active",
+    "shield_subtitle": "Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard",
+    "auto_warm": "Auto-Warm",
+    "manage_accounts_desc": "Manage, rotate and inspect accounts",
+    "export_accounts_desc": "Export encrypted backup of active accounts",
+    "verification_direct_hint": "Google requires identity confirmation. Use 'Verify in Browser' for instant one-click authentication, then click Re-check.",
+    "widget_best": {
+      "dynamic_fleet_routing": "Dynamic Fleet Routing",
+      "gt_20m": "&gt;20m",
+      "gt_20m_2": "&gt;20m"
+    },
+    "widget_current": {
+      "active_target_engine": "Active Target Engine",
+      "active_target_engine_2": "Active Target Engine",
+      "google_ai_ultra_tier": "Google AI Ultra Tier",
+      "google_ai_pro_paid_subscriptio": "Google AI Pro (Paid Subscription)",
+      "pro_paid": "PRO (PAID)",
+      "google_ai_pro_long_promotional": "Google AI Pro (Long Promotional Trial)",
+      "trial": "trial"
+    },
+    "pool": "POOL",
+    "attention": "ATTENTION",
+    "healthy": "HEALTHY"
   },
   "accounts": {
     "sync_freshness": {
@@ -301,7 +447,8 @@
       "violation_blocked": "Bloqueado por Violação",
       "region_restricted": "Region Restricted (400)",
       "subscription_required": "License Required (403 #3501)",
-      "reauth_required": "Session Expired (401)"
+      "reauth_required": "Session Expired (401)",
+      "appeal_required": "Appeal Required"
     },
     "error_details": "Detalhes do erro",
     "error_status": "Status do erro",
@@ -320,10 +467,10 @@
     "direct_browser_verification_desc": "O Google forneceu um link de verificação direta para esta sessão. Clique no botão para autenticar no seu navegador, conclua a confirmação e revalide a conta.",
     "verification_method_1_title": "Método 1 (Mais Rápido e Recomendado): Verificar no Navegador ou Escanear com Outro Celular",
     "verification_method_1_desc": "Abra este link de verificação direta no seu navegador. Se a verificação no desktop entrar em loop ou falhar, escaneie ou abra o link em outro celular (de preferência usando dados móveis 4G/5G) — o Google confia em dispositivos secundários e normalmente valida instantaneamente sem SMS!",
-    "scan_qr_btn": "Escanear com Celular",
-    "scan_with_phone_tooltip": "Mostrar código QR para escanear com outro celular",
-    "scan_with_phone_hint": "Escaneie este código QR com a câmera de outro celular para verificar. O uso de dados móveis (4G/5G) evita bloqueios de IP de desktop.",
-    "verification_method_2_title": "Método 2 (Alternativa): Guia de Verificação por SMS no Google Cloud Shell",
+    "scan_qr_btn": "Escanear com o Celular",
+    "scan_with_phone_tooltip": "Exibir código QR para escanear com outro dispositivo móvel",
+    "scan_with_phone_hint": "Escaneie este código QR com a câmera de outro celular para validar. O uso de dados móveis (4G/5G) evita bloqueios de IP de desktop.",
+    "verification_method_2_title": "Método 2 (Alternativo): Guia de Verificação por SMS no Google Cloud Shell",
     "fallback_guide_note": "Se o Método 1 não resolver o problema ou o Google exigir verificação por telefone no Cloud Shell, siga as etapas abaixo:",
     "fix_guide": {
       "title": "Guia de Resolução",
@@ -425,24 +572,28 @@
     "quota_window_5h": "Janela de 5 Horas",
     "quota_window_weekly": "Cota Semanal",
     "quota_window_weekly_short": "Semanal",
-    "provider_gemini_tooltip": "Cota Gemini e Temporizadores de Redefinição",
-    "provider_claude_tooltip": "Cota Claude e Temporizadores de Redefinição",
-    "provider_not_available": "A cota do Claude não está disponível no plano Gratuito",
+    "provider_gemini_tooltip": "Cota do Gemini e Contagem Regressiva de Redefinição",
+    "provider_claude_tooltip": "Cota do Claude e Contagem Regressiva de Redefinição",
+    "provider_not_available": "Cota do Claude indisponível no plano gratuito",
     "weekly_token_remaining": "Cota Semanal Restante",
     "quota_protected": "Protegido",
     "stop_refresh": "Parar Atualização",
     "refresh_stopping": "Parando atualização...",
     "refresh_stopped": "Atualização parada",
     "five_hour_ready_tooltip": "Cota de 5H totalmente disponível (Sem tempo de espera)",
+    "five_hour_warmed_tooltip": "Janela de 5 horas pronta (100% disponível) — Redefinição em: {{time}}",
+    "warmed": "Pronto (5H)",
     "details": {
       "title": "Detalhes da Cota",
       "model_quota": "Cota do Modelo",
       "protected_models": "Modelos Protegidos",
-      "quota_groups": "Cota Detalhada"
+      "quota_groups": "Cota Detalhada",
+      "trial": "trial"
     },
     "toast": {
-      "proxy_enabled": "Proxy habilitado para {{count}} contas",
-      "proxy_disabled": "Proxy desabilitado para {{count}} contas"
+      "proxy_enabled": "Proxy ativado para {{count}} contas",
+      "proxy_disabled": "Proxy desativado para {{count}} contas",
+      "validation_cleared": "Account validation block cleared and refreshed"
     },
     "add": {
       "title": "Adicionar Conta",
@@ -452,23 +603,23 @@
         "import": "Importar DB"
       },
       "oauth": {
+        "error_no_url": "Não foi possível obter a URL OAuth",
+        "manual_submitting": "Enviando código de autorização...",
+        "manual_submitted": "Código de autorização enviado, processando em segundo plano...",
+        "web_hint": "A página de login do Google será aberta em uma nova janela",
+        "popup_blocked": "Popup bloqueado",
+        "btn_start": "Iniciar OAuth",
+        "error_no_flow": "Nenhum fluxo de autenticação ativo encontrado. Por favor, reinicie o OAuth.",
         "recommend": "Recomendado",
         "desc": "Abre o navegador padrão para login do Google e busca automaticamente o Token.",
-        "btn_start": "Iniciar OAuth",
         "btn_waiting": "Aguardando autenticação...",
-        "btn_finish": "Já autorizei",
-        "copy_link": "Copiar Link de Autenticação",
-        "copied": "Copiado",
         "link_label": "URL de Autorização",
         "link_click_to_copy": "Clique para copiar",
+        "copied": "Copiado",
+        "copy_link": "Copiar Link de Autenticação",
+        "btn_finish": "Já autorizei",
         "manual_hint": "O navegador não redirecionou automaticamente? Cole o link de retorno ou o Código de Autorização aqui:",
-        "manual_placeholder": "Cole o link ou o código aqui...",
-        "error_no_flow": "Nenhum fluxo de autenticação ativo encontrado. Por favor, reinicie o OAuth.",
-        "web_hint": "A página de login do Google será aberta em uma nova janela",
-        "error_no_url": "Não foi possível obter a URL OAuth",
-        "popup_blocked": "Popup bloqueado",
-        "manual_submitting": "Enviando código de autorização...",
-        "manual_submitted": "Código de autorização enviado, processando em segundo plano..."
+        "manual_placeholder": "Cole o link ou o código aqui..."
       },
       "token": {
         "label": "Refresh Token",
@@ -477,7 +628,7 @@
         "error_token": "Por favor, insira o Refresh Token",
         "batch_progress": "Importando {{current}}/{{total}} contas...",
         "batch_success": "{{count}} contas importadas com sucesso",
-        "batch_partial": "Importação concluída: {{success}} sucesso, {{fail}} falhou",
+        "batch_partial": "Importação concluída: {{success}} com sucesso, {{fail}} falharam",
         "batch_fail": "Importação falhou"
       },
       "import": {
@@ -492,7 +643,7 @@
       },
       "btn_cancel": "Cancelar",
       "btn_confirm": "Confirmar",
-      "oauth_error": "OAuth falhou: {{error}}",
+      "oauth_error": "Erro na autenticação OAuth: {{error}}",
       "status": {
         "error_token": "Por favor, insira o Refresh Token"
       },
@@ -505,9 +656,18 @@
       "last_used": "Último Uso",
       "actions": "Ações",
       "weekly_info_tooltip": "Caixas 1-7: Dias do ciclo semanal\nBarra de porcentagem: Cota de tokens utilizável nesta semana",
-      "weekly_quota": "Cota Semanal"
+      "five_hour_countdown": "5H Reset",
+      "active_in_antigravity_platform": "Active in Antigravity Platform",
+      "platform": "Platform",
+      "active_in_antigravity_ide": "Active in Antigravity IDE",
+      "active_in_antigravity_cli": "Active in Antigravity CLI",
+      "active_in_antigravity": "Active in Antigravity",
+      "active": "Active",
+      "trial_account": "Trial Account",
+      "trial": "trial",
+      "n_a_free": "N/A (Free)"
     },
-    "drag_to_reorder": "Arraste para reordenar",
+    "drag_to_reorder": "Arraste para reordenar as contas",
     "empty": {
       "title": "Sem Contas",
       "desc": "Clique no botão \"Adicionar Conta\" acima para adicionar sua primeira conta"
@@ -526,7 +686,7 @@
       "refresh_all_title": "Atualizar Todas as Contas",
       "batch_refresh_title": "Atualização em Lote",
       "refresh_msg": "Tem certeza de que deseja atualizar a cota da conta atual?",
-      "refresh_all_msg": "Tem certeza de que deseja atualizar as cotas de todas as contas? Isso pode levar algum tempo.",
+      "refresh_all_msg": "Tem certeza de que deseja atualizar o status da cota de todas as contas? Isso pode levar algum tempo.",
       "batch_refresh_msg": "Tem certeza de que deseja atualizar as cotas das {{count}} contas selecionadas? Isso pode levar algum tempo.",
       "disable_proxy_title": "Desabilitar Proxy",
       "disable_proxy_msg": "Tem certeza de que deseja desabilitar o proxy para esta conta? A conta permanecerá utilizável no aplicativo.",
@@ -535,18 +695,20 @@
       "warmup_all_title": "Aquecimento Manual Completo",
       "warmup_all_msg": "Tem certeza de que deseja acionar tarefas de aquecimento para todas as contas elegíveis imediatamente? Isso enviará tráfego mínimo para os serviços do Google para redefinir ciclos de cota.",
       "batch_warmup_title": "Aquecimento Manual em Lote",
-      "batch_warmup_msg": "Tem certeza de que deseja acionar o aquecimento para as {{count}} contas selecionadas imediatamente?"
+      "batch_warmup_msg": "Tem certeza de que deseja acionar o aquecimento para as {{count}} contas selecionadas imediatamente?",
+      "batch_warmup_confirm": "Are you sure you want to trigger warmup for {{count}} selected accounts?",
+      "warmup_all_confirm": "Trigger warmup for all eligible accounts? This sends minimal traffic to Google services."
     },
     "auto_sort": "Ordenação Automática",
-    "show_last_used": "Mostrar Último Uso",
+    "show_last_used": "Exibir Último Uso",
     "drag_column_to_reorder": "Arraste o cabeçalho para reordenar",
-    "verification_required_table_msg": "Verificação necessária — veja o guia",
+    "verification_required_table_msg": "Verificação necessária — consulte o guia",
     "open_guide_btn": "Ver Guia",
     "recheck_btn": "Verificar Novamente",
-    "recheck_tooltip": "Limpar status de bloqueio e verificar novamente a cota da conta",
+    "recheck_tooltip": "Limpar status de bloqueio e reavaliar cota da conta",
     "go_to_appeal": "Ir para Recurso",
     "copy_appeal_url": "Copiar Link de Recurso",
-    "warmup_all_triggered": "Tarefa de pré-aquecimento disparada para todas as contas",
+    "drag_disabled_autosort": "Reordenação manual desativada enquanto a Ordenação Automática estiver ativa",
     "error_dialog": {
       "region_badge": "Region Geofence (400)",
       "region_title": "Unsupported Geographic Region / IP Geofence",
@@ -562,8 +724,92 @@
       "reauth_title": "OAuth Session Expired or Revoked",
       "reauth_desc": "Google revoked this OAuth session (refresh token expired, account password changed, or signed out from another device). Re-authenticating this account will immediately restore access.",
       "reauth_advice_copied": "Re-authentication advice copied to clipboard",
-      "copy_reauth_advice": "Copy Re-auth Command"
-    }
+      "copy_reauth_advice": "Copy Re-auth Command",
+      "drguidance": "@DrGuidance",
+      "gcloud_auth_login_update_adc": "gcloud auth login --update-adc",
+      "press_enter_to_execute_enter_y": "Press Enter to execute, enter Y when prompted to continue.",
+      "done_once_you_see_success_mess": "Done once you see success message!",
+      "gcloud_auth_revoke": "gcloud auth revoke",
+      "gcloud_auth_login_update_adc_2": "gcloud auth login --update-adc",
+      "if_still_403_run": "If still 403, run",
+      "in_terminal_to_reset_environme": "in terminal to reset environment variables.",
+      "in_production_using_a": "In production, using a",
+      "json_key_is_recommended_for_he": "JSON key is recommended for headless stability.",
+      "if_it_still_fails_check_the_ge": "If it still fails, check the Generative Language API in",
+      "google_cloud_console": "Google Cloud Console",
+      "to_see_if_permissions_are_froz": "to see if permissions are frozen. If so, your account is under risk control. Please let the account cool down for 72 hours before trying again.",
+      "you_can_also_test_with": "You can also test with",
+      "re_authorizing_in_app_will_usu": "; re-authorizing in-app will usually resolve issues."
+    },
+    "platform_active": "Antigravity Platform (Active)",
+    "ide_active": "Antigravity IDE (Active)",
+    "cli_active": "Antigravity CLI (Active)",
+    "tos_violation_title": "Suspended: Google Terms of Service",
+    "submit_appeal_tooltip": "Open Google official appeal form in browser",
+    "submit_appeal_btn": "Submit Appeal",
+    "appeal_url_copied": "Appeal link copied to clipboard",
+    "quota_5h": "5-Hour Rolling",
+    "rolling_5h": "5H Rolling",
+    "verify_prompt": "Google account verification is required to continue.",
+    "appeal_title": "Google Policy Violation: Submit Official Appeal",
+    "appeal_desc": "This account was disabled by Google for automated requests/TOS violation. Click below to submit an official appeal to Google to reinstate this account.",
+    "weekly_reset_ready": "Weekly Quota is Fresh / Ready",
+    "weekly_remaining": "remaining",
+    "quota_weekly": "Weekly Quota",
+    "warmup_all_triggered": "Tarefa de pré-aquecimento disparada para todas as contas",
+    "card": {
+      "active_in_antigravity_platform": "Active in Antigravity Platform",
+      "platform": "Platform",
+      "active_in_antigravity_ide": "Active in Antigravity IDE",
+      "active_in_antigravity_cli": "Active in Antigravity CLI",
+      "google_ai_ultra_tier": "Google AI Ultra Tier",
+      "google_ai_pro_paid_subscriptio": "Google AI Pro (Paid Subscription)",
+      "pro_paid": "PRO (PAID)",
+      "google_ai_pro_long_promotional": "Google AI Pro (Long Promotional Trial)",
+      "trial": "trial",
+      "n_a_free": "N/A (Free)"
+    },
+    "row": {
+      "trial_account": "Trial Account",
+      "trial": "trial",
+      "gemini_pro": "Gemini Pro",
+      "gemini_flash": "Gemini Flash",
+      "claude_series": "Claude Series"
+    },
+    "fingerprint": {
+      "machineid": "machineId:",
+      "macmachineid": "macMachineId:",
+      "devdeviceid": "devDeviceId:",
+      "sqmid": "sqmId:",
+      "machineid_2": "machineId:",
+      "macmachineid_2": "macMachineId:",
+      "devdeviceid_2": "devDeviceId:",
+      "sqmid_2": "sqmId:",
+      "machineid_3": "machineId:",
+      "macmachineid_3": "macMachineId:",
+      "devdeviceid_3": "devDeviceId:",
+      "sqmid_3": "sqmId:"
+    },
+    "countdown": {
+      "n_a_free": "N/A (Free)"
+    },
+    "page": {
+      "auto_warm": "Auto-Warm",
+      "on": "ON",
+      "off": "OFF"
+    },
+    "target": {
+      "platform": "Antigravity Platform",
+      "ide": "Antigravity IDE",
+      "cli": "Antigravity CLI"
+    },
+    "day_progress_tooltip": "Day {{day}}: {{status}}",
+    "upcoming": "100% (Upcoming)",
+    "passed": "0% (Passed)",
+    "water_remaining": "{{pct}}% water remaining",
+    "velocity_tooltip": "Velocity: {{burn}}%/hr • {{status}}",
+    "deficit_status": "⚠️ Deficit: {{hours}}h before reset",
+    "sustainable_buffer": "✓ Sustainable buffer"
   },
   "settings": {
     "save": "Salvar Configurações",
@@ -592,7 +838,10 @@
       "auto_check_update_disabled": "Verificação automática desabilitada",
       "update_check_interval": "Intervalo de Verificação (horas)",
       "update_check_interval_desc": "Definir intervalo de verificação automática (1-168 horas)",
-      "update_check_interval_saved": "Configurações de intervalo de verificação salvas"
+      "update_check_interval_saved": "Configurações de intervalo de verificação salvas",
+      "navigation_layout": "Navigation Layout Mode",
+      "nav_sidebar": "Apple macOS Glass Sidebar (Default)",
+      "nav_topbar": "Classic Top Navigation Bar"
     },
     "account": {
       "title": "Configurações de Conta",
@@ -605,6 +854,8 @@
       "sync_interval": "Intervalo de Sincronização (segundos)",
       "auto_switch_on_quota": "Alternância Automática ao Esgotar Cota",
       "auto_switch_on_quota_desc": "Alterna automaticamente para a próxima conta com cota disponível quando a cota da conta ativa se esgotar (Claude -> Próximo Claude -> Fallback Gemini).",
+      "auto_switch_threshold": "Auto-Switch Threshold Percentage",
+      "auto_switch_threshold_desc": "Automatically switch accounts when remaining quota falls to or below this percentage (Default: 5%).",
       "email": "E-mail",
       "no_accounts": "Nenhuma conta encontrada"
     },
@@ -642,8 +893,7 @@
     },
     "pinned_quota_models": {
       "title": "Modelos de Cota Fixados",
-      "desc": "Selecione quais cotas de modelo exibir na lista de contas. Modelos não selecionados são mostrados apenas no pop-up de detalhes",
-      "dynamic": "Modelo Dinâmico Detectado"
+      "desc": "Selecione quais cotas de modelo exibir na lista de contas. Modelos não selecionados são mostrados apenas no pop-up de detalhes"
     },
     "proxy": {
       "title": "Configurações do Proxy"
@@ -769,7 +1019,8 @@
       "http_api_port_placeholder": "Porta padrão 19527",
       "http_api_port_invalid": "Número de porta inválido (intervalo: 1024-65535)",
       "http_api_settings_saved": "Configurações HTTP API salvas, reinício necessário para aplicar",
-      "http_api_restart_required": "⚠️ Reinício necessário para aplicar"
+      "http_api_restart_required": "⚠️ Reinício necessário para aplicar",
+      "need_cli_path": "Need to set or detect CLI path above first"
     },
     "debug": {
       "title": "Depuração e Logs do Sistema",
@@ -834,7 +1085,8 @@
       "support_gram": "GRAM (TON)",
       "support_tron": "Tron (TRX / USDT)",
       "support_copy_address": "Copiar endereço",
-      "support_copied": "Endereço copiado para a área de transferência!"
+      "support_copied": "Endereço copiado para a área de transferência!",
+      "download_page": "Download Page"
     },
     "advanced_thinking": {
       "title": "Pensamento Avançado e Configuração Global",
@@ -883,7 +1135,29 @@
       "title": "Personalização da Marca",
       "subtitle": "Ajuste o nome do produto exibido e elementos visuais da interface"
     },
-    "web_mode_limitation": "(Não suportado no modo Web)"
+    "save_failed_reverted": "Failed to save, reverted settings",
+    "web_mode_limitation": "(Não suportado no modo Web)",
+    "pinned_models": {
+      "pro": "Pro",
+      "flash": "Flash",
+      "image": "Image"
+    },
+    "batch_import": {
+      "http_user_pass_127_0_0_1_8080_": "http://user:pass@127.0.0.1:8080&#10;127.0.0.1:8080:user:pass",
+      "valid": "valid"
+    },
+    "proxy_edit": {
+      "http_127_0_0_1_7890": "http://127.0.0.1:7890",
+      "https_www_google_com": "https://www.google.com"
+    },
+    "30s_default": "30s (Default)",
+    "tip": "Tip:",
+    "antigravity_logo": "Antigravity Logo",
+    "doctorguidance": "DoctorGuidance",
+    "tauri_v2": "Tauri v2",
+    "react_19": "React 19",
+    "brew_upgrade_cask_antigravity_": "brew upgrade --cask antigravity-shield",
+    "sudo_xattr_rd_com_apple_quaran": "sudo xattr -rd com.apple.quarantine \"/Applications/Antigravity Shield.app\""
   },
   "tray": {
     "current": "Atual",
@@ -897,15 +1171,16 @@
     "forbidden": "Conta Proibida"
   },
   "proxy": {
-    "title": "Serviço de Proxy da API",
+    "title": "Serviço de Proxy de API",
     "error": {
-      "load_failed": "Falha ao carregar a lista de modelos. Verifique a conexão com o proxy."
+      "load_failed": "Falha ao carregar configuração"
     },
     "status": {
       "running": "Serviço em Execução",
       "stopped": "Serviço Parado",
       "accounts_available": "{{count}} Contas Disponíveis",
-      "processing": "Processando..."
+      "processing": "Processando...",
+      "started": "Serviço de proxy iniciado com sucesso"
     },
     "action": {
       "start": "Iniciar Serviço",
@@ -959,19 +1234,19 @@
       }
     },
     "config": {
-      "title": "Configuração do Proxy",
+      "title": "Configuração do Serviço",
       "request": {
         "user_agent": "User-Agent Override",
         "user_agent_tooltip": "Override the User-Agent header sent to upstream APIs. Leave empty to use default.",
         "user_agent_hint": "Current Default: antigravity/<version> <os>/<arch>",
         "user_agent_placeholder": "Enter custom User-Agent string..."
       },
-      "port": "Porta do Proxy",
+      "port": "Porta de Escuta",
       "port_tooltip": "Porta TCP que o Proxy da API local escuta. Pare o serviço para alterá-la, depois reinicie para aplicar.",
       "port_hint": "Padrão 8045, reinício necessário para aplicar alterações",
-      "auto_start": "Iniciar Automaticamente",
+      "auto_start": "Iniciar Automaticamente com o Aplicativo",
       "auto_start_tooltip": "Inicia automaticamente o serviço de Proxy da API local quando o aplicativo é iniciado.",
-      "allow_lan_access": "Permitir Acesso LAN",
+      "allow_lan_access": "Permitir Acesso via Rede Local (LAN)",
       "allow_lan_access_tooltip": "Quando habilitado, o serviço se vincula a 0.0.0.0 para que outros dispositivos na sua LAN possam acessá-lo. Mantenha a autorização habilitada e proteja sua chave de API; reinício necessário para aplicar.",
       "allow_lan_access_hint_enabled": "🌐 Escutando em 0.0.0.0, dispositivos LAN podem acessar",
       "allow_lan_access_hint_disabled": "🔒 Escutando apenas em 127.0.0.1, acesso localhost (Privacidade Primeiro)",
@@ -979,7 +1254,7 @@
       "allow_lan_access_restart_hint": "ℹ️ Reinício do serviço necessário para aplicar alterações",
       "api_key": "Chave de Acesso (API Key)",
       "api_key_tooltip": "Segredo compartilhado usado pelos clientes quando a autorização do proxy está habilitada. Regenerar a chave invalida imediatamente a antiga.",
-      "btn_regenerate": "Regenerar Chave",
+      "btn_regenerate": "Gerar Nova Chave",
       "btn_edit": "Editar",
       "btn_save": "Salvar",
       "btn_copy": "Copiar",
@@ -1067,7 +1342,7 @@
           "local_endpoints_tooltip": "Use estes URLs no seu cliente MCP. Eles compartilham o mesmo host/porta do Proxy da API e seguem a política de autorização do proxy."
         }
       },
-      "request_timeout": "Tempo Limite de Requisição (s)",
+      "request_timeout": "Tempo Limite de Requisição",
       "request_timeout_tooltip": "Tempo máximo (segundos) que o proxy aguarda por uma resposta upstream, incluindo streaming. Aumente para gerações longas; reinício necessário para aplicar.",
       "request_timeout_hint": "Padrão 120s, intervalo 30-7200s. Reinicie o serviço para aplicar alterações.",
       "enable_logging": "Habilitar Registro de Solicitações",
@@ -1085,14 +1360,14 @@
         "restart_hint": "Configurações de proxy salvas. Reinicie o aplicativo para aplicar as alterações."
       },
       "scheduling": {
-        "title": "Rotação de Conta e Agendamento",
+        "title": "Rotação de Contas e Escalonamento",
         "title_tooltip": "Controla como as sessões são vinculadas a contas e como os limites de taxa são tratados.",
-        "subtitle": "Otimiza Prompt Caching e tratamento de limite de taxa para todos os protocolos (OpenAI/Gemini/Claude).",
-        "mode": "Modo de Agendamento",
+        "subtitle": "Otimiza Prompt Caching e tratamento de limites de taxa para todos os protocolos.",
+        "mode": "Modo de Escalonamento",
         "mode_tooltip": "Cache-First: Vincular sessão à conta, aguardar no limite de taxa (maximizar utilidade do cache); Balance: Vincular sessão, alternar conta no limite de taxa; Performance: Round-robin padrão.",
         "modes": {
-          "CacheFirst": "Cache Primeiro",
-          "Balance": "Equilíbrio",
+          "CacheFirst": "Priorizar Cache",
+          "Balance": "Equilibrado",
           "PerformanceFirst": "Desempenho"
         },
         "modes_desc": {
@@ -1104,14 +1379,10 @@
         "max_wait_tooltip": "Usado apenas no modo 'Cache Primeiro': aguardar em vez de alternar se o tempo de reset do limite de taxa estiver abaixo deste valor.",
         "clear_bindings": "Limpar Vinculações de Sessão",
         "clear_bindings_tooltip": "Redefinir todas as vinculações sessão-conta, forçando contas a serem reatribuídas na próxima solicitação.",
-        "clear_rate_limits": "Limpar Bloqueios de Taxa (429)",
+        "clear_rate_limits": "Limpar Registros de Limite de Taxa",
         "clear_rate_limits_tooltip": "Redefine imediatamente o estado de penalidade de limitação de taxa de todas as contas",
-        "round_robin_set": "Modo de alternância circular ativado",
-        "account_changed": "Conta alternada com sucesso",
-        "fixed_account_set": "Modo de conta fixa ativado",
-        "fixed_account": "Modo de Conta Fixa",
-        "fixed_account_tooltip": "Quando ativado, todas as requisições utilizarão exclusivamente a conta selecionada em vez de alternar entre as contas disponíveis.",
-        "start_proxy_first": "Inicie o serviço de proxy para configurar o modo de conta fixa."
+        "clear_bindings_success": "Vinculações de sessão limpas com sucesso",
+        "clear_rate_limits_success": "Cooldowns e limites redefinidos com sucesso"
       },
       "circuit_breaker": {
         "title": "Proteção Circuit Breaker (Disjuntor de Falhas)",
@@ -1193,7 +1464,8 @@
           "sync_error": "Erro ao sincronizar com Droid: {{error}}"
         }
       },
-      "thinking_budget": "Orçamento de Raciocínio (Thinking Budget)"
+      "thinking_budget": "Orçamento de Pensamento",
+      "api_key_generated": "New API key generated successfully"
     },
     "cloudflared": {
       "title": "Túnel Cloudflare (Cloudflared)",
@@ -1237,7 +1509,8 @@
       "require_proxy_running": "O proxy local precisa estar em execução antes de iniciar o túnel Cloudflare",
       "connection_info": "Informações de Conexão",
       "local_port": "Porta Local",
-      "tunnel_protocol": "Protocolo do Túnel"
+      "tunnel_protocol": "Protocolo do Túnel",
+      "mobile_modal_title": "Secure Mobile Pairing"
     },
     "example": {
       "title": "Exemplos de Uso",
@@ -1391,7 +1664,9 @@
       "original_id": "ID Original",
       "route_to": "Rotear Para",
       "select_target_model": "Selecionar Modelo de Destino",
-      "original_placeholder": "Original (ex: gpt-4 ou gpt-4*)"
+      "original_placeholder": "Original (ex: gpt-4 ou gpt-4*)",
+      "reset_success": "Routing rules reset to default",
+      "preset_applied": "Applied routing preset: {{name}}"
     },
     "multi_protocol": {
       "title": "Suporte Multi-Protocolo",
@@ -1415,57 +1690,284 @@
       "action": "Ação"
     },
     "cli_sync": {
-      "title": "Sincronização de Ferramentas CLI",
-      "subtitle": "Sincronize a URL e chave da API com suas ferramentas de CLI de IA",
+      "title": "Sincronização em Um Clique com Clientes CLI",
+      "subtitle": "Configura automaticamente o endpoint do proxy e as chaves de API nas suas ferramentas locais.",
       "card_title": "Config {{name}}",
       "status": {
-        "not_installed": "Não instalado",
+        "not_installed": "Não Instalado",
         "installed": "v{{version}}",
         "synced": "Apontado para este app",
         "not_synced": "Não sincronizado",
         "detecting": "Detectando...",
         "current_base_url": "URL Base Atual"
       },
-      "model_select": "Seleção de Modelos para Exportação",
-      "btn_sync": "Sincronizar Agora",
+      "model_select": "Selecionar Modelo Alvo",
+      "btn_sync": "Sincronizar Configuração",
       "btn_view": "Ver Config",
-      "btn_restore": "Restaurar Padrão",
+      "btn_restore": "Restaurar Padrão Oficial",
       "btn_restore_backup": "Restaurar Backup",
-      "restore_confirm": "Tem certeza que deseja restaurar a config de {{name}} para o padrão?",
-      "restore_backup_confirm": "Configuração de backup encontrada. Tem certeza de que deseja restaurá-la?",
+      "restore_confirm": "Tem certeza de que deseja restaurar as configurações de {{name}} para o padrão oficial?",
+      "restore_backup_confirm": "Arquivo de backup encontrado. Deseja restaurá-lo?",
       "modal": {
         "view_title": "Conteúdo do arquivo {{name}}",
         "copy_success": "Copiado para a área de transferência"
       },
       "toast": {
-        "sync_success": "Sucesso! {{name}} está pronto.",
-        "sync_error": "Falha na sincronização: {{error}}",
-        "config_missing": "Gere uma Chave de API e inicie o serviço primeiro"
+        "config_missing": "Gere uma Chave de API e inicie o serviço primeiro",
+        "sync_success": "Configurações de {{name}} sincronizadas com sucesso",
+        "sync_error": "Falha na sincronização: {{error}}"
       },
-      "sync_confirm_title": "Confirmação de Sincronização",
-      "sync_confirm_message": "Pronto para sincronizar a configuração do {{name}}. ⚠️ Aviso: Isso substituirá seus arquivos de configuração local existentes (como tokens de login, chaves de API). Tem certeza de que deseja continuar?"
+      "sync_confirm_title": "Confirmar Sincronização",
+      "sync_confirm_message": "Pronto para configurar {{name}}. ⚠️ Aviso: isso substituirá o arquivo de configuração local existente. Deseja continuar?"
+    },
+    "droid_sync": {
+      "modal_title": "Adicionar Modelos ao Droid",
+      "select_models": "Selecionar Modelos para Adicionar",
+      "no_models": "Selecione modelos acima para adicionar",
+      "btn_confirm_sync": "Gravar no Arquivo de Configuração",
+      "toast": {
+        "no_models_selected": "Selecione pelo menos um modelo",
+        "sync_success_count": "Adicionado(s) {{count}} modelo(s) ao Droid",
+        "sync_error": "Falha na sincronização: {{error}}"
+      },
+      "factory_settings_json": "~/.factory/settings.json",
+      "custommodels_preview": "customModels Preview",
+      "existing": "existing",
+      "new": "new",
+      "total": "total"
     },
     "opencode_sync": {
       "toast": {
+        "sync_success": "Sincronizado com OpenCode com sucesso",
         "clear_success": "Configuração do OpenCode limpa com sucesso",
         "clear_error": "Erro ao limpar configuração do OpenCode: {{error}}",
-        "sync_success": "Sincronizado com OpenCode com sucesso"
+        "sync_error": "OpenCode sync failed: {{error}}"
       },
       "sync_accounts": "Sincronizar contas para antigravity-accounts.json",
       "btn_clear": "Limpar",
       "clear_confirm_title": "Limpar Configuração do OpenCode",
-      "clear_confirm_message": "Isso removerá todas as configurações do OpenCode, incluindo definições legadas. Tem certeza?"
+      "clear_confirm_message": "Isso removerá todas as configurações do OpenCode, incluindo definições legadas. Tem certeza?",
+      "config_opencode_opencode_json_": "~/.config/opencode/opencode.json (or .jsonc)",
+      "e_g_http_antigravity_manager_8": "e.g. http://antigravity-manager:8045/v1",
+      "sync_queue_preview": "Sync Queue Preview",
+      "models": "models",
+      "btn_view": "View Config",
+      "btn_restore": "Restore"
     },
-    "droid_sync": {
-      "toast": {
-        "no_models_selected": "Por favor, selecione pelo menos um modelo",
-        "sync_success_count": "Adicionado(s) {{count}} modelo(s) ao Droid",
-        "sync_error": "Falha na sincronização: {{error}}"
-      },
-      "modal_title": "Adicionar Modelos ao Droid",
-      "select_models": "Selecione os modelos para adicionar",
-      "no_models": "Selecione os modelos na lista acima para adicionar",
-      "btn_confirm_sync": "Gravar Configuração"
+    "overview": {
+      "test_connection": "Testar Conexão ao Vivo",
+      "pool_status": "Motor de Rotação",
+      "view_quotas": "Ver Contas e Cotas",
+      "endpoints_title": "Endpoints Universais de Protocolo",
+      "antigravity_shield_gateway": "Antigravity Shield Gateway",
+      "v6_1_native": "v6.1 Native",
+      "start_the_proxy_service_to_ena": "Start the proxy service to enable downstream connections from Cursor, Claude Code, and Windsurf.",
+      "endpoint": "Endpoint:",
+      "active_accounts": "Contas Ativas",
+      "failover_latency": "Latência de Failover",
+      "lt_50ms": "&lt; 50ms",
+      "protocol_support": "Protocolos Suportados",
+      "openai_claude": "OpenAI / Claude",
+      "zero_leak_guard": "Zero-Leak Guard",
+      "active": "Active",
+      "plug_any_downstream_client_dir": "Plug any downstream client directly into these local endpoints.",
+      "auth_bearer_token": "Auth: Bearer Token",
+      "cursor_ai_quick_setup": "Cursor AI Quick Setup",
+      "settings_gt_models_gt_openai_a": "Settings &gt; Models &gt; OpenAI API Key",
+      "claude_code_cli_setup": "Claude Code CLI Setup",
+      "terminal_environment": "Terminal Environment",
+      "export_anthropic_base_url": "export ANTHROPIC_BASE_URL=\"",
+      "export_anthropic_api_key": "export ANTHROPIC_API_KEY=\"",
+      "running_status": "Listening on port {{port}}. Multi-account tiered rotation and sub-50ms cooldown active."
+    },
+    "fixed_account": {
+      "enabled": "Fixed account routing enabled: {{email}}",
+      "disabled": "Roteamento de conta fixa desativado"
+    },
+    "tabs": {
+      "overview": "Visão Geral e Status",
+      "accounts": "Contas e Cotas",
+      "routing": "Routing & Aliases",
+      "diagnostics": "Painel de Diagnóstico",
+      "settings": "Configurações e Rede"
+    },
+    "header": {
+      "title": "Antigravity Shield API Proxy"
+    },
+    "accounts": {
+      "total_accounts": "Total Accounts",
+      "active": "active",
+      "active_cooldowns": "Active Cooldowns",
+      "preferred_route": "Preferred Route",
+      "smart_tiered_rotation": "Smart Tiered Rotation",
+      "cooldown_actions": "Cooldown Actions",
+      "reset_active_429_timers": "Reset active 429 timers",
+      "clear": "Clear",
+      "active_cooldown_pool_amp_count": "Active Cooldown Pool &amp; Countdown Timers",
+      "all_accounts_healthy": "All accounts healthy",
+      "zero_active_429_cooldowns_all_": "Zero active 429 cooldowns. All accounts in pool are available for high-throughput dispatch.",
+      "status_429_quota_exhausted": "Status 429 Quota Exhausted",
+      "failover_ok": "Failover OK",
+      "per_account_quota_health_gauge": "Per-Account Quota Health Gauges",
+      "live_telemetry_and_remaining_u": "Live telemetry and remaining usage percentages across all connected Google Pro accounts.",
+      "reset_to_auto_rotation": "Reset to Auto Rotation",
+      "loading_accounts_and_quota_met": "Loading accounts and quota metrics...",
+      "no_accounts_configured_yet": "No accounts configured yet.",
+      "suspended": "Suspended",
+      "blocked": "Blocked",
+      "isolated_from_rotation": "Isolated from rotation:",
+      "no_detailed_quota_stats_receiv": "No detailed quota stats received yet.",
+      "rotation_amp_sticky_session_po": "Rotation &amp; Sticky Session Policies",
+      "clear_session_bindings": "Clear Session Bindings",
+      "scheduling_strategy": "Scheduling Strategy",
+      "balanced_priority_tiered": "Balanced (Priority Tiered)",
+      "fill_first_drain_pro_primary": "Fill-First (Drain Pro Primary)",
+      "randomized_dispatch": "Randomized Dispatch",
+      "balanced_automatically_rotates": "Balanced automatically rotates requests across healthy ULTRA and PRO accounts.",
+      "max_wait_cooldown_s": "Max Wait Cooldown (s)",
+      "maximum_wait_threshold_before_": "Maximum wait threshold before initiating instant failover.",
+      "strict_quota_model_catalog": "Strict Quota Model Catalog",
+      "only_raw_quota_models": "Only Raw Quota Models",
+      "hides_virtual_aliases_and_only": "Hides virtual aliases and only displays models reported by upstream tokens.",
+      "pinned_preferred": "Pinned Preferred",
+      "pin_route": "Pin Route",
+      "suspended_count": ", {{count}} suspended",
+      "active_rate_limits": "{{count}} rate limits active",
+      "suspended_google_appeal": "Account suspended by Google (Appeal required)"
+    },
+    "diagnostics": {
+      "gateway_health": "Gateway Health",
+      "healthy_amp_responsive": "Healthy &amp; Responsive",
+      "offline": "Offline",
+      "ping_latency": "Ping Latency",
+      "stream_engine": "Stream Engine",
+      "non_blocking_tokio": "Non-Blocking Tokio",
+      "http_2_zero_leak": "HTTP/2 Zero-Leak",
+      "failover_threshold": "Failover Threshold",
+      "sub_50ms_fast_cooldown_rotatio": "Sub-50ms Fast Cooldown Rotation",
+      "interactive_live_diagnostic_pr": "Interactive Live Diagnostic Probe",
+      "execute_an_actual_inference_re": "Execute an actual inference request through the local gateway to verify end-to-end token routing and latency.",
+      "openai_protocol": "OpenAI Protocol",
+      "claude_protocol": "Claude Protocol",
+      "target_model_alias": "Target Model Alias",
+      "gemini_4_argon_gemini_4_argon": "Gemini 4 Argon (gemini-4-argon)",
+      "gemini_3_8_flash_gemini_3_8_fl": "Gemini 3.8 Flash (gemini-3.8-flash)",
+      "gemini_3_5_flash_gemini_3_5_fl": "Gemini 3.5 Flash (gemini-3.5-flash)",
+      "gemini_2_5_flash_gemini_2_5_fl": "Gemini 2.5 Flash (gemini-2.5-flash)",
+      "claude_sonnet_4_6_claude_sonne": "Claude Sonnet 4.6 (claude-sonnet-4-6)",
+      "diagnostic_test_prompt": "Diagnostic Test Prompt",
+      "enter_diagnostic_prompt": "Enter diagnostic prompt...",
+      "probing": "Probing...",
+      "test_connection": "Test Connection",
+      "sending_probe_request_through": "Sending probe request through",
+      "v1_chat_completions": "/v1/chat/completions",
+      "v1_messages": "/v1/messages",
+      "probe_succeeded_bull_200_ok": "Probe Succeeded &bull; 200 OK",
+      "latency": "Latency:",
+      "bull": "&bull;",
+      "model": "Model:",
+      "no_text_content_returned": "No text content returned.",
+      "copy_response": "Copy Response",
+      "probe_failed": "Probe Failed",
+      "live_gateway_traffic_amp_reque": "Live Gateway Traffic &amp; Request Logs",
+      "sse_real_time_stream": "SSE Real-Time Stream"
+    },
+    "monitor": {
+      "all": "All",
+      "filter_for_ai_model_completion": "Filter for AI model completion & chat calls only",
+      "ai_models": "AI Models",
+      "filter_for_local_gateway_manag": "Filter for local gateway management & refresh calls",
+      "system_calls": "System Calls",
+      "in": "In:",
+      "out": "Out:",
+      "route_not_matched_local_gatewa": "⚠️ Route Not Matched (Local Gateway 404)",
+      "this_request_targeted_an_unmap": "This request targeted an unmapped local path (",
+      "and_was_rejected_by_the_gatewa": ") and was rejected by the Gateway router in 0ms. It is",
+      "not": "not",
+      "an_ai_model_failure_and_is": "an AI model failure and is",
+      "not_2": "not",
+      "associated_with_google_account": "associated with Google account quota limits or bans."
+    },
+    "routing": {
+      "model_routing_presets_amp_alia": "Model Routing Presets &amp; Alias Normalizer",
+      "normalize_incoming_model_names": "Normalize incoming model names from Cursor and CLI clients to active upstream Google models.",
+      "presets": "Presets:",
+      "apply_preset": "Apply Preset",
+      "save_manage": "Save / Manage",
+      "configured_custom_model_aliase": "Configured Custom Model Aliases",
+      "intercept_specific_request_mod": "Intercept specific request model identifiers and dynamically reroute to upstream models.",
+      "custom_aliases": "Custom Aliases",
+      "request_model_name_e_g_my_cust": "Request Model Name (e.g. my-custom-model)",
+      "rarr": "&rarr;",
+      "target_upstream_e_g_gemini_3_f": "Target Upstream (e.g. gemini-3-flash)",
+      "add_mapping": "Add Mapping",
+      "no_custom_model_aliases_regist": "No custom model aliases registered. Standard built-in mappings are active below.",
+      "incoming_alias": "Incoming Alias",
+      "mapped_target": "Mapped Target",
+      "actions": "Actions",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "standard_built_in_normalizatio": "Standard Built-in Normalization Table (Native Rust Engine)",
+      "always_active_in_background": "Always active in background",
+      "rarr_2": "&rarr;",
+      "supported_models_directory_amp": "Supported Models Directory &amp; Code Generator",
+      "integration_snippet": "Integration Snippet ("
+    },
+    "settings": {
+      "core_network_amp_listener_conf": "Core Network &amp; Listener Configuration",
+      "stop_proxy_to_change_port": "Stop proxy to change port",
+      "default_8045_or_8765": "Default: 8045 or 8765",
+      "30_to_7200_seconds_recommended": "30 to 7200 seconds (recommended: 120s for code generation)",
+      "startup_behavior": "Startup Behavior",
+      "auto_start_on_app_launch": "Auto-start on app launch",
+      "automatically_activates_the_ga": "Automatically activates the gateway upon launching Antigravity Shield.",
+      "authentication_amp_access_cont": "Authentication &amp; Access Control",
+      "proxy_api_key_bearer_token": "Proxy API Key (Bearer Token)",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "regenerate": "Regenerate",
+      "copy": "Copy",
+      "required_in_authorization_bear": "Required in Authorization: Bearer &lt;key&gt; header when auth is enabled.",
+      "admin_dashboard_password": "Admin Dashboard Password",
+      "save_2": "Save",
+      "cancel_2": "Cancel",
+      "edit_2": "Edit",
+      "enter_new_admin_password": "Enter new admin password",
+      "none_open_access": "None (Open access)",
+      "protects_management_web_endpoi": "Protects management web endpoints and remote monitoring views.",
+      "cloudflared_zero_trust_tunnel_": "Cloudflared Zero-Trust Tunnel (Egress &amp; Remote Access)",
+      "securely_expose_your_local_pro": "Securely expose your local proxy to your mobile devices or remote servers without opening router ports.",
+      "installing": "Installing...",
+      "install_cloudflared": "Install Cloudflared",
+      "stop_tunnel": "Stop Tunnel",
+      "start_tunnel": "Start Tunnel",
+      "tunnel_mode": "Tunnel Mode",
+      "quick_tunnel_zero_config": "Quick Tunnel (Zero Config)",
+      "named_tunnel_custom_token": "Named Tunnel (Custom Token)",
+      "tunnel_auth_token": "Tunnel Auth Token",
+      "eyjhbgcioi": "eyJhbGciOi...",
+      "transport_protocol": "Transport Protocol",
+      "use_http_2_egress": "Use HTTP/2 Egress",
+      "public_live_url": "Public Live URL:",
+      "copy_url": "Copy URL",
+      "pair_mobile": "Pair Mobile",
+      "no_key_set": "No key set"
+    },
+    "page": {
+      "local_high_performance_ai_gate": "Local High-Performance AI Gateway with Zero-Leak Telemetry &amp; Universal Protocol Mapping",
+      "your_saved_presets": "Your Saved Presets",
+      "no_custom_presets_saved_yet": "No custom presets saved yet.",
+      "rules_mapped": "rules mapped",
+      "zero_trust_end_to_end_pairing": "Zero-Trust End-to-End Pairing",
+      "direct_mobile_camera_scan": "Direct Mobile Camera Scan",
+      "scan_this_barcode_with_your_ph": "Scan this barcode with your phone camera to securely connect to the proxy without entering URLs or credentials.",
+      "copy_link": "Copy Link"
+    },
+    "model_item": {
+      "ag_logo": "AG"
     }
   },
   "monitor": {
@@ -1573,6 +2075,7 @@
     "mandatory_badge": "ATUALIZAÇÃO OBRIGATÓRIA",
     "mandatory_title": "Atualização Crítica Necessária",
     "mandatory_desc": "Esta versão introduz atualizações críticas de protocolo e proteções de segurança anti-403. A atualização é obrigatória para evitar suspensões de contas e interrupções de serviço.",
+    "reason_title": "Update Highlights & Changelog:",
     "btn_grace_period": "Período de Carência de 30 Min (Concluir Tarefa)",
     "grace_period_activated": "Período de carência de 30 minutos ativado. Atualize seu sistema em breve.",
     "toast": {
@@ -1582,7 +2085,12 @@
       "downloading": "Baixando pacote de atualização...",
       "switching_direct": "Verificação criptográfica indisponível. Iniciando instalação direta automática...",
       "launching_installer": "Download concluído. Iniciando instalador..."
-    }
+    },
+    "required": "Required",
+    "evaluating_changelog_for_v": "Evaluating changelog for v",
+    "version_v": "Version v",
+    "contains_critical_architecture": "contains critical architecture and protocol upgrades.",
+    "view_full_release_notes_on_git": "View full release notes on GitHub"
   },
   "login": {
     "title": "Controle de Acesso Seguro",
@@ -1646,7 +2154,45 @@
     "heatmap_no_activity": "Nenhuma atividade de tokens em",
     "total": "Total",
     "percentage": "Porcentagem",
-    "no_data": "Sem dados"
+    "no_data": "Sem dados",
+    "horizon_title": "Horizonte de Previsão de Tokens",
+    "reality_verified": "Dados Reais Verificados",
+    "horizon_desc": "Métricas baseadas nos limites práticos de janelas rolantes de 5 horas e consumo de 7 dias",
+    "db_grounded": "Conexão Direta SQLite",
+    "window_5h_title": "Janela Deslizante de 5 Horas Atual",
+    "heavy_burst": "🔥 Pico Intenso de Agentes",
+    "steady_burn": "⚡ Consumo Estável",
+    "tokens": "Tokens",
+    "avg_5h": "Média de 5h:",
+    "window_7d_title": "Resumo Semanal (Últimos 7 Dias)",
+    "day": "Day",
+    "hourly_rate": "Taxa Horária:",
+    "period_hourly": "Past 1 Hour",
+    "period_daily": "Past 24 Hours",
+    "period_weekly": "Past 7 Days",
+    "period_monthly": "Past 30 Days",
+    "period_yearly": "Past 1 Year",
+    "period_selected_day": "Filtered Day",
+    "active_period": "Period",
+    "active_range_summary": "Aggregated Metrics For",
+    "heatmap_tip": "Click any square to inspect and filter by that day",
+    "custom": "Custom Range",
+    "heatmap": {
+      "days_active": "days active,",
+      "tokens": "tokens)",
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "tokens_2": "tokens (",
+      "in": "in /",
+      "out": "out)",
+      "clear": "✕ Clear"
+    },
+    "weekly_tooltip": "Week {{week}} ({{dateRange}})\nTotal: {{total}} tokens\nInput: {{input}}\nOutput: {{output}}"
   },
   "errors": {
     "stream": {
@@ -1703,7 +2249,8 @@
       "prev_page": "Anterior",
       "next_page": "Próximo",
       "page_num": "Página {{page}}",
-      "per_page_suffix": "/pág"
+      "per_page_suffix": "/pág",
+      "ip": "IP Address"
     },
     "blacklist": {
       "add_ip": "Adicionar IP",
@@ -1721,9 +2268,9 @@
       "cancel": "Cancelar",
       "confirm": "Adicionar",
       "add_btn": "Adicionar",
+      "error_add_failed": "Falha ao adicionar IP: ",
       "error_duplicate": "Este IP já está na lista negra",
-      "error_invalid_ip": "Formato de IP inválido. Use endereço IP ou notação CIDR (ex: 192.168.1.0/24)",
-      "error_add_failed": "Falha ao adicionar IP: "
+      "error_invalid_ip": "Formato de IP inválido. Use endereço IP ou notação CIDR (ex: 192.168.1.0/24)"
     },
     "whitelist": {
       "add_ip": "Adicionar IP Confiável",
@@ -1733,7 +2280,8 @@
       "description_placeholder": "ex: Servidor Interno",
       "cancel": "Cancelar",
       "confirm": "Adicionar",
-      "add_btn": "Adicionar"
+      "add_btn": "Adicionar",
+      "error_add_failed": "Failed to add IP to whitelist"
     },
     "config": {
       "title": "Configurações de Segurança",
@@ -1753,6 +2301,9 @@
       "load_error": "Falha ao carregar configurações",
       "save_success": "Configuração salva",
       "save_error": "Falha ao salvar configuração"
+    },
+    "ip_stats": {
+      "reqs": "reqs"
     }
   },
   "user_token": {
@@ -1788,10 +2339,15 @@
     "placeholder_max_ips": "0 = Ilimitado",
     "hint_max_ips": "0 significa ilimitado",
     "hint_curfew": "Deixe em branco para desativar. Baseado na hora do servidor.",
-    "custom_expires_required": "Por favor, especifique uma data e hora de expiração válida",
     "expires_custom": "Personalizado",
+    "custom_expires_required": "Por favor, especifique uma data e hora de expiração válida",
     "custom_expires_at": "Data e Hora de Expiração",
-    "hint_custom_expires": "Selecione a data e o horário exatos em que este token expirará"
+    "hint_custom_expires": "Selecione a data e o horário exatos em que este token expirará",
+    "reqs": "reqs",
+    "k_tokens": "k tokens",
+    "ips": "IPs",
+    "to": "to",
+    "to_2": "to"
   },
   "apiKeyFun": {
     "title": "APIKEY.FUN Hub",
@@ -1836,7 +2392,15 @@
       "queryFailed": "Failed to get valid quota or models. Please check if the API Key and Base URL are correct."
     },
     "syncSuccess": "Sincronizado com sucesso para {{app}}",
-    "syncError": "Falha ao sincronizar: {{error}}"
+    "syncError": "Falha ao sincronizar: {{error}}",
+    "ak": "{AK}",
+    "copy_key": "Copy Key",
+    "edit_name": "Edit Name",
+    "delete": "Delete",
+    "clear": "Clear",
+    "hide": "Hide",
+    "show": "Show",
+    "copy": "Copy"
   },
   "toolkit": {
     "modal": {
@@ -1893,37 +2457,309 @@
     "restore_initial": "Restaurar Padrão (LTR)",
     "restore_tooltip": "Restaurar para o layout padrão em inglês/LTR",
     "reapply": "Reaplicar Patch",
-    "one_click_apply": "Aplicar Patch em 1 Clique"
+    "one_click_apply": "Aplicar Patch em 1 Clique",
+    "antigravity_2_0_desktop": "Antigravity 2.0 Desktop:",
+    "antigravity_ide_workbench": "Antigravity IDE (Workbench):"
   },
   "notifications": {
-    "quota_critical_alert": "Alerta Crítico de Cota: A cota de {{target}}{{model}} está em {{percentage}}% na conta {{email}}.",
+    "quota_critical_alert": "Alerta Crítico de Cota: a cota de {{target}}{{model}} na conta {{email}} está em apenas {{percentage}}%.",
     "quota_alert_title": "Antigravity Shield - Alerta de Cota Baixa",
     "family_gemini": "Gemini",
     "family_claude": "Claude",
     "and_separator": " e ",
     "other_models": "Outros modelos",
-    "auto_switch_title": "Antigravity Shield - Conta Alternada",
+    "auto_switch_title": "Antigravity Shield - Troca Automática de Conta",
     "quota_exhausted_title": "Antigravity Shield - Cota Esgotada",
-    "auto_switch_claude_success": "⚡ Alternância Automática: {{target}}Cota do Claude esgotada em {{from}}. Alternado para {{to}} ({{score}}% de cota do Claude).",
-    "auto_switch_fallback_gemini": "⚡ Alternância Automática: {{target}}Todas as cotas do Claude esgotadas. Alternado para {{to}} ({{score}}% de cota do Gemini).",
-    "auto_switch_gemini_success": "⚡ Alternância Automática: {{target}}Cota do Gemini esgotada em {{from}}. Alternado para {{to}} ({{score}}% de cota do Gemini).",
-    "all_quotas_depleted": "⚠️ Todas as cotas do Claude e Gemini foram esgotadas em todas as contas disponíveis.",
+    "auto_switch_success": "⚡ Troca Automática: {{target}}{{model}} atingiu {{percent}}%. Alternado para {{to}} ({{score}}% de cota restante).",
+    "auto_switch_claude_success": "⚡ Troca Automática: a cota do Claude em {{target}} na conta {{from}} esgotou. Alternado para {{to}} ({{score}}% de cota do Claude restante).",
+    "auto_switch_fallback_gemini": "⚡ Alternância Automática: Alternado para {{to}} ({{score}}% de cota do Gemini).",
+    "auto_switch_gemini_success": "⚡ Troca Automática: a cota do Gemini em {{target}} na conta {{from}} esgotou. Alternado para {{to}} ({{score}}% de cota do Gemini restante).",
+    "all_quotas_depleted": "⚠️ Todas as contas disponíveis tiveram suas cotas esgotadas.",
     "target_platform": "Plataforma (Harness)",
     "target_ide": "IDE",
     "target_ide_and_platform": "IDE e Plataforma",
     "target_agy": "AGY CLI",
-    "overlay_title": "Antigravity Shield - Alternância Inteligente",
-    "overlay_quota_for": "Cota esgotada para",
+    "overlay_title": "Antigravity Shield - Troca Inteligente",
+    "overlay_quota_for": "Cota esgotada para:",
     "overlay_switch_to": "Alternar para:",
     "overlay_quota_badge": "cota",
     "overlay_switch_now": "Alternar Agora",
-    "overlay_snooze": "Adiar 5m",
+    "overlay_snooze": "Adiar (5 min)",
     "overlay_cancel": "Cancelar",
-    "overlay_dismiss": "Dispensar",
+    "overlay_dismiss": "Fechar",
     "overlay_auto_dismiss": "Fechando automaticamente em alguns segundos",
-    "overlay_auto_dismiss_timer": "Fechando automaticamente em {{seconds}}s",
+    "overlay_auto_dismiss_timer": "Fechando em {{seconds}}s",
+    "overlay_from_account": "Conta Atual",
+    "overlay_depleted_badge": "Esgotada",
     "overlay_waiting": "Recebendo telemetria do Shield...",
-    "overlay_default_model": "Modelo de IA"
+    "overlay_default_model": "Modelo de IA",
+    "overlay": {
+      "platform": "Platform",
+      "esc": "Esc"
+    }
+  },
+  "sidebar": {
+    "sections": {
+      "core": "Core",
+      "ecosystem": "Ecosystem",
+      "monitoring": "Telemetry",
+      "system": "System"
+    },
+    "shield": "SHIELD",
+    "agentic_manager_hub": "Agentic Manager & Hub",
+    "dark_mode": "Dark Mode",
+    "light_mode": "Light Mode"
+  },
+  "ecosystem": {
+    "title": "Agent Ecosystem Hub",
+    "subtitle": "Curate, configure, and monitor agent skills, Model Context Protocol servers, and behavioral rules",
+    "search_placeholder": "Search tools, triggers, servers...",
+    "tabs": {
+      "skills": "Agent Skills",
+      "mcp": "MCP Servers",
+      "rules": "Rules & Prompts"
+    },
+    "skills": {
+      "create": "Create Skill",
+      "create_modal_title": "Create New Agent Skill",
+      "sort_skills_to_show_active_ena": "Ordenar para exibir habilidades ativas/habilitadas primeiro",
+      "show_only_skills_from_verified": "Exibir apenas habilidades de desenvolvedores oficiais com auditoria limpa",
+      "active": "Ativo",
+      "sync_latest_install_counts_and": "Sincronizar estatísticas de downloads e classificação via CDN do Hub",
+      "official_technology_maker_skil": "Criador Oficial de Tecnologia (verificado pelo skills.sh)",
+      "official": "Oficial",
+      "live_verified_upstream_git_rep": "Repositório Git upstream verificado ao vivo",
+      "live": "Ao Vivo",
+      "toggle": "Alternar",
+      "of": "de",
+      "scroll_down_to_load_more": "Role para baixo para carregar mais habilidades",
+      "all": "✓ Todas",
+      "skills_rendered": "habilidades exibidas",
+      "try_adjusting_your_query_or_ca": "Tente ajustar sua busca ou os filtros de categoria.",
+      "installs": "Instalações",
+      "github_stars": "Estrelas no GitHub",
+      "repository": "Repositório",
+      "first_seen": "Descoberto em",
+      "gen_agent_trust_hub": "Hub de Confiança para Agentes de IA",
+      "pass": "Aprovado",
+      "socket": "Socket",
+      "pass_2": "Aprovado",
+      "snyk": "Snyk",
+      "pass_3": "Aprovado",
+      "execution_prerequisites_tool_t": "Pré-requisitos de Execução e Telemetria de Ferramentas",
+      "live_github": "GITHUB AO VIVO",
+      "allowed_tools_execution_permis": "Ferramentas Permitidas (Permissões de Execução):",
+      "required_environment_variables": "Variáveis de Ambiente Necessárias (Chaves de API / Tokens):",
+      "cli_setup_commands": "Comandos de Instalação via CLI:",
+      "copy_command": "Copiar comando",
+      "multi_file_companion_assets": "Recursos Adicionais Multiarquivo (",
+      "npx_skills_add": "npx skills add",
+      "identifier_slug": "Identificador (slug)",
+      "my_custom_skill": "minha-habilidade-personalizada",
+      "title": "Título",
+      "my_custom_skill_title": "Título da Minha Habilidade",
+      "category": "Categoria",
+      "triggers_comma_separated": "Gatilhos (separados por vírgula)",
+      "react_refactor_audit": "react, refatorar, auditoria",
+      "description": "Descrição",
+      "short_description_of_what_this": "Breve descrição do que esta habilidade permite o agente executar...",
+      "cancel": "Cancelar",
+      "save_install": "Salvar e Instalar",
+      "download_rank": "Download Rank: #{{rank}}"
+    },
+    "mcp": {
+      "add_server": "Add MCP Server",
+      "add_modal_title": "Register New MCP Server",
+      "test": "Test Server Connection",
+      "test_all": "Check All Servers Health",
+      "testing_all": "Checking servers health...",
+      "configure": "Configure Env & Args",
+      "diagnostics": "Diagnostics & Tools",
+      "active": "Active",
+      "inactive": "Disabled",
+      "status_connected": "Ready & Connected",
+      "status_needs_config": "Needs Configuration",
+      "status_disabled": "Disabled",
+      "status_error": "Connection Error",
+      "status_testing": "Testing...",
+      "summary_healthy": "servers operational & connected",
+      "summary_inactive": "servers disabled or require setup",
+      "tools_count": "{{count}} tools available",
+      "exposed_tools": "Tools exposed to AI agents",
+      "requirements": "Prerequisites & Runtime",
+      "health_overview": "MCP Servers Health & Capability Overview",
+      "filter_all": "All Servers",
+      "filter_healthy": "Healthy & Ready",
+      "filter_needs_config": "Setup Required",
+      "filter_disabled": "Disabled",
+      "no_servers": "Nenhum servidor MCP corresponde à sua busca ou filtro",
+      "no_servers_desc": "Tente limpar o termo de pesquisa ou alterar o filtro de status.",
+      "clear_filters": "Limpar filtros e exibir todos os servidores",
+      "ms_avg": "ms médios",
+      "official_verified_mcp_server": "Servidor MCP Oficial e Verificado",
+      "toggle": "Alternar",
+      "official": "Oficial",
+      "disabled": "Server is disabled",
+      "handshake": "This server dynamically registers its tools during initial AI model handshake.",
+      "command_arguments_space_separa": "Argumentos do Comando (Separados por espaço)",
+      "environment_variables_json": "Variáveis de Ambiente (JSON)",
+      "cancel": "Cancelar",
+      "save_changes": "Salvar Alterações",
+      "server_identifier": "Identificador do Servidor",
+      "postgres_analytics": "postgres-analytics",
+      "display_title": "Nome de Exibição",
+      "postgresql_analytics": "Análise PostgreSQL",
+      "command": "Comando",
+      "npx_or_node": "npx ou node",
+      "arguments": "Argumentos",
+      "y_modelcontextprotocol_server": "-y @modelcontextprotocol/server-...",
+      "description": "Descrição",
+      "tools_and_capabilities_provide": "Ferramentas e recursos fornecidos por este servidor MCP...",
+      "cancel_2": "Cancelar",
+      "register_server": "Registrar Servidor",
+      "description_protocol": "Standard protocol equipping AI models with filesystem, web, GitHub, and database capabilities.",
+      "of": "of",
+      "view_tools": "View tools list",
+      "tools_count_short": "{{count}} tools",
+      "copy_command": "Copy Command",
+      "test_ping": "Test Ping",
+      "delete_server": "Delete Server",
+      "protocol_label": "Protocol",
+      "status_operational": "Operational & Ready ({{ping}}ms)",
+      "status_needs_config_desc": "Requires configuration completion or prerequisite service",
+      "status_connection_error": "Connection error",
+      "server_ready_desc": "Server is ready to handle AI model requests.",
+      "retest": "Retest",
+      "command_and_args": "Execution Command & Arguments"
+    },
+    "rules": {
+      "create": "Add Instruction Rule",
+      "active_rule_guidelines_applied": "diretrizes de regras ativas aplicadas",
+      "trigger": "Gatilho:",
+      "edit_rule": "Editar Regra:",
+      "rule_title": "Título da Regra",
+      "rule_content_markdown": "Conteúdo da Regra (Markdown)",
+      "cancel": "Cancelar",
+      "save_rule": "Salvar Regra",
+      "add_new_agent_rule": "Adicionar Nova Regra para Agentes",
+      "title": "Título",
+      "e_g_strict_error_handling_guid": "Ex: Diretrizes Rígidas de Tratamento de Erros",
+      "file_target": "Arquivo de Destino",
+      "gemini_md": "GEMINI.md",
+      "agents_md": "AGENTS.md",
+      "rule_user_global": "Regra Global do Usuário (user_global)",
+      "scope": "Escopo",
+      "global_system": "Global (Sistema)",
+      "workspace_only": "Apenas Espaço de Trabalho",
+      "trigger_2": "Tipo de Gatilho",
+      "always_on": "Sempre Ativo",
+      "model_decision": "Decisão do Modelo",
+      "instructions_guidelines_conten": "Conteúdo das Instruções e Diretrizes",
+      "cancel_2": "Cancelar",
+      "create_rule": "Criar Regra"
+    },
+    "no_skills": "No skills match your search",
+    "inspect": "View SKILL.md",
+    "source": {
+      "all": "All Skills",
+      "local": "My Local Skills",
+      "skills_sh": "Marketplace"
+    },
+    "zero_leak_banner": "Zero-Leak Shield: Local skills & keys are 100% isolated",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "preview_content": "SKILL.md Content Preview",
+    "read_only": "Read-Only",
+    "install_instruction": "Install via Terminal or 1-Click:",
+    "one_click_install": "1-Click Install",
+    "installing": "Installing...",
+    "view_on_skills_sh": "View on Skills.sh",
+    "github_repo": "GitHub Repo",
+    "local_shield_title": "Zero-Leak Isolated Local Skill",
+    "file_path": "File Path:",
+    "private_and_local": "Private & Local",
+    "local_path": "Local Path:",
+    "zero_leak_isolated": "Zero-Leak Isolated",
+    "security_audits": "Security Audits",
+    "official_maker": "Official Maker",
+    "active_first": "Active First",
+    "architecture_docs": "Architecture & Documentation",
+    "all_security_audits": "Todas as Auditorias de Segurança",
+    "security_filtered": "Segurança",
+    "agent_filter_label": "Agente",
+    "audit_filter_label": "Segurança",
+    "verified_only": "Apenas Verificados",
+    "syncing": "Sincronizando...",
+    "sync_telemetry": "Sincronizar ao Vivo",
+    "reorder_prompt": "As últimas contagens de download e classificações foram sincronizadas via Hub CDN.",
+    "apply_reorder": "Atualizar Classificação",
+    "click_to_copy": "Clique para copiar o comando",
+    "loading_more": "Carregando mais habilidades...",
+    "doc_viewer": {
+      "enriched": "Enriquecido",
+      "english": "🇬🇧 Inglês",
+      "raw": "Original",
+      "security_audits": "Auditorias de Segurança Aprovadas",
+      "official_security_audits": "Auditorias Oficiais de Segurança",
+      "zero_leak_protected": "Protegido Contra Vazamentos (Zero-Leak)",
+      "pass": "APROVADO",
+      "warn": "AVISO",
+      "copy_markdown": "Copiar Markdown",
+      "fetching_specialized_documenta": "Buscando documentação especializada no Hub CDN...",
+      "critical_pillar": "Critical Pillar",
+      "recommended": "Recommended",
+      "specialized_utility": "Specialized Utility",
+      "documented": "Documented",
+      "persian": "🇮🇷 Persa"
+    },
+    "security_dropdown": {
+      "selected": "selecionados",
+      "reset_to_all": "Redefinir para Todos"
+    },
+    "agent_logos": {
+      "google_antigravity": "Google Antigravity"
+    },
+    "agent_dropdown": {
+      "all_agents": "Todos os 20 Agentes de IA",
+      "google_antigravity": "Google Antigravity",
+      "native_badge": "100% Nativo"
+    }
+  },
+  "theme": {
+    "accent_palette": "UI Accent Palette",
+    "choose_accent": "Choose UI Accent Color",
+    "accents": {
+      "seafoam": {
+        "name": "Seafoam Green",
+        "desc": "Emerald seafoam signature • Balanced, modern & serene"
+      },
+      "cyan": {
+        "name": "Azure Sky",
+        "desc": "Electric high-tech azure • Crisp coding aesthetic"
+      },
+      "violet": {
+        "name": "Lavender Violet",
+        "desc": "Elegance and deep creative focus"
+      },
+      "amber": {
+        "name": "Amber Gold",
+        "desc": "Warm obsidian honey • Premium terminal warmth"
+      },
+      "rose": {
+        "name": "Ruby Rose",
+        "desc": "Vibrant and dynamic high-energy accent"
+      },
+      "emerald": {
+        "name": "Jade Emerald",
+        "desc": "Classic luminous matrix green"
+      },
+      "sunset": {
+        "name": "Sunset Coral",
+        "desc": "Vivid warm horizon • Tangy and bold"
+      }
+    }
   },
   "debug_console": {
     "pause_scroll": "Pausar rolagem",
@@ -1932,6 +2768,26 @@
     "no_logs": "Nenhum log para exibir",
     "no_logs_hint": "Os logs de execução aparecerão aqui em tempo real",
     "scroll_to_bottom": "Rolar para o final",
-    "toggle": "Alternar Console de Depuração"
+    "toggle": "Alternar Console de Depuração",
+    "console": "CONSOLE",
+    "filter_logs": "Filter logs...",
+    "live": "Live",
+    "console_2": "Console"
+  },
+  "layout": {
+    "mini_view": {
+      "no_account_selected": "No account selected",
+      "no_quota_data_available": "No quota data available",
+      "input_output_tokens": "Input/Output Tokens",
+      "duration": "Duration",
+      "connected": "Connected",
+      "best": "Best",
+      "gemini": "Gemini:",
+      "claude": "Claude:",
+      "antigravity_platform": "Antigravity Platform",
+      "platform": "Platform",
+      "antigravity_ide": "Antigravity IDE",
+      "antigravity_cli_agy": "Antigravity CLI (agy)"
+    }
   }
 }
