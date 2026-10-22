@@ -149,7 +149,7 @@ export default function ThinkingBudget({
                                 max={65536}
                                 step={1024}
                             />
-                            <span className="text-[10px] text-gray-400 font-mono">TOKENS</span>
+                            <span className="text-[10px] text-gray-400 font-mono">{t('settings.thinking_budget.tokens', "TOKENS")}</span>
                         </div>
                         <p className="text-[10px] text-gray-500 dark:text-gray-500">
                             {t("settings.thinking_budget.custom_value_hint", {

@@ -233,7 +233,7 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                     <h2 className="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2">
                         {t('token_stats.heatmap_title', 'Annual Activity Heatmap')}
                         <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
-                            ({yearSummary.activeDays} days active, {formatNumber(yearSummary.total)} tokens)
+                            ({yearSummary.activeDays} {t('token_stats.heatmap.days_active', "days active,")} {formatNumber(yearSummary.total)} {t('token_stats.heatmap.tokens', "tokens)")}
                         </span>
                     </h2>
                 </div>
@@ -318,13 +318,13 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                         <div className="flex">
                             {/* Day labels (Sun, Tue, Thu, Sat) */}
                             <div className="flex flex-col justify-between text-[9px] text-gray-400 dark:text-gray-500 pr-1.5 py-0.5 w-6 select-none leading-none">
-                                <span>Sun</span>
-                                <span className="opacity-0">Mon</span>
-                                <span>Tue</span>
-                                <span className="opacity-0">Wed</span>
-                                <span>Thu</span>
-                                <span className="opacity-0">Fri</span>
-                                <span>Sat</span>
+                                <span>{t('token_stats.heatmap.sun', "Sun")}</span>
+                                <span className="opacity-0">{t('token_stats.heatmap.mon', "Mon")}</span>
+                                <span>{t('token_stats.heatmap.tue', "Tue")}</span>
+                                <span className="opacity-0">{t('token_stats.heatmap.wed', "Wed")}</span>
+                                <span>{t('token_stats.heatmap.thu', "Thu")}</span>
+                                <span className="opacity-0">{t('token_stats.heatmap.fri', "Fri")}</span>
+                                <span>{t('token_stats.heatmap.sat', "Sat")}</span>
                             </div>
 
                             {/* 53 Column Weeks */}
@@ -380,7 +380,14 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                             return (
                                 <div
                                     key={wk.weekIndex}
-                                    title={`Week ${wk.weekIndex} (${wk.dateRange})\nTotal: ${formatNumber(wk.total_tokens)} tokens\nInput: ${formatNumber(wk.input_tokens)}\nOutput: ${formatNumber(wk.output_tokens)}`}
+                                    title={t('token_stats.weekly_tooltip', {
+                                        week: wk.weekIndex,
+                                        dateRange: wk.dateRange,
+                                        total: formatNumber(wk.total_tokens),
+                                        input: formatNumber(wk.input_tokens),
+                                        output: formatNumber(wk.output_tokens),
+                                        defaultValue: 'Week {{week}} ({{dateRange}})\nTotal: {{total}} tokens\nInput: {{input}}\nOutput: {{output}}'
+                                    })}
                                     className={cn(
                                         "flex flex-col p-2 rounded-lg border text-center transition-all cursor-default",
                                         wk.total_tokens === 0 && "bg-gray-50 border-gray-200/50 dark:bg-gray-800/40 dark:border-gray-700/40 opacity-50"
@@ -418,8 +425,8 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                                 className="font-mono font-bold"
                                 style={{ color: 'var(--color-accent)' }}
                             >
-                                {formatNumber(activityMap.get(selectedDate)!.total_tokens)} tokens (
-                                {formatNumber(activityMap.get(selectedDate)!.input_tokens)} in / {formatNumber(activityMap.get(selectedDate)!.output_tokens)} out)
+                                {formatNumber(activityMap.get(selectedDate)!.total_tokens)} {t('token_stats.heatmap.tokens_2', "tokens (")}
+                                {formatNumber(activityMap.get(selectedDate)!.input_tokens)} {t('token_stats.heatmap.in', "in /")} {formatNumber(activityMap.get(selectedDate)!.output_tokens)} {t('token_stats.heatmap.out', "out)")}
                             </span>
                         ) : (
                             <span>{t('token_stats.heatmap_no_activity', 'No token activity')}</span>
@@ -428,7 +435,7 @@ export const TokenHeatmap: React.FC<TokenHeatmapProps> = ({
                             onClick={() => onSelectDate && onSelectDate(null)}
                             className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-500 hover:text-gray-700 ml-1"
                         >
-                            ✕ Clear
+                            {t('token_stats.heatmap.clear', "✕ Clear")}
                         </button>
                     </div>
                 ) : (

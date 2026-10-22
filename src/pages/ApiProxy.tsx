@@ -746,7 +746,7 @@ print(response.choices[0].message.content)`;
                             <span>{t('proxy.header.title', { defaultValue: 'Antigravity Shield API Proxy' })}</span>
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-gray-400 pt-0.5">
-                            Local High-Performance AI Gateway with Zero-Leak Telemetry &amp; Universal Protocol Mapping
+                            {t('proxy.page.local_high_performance_ai_gate', "Local High-Performance AI Gateway with Zero-Leak Telemetry &amp; Universal Protocol Mapping")}
                         </p>
                     </div>
 
@@ -988,12 +988,12 @@ print(response.choices[0].message.content)`;
                         {/* Existing Custom Presets */}
                         <div className="space-y-2">
                             <h4 className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Your Saved Presets
+                                {t('proxy.page.your_saved_presets', "Your Saved Presets")}
                             </h4>
                             <div className="max-h-[220px] overflow-y-auto space-y-1.5 pe-1">
                                 {customPresets.length === 0 ? (
                                     <div className="text-center py-6 text-xs text-gray-400 bg-gray-50 dark:bg-base-200/50 rounded-xl border border-dashed border-gray-200 dark:border-base-300">
-                                        No custom presets saved yet.
+                                        {t('proxy.page.no_custom_presets_saved_yet', "No custom presets saved yet.")}
                                     </div>
                                 ) : (
                                     customPresets.map((preset) => (
@@ -1006,7 +1006,7 @@ print(response.choices[0].message.content)`;
                                                     {preset.name}
                                                 </div>
                                                 <div className="text-[10px] text-gray-400">
-                                                    {Object.keys(preset.mappings).length} rules mapped
+                                                    {Object.keys(preset.mappings).length} {t('proxy.page.rules_mapped', "rules mapped")}
                                                 </div>
                                             </div>
                                             <button
@@ -1038,7 +1038,7 @@ print(response.choices[0].message.content)`;
                                             {t('proxy.cloudflared.mobile_modal_title', { defaultValue: 'Secure Mobile Pairing' })}
                                         </h3>
                                         <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                                            Zero-Trust End-to-End Pairing
+                                            {t('proxy.page.zero_trust_end_to_end_pairing', "Zero-Trust End-to-End Pairing")}
                                         </p>
                                     </div>
                                 </div>
@@ -1058,10 +1058,10 @@ print(response.choices[0].message.content)`;
                                 <div className="bg-gray-50 dark:bg-base-200/50 border border-gray-200 dark:border-base-300 rounded-xl p-3 text-center space-y-1 w-full">
                                     <div className="flex items-center justify-center gap-1.5 text-gray-800 dark:text-gray-200 font-bold text-xs">
                                         <QrCode className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
-                                        <span>Direct Mobile Camera Scan</span>
+                                        <span>{t('proxy.page.direct_mobile_camera_scan', "Direct Mobile Camera Scan")}</span>
                                     </div>
                                     <p className="text-[11px] text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
-                                        Scan this barcode with your phone camera to securely connect to the proxy without entering URLs or credentials.
+                                        {t('proxy.page.scan_this_barcode_with_your_ph', "Scan this barcode with your phone camera to securely connect to the proxy without entering URLs or credentials.")}
                                     </p>
                                 </div>
 
@@ -1074,7 +1074,7 @@ print(response.choices[0].message.content)`;
                                         style={{ backgroundColor: 'var(--color-primary-btn)' }}
                                     >
                                         {copied === 'mobile-url-modal' ? <CheckCircle size={14} /> : <Copy size={14} />}
-                                        <span>Copy Link</span>
+                                        <span>{t('proxy.page.copy_link', "Copy Link")}</span>
                                     </button>
                                     <button
                                         onClick={() => setIsMobileQrOpen(false)}

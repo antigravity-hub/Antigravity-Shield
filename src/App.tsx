@@ -32,6 +32,7 @@ import { useQuotaAlertWatcher } from './hooks/useQuotaAlertWatcher';
 import NotificationOverlay from './components/overlay/NotificationOverlay';
 
 function RouteErrorBoundary() {
+  const { t } = useTranslation();
   const error: any = useRouteError();
   console.error('Route error caught:', error);
   return (
@@ -42,16 +43,16 @@ function RouteErrorBoundary() {
         </svg>
       </div>
       <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-        {error?.status === 404 ? 'Page Not Found' : 'Something went wrong'}
+        {error?.status === 404 ? t('common.app.page_not_found', 'Page Not Found') : t('common.app.something_went_wrong', 'Something went wrong')}
       </h2>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md">
-        {error?.statusText || error?.message || 'An unexpected error occurred while loading this view.'}
+        {error?.statusText || error?.message || t('common.app.unexpected_error', 'An unexpected error occurred while loading this view.')}
       </p>
       <a
         href="#/"
         className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-colors shadow-sm"
       >
-        Return to Dashboard
+        {t('common.app.return_to_dashboard', 'Return to Dashboard')}
       </a>
     </div>
   );

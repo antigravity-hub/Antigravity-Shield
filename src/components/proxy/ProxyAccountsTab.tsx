@@ -111,12 +111,12 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                 <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <Users size={15} style={{ color: 'var(--color-accent)' }} />
-                        <span>Total Accounts</span>
+                        <span>{t('proxy.accounts.total_accounts', "Total Accounts")}</span>
                     </div>
                     <div className="text-xl font-bold text-gray-900 dark:text-gray-100 mt-1 flex items-baseline gap-1.5">
                         <span>{accounts.length}</span>
                         <span className="text-[11px] font-normal text-gray-500 dark:text-gray-400">
-                            ({activeAccountsCount} active{blockedAccountsCount > 0 ? `, ${blockedAccountsCount} suspended` : ''})
+                            ({activeAccountsCount} {t('proxy.accounts.active', "active")}{blockedAccountsCount > 0 ? t('proxy.accounts.suspended_count', { count: blockedAccountsCount, defaultValue: ', {{count}} suspended' }) : ''})
                         </span>
                     </div>
                 </div>
@@ -124,7 +124,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                 <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <Activity size={15} className="text-amber-500" />
-                        <span>Active Cooldowns</span>
+                        <span>{t('proxy.accounts.active_cooldowns', "Active Cooldowns")}</span>
                     </div>
                     <div className={`text-xl font-bold mt-1 ${activeCooldowns.length > 0 ? 'text-amber-600' : 'text-gray-900 dark:text-gray-100'}`}>
                         {activeCooldowns.length}
@@ -134,19 +134,19 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                 <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <Lock size={15} style={{ color: 'var(--color-accent)' }} />
-                        <span>Preferred Route</span>
+                        <span>{t('proxy.accounts.preferred_route', "Preferred Route")}</span>
                     </div>
                     <div className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-2 truncate">
                         {preferredAccountId
                             ? accounts.find((a) => a.id === preferredAccountId)?.email || preferredAccountId
-                            : 'Smart Tiered Rotation'}
+                            : t('proxy.accounts.smart_tiered_rotation', "Smart Tiered Rotation")}
                     </div>
                 </div>
 
                 <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm flex items-center justify-between">
                     <div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Cooldown Actions</div>
-                        <div className="text-xs text-gray-400 pt-0.5">Reset active 429 timers</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">{t('proxy.accounts.cooldown_actions', "Cooldown Actions")}</div>
+                        <div className="text-xs text-gray-400 pt-0.5">{t('proxy.accounts.reset_active_429_timers', "Reset active 429 timers")}</div>
                     </div>
                     <button
                         onClick={onClearRateLimits}
@@ -154,7 +154,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                         title={t('proxy.config.scheduling.clear_rate_limits_tooltip', { defaultValue: 'Clear all rate limit records' })}
                     >
                         <Trash2 size={13} className="text-rose-500" />
-                        <span>Clear</span>
+                        <span>{t('proxy.accounts.clear', "Clear")}</span>
                     </button>
                 </div>
             </div>
@@ -165,18 +165,18 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                     <div className="flex items-center gap-2">
                         <Clock size={16} className={activeCooldowns.length > 0 ? 'text-amber-500 animate-pulse' : 'text-gray-400'} />
                         <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
-                            Active Cooldown Pool &amp; Countdown Timers
+                            {t('proxy.accounts.active_cooldown_pool_amp_count', "Active Cooldown Pool &amp; Countdown Timers")}
                         </h3>
                     </div>
                     <span className="text-[11px] text-gray-400">
-                        {activeCooldowns.length === 0 ? 'All accounts healthy' : `${activeCooldowns.length} rate limits active`}
+                        {activeCooldowns.length === 0 ? t('proxy.accounts.all_accounts_healthy', "All accounts healthy") : t('proxy.accounts.active_rate_limits', { count: activeCooldowns.length, defaultValue: '{{count}} rate limits active' })}
                     </span>
                 </div>
 
                 {activeCooldowns.length === 0 ? (
                     <div className="p-4 rounded-xl bg-gray-50/60 dark:bg-[#141916] border border-dashed border-gray-200 dark:border-slate-800/80 flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                         <CheckCircle2 size={15} className="text-emerald-500" />
-                        <span>Zero active 429 cooldowns. All accounts in pool are available for high-throughput dispatch.</span>
+                        <span>{t('proxy.accounts.zero_active_429_cooldowns_all_', "Zero active 429 cooldowns. All accounts in pool are available for high-throughput dispatch.")}</span>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -199,8 +199,8 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                     </div>
                                 </div>
                                 <div className="mt-3 pt-2 border-t border-amber-200/40 dark:border-amber-900/40 flex items-center justify-between text-[10px] text-gray-400">
-                                    <span>Status 429 Quota Exhausted</span>
-                                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">Failover OK</span>
+                                    <span>{t('proxy.accounts.status_429_quota_exhausted', "Status 429 Quota Exhausted")}</span>
+                                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">{t('proxy.accounts.failover_ok', "Failover OK")}</span>
                                 </div>
                             </div>
                         ))}
@@ -214,10 +214,10 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                     <div>
                         <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                             <Layers size={16} style={{ color: 'var(--color-accent)' }} />
-                            Per-Account Quota Health Gauges
+                            {t('proxy.accounts.per_account_quota_health_gauge', "Per-Account Quota Health Gauges")}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                            Live telemetry and remaining usage percentages across all connected Google Pro accounts.
+                            {t('proxy.accounts.live_telemetry_and_remaining_u', "Live telemetry and remaining usage percentages across all connected Google Pro accounts.")}
                         </p>
                     </div>
 
@@ -226,15 +226,15 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                             onClick={() => onSetPreferredAccount(null)}
                             className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-[#141916] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#1a201c] transition-colors"
                         >
-                            Reset to Auto Rotation
+                            {t('proxy.accounts.reset_to_auto_rotation', "Reset to Auto Rotation")}
                         </button>
                     )}
                 </div>
 
                 {loading ? (
-                    <div className="py-12 text-center text-xs text-gray-400">Loading accounts and quota metrics...</div>
+                    <div className="py-12 text-center text-xs text-gray-400">{t('proxy.accounts.loading_accounts_and_quota_met', "Loading accounts and quota metrics...")}</div>
                 ) : accounts.length === 0 ? (
-                    <div className="py-12 text-center text-xs text-gray-400">No accounts configured yet.</div>
+                    <div className="py-12 text-center text-xs text-gray-400">{t('proxy.accounts.no_accounts_configured_yet', "No accounts configured yet.")}</div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {accounts.map((acc) => {
@@ -274,7 +274,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                                 {isBlocked && (
                                                     <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30 flex items-center gap-1">
                                                         <ShieldAlert size={11} />
-                                                        Suspended
+                                                        {t('proxy.accounts.suspended', "Suspended")}
                                                     </span>
                                                 )}
                                             </div>
@@ -294,7 +294,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                                     : 'bg-gray-100 dark:bg-base-200 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-base-300 hover:bg-gray-200 dark:hover:bg-base-300'
                                             }`}
                                         >
-                                            {isBlocked ? 'Blocked' : isPreferred ? 'Pinned Preferred' : 'Pin Route'}
+                                            {isBlocked ? t('proxy.accounts.blocked', "Blocked") : isPreferred ? t('proxy.accounts.pinned_preferred', 'Pinned Preferred') : t('proxy.accounts.pin_route', 'Pin Route')}
                                         </button>
                                     </div>
 
@@ -303,8 +303,8 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                         <div className="mt-2.5 p-2 rounded-lg bg-rose-500/10 border border-rose-500/20 text-[11px] text-rose-600 dark:text-rose-400 flex items-start gap-1.5">
                                             <AlertTriangle size={13} className="shrink-0 mt-0.5 text-rose-500" />
                                             <div className="leading-tight">
-                                                <span className="font-semibold">Isolated from rotation: </span>
-                                                <span>{blockReason || 'Account suspended by Google (Appeal required)'}</span>
+                                                <span className="font-semibold">{t('proxy.accounts.isolated_from_rotation', "Isolated from rotation:")} </span>
+                                                <span>{blockReason || t('proxy.accounts.suspended_google_appeal', 'Account suspended by Google (Appeal required)')}</span>
                                             </div>
                                         </div>
                                     )}
@@ -312,7 +312,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                     {/* Quota Progress Bars */}
                                     <div className={`pt-3 space-y-2.5 ${isBlocked ? 'opacity-40' : ''}`}>
                                         {models.length === 0 ? (
-                                            <div className="text-[11px] text-gray-400 py-1">No detailed quota stats received yet.</div>
+                                            <div className="text-[11px] text-gray-400 py-1">{t('proxy.accounts.no_detailed_quota_stats_receiv', "No detailed quota stats received yet.")}</div>
                                         ) : (
                                             models.slice(0, 4).map((m) => {
                                                 const pct = typeof m.percentage === 'number' ? m.percentage : 100;
@@ -358,7 +358,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                     <div className="flex items-center gap-2">
                         <Sliders size={16} style={{ color: 'var(--color-accent)' }} />
                         <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                            Rotation &amp; Sticky Session Policies
+                            {t('proxy.accounts.rotation_amp_sticky_session_po', "Rotation &amp; Sticky Session Policies")}
                         </h3>
                     </div>
 
@@ -367,14 +367,14 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                         className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-[#141916] transition-colors flex items-center gap-1.5 text-gray-700 dark:text-gray-300"
                     >
                         <RotateCcw size={13} />
-                        <span>Clear Session Bindings</span>
+                        <span>{t('proxy.accounts.clear_session_bindings', "Clear Session Bindings")}</span>
                     </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
                     <div className="space-y-1">
                         <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            Scheduling Strategy
+                            {t('proxy.accounts.scheduling_strategy', "Scheduling Strategy")}
                         </label>
                         <select
                             value={scheduling.mode}
@@ -382,18 +382,18 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                             className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content focus:outline-none"
                             style={{ borderColor: 'var(--color-accent)' }}
                         >
-                            <option value="Balance">Balanced (Priority Tiered)</option>
-                            <option value="FillFirst">Fill-First (Drain Pro Primary)</option>
-                            <option value="Random">Randomized Dispatch</option>
+                            <option value="Balance">{t('proxy.accounts.balanced_priority_tiered', "Balanced (Priority Tiered)")}</option>
+                            <option value="FillFirst">{t('proxy.accounts.fill_first_drain_pro_primary', "Fill-First (Drain Pro Primary)")}</option>
+                            <option value="Random">{t('proxy.accounts.randomized_dispatch', "Randomized Dispatch")}</option>
                         </select>
                         <p className="text-[10px] text-gray-400">
-                            Balanced automatically rotates requests across healthy ULTRA and PRO accounts.
+                            {t('proxy.accounts.balanced_automatically_rotates', "Balanced automatically rotates requests across healthy ULTRA and PRO accounts.")}
                         </p>
                     </div>
 
                     <div className="space-y-1">
                         <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            Max Wait Cooldown (s)
+                            {t('proxy.accounts.max_wait_cooldown_s', "Max Wait Cooldown (s)")}
                         </label>
                         <input
                             type="number"
@@ -404,16 +404,16 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                             className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content focus:outline-none"
                         />
                         <p className="text-[10px] text-gray-400">
-                            Maximum wait threshold before initiating instant failover.
+                            {t('proxy.accounts.maximum_wait_threshold_before_', "Maximum wait threshold before initiating instant failover.")}
                         </p>
                     </div>
 
                     <div className="space-y-1">
                         <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            Strict Quota Model Catalog
+                            {t('proxy.accounts.strict_quota_model_catalog', "Strict Quota Model Catalog")}
                         </label>
                         <div className="pt-1.5 flex items-center justify-between">
-                            <span className="text-xs text-gray-500">Only Raw Quota Models</span>
+                            <span className="text-xs text-gray-500">{t('proxy.accounts.only_raw_quota_models', "Only Raw Quota Models")}</span>
                             <input
                                 type="checkbox"
                                 checked={appConfig?.proxy?.only_raw_quota_models || false}
@@ -422,7 +422,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                             />
                         </div>
                         <p className="text-[10px] text-gray-400">
-                            Hides virtual aliases and only displays models reported by upstream tokens.
+                            {t('proxy.accounts.hides_virtual_aliases_and_only', "Hides virtual aliases and only displays models reported by upstream tokens.")}
                         </p>
                     </div>
                 </div>

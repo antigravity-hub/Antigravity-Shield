@@ -128,7 +128,7 @@ export default function ProxyEditModal({ isOpen, onClose, onSave, initialData, i
                                 value={formData.url}
                                 onChange={e => setFormData({ ...formData, url: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                                placeholder="http://127.0.0.1:7890"
+                                placeholder={t('settings.proxy_edit.http_127_0_0_1_7890', "http://127.0.0.1:7890")}
                             />
                         </div>
                     </div>
@@ -198,7 +198,7 @@ export default function ProxyEditModal({ isOpen, onClose, onSave, initialData, i
                                 value={formData.health_check_url || ''}
                                 onChange={e => setFormData({ ...formData, health_check_url: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                                placeholder="https://www.google.com"
+                                placeholder={t('settings.proxy_edit.https_www_google_com', "https://www.google.com")}
                             />
                         </div>
                     </div>

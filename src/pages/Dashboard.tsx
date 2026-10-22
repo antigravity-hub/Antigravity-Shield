@@ -308,7 +308,7 @@ function Dashboard() {
                             >
                                 <Users className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                             </div>
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400">POOL</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400">{t('dashboard.pool', "POOL")}</span>
                         </div>
                         <div>
                             <div className="text-3xl font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{stats.total}</div>
@@ -377,7 +377,7 @@ function Dashboard() {
                             </div>
                             {stats.lowQuota > 0 ? (
                                 <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-600 dark:text-rose-400 animate-pulse">
-                                    ATTENTION
+                                    {t('dashboard.attention', "ATTENTION")}
                                 </span>
                             ) : (
                                 <span 
@@ -387,7 +387,7 @@ function Dashboard() {
                                         color: 'var(--color-badge-text)',
                                     }}
                                 >
-                                    HEALTHY
+                                    {t('dashboard.healthy', "HEALTHY")}
                                 </span>
                             )}
                         </div>

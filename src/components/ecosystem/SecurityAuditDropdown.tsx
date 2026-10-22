@@ -188,14 +188,14 @@ export const SecurityAuditDropdown: React.FC<SecurityAuditDropdownProps> = ({
             {!isAllSelected && (
               <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between px-1">
                 <span className="text-[10px] text-slate-400">
-                  {selectedAudits.length} selected
+                  {selectedAudits.length} {t('ecosystem.security_dropdown.selected', "selected")}
                 </span>
                 <button
                   type="button"
                   onClick={handleSelectAll}
                   className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline"
                 >
-                  Reset to All
+                  {t('ecosystem.security_dropdown.reset_to_all', "Reset to All")}
                 </button>
               </div>
             )}

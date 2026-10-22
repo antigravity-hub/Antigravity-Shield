@@ -164,7 +164,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                 {t('dashboard.best_accounts')}
                             </h2>
                             <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                                Dynamic Fleet Routing
+                                {t('dashboard.widget_best.dynamic_fleet_routing', "Dynamic Fleet Routing")}
                             </span>
                         </div>
                     </div>
@@ -232,7 +232,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                             }}
                                         >
                                             <ShieldCheck className="w-2.5 h-2.5" />
-                                            &gt;20m
+                                            {t('dashboard.widget_best.gt_20m', "&gt;20m")}
                                         </span>
                                     ) : (
                                         <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.2 bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-md font-bold">
@@ -305,7 +305,7 @@ function BestAccounts({ accounts, currentAccountId, onSwitch }: BestAccountsProp
                                     {bestClaude.hasSafeBuffer ? (
                                         <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.2 bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 rounded-md font-bold">
                                             <ShieldCheck className="w-2.5 h-2.5" />
-                                            &gt;20m
+                                            {t('dashboard.widget_best.gt_20m_2', "&gt;20m")}
                                         </span>
                                     ) : (
                                         <span className="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.2 bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-md font-bold">

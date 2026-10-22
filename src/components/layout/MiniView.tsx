@@ -350,7 +350,7 @@ export default function MiniView() {
                         <div className="flex items-center gap-1.5 overflow-hidden" data-tauri-drag-region>
                             <div className="w-2 h-2 rounded-full bg-[#93e9be] shadow-[0_0_6px_#93e9be] animate-pulse shrink-0" />
                             <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate max-w-[120px]" title={currentAccount?.email}>
-                                {currentAccount?.email?.split('@')[0] || 'No Account'}
+                                {currentAccount?.email?.split('@')[0] || t('common.no_account', 'No Account')}
                             </span>
                         </div>
                         <div className="flex items-center gap-1 shrink-0" data-no-drag="true">
@@ -428,7 +428,7 @@ export default function MiniView() {
                         >
                             <div className="w-2 h-2 rounded-full bg-[#93e9be] shadow-[0_0_8px_#93e9be] animate-pulse shrink-0" />
                             <span className="truncate" title={currentAccount?.email}>
-                                {currentAccount?.email?.split('@')[0] || 'No Account'}
+                                {currentAccount?.email?.split('@')[0] || t('common.no_account', 'No Account')}
                             </span>
                         </div>
 
@@ -465,7 +465,7 @@ export default function MiniView() {
                         {!currentAccount ? (
                             <div className="h-full flex flex-col items-center justify-center text-center opacity-50 space-y-2">
                                 <ShieldAlert size={32} />
-                                <p className="text-sm">No account selected</p>
+                                <p className="text-sm">{t('layout.mini_view.no_account_selected', "No account selected")}</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -506,7 +506,7 @@ export default function MiniView() {
 
                                         {!geminiProModel && !geminiFlashModel && !claudeModel && (
                                             <div className="text-center py-4 text-xs text-gray-400">
-                                                No quota data available
+                                                {t('layout.mini_view.no_quota_data_available', "No quota data available")}
                                             </div>
                                         )}
                                     </div>
@@ -533,7 +533,7 @@ export default function MiniView() {
                                 </span>
 
                                 <div className="flex-1 flex items-center justify-end gap-2">
-                                    <div className="flex items-center gap-1.5 text-[9px]" title="Input/Output Tokens">
+                                    <div className="flex items-center gap-1.5 text-[9px]" title={t('layout.mini_view.input_output_tokens', "Input/Output Tokens")}>
                                         <Activity size={10} className="text-blue-500" />
                                         <span className="flex items-center gap-0.5 text-gray-500 dark:text-gray-400">
                                             I:<span className="font-mono text-gray-900 dark:text-gray-200">{formatCompactNumber(latestLog.input_tokens || 0)}</span>
@@ -546,7 +546,7 @@ export default function MiniView() {
 
                                     <div className="w-px h-2.5 bg-gray-300 dark:bg-white/10" />
 
-                                    <div className="flex items-center gap-0.5" title="Duration">
+                                    <div className="flex items-center gap-0.5" title={t('layout.mini_view.duration', "Duration")}>
                                         <Clock size={10} className="text-gray-400" />
                                         <span className="font-mono">{(latestLog.duration / 1000).toFixed(2)}s</span>
                                     </div>
@@ -556,7 +556,7 @@ export default function MiniView() {
                             <>
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-1.5 h-1.5 rounded-full bg-[#93e9be]" />
-                                    <span>Connected</span>
+                                    <span>{t('layout.mini_view.connected', "Connected")}</span>
                                 </div>
                                 <span className="font-mono opacity-50">v{appVersion}</span>
                             </>
@@ -614,11 +614,11 @@ export default function MiniView() {
                                             <div className="p-2.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/10 space-y-1.5">
                                                 <div className="flex items-center justify-between text-[11px] font-semibold text-gray-800 dark:text-gray-200">
                                                     <span className="truncate max-w-[150px]">{bestAccount.email}</span>
-                                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">Best</span>
+                                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">{t('layout.mini_view.best', "Best")}</span>
                                                 </div>
                                                 <div className="flex items-center gap-3 text-[10px] text-gray-500 dark:text-gray-400 font-mono">
-                                                    <span>Gemini: <strong className="text-[#93e9be]">{recommended.geminiScore}%</strong></span>
-                                                    <span>Claude: <strong className="text-cyan-500">{recommended.claudeScore}%</strong></span>
+                                                    <span>{t('layout.mini_view.gemini', "Gemini:")} <strong className="text-[#93e9be]">{recommended.geminiScore}%</strong></span>
+                                                    <span>{t('layout.mini_view.claude', "Claude:")} <strong className="text-cyan-500">{recommended.claudeScore}%</strong></span>
                                                 </div>
                                             </div>
                                         </>
@@ -660,11 +660,11 @@ export default function MiniView() {
                                             onClick={(e) => handleSelectTarget('platform', e)}
                                             disabled={isSwitching}
                                             className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-[#93e9be]/15 hover:border-[#93e9be]/30 border border-gray-200/50 dark:border-white/10 transition-all group active:scale-95"
-                                            title="Antigravity Platform"
+                                            title={t('layout.mini_view.antigravity_platform', "Antigravity Platform")}
                                             data-no-drag="true"
                                         >
                                             <AntigravityPlatformIcon size={24} className="transition-transform group-hover:scale-110" />
-                                            <span className="text-[10px] font-semibold mt-1.5 text-gray-700 dark:text-gray-300 group-hover:text-emerald-600 dark:group-hover:text-[#93e9be]">Platform</span>
+                                            <span className="text-[10px] font-semibold mt-1.5 text-gray-700 dark:text-gray-300 group-hover:text-emerald-600 dark:group-hover:text-[#93e9be]">{t('layout.mini_view.platform', "Platform")}</span>
                                         </button>
 
                                         {/* 2. IDE */}
@@ -672,7 +672,7 @@ export default function MiniView() {
                                             onClick={(e) => handleSelectTarget('ide', e)}
                                             disabled={isSwitching}
                                             className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-purple-500/10 hover:border-purple-500/30 border border-gray-200/50 dark:border-white/10 transition-all group active:scale-95"
-                                            title="Antigravity IDE"
+                                            title={t('layout.mini_view.antigravity_ide', "Antigravity IDE")}
                                             data-no-drag="true"
                                         >
                                             <AntigravityIdeIcon size={24} className="transition-transform group-hover:scale-110" />
@@ -684,7 +684,7 @@ export default function MiniView() {
                                             onClick={(e) => handleSelectTarget('agy', e)}
                                             disabled={isSwitching}
                                             className="flex flex-col items-center justify-center p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-gray-200/50 dark:border-white/10 transition-all group active:scale-95"
-                                            title="Antigravity CLI (agy)"
+                                            title={t('layout.mini_view.antigravity_cli_agy', "Antigravity CLI (agy)")}
                                             data-no-drag="true"
                                         >
                                             <AntigravityCliIcon size={24} className="transition-transform group-hover:scale-110" />

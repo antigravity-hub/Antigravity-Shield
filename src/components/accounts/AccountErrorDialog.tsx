@@ -577,7 +577,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                             className="text-blue-500 hover:underline flex items-center gap-1 font-medium ml-1 flex-shrink-0"
                                         >
                                             <Send className="w-2.5 h-2.5" />
-                                            @DrGuidance
+                                            {t('accounts.error_dialog.drguidance', "@DrGuidance")}
                                         </button>
                                     </div>
                                 </div>
@@ -605,7 +605,7 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                             {t('accounts.fix_guide.step1_desc', 'Open Terminal and execute the following command to verify ownership with Google (fixes some 403 blocks):')}
                                         </p>
                                         <div className="bg-gray-900 dark:bg-[#1e1e1e] text-green-400 p-2.5 rounded-lg font-mono text-[11px] flex justify-between items-center ring-1 ring-inset ring-gray-800">
-                                            <code>gcloud auth login --update-adc</code>
+                                            <code>{t('accounts.error_dialog.gcloud_auth_login_update_adc', "gcloud auth login --update-adc")}</code>
                                             <button
                                                 onClick={() => handleCopyText('gcloud auth login --update-adc', t('common.copied', 'Command copied'))}
                                                 className="text-gray-400 hover:text-white transition-colors p-1"
@@ -615,9 +615,9 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                             </button>
                                         </div>
                                         <ul className="mt-2 text-[11px] text-gray-500 dark:text-gray-400 list-disc pl-4 marker:text-gray-300 dark:marker:text-gray-600">
-                                            <li><Trans i18nKey="accounts.fix_guide.step1_li1" components={{ 1: <code /> }}>Press Enter to execute, enter Y when prompted to continue.</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.step1_li1" components={{ 1: <code /> }}>{t('accounts.error_dialog.press_enter_to_execute_enter_y', "Press Enter to execute, enter Y when prompted to continue.")}</Trans></li>
                                             <li>{t('accounts.fix_guide.step1_li2')}</li>
-                                            <li><Trans i18nKey="accounts.fix_guide.step1_li3" components={{ 1: <code /> }}>Done once you see success message!</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.step1_li3" components={{ 1: <code /> }}>{t('accounts.error_dialog.done_once_you_see_success_mess', "Done once you see success message!")}</Trans></li>
                                         </ul>
                                     </div>
 
@@ -629,10 +629,10 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                             <li>
                                                 {t('accounts.fix_guide.step2_li1_prefix', 'First execute revoke command to log out old credentials:')}
                                                 <div className="bg-gray-100 dark:bg-base-300/50 mt-1 px-2 py-1.5 rounded text-red-600 dark:text-red-400 inline-block font-mono">
-                                                    gcloud auth revoke {account.email || 'your-email@gmail.com'}
+                                                    {t('accounts.error_dialog.gcloud_auth_revoke', "gcloud auth revoke")} {account.email || 'your-email@gmail.com'}
                                                 </div>
                                             </li>
-                                            <li>{t('accounts.fix_guide.step2_li2_prefix', 'Then login again:')}<code className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-1 rounded ml-1">gcloud auth login --update-adc</code></li>
+                                            <li>{t('accounts.fix_guide.step2_li2_prefix', 'Then login again:')}<code className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-1 rounded ml-1">{t('accounts.error_dialog.gcloud_auth_login_update_adc_2', "gcloud auth login --update-adc")}</code></li>
                                         </ol>
                                     </div>
 
@@ -641,8 +641,8 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                             {t('accounts.fix_guide.tips_title', '💡 Common Recommendations')}
                                         </h4>
                                         <ul className="list-disc pl-4 space-y-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium marker:text-gray-300">
-                                            <li><Trans i18nKey="accounts.fix_guide.tip1" components={{ 1: <code /> }}>If still 403, run <code /> in terminal to reset environment variables.</Trans></li>
-                                            <li><Trans i18nKey="accounts.fix_guide.tip2" components={{ 1: <strong /> }}>In production, using a <strong /> JSON key is recommended for headless stability.</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.tip1" components={{ 1: <code /> }}>{t('accounts.error_dialog.if_still_403_run', "If still 403, run")} <code /> {t('accounts.error_dialog.in_terminal_to_reset_environme', "in terminal to reset environment variables.")}</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.tip2" components={{ 1: <strong /> }}>{t('accounts.error_dialog.in_production_using_a', "In production, using a")} <strong /> {t('accounts.error_dialog.json_key_is_recommended_for_he', "JSON key is recommended for headless stability.")}</Trans></li>
                                             <li>
                                                 <Trans
                                                     i18nKey="accounts.fix_guide.tip3"
@@ -650,10 +650,10 @@ export default function AccountErrorDialog({ account, onClose }: AccountErrorDia
                                                         1: <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 hover:underline" />
                                                     }}
                                                 >
-                                                    If it still fails, check the Generative Language API in <a href="https://console.cloud.google.com/">Google Cloud Console</a> to see if permissions are frozen. If so, your account is under risk control. Please let the account cool down for 72 hours before trying again.
+                                                    {t('accounts.error_dialog.if_it_still_fails_check_the_ge', "If it still fails, check the Generative Language API in")} <a href="https://console.cloud.google.com/">{t('accounts.error_dialog.google_cloud_console', "Google Cloud Console")}</a> {t('accounts.error_dialog.to_see_if_permissions_are_froz', "to see if permissions are frozen. If so, your account is under risk control. Please let the account cool down for 72 hours before trying again.")}
                                                 </Trans>
                                             </li>
-                                            <li><Trans i18nKey="accounts.fix_guide.tip4" components={{ 1: <code /> }}>You can also test with <code />; re-authorizing in-app will usually resolve issues.</Trans></li>
+                                            <li><Trans i18nKey="accounts.fix_guide.tip4" components={{ 1: <code /> }}>{t('accounts.error_dialog.you_can_also_test_with', "You can also test with")} <code />{t('accounts.error_dialog.re_authorizing_in_app_will_usu', "; re-authorizing in-app will usually resolve issues.")}</Trans></li>
                                         </ul>
                                     </div>
                                 </div>

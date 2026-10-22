@@ -34,7 +34,7 @@ const DebugConsoleButton: React.FC = () => {
             title={t('debug_console.toggle', { defaultValue: 'Toggle Debug Console' })}
         >
             <Terminal size={14} className={isOpen ? "text-green-400" : ""} />
-            <span className="hidden sm:inline">Console</span>
+            <span className="hidden sm:inline">{t('debug_console.console_2', "Console")}</span>
 
             {/* Error badge */}
             {errorCount > 0 && (

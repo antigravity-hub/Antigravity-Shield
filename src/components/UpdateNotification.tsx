@@ -503,7 +503,7 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
                 </span>
               </div>
               <span className="text-[11px] font-semibold text-red-600 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
-                Required
+                {t('update_notification.required', "Required")}
               </span>
             </div>
 
@@ -521,18 +521,18 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
                 ) : isLoadingNotes ? (
                   <div className="flex items-center gap-2 py-4 justify-center text-xs text-gray-500 dark:text-gray-400">
                     <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-                    <span>Evaluating changelog for v{updateInfo?.latest_version}...</span>
+                    <span>{t('update_notification.evaluating_changelog_for_v', "Evaluating changelog for v")}{updateInfo?.latest_version}...</span>
                   </div>
                 ) : (
                   <div className="py-2 text-xs text-gray-600 dark:text-gray-300">
-                    <p className="mb-2">Version v{updateInfo?.latest_version} contains critical architecture and protocol upgrades.</p>
+                    <p className="mb-2">{t('update_notification.version_v', "Version v")}{updateInfo?.latest_version} {t('update_notification.contains_critical_architecture', "contains critical architecture and protocol upgrades.")}</p>
                     <a
                       href={`https://github.com/antigravity-hub/Antigravity-Shield/releases/tag/v${updateInfo?.latest_version}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:underline font-medium"
                     >
-                      <span>View full release notes on GitHub</span>
+                      <span>{t('update_notification.view_full_release_notes_on_git', "View full release notes on GitHub")}</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
@@ -845,12 +845,11 @@ export const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onClose 
               })}
               {updateState === 'downloading' && t('update_notification.downloading')}
               {updateState === 'ready' && t('update_notification.restart_prompt')}
-              {updateState === 'error' && `${t('update_notification.toast.failed')}`}
-              {updateState === 'manual' && (
-                navigator.language.startsWith('zh')
-                  ? (t('settings.about.new_version_available', 'A new version is available. Click below to go to the download page.'))
-                  : 'A new version is available. Please click below to download the update.'
-              )}
+              {updateState === 'error' && t('update_notification.toast.failed')}
+              {updateState === 'manual' && t('settings.about.new_version_available', {
+                version: updateInfo?.latest_version || '',
+                defaultValue: 'A new version is available. Please click below to download the update.'
+              })}
             </p>
 
             {updateState === 'available' && hasRealNotes && (

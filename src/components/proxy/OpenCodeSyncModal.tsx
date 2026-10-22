@@ -195,7 +195,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                                 <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
                                     {t('proxy.config.opencode_sync.modal_title', { defaultValue: 'Select OpenCode Models' })}
                                 </h3>
-                                <p className="text-[10px] text-gray-400 mt-0.5">~/.config/opencode/opencode.json (or .jsonc)</p>
+                                <p className="text-[10px] text-gray-400 mt-0.5">{t('proxy.opencode_sync.config_opencode_opencode_json_', "~/.config/opencode/opencode.json (or .jsonc)")}</p>
                             </div>
                         </div>
                         <button type="button" onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-base-300 transition-colors">
@@ -221,7 +221,7 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                                 type="text"
                                 value={customBaseUrl}
                                 onChange={(e) => setCustomBaseUrl(e.target.value)}
-                                placeholder="e.g. http://antigravity-manager:8045/v1"
+                                placeholder={t('proxy.opencode_sync.e_g_http_antigravity_manager_8', "e.g. http://antigravity-manager:8045/v1")}
                                 className="w-full px-3 py-1.5 text-xs bg-white dark:bg-base-100 border border-gray-200 dark:border-base-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                             />
                             {customBaseUrl !== proxyUrl && (
@@ -295,9 +295,9 @@ export function OpenCodeSyncModal({ proxyUrl, apiKey, getFormattedProxyUrl, sync
                 <div className="flex-1 min-h-0 flex flex-col">
                     <div className="px-5 py-2 flex items-center justify-between shrink-0">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                            Sync Queue Preview
+                            {t('proxy.opencode_sync.sync_queue_preview', "Sync Queue Preview")}
                         </span>
-                        <span className="text-[9px] font-mono text-gray-300">{previewModels.length} models</span>
+                        <span className="text-[9px] font-mono text-gray-300">{previewModels.length} {t('proxy.opencode_sync.models', "models")}</span>
                     </div>
                     <div className="px-4 pb-3 overflow-auto flex-1">
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

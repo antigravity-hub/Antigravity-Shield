@@ -3,6 +3,7 @@
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Activity,
     Zap,
@@ -46,6 +47,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
     appConfig: _appConfig,
     models = [],
 }) => {
+    const { t } = useTranslation();
     // Live Probe State
     const [probeModel, setProbeModel] = useState('gemini-3.8-flash');
     const [probeProtocol, setProbeProtocol] = useState<'openai' | 'claude'>('openai');
@@ -159,25 +161,25 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     <div>
                         <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                             <Server size={15} style={{ color: 'var(--color-accent)' }} />
-                            <span>Gateway Health</span>
+                            <span>{t('proxy.diagnostics.gateway_health', "Gateway Health")}</span>
                         </div>
                         <div className="text-lg font-bold text-gray-900 dark:text-gray-100 mt-1 flex items-center gap-2">
                             {healthStatus === 'ok' ? (
                                 <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    Healthy &amp; Responsive
+                                    {t('proxy.diagnostics.healthy_amp_responsive', "Healthy &amp; Responsive")}
                                 </span>
                             ) : (
                                 <span className="text-gray-400 flex items-center gap-1.5">
                                     <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
-                                    Offline
+                                    {t('proxy.diagnostics.offline', "Offline")}
                                 </span>
                             )}
                         </div>
                     </div>
                     {healthLatency !== null && (
                         <div className="text-end">
-                            <div className="text-[10px] text-gray-400 font-mono">Ping Latency</div>
+                            <div className="text-[10px] text-gray-400 font-mono">{t('proxy.diagnostics.ping_latency', "Ping Latency")}</div>
                             <div className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
                                 {healthLatency}ms
                             </div>
@@ -188,23 +190,23 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                 <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                         <Cpu size={15} style={{ color: 'var(--color-accent)' }} />
-                        <span>Stream Engine</span>
+                        <span>{t('proxy.diagnostics.stream_engine', "Stream Engine")}</span>
                     </div>
                     <div className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-1.5 flex items-center gap-2">
                         <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400">
-                            Non-Blocking Tokio
+                            {t('proxy.diagnostics.non_blocking_tokio', "Non-Blocking Tokio")}
                         </span>
-                        <span className="text-gray-400 font-normal">HTTP/2 Zero-Leak</span>
+                        <span className="text-gray-400 font-normal">{t('proxy.diagnostics.http_2_zero_leak', "HTTP/2 Zero-Leak")}</span>
                     </div>
                 </div>
 
                 <div className="bg-white dark:bg-[#0c100e] p-4 rounded-xl border border-gray-100 dark:border-slate-800/80 shadow-sm">
                     <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                         <Zap size={15} style={{ color: 'var(--color-accent)' }} />
-                        <span>Failover Threshold</span>
+                        <span>{t('proxy.diagnostics.failover_threshold', "Failover Threshold")}</span>
                     </div>
                     <div className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-1.5">
-                        Sub-50ms Fast Cooldown Rotation
+                        {t('proxy.diagnostics.sub_50ms_fast_cooldown_rotatio', "Sub-50ms Fast Cooldown Rotation")}
                     </div>
                 </div>
             </div>
@@ -215,10 +217,10 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     <div>
                         <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                             <Activity size={16} style={{ color: 'var(--color-accent)' }} />
-                            Interactive Live Diagnostic Probe
+                            {t('proxy.diagnostics.interactive_live_diagnostic_pr', "Interactive Live Diagnostic Probe")}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                            Execute an actual inference request through the local gateway to verify end-to-end token routing and latency.
+                            {t('proxy.diagnostics.execute_an_actual_inference_re', "Execute an actual inference request through the local gateway to verify end-to-end token routing and latency.")}
                         </p>
                     </div>
 
@@ -231,7 +233,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                     : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
                             }`}
                         >
-                            OpenAI Protocol
+                            {t('proxy.diagnostics.openai_protocol', "OpenAI Protocol")}
                         </button>
                         <button
                             onClick={() => setProbeProtocol('claude')}
@@ -241,7 +243,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                     : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
                             }`}
                         >
-                            Claude Protocol
+                            {t('proxy.diagnostics.claude_protocol', "Claude Protocol")}
                         </button>
                     </div>
                 </div>
@@ -250,7 +252,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
                         <label className="text-[11px] font-semibold text-gray-600 dark:text-gray-300 mb-1 block">
-                            Target Model Alias
+                            {t('proxy.diagnostics.target_model_alias', "Target Model Alias")}
                         </label>
                         <select
                             value={probeModel}
@@ -270,11 +272,11 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 ))
                             ) : (
                                 <>
-                                    <option value="gemini-4-argon">Gemini 4 Argon (gemini-4-argon)</option>
-                                    <option value="gemini-3.8-flash">Gemini 3.8 Flash (gemini-3.8-flash)</option>
-                                    <option value="gemini-3.5-flash">Gemini 3.5 Flash (gemini-3.5-flash)</option>
-                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (gemini-2.5-flash)</option>
-                                    <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (claude-sonnet-4-6)</option>
+                                    <option value="gemini-4-argon">{t('proxy.diagnostics.gemini_4_argon_gemini_4_argon', "Gemini 4 Argon (gemini-4-argon)")}</option>
+                                    <option value="gemini-3.8-flash">{t('proxy.diagnostics.gemini_3_8_flash_gemini_3_8_fl', "Gemini 3.8 Flash (gemini-3.8-flash)")}</option>
+                                    <option value="gemini-3.5-flash">{t('proxy.diagnostics.gemini_3_5_flash_gemini_3_5_fl', "Gemini 3.5 Flash (gemini-3.5-flash)")}</option>
+                                    <option value="gemini-2.5-flash">{t('proxy.diagnostics.gemini_2_5_flash_gemini_2_5_fl', "Gemini 2.5 Flash (gemini-2.5-flash)")}</option>
+                                    <option value="claude-sonnet-4-6">{t('proxy.diagnostics.claude_sonnet_4_6_claude_sonne', "Claude Sonnet 4.6 (claude-sonnet-4-6)")}</option>
                                 </>
                             )}
                         </select>
@@ -282,14 +284,14 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
 
                     <div className="md:col-span-2">
                         <label className="text-[11px] font-semibold text-gray-600 dark:text-gray-300 mb-1 block">
-                            Diagnostic Test Prompt
+                            {t('proxy.diagnostics.diagnostic_test_prompt', "Diagnostic Test Prompt")}
                         </label>
                         <div className="flex gap-2">
                             <input
                                 type="text"
                                 value={probePrompt}
                                 onChange={(e) => setProbePrompt(e.target.value)}
-                                placeholder="Enter diagnostic prompt..."
+                                placeholder={t('proxy.diagnostics.enter_diagnostic_prompt', "Enter diagnostic prompt...")}
                                 className="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
                             />
                             <button
@@ -301,12 +303,12 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 {probeState === 'probing' ? (
                                     <>
                                         <RotateCcw size={14} className="animate-spin" />
-                                        <span>Probing...</span>
+                                        <span>{t('proxy.diagnostics.probing', "Probing...")}</span>
                                     </>
                                 ) : (
                                     <>
                                         <Play size={14} />
-                                        <span>Test Connection</span>
+                                        <span>{t('proxy.diagnostics.test_connection', "Test Connection")}</span>
                                     </>
                                 )}
                             </button>
@@ -319,7 +321,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#141916] border border-gray-200 dark:border-slate-800/80 flex items-center justify-center gap-3 py-8">
                         <RotateCcw size={18} className="animate-spin" style={{ color: 'var(--color-accent)' }} />
                         <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                            Sending probe request through {probeProtocol === 'openai' ? '/v1/chat/completions' : '/v1/messages'}...
+                            {t('proxy.diagnostics.sending_probe_request_through', "Sending probe request through")} {probeProtocol === 'openai' ? t('proxy.diagnostics.v1_chat_completions', "/v1/chat/completions") : t('proxy.diagnostics.v1_messages', "/v1/messages")}...
                         </span>
                     </div>
                 )}
@@ -330,17 +332,17 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                             <div className="flex items-center gap-2">
                                 <CheckCircle2 size={16} className="text-emerald-500" />
                                 <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
-                                    Probe Succeeded &bull; 200 OK
+                                    {t('proxy.diagnostics.probe_succeeded_bull_200_ok', "Probe Succeeded &bull; 200 OK")}
                                 </span>
                             </div>
 
                             <div className="flex items-center gap-3 font-mono text-xs">
                                 <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
-                                    Latency: {probeLatency}ms
+                                    {t('proxy.diagnostics.latency', "Latency:")} {probeLatency}ms
                                 </span>
-                                <span className="text-gray-400">&bull;</span>
+                                <span className="text-gray-400">{t('proxy.diagnostics.bull', "&bull;")}</span>
                                 <span className="text-gray-500 dark:text-gray-400">
-                                    Model: {probeModel}
+                                    {t('proxy.diagnostics.model', "Model:")} {probeModel}
                                 </span>
                             </div>
                         </div>
@@ -350,14 +352,14 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                                 {probeResponse && probeResponse.trim() ? (
                                     probeResponse
                                 ) : (
-                                    <span className="text-gray-400 italic">No text content returned.</span>
+                                    <span className="text-gray-400 italic">{t('proxy.diagnostics.no_text_content_returned', "No text content returned.")}</span>
                                 )}
                             </pre>
                             {probeResponse && probeResponse.trim() && (
                                 <button
                                     onClick={handleCopyResponse}
                                     className="absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 dark:bg-[#0c100e] text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-[#141916] transition-colors"
-                                    title="Copy Response"
+                                    title={t('proxy.diagnostics.copy_response', "Copy Response")}
                                 >
                                     {copiedResponse ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
                                 </button>
@@ -372,7 +374,7 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                             <div className="flex items-center gap-2">
                                 <XCircle size={16} className="text-rose-500" />
                                 <span className="text-xs font-bold text-rose-800 dark:text-rose-300">
-                                    Probe Failed
+                                    {t('proxy.diagnostics.probe_failed', "Probe Failed")}
                                 </span>
                             </div>
                             {probeLatency !== null && (
@@ -394,11 +396,11 @@ export const ProxyDiagnosticsHUD: React.FC<ProxyDiagnosticsHUDProps> = ({
                     <div className="flex items-center gap-2">
                         <Terminal size={16} style={{ color: 'var(--color-accent)' }} />
                         <h4 className="text-xs font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider">
-                            Live Gateway Traffic &amp; Request Logs
+                            {t('proxy.diagnostics.live_gateway_traffic_amp_reque', "Live Gateway Traffic &amp; Request Logs")}
                         </h4>
                     </div>
                     <span className="text-[11px] font-mono text-gray-400">
-                        SSE Real-Time Stream
+                        {t('proxy.diagnostics.sse_real_time_stream', "SSE Real-Time Stream")}
                     </span>
                 </div>
 

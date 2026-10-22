@@ -130,7 +130,7 @@ const NetworkMonitor: React.FC = () => {
                                 <h3 className="text-xs font-bold uppercase opacity-50 mb-1">{t('monitor.network.sections.general', 'Overview')}</h3>
                                 <div className="bg-base-200 rounded p-2 text-xs space-y-1">
                                     <div className="flex justify-between">
-                                        <span className="opacity-70">ID:</span>
+                                        <span className="opacity-70">{t('common.network.id', "ID:")}</span>
                                         <span className="font-mono select-all">{selectedRequest.id}</span>
                                     </div>
                                     <div className="flex justify-between">

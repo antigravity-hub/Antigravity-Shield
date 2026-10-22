@@ -1201,7 +1201,7 @@ function Settings() {
                                             >
                                                 <option value="10">10s</option>
                                                 <option value="15">15s</option>
-                                                <option value="30">30s (Default)</option>
+                                                <option value="30">{t('settings.30s_default', "30s (Default)")}</option>
                                                 <option value="60">60s</option>
                                             </select>
                                         </div>
@@ -1846,7 +1846,7 @@ function Settings() {
                                                     <Network size={12} className="text-amber-600 dark:text-amber-400" />
                                                 </div>
                                                 <div className="leading-relaxed">
-                                                    <span className="font-bold mr-1.5 opacity-80 uppercase tracking-tighter">Tip:</span>
+                                                    <span className="font-bold mr-1.5 opacity-80 uppercase tracking-tighter">{t('settings.tip', "Tip:")}</span>
                                                     {t('proxy.config.upstream_proxy.socks5h_hint')}
                                                 </div>
                                             </div>
@@ -1866,7 +1866,7 @@ function Settings() {
                                         <div className="absolute inset-0 bg-blue-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
                                         <img
                                             src="/icon.png"
-                                            alt="Antigravity Logo"
+                                            alt={t('settings.antigravity_logo', "Antigravity Logo")}
                                             className="relative w-24 h-24 drop-shadow-2xl transform group-hover:scale-105 transition-all duration-500 rotate-3 group-hover:rotate-6 object-contain bg-transparent"
                                         />
                                     </div>
@@ -1890,7 +1890,7 @@ function Settings() {
                                         </div>
                                         <div>
                                             <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">{t('settings.about.author')}</div>
-                                            <div className="font-bold text-gray-900 dark:text-base-content">DoctorGuidance</div>
+                                            <div className="font-bold text-gray-900 dark:text-base-content">{t('settings.doctorguidance', "DoctorGuidance")}</div>
                                         </div>
                                     </div>
 
@@ -1931,10 +1931,10 @@ function Settings() {
                                 {/* Tech Stack Badges */}
                                 <div className="flex gap-2 justify-center">
                                     <div className="px-3 py-1 bg-gray-50 dark:bg-base-200 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-base-300">
-                                        Tauri v2
+                                        {t('settings.tauri_v2', "Tauri v2")}
                                     </div>
                                     <div className="px-3 py-1 bg-gray-50 dark:bg-base-200 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-base-300">
-                                        React 19
+                                        {t('settings.react_19', "React 19")}
                                     </div>
                                     <div className="px-3 py-1 bg-gray-50 dark:bg-base-200 rounded-lg text-xs font-medium text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-base-300">
                                         TypeScript
@@ -2127,7 +2127,7 @@ function Settings() {
                         </p>
                         <div className="bg-gray-50 dark:bg-base-200 rounded-lg p-3">
                             <div className="flex items-center justify-between gap-2">
-                                <code className="text-xs text-gray-700 dark:text-gray-300 break-all">brew upgrade --cask antigravity-shield</code>
+                                <code className="text-xs text-gray-700 dark:text-gray-300 break-all">{t('settings.brew_upgrade_cask_antigravity_', "brew upgrade --cask antigravity-shield")}</code>
                                 <button
                                     className="shrink-0 px-2 py-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 border border-gray-200 dark:border-base-300 rounded hover:bg-gray-100 dark:hover:bg-base-300 transition-colors"
                                     onClick={() => {
@@ -2142,7 +2142,7 @@ function Settings() {
                         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/30 rounded-lg p-3">
                             <p className="text-xs text-amber-700 dark:text-amber-400 mb-2">{t('settings.about.brew_quarantine_hint')}</p>
                             <div className="flex items-center justify-between gap-2">
-                                <code className="text-xs text-amber-800 dark:text-amber-300 break-all">sudo xattr -rd com.apple.quarantine "/Applications/Antigravity Shield.app"</code>
+                                <code className="text-xs text-amber-800 dark:text-amber-300 break-all">{t('settings.sudo_xattr_rd_com_apple_quaran', "sudo xattr -rd com.apple.quarantine \"/Applications/Antigravity Shield.app\"")}</code>
                                 <button
                                     className="shrink-0 px-2 py-1 text-xs text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200 border border-amber-200 dark:border-amber-700 rounded hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
                                     onClick={() => {

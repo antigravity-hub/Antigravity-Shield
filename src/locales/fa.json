@@ -63,7 +63,8 @@
     "switch_success": "سوییچ با موفقیت انجام شد",
     "claude_series": "سری کلود",
     "select_all": "انتخاب همه",
-    "deselect_all": "لغو انتخاب همه"
+    "deselect_all": "لغو انتخاب همه",
+    "no_account": "بدون حساب"
   },
   "nav": {
     "dashboard": "داشبورد",
@@ -270,7 +271,8 @@
       "warp_installed_toast": "نرم‌افزار Cloudflare WARP با موفقیت در پس‌زمینه نصب شد!",
       "warp_connect_1click": "اتصال یک‌کلیک به وارپ (Proxy Mode پورت ۴۰۰۰۰)",
       "warp_disconnect_btn": "قطع اتصال وارپ",
-      "warp_download_started": "دانلود خودکار Cloudflare WARP در پس‌زمینه شروع شد..."
+      "warp_download_started": "دانلود خودکار Cloudflare WARP در پس‌زمینه شروع شد...",
+      "apply_vpn_proxy_title": "اعمال پروکسی {{name}} ({{proxy}}) به Antigravity IDE"
     },
     "verification_required_title": "اکانت‌های نیازمند احراز هویت گوگل (Verification Required)",
     "account_unit": "اکانت",
@@ -612,7 +614,14 @@
       "reauth_desc": "گوگل نشست OAuth این حساب را باطل کرده است (تغییر رمز عبور، خروج از سایر دستگاه‌ها یا انقضای کلید امنیتی). با ورود مجدد و اتصال مجدد این حساب، دسترسی آنی برقرار خواهد شد.",
       "reauth_advice_copied": "دستور احراز هویت مجدد در کلیپ‌بورد کپی شد",
       "copy_reauth_advice": "کپی دستور احراز مجدد"
-    }
+    },
+    "day_progress_tooltip": "روز {{day}}: {{status}}",
+    "upcoming": "۱۰۰٪ (در راه)",
+    "passed": "۰٪ (سپری‌شده)",
+    "water_remaining": "{{pct}}٪ آب باقی‌مانده",
+    "velocity_tooltip": "نرخ مصرف: {{burn}}٪/ساعت • {{status}}",
+    "deficit_status": "⚠️ کسری: {{hours}} ساعت قبل از بازنشانی",
+    "sustainable_buffer": "✓ بافر پایدار"
   },
   "settings": {
     "save": "Save Settings",
@@ -1531,8 +1540,24 @@
     },
     "opencode_sync": {
       "toast": {
-        "sync_success": "همگام‌سازی اوپن‌کد با موفقیت انجام شد"
-      }
+        "sync_success": "همگام‌سازی اوپن‌کد با موفقیت انجام شد",
+        "sync_error": "خطا در همگام‌سازی OpenCode: {{error}}"
+      },
+      "btn_view": "مشاهده تنظیمات",
+      "btn_restore": "بازیابی"
+    },
+    "accounts": {
+      "pinned_preferred": "مسیر ترجیحی پین‌شده",
+      "pin_route": "پین کردن مسیر",
+      "suspended_count": "، {{count}} مسدودشده",
+      "active_rate_limits": "{{count}} محدودیت نرخ فعال",
+      "suspended_google_appeal": "حساب توسط گوگل مسدود شده (نیازمند ثبت اعتراض)"
+    },
+    "overview": {
+      "running_status": "در حال گوش دادن به پورت {{port}}. چرخش چندحسابه لایه‌ای و کول‌داون زیر ۵۰ میلی‌ثانیه فعال است."
+    },
+    "settings": {
+      "no_key_set": "کلیدی تنظیم نشده"
     }
   },
   "monitor": {
@@ -1734,7 +1759,8 @@
     "period_yearly": "۱ سال گذشته",
     "period_selected_day": "روز انتخابی از جدول",
     "active_period": "بازه انتخابی",
-    "active_range_summary": "مجموع آمار محاسبه‌شده برای"
+    "active_range_summary": "مجموع آمار محاسبه‌شده برای",
+    "weekly_tooltip": "هفته {{week}} ({{dateRange}})\nمجموع: {{total}} توکن\nورودی: {{input}}\nخروجی: {{output}}"
   },
   "errors": {
     "stream": {
@@ -2045,7 +2071,8 @@
     },
     "skills": {
       "create": "ساخت مهارت جدید",
-      "create_modal_title": "تعریف مهارت سفارشی ایجنت"
+      "create_modal_title": "تعریف مهارت سفارشی ایجنت",
+      "download_rank": "رتبه دانلود: #{{rank}}"
     },
     "mcp": {
       "add_server": "افزودن سرور MCP",
@@ -2071,7 +2098,23 @@
       "filter_all": "همه سرورها",
       "filter_healthy": "سالم و متصل",
       "filter_needs_config": "نیازمند راه‌اندازی",
-      "filter_disabled": "غیرفعال"
+      "filter_disabled": "غیرفعال",
+      "description_protocol": "پروتکل ارتباطی ابزارها جهت تجهیز هوش مصنوعی به قابلیت‌های فایل‌سیستم، وب، گیت‌هاب و دیتابیس",
+      "of": "از",
+      "view_tools": "مشاهده لیست ابزارها",
+      "tools_count_short": "{{count}} ابزار",
+      "copy_command": "کپی دستور",
+      "test_ping": "تست پینگ",
+      "delete_server": "حذف سرور",
+      "protocol_label": "پروتکل",
+      "status_operational": "عملیاتی و آماده به کار ({{ping}}ms)",
+      "status_needs_config_desc": "نیازمند تکمیل تنظیمات یا اجرای سرویس پیش‌نیاز",
+      "status_connection_error": "خطا در برقراری ارتباط",
+      "server_ready_desc": "سرور آماده پاسخگویی به درخواست‌های هوش مصنوعی است.",
+      "retest": "تست مجدد",
+      "command_and_args": "دستور اجرا و پارامترها",
+      "disabled": "سرور غیرفعال است (Disabled)",
+      "handshake": "این سرور به صورت پویا ابزارهای خود را هنگام فراخوانی اولیه هوش مصنوعی (Handshake) رجیستر می‌کند."
     },
     "rules": {
       "create": "افزودن قانون یا دستورالعمل"
@@ -2103,7 +2146,14 @@
     "security_audits": "ممیزی‌های امنیتی (Security Audits)",
     "official_maker": "سازنده رسمی (Official Maker)",
     "active_first": "ابتدا فعال‌ها",
-    "architecture_docs": "مستندات معماری و کارکرد"
+    "architecture_docs": "مستندات معماری و کارکرد",
+    "doc_viewer": {
+      "critical_pillar": "حیاتی (Critical)",
+      "recommended": "توصیه شده (Recommended)",
+      "specialized_utility": "تخصصی (Specialized)",
+      "documented": "مستندسازی شده",
+      "persian": "🇮🇷 فارسی"
+    }
   },
   "theme": {
     "accent_palette": "پالت رنگ اختصاصی رابط کاربری",

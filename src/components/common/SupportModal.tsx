@@ -9,6 +9,9 @@ import { useSupportModalStore } from '../../stores/useSupportModalStore';
 import { copyToClipboard } from '../../utils/clipboard';
 import { showToast } from './ToastContainer';
 
+const GRAM_TON_ADDRESS = 'UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN';
+const TRON_ADDRESS = 'TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH';
+
 export function SupportModal() {
     const { t } = useTranslation();
     const { isOpen, closeModal } = useSupportModalStore();
@@ -57,7 +60,7 @@ export function SupportModal() {
                         {/* GRAM (TON) */}
                         <div className="flex flex-col items-center p-4 rounded-2xl bg-gray-50 dark:bg-base-200 border border-gray-100 dark:border-base-300 shadow-sm transition-all hover:border-blue-300 dark:hover:border-blue-700">
                             <div className="w-full max-w-[190px] aspect-square relative bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 p-2">
-                                <img src="/images/donate/gram.png" alt="GRAM (TON)" className="w-full h-full object-contain" />
+                                <img src="/images/donate/gram.png" alt={t('settings.about.support_gram', 'GRAM (TON)')} className="w-full h-full object-contain" />
                             </div>
                             <div className="mt-3 text-center w-full">
                                 <div className="text-sm font-black text-gray-800 dark:text-gray-100 mb-1">
@@ -65,17 +68,17 @@ export function SupportModal() {
                                 </div>
                                 <div
                                     className="text-[11px] font-mono text-gray-600 dark:text-gray-300 truncate px-2 py-1.5 bg-white dark:bg-base-300 rounded-lg border border-gray-200 dark:border-base-100 mb-2 select-all cursor-pointer hover:bg-gray-100 dark:hover:bg-base-100 transition-colors"
-                                    title="UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN"
-                                    onClick={() => handleCopyAddress('UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN')}
+                                    title={GRAM_TON_ADDRESS}
+                                    onClick={() => handleCopyAddress(GRAM_TON_ADDRESS)}
                                 >
-                                    UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN
+                                    {GRAM_TON_ADDRESS}
                                 </div>
                                 <button
                                     type="button"
-                                    onClick={() => handleCopyAddress('UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN')}
+                                    onClick={() => handleCopyAddress(GRAM_TON_ADDRESS)}
                                     className="w-full py-1.5 px-3 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5"
                                 >
-                                    {copiedAddress === 'UQBvB6Vjd-IGZz7a6xc6gdOlDyEJGIfCtLxcYl4nAGboDJBN' ? (
+                                    {copiedAddress === GRAM_TON_ADDRESS ? (
                                         <>
                                             <Check className="w-3.5 h-3.5 text-emerald-500" />
                                             <span className="text-emerald-500 font-bold">{t('settings.about.support_copied', 'Copied')}</span>
@@ -93,7 +96,7 @@ export function SupportModal() {
                         {/* Tron (TRX) */}
                         <div className="flex flex-col items-center p-4 rounded-2xl bg-gray-50 dark:bg-base-200 border border-gray-100 dark:border-base-300 shadow-sm transition-all hover:border-red-300 dark:hover:border-red-700">
                             <div className="w-full max-w-[190px] aspect-square relative bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800 p-2">
-                                <img src="/images/donate/tron.png" alt="Tron" className="w-full h-full object-contain" />
+                                <img src="/images/donate/tron.png" alt={t('settings.about.support_tron', 'Tron')} className="w-full h-full object-contain" />
                             </div>
                             <div className="mt-3 text-center w-full">
                                 <div className="text-sm font-black text-gray-800 dark:text-gray-100 mb-1">
@@ -101,17 +104,17 @@ export function SupportModal() {
                                 </div>
                                 <div
                                     className="text-[11px] font-mono text-gray-600 dark:text-gray-300 truncate px-2 py-1.5 bg-white dark:bg-base-300 rounded-lg border border-gray-200 dark:border-base-100 mb-2 select-all cursor-pointer hover:bg-gray-100 dark:hover:bg-base-100 transition-colors"
-                                    title="TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH"
-                                    onClick={() => handleCopyAddress('TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH')}
+                                    title={TRON_ADDRESS}
+                                    onClick={() => handleCopyAddress(TRON_ADDRESS)}
                                 >
-                                    TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH
+                                    {TRON_ADDRESS}
                                 </div>
                                 <button
                                     type="button"
-                                    onClick={() => handleCopyAddress('TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH')}
+                                    onClick={() => handleCopyAddress(TRON_ADDRESS)}
                                     className="w-full py-1.5 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5"
                                 >
-                                    {copiedAddress === 'TFH25GHwwdd87vmi3xMmr6KXYsnV8wVMSH' ? (
+                                    {copiedAddress === TRON_ADDRESS ? (
                                         <>
                                             <Check className="w-3.5 h-3.5 text-emerald-500" />
                                             <span className="text-emerald-500 font-bold">{t('settings.about.support_copied', 'Copied')}</span>
@@ -132,7 +135,7 @@ export function SupportModal() {
                         onClick={closeModal}
                         className="w-full sm:w-auto px-12 py-3 bg-gray-100 dark:bg-base-300 text-gray-700 dark:text-gray-200 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-base-200 transition-all cursor-pointer"
                     >
-                        {t('common.close') || 'Close'}
+                        {t('common.close', 'Close')}
                     </button>
                 </div>
             </div>

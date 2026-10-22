@@ -349,7 +349,7 @@ export const ToolkitIntegrationModal: React.FC = () => {
             rel="noreferrer"
             className="hover:text-blue-500 transition-colors flex items-center gap-1 truncate max-w-[260px]"
           >
-            <span className="truncate">antigravity-hub/antigravity-toolkit-extension</span>
+            <span className="truncate">{t('nav.toolkit_modal.antigravity_hub_antigravity_to', "antigravity-hub/antigravity-toolkit-extension")}</span>
             <ExternalLink className="w-3 h-3 shrink-0" />
           </a>
           <button

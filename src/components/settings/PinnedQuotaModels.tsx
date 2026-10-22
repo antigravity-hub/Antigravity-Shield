@@ -268,7 +268,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                         )}
                     >
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                        Pro
+                        {t('settings.pinned_models.pro', "Pro")}
                     </button>
                     <button
                         type="button"
@@ -281,7 +281,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                         )}
                     >
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        Flash
+                        {t('settings.pinned_models.flash', "Flash")}
                     </button>
                     <button
                         type="button"
@@ -294,7 +294,7 @@ const PinnedQuotaModels = ({ config, onChange }: PinnedQuotaModelsProps) => {
                         )}
                     >
                         <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                        Image
+                        {t('settings.pinned_models.image', "Image")}
                     </button>
                 </div>
             </div>

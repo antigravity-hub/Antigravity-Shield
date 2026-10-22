@@ -188,7 +188,7 @@ export const McpTab: React.FC = () => {
               </h2>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              پروتکل ارتباطی ابزارها جهت تجهیز هوش مصنوعی به قابلیت‌های فایل‌سیستم، وب، گیت‌هاب و دیتابیس
+              {t('ecosystem.mcp.description_protocol', 'Standard protocol equipping AI models with filesystem, web, GitHub, and database capabilities.')}
             </p>
           </div>
 
@@ -197,11 +197,11 @@ export const McpTab: React.FC = () => {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 text-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="font-semibold text-slate-800 dark:text-slate-200">
-                {healthyCount} از {activeCount} {t('ecosystem.mcp.status_connected', 'آماده و متصل')}
+                {healthyCount} {t('ecosystem.mcp.of', 'of')} {activeCount} {t('ecosystem.mcp.status_connected', 'Ready & Connected')}
               </span>
               <span className="text-slate-400">|</span>
               <span className="text-slate-500 dark:text-slate-400 font-mono">
-                ~{avgLatency}ms avg
+                ~{avgLatency}{t('ecosystem.mcp.ms_avg', "ms avg")}
               </span>
             </div>
 
@@ -348,7 +348,7 @@ export const McpTab: React.FC = () => {
                           {server.title}
                         </h3>
                         {server.official && (
-                          <span title="Official Verified MCP Server">
+                          <span title={t('ecosystem.mcp.official_verified_mcp_server', "Official Verified MCP Server")}>
                             <ShieldCheck className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-accent)' }} />
                           </span>
                         )}
@@ -362,10 +362,10 @@ export const McpTab: React.FC = () => {
                               onClick={() => setInspectingServer(server)}
                               className="hover:underline flex items-center gap-1"
                               style={{ color: 'var(--color-accent)' }}
-                              title="مشاهده لیست ابزارها"
+                              title={t('ecosystem.mcp.view_tools', 'View tools list')}
                             >
                               <Layers className="w-3 h-3" />
-                              <span>{server.toolCount} ابزار</span>
+                              <span>{t('ecosystem.mcp.tools_count_short', { count: server.toolCount, defaultValue: '{{count}} tools' })}</span>
                             </button>
                           </>
                         )}
@@ -399,7 +399,7 @@ export const McpTab: React.FC = () => {
                   <button
                     onClick={() => handleCopyCommand(`${server.command} ${server.args.join(' ')}`)}
                     className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                    title="کپی دستور"
+                    title={t('ecosystem.mcp.copy_command', 'Copy Command')}
                   >
                     {copiedCmd === `${server.command} ${server.args.join(' ')}` ? (
                       <Check className="w-3.5 h-3.5 text-emerald-500" />
@@ -458,12 +458,12 @@ export const McpTab: React.FC = () => {
                       className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin' : ''}`}
                       style={isTesting ? { color: 'var(--color-accent)' } : undefined}
                     />
-                    <span>{isTesting ? 'در حال تست...' : 'تست پینگ'}</span>
+                    <span>{isTesting ? t('ecosystem.mcp.status_testing', 'Testing...') : t('ecosystem.mcp.test_ping', 'Test Ping')}</span>
                   </button>
 
                   <button
                     onClick={() => setInspectingServer(server)}
-                    title={t('ecosystem.mcp.diagnostics', 'عیب‌یابی و ابزارها')}
+                    title={t('ecosystem.mcp.diagnostics', 'Diagnostics & Tools')}
                     className="p-1.5 rounded-lg text-slate-400 hover:text-[var(--color-accent)] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     <Wrench className="w-4 h-4" />
@@ -480,7 +480,7 @@ export const McpTab: React.FC = () => {
                   {!server.official && (
                     <button
                       onClick={() => deleteMcpServer(server.id)}
-                      title="حذف سرور"
+                      title={t('ecosystem.mcp.delete_server', 'Delete Server')}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -491,7 +491,7 @@ export const McpTab: React.FC = () => {
                 {/* Pixel-perfect Apple Switch Toggle */}
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 select-none">
-                    {server.isEnabled ? t('ecosystem.mcp.active', 'فعال') : t('ecosystem.mcp.inactive', 'غیرفعال')}
+                    {server.isEnabled ? t('ecosystem.mcp.active', 'Active') : t('ecosystem.mcp.inactive', 'Disabled')}
                   </span>
                   <button
                     type="button"
@@ -502,7 +502,7 @@ export const McpTab: React.FC = () => {
                       server.isEnabled ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
                     }`}
                   >
-                    <span className="sr-only">Toggle {server.title}</span>
+                    <span className="sr-only">{t('ecosystem.mcp.toggle', "Toggle")} {server.title}</span>
                     <span
                       className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                         server.isEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'
@@ -587,12 +587,12 @@ export const McpTab: React.FC = () => {
                             borderColor: 'var(--color-badge-border)',
                           }}
                         >
-                          Official
+                          {t('ecosystem.mcp.official', "Official")}
                         </span>
                       )}
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {inspectingServer.category} • پروتکل {inspectingServer.transport.toUpperCase()}
+                      {inspectingServer.category} • {t('ecosystem.mcp.protocol_label', 'Protocol')} {inspectingServer.transport.toUpperCase()}
                     </p>
                   </div>
                 </div>
@@ -621,15 +621,15 @@ export const McpTab: React.FC = () => {
                     <div>
                       <div className="text-xs font-bold text-slate-900 dark:text-white">
                         {!inspectingServer.isEnabled
-                          ? 'سرور غیرفعال است (Disabled)'
+                          ? t('ecosystem.mcp.disabled', "Server is disabled")
                           : inspectingServer.status === 'connected'
-                          ? `عملیاتی و آماده به کار (${inspectingServer.lastPingMs || 12}ms)`
+                          ? t('ecosystem.mcp.status_operational', { ping: inspectingServer.lastPingMs || 12, defaultValue: 'Operational & Ready ({{ping}}ms)' })
                           : inspectingServer.status === 'needs_config'
-                          ? 'نیازمند تکمیل تنظیمات یا اجرای سرویس پیش‌نیاز'
-                          : 'خطا در برقراری ارتباط'}
+                          ? t('ecosystem.mcp.status_needs_config_desc', 'Requires configuration completion or prerequisite service')
+                          : t('ecosystem.mcp.status_connection_error', 'Connection error')}
                       </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                        {inspectingServer.requirements?.description || 'سرور آماده پاسخگویی به درخواست‌های هوش مصنوعی است.'}
+                        {inspectingServer.requirements?.description || t('ecosystem.mcp.server_ready_desc', 'Server is ready to handle AI model requests.')}
                       </div>
                     </div>
                   </div>
@@ -643,7 +643,7 @@ export const McpTab: React.FC = () => {
                     }}
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${testingMcpId === inspectingServer.id ? 'animate-spin' : ''}`} />
-                    <span>تست مجدد</span>
+                    <span>{t('ecosystem.mcp.retest', 'Retest')}</span>
                   </button>
                 </div>
 
@@ -651,9 +651,9 @@ export const McpTab: React.FC = () => {
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-1.5">
                     <Layers className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
-                    <span>{t('ecosystem.mcp.exposed_tools', 'ابزارهای ارائه‌شده برای هوش مصنوعی')}</span>
+                    <span>{t('ecosystem.mcp.exposed_tools', 'Tools exposed to AI agents')}</span>
                     <span className="text-[11px] font-normal text-slate-400">
-                      ({inspectingServer.tools?.length || inspectingServer.toolCount || 0} ابزار)
+                      ({t('ecosystem.mcp.tools_count_short', { count: inspectingServer.tools?.length || inspectingServer.toolCount || 0, defaultValue: '{{count}} tools' })})
                     </span>
                   </h4>
 
@@ -678,7 +678,7 @@ export const McpTab: React.FC = () => {
                     </div>
                   ) : (
                     <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
-                      این سرور به صورت پویا ابزارهای خود را هنگام فراخوانی اولیه هوش مصنوعی (Handshake) رجیستر می‌کند.
+                      {t('ecosystem.mcp.handshake', "This server dynamically registers its tools during initial AI model handshake.")}
                     </div>
                   )}
                 </div>
@@ -687,7 +687,7 @@ export const McpTab: React.FC = () => {
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-1.5">
                     <Terminal className="w-4 h-4 text-indigo-500" />
-                    <span>دستور اجرا و پارامترها</span>
+                    <span>{t('ecosystem.mcp.command_and_args', 'Execution Command & Arguments')}</span>
                   </h4>
                   <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 font-mono text-xs text-slate-800 dark:text-slate-200 flex items-center justify-between gap-2">
                     <span className="truncate">
@@ -713,7 +713,7 @@ export const McpTab: React.FC = () => {
                   onClick={() => setInspectingServer(null)}
                   className="px-4 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold"
                 >
-                  بستن
+                  {t('common.close', 'Close')}
                 </button>
               </div>
             </motion.div>
@@ -758,7 +758,7 @@ export const McpTab: React.FC = () => {
               <div className="p-4 space-y-3">
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Command Arguments (Space-separated)
+                    {t('ecosystem.mcp.command_arguments_space_separa', "Command Arguments (Space-separated)")}
                   </label>
                   <input
                     type="text"
@@ -775,7 +775,7 @@ export const McpTab: React.FC = () => {
 
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Environment Variables (JSON)
+                    {t('ecosystem.mcp.environment_variables_json', "Environment Variables (JSON)")}
                   </label>
                   <textarea
                     rows={4}
@@ -796,7 +796,7 @@ export const McpTab: React.FC = () => {
                   onClick={() => setConfiguringServer(null)}
                   className="px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
-                  Cancel
+                  {t('ecosystem.mcp.cancel', "Cancel")}
                 </button>
                 <button
                   onClick={async () => {
@@ -809,7 +809,7 @@ export const McpTab: React.FC = () => {
                     boxShadow: '0 2px 8px var(--color-accent-glow)',
                   }}
                 >
-                  Save Changes
+                  {t('ecosystem.mcp.save_changes', "Save Changes")}
                 </button>
               </div>
             </motion.div>
@@ -855,12 +855,12 @@ export const McpTab: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Server Identifier
+                      {t('ecosystem.mcp.server_identifier', "Server Identifier")}
                     </label>
                     <input
                       type="text"
                       required
-                      placeholder="postgres-analytics"
+                      placeholder={t('ecosystem.mcp.postgres_analytics', "postgres-analytics")}
                       value={newServer.id}
                       onChange={(e) => setNewServer({ ...newServer, id: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
@@ -869,11 +869,11 @@ export const McpTab: React.FC = () => {
 
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Display Title
+                      {t('ecosystem.mcp.display_title', "Display Title")}
                     </label>
                     <input
                       type="text"
-                      placeholder="PostgreSQL Analytics"
+                      placeholder={t('ecosystem.mcp.postgresql_analytics', "PostgreSQL Analytics")}
                       value={newServer.title}
                       onChange={(e) => setNewServer({ ...newServer, title: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
@@ -884,12 +884,12 @@ export const McpTab: React.FC = () => {
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Command
+                      {t('ecosystem.mcp.command', "Command")}
                     </label>
                     <input
                       type="text"
                       required
-                      placeholder="npx or node"
+                      placeholder={t('ecosystem.mcp.npx_or_node', "npx or node")}
                       value={newServer.command}
                       onChange={(e) => setNewServer({ ...newServer, command: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-mono"
@@ -898,11 +898,11 @@ export const McpTab: React.FC = () => {
 
                   <div className="col-span-2">
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Arguments
+                      {t('ecosystem.mcp.arguments', "Arguments")}
                     </label>
                     <input
                       type="text"
-                      placeholder="-y @modelcontextprotocol/server-..."
+                      placeholder={t('ecosystem.mcp.y_modelcontextprotocol_server', "-y @modelcontextprotocol/server-...")}
                       value={newServer.args}
                       onChange={(e) => setNewServer({ ...newServer, args: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-mono"
@@ -912,11 +912,11 @@ export const McpTab: React.FC = () => {
 
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Description
+                    {t('ecosystem.mcp.description', "Description")}
                   </label>
                   <textarea
                     rows={2}
-                    placeholder="Tools and capabilities provided by this MCP server..."
+                    placeholder={t('ecosystem.mcp.tools_and_capabilities_provide', "Tools and capabilities provided by this MCP server...")}
                     value={newServer.description}
                     onChange={(e) => setNewServer({ ...newServer, description: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
@@ -929,7 +929,7 @@ export const McpTab: React.FC = () => {
                     onClick={() => setIsAddOpen(false)}
                     className="px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
-                    Cancel
+                    {t('ecosystem.mcp.cancel_2', "Cancel")}
                   </button>
                   <button
                     type="submit"
@@ -939,7 +939,7 @@ export const McpTab: React.FC = () => {
                       boxShadow: '0 2px 8px var(--color-accent-glow)',
                     }}
                   >
-                    Register Server
+                    {t('ecosystem.mcp.register_server', "Register Server")}
                   </button>
                 </div>
               </form>

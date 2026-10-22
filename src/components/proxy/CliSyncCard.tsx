@@ -215,7 +215,7 @@ export const CliSyncCard = ({ proxyUrl, apiKey, className }: CliSyncCardProps) =
             showToast(t('proxy.opencode_sync.toast.clear_success', { defaultValue: 'OpenCode cleared successfully' }), 'success');
             await checkStatus(app);
         } catch (error: any) {
-            showToast(t('proxy.opencode_sync.toast.clear_error', { defaultValue: `Clear failed: ${error.toString()}` }), 'error');
+            showToast(t('proxy.opencode_sync.toast.clear_error', { error: error.toString(), defaultValue: `Clear failed: ${error.toString()}` }), 'error');
         } finally {
             setSyncing(prev => ({ ...prev, [app]: false }));
         }

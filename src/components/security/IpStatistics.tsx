@@ -176,7 +176,7 @@ export const IpStatistics: React.FC<Props> = ({ refreshKey }) => {
                                                 <td>
                                                     <div className="flex flex-col gap-1">
                                                         <div className="flex justify-between text-xs text-gray-500">
-                                                            <span>{formatCompactNumber(ip.request_count)} reqs</span>
+                                                            <span>{formatCompactNumber(ip.request_count)} {t('security.ip_stats.reqs', "reqs")}</span>
                                                             <span>{Math.round(percentage)}%</span>
                                                         </div>
                                                         <div className="w-full bg-gray-100 dark:bg-base-300 rounded-full h-1.5">

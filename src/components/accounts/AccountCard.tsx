@@ -271,19 +271,19 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                         color: 'var(--color-badge-text)',
                                         borderColor: 'var(--color-badge-border)',
                                     }}
-                                    title="Active in Antigravity Platform"
+                                    title={t('accounts.card.active_in_antigravity_platform', "Active in Antigravity Platform")}
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
                                         <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 5px var(--color-accent)' }}></span>
                                     </span>
-                                    Platform
+                                    {t('accounts.card.platform', "Platform")}
                                 </span>
                             )}
                             {isIdeActive && (
                                 <span 
                                     className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-sky-500/15 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 text-[9px] font-extrabold border border-sky-500/30"
-                                    title="Active in Antigravity IDE"
+                                    title={t('accounts.card.active_in_antigravity_ide', "Active in Antigravity IDE")}
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
@@ -295,7 +295,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                             {isCliActive && (
                                 <span 
                                     className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-indigo-500/15 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[9px] font-extrabold border border-indigo-500/30"
-                                    title="Active in Antigravity CLI"
+                                    title={t('accounts.card.active_in_antigravity_cli', "Active in Antigravity CLI")}
                                 >
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
@@ -373,26 +373,26 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                 const tier = account.quota.subscription_tier.toLowerCase();
                                 if (tier.includes('ultra')) {
                                     return (
-                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[9px] font-bold shadow-sm" title="Google AI Ultra Tier">
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[9px] font-bold shadow-sm" title={t('accounts.card.google_ai_ultra_tier', "Google AI Ultra Tier")}>
                                             <Gem className="w-2.5 h-2.5 fill-current" />
                                             ULTRA
                                         </span>
                                     );
                                 } else if (tier.includes('paid')) {
                                     return (
-                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[9px] font-bold shadow-sm" title="Google AI Pro (Paid Subscription)">
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[9px] font-bold shadow-sm" title={t('accounts.card.google_ai_pro_paid_subscriptio', "Google AI Pro (Paid Subscription)")}>
                                             <Diamond className="w-2.5 h-2.5 fill-current" />
-                                            PRO (PAID)
+                                            {t('accounts.card.pro_paid', "PRO (PAID)")}
                                         </span>
                                     );
                                 } else if (tier.includes('trial')) {
                                     return (
-                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[9px] font-bold shadow-sm" title="Google AI Pro (Long Promotional Trial)">
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[9px] font-bold shadow-sm" title={t('accounts.card.google_ai_pro_long_promotional', "Google AI Pro (Long Promotional Trial)")}>
                                             <Diamond className="w-2.5 h-2.5" />
                                             PRO
                                             <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-0.5 shadow-2xs">
                                                 <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
-                                                trial
+                                                {t('accounts.card.trial', "trial")}
                                             </span>
                                         </span>
                                     );
@@ -663,7 +663,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                 <span className="font-medium text-[11px] capitalize">{quotaProvider} 5H</span>
                             </div>
                             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700/50">
-                                N/A (Free)
+                                {t('accounts.card.n_a_free', "N/A (Free)")}
                             </span>
                         </div>
                     ) : (

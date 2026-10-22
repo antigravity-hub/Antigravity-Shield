@@ -282,7 +282,7 @@ export const NotificationOverlay: React.FC = () => {
                                             : 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30'
                                     }`}
                                 >
-                                    {payload.target_env === 'platform' ? 'Platform' : payload.target_env.toUpperCase()}
+                                    {payload.target_env === 'platform' ? t('notifications.overlay.platform', "Platform") : payload.target_env.toUpperCase()}
                                 </span>
                             )}
                         </div>
@@ -448,7 +448,7 @@ export const NotificationOverlay: React.FC = () => {
                         >
                             <span>{t('notifications.overlay_cancel', { defaultValue: 'Cancel' })}</span>
                             <kbd className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-900/60 text-slate-500 border border-slate-800 ms-1">
-                                Esc
+                                {t('notifications.overlay.esc', "Esc")}
                             </kbd>
                         </button>
                     </div>

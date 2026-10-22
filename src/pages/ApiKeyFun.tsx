@@ -372,7 +372,7 @@ export const ApiKeyFun: React.FC = () => {
                     {/* Branded Logo Box */}
                     <div className="w-14 h-14 md:w-16 md:h-16 bg-white dark:bg-base-100 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.15)] dark:shadow-[0_0_25px_rgba(59,130,246,0.3)] border border-blue-100 dark:border-blue-900/50 flex-shrink-0 select-none transform transition-transform duration-300 hover:scale-105">
                         <span className="text-xl md:text-2xl font-bold text-[#e05220] font-sans">
-                            {"{AK}"}
+                            {t('apiKeyFun.ak', "{AK}")}
                         </span>
                     </div>
 
@@ -579,7 +579,7 @@ export const ApiKeyFun: React.FC = () => {
                                         <button
                                             onClick={e => { e.stopPropagation(); handleCopy(item.key); }}
                                             className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-white/10 rounded-lg transition-colors"
-                                            title="Copy Key"
+                                            title={t('apiKeyFun.copy_key', "Copy Key")}
                                         >
                                             <Copy size={15} />
                                         </button>
@@ -587,7 +587,7 @@ export const ApiKeyFun: React.FC = () => {
                                             <button
                                                 onClick={e => startRename(item, e)}
                                                 className="p-1.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-white/10 rounded-lg transition-colors"
-                                                title="Edit Name"
+                                                title={t('apiKeyFun.edit_name', "Edit Name")}
                                             >
                                                 <Pencil size={14} />
                                             </button>
@@ -595,7 +595,7 @@ export const ApiKeyFun: React.FC = () => {
                                         <button
                                             onClick={e => handleDeleteKey(item.id, e)}
                                             className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
-                                            title="Delete"
+                                            title={t('apiKeyFun.delete', "Delete")}
                                         >
                                             <Trash2 size={15} />
                                         </button>
@@ -646,7 +646,7 @@ export const ApiKeyFun: React.FC = () => {
                                                 <button
                                                     className="p-2 rounded-lg text-slate-400 hover:bg-slate-200 hover:text-slate-600 dark:text-gray-500 dark:hover:bg-white/10 dark:hover:text-gray-300 transition-colors"
                                                     onClick={() => setApiKey('')}
-                                                    title="Clear"
+                                                    title={t('apiKeyFun.clear', "Clear")}
                                                 >
                                                     <X size={16} strokeWidth={2.5} />
                                                 </button>
@@ -654,7 +654,7 @@ export const ApiKeyFun: React.FC = () => {
                                             <button
                                                 className="p-2 rounded-lg text-slate-400 hover:bg-slate-200 hover:text-slate-600 dark:text-gray-500 dark:hover:bg-white/10 dark:hover:text-gray-300 transition-colors"
                                                 onClick={() => setShowApiKey(!showApiKey)}
-                                                title={showApiKey ? "Hide" : "Show"}
+                                                title={showApiKey ? t('apiKeyFun.hide', "Hide") : t('apiKeyFun.show', "Show")}
                                             >
                                                 {showApiKey ? <EyeOff size={16} strokeWidth={2.5} /> : <Eye size={16} strokeWidth={2.5} />}
                                             </button>
@@ -663,7 +663,7 @@ export const ApiKeyFun: React.FC = () => {
                                                 className="p-2 rounded-xl bg-white dark:bg-white/5 hover:bg-blue-50 dark:hover:bg-blue-500/20 text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-slate-200 dark:border-white/5 shadow-sm"
                                                 onClick={() => handleCopy(apiKey)}
                                                 disabled={!apiKey}
-                                                title="Copy"
+                                                title={t('apiKeyFun.copy', "Copy")}
                                             >
                                                 <Copy size={16} strokeWidth={2.5} />
                                             </button>

@@ -3,6 +3,7 @@
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, Zap } from 'lucide-react';
 import { OFFICIAL_AGENTS } from '../../config/skillsCatalog';
@@ -20,6 +21,7 @@ export const AgentPlatformDropdown: React.FC<AgentPlatformDropdownProps> = ({
   onChange,
   className = '',
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -58,9 +60,9 @@ export const AgentPlatformDropdown: React.FC<AgentPlatformDropdownProps> = ({
 
         <span className="truncate max-w-[150px]">
           {value === 'all'
-            ? 'All 20 AI Agents'
+            ? t('ecosystem.agent_dropdown.all_agents', 'All 20 AI Agents')
             : value === 'antigravity'
-            ? 'Google Antigravity'
+            ? t('ecosystem.agent_dropdown.google_antigravity', 'Google Antigravity')
             : selectedAgentInfo?.name || value}
         </span>
 
@@ -98,7 +100,7 @@ export const AgentPlatformDropdown: React.FC<AgentPlatformDropdownProps> = ({
                 <div className="w-5 h-5 rounded-md flex items-center justify-center bg-amber-500/15 text-amber-500 shrink-0">
                   <Zap className="w-3.5 h-3.5 fill-amber-500" />
                 </div>
-                <span>All 20 AI Agents</span>
+                <span>{t('ecosystem.agent_dropdown.all_agents', 'All 20 AI Agents')}</span>
               </div>
               {value === 'all' && <Check className="w-3.5 h-3.5 text-sky-500 shrink-0" />}
             </button>
@@ -121,9 +123,9 @@ export const AgentPlatformDropdown: React.FC<AgentPlatformDropdownProps> = ({
               <div className="flex items-center gap-2 min-w-0">
                 <AgentThumbnail agentId="antigravity" size={18} />
                 <div className="flex items-center gap-1.5 truncate">
-                  <span className="text-sky-600 dark:text-sky-400">Google Antigravity</span>
+                  <span className="text-sky-600 dark:text-sky-400">{t('ecosystem.agent_dropdown.google_antigravity', 'Google Antigravity')}</span>
                   <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-500 font-normal">
-                    100% Native
+                    {t('ecosystem.agent_dropdown.native_badge', '100% Native')}
                   </span>
                 </div>
               </div>

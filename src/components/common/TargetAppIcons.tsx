@@ -2,6 +2,7 @@
  * Antigravity Shield — AI Proxy & Fleet Management Engine
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
+import { useTranslation } from 'react-i18next';
 import platformLogo from '../../assets/icons/antigravity-agentic.png';
 import ideLogo from '../../assets/icons/antigravity-ide.png';
 import cliLogo from '../../assets/icons/antigravity-cli.png';
@@ -16,11 +17,12 @@ interface IconProps {
  * Uses official Antigravity Platform logo from assets.
  */
 export function AntigravityPlatformIcon({ className = "w-4 h-4", size }: IconProps) {
+    const { t } = useTranslation();
     const sizeStyle = size ? { width: size, height: size } : undefined;
     return (
         <img
             src={platformLogo}
-            alt="Antigravity Platform"
+            alt={t('accounts.target.platform', 'Antigravity Platform')}
             className={className}
             style={{ objectFit: 'contain', ...sizeStyle }}
             draggable={false}
@@ -35,11 +37,12 @@ export const AntigravityClassicIcon = AntigravityPlatformIcon;
  * Uses official Antigravity IDE logo from assets.
  */
 export function AntigravityIdeIcon({ className = "w-4 h-4", size }: IconProps) {
+    const { t } = useTranslation();
     const sizeStyle = size ? { width: size, height: size } : undefined;
     return (
         <img
             src={ideLogo}
-            alt="Antigravity IDE"
+            alt={t('accounts.target.ide', 'Antigravity IDE')}
             className={className}
             style={{ objectFit: 'contain', ...sizeStyle }}
             draggable={false}
@@ -52,11 +55,12 @@ export function AntigravityIdeIcon({ className = "w-4 h-4", size }: IconProps) {
  * Uses official Antigravity CLI logo from assets.
  */
 export function AntigravityCliIcon({ className = "w-4 h-4", size }: IconProps) {
+    const { t } = useTranslation();
     const sizeStyle = size ? { width: size, height: size } : undefined;
     return (
         <img
             src={cliLogo}
-            alt="Antigravity CLI"
+            alt={t('accounts.target.cli', 'Antigravity CLI')}
             className={className}
             style={{ objectFit: 'contain', ...sizeStyle }}
             draggable={false}

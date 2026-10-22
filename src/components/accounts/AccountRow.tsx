@@ -152,9 +152,9 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                         <Diamond className="w-2.5 h-2.5 fill-current" />
                                         PRO
                                         {isTrial && (
-                                            <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs" title="Trial Account">
+                                            <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs" title={t('accounts.row.trial_account', "Trial Account")}>
                                                 <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
-                                                trial
+                                                {t('accounts.row.trial', "trial")}
                                             </span>
                                         )}
                                     </span>
@@ -194,7 +194,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 />
                             )}
                             <div className="relative z-10 w-full flex items-center text-[10px] font-mono leading-none">
-                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={geminiProModel ? getModelDisplayName(geminiProModel) : "Gemini Pro"}>
+                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={geminiProModel ? getModelDisplayName(geminiProModel) : t('accounts.row.gemini_pro', "Gemini Pro")}>
                                     {(account.protected_models?.includes('gemini-3-pro-high') || account.protected_models?.includes('gemini-3.1-pro-high') || account.protected_models?.includes('gemini-pro')) && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
                                     <span className="truncate">{getModelShortDisplayName(geminiProModel, "G-Pro")}</span>
                                 </span>
@@ -230,7 +230,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 />
                             )}
                             <div className="relative z-10 w-full flex items-center text-[10px] font-mono leading-none">
-                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={geminiFlashModel ? getModelDisplayName(geminiFlashModel) : "Gemini Flash"}>
+                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={geminiFlashModel ? getModelDisplayName(geminiFlashModel) : t('accounts.row.gemini_flash', "Gemini Flash")}>
                                     {(account.protected_models?.includes('gemini-3-flash') || account.protected_models?.includes('gemini-flash')) && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
                                     <span className="truncate">{getModelShortDisplayName(geminiFlashModel, "G-Flash")}</span>
                                 </span>
@@ -304,7 +304,7 @@ function AccountRow({ account, selected, onSelect, isCurrent, isRefreshing, isSw
                                 />
                             )}
                             <div className="relative z-10 w-full flex items-center text-[10px] font-mono leading-none">
-                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={claudeModel ? getModelDisplayName(claudeModel) : "Claude Series"}>
+                                <span className="w-[64px] text-gray-500 dark:text-gray-400 font-bold pr-1 flex items-center gap-1" title={claudeModel ? getModelDisplayName(claudeModel) : t('accounts.row.claude_series', "Claude Series")}>
                                     {account.protected_models?.includes('claude') && <Lock className="w-2.5 h-2.5 text-rose-500 shrink-0 z-10" />}
                                     <span className="truncate">{getModelShortDisplayName(claudeModel, "Claude")}</span>
                                 </span>

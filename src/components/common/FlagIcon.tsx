@@ -3,6 +3,7 @@
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface FlagIconProps {
   code: string;
@@ -15,6 +16,7 @@ interface FlagIconProps {
  * Self-contained, zero-dependency, works seamlessly across Web and Windows WebView2.
  */
 export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5', style }) => {
+  const { t } = useTranslation();
   const norm = (code || '').toLowerCase().replace('_', '-');
 
   const baseClasses = `inline-block shrink-0 overflow-hidden rounded-[2px] shadow-xs ring-1 ring-black/15 dark:ring-white/20 select-none align-middle ${className}`;
@@ -39,7 +41,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇮🇷 Iran / Persian
     case 'fa':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Iran">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.fa', 'Flag of Iran')}>
           <g fillRule="evenodd">
             <path fill="#239f40" d="M0 0h640v160H0z" />
             <path fill="#ffffff" d="M0 160h640v160H0z" />
@@ -64,7 +66,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇨🇳 China (Simplified Chinese)
     case 'zh':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of China">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.zh', 'Flag of China')}>
           <path fill="#de2910" d="M0 0h640v480H0z" />
           <g fill="#ffde00">
             {/* Large Star */}
@@ -81,7 +83,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇹🇼 Taiwan (Traditional Chinese)
     case 'zh-tw':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Taiwan">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.zh_tw', 'Flag of Taiwan')}>
           <path fill="#fe0000" d="M0 0h640v480H0z" />
           <path fill="#000095" d="M0 0h320v240H0z" />
           {/* 12-ray white sun */}
@@ -102,7 +104,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇺🇸 English (US Flag)
     case 'en':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of United States">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.en', 'Flag of United States')}>
           <g fillRule="evenodd">
             {/* 13 Stripes */}
             <path fill="#b22234" d="M0 0h640v480H0z" />
@@ -131,7 +133,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇯🇵 Japan
     case 'ja':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Japan">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.ja', 'Flag of Japan')}>
           <path fill="#ffffff" d="M0 0h640v480H0z" />
           <circle cx="320" cy="240" r="135" fill="#bc002d" />
         </svg>
@@ -140,7 +142,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇹🇷 Turkey
     case 'tr':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Turkey">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.tr', 'Flag of Turkey')}>
           <path fill="#e30a17" d="M0 0h640v480H0z" />
           {/* Crescent */}
           <circle cx="260" cy="240" r="120" fill="#ffffff" />
@@ -155,7 +157,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇻🇳 Vietnam
     case 'vi':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Vietnam">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.vi', 'Flag of Vietnam')}>
           <path fill="#da251d" d="M0 0h640v480H0z" />
           <polygon
             fill="#ffff00"
@@ -167,7 +169,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇧🇷 Brazil / Portuguese
     case 'pt':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Brazil">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.pt', 'Flag of Brazil')}>
           <path fill="#009c3b" d="M0 0h640v480H0z" />
           <polygon points="320,45 580,240 320,435 60,240" fill="#ffdf00" />
           <circle cx="320" cy="240" r="105" fill="#002776" />
@@ -182,7 +184,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇰🇷 South Korea
     case 'ko':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of South Korea">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.ko', 'Flag of South Korea')}>
           <path fill="#ffffff" d="M0 0h640v480H0z" />
           {/* Taegeuk */}
           <g transform="translate(320 240) rotate(-34)">
@@ -228,7 +230,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇷🇺 Russia
     case 'ru':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Russia">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.ru', 'Flag of Russia')}>
           <path fill="#ffffff" d="M0 0h640v160H0z" />
           <path fill="#0039a6" d="M0 160h640v160H0z" />
           <path fill="#d52b1e" d="M0 320h640v160H0z" />
@@ -238,7 +240,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇸🇦 Saudi Arabia / Arabic
     case 'ar':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Saudi Arabia">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.ar', 'Flag of Saudi Arabia')}>
           <path fill="#006c35" d="M0 0h640v480H0z" />
           {/* Stylized Arabic script & sword */}
           <g fill="#ffffff" transform="translate(320, 220)">
@@ -260,7 +262,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇪🇸 Spain
     case 'es':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Spain">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.es', 'Flag of Spain')}>
           <path fill="#aa151b" d="M0 0h640v120H0zM0 360h640v120H0z" />
           <path fill="#f1bf00" d="M0 120h640v240H0z" />
           {/* Simplified Coat of Arms */}
@@ -276,7 +278,7 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
     // 🇲🇾 Malaysia
     case 'my':
       return (
-        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label="Flag of Malaysia">
+        <svg viewBox="0 0 640 480" className={baseClasses} style={style} aria-label={t('common.flags.my', 'Flag of Malaysia')}>
           {/* 14 Stripes */}
           <g fill="#cc0000">
             <rect width="640" height="480" fill="#ffffff" />

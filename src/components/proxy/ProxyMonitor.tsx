@@ -522,23 +522,23 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
                             onClick={() => setTrafficType('all')}
                             className={`px-2 py-1 rounded-md transition-all ${trafficType === 'all' ? 'bg-white dark:bg-base-100 text-gray-900 dark:text-gray-100 shadow-xs' : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-200'}`}
                         >
-                            All
+                            {t('proxy.monitor.all', "All")}
                         </button>
                         <button
                             type="button"
                             onClick={() => setTrafficType('inference')}
                             className={`px-2 py-1 rounded-md transition-all ${trafficType === 'inference' ? 'bg-white dark:bg-base-100 text-emerald-600 dark:text-emerald-400 font-bold shadow-xs' : 'text-gray-500 hover:text-emerald-600'}`}
-                            title="Filter for AI model completion & chat calls only"
+                            title={t('proxy.monitor.filter_for_ai_model_completion', "Filter for AI model completion & chat calls only")}
                         >
-                            AI Models
+                            {t('proxy.monitor.ai_models', "AI Models")}
                         </button>
                         <button
                             type="button"
                             onClick={() => setTrafficType('system')}
                             className={`px-2 py-1 rounded-md transition-all ${trafficType === 'system' ? 'bg-white dark:bg-base-100 text-amber-600 dark:text-amber-400 font-bold shadow-xs' : 'text-gray-500 hover:text-amber-600'}`}
-                            title="Filter for local gateway management & refresh calls"
+                            title={t('proxy.monitor.filter_for_local_gateway_manag', "Filter for local gateway management & refresh calls")}
                         >
-                            System Calls
+                            {t('proxy.monitor.system_calls', "System Calls")}
                         </button>
                     </div>
 
@@ -655,8 +655,8 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
                                     <div className="space-y-1.5">
                                         <span className="block text-gray-500 dark:text-gray-400 uppercase font-black text-[10px] tracking-widest">{t('monitor.details.tokens')}</span>
                                         <div className="font-mono text-[11px] flex gap-2">
-                                            <span className="text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/40 px-2.5 py-1 rounded-md border border-blue-200 dark:border-blue-800/50 font-bold">In: {formatCompactNumber(selectedLog.input_tokens ?? 0)}</span>
-                                            <span className="text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-2.5 py-1 rounded-md border border-green-200 dark:border-green-800/50 font-bold">Out: {formatCompactNumber(selectedLog.output_tokens ?? 0)}</span>
+                                            <span className="text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/40 px-2.5 py-1 rounded-md border border-blue-200 dark:border-blue-800/50 font-bold">{t('proxy.monitor.in', "In:")} {formatCompactNumber(selectedLog.input_tokens ?? 0)}</span>
+                                            <span className="text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/40 px-2.5 py-1 rounded-md border border-green-200 dark:border-green-800/50 font-bold">{t('proxy.monitor.out', "Out:")} {formatCompactNumber(selectedLog.output_tokens ?? 0)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -696,10 +696,10 @@ export const ProxyMonitor: React.FC<ProxyMonitorProps> = ({ className }) => {
                                 {selectedLog.status === 404 && (
                                     <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/25 text-xs text-amber-800 dark:text-amber-300">
                                         <div className="font-bold mb-1 flex items-center gap-1.5">
-                                            <span>⚠️ Route Not Matched (Local Gateway 404)</span>
+                                            <span>{t('proxy.monitor.route_not_matched_local_gatewa', "⚠️ Route Not Matched (Local Gateway 404)")}</span>
                                         </div>
                                         <div className="leading-relaxed text-[11px] opacity-90">
-                                            This request targeted an unmapped local path (<code className="font-mono bg-amber-500/15 px-1 py-0.5 rounded">{selectedLog.url}</code>) and was rejected by the Gateway router in 0ms. It is <strong>not</strong> an AI model failure and is <strong>not</strong> associated with Google account quota limits or bans.
+                                            {t('proxy.monitor.this_request_targeted_an_unmap', "This request targeted an unmapped local path (")}<code className="font-mono bg-amber-500/15 px-1 py-0.5 rounded">{selectedLog.url}</code>{t('proxy.monitor.and_was_rejected_by_the_gatewa', ") and was rejected by the Gateway router in 0ms. It is")} <strong>{t('proxy.monitor.not', "not")}</strong> {t('proxy.monitor.an_ai_model_failure_and_is', "an AI model failure and is")} <strong>{t('proxy.monitor.not_2', "not")}</strong> {t('proxy.monitor.associated_with_google_account', "associated with Google account quota limits or bans.")}
                                         </div>
                                     </div>
                                 )}

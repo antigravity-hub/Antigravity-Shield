@@ -249,7 +249,7 @@ const UserToken: React.FC = () => {
                     <button
                         onClick={() => loadData()}
                         className={`p-2 hover:bg-gray-100 dark:hover:bg-base-200 rounded-lg transition-colors ${loading ? 'text-blue-500' : 'text-gray-500'}`}
-                        title={t('common.refresh') || 'Refresh'}
+                        title={t('common.refresh', 'Refresh')}
                     >
                         <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
                     </button>
@@ -386,15 +386,15 @@ const UserToken: React.FC = () => {
                                         </div>
                                     </td>
                                     <td>
-                                        <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">{token.total_requests} <span className="text-[10px] font-normal text-gray-400">reqs</span></div>
+                                        <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">{token.total_requests} <span className="text-[10px] font-normal text-gray-400">{t('user_token.reqs', "reqs")}</span></div>
                                         <div className="text-[10px] text-gray-400 mt-0.5">
-                                            {(token.total_tokens_used / 1000).toFixed(1)}k tokens
+                                            {(token.total_tokens_used / 1000).toFixed(1)}{t('user_token.k_tokens', "k tokens")}
                                         </div>
                                     </td>
                                     <td>
                                         {token.max_ips === 0
                                             ? <span className="px-2 py-0.5 bg-gray-100 dark:bg-base-200 text-gray-500 text-[10px] rounded-full">{t('user_token.unlimited', { defaultValue: 'Unlimited' })}</span>
-                                            : <span className="px-2 py-0.5 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-[10px] font-medium rounded-full border border-orange-100 dark:border-orange-900/30">{token.max_ips} IPs</span>
+                                            : <span className="px-2 py-0.5 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-[10px] font-medium rounded-full border border-orange-100 dark:border-orange-900/30">{token.max_ips} {t('user_token.ips', "IPs")}</span>
                                         }
                                         {token.curfew_start && token.curfew_end && (
                                             <div className="text-[10px] text-gray-400 mt-1.5 flex items-center gap-1 bg-gray-50 dark:bg-base-200 w-fit px-1.5 py-0.5 rounded">
@@ -557,7 +557,7 @@ const UserToken: React.FC = () => {
                                     value={newCurfewStart}
                                     onChange={e => setNewCurfewStart(e.target.value)}
                                 />
-                                <span className="text-gray-400">to</span>
+                                <span className="text-gray-400">{t('user_token.to', "to")}</span>
                                 <input
                                     type="time"
                                     className="input input-bordered w-full"
@@ -647,7 +647,7 @@ const UserToken: React.FC = () => {
                                     value={editCurfewStart}
                                     onChange={e => setEditCurfewStart(e.target.value)}
                                 />
-                                <span className="text-gray-400">to</span>
+                                <span className="text-gray-400">{t('user_token.to_2', "to")}</span>
                                 <input
                                     type="time"
                                     className="input input-bordered w-full"

@@ -3,6 +3,7 @@
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
 import { Component, ErrorInfo, ReactNode } from 'react';
+import i18n from '../../i18n';
 
 interface Props {
   children: ReactNode;
@@ -34,7 +35,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div style={{ padding: '24px', color: '#f87171', backgroundColor: '#0f172a', minHeight: '100vh', fontFamily: 'monospace' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>Application UI Error</h2>
+          <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>{i18n.t('common.error_boundary.title', 'Application UI Error')}</h2>
           <pre style={{ whiteSpace: 'pre-wrap', backgroundColor: '#1e293b', padding: '12px', borderRadius: '8px', border: '1px solid #ef4444' }}>
             {this.state.error?.toString()}
           </pre>
@@ -47,7 +48,7 @@ export class ErrorBoundary extends Component<Props, State> {
             onClick={() => window.location.reload()}
             style={{ marginTop: '16px', padding: '8px 16px', backgroundColor: '#129a5f', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
           >
-            Reload Application
+            {i18n.t('common.error_boundary.reload', 'Reload Application')}
           </button>
         </div>
       );

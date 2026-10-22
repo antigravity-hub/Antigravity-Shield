@@ -1,0 +1,116 @@
+{
+  "totalCalls": 2466,
+  "resolvedStrings": 2450,
+  "missingKeys": [],
+  "brokenObjects": [],
+  "emptyStrings": [],
+  "nonStringValues": [],
+  "dynamicCalls": [
+    {
+      "file": "src\\components\\accounts\\AccountDetailsDialog.tsx",
+      "line": 221,
+      "snippet": "t(config.i18nKey)"
+    },
+    {
+      "file": "src\\components\\accounts\\AccountTable.tsx",
+      "line": 390,
+      "snippet": "t(config.i18nKey)"
+    },
+    {
+      "file": "src\\components\\accounts\\AccountTable.tsx",
+      "line": 407,
+      "snippet": "t(resolvedConfig.i18nKey)"
+    },
+    {
+      "file": "src\\components\\accounts\\AccountTable.tsx",
+      "line": 408,
+      "snippet": "t(selectorConfig.i18nKey)"
+    },
+    {
+      "file": "src\\components\\common\\AccentColorPicker.tsx",
+      "line": 109,
+      "snippet": "t(accent.nameKey)"
+    },
+    {
+      "file": "src\\components\\common\\AccentColorPicker.tsx",
+      "line": 112,
+      "snippet": "t(accent.descKey)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 290,
+      "snippet": "t(`dashboard.velocity_gauge.zone_${activeZone.id}`, activeZone.statusLabel)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 291,
+      "snippet": "t(`dashboard.velocity_gauge.arc_${activeZone.id}`, activeZone.label)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 333,
+      "snippet": "t(`dashboard.velocity_gauge.arc_${zones[0].id || 'critical'}`, zones[0].label)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 334,
+      "snippet": "t(`dashboard.velocity_gauge.arc_${zones[1].id || 'high'}`, zones[1].label)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 335,
+      "snippet": "t(`dashboard.velocity_gauge.arc_${zones[2].id || 'balanced'}`, zones[2].label)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 336,
+      "snippet": "t(`dashboard.velocity_gauge.arc_${zones[3].id || 'safe'}`, zones[3].label)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 337,
+      "snippet": "t(`dashboard.velocity_gauge.arc_${zones[4].id || 'surplus'}`, zones[4].label)"
+    },
+    {
+      "file": "src\\components\\common\\SpeedometerGauge.tsx",
+      "line": 350,
+      "snippet": "t(`dashboard.velocity_gauge.arc_${z.id}`, z.label)"
+    },
+    {
+      "file": "src\\components\\dashboard\\FleetVelocityGauge.tsx",
+      "line": 208,
+      "snippet": "t(`dashboard.velocity_gauge.tag_${metrics.zoneTag.toLowerCase().replace(/\\s+/g, '_')}`, metrics.zoneTag)"
+    },
+    {
+      "file": "src\\components\\dashboard\\FleetVelocityGauge.tsx",
+      "line": 266,
+      "snippet": "t(`dashboard.velocity_gauge.zone_${metrics.zone}`, metrics.zoneLabel)"
+    },
+    {
+      "file": "src\\components\\settings\\ImageThinkingMode.tsx",
+      "line": 51,
+      "snippet": "t(`settings.image_thinking_mode.options.${option.label}`, {\r\n                                defaultValue: option.value === 'enabled' ? \"Enabled\" : \"Disabled\"\r\n                            })"
+    },
+    {
+      "file": "src\\components\\settings\\ThinkingBudget.tsx",
+      "line": 85,
+      "snippet": "t(`settings.thinking_budget.mode.${key}`)"
+    },
+    {
+      "file": "src\\components\\settings\\ThinkingBudget.tsx",
+      "line": 125,
+      "snippet": "t(`settings.thinking_budget.effort.${effort}`)"
+    },
+    {
+      "file": "src\\pages\\Settings.tsx",
+      "line": 541,
+      "snippet": "t(`settings.about.brew_error_${errKey}`, t('settings.about.brew_upgrade_failed'))"
+    },
+    {
+      "file": "src\\pages\\Settings.tsx",
+      "line": 727,
+      "snippet": "t(accent.nameKey)"
+    }
+  ],
+  "interpolationMismatches": []
+}

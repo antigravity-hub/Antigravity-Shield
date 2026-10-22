@@ -146,10 +146,10 @@ export default function DeviceFingerprintDialog({ account, onClose }: DeviceFing
         if (!profile) return <span className="text-xs text-gray-400">{t('common.empty', 'Empty')}</span>;
         return (
             <div className="grid grid-cols-1 gap-2 text-xs font-mono text-gray-600 dark:text-gray-300">
-                <div><span className="font-semibold">machineId:</span> {profile.machine_id}</div>
-                <div><span className="font-semibold">macMachineId:</span> {profile.mac_machine_id}</div>
-                <div><span className="font-semibold">devDeviceId:</span> {profile.dev_device_id}</div>
-                <div><span className="font-semibold">sqmId:</span> {profile.sqm_id}</div>
+                <div><span className="font-semibold">{t('accounts.fingerprint.machineid', "machineId:")}</span> {profile.machine_id}</div>
+                <div><span className="font-semibold">{t('accounts.fingerprint.macmachineid', "macMachineId:")}</span> {profile.mac_machine_id}</div>
+                <div><span className="font-semibold">{t('accounts.fingerprint.devdeviceid', "devDeviceId:")}</span> {profile.dev_device_id}</div>
+                <div><span className="font-semibold">{t('accounts.fingerprint.sqmid', "sqmId:")}</span> {profile.sqm_id}</div>
             </div>
         );
     };
@@ -282,10 +282,10 @@ function HistoryRow({ id, label, createdAt, profile, onRestore, onDelete, isCurr
                 <div className="font-semibold">{label}{isCurrent && <span className="ml-2 text-[10px] text-blue-500">{t('accounts.device_fingerprint_dialog.current')}</span>}</div>
                 {createdAt > 0 && <div className="text-[10px] text-gray-400">{new Date(createdAt * 1000).toLocaleString()}</div>}
                 <div className="mt-1 text-[10px] font-mono text-gray-500">
-                    <div>machineId: {profile.machine_id}</div>
-                    <div>macMachineId: {profile.mac_machine_id}</div>
-                    <div>devDeviceId: {profile.dev_device_id}</div>
-                    <div>sqmId: {profile.sqm_id}</div>
+                    <div>{t('accounts.fingerprint.machineid_2', "machineId:")} {profile.machine_id}</div>
+                    <div>{t('accounts.fingerprint.macmachineid_2', "macMachineId:")} {profile.mac_machine_id}</div>
+                    <div>{t('accounts.fingerprint.devdeviceid_2', "devDeviceId:")} {profile.dev_device_id}</div>
+                    <div>{t('accounts.fingerprint.sqmid_2', "sqmId:")} {profile.sqm_id}</div>
                 </div>
             </div>
             <div className="flex gap-2 ml-2">
@@ -320,10 +320,10 @@ function ConfirmDialog({ profile, type, onConfirm, onCancel, loading }: { profil
                 <h3 className="font-bold text-lg text-gray-900 dark:text-base-content mb-1">{title}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{desc}</p>
                 <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-base-200/60 border border-gray-100 dark:border-base-200 rounded-lg p-3 text-left space-y-1">
-                    <div><span className="font-semibold">machineId:</span> {profile.machine_id}</div>
-                    <div><span className="font-semibold">macMachineId:</span> {profile.mac_machine_id}</div>
-                    <div><span className="font-semibold">devDeviceId:</span> {profile.dev_device_id}</div>
-                    <div><span className="font-semibold">sqmId:</span> {profile.sqm_id}</div>
+                    <div><span className="font-semibold">{t('accounts.fingerprint.machineid_3', "machineId:")}</span> {profile.machine_id}</div>
+                    <div><span className="font-semibold">{t('accounts.fingerprint.macmachineid_3', "macMachineId:")}</span> {profile.mac_machine_id}</div>
+                    <div><span className="font-semibold">{t('accounts.fingerprint.devdeviceid_3', "devDeviceId:")}</span> {profile.dev_device_id}</div>
+                    <div><span className="font-semibold">{t('accounts.fingerprint.sqmid_3', "sqmId:")}</span> {profile.sqm_id}</div>
                 </div>
                 <div className="mt-5 flex gap-3 justify-center">
                     <button className="btn btn-sm min-w-[100px]" onClick={onCancel} disabled={!!loading}>{t('accounts.device_fingerprint_dialog.cancel')}</button>

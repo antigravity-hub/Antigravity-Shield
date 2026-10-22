@@ -178,7 +178,7 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
             {/* Target Status Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800">
-                    <span className="text-slate-600 dark:text-slate-400">Antigravity 2.0 Desktop:</span>
+                    <span className="text-slate-600 dark:text-slate-400">{t('rtl_card.antigravity_2_0_desktop', "Antigravity 2.0 Desktop:")}</span>
                     {status?.desktop_asar_path ? (
                         <span className={`font-semibold flex items-center gap-1 ${status.desktop_is_patched ? 'text-emerald-500' : 'text-amber-500'}`}>
                             {status.desktop_is_patched ? t('rtl_card.patched', '✔ Active (Patched)') : t('rtl_card.ready', 'Ready to Apply')}
@@ -189,7 +189,7 @@ export default function AntigravityRtlCard({ compact = false }: AntigravityRtlCa
                 </div>
 
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800">
-                    <span className="text-slate-600 dark:text-slate-400">Antigravity IDE (Workbench):</span>
+                    <span className="text-slate-600 dark:text-slate-400">{t('rtl_card.antigravity_ide_workbench', "Antigravity IDE (Workbench):")}</span>
                     {status?.ide_css_path ? (
                         <span className={`font-semibold flex items-center gap-1 ${status.ide_is_patched ? 'text-emerald-500' : 'text-amber-500'}`}>
                             {status.ide_is_patched ? t('rtl_card.patched', '✔ Active (Patched)') : t('rtl_card.ready', 'Ready to Apply')}

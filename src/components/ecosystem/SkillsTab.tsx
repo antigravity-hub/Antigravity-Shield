@@ -634,7 +634,7 @@ export const SkillsTab: React.FC = () => {
                 ? { backgroundColor: 'var(--color-badge-bg)', borderColor: 'var(--color-badge-border)' }
                 : undefined
             }
-            title="Sort skills to show active/enabled ones first"
+            title={t('ecosystem.skills.sort_skills_to_show_active_ena', "Sort skills to show active/enabled ones first")}
           >
             <div
               className="w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-colors"
@@ -710,7 +710,7 @@ export const SkillsTab: React.FC = () => {
                   }
                 : undefined
             }
-            title="Show only skills from verified official publishers with clean security audits"
+            title={t('ecosystem.skills.show_only_skills_from_verified', "Show only skills from verified official publishers with clean security audits")}
           >
             <BadgeCheck
               className={`w-3.5 h-3.5 ${verifiedOnly ? 'animate-pulse' : 'text-slate-400'}`}
@@ -726,7 +726,7 @@ export const SkillsTab: React.FC = () => {
                 className="text-[10px] px-1 py-0.2 rounded-full font-mono"
                 style={{ backgroundColor: 'var(--color-badge-bg)', color: 'var(--color-accent)' }}
               >
-                Active
+                {t('ecosystem.skills.active', "Active")}
               </span>
             )}
           </button>
@@ -744,7 +744,7 @@ export const SkillsTab: React.FC = () => {
             title={
               lastTelemetrySyncAt
                 ? `Last synced: ${new Date(lastTelemetrySyncAt).toLocaleTimeString()}`
-                : 'Sync latest install counts and leaderboard from Hub CDN'
+                : t('ecosystem.skills.sync_latest_install_counts_and', "Sync latest install counts and leaderboard from Hub CDN")
             }
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncingTelemetry ? 'animate-spin text-purple-500' : 'text-slate-400'}`} />
@@ -800,7 +800,7 @@ export const SkillsTab: React.FC = () => {
                   <div className="relative pointer-events-auto">
                     {/* Ribbon Main Body */}
                     <div
-                      title={`Download Rank: #${rank}`}
+                      title={t('ecosystem.skills.download_rank', { rank, defaultValue: 'Download Rank: #{{rank}}' })}
                       className={`relative z-10 flex items-center gap-1.5 px-3.5 py-1 text-xs font-mono font-black tracking-tight rounded-l-xl transition-all duration-200 group-hover:scale-105 group-hover:-translate-x-0.5 ${getRankBadgeClasses(rank)}`}
                     >
                       {rank <= 10 && (
@@ -862,7 +862,7 @@ export const SkillsTab: React.FC = () => {
                     {skill.installs && (
                       <span className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md text-slate-700 dark:text-slate-300">
                         {isVerified && (
-                          <span title="Official Technology Maker (skills.sh verified)" className="flex items-center" style={{ color: 'var(--color-accent)' }}>
+                          <span title={t('ecosystem.skills.official_technology_maker_skil', "Official Technology Maker (skills.sh verified)")} className="flex items-center" style={{ color: 'var(--color-accent)' }}>
                             <BadgeCheck className="w-3.5 h-3.5" style={{ fill: 'var(--color-badge-bg)', color: 'var(--color-accent)' }} />
                           </span>
                         )}
@@ -885,7 +885,7 @@ export const SkillsTab: React.FC = () => {
                           borderColor: 'var(--color-badge-border)',
                         }}
                       >
-                        Official
+                        {t('ecosystem.skills.official', "Official")}
                       </span>
                     )}
                     {isSkillUpstreamLive(skill) && (
@@ -896,10 +896,10 @@ export const SkillsTab: React.FC = () => {
                           color: 'var(--color-accent)',
                           borderColor: 'var(--color-badge-border)',
                         }}
-                        title="Live verified upstream Git repository"
+                        title={t('ecosystem.skills.live_verified_upstream_git_rep', "Live verified upstream Git repository")}
                       >
                         <Globe className="w-2.5 h-2.5" />
-                        Live
+                        {t('ecosystem.skills.live', "Live")}
                       </span>
                     )}
                   </div>
@@ -979,7 +979,7 @@ export const SkillsTab: React.FC = () => {
                           skill.isEnabled ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
                         }`}
                       >
-                        <span className="sr-only">Toggle {skill.title}</span>
+                        <span className="sr-only">{t('ecosystem.skills.toggle', "Toggle")} {skill.title}</span>
                         <span
                           className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                             skill.isEnabled ? 'ltr:translate-x-5 rtl:-translate-x-5' : 'translate-x-0'
@@ -1041,15 +1041,15 @@ export const SkillsTab: React.FC = () => {
           <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 shadow-xs text-xs font-medium text-slate-600 dark:text-slate-300 backdrop-blur-md">
             <RefreshCw className="w-3.5 h-3.5 animate-spin" style={{ color: 'var(--color-accent)' }} />
             <span>
-              {t('ecosystem.loading_more', 'Loading more skills...')} ({visibleSkills.length} of {sortedSkills.length})
+              {t('ecosystem.loading_more', 'Loading more skills...')} ({visibleSkills.length} {t('ecosystem.skills.of', "of")} {sortedSkills.length})
             </span>
           </div>
-          <p className="text-[11px] text-slate-400">Scroll down to load more</p>
+          <p className="text-[11px] text-slate-400">{t('ecosystem.skills.scroll_down_to_load_more', "Scroll down to load more")}</p>
         </div>
       ) : sortedSkills.length > 0 ? (
         <div className="py-8 flex items-center justify-center">
           <span className="text-xs font-mono font-medium text-slate-400 dark:text-slate-500 px-3.5 py-1 rounded-full bg-slate-100/70 dark:bg-slate-900/70 border border-slate-200/50 dark:border-slate-800/50">
-            ✓ All {sortedSkills.length} skills rendered
+            {t('ecosystem.skills.all', "✓ All")} {sortedSkills.length} {t('ecosystem.skills.skills_rendered', "skills rendered")}
           </span>
         </div>
       ) : null}
@@ -1061,7 +1061,7 @@ export const SkillsTab: React.FC = () => {
             {t('ecosystem.no_skills', 'No skills match your search')}
           </h4>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Try adjusting your query or category filters.
+            {t('ecosystem.skills.try_adjusting_your_query_or_ca', "Try adjusting your query or category filters.")}
           </p>
         </div>
       )}
@@ -1109,7 +1109,7 @@ export const SkillsTab: React.FC = () => {
                         if (modalRank === undefined) return null;
                         return (
                           <span
-                            title={`Download Rank: #${modalRank}`}
+                            title={t('ecosystem.skills.download_rank', { rank: modalRank, defaultValue: 'Download Rank: #{{rank}}' })}
                             className={`inline-flex items-center gap-1 h-5 px-2 rounded-full text-[10px] font-mono font-bold tracking-tight border shadow-xs whitespace-nowrap shrink-0 ${getRankBadgeClasses(modalRank)}`}
                           >
                             {modalRank <= 10 && <Flame className="w-2.5 h-2.5 fill-current shrink-0 animate-pulse" />}
@@ -1165,7 +1165,7 @@ export const SkillsTab: React.FC = () => {
                   <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
                     <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
                       <Download className="w-3 h-3" style={{ color: 'var(--color-accent)' }} />
-                      Installs
+                      {t('ecosystem.skills.installs', "Installs")}
                     </span>
                     <span className="text-lg font-bold font-mono text-slate-900 dark:text-white">
                       {inspectingSkill.installs || '10K+'}
@@ -1175,7 +1175,7 @@ export const SkillsTab: React.FC = () => {
                   <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
                     <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
                       <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                      GitHub Stars
+                      {t('ecosystem.skills.github_stars', "GitHub Stars")}
                     </span>
                     <span className="text-lg font-bold font-mono text-slate-900 dark:text-white">
                       {inspectingSkill.stars || 'N/A'}
@@ -1185,7 +1185,7 @@ export const SkillsTab: React.FC = () => {
                   <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
                     <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
                       <GitBranch className="w-3 h-3 text-indigo-500" />
-                      Repository
+                      {t('ecosystem.skills.repository', "Repository")}
                     </span>
                     <span className="text-xs font-mono font-semibold text-slate-900 dark:text-white truncate">
                       {inspectingSkill.repo || (inspectingSkill.owner ? `${inspectingSkill.owner}/${inspectingSkill.repo}` : inspectingSkill.id)}
@@ -1195,10 +1195,10 @@ export const SkillsTab: React.FC = () => {
                   <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col">
                     <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-1">
                       <Calendar className="w-3 h-3 text-emerald-500" />
-                      First Seen
+                      {t('ecosystem.skills.first_seen', "First Seen")}
                     </span>
                     <span className="text-xs font-mono font-semibold text-slate-900 dark:text-white">
-                      {inspectingSkill.firstSeen || 'Mar 13, 2026'}
+                      {inspectingSkill.firstSeen || '2026-03-13'}
                     </span>
                   </div>
                 </div>
@@ -1213,28 +1213,28 @@ export const SkillsTab: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
                       <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
-                        Gen Agent Trust Hub
+                        {t('ecosystem.skills.gen_agent_trust_hub', "Gen Agent Trust Hub")}
                       </span>
                       <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
-                        Pass
+                        {t('ecosystem.skills.pass', "Pass")}
                       </span>
                     </div>
 
                     <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
                       <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
-                        Socket
+                        {t('ecosystem.skills.socket', "Socket")}
                       </span>
                       <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
-                        Pass
+                        {t('ecosystem.skills.pass_2', "Pass")}
                       </span>
                     </div>
 
                     <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
                       <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
-                        Snyk
+                        {t('ecosystem.skills.snyk', "Snyk")}
                       </span>
                       <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
-                        Pass
+                        {t('ecosystem.skills.pass_3', "Pass")}
                       </span>
                     </div>
                   </div>
@@ -1274,7 +1274,7 @@ export const SkillsTab: React.FC = () => {
                           style={{ color: 'var(--color-accent)' }}
                         >
                           <Terminal className="w-4 h-4" />
-                          <span>Execution Prerequisites & Tool Telemetry</span>
+                          <span>{t('ecosystem.skills.execution_prerequisites_tool_t', "Execution Prerequisites & Tool Telemetry")}</span>
                         </div>
                         {isSkillUpstreamLive(inspectingSkill) && (
                           <span
@@ -1286,7 +1286,7 @@ export const SkillsTab: React.FC = () => {
                             }}
                           >
                             <Globe className="w-3 h-3" />
-                            LIVE GITHUB
+                            {t('ecosystem.skills.live_github', "LIVE GITHUB")}
                           </span>
                         )}
                       </div>
@@ -1295,7 +1295,7 @@ export const SkillsTab: React.FC = () => {
                       {prereqs.allowedTools && prereqs.allowedTools.length > 0 && (
                         <div>
                           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
-                            Allowed Tools (Execution Permissions):
+                            {t('ecosystem.skills.allowed_tools_execution_permis', "Allowed Tools (Execution Permissions):")}
                           </span>
                           <div className="flex flex-wrap gap-1.5">
                             {prereqs.allowedTools.map((tool, idx) => (
@@ -1319,7 +1319,7 @@ export const SkillsTab: React.FC = () => {
                       {prereqs.envVars && prereqs.envVars.length > 0 && (
                         <div>
                           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
-                            Required Environment Variables (API Keys / Tokens):
+                            {t('ecosystem.skills.required_environment_variables', "Required Environment Variables (API Keys / Tokens):")}
                           </span>
                           <div className="flex flex-wrap gap-1.5">
                             {prereqs.envVars.map((envVar, idx) => (
@@ -1338,7 +1338,7 @@ export const SkillsTab: React.FC = () => {
                       {prereqs.cliCommands && prereqs.cliCommands.length > 0 && (
                         <div>
                           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
-                            CLI Setup Commands:
+                            {t('ecosystem.skills.cli_setup_commands', "CLI Setup Commands:")}
                           </span>
                           <div className="space-y-1.5">
                             {prereqs.cliCommands.map((cmd, idx) => (
@@ -1354,7 +1354,7 @@ export const SkillsTab: React.FC = () => {
                                     handleCopyTrigger(cmd);
                                   }}
                                   className="p-1 rounded text-slate-400 hover:text-white transition-colors"
-                                  title="Copy command"
+                                  title={t('ecosystem.skills.copy_command', "Copy command")}
                                 >
                                   <Copy className="w-3.5 h-3.5" />
                                 </button>
@@ -1368,7 +1368,7 @@ export const SkillsTab: React.FC = () => {
                       {inspectingSkill.companionFiles && inspectingSkill.companionFiles.length > 0 && (
                         <div>
                           <span className="text-[10px] font-mono text-slate-500 uppercase block mb-1">
-                            Multi-File Companion Assets ({inspectingSkill.companionFiles.length}):
+                            {t('ecosystem.skills.multi_file_companion_assets', "Multi-File Companion Assets (")}{inspectingSkill.companionFiles.length}):
                           </span>
                           <div className="flex flex-wrap gap-1.5">
                             {inspectingSkill.companionFiles.map((file, idx) => (
@@ -1406,7 +1406,7 @@ export const SkillsTab: React.FC = () => {
                           color: 'var(--color-accent)',
                         }}
                       >
-                        npx skills add {inspectingSkill.id}
+                        {t('ecosystem.skills.npx_skills_add', "npx skills add")} {inspectingSkill.id}
                       </code>
                     </div>
 
@@ -1536,12 +1536,12 @@ export const SkillsTab: React.FC = () => {
               <form onSubmit={handleCreateSubmit} className="p-4 space-y-3">
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Identifier (slug)
+                    {t('ecosystem.skills.identifier_slug', "Identifier (slug)")}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="my-custom-skill"
+                    placeholder={t('ecosystem.skills.my_custom_skill', "my-custom-skill")}
                     value={newSkill.id}
                     onChange={(e) => setNewSkill({ ...newSkill, id: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[var(--color-accent)]"
@@ -1550,12 +1550,12 @@ export const SkillsTab: React.FC = () => {
 
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Title
+                    {t('ecosystem.skills.title', "Title")}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="My Custom Skill Title"
+                    placeholder={t('ecosystem.skills.my_custom_skill_title', "My Custom Skill Title")}
                     value={newSkill.title}
                     onChange={(e) => setNewSkill({ ...newSkill, title: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[var(--color-accent)]"
@@ -1565,7 +1565,7 @@ export const SkillsTab: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Category
+                      {t('ecosystem.skills.category', "Category")}
                     </label>
                     <select
                       value={newSkill.category}
@@ -1580,11 +1580,11 @@ export const SkillsTab: React.FC = () => {
 
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Triggers (comma separated)
+                      {t('ecosystem.skills.triggers_comma_separated', "Triggers (comma separated)")}
                     </label>
                     <input
                       type="text"
-                      placeholder="react, refactor, audit"
+                      placeholder={t('ecosystem.skills.react_refactor_audit', "react, refactor, audit")}
                       value={newSkill.triggers}
                       onChange={(e) => setNewSkill({ ...newSkill, triggers: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
@@ -1594,11 +1594,11 @@ export const SkillsTab: React.FC = () => {
 
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Description
+                    {t('ecosystem.skills.description', "Description")}
                   </label>
                   <textarea
                     rows={2}
-                    placeholder="Short description of what this skill enables the agent to do..."
+                    placeholder={t('ecosystem.skills.short_description_of_what_this', "Short description of what this skill enables the agent to do...")}
                     value={newSkill.description}
                     onChange={(e) => setNewSkill({ ...newSkill, description: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
@@ -1611,7 +1611,7 @@ export const SkillsTab: React.FC = () => {
                     onClick={() => setIsCreateOpen(false)}
                     className="px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
-                    Cancel
+                    {t('ecosystem.skills.cancel', "Cancel")}
                   </button>
                   <button
                     type="submit"
@@ -1621,7 +1621,7 @@ export const SkillsTab: React.FC = () => {
                       boxShadow: '0 2px 8px var(--color-accent-glow)',
                     }}
                   >
-                    Save & Install
+                    {t('ecosystem.skills.save_install', "Save & Install")}
                   </button>
                 </div>
               </form>

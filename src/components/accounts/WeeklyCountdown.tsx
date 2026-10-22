@@ -44,7 +44,7 @@ export function WeeklyCountdown({
                 title={t('accounts.provider_not_available', 'Claude quota is not available on Free tier')}
             >
                 <Sparkles className="w-3 h-3 opacity-40 shrink-0" />
-                <span className="font-medium">N/A (Free)</span>
+                <span className="font-medium">{t('accounts.countdown.n_a_free', "N/A (Free)")}</span>
             </div>
         );
     }
@@ -148,7 +148,15 @@ export function WeeklyCountdown({
                                             }
                                             : undefined
                                 }
-                                title={`Day ${dayNum}: ${isFull ? '100% (Upcoming)' : isEmpty ? '0% (Passed)' : `${fillPercentage}% water remaining`}`}
+                                title={t('accounts.day_progress_tooltip', {
+                                    day: dayNum,
+                                    status: isFull
+                                        ? t('accounts.upcoming', '100% (Upcoming)')
+                                        : isEmpty
+                                        ? t('accounts.passed', '0% (Passed)')
+                                        : t('accounts.water_remaining', { pct: fillPercentage, defaultValue: '{{pct}}% water remaining' }),
+                                    defaultValue: 'Day {{day}}: {{status}}'
+                                })}
                             >
                                 {/* Active Day Liquid Water Fill */}
                                 {isActive && (
@@ -339,7 +347,13 @@ export function WeeklyCountdown({
                         backgroundColor: `${velocity.zoneColor}20`,
                         color: velocity.zoneColor,
                     }}
-                    title={`Velocity: ${velocity.hourlyBurnRatePct}%/hr • ${velocity.isDepletedBeforeReset ? `⚠️ Deficit: ${velocity.deficitHours}h before reset` : '✓ Sustainable buffer'}`}
+                    title={t('accounts.velocity_tooltip', {
+                        burn: velocity.hourlyBurnRatePct,
+                        status: velocity.isDepletedBeforeReset
+                            ? t('accounts.deficit_status', { hours: velocity.deficitHours, defaultValue: '⚠️ Deficit: {{hours}}h before reset' })
+                            : t('accounts.sustainable_buffer', '✓ Sustainable buffer'),
+                        defaultValue: 'Velocity: {{burn}}%/hr • {{status}}'
+                    })}
                 >
                     {velocity.sustainabilityRatio}x {velocity.isDepletedBeforeReset ? '⚡' : '🛡️'}
                 </span>

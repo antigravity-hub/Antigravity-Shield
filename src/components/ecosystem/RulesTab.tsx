@@ -84,7 +84,7 @@ export const RulesTab: React.FC = () => {
       {/* Top action bar */}
       <div className="flex items-center justify-between gap-3">
         <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-          {rules.filter((r) => r.isEnabled).length} active rule guidelines applied
+          {rules.filter((r) => r.isEnabled).length} {t('ecosystem.rules.active_rule_guidelines_applied', "active rule guidelines applied")}
         </span>
 
         <button
@@ -167,7 +167,7 @@ export const RulesTab: React.FC = () => {
                 {/* Trigger pill */}
                 <div className="flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400 mb-3 font-mono">
                   <Zap className="w-3 h-3 text-amber-500" />
-                  <span>Trigger: {rule.trigger}</span>
+                  <span>{t('ecosystem.rules.trigger', "Trigger:")} {rule.trigger}</span>
                 </div>
               </div>
 
@@ -231,7 +231,7 @@ export const RulesTab: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <FileCode2 className="w-5 h-5 text-emerald-500" />
                   <span className="font-bold text-sm text-slate-900 dark:text-white">
-                    Edit Rule: {editingRule.title}
+                    {t('ecosystem.rules.edit_rule', "Edit Rule:")} {editingRule.title}
                   </span>
                 </div>
                 <button
@@ -245,7 +245,7 @@ export const RulesTab: React.FC = () => {
               <div className="p-4 overflow-y-auto flex-1 space-y-3">
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Rule Title
+                    {t('ecosystem.rules.rule_title', "Rule Title")}
                   </label>
                   <input
                     type="text"
@@ -257,7 +257,7 @@ export const RulesTab: React.FC = () => {
 
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Rule Content (Markdown)
+                    {t('ecosystem.rules.rule_content_markdown', "Rule Content (Markdown)")}
                   </label>
                   <textarea
                     rows={12}
@@ -273,7 +273,7 @@ export const RulesTab: React.FC = () => {
                   onClick={() => setEditingRule(null)}
                   className="px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
-                  Cancel
+                  {t('ecosystem.rules.cancel', "Cancel")}
                 </button>
                 <button
                   onClick={async () => {
@@ -282,7 +282,7 @@ export const RulesTab: React.FC = () => {
                   }}
                   className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-white shadow-xs"
                 >
-                  Save Rule
+                  {t('ecosystem.rules.save_rule', "Save Rule")}
                 </button>
               </div>
             </motion.div>
@@ -314,7 +314,7 @@ export const RulesTab: React.FC = () => {
               >
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60">
                 <span className="font-bold text-sm text-slate-900 dark:text-white">
-                  Add New Agent Rule
+                  {t('ecosystem.rules.add_new_agent_rule', "Add New Agent Rule")}
                 </span>
                 <button
                   onClick={() => setIsCreateOpen(false)}
@@ -327,12 +327,12 @@ export const RulesTab: React.FC = () => {
               <form onSubmit={handleCreateSubmit} className="p-4 space-y-3">
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Title
+                    {t('ecosystem.rules.title', "Title")}
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="E.g. Strict Error Handling Guidelines"
+                    placeholder={t('ecosystem.rules.e_g_strict_error_handling_guid', "E.g. Strict Error Handling Guidelines")}
                     value={newRule.title}
                     onChange={(e) => setNewRule({ ...newRule, title: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
@@ -342,51 +342,51 @@ export const RulesTab: React.FC = () => {
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      File Target
+                      {t('ecosystem.rules.file_target', "File Target")}
                     </label>
                     <select
                       value={newRule.fileName}
                       onChange={(e) => setNewRule({ ...newRule, fileName: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
                     >
-                      <option value="GEMINI.md">GEMINI.md</option>
-                      <option value="AGENTS.md">AGENTS.md</option>
-                      <option value="RULE[user_global]">RULE[user_global]</option>
+                      <option value="GEMINI.md">{t('ecosystem.rules.gemini_md', "GEMINI.md")}</option>
+                      <option value="AGENTS.md">{t('ecosystem.rules.agents_md', "AGENTS.md")}</option>
+                      <option value="RULE[user_global]">{t('ecosystem.rules.rule_user_global', "RULE[user_global]")}</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Scope
+                      {t('ecosystem.rules.scope', "Scope")}
                     </label>
                     <select
                       value={newRule.scope}
                       onChange={(e) => setNewRule({ ...newRule, scope: e.target.value as any })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
                     >
-                      <option value="global">Global (System)</option>
-                      <option value="workspace">Workspace Only</option>
+                      <option value="global">{t('ecosystem.rules.global_system', "Global (System)")}</option>
+                      <option value="workspace">{t('ecosystem.rules.workspace_only', "Workspace Only")}</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                      Trigger
+                      {t('ecosystem.rules.trigger_2', "Trigger")}
                     </label>
                     <select
                       value={newRule.trigger}
                       onChange={(e) => setNewRule({ ...newRule, trigger: e.target.value as any })}
                       className="w-full px-3 py-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white"
                     >
-                      <option value="always_on">Always On</option>
-                      <option value="model_decision">Model Decision</option>
+                      <option value="always_on">{t('ecosystem.rules.always_on', "Always On")}</option>
+                      <option value="model_decision">{t('ecosystem.rules.model_decision', "Model Decision")}</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
                   <label className="text-xs font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Instructions / Guidelines Content
+                    {t('ecosystem.rules.instructions_guidelines_conten', "Instructions / Guidelines Content")}
                   </label>
                   <textarea
                     rows={6}
@@ -403,7 +403,7 @@ export const RulesTab: React.FC = () => {
                     onClick={() => setIsCreateOpen(false)}
                     className="px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
-                    Cancel
+                    {t('ecosystem.rules.cancel_2', "Cancel")}
                   </button>
                   <button
                     type="submit"
@@ -413,7 +413,7 @@ export const RulesTab: React.FC = () => {
                       boxShadow: '0 2px 8px var(--color-accent-glow)',
                     }}
                   >
-                    Create Rule
+                    {t('ecosystem.rules.create_rule', "Create Rule")}
                   </button>
                 </div>
               </form>

@@ -476,13 +476,13 @@ function AccountRowContent({
                                 color: 'var(--color-badge-text)',
                                 borderColor: 'var(--color-badge-border)',
                             }}
-                            title="Active in Antigravity Platform"
+                            title={t('accounts.table.active_in_antigravity_platform', "Active in Antigravity Platform")}
                         >
                             <span className="relative flex h-1.5 w-1.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                             </span>
-                            Platform
+                            {t('accounts.table.platform', "Platform")}
                         </span>
                     )}
                     {isIdeActive && (
@@ -493,7 +493,7 @@ function AccountRowContent({
                                 color: 'var(--color-badge-text)',
                                 borderColor: 'var(--color-badge-border)',
                             }}
-                            title="Active in Antigravity IDE"
+                            title={t('accounts.table.active_in_antigravity_ide', "Active in Antigravity IDE")}
                         >
                             <span className="relative flex h-1.5 w-1.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
@@ -505,7 +505,7 @@ function AccountRowContent({
                     {isCliActive && (
                         <span 
                             className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-teal-500/15 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400 text-[10px] font-extrabold border border-teal-500/30"
-                            title="Active in Antigravity CLI"
+                            title={t('accounts.table.active_in_antigravity_cli', "Active in Antigravity CLI")}
                         >
                             <span className="relative flex h-1.5 w-1.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
@@ -522,13 +522,13 @@ function AccountRowContent({
                                 color: 'var(--color-badge-text)',
                                 borderColor: 'var(--color-badge-border)',
                             }}
-                            title="Active in Antigravity"
+                            title={t('accounts.table.active_in_antigravity', "Active in Antigravity")}
                         >
                             <span className="relative flex h-1.5 w-1.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'var(--color-accent)' }}></span>
                                 <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: 'var(--color-accent)', boxShadow: '0 0 6px var(--color-accent)' }}></span>
                             </span>
-                            Active
+                            {t('accounts.table.active', "Active")}
                         </span>
                     )}
                     {isDisabled && (
@@ -598,9 +598,9 @@ function AccountRowContent({
                                     <Diamond className="w-2.5 h-2.5 fill-current" />
                                     {t('accounts.pro')}
                                     {isTrial && (
-                                        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs" title="Trial Account">
+                                        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-amber-400 text-amber-950 text-[8px] font-black tracking-wider uppercase ml-1 shadow-2xs" title={t('accounts.table.trial_account', "Trial Account")}>
                                             <svg className="w-2 h-2 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
-                                            trial
+                                            {t('accounts.table.trial', "trial")}
                                         </span>
                                     )}
                                 </span>
@@ -881,7 +881,7 @@ function AccountRowContent({
                     isFamilyMember && isLastInFamily && "border-b-2 border-dashed border-[var(--color-badge-border)]"
                 )}>
                     <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
-                        N/A (Free)
+                        {t('accounts.table.n_a_free', "N/A (Free)")}
                     </span>
                 </td>
             );

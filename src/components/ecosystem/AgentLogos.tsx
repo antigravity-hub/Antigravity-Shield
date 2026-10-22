@@ -3,6 +3,7 @@
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Gemini, Claude, OpenAI } from '@lobehub/icons';
 import { Bot } from 'lucide-react';
 
@@ -11,6 +12,7 @@ export const AgentThumbnail: React.FC<{
   size?: number;
   className?: string;
 }> = ({ agentId, size = 18, className = '' }) => {
+  const { t } = useTranslation();
   const pixelSize = `${size}px`;
 
   switch (agentId) {
@@ -18,7 +20,7 @@ export const AgentThumbnail: React.FC<{
       return (
         <img
           src="/icon.png"
-          alt="Google Antigravity"
+          alt={t('ecosystem.agent_logos.google_antigravity', 'Google Antigravity')}
           style={{ width: pixelSize, height: pixelSize }}
           className={`rounded-md shrink-0 object-contain shadow-xs ring-1 ring-sky-500/30 ${className}`}
         />

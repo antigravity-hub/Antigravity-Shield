@@ -123,10 +123,10 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                         <BrainCircuit size={18} style={{ color: 'var(--color-accent)' }} />
                         <div>
                             <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                                Model Routing Presets &amp; Alias Normalizer
+                                {t('proxy.routing.model_routing_presets_amp_alia', "Model Routing Presets &amp; Alias Normalizer")}
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Normalize incoming model names from Cursor and CLI clients to active upstream Google models.
+                                {t('proxy.routing.normalize_incoming_model_names', "Normalize incoming model names from Cursor and CLI clients to active upstream Google models.")}
                             </p>
                         </div>
                     </div>
@@ -145,7 +145,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                 {/* Presets Selector Row */}
                 <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-gray-100 dark:border-slate-800/80">
                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 pe-2">
-                        Presets:
+                        {t('proxy.routing.presets', "Presets:")}
                     </span>
                     {presetOptions.map((opt) => {
                         const isSelected = selectedPreset === opt.id;
@@ -174,13 +174,13 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                             style={{ backgroundColor: 'var(--color-primary-btn)' }}
                         >
                             <Check size={13} />
-                            <span>Apply Preset</span>
+                            <span>{t('proxy.routing.apply_preset', "Apply Preset")}</span>
                         </button>
                         <button
                             onClick={onOpenPresetManager}
                             className="px-3 py-1.5 rounded-xl text-xs font-medium border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-[#141916] text-gray-700 dark:text-gray-300 transition-colors"
                         >
-                            Save / Manage
+                            {t('proxy.routing.save_manage', "Save / Manage")}
                         </button>
                     </div>
                 </div>
@@ -192,10 +192,10 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                     <div>
                         <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                             <Sparkles size={16} style={{ color: 'var(--color-accent)' }} />
-                            Configured Custom Model Aliases
+                            {t('proxy.routing.configured_custom_model_aliase', "Configured Custom Model Aliases")}
                         </h4>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                            Intercept specific request model identifiers and dynamically reroute to upstream models.
+                            {t('proxy.routing.intercept_specific_request_mod', "Intercept specific request model identifiers and dynamically reroute to upstream models.")}
                         </p>
                     </div>
                     <span
@@ -206,7 +206,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                             borderColor: 'var(--color-badge-border)',
                         }}
                     >
-                        {Object.keys(customMapping).length} Custom Aliases
+                        {Object.keys(customMapping).length} {t('proxy.routing.custom_aliases', "Custom Aliases")}
                     </span>
                 </div>
 
@@ -216,15 +216,15 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                         type="text"
                         value={newMappingKey}
                         onChange={(e) => setNewMappingKey(e.target.value)}
-                        placeholder="Request Model Name (e.g. my-custom-model)"
+                        placeholder={t('proxy.routing.request_model_name_e_g_my_cust', "Request Model Name (e.g. my-custom-model)")}
                         className="flex-1 min-w-[200px] px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
                     />
-                    <span className="text-gray-400 font-mono text-xs">&rarr;</span>
+                    <span className="text-gray-400 font-mono text-xs">{t('proxy.routing.rarr', "&rarr;")}</span>
                     <input
                         type="text"
                         value={newMappingValue}
                         onChange={(e) => setNewMappingValue(e.target.value)}
-                        placeholder="Target Upstream (e.g. gemini-3-flash)"
+                        placeholder={t('proxy.routing.target_upstream_e_g_gemini_3_f', "Target Upstream (e.g. gemini-3-flash)")}
                         className="flex-1 min-w-[200px] px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 focus:outline-none"
                     />
                     <button
@@ -234,23 +234,23 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                         style={{ backgroundColor: 'var(--color-primary-btn)' }}
                     >
                         <Plus size={14} />
-                        <span>Add Mapping</span>
+                        <span>{t('proxy.routing.add_mapping', "Add Mapping")}</span>
                     </button>
                 </div>
 
                 {/* Custom Mapping Table */}
                 {Object.keys(customMapping).length === 0 ? (
                     <div className="py-6 text-center text-xs text-gray-400 border border-dashed border-gray-200 dark:border-slate-800/80 rounded-xl">
-                        No custom model aliases registered. Standard built-in mappings are active below.
+                        {t('proxy.routing.no_custom_model_aliases_regist', "No custom model aliases registered. Standard built-in mappings are active below.")}
                     </div>
                 ) : (
                     <div className="overflow-x-auto rounded-xl border border-gray-200/70 dark:border-slate-800/80">
                         <table className="table w-full text-xs">
                             <thead className="bg-gray-50 dark:bg-[#141916] text-gray-500 dark:text-gray-400">
                                 <tr>
-                                    <th className="py-2.5 ps-4 font-semibold text-start">Incoming Alias</th>
-                                    <th className="py-2.5 font-semibold text-start">Mapped Target</th>
-                                    <th className="py-2.5 pe-4 font-semibold text-end">Actions</th>
+                                    <th className="py-2.5 ps-4 font-semibold text-start">{t('proxy.routing.incoming_alias', "Incoming Alias")}</th>
+                                    <th className="py-2.5 font-semibold text-start">{t('proxy.routing.mapped_target', "Mapped Target")}</th>
+                                    <th className="py-2.5 pe-4 font-semibold text-end">{t('proxy.routing.actions', "Actions")}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-800/80">
@@ -281,14 +281,14 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                                                         <button
                                                             onClick={() => handleSaveEdit(key)}
                                                             className="p-1 rounded text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
-                                                            title="Save"
+                                                            title={t('proxy.routing.save', "Save")}
                                                         >
                                                             <Check size={14} />
                                                         </button>
                                                         <button
                                                             onClick={handleCancelEdit}
                                                             className="p-1 rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916]"
-                                                            title="Cancel"
+                                                            title={t('proxy.routing.cancel', "Cancel")}
                                                         >
                                                             <X size={14} />
                                                         </button>
@@ -298,14 +298,14 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                                                         <button
                                                             onClick={() => handleStartEdit(key, val)}
                                                             className="p-1 rounded text-gray-500 hover:text-gray-800 dark:hover:text-gray-200"
-                                                            title="Edit"
+                                                            title={t('proxy.routing.edit', "Edit")}
                                                         >
                                                             <Edit2 size={13} />
                                                         </button>
                                                         <button
                                                             onClick={() => onRemoveCustomMapping(key)}
                                                             className="p-1 rounded text-gray-400 hover:text-rose-500 dark:hover:text-rose-400"
-                                                            title="Delete"
+                                                            title={t('proxy.routing.delete', "Delete")}
                                                         >
                                                             <Trash2 size={13} />
                                                         </button>
@@ -326,9 +326,9 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                 <div className="flex items-center justify-between">
                     <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                         <Terminal size={16} style={{ color: 'var(--color-accent)' }} />
-                        Standard Built-in Normalization Table (Native Rust Engine)
+                        {t('proxy.routing.standard_built_in_normalizatio', "Standard Built-in Normalization Table (Native Rust Engine)")}
                     </h4>
-                    <span className="text-[10px] text-gray-400">Always active in background</span>
+                    <span className="text-[10px] text-gray-400">{t('proxy.routing.always_active_in_background', "Always active in background")}</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2.5">
@@ -341,7 +341,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                                 {item.from}
                             </div>
                             <div className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400 pt-0.5">
-                                &rarr; {item.to}
+                                {t('proxy.routing.rarr_2', "&rarr;")} {item.to}
                             </div>
                             <div className="text-[10px] text-gray-400 pt-1 truncate">{item.note}</div>
                         </div>
@@ -354,7 +354,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                 <div className="p-4 border-b border-gray-100 dark:border-slate-800/80 flex items-center justify-between">
                     <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                         <Code size={16} style={{ color: 'var(--color-accent)' }} />
-                        Supported Models Directory &amp; Code Generator
+                        {t('proxy.routing.supported_models_directory_amp', "Supported Models Directory &amp; Code Generator")}
                     </h4>
 
                     {/* Protocol Selector */}
@@ -402,7 +402,7 @@ export const ProxyRoutingTab: React.FC<ProxyRoutingTabProps> = ({
                     {/* Code Snippet Box */}
                     <div className="col-span-2 bg-gray-900 p-4 text-gray-200 flex flex-col justify-between font-mono relative group">
                         <div className="flex items-center justify-between pb-2 border-b border-gray-800 text-[11px] text-gray-400">
-                            <span>Integration Snippet ({selectedProtocol.toUpperCase()})</span>
+                            <span>{t('proxy.routing.integration_snippet', "Integration Snippet (")}{selectedProtocol.toUpperCase()})</span>
                             <span className="text-emerald-400">{selectedModelId}</span>
                         </div>
                         <pre className="py-3 text-[11px] leading-relaxed overflow-x-auto text-gray-300">

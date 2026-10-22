@@ -169,11 +169,11 @@ export const Sidebar: React.FC = () => {
                   Antigravity
                 </span>
                 <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-[#93e9be]/15 text-emerald-700 dark:text-[#93e9be] border border-[#93e9be]/30">
-                  SHIELD
+                  {t('sidebar.shield', "SHIELD")}
                 </span>
               </div>
               <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium truncate">
-                Agentic Manager & Hub
+                {t('sidebar.agentic_manager_hub', "Agentic Manager & Hub")}
               </span>
             </motion.div>
           )}
@@ -299,7 +299,7 @@ export const Sidebar: React.FC = () => {
           <div className="flex items-center gap-1">
             <button
               onClick={toggleTheme}
-              title={config?.theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+              title={config?.theme === 'light' ? t('sidebar.dark_mode', "Dark Mode") : t('sidebar.light_mode', "Light Mode")}
               className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-all active:scale-95 cursor-pointer"
             >
               {config?.theme === 'light' ? (

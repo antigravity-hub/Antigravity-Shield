@@ -5,9 +5,11 @@
 import { Link } from 'react-router-dom';
 import { Shield } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavVersionBadge } from './NavVersionBadge';
 
 export function NavLogo() {
+    const { t } = useTranslation();
     const [imgFailed, setImgFailed] = useState(false);
 
     return (
@@ -51,7 +53,7 @@ export function NavLogo() {
                 </div>
                 <span className="text-[10px] text-slate-400 dark:text-slate-400 tracking-wider font-medium hidden xl:flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-                    AI Gateway Shield
+                    {t('nav.tagline', 'AI Gateway Shield')}
                 </span>
             </div>
         </Link>

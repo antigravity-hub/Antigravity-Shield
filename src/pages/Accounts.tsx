@@ -1404,13 +1404,13 @@ function Accounts() {
             >
               <Sparkles className={cn("w-3.5 h-3.5", isAutoWarmEnabled ? "text-orange-500 fill-orange-500/20" : "text-gray-400")} />
               <span className="font-semibold">
-                Auto-Warm
+                {t('accounts.page.auto_warm', "Auto-Warm")}
               </span>
               <span className={cn(
                 "text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider",
                 isAutoWarmEnabled ? "bg-orange-500 text-white" : "bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
               )}>
-                {isAutoWarmEnabled ? "ON" : "OFF"}
+                {isAutoWarmEnabled ? t('accounts.page.on', "ON") : t('accounts.page.off', "OFF")}
               </span>
               <span className={cn(
                 "w-2 h-2 rounded-full",
@@ -1654,12 +1654,11 @@ function Accounts() {
           selectedIds.size > 0
             ? t(
               "accounts.dialog.batch_warmup_msg",
-              t("accounts.dialog.batch_warmup_confirm", "Are you sure you want to trigger warmup for {{count}} selected accounts?"),
-              { count: selectedIds.size },
+              { count: selectedIds.size, defaultValue: "Are you sure you want to trigger warmup for {{count}} selected accounts?" },
             )
             : t(
               "accounts.dialog.warmup_all_msg",
-              t("accounts.dialog.warmup_all_confirm", "Trigger warmup for all eligible accounts? This sends minimal traffic to Google services."),
+              { defaultValue: "Trigger warmup for all eligible accounts? This sends minimal traffic to Google services." },
             )
         }
         type="confirm"

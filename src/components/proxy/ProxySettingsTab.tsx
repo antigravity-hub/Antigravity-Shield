@@ -115,7 +115,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                 <div className="flex items-center gap-2">
                     <Settings size={18} style={{ color: 'var(--color-accent)' }} />
                     <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        Core Network &amp; Listener Configuration
+                        {t('proxy.settings.core_network_amp_listener_conf', "Core Network &amp; Listener Configuration")}
                     </h3>
                 </div>
 
@@ -126,7 +126,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             <span>{t('proxy.config.port', { defaultValue: 'Listening Port' })}</span>
                             <HelpTooltip
                                 text={t('proxy.config.port_tooltip', { defaultValue: 'Local port for incoming proxy requests.' })}
-                                ariaLabel="Port"
+                                ariaLabel={t('proxy.config.port', 'Port')}
                                 placement="right"
                             />
                         </label>
@@ -140,7 +140,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 disabled:opacity-50"
                         />
                         <p className="text-[10px] text-gray-400">
-                            {status.running ? 'Stop proxy to change port' : 'Default: 8045 or 8765'}
+                            {status.running ? t('proxy.settings.stop_proxy_to_change_port', "Stop proxy to change port") : t('proxy.settings.default_8045_or_8765', "Default: 8045 or 8765")}
                         </p>
                     </div>
 
@@ -150,7 +150,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             <span>{t('proxy.config.request_timeout', { defaultValue: 'Request Timeout (s)' })}</span>
                             <HelpTooltip
                                 text={t('proxy.config.request_timeout_tooltip', { defaultValue: 'Maximum seconds before timing out long stream requests.' })}
-                                ariaLabel="Timeout"
+                                ariaLabel={t('proxy.config.request_timeout', 'Timeout')}
                                 placement="top"
                             />
                         </label>
@@ -164,17 +164,17 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             className="w-full px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100 disabled:opacity-50"
                         />
                         <p className="text-[10px] text-gray-400">
-                            30 to 7200 seconds (recommended: 120s for code generation)
+                            {t('proxy.settings.30_to_7200_seconds_recommended', "30 to 7200 seconds (recommended: 120s for code generation)")}
                         </p>
                     </div>
 
                     {/* Auto Start */}
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                            Startup Behavior
+                            {t('proxy.settings.startup_behavior', "Startup Behavior")}
                         </label>
                         <div className="pt-1.5 flex items-center justify-between">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Auto-start on app launch</span>
+                            <span className="text-xs text-gray-600 dark:text-gray-400">{t('proxy.settings.auto_start_on_app_launch', "Auto-start on app launch")}</span>
                             <input
                                 type="checkbox"
                                 checked={appConfig?.proxy?.auto_start || false}
@@ -183,7 +183,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             />
                         </div>
                         <p className="text-[10px] text-gray-400">
-                            Automatically activates the gateway upon launching Antigravity Shield.
+                            {t('proxy.settings.automatically_activates_the_ga', "Automatically activates the gateway upon launching Antigravity Shield.")}
                         </p>
                     </div>
                 </div>
@@ -194,7 +194,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                 <div className="flex items-center gap-2">
                     <Shield size={18} style={{ color: 'var(--color-accent)' }} />
                     <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        Authentication &amp; Access Control
+                        {t('proxy.settings.authentication_amp_access_cont', "Authentication &amp; Access Control")}
                     </h3>
                 </div>
 
@@ -204,30 +204,30 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
                                 <Key size={14} style={{ color: 'var(--color-accent)' }} />
-                                Proxy API Key (Bearer Token)
+                                {t('proxy.settings.proxy_api_key_bearer_token', "Proxy API Key (Bearer Token)")}
                             </span>
                             <div className="flex items-center gap-1">
                                 {isEditingApiKey ? (
                                     <>
-                                        <button onClick={onSaveApiKey} className="p-1 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded" title="Save">
+                                        <button onClick={onSaveApiKey} className="p-1 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded" title={t('proxy.settings.save', "Save")}>
                                             <Check size={14} />
                                         </button>
-                                        <button onClick={onCancelEditApiKey} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916] rounded" title="Cancel">
+                                        <button onClick={onCancelEditApiKey} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916] rounded" title={t('proxy.settings.cancel', "Cancel")}>
                                             <X size={14} />
                                         </button>
                                     </>
                                 ) : (
                                     <>
-                                        <button onClick={onEditApiKey} className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded" title="Edit">
+                                        <button onClick={onEditApiKey} className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded" title={t('proxy.settings.edit', "Edit")}>
                                             <Edit2 size={13} />
                                         </button>
-                                        <button onClick={onGenerateApiKey} className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded" title="Regenerate">
+                                        <button onClick={onGenerateApiKey} className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded" title={t('proxy.settings.regenerate', "Regenerate")}>
                                             <RefreshCw size={13} />
                                         </button>
                                         <button
                                             onClick={() => onCopy(appConfig?.proxy?.api_key || '', 'api-key')}
                                             className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded"
-                                            title="Copy"
+                                            title={t('proxy.settings.copy', "Copy")}
                                         >
                                             {copied === 'api-key' ? <CheckCircle size={13} className="text-emerald-500" /> : <Copy size={13} />}
                                         </button>
@@ -245,11 +245,11 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             />
                         ) : (
                             <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-[#0c100e] px-3 py-1.5 rounded border border-gray-200 dark:border-slate-800 truncate">
-                                {appConfig?.proxy?.api_key || 'No key set'}
+                                {appConfig?.proxy?.api_key || t('proxy.settings.no_key_set', 'No key set')}
                             </div>
                         )}
                         <p className="text-[10px] text-gray-400">
-                            Required in Authorization: Bearer &lt;key&gt; header when auth is enabled.
+                            {t('proxy.settings.required_in_authorization_bear', "Required in Authorization: Bearer &lt;key&gt; header when auth is enabled.")}
                         </p>
                     </div>
 
@@ -258,20 +258,20 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
                                 <Lock size={14} style={{ color: 'var(--color-accent)' }} />
-                                Admin Dashboard Password
+                                {t('proxy.settings.admin_dashboard_password', "Admin Dashboard Password")}
                             </span>
                             <div className="flex items-center gap-1">
                                 {isEditingAdminPassword ? (
                                     <>
-                                        <button onClick={onSaveAdminPassword} className="p-1 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded" title="Save">
+                                        <button onClick={onSaveAdminPassword} className="p-1 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded" title={t('proxy.settings.save_2', "Save")}>
                                             <Check size={14} />
                                         </button>
-                                        <button onClick={onCancelEditAdminPassword} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916] rounded" title="Cancel">
+                                        <button onClick={onCancelEditAdminPassword} className="p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-[#141916] rounded" title={t('proxy.settings.cancel_2', "Cancel")}>
                                             <X size={14} />
                                         </button>
                                     </>
                                 ) : (
-                                    <button onClick={onEditAdminPassword} className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded" title="Edit">
+                                    <button onClick={onEditAdminPassword} className="p-1 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 rounded" title={t('proxy.settings.edit_2', "Edit")}>
                                         <Edit2 size={13} />
                                     </button>
                                 )}
@@ -283,16 +283,16 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                 type="password"
                                 value={tempAdminPassword}
                                 onChange={(e) => setTempAdminPassword(e.target.value)}
-                                placeholder="Enter new admin password"
+                                placeholder={t('proxy.settings.enter_new_admin_password', "Enter new admin password")}
                                 className="w-full px-2.5 py-1.5 rounded border border-gray-300 dark:border-slate-800 bg-white dark:bg-[#0c100e] text-xs text-gray-900 dark:text-gray-100"
                             />
                         ) : (
                             <div className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-white dark:bg-[#0c100e] px-3 py-1.5 rounded border border-gray-200 dark:border-slate-800">
-                                {appConfig?.proxy?.admin_password ? '••••••••••••' : 'None (Open access)'}
+                                {appConfig?.proxy?.admin_password ? '••••••••••••' : t('proxy.settings.none_open_access', "None (Open access)")}
                             </div>
                         )}
                         <p className="text-[10px] text-gray-400">
-                            Protects management web endpoints and remote monitoring views.
+                            {t('proxy.settings.protects_management_web_endpoi', "Protects management web endpoints and remote monitoring views.")}
                         </p>
                     </div>
                 </div>
@@ -313,10 +313,10 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                         <Globe size={18} className="text-amber-500" />
                         <div>
                             <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                                Cloudflared Zero-Trust Tunnel (Egress &amp; Remote Access)
+                                {t('proxy.settings.cloudflared_zero_trust_tunnel_', "Cloudflared Zero-Trust Tunnel (Egress &amp; Remote Access)")}
                             </h3>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
-                                Securely expose your local proxy to your mobile devices or remote servers without opening router ports.
+                                {t('proxy.settings.securely_expose_your_local_pro', "Securely expose your local proxy to your mobile devices or remote servers without opening router ports.")}
                             </p>
                         </div>
                     </div>
@@ -330,7 +330,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                 style={{ backgroundColor: 'var(--color-primary-btn)' }}
                             >
                                 <Download size={14} />
-                                <span>{cfLoading ? 'Installing...' : 'Install Cloudflared'}</span>
+                                <span>{cfLoading ? t('proxy.settings.installing', "Installing...") : t('proxy.settings.install_cloudflared', "Install Cloudflared")}</span>
                             </button>
                         ) : (
                             <button
@@ -344,7 +344,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                 style={!cfStatus.running ? { backgroundColor: 'var(--color-primary-btn)' } : undefined}
                             >
                                 <Power size={14} />
-                                <span>{cfStatus.running ? 'Stop Tunnel' : 'Start Tunnel'}</span>
+                                <span>{cfStatus.running ? t('proxy.settings.stop_tunnel', "Stop Tunnel") : t('proxy.settings.start_tunnel', "Start Tunnel")}</span>
                             </button>
                         )}
                     </div>
@@ -354,7 +354,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 border-t border-gray-100 dark:border-base-300">
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                            Tunnel Mode
+                            {t('proxy.settings.tunnel_mode', "Tunnel Mode")}
                         </label>
                         <select
                             value={cfMode}
@@ -362,22 +362,22 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             disabled={cfStatus.running}
                             className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content"
                         >
-                            <option value="quick">Quick Tunnel (Zero Config)</option>
-                            <option value="auth">Named Tunnel (Custom Token)</option>
+                            <option value="quick">{t('proxy.settings.quick_tunnel_zero_config', "Quick Tunnel (Zero Config)")}</option>
+                            <option value="auth">{t('proxy.settings.named_tunnel_custom_token', "Named Tunnel (Custom Token)")}</option>
                         </select>
                     </div>
 
                     {cfMode === 'auth' && (
                         <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                                Tunnel Auth Token
+                                {t('proxy.settings.tunnel_auth_token', "Tunnel Auth Token")}
                             </label>
                             <input
                                 type="text"
                                 value={cfToken}
                                 onChange={(e) => setCfToken(e.target.value)}
                                 disabled={cfStatus.running}
-                                placeholder="eyJhbGciOi..."
+                                placeholder={t('proxy.settings.eyjhbgcioi', "eyJhbGciOi...")}
                                 className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 dark:border-base-300 bg-white dark:bg-base-100 text-xs text-gray-900 dark:text-base-content"
                             />
                         </div>
@@ -385,10 +385,10 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
 
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                            Transport Protocol
+                            {t('proxy.settings.transport_protocol', "Transport Protocol")}
                         </label>
                         <div className="pt-1.5 flex items-center justify-between">
-                            <span className="text-xs text-gray-600 dark:text-gray-400">Use HTTP/2 Egress</span>
+                            <span className="text-xs text-gray-600 dark:text-gray-400">{t('proxy.settings.use_http_2_egress', "Use HTTP/2 Egress")}</span>
                             <input
                                 type="checkbox"
                                 checked={cfUseHttp2}
@@ -403,7 +403,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                 {cfStatus.running && cfStatus.url && (
                     <div className="p-3 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200/70 dark:border-emerald-900/40 flex items-center justify-between">
                         <div className="space-y-0.5">
-                            <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400">Public Live URL:</span>
+                            <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400">{t('proxy.settings.public_live_url', "Public Live URL:")}</span>
                             <div className="text-xs font-mono font-semibold text-gray-900 dark:text-gray-100">
                                 {cfStatus.url}
                             </div>
@@ -413,7 +413,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                             <button
                                 onClick={onCfCopyUrl}
                                 className="p-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
-                                title="Copy URL"
+                                title={t('proxy.settings.copy_url', "Copy URL")}
                             >
                                 {copied === 'cf-url' ? <CheckCircle size={14} /> : <Copy size={14} />}
                             </button>
@@ -422,7 +422,7 @@ export const ProxySettingsTab: React.FC<ProxySettingsTabProps> = ({
                                 className="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white flex items-center gap-1.5"
                             >
                                 <QrCode size={14} />
-                                <span>Pair Mobile</span>
+                                <span>{t('proxy.settings.pair_mobile', "Pair Mobile")}</span>
                             </button>
                         </div>
                     </div>

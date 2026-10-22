@@ -176,7 +176,7 @@ export const VerificationGuideModal: React.FC = () => {
                     <iframe
                         src="/guides/Antigravity_Verification_Guide.pdf#view=FitH&toolbar=1"
                         className="w-full h-full border-0"
-                        title="Antigravity Verification Guide PDF"
+                        title={t('common.verification.antigravity_verification_guide', "Antigravity Verification Guide PDF")}
                     />
                 </div>
             </div>

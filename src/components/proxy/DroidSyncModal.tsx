@@ -233,7 +233,7 @@ export function DroidSyncModal({ apiKey, getFormattedProxyUrl, onClose, onSyncDo
                                 <h3 className="text-sm font-bold text-gray-900 dark:text-base-content">
                                     {t('proxy.droid_sync.modal_title', { defaultValue: 'Add Models to Droid' })}
                                 </h3>
-                                <p className="text-[10px] text-gray-400 mt-0.5">~/.factory/settings.json</p>
+                                <p className="text-[10px] text-gray-400 mt-0.5">{t('proxy.droid_sync.factory_settings_json', "~/.factory/settings.json")}</p>
                             </div>
                         </div>
                         <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-base-300 transition-colors">
@@ -288,14 +288,14 @@ export function DroidSyncModal({ apiKey, getFormattedProxyUrl, onClose, onSyncDo
                 <div className="flex-1 min-h-0 flex flex-col">
                     <div className="px-5 py-2 flex items-center justify-between shrink-0">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                            customModels Preview
+                            {t('proxy.droid_sync.custommodels_preview', "customModels Preview")}
                             <span className="ml-2 font-normal">
-                                {existingCount > 0 && <span className="text-gray-300">{existingCount} existing</span>}
+                                {existingCount > 0 && <span className="text-gray-300">{existingCount} {t('proxy.droid_sync.existing', "existing")}</span>}
                                 {existingCount > 0 && agCount > 0 && <span className="text-gray-200 mx-1">+</span>}
-                                {agCount > 0 && <span className="text-orange-400">{agCount} new</span>}
+                                {agCount > 0 && <span className="text-orange-400">{agCount} {t('proxy.droid_sync.new', "new")}</span>}
                             </span>
                         </span>
-                        <span className="text-[9px] font-mono text-gray-300">{previewModels.length} total</span>
+                        <span className="text-[9px] font-mono text-gray-300">{previewModels.length} {t('proxy.droid_sync.total', "total")}</span>
                     </div>
                     <div className="px-4 pb-3 overflow-auto flex-1">
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

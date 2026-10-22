@@ -83,7 +83,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                         <div className="space-y-1">
                             <div className="flex items-center gap-2.5">
                                 <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                    Antigravity Shield Gateway
+                                    {t('proxy.overview.antigravity_shield_gateway', "Antigravity Shield Gateway")}
                                 </span>
                                 <span
                                     className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
@@ -93,7 +93,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                                         borderColor: 'var(--color-badge-border)',
                                     }}
                                 >
-                                    v6.1 Native
+                                    {t('proxy.overview.v6_1_native', "v6.1 Native")}
                                 </span>
                             </div>
                             <h2 className="text-xl font-bold text-gray-900 dark:text-base-content flex items-center gap-3">
@@ -111,8 +111,8 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                             </h2>
                             <p className="text-xs text-gray-500 dark:text-gray-400 max-w-md pt-1">
                                 {status.running
-                                    ? `Listening on port ${port}. Multi-account tiered rotation and sub-50ms cooldown active.`
-                                    : 'Start the proxy service to enable downstream connections from Cursor, Claude Code, and Windsurf.'}
+                                    ? t('proxy.overview.running_status', { port, defaultValue: 'Listening on port {{port}}. Multi-account tiered rotation and sub-50ms cooldown active.' })
+                                    : t('proxy.overview.start_the_proxy_service_to_ena', "Start the proxy service to enable downstream connections from Cursor, Claude Code, and Windsurf.")}
                             </p>
                         </div>
 
@@ -141,7 +141,7 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                     {/* Port & Address Bar */}
                     <div className="mt-6 pt-4 border-t border-gray-100 dark:border-base-300 flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-2 text-xs font-mono bg-gray-50 dark:bg-base-100 px-3 py-1.5 rounded-lg border border-gray-200/60 dark:border-base-300">
-                            <span className="text-gray-400">Endpoint:</span>
+                            <span className="text-gray-400">{t('proxy.overview.endpoint', "Endpoint:")}</span>
                             <span className="font-semibold text-gray-900 dark:text-gray-100">{baseUrl}</span>
                             <button
                                 onClick={() => onCopy(baseUrl, 'base-url')}
@@ -175,28 +175,28 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
 
                         <div className="grid grid-cols-2 gap-3 pt-1">
                             <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
-                                <div className="text-[11px] text-gray-500 dark:text-gray-400">Active Accounts</div>
+                                <div className="text-[11px] text-gray-500 dark:text-gray-400">{t('proxy.overview.active_accounts', "Active Accounts")}</div>
                                 <div className="text-lg font-bold text-gray-900 dark:text-gray-100 pt-0.5">
                                     {status.active_accounts}
                                 </div>
                             </div>
                             <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
-                                <div className="text-[11px] text-gray-500 dark:text-gray-400">Failover Latency</div>
+                                <div className="text-[11px] text-gray-500 dark:text-gray-400">{t('proxy.overview.failover_latency', "Failover Latency")}</div>
                                 <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400 pt-0.5">
-                                    &lt; 50ms
+                                    {t('proxy.overview.lt_50ms', "&lt; 50ms")}
                                 </div>
                             </div>
                             <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
-                                <div className="text-[11px] text-gray-500 dark:text-gray-400">Protocol Support</div>
+                                <div className="text-[11px] text-gray-500 dark:text-gray-400">{t('proxy.overview.protocol_support', "Protocol Support")}</div>
                                 <div className="text-xs font-semibold text-gray-800 dark:text-gray-200 pt-1">
-                                    OpenAI / Claude
+                                    {t('proxy.overview.openai_claude', "OpenAI / Claude")}
                                 </div>
                             </div>
                             <div className="bg-gray-50/80 dark:bg-[#141916] p-3 rounded-xl border border-gray-100 dark:border-slate-800/80">
-                                <div className="text-[11px] text-gray-500 dark:text-gray-400">Zero-Leak Guard</div>
+                                <div className="text-[11px] text-gray-500 dark:text-gray-400">{t('proxy.overview.zero_leak_guard', "Zero-Leak Guard")}</div>
                                 <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 pt-1 flex items-center gap-1">
                                     <CheckCircle size={12} />
-                                    Active
+                                    {t('proxy.overview.active', "Active")}
                                 </div>
                             </div>
                         </div>
@@ -222,11 +222,11 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                             {t('proxy.overview.endpoints_title', { defaultValue: 'Universal Protocol Endpoints' })}
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                            Plug any downstream client directly into these local endpoints.
+                            {t('proxy.overview.plug_any_downstream_client_dir', "Plug any downstream client directly into these local endpoints.")}
                         </p>
                     </div>
                     <span className="text-[11px] font-mono text-gray-400">
-                        Auth: Bearer Token
+                        {t('proxy.overview.auth_bearer_token', "Auth: Bearer Token")}
                     </span>
                 </div>
 
@@ -286,10 +286,10 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                         <div className="flex items-center gap-2">
                             <Cpu size={16} style={{ color: 'var(--color-accent)' }} />
                             <h4 className="text-xs font-bold text-gray-900 dark:text-gray-100">
-                                Cursor AI Quick Setup
+                                {t('proxy.overview.cursor_ai_quick_setup', "Cursor AI Quick Setup")}
                             </h4>
                         </div>
-                        <span className="text-[10px] text-gray-400">Settings &gt; Models &gt; OpenAI API Key</span>
+                        <span className="text-[10px] text-gray-400">{t('proxy.overview.settings_gt_models_gt_openai_a', "Settings &gt; Models &gt; OpenAI API Key")}</span>
                     </div>
                     <div className="bg-gray-900 text-gray-200 p-3 rounded-xl font-mono text-[11px] space-y-1 relative group">
                         <div className="text-gray-400"># Override OpenAI Base URL</div>
@@ -312,18 +312,18 @@ export const ProxyOverviewTab: React.FC<ProxyOverviewTabProps> = ({
                         <div className="flex items-center gap-2">
                             <Terminal size={16} style={{ color: 'var(--color-accent)' }} />
                             <h4 className="text-xs font-bold text-gray-900 dark:text-base-content">
-                                Claude Code CLI Setup
+                                {t('proxy.overview.claude_code_cli_setup', "Claude Code CLI Setup")}
                             </h4>
                         </div>
-                        <span className="text-[10px] text-gray-400">Terminal Environment</span>
+                        <span className="text-[10px] text-gray-400">{t('proxy.overview.terminal_environment', "Terminal Environment")}</span>
                     </div>
                     <div className="bg-gray-900 text-gray-200 p-3 rounded-xl font-mono text-[11px] space-y-1 relative group">
                         <div className="text-gray-400"># Export Anthropic URL &amp; Token</div>
                         <div className="text-emerald-400 font-semibold truncate">
-                            export ANTHROPIC_BASE_URL="{baseUrl}"
+                            {t('proxy.overview.export_anthropic_base_url', "export ANTHROPIC_BASE_URL=\"")}{baseUrl}"
                         </div>
                         <div className="text-gray-300 truncate">
-                            export ANTHROPIC_API_KEY="{apiKey}"
+                            {t('proxy.overview.export_anthropic_api_key', "export ANTHROPIC_API_KEY=\"")}{apiKey}"
                         </div>
                         <button
                             onClick={() => onCopy(`export ANTHROPIC_BASE_URL="${baseUrl}"\nexport ANTHROPIC_API_KEY="${apiKey}"`, 'claude-cli-config')}

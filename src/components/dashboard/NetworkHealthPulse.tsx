@@ -378,7 +378,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                         )}
                                         {pulse.is_warp_active && (
                                             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800/40">
-                                                WARP
+                                                {t('dashboard.health_pulse.warp', "WARP")}
                                             </span>
                                         )}
                                     </div>
@@ -583,7 +583,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                             onClick={handleAutoDetectAndApply}
                                             disabled={isApplyingProxy}
                                             className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
-                                            title="Automatically detect open proxy ports (10810, 10809, 10808, 40000) and route Antigravity IDE traffic"
+                                            title={t('dashboard.health_pulse.automatically_detect_open_prox', "Automatically detect open proxy ports (10810, 10809, 10808, 40000) and route Antigravity IDE traffic")}
                                         >
                                             <Zap size={13} className="text-yellow-300 fill-current" />
                                             <span>{t('dashboard.health_pulse.auto_detect_btn', '⚡ Auto-Detect & Connect Working Proxy')}</span>
@@ -610,7 +610,7 @@ export const NetworkHealthPulse: React.FC<NetworkHealthPulseProps> = ({ onOpenPr
                                                     onClick={() => handleApplyLocalProxy(proxyToApply)}
                                                     disabled={isApplyingProxy}
                                                     className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm active:scale-95 flex items-center gap-1.5 cursor-pointer"
-                                                    title={`Apply ${vpn.name} proxy (${proxyToApply}) to Antigravity IDE`}
+                                                    title={t('dashboard.health_pulse.apply_vpn_proxy_title', { name: vpn.name, proxy: proxyToApply, defaultValue: 'Apply {{name}} proxy ({{proxy}}) to Antigravity IDE' })}
                                                 >
                                                     <Zap size={13} className="text-yellow-300 fill-current" />
                                                     <span>

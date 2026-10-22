@@ -172,7 +172,7 @@ const DebugConsole: React.FC<DebugConsoleProps> = ({ embedded = false }) => {
                 <div className="flex items-center gap-3">
                     <span className="flex items-center gap-2 font-medium text-xs tracking-wide text-zinc-500 dark:text-zinc-400">
                         <Terminal size={14} className="opacity-70" />
-                        CONSOLE
+                        {t('debug_console.console', "CONSOLE")}
                     </span>
                     <div className="h-4 w-px bg-zinc-200 dark:bg-white/10 mx-1" />
 
@@ -201,7 +201,7 @@ const DebugConsole: React.FC<DebugConsoleProps> = ({ embedded = false }) => {
                             type="text"
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            placeholder="Filter logs..."
+                            placeholder={t('debug_console.filter_logs', "Filter logs...")}
                             className={cn(
                                 "border border-transparent rounded-md pl-8 pr-3 py-1 text-xs w-40 focus:w-64 transition-all focus:outline-none placeholder:text-zinc-400",
                                 "bg-zinc-100 dark:bg-black/20",
@@ -323,7 +323,7 @@ const DebugConsole: React.FC<DebugConsoleProps> = ({ embedded = false }) => {
                     )}
                     <span className="opacity-80 flex items-center gap-1">
                         <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
-                        Live
+                        {t('debug_console.live', "Live")}
                     </span>
                 </div>
             </div>

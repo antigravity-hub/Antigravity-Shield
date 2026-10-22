@@ -140,7 +140,7 @@ export default function BatchImportModal({ isOpen, onClose, onImport }: BatchImp
                         </div>
                         <textarea
                             className="w-full h-40 px-4 py-3 border border-gray-200 dark:border-base-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-base-200 text-gray-900 dark:text-base-content font-mono text-sm resize-none"
-                            placeholder="http://user:pass@127.0.0.1:8080&#10;127.0.0.1:8080:user:pass"
+                            placeholder={t('settings.batch_import.http_user_pass_127_0_0_1_8080_', "http://user:pass@127.0.0.1:8080&#10;127.0.0.1:8080:user:pass")}
                             value={rawText}
                             onChange={handleTextChange}
                         />
@@ -159,7 +159,7 @@ export default function BatchImportModal({ isOpen, onClose, onImport }: BatchImp
                                 <FileText size={16} />
                                 {t('settings.proxy_pool.import_preview', 'Preview')}
                                 <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs">
-                                    {preview.length} valid
+                                    {preview.length} {t('settings.batch_import.valid', "valid")}
                                 </span>
                             </h4>
                             <div className="bg-gray-50 dark:bg-base-200 rounded-xl border border-gray-200 dark:border-base-300 max-h-40 overflow-y-auto">

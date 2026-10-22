@@ -79,7 +79,7 @@ export const AccentColorPicker: React.FC<AccentColorPickerProps> = ({ compact = 
                             {t('theme.accent_palette')}
                         </span>
                         <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400">
-                            7 PALETTES
+                            {t('common.accent.7_palettes', "7 PALETTES")}
                         </span>
                     </div>
 
