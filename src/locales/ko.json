@@ -57,12 +57,12 @@
     "switch_best_title": "사용 가능한 최적의 계정으로 자동 전환",
     "select_target_title": "대상 환경 선택",
     "no_alternative_account": "충분한 할당량이 있는 활성 대체 계정을 찾을 수 없습니다.",
-    "switch_confirm_prompt": "Do you want to switch to the best recommended account?",
-    "confirm_proceed": "Yes, Continue",
-    "select_target_desc": "Select the target environment where quota should be activated:",
-    "switch_success": "Switch completed successfully",
+    "switch_confirm_prompt": "가장 권장되는 계정으로 전환하시겠습니까?",
+    "confirm_proceed": "예, 계속합니다",
+    "select_target_desc": "할당량을 활성화할 대상 환경을 선택하세요:",
+    "switch_success": "계정 전환이 성공적으로 완료되었습니다",
     "claude_series": "Claude Series",
-    "select_all": "Select All",
+    "select_all": "모두 선택",
     "deselect_all": "Deselect All",
     "more_actions": "추가 작업",
     "account_options": "계정 옵션",
@@ -359,7 +359,7 @@
     "verify_in_google": "Direct Google Verification Page",
     "google_link": "Google",
     "view_guide_pdf": "View PDF Guide",
-    "verify_account_prompt": "Verify your account to continue.",
+    "verify_account_prompt": "계속하려면 계정을 확인하세요.",
     "hello_user": "Hello, {{name}} 👋",
     "shield_active": "Shield Active",
     "shield_subtitle": "Antigravity Shield Gateway • Enterprise AI Rotation & Quota Guard",
@@ -479,7 +479,7 @@
       "step1_li1": "엔터를 눌러 실행하고, 계속할지 물으면 <1>Y</1>를 입력하세요.",
       "step1_li2": "브라우저가 자동으로 열리면 계정을 선택하고 \"허용\"을 클릭하세요.",
       "step1_li3": "<1>You are now authenticated</1> 메시지가 보이면 완료된 것입니다!",
-      "step2_title": "🧹 안 될 경우 (캐시 지우기)",
+      "step2_title": "🧹 그래도 해결되지 않는 경우 (캐시 지우기)",
       "step2_li1_prefix": "다음 명령으로 기존 인증 정보를 지우세요:",
       "step2_li2_prefix": "그런 다음 다시 로그인하세요:",
       "tips_title": "💡 자주 묻는 팁",
@@ -498,7 +498,7 @@
       "step3": "Verify Phone & SMS",
       "step4": "Back to Antigravity",
       "step5": "When the \"Verify your account\" popup appears, click Verify.",
-      "step6": "Select \"Verify your phone number\" and complete the 6-digit SMS verification code.",
+      "step6": "\"전화번호 인증\"을 선택하고 6자리 SMS 인증 코드를 완료하세요.",
       "step7": "Return to Antigravity IDE login page, click Sign in, and IDE will activate immediately!",
       "open_pdf": "Open Visual PDF Guide",
       "open_gcp": "Open Google Cloud Console",
@@ -750,7 +750,7 @@
     "appeal_url_copied": "Appeal link copied to clipboard",
     "quota_5h": "5-Hour Rolling",
     "rolling_5h": "5H Rolling",
-    "verify_prompt": "Google account verification is required to continue.",
+    "verify_prompt": "계속하려면 Google 계정 인증이 필요합니다.",
     "appeal_title": "Google Policy Violation: Submit Official Appeal",
     "appeal_desc": "This account was disabled by Google for automated requests/TOS violation. Click below to submit an official appeal to Google to reinstate this account.",
     "weekly_reset_ready": "Weekly Quota is Fresh / Ready",
@@ -878,7 +878,7 @@
       "enabled_toast": "Auto-Warm enabled",
       "disabled_toast": "Auto-Warm disabled",
       "monitored_models_label": "Warmup Model Scope",
-      "monitored_models_desc": "Select models to warmup. When 5-hour rolling or weekly quota recovers to 100%, a minimal probe starts the new cycle."
+      "monitored_models_desc": "워밍업할 모델을 선택하세요. 5시간 롤링 또는 주간 할당량이 100%로 복구되면 최소한의 프로브가 새 사이클을 시작합니다."
     },
     "quota_protection": {
       "title": "할당량 보호",
@@ -972,7 +972,7 @@
       "antigravity_path_select": "Antigravity 실행 파일 선택",
       "antigravity_path_detected": "감지된 경로가 업데이트되었습니다",
       "antigravity_cli_path": "Antigravity CLI (agy) 경로",
-      "antigravity_cli_path_placeholder": "설정되지 않음 (자동 감지 사용)",
+      "antigravity_cli_path_placeholder": "미설정 (자동 감지 사용)",
       "antigravity_cli_path_desc": "계정 제한을 우회하기 위해 명령줄 클라이언트(agy) 실행 파일 경로를 설정합니다.",
       "antigravity_cli_path_select": "Antigravity CLI (agy) 실행 파일 선택",
       "antigravity_cli_path_detected": "감지된 CLI 경로가 업데이트되었습니다",
@@ -1239,7 +1239,7 @@
         "user_agent": "User-Agent 재정의",
         "user_agent_tooltip": "업스트림 API로 전송되는 User-Agent 헤더를 재정의합니다. 비워 두면 기본값이 사용됩니다.",
         "user_agent_hint": "현재 기본값: antigravity/<version> <os>/<arch>",
-        "user_agent_placeholder": "사용자 지정 User-Agent 문자열 입력..."
+        "user_agent_placeholder": "사용자 정의 User-Agent 입력..."
       },
       "port": "수신 포트",
       "port_tooltip": "로컬 API 프록시가 수신 대기하는 TCP 포트입니다. 변경하려면 서비스를 중지한 다음 다시 시작하여 적용하세요.",
@@ -1388,7 +1388,7 @@
         "title": "적응형 서킷 브레이커",
         "tooltip": "할당량 초과로 인하여 반복적으로 실패하는 계정의 잠금 시간을 자동으로 늘립니다. 이는 작동하지 않는 계정에 대한 불필요한 API 호출을 방지하고, 일시적인 오류는 빠르게 복구될 수 있게 합니다.",
         "backoff_levels": "백오프 레벨 (초)",
-        "input_placeholder": "백오프 기간을 초 단위로 쉼표로 구분하여 입력하세요",
+        "input_placeholder": "대기 시간을 초 단위로 쉼표로 구분하여 입력",
         "level": "레벨 {{level}}",
         "invalid_format": "잘못된 형식입니다. 쉼표로 구분된 숫자(예: 60, 300)를 사용하세요.",
         "clear_records": "모든 제한 기록 삭제"
@@ -1484,7 +1484,7 @@
       "mode_auth": "네임드 터널",
       "mode_auth_desc": "Cloudflare 계정 토큰 사용, 사용자 지정 도메인 지원, 영구 URL",
       "token": "터널 토큰",
-      "token_placeholder": "여기에 Cloudflare 터널 토큰을 붙여넣으세요",
+      "token_placeholder": "Cloudflare Tunnel 토큰을 여기에 붙여넣기",
       "token_hint": "Cloudflare Zero Trust 대시보드에서 가져오기",
       "token_required": "네임드 터널 모드에는 토큰이 필요합니다",
       "use_http2": "HTTP/2 사용",
@@ -1496,7 +1496,7 @@
       "status_stopping": "중지 중...",
       "status_error": "오류",
       "public_url": "공개 URL",
-      "public_url_placeholder": "터널이 시작되면 여기에 공개 URL이 표시됩니다",
+      "public_url_placeholder": "터널 시작 후 여기에 공개 URL이 표시됩니다",
       "copy_url": "URL 복사",
       "url_copied": "URL 복사됨",
       "start_tunnel": "터널 시작",
@@ -1721,7 +1721,7 @@
       "sync_confirm_message": "{{name}}을(를) 구성할 준비가 되었습니다. ⚠️ 경고: 기존 로컬 구성 파일을 덮어씁니다. 계속하시겠습니까?"
     },
     "droid_sync": {
-      "modal_title": "Add Models to Droid",
+      "modal_title": "Droid에 모델 추가",
       "select_models": "추가할 모델 선택",
       "no_models": "추가할 모델을 위에서 선택해 주세요",
       "btn_confirm_sync": "구성 파일에 쓰기",
@@ -1855,8 +1855,8 @@
       "gemini_3_5_flash_gemini_3_5_fl": "Gemini 3.5 Flash (gemini-3.5-flash)",
       "gemini_2_5_flash_gemini_2_5_fl": "Gemini 2.5 Flash (gemini-2.5-flash)",
       "claude_sonnet_4_6_claude_sonne": "Claude Sonnet 4.6 (claude-sonnet-4-6)",
-      "diagnostic_test_prompt": "Diagnostic Test Prompt",
-      "enter_diagnostic_prompt": "Enter diagnostic prompt...",
+      "diagnostic_test_prompt": "진단 테스트 프롬프트",
+      "enter_diagnostic_prompt": "진단 프롬프트를 입력하세요...",
       "probing": "Probing...",
       "test_connection": "Test Connection",
       "sending_probe_request_through": "Sending probe request through",
@@ -1900,7 +1900,7 @@
       "request_model_name_e_g_my_cust": "Request Model Name (e.g. my-custom-model)",
       "rarr": "&rarr;",
       "target_upstream_e_g_gemini_3_f": "Target Upstream (e.g. gemini-3-flash)",
-      "add_mapping": "Add Mapping",
+      "add_mapping": "매핑 추가",
       "no_custom_model_aliases_regist": "No custom model aliases registered. Standard built-in mappings are active below.",
       "incoming_alias": "Incoming Alias",
       "mapped_target": "Mapped Target",
@@ -1935,7 +1935,7 @@
       "save_2": "Save",
       "cancel_2": "Cancel",
       "edit_2": "Edit",
-      "enter_new_admin_password": "Enter new admin password",
+      "enter_new_admin_password": "새 관리자 비밀번호 입력",
       "none_open_access": "None (Open access)",
       "protects_management_web_endpoi": "Protects management web endpoints and remote monitoring views.",
       "cloudflared_zero_trust_tunnel_": "Cloudflared Zero-Trust Tunnel (Egress &amp; Remote Access)",
@@ -2233,7 +2233,7 @@
       "no_data": "데이터 없음"
     },
     "logs": {
-      "search_placeholder": "IP, 경로, 사용자 에이전트 검색...",
+      "search_placeholder": "IP, 경로, User Agent 검색...",
       "username": "사용자",
       "show_blocked_only": "차단된 항목만 표시",
       "status": "상태",
@@ -2264,7 +2264,7 @@
       "reason_label": "사유 (선택)",
       "reason_placeholder": "예: 악성 스캔",
       "expires_label": "만료 시간 (시간, 선택)",
-      "expires_placeholder": "영구적으로 비워두기",
+      "expires_placeholder": "영구적인 경우 비워 둠",
       "cancel": "취소",
       "confirm": "추가",
       "add_btn": "추가",
@@ -2342,7 +2342,7 @@
     "expires_custom": "Custom",
     "custom_expires_required": "Please select a custom expiration time",
     "custom_expires_at": "Expiration Date & Time",
-    "hint_custom_expires": "Select the exact date and hour when this token expires",
+    "hint_custom_expires": "이 토큰이 만료되는 정확한 날짜와 시간을 선택하세요",
     "reqs": "reqs",
     "k_tokens": "k tokens",
     "ips": "IPs",
@@ -2373,7 +2373,7 @@
     },
     "queryTitle": "키 잔액 조회",
     "apiKeyLabel": "API 키",
-    "apiKeyPlaceholder": "API Key를 붙여넣으세요...",
+    "apiKeyPlaceholder": "API 키를 여기에 붙여넣기...",
     "queryButton": "새로고침",
     "cli": {
       "quickConfig": "원클릭 로컬 개발 설정",
@@ -2513,7 +2513,7 @@
   "ecosystem": {
     "title": "Agent Ecosystem Hub",
     "subtitle": "Curate, configure, and monitor agent skills, Model Context Protocol servers, and behavioral rules",
-    "search_placeholder": "Search tools, triggers, servers...",
+    "search_placeholder": "도구, 트리거, 서버 검색...",
     "tabs": {
       "skills": "Agent Skills",
       "mcp": "MCP Servers",
@@ -2568,7 +2568,7 @@
       "download_rank": "Download Rank: #{{rank}}"
     },
     "mcp": {
-      "add_server": "Add MCP Server",
+      "add_server": "MCP 서버 추가",
       "add_modal_title": "Register New MCP Server",
       "test": "Test Server Connection",
       "test_all": "Check All Servers Health",
@@ -2633,7 +2633,7 @@
       "command_and_args": "Execution Command & Arguments"
     },
     "rules": {
-      "create": "Add Instruction Rule",
+      "create": "지시 규칙 추가",
       "active_rule_guidelines_applied": "개의 활성 규칙 가이드라인 적용됨",
       "trigger": "트리거:",
       "edit_rule": "규칙 편집:",
@@ -2729,7 +2729,7 @@
   },
   "theme": {
     "accent_palette": "UI Accent Palette",
-    "choose_accent": "Choose UI Accent Color",
+    "choose_accent": "UI 강조 색상 선택",
     "accents": {
       "seafoam": {
         "name": "Seafoam Green",
