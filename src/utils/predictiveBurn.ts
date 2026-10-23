@@ -15,6 +15,7 @@
  */
 
 import { getDistinctCapacityUnits } from './familyGroup';
+import { getAccountWeeklyReset, getWeeklyTokenQuota } from './quota';
 
 export interface BurnVelocityMetrics {
   sustainabilityRatio: number; // S: <1 means burning faster than time; >1 means surplus
@@ -76,38 +77,28 @@ export function calculateAccountBurnVelocity(
   let quotaRemainingPct = 100;
   let resetTimeMs = now + windowHours * 3600 * 1000;
 
-  // 1. Extract weekly quota from quota_groups
-  const weeklyBucket = account.quota?.quota_groups
-    ?.flatMap((g) => g.buckets || [])
-    ?.find(
-      (b) =>
-        b?.window?.toLowerCase().includes('week') ||
-        b?.bucket_id?.toLowerCase().includes('week')
-    );
-
-  if (weeklyBucket) {
-    if (typeof weeklyBucket.remaining_fraction === 'number') {
+  // 1. Extract weekly quota and cycle reset via unified quota engine
+  const weeklyQuota = getWeeklyTokenQuota(account as any);
+  if (weeklyQuota.percentage !== null) {
+    quotaRemainingPct = Math.max(0, Math.min(100, weeklyQuota.percentage));
+  } else {
+    const weeklyBucket = account.quota?.quota_groups
+      ?.flatMap((g) => g.buckets || [])
+      ?.find(
+        (b) =>
+          b?.window?.toLowerCase().includes('week') ||
+          b?.bucket_id?.toLowerCase().includes('week')
+      );
+    if (weeklyBucket && typeof weeklyBucket.remaining_fraction === 'number') {
       quotaRemainingPct = Math.max(0, Math.min(100, weeklyBucket.remaining_fraction * 100));
     }
-    if (weeklyBucket.reset_time) {
-      const parsed = new Date(weeklyBucket.reset_time).getTime();
-      if (!isNaN(parsed) && parsed > now) {
-        resetTimeMs = parsed;
-      }
-    }
-  } else if (account.quota?.models && account.quota.models.length > 0) {
-    const primary =
-      account.quota.models.find(
-        (m) => m.name?.toLowerCase().includes('pro') || m.name?.toLowerCase().includes('flash')
-      ) || account.quota.models[0];
-    if (primary && typeof primary.percentage === 'number') {
-      quotaRemainingPct = Math.max(0, Math.min(100, primary.percentage));
-    }
-    if (primary?.reset_time) {
-      const parsed = new Date(primary.reset_time).getTime();
-      if (!isNaN(parsed) && parsed > now) {
-        resetTimeMs = parsed;
-      }
+  }
+
+  const weeklyReset = getAccountWeeklyReset(account as any);
+  if (weeklyReset.resetTime) {
+    const parsed = new Date(weeklyReset.resetTime).getTime();
+    if (!isNaN(parsed) && parsed > now) {
+      resetTimeMs = parsed;
     }
   }
 
@@ -387,11 +378,28 @@ export function calculateFleetBurnVelocity(
   const avgBurnRate = totalBurnRate / validCount;
 
   // 3. Discrete-Event Rolling Renewal Simulation (Multi-Server Replenishment Horizon)
-  // Evaluates dynamic inventory over 336 hours (2 full 168-hour cycles) with dt = 0.5h.
-  // Staggered account renewals inject 100% fresh capacity at their exact scheduled timestamps.
+  // Concurrency-capped fleet burn velocity:
+  // In reality, a single developer or pair only consumes through active client channels (IDE, Platform, CLI),
+  // typically 1 to 2 streams in parallel. Blindly summing past historical depletions across all N accounts
+  // creates an artificial N-fold multiplier (Parallel Fallacy).
+  const activeStreamsCount = Math.min(
+    2.0,
+    Math.max(
+      1.0,
+      distinctCapacityAccounts.filter(
+        (a: any) => a.active_targets && Object.keys(a.active_targets).length > 0
+      ).length
+    )
+  );
+
+  const maxIndividualBurn = Math.max(...accountItems.map((a) => a.hourlyBurnRatePct), 0);
+  const totalFleetBurnRatePerHour = Math.min(
+    totalBurnRate,
+    Math.max(maxIndividualBurn, avgBurnRate * activeStreamsCount)
+  );
+
   const HORIZON_HOURS = 336;
   const DT = 0.5;
-  const totalFleetBurnRatePerHour = totalBurnRate; // aggregate percentage points consumed per hour
 
   const simQuota = accountItems.map((a) => a.quotaPct);
   const simNextReset = accountItems.map((a) => a.timeRemainingHours);
@@ -525,7 +533,7 @@ export function calculateFleetBurnVelocity(
 
   return {
     sustainabilityRatio: isNaN(sustainabilityRatio) ? 1.0 : Number(sustainabilityRatio.toFixed(2)),
-    hourlyBurnRatePct: isNaN(avgBurnRate) ? 0 : Number(avgBurnRate.toFixed(2)),
+    hourlyBurnRatePct: isNaN(totalFleetBurnRatePerHour) ? 0 : Number(totalFleetBurnRatePerHour.toFixed(2)),
     runwayHoursRemaining: isNaN(runwayHoursRemaining) ? 168 : Math.round(runwayHoursRemaining),
     projectedDepletionDate,
     isDepletedBeforeReset,
