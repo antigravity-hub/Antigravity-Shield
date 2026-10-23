@@ -34,7 +34,7 @@ fn oauth_success_html() -> &'static str {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>احراز هویت موفق • Antigravity Shield</title>
+    <title>Authentication Successful • احراز هویت موفق • Antigravity Shield</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap');
         
@@ -410,37 +410,155 @@ fn oauth_success_html() -> &'static str {
             pointer-events: auto;
         }
 
-        .final-title {
-            font-size: 22px;
+        .final-title-en {
+            font-family: 'Inter', sans-serif;
+            font-size: 23px;
             font-weight: 800;
             color: #f8fafc;
-            margin-bottom: 8px;
+            margin-bottom: 3px;
+            letter-spacing: -0.02em;
+            direction: ltr;
         }
 
-        .final-hint {
-            font-size: 14.5px;
+        .final-title-fa {
+            font-size: 18px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 12px;
+            direction: rtl;
+        }
+
+        .final-hint-en {
+            font-family: 'Inter', sans-serif;
+            font-size: 13.5px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 4px;
+            direction: ltr;
+        }
+
+        .final-hint-fa {
+            font-size: 13px;
             color: #94a3b8;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
+            direction: rtl;
         }
 
         .close-tab-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 12px 28px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(16, 185, 129, 0.35));
-            border: 1.5px solid rgba(56, 189, 248, 0.5);
+            gap: 10px;
+            padding: 12px 26px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.28), rgba(16, 185, 129, 0.38));
+            border: 1.5px solid rgba(56, 189, 248, 0.55);
             border-radius: 9999px;
             color: #ffffff;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.25);
             pointer-events: auto;
+        }
+
+        .shortcut-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #f1f5f9;
+            font-family: 'Inter', monospace;
+            letter-spacing: 0.04em;
+        }
+
+        .browser-notice {
+            margin-top: 18px;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeInNotice 0.3s ease;
+        }
+
+        .browser-notice .notice-en {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 4px;
+            direction: ltr;
+        }
+
+        .browser-notice .notice-fa {
+            font-size: 11.5px;
+            color: #64748b;
+            line-height: 1.5;
+            direction: rtl;
+        }
+
+        .browser-notice kbd {
+            padding: 1px 5px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .sub-fa {
+            font-size: 15px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-top: 2px;
+            margin-bottom: 12px;
+            direction: rtl;
+        }
+
+        .desc-en {
+            font-family: 'Inter', sans-serif;
+            font-size: 13.5px;
+            color: #e2e8f0;
+            margin-bottom: 2px;
+            line-height: 1.5;
+            direction: ltr;
+        }
+
+        .desc-fa {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            direction: rtl;
+        }
+
+        .desc-sub-en {
+            font-family: 'Inter', sans-serif;
+            font-size: 12.5px;
+            color: #cbd5e1;
+            margin-bottom: 2px;
+            direction: ltr;
+        }
+
+        .desc-sub-fa {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 16px;
+            direction: rtl;
+        }
+
+        @keyframes fadeInNotice {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .close-tab-btn:hover {
@@ -499,17 +617,23 @@ fn oauth_success_html() -> &'static str {
             
             <div class="badge">
                 <span class="badge-dot"></span>
-                <span>احراز هویت و همگام‌سازی خودکار</span>
+                <span>Authentication Verified &bull; همگام‌سازی تایید شد</span>
             </div>
 
-            <h1>احراز هویت با موفقیت انجام شد</h1>
-            <div class="sub-en">Authentication Verified & Synchronized</div>
+            <h1>Authentication Verified</h1>
+            <div class="sub-fa">احراز هویت با موفقیت انجام شد</div>
 
-            <p class="desc">
-                نشست کاربری شما با موفقیت تایید و برنامه Antigravity Shield متصل گردید.
+            <p class="desc-en">
+                Your account is verified and connected to Antigravity Shield.
             </p>
-            <p class="desc-sub">
-                نیازی به انجام کار دیگری نیست؛ می‌توانید این پنجره را ببندید.
+            <p class="desc-fa">
+                نشست کاربری تایید شد و به Antigravity Shield متصل گردید.
+            </p>
+            <p class="desc-sub-en">
+                No further action is required. You can safely close this window.
+            </p>
+            <p class="desc-sub-fa">
+                نیازی به کار دیگری نیست؛ می‌توانید این پنجره را ببندید.
             </p>
 
             <div class="timer-widget">
@@ -531,7 +655,7 @@ fn oauth_success_html() -> &'static str {
                 </div>
                 <div class="timer-label">
                     <span class="timer-pulse"></span>
-                    <span>بسته شدن خودکار در ۳ ثانیه...</span>
+                    <span>Auto-closing in 3s &bull; بستن خودکار در ۳ ثانیه...</span>
                 </div>
             </div>
 
@@ -546,12 +670,19 @@ fn oauth_success_html() -> &'static str {
                 <path class="checkmark-check" d="M14.5 27.5L22 35L37.5 19" style="stroke-dashoffset: 0;" />
             </svg>
         </div>
-        <div class="final-title">احراز هویت با موفقیت انجام شد</div>
-        <div class="final-hint">اکانت با موفقیت به Antigravity Shield متصل گردید.<br>اکنون می‌توانید این برگه را با خیال راحت ببندید.</div>
-        <button class="close-tab-btn" onclick="tryCloseTab()">
+        <div class="final-title-en">Authentication Successful</div>
+        <div class="final-title-fa">احراز هویت با موفقیت انجام شد</div>
+        <div class="final-hint-en">Account connected to Antigravity Shield successfully.<br>You can safely close this browser tab now.</div>
+        <div class="final-hint-fa">اکانت با موفقیت به Antigravity Shield متصل گردید.<br>اکنون می‌توانید این برگه را با خیال راحت ببندید.</div>
+        <button class="close-tab-btn" onclick="tryCloseTab()" id="closeTabBtn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            بستن این برگه
+            <span>Close Tab &bull; بستن این برگه</span>
+            <kbd class="shortcut-pill" id="shortcutPill">Ctrl + W</kbd>
         </button>
+        <div class="browser-notice" id="browserNotice" style="display: none;">
+            <div class="notice-en">Browser security policy prevents automatic script closure.<br>Please press <kbd id="shortcutNoticeKbd">Ctrl + W</kbd> or click <b>&times;</b> on the tab bar.</div>
+            <div class="notice-fa">مرورگر به دلایل امنیتی اجازه بستن خودکار برگه را نمی‌دهد.<br>لطفاً کلیدهای <kbd id="shortcutNoticeKbdFa">Ctrl + W</kbd> را فشار دهید یا ضربدر <b>&times;</b> بالای برگه را بزنید.</div>
+        </div>
     </div>
 
     <script>
@@ -819,7 +950,20 @@ fn oauth_success_html() -> &'static str {
             }
         }, 1000);
 
+        let closeAttempts = 0;
+        function setupPlatformShortcut() {
+            const isMac = navigator.platform && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+            const keyStr = isMac ? '⌘ + W' : 'Ctrl + W';
+            const pill = document.getElementById('shortcutPill');
+            const noticeKbd = document.getElementById('shortcutNoticeKbd');
+            const noticeKbdFa = document.getElementById('shortcutNoticeKbdFa');
+            if (pill) pill.textContent = keyStr;
+            if (noticeKbd) noticeKbd.textContent = keyStr;
+            if (noticeKbdFa) noticeKbdFa.textContent = keyStr;
+        }
+
         function tryCloseTab() {
+            closeAttempts++;
             if (window.opener) {
                 try {
                     window.opener.postMessage({ type: 'oauth-success', message: 'login success' }, '*');
@@ -828,7 +972,26 @@ fn oauth_success_html() -> &'static str {
             try { window.open('', '_self', ''); window.close(); } catch (e) {}
             try { window.close(); } catch (e) {}
             try { self.close(); } catch (e) {}
+
+            // In modern browsers, scripts are blocked from closing windows they didn't open.
+            // If the tab is still open after 150ms, display the keyboard shortcut notice.
+            setTimeout(() => {
+                const notice = document.getElementById('browserNotice');
+                if (notice) notice.style.display = 'block';
+                // If user clicks a second time, navigate to about:blank to at least blank the tab
+                if (closeAttempts >= 2) {
+                    try { window.location.replace('about:blank'); } catch (e) {}
+                }
+            }, 150);
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' || e.key === 'Enter') {
+                tryCloseTab();
+            }
+        });
+
+        setupPlatformShortcut();
 
         function finishFlow() {
             tryCloseTab();
