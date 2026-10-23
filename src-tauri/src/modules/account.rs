@@ -779,91 +779,126 @@ pub fn get_accounts_dir() -> Result<PathBuf, String> {
     Ok(accounts_dir)
 }
 
-/// Load account index from a specific directory (internal helper)
+/// Load account index from a specific directory (internal helper with self-healing .bak support)
 fn load_account_index_in_dir(data_dir: &PathBuf) -> Result<AccountIndex, String> {
     let index_path = data_dir.join(ACCOUNTS_INDEX);
+    let bak_path = index_path.with_extension("bak");
 
-    if !index_path.exists() {
-        crate::modules::logger::log_warn(
-            "Account index file not found, attempting recovery from accounts directory",
-        );
-        let recovered = rebuild_index_from_accounts_in_dir(data_dir)?;
-        try_save_recovered_index(data_dir, &index_path, &recovered, None)?;
-        return Ok(recovered);
-    }
-
-    let raw_content =
-        fs::read(&index_path).map_err(|e| format!("failed_to_read_account_index: {}", e))?;
-
-    // If file is empty, attempt recovery
-    if raw_content.is_empty() {
-        crate::modules::logger::log_warn(
-            "Account index is empty, attempting recovery from accounts directory",
-        );
-        let recovered = rebuild_index_from_accounts_in_dir(data_dir)?;
-        try_save_recovered_index(data_dir, &index_path, &recovered, None)?;
-        return Ok(recovered);
-    }
-
-    // Sanitize content: strip BOM and leading NUL bytes
-    let sanitized = sanitize_index_content(&raw_content);
-
-    // If sanitized content is empty/whitespace, attempt recovery
-    if sanitized.trim().is_empty() {
-        crate::modules::logger::log_warn(
-            "Account index is empty after sanitization, attempting recovery from accounts directory",
-        );
-        let recovered = rebuild_index_from_accounts_in_dir(data_dir)?;
-        try_save_recovered_index(data_dir, &index_path, &recovered, None)?;
-        return Ok(recovered);
-    }
-
-    // Try to parse sanitized content
-    match serde_json::from_str::<AccountIndex>(&sanitized) {
-        Ok(index) => {
-            crate::modules::logger::log_info(&format!(
-                "Successfully loaded index with {} accounts",
-                index.accounts.len()
-            ));
-            Ok(index)
+    let try_parse_index_bytes = |raw: &[u8]| -> Option<AccountIndex> {
+        if raw.is_empty() || raw.iter().take(16).all(|&b| b == 0) {
+            return None;
         }
-        Err(parse_err) => {
-            crate::modules::logger::log_error(&format!(
-                "Failed to parse account index: {}. Attempting recovery from accounts directory",
-                parse_err
-            ));
-            let recovered = rebuild_index_from_accounts_in_dir(data_dir)?;
-            try_save_recovered_index(data_dir, &index_path, &recovered, Some(&raw_content))?;
-            Ok(recovered)
+        let sanitized = sanitize_index_content(raw);
+        if sanitized.trim().is_empty() {
+            return None;
+        }
+        serde_json::from_str::<AccountIndex>(&sanitized).ok()
+    };
+
+    if index_path.exists() {
+        if let Ok(raw_content) = fs::read(&index_path) {
+            if let Some(index) = try_parse_index_bytes(&raw_content) {
+                crate::modules::logger::log_info(&format!(
+                    "Successfully loaded index with {} accounts",
+                    index.accounts.len()
+                ));
+                return Ok(index);
+            }
         }
     }
+
+    // Index file missing or corrupted: check rolling backup accounts.json.bak
+    if bak_path.exists() {
+        if let Ok(bak_content) = fs::read(&bak_path) {
+            if let Some(index) = try_parse_index_bytes(&bak_content) {
+                crate::modules::logger::log_warn(
+                    "🛡️ [Self-Healing] Account index was missing or corrupted, successfully restored from rolling backup accounts.json.bak"
+                );
+                let _ = save_account_index_in_dir(data_dir, &index);
+                return Ok(index);
+            }
+        }
+    }
+
+    // Both main index and .bak failed: fallback to scanning accounts directory
+    crate::modules::logger::log_warn(
+        "Account index and backup unavailable, attempting recovery from accounts directory",
+    );
+    let recovered = rebuild_index_from_accounts_in_dir(data_dir)?;
+    try_save_recovered_index(data_dir, &index_path, &recovered, None)?;
+    Ok(recovered)
 }
 
-/// Save account index to a specific directory (internal helper)
-fn save_account_index_in_dir(data_dir: &PathBuf, index: &AccountIndex) -> Result<(), String> {
-    let index_path = data_dir.join(ACCOUNTS_INDEX);
-    // Use unique temp file name per write to avoid collision
-    let temp_filename = format!("{}.tmp.{}", ACCOUNTS_INDEX, Uuid::new_v4());
-    let temp_path = data_dir.join(&temp_filename);
+/// Safely writes content to a file atomically with crash resilience:
+/// 1. Writes to temporary file
+/// 2. Calls sync_all() (FlushFileBuffers on Windows) to ensure dirty OS cache is committed to disk before rename
+/// 3. Creates a rolling .bak of the destination file if it exists and is valid (> 0 bytes)
+/// 4. Replaces destination atomically using atomic_replace_file (MoveFileExW)
+pub(crate) fn safe_atomic_write_file(target_path: &PathBuf, content: &[u8]) -> Result<(), String> {
+    use std::io::Write;
 
-    let content = serde_json::to_string_pretty(index)
-        .map_err(|e| format!("failed_to_serialize_account_index: {}", e))?;
+    let parent_dir = target_path
+        .parent()
+        .map(|p| p.to_path_buf())
+        .ok_or_else(|| "invalid_target_path".to_string())?;
 
-    // Write to temporary file
-    if let Err(e) = fs::write(&temp_path, content) {
-        // Clean up temp file on failure
-        let _ = fs::remove_file(&temp_path);
-        return Err(format!("failed_to_write_temp_index_file: {}", e));
+    let filename = target_path
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or("file");
+
+    let temp_filename = format!("{}.tmp.{}", filename, Uuid::new_v4());
+    let temp_path = parent_dir.join(&temp_filename);
+
+    // 1. Write to temp file and flush buffers to physical disk
+    {
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open(&temp_path)
+            .map_err(|e| format!("failed_to_create_temp_file: {}", e))?;
+
+        file.write_all(content)
+            .map_err(|e| {
+                let _ = fs::remove_file(&temp_path);
+                format!("failed_to_write_temp_file: {}", e)
+            })?;
+
+        // CRITICAL FOR CRASH-RESISTANCE: Flush NTFS OS dirty page cache
+        file.sync_all()
+            .map_err(|e| {
+                let _ = fs::remove_file(&temp_path);
+                format!("failed_to_sync_temp_file: {}", e)
+            })?;
     }
 
-    // Atomic rename with platform-specific handling
-    if let Err(e) = atomic_replace_file(&temp_path, &index_path) {
-        // Clean up temp file on failure
+    // 2. Maintain a rolling .bak of the existing good file before replacement
+    if target_path.exists() {
+        if let Ok(meta) = fs::metadata(target_path) {
+            if meta.len() > 0 {
+                let bak_path = target_path.with_extension("bak");
+                let _ = fs::copy(target_path, &bak_path);
+            }
+        }
+    }
+
+    // 3. Atomic rename with platform MoveFileExW
+    if let Err(e) = atomic_replace_file(&temp_path, target_path) {
         let _ = fs::remove_file(&temp_path);
-        return Err(format!("failed_to_replace_index_file: {}", e));
+        return Err(format!("failed_to_replace_file: {}", e));
     }
 
     Ok(())
+}
+
+/// Save account index to a specific directory (internal helper with crash resilience)
+fn save_account_index_in_dir(data_dir: &PathBuf, index: &AccountIndex) -> Result<(), String> {
+    let index_path = data_dir.join(ACCOUNTS_INDEX);
+    let content = serde_json::to_string_pretty(index)
+        .map_err(|e| format!("failed_to_serialize_account_index: {}", e))?;
+
+    safe_atomic_write_file(&index_path, content.as_bytes())
 }
 
 /// Rebuild AccountIndex by scanning accounts/*.json files in specific directory
@@ -930,28 +965,45 @@ fn rebuild_index_from_accounts_in_dir(data_dir: &PathBuf) -> Result<AccountIndex
     })
 }
 
-/// Load account from a specific path with self-healing support for trailing characters/corrupted suffixes
+/// Load account from a specific path with self-healing support for trailing characters, zero-fill recovery, and rolling .bak fallback
 fn load_account_at_path(account_path: &PathBuf) -> Result<Account, String> {
-    let content = fs::read_to_string(account_path)
-        .map_err(|e| format!("failed_to_read_account_data: {}", e))?;
+    let try_parse_account = |path: &PathBuf| -> Result<Account, String> {
+        let raw = fs::read(path).map_err(|e| format!("failed_to_read_account_data: {}", e))?;
+        if raw.is_empty() || raw.iter().take(16).all(|&b| b == 0) {
+            return Err("file is zero-filled or empty".to_string());
+        }
+        let content = String::from_utf8(raw).map_err(|e| format!("invalid_utf8: {}", e))?;
+        match serde_json::from_str::<Account>(&content) {
+            Ok(account) => Ok(account),
+            Err(e) => {
+                let err_msg = e.to_string();
+                // Self-healing attempt: handle trailing characters / extra closing brackets
+                if err_msg.contains("trailing characters") || err_msg.contains("trailing comma") || err_msg.contains("trailing") {
+                    let mut de = serde_json::Deserializer::from_str(&content);
+                    if let Ok(account) = serde::Deserialize::deserialize(&mut de) {
+                        return Ok(account);
+                    }
+                }
+                Err(format!("failed_to_parse_account_data: {}", err_msg))
+            }
+        }
+    };
 
-    match serde_json::from_str::<Account>(&content) {
+    match try_parse_account(account_path) {
         Ok(account) => Ok(account),
-        Err(e) => {
-            let err_msg = e.to_string();
-            // Self-healing attempt: handle trailing characters / extra closing brackets
-            if err_msg.contains("trailing characters") || err_msg.contains("trailing comma") || err_msg.contains("trailing") {
-                let mut de = serde_json::Deserializer::from_str(&content);
-                if let Ok(account) = serde::Deserialize::deserialize(&mut de) {
+        Err(orig_err) => {
+            let bak_path = account_path.with_extension("bak");
+            if bak_path.exists() {
+                if let Ok(recovered) = try_parse_account(&bak_path) {
                     crate::modules::logger::log_warn(&format!(
-                        "Self-healing account JSON at {:?}: recovered valid account data from trailing characters, saving clean file",
-                        account_path
+                        "🛡️ [Self-Healing] Corrupted account file {:?} ({}). Successfully recovered from .bak backup",
+                        account_path, orig_err
                     ));
-                    let _ = save_account_at_path(account_path, &account);
-                    return Ok(account);
+                    let _ = save_account_at_path(account_path, &recovered);
+                    return Ok(recovered);
                 }
             }
-            Err(format!("failed_to_parse_account_data: {}", err_msg))
+            Err(orig_err)
         }
     }
 }
@@ -1124,33 +1176,15 @@ pub fn load_account(account_id: &str) -> Result<Account, String> {
     load_account_at_path(&account_path)
 }
 
-/// Save account data at specific file path (thread-safe and atomic)
+/// Save account data at specific file path (thread-safe, atomic, and crash-resilient)
 fn save_account_at_path(account_path: &PathBuf, account: &Account) -> Result<(), String> {
     let _lock = get_account_lock(&account.id);
     let _guard = _lock.lock().unwrap();
 
-    let parent_dir = account_path
-        .parent()
-        .map(|p| p.to_path_buf())
-        .ok_or_else(|| "invalid_account_path".to_string())?;
-
-    let temp_filename = format!("{}.tmp.{}", account.id, Uuid::new_v4());
-    let temp_path = parent_dir.join(&temp_filename);
-
     let content = serde_json::to_string_pretty(account)
         .map_err(|e| format!("failed_to_serialize_account_data: {}", e))?;
 
-    if let Err(e) = std::fs::write(&temp_path, content) {
-        let _ = std::fs::remove_file(&temp_path);
-        return Err(format!("failed_to_write_temp_account_file: {}", e));
-    }
-
-    if let Err(e) = atomic_replace_file(&temp_path, account_path) {
-        let _ = std::fs::remove_file(&temp_path);
-        return Err(format!("failed_to_replace_account_file: {}", e));
-    }
-
-    Ok(())
+    safe_atomic_write_file(account_path, content.as_bytes())
 }
 
 /// Save account data (thread-safe and atomic)

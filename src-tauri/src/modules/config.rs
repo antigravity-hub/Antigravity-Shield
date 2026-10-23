@@ -174,21 +174,13 @@ pub fn load_app_config() -> Result<AppConfig, String> {
     Ok(config)
 }
 
-/// Save application configuration (atomic write)
+/// Save application configuration (atomic write with crash resilience)
 pub fn save_app_config(config: &AppConfig) -> Result<(), String> {
     let data_dir = get_data_dir()?;
     let config_path = data_dir.join(CONFIG_FILE);
-    let temp_path = data_dir.join(format!("{}.tmp.{}", CONFIG_FILE, std::process::id()));
 
     let content = serde_json::to_string_pretty(config)
         .map_err(|e| format!("failed_to_serialize_config: {}", e))?;
 
-    fs::write(&temp_path, &content).map_err(|e| format!("failed_to_save_temp_config: {}", e))?;
-
-    if let Err(e) = crate::modules::account::atomic_replace_file(&temp_path, &config_path) {
-        let _ = fs::remove_file(&temp_path);
-        return Err(format!("failed_to_commit_config: {}", e));
-    }
-
-    Ok(())
+    crate::modules::account::safe_atomic_write_file(&config_path, content.as_bytes())
 }
