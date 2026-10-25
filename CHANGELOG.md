@@ -3,6 +3,11 @@
 > Complete version history for Antigravity Shield. Return to project home at [README.md](README.md) | [English Documentation](README_EN.md).
 
 *   **Version History**:
+    *   **v6.5.0 (2026-10-25)**:
+        -   **Platform 2.0+ Active Account Auto-Detection**: Dynamic non-locking inspection of Antigravity Platform database (`state.vscdb`) parsing both `antigravityAuthStatus` JSON credentials and protobuf `antigravityUnifiedStateSync.userStatus` with SQLITE_OPEN_URI read-only locks, ensuring seamless active account synchronization across Platform and IDE targets.
+        -   **Google Baseline Quota Lockout Guard (429 RESOURCE_EXHAUSTED)**: Gracefully handles Google baseline quota exhaustion by marking account models as depleted with an automatic 4-hour cooldown reset timestamp, eliminating error cascade loops.
+        -   **In-App Model Switch & Resilient Window Management**: Guided notifications for smooth model transitions when Claude quota is depleted, preventing ping-pong app restarts, restoring foreground focus via Windows Win32 APIs, and refining RTL window controls.
+        -   **5-Gate i18n Quality Assurance**: Certified 100% key and variable parity across all 13 supported locales (2,412 leaf keys each) with zero un-localized UI strings.
     *   **v6.2.1 (2026-10-21)**:
         -   **Accurate Subscription Tier Classification (`PRO (TRIAL)` vs `PRO (PAID)` vs `ULTRA`)**: Resolved subscription tier ambiguity by inspecting Google's authoritative `currentTier` object in `quota.rs` rather than promotional upgrade offers (`paidTier`). Added dedicated badge indicators across account cards and status HUDs to clearly separate promotional long trials from genuine paid Pro and Ultra accounts.
         -   **Safe On-Demand Gemini 4 Argon Pipeline**: Purged forced Argon brain rewrites and persistent alert banners from the proxy gateway and UI. Gemini 4 Argon models are now dynamically queried and surfaced strictly on-demand for accounts with active upstream quota allocations (`disabled: false`), protecting trial users from 429 quota exhaustion errors.

@@ -2902,17 +2902,17 @@ async fn admin_toolkit_heartbeat(
     Json(payload): Json<crate::modules::ide_scanner::ToolkitHeartbeatPayload>,
 ) -> impl IntoResponse {
     let active_email = payload.active_email.clone();
+    let target_env = if payload.ide.to_lowercase().contains("platform") {
+        "platform"
+    } else {
+        "ide"
+    };
     crate::modules::ide_scanner::record_heartbeat(payload);
 
     // Synchronize active account based on target reported in heartbeat (Platform or IDE)
     if let Some(ref email) = active_email {
         if !email.trim().is_empty() {
             if let Ok(Some(acc)) = crate::modules::account::find_account_by_email(email) {
-                let target_env = if payload.ide.to_lowercase().contains("platform") {
-                    "platform"
-                } else {
-                    "ide"
-                };
                 if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
                     let is_already_active = if target_env == "platform" {
                         targets.platform.as_deref() == Some(&acc.id)

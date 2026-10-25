@@ -1012,7 +1012,7 @@ pub fn focus_antigravity(target_ide: Option<&str>) -> Result<(), String> {
     {
         let pids = get_antigravity_pids(target_ide);
         if !pids.is_empty() {
-            if win32_window_close::focus_windows(&pids) {
+            if win_graceful::focus_windows(&pids) {
                 crate::modules::logger::log_info(&format!(
                     "[Process] Brought Antigravity ({:?}) to foreground",
                     target_ide
