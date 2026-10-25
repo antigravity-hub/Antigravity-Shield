@@ -100,6 +100,71 @@ pub fn get_db_path(target_ide: Option<&str>) -> Result<PathBuf, String> {
         .ok_or_else(|| "Failed to locate database path".to_string())
 }
 
+/// Detect active email currently logged into the local Antigravity database for a given target ("platform", "ide", etc.)
+pub fn detect_active_email_from_db(target_ide: Option<&str>) -> Option<String> {
+    let candidates = get_all_candidate_db_paths(target_ide);
+    for db_path in candidates {
+        if !db_path.exists() {
+            continue;
+        }
+
+        // Open in read-only mode with URI flag to prevent database locking
+        let conn = match rusqlite::Connection::open_with_flags(
+            &db_path,
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_URI,
+        ) {
+            Ok(c) => c,
+            Err(_) => continue,
+        };
+
+        // 1. Direct JSON check from modern antigravityAuthStatus (used by Platform 2.0+ and latest IDE)
+        let auth_status: Option<String> = conn
+            .query_row(
+                "SELECT value FROM ItemTable WHERE key = ?",
+                ["antigravityAuthStatus"],
+                |row| row.get(0),
+            )
+            .ok();
+
+        if let Some(raw_json) = auth_status {
+            if let Ok(val) = serde_json::from_str::<serde_json::Value>(&raw_json) {
+                if let Some(email) = val.get("email").and_then(|v| v.as_str()) {
+                    let trimmed = email.trim();
+                    if !trimmed.is_empty() && trimmed.contains('@') {
+                        return Some(trimmed.to_string());
+                    }
+                }
+            }
+        }
+
+        // 2. Protobuf / Unified state check (userStatus)
+        let user_status_b64: Option<String> = conn
+            .query_row(
+                "SELECT value FROM ItemTable WHERE key = ?",
+                ["antigravityUnifiedStateSync.userStatus"],
+                |row| row.get(0),
+            )
+            .ok();
+
+        if let Some(b64) = user_status_b64 {
+            if let Ok((sentinel, payload)) = crate::utils::protobuf::decode_unified_state_entry(&b64) {
+                if sentinel == "userStatusSentinelKey" {
+                    if let Ok(text) = String::from_utf8(payload) {
+                        static EMAIL_RE: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+                            regex::Regex::new(r"[\w\.-]+@[\w\.-]+\.\w+").unwrap()
+                        });
+                        if let Some(mat) = EMAIL_RE.find(&text) {
+                            return Some(mat.as_str().to_string());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
 /// Inject Token and Email into database
 pub fn inject_token(
     db_path: &PathBuf,
@@ -203,6 +268,17 @@ fn inject_new_format(
     } else {
         clear_enterprise_project_preference(&conn)?;
     }
+
+    // Also inject modern antigravityAuthStatus JSON for Antigravity Platform & IDE consistency
+    let auth_status_json = serde_json::json!({
+        "name": email.split('@').next().unwrap_or(email),
+        "apiKey": access_token,
+        "email": email,
+    });
+    let _ = conn.execute(
+        "INSERT OR REPLACE INTO ItemTable (key, value) VALUES (?, ?)",
+        ["antigravityAuthStatus", &auth_status_json.to_string()],
+    );
 
     // Inject Onboarding flag
     conn.execute(

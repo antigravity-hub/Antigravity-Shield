@@ -2904,16 +2904,26 @@ async fn admin_toolkit_heartbeat(
     let active_email = payload.active_email.clone();
     crate::modules::ide_scanner::record_heartbeat(payload);
 
-    // If the connected IDE reports its active email, ensure active_ide_account_id stays synchronized
+    // Synchronize active account based on target reported in heartbeat (Platform or IDE)
     if let Some(ref email) = active_email {
         if !email.trim().is_empty() {
             if let Ok(Some(acc)) = crate::modules::account::find_account_by_email(email) {
+                let target_env = if payload.ide.to_lowercase().contains("platform") {
+                    "platform"
+                } else {
+                    "ide"
+                };
                 if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
-                    if targets.ide.as_deref() != Some(&acc.id) {
-                        let _ = crate::modules::account::set_current_account_id_with_target(&acc.id, Some("ide"));
+                    let is_already_active = if target_env == "platform" {
+                        targets.platform.as_deref() == Some(&acc.id)
+                    } else {
+                        targets.ide.as_deref() == Some(&acc.id)
+                    };
+                    if !is_already_active {
+                        let _ = crate::modules::account::set_current_account_id_with_target(&acc.id, Some(target_env));
                         logger::log_info(&format!(
-                            "[Toolkit Heartbeat] Synchronized active IDE target to account {} ({})",
-                            acc.email, acc.id
+                            "[Toolkit Heartbeat] Synchronized active {} target to account {} ({})",
+                            target_env, acc.email, acc.id
                         ));
                     }
                 }

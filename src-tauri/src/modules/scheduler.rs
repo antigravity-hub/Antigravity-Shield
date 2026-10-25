@@ -222,7 +222,7 @@ pub fn start_scheduler(
                 // 2. Fall back to active target accounts
                 if active_target_account_id.is_none() {
                     if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
-                        active_target_account_id = targets.ide.or(targets.agy);
+                        active_target_account_id = targets.platform.or(targets.ide).or(targets.agy);
                     }
                 }
                 // 3. Fall back to current account
@@ -425,7 +425,12 @@ pub fn start_scheduler(
                                                                             };
                                                                             let service = crate::modules::account_service::AccountService::new(sys_manager);
 
-                                                                            if let Err(e) = service.switch_account(&best_cand.id, Some("ide")).await {
+                                                                            let target_env = if refreshed_acc.active_targets.contains(&"platform".to_string()) {
+                                                                                Some("platform")
+                                                                            } else {
+                                                                                Some("ide")
+                                                                            };
+                                                                            if let Err(e) = service.switch_account(&best_cand.id, target_env).await {
                                                                                 logger::log_error(&format!("[Scheduler] Preemptive auto-switch execution failed: {}", e));
                                                                             } else {
                                                                                 if let Some(ref app) = app_handle_for_daemon {

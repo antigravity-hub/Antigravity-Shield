@@ -408,6 +408,28 @@ pub async fn fetch_quota_with_cache(
 
                         let text = response.text().await.unwrap_or_default();
 
+                        // Handle Google Baseline Quota Lockout (429 RESOURCE_EXHAUSTED) gracefully
+                        if status == rquest::StatusCode::TOO_MANY_REQUESTS && text.contains("RESOURCE_EXHAUSTED") {
+                            crate::modules::logger::log_warn(&format!(
+                                "⚠️ [Quota] Account {} hit 429 RESOURCE_EXHAUSTED (Baseline quota reached). Marking models as depleted.",
+                                email
+                            ));
+                            let now = chrono::Utc::now();
+                            let reset_time = (now + chrono::Duration::hours(4)).to_rfc3339();
+                            if let Some(acc_id) = account_id {
+                                if let Ok(existing_acc) = crate::modules::account::load_account(acc_id) {
+                                    if let Some(mut old_q) = existing_acc.quota {
+                                        for m in old_q.models.iter_mut() {
+                                            m.percentage = 0;
+                                            m.reset_time = reset_time.clone();
+                                        }
+                                        old_q.last_updated = now.timestamp();
+                                        return Ok((old_q, None));
+                                    }
+                                }
+                            }
+                        }
+
                         // 429/5xx: fallback to next endpoint
                         if has_next
                             && (status == rquest::StatusCode::TOO_MANY_REQUESTS

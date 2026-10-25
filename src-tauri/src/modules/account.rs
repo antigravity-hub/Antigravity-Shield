@@ -1199,39 +1199,22 @@ pub fn list_accounts() -> Result<Vec<Account>, String> {
     let index = load_account_index()?;
     let mut accounts = Vec::new();
 
-    let active_platform = index.active_platform_account_id.as_ref().or_else(|| {
-        if index.current_target_ide.as_deref() == Some("platform") || index.current_target_ide.is_none() {
-            index.current_account_id.as_ref()
-        } else {
-            None
-        }
-    });
-    let active_ide = index.active_ide_account_id.as_ref().or_else(|| {
-        if index.current_target_ide.as_deref() == Some("ide") {
-            index.current_account_id.as_ref()
-        } else {
-            None
-        }
-    });
-    let active_cli = index.active_cli_account_id.as_ref().or_else(|| {
-        if index.current_target_ide.as_deref() == Some("agy") || index.current_target_ide.as_deref() == Some("cli") {
-            index.current_account_id.as_ref()
-        } else {
-            None
-        }
-    });
+    let active_targets = get_active_target_accounts().ok();
+    let active_platform = active_targets.as_ref().and_then(|t| t.platform.clone());
+    let active_ide = active_targets.as_ref().and_then(|t| t.ide.clone());
+    let active_cli = active_targets.as_ref().and_then(|t| t.agy.clone());
 
     for summary in &index.accounts {
         match load_account(&summary.id) {
             Ok(mut account) => {
                 let mut targets = Vec::new();
-                if active_platform == Some(&account.id) {
+                if active_platform.as_deref() == Some(&account.id) {
                     targets.push("platform".to_string());
                 }
-                if active_ide == Some(&account.id) {
+                if active_ide.as_deref() == Some(&account.id) {
                     targets.push("ide".to_string());
                 }
-                if active_cli == Some(&account.id) {
+                if active_cli.as_deref() == Some(&account.id) {
                     targets.push("agy".to_string());
                 }
                 account.active_targets = targets;
@@ -2018,24 +2001,55 @@ pub fn set_current_account_id_with_target(
 
 /// Get active target accounts for all environments
 pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccounts, String> {
-    let index = load_account_index()?;
+    let mut index = load_account_index()?;
+    let mut dirty = false;
 
-    let platform = index.active_platform_account_id.clone().or_else(|| {
-        if index.current_target_ide.as_deref() == Some("platform") || index.current_target_ide.is_none() {
-            index.current_account_id.clone()
+    // 1. Platform: prioritize dynamic disk detection from Antigravity Platform database
+    let platform = if let Some(detected_email) = crate::modules::db::detect_active_email_from_db(Some("platform")) {
+        if let Some(acc_id) = find_account_id_by_email(&detected_email) {
+            if index.active_platform_account_id.as_deref() != Some(&acc_id) {
+                index.active_platform_account_id = Some(acc_id.clone());
+                dirty = true;
+            }
+            Some(acc_id)
         } else {
-            None
+            index.active_platform_account_id.clone()
         }
-    });
+    } else {
+        index.active_platform_account_id.clone().or_else(|| {
+            if index.current_target_ide.as_deref() == Some("platform") || index.current_target_ide.is_none() {
+                index.current_account_id.clone()
+            } else {
+                None
+            }
+        })
+    };
 
-    let ide = index.active_ide_account_id.clone().or_else(|| {
-        if index.current_target_ide.as_deref() == Some("ide") {
-            index.current_account_id.clone()
+    // 2. IDE: prioritize live extension heartbeat, then dynamic database detection
+    let detected_ide_email = crate::modules::ide_scanner::get_active_ide_email()
+        .or_else(|| crate::modules::db::detect_active_email_from_db(Some("ide")));
+
+    let ide = if let Some(ref detected_email) = detected_ide_email {
+        if let Some(acc_id) = find_account_id_by_email(detected_email) {
+            if index.active_ide_account_id.as_deref() != Some(&acc_id) {
+                index.active_ide_account_id = Some(acc_id.clone());
+                dirty = true;
+            }
+            Some(acc_id)
         } else {
-            None
+            index.active_ide_account_id.clone()
         }
-    });
+    } else {
+        index.active_ide_account_id.clone().or_else(|| {
+            if index.current_target_ide.as_deref() == Some("ide") {
+                index.current_account_id.clone()
+            } else {
+                None
+            }
+        })
+    };
 
+    // 3. CLI (agy)
     let agy = index.active_cli_account_id.clone().or_else(|| {
         if index.current_target_ide.as_deref() == Some("agy") || index.current_target_ide.as_deref() == Some("cli") {
             index.current_account_id.clone()
@@ -2043,6 +2057,10 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
             None
         }
     });
+
+    if dirty {
+        let _ = save_account_index(&index);
+    }
 
     Ok(crate::models::ActiveTargetAccounts {
         platform,
