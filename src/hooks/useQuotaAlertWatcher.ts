@@ -9,7 +9,7 @@ import { Account } from '../types/account';
 import { showToast } from '../components/common/ToastContainer';
 import { sendDesktopNotification } from '../services/notificationService';
 import { showFloatingOverlay } from '../services/overlayNotificationService';
-import { getRecommendedBestAccount } from '../utils/bestAccount';
+import { getRecommendedBestAccount, getAccountEffectiveScores } from '../utils/bestAccount';
 import { extractModelScore, getModelDisplayName } from '../utils/modelCategory';
 import { useTranslation } from 'react-i18next';
 
@@ -51,30 +51,27 @@ function formatGroupedModelNames(models: { name: string; display_name?: string }
         familyLabels.push(claudeLabel);
     }
 
-    // Other third-party models
-    const otherModels = models.filter(m => !isClaudeModel(m.name, m.display_name) && !isGeminiModel(m.name, m.display_name));
-    if (otherModels.length > 0) {
-        const uniqueOther = Array.from(new Set(otherModels.map(om => om.display_name || om.name)));
-        if (uniqueOther.length > 1) {
-            familyLabels.push(t ? t('notifications.other_models', { defaultValue: 'Other models' }) : 'Other models');
-        } else {
-            familyLabels.push(...uniqueOther);
+    // If neither matched (e.g. pure experimental/custom model), fallback to generic or count
+    if (familyLabels.length === 0) {
+        if (models.length === 1) {
+            return models[0].display_name || models[0].name;
         }
+        return t ? t('notifications.other_models', { defaultValue: 'Other models' }) : 'Other models';
     }
 
-    return familyLabels.join(andSeparator) || geminiLabel;
+    return familyLabels.join(andSeparator);
 }
 
 function getTargetEnvLabel(
     targetId: string,
-    activeTargetAccounts?: { ide?: string | null; platform?: string | null; agy?: string | null } | null,
-    t?: (key: string, options?: Record<string, unknown>) => string
+    activeTargetAccounts: { ide?: string | null; platform?: string | null; agy?: string | null } | null | undefined,
+    t?: any
 ): string {
-    const isIde = activeTargetAccounts?.ide === targetId;
     const isPlatform = activeTargetAccounts?.platform === targetId;
+    const isIde = activeTargetAccounts?.ide === targetId;
     const isAgy = activeTargetAccounts?.agy === targetId;
 
-    if (isIde && isPlatform) {
+    if (isPlatform && isIde) {
         return t ? t('notifications.target_ide_and_platform', { defaultValue: 'IDE & Platform' }) : 'IDE & Platform';
     }
     if (isPlatform) {
@@ -237,20 +234,31 @@ export function useQuotaAlertWatcher() {
                 sendDesktopNotification(alertTitle, alertMsg);
             }
 
-            // 2. Intelligent Auto-Switching on Quota Depletion (<= 5%)
+            // 2. Intelligent Auto-Switching or In-App Guidance on Quota Depletion (<= 5%)
             if (autoSwitchEnabled && (claudeDepleted || geminiDepleted) && !isAutoSwitchingRef.current) {
                 const lastSwitch = lastAutoSwitchMap.get(targetAccount.id) || 0;
                 if (now - lastSwitch < AUTO_SWITCH_COOLDOWN_MS) {
                     continue;
                 }
 
+                // Calculate current effective scores on the active account
+                const currentScores = getAccountEffectiveScores(targetAccount);
+
+                // Exclude accounts already actively running in other slots (e.g. IDE or Platform)
+                const otherActiveSlots = [
+                    activeTargetAccounts?.ide,
+                    activeTargetAccounts?.platform,
+                    activeTargetAccounts?.agy,
+                ].filter(id => id && id !== targetAccount.id);
+
                 const triggerGracefulAutoSwitch = async (
                     sourceAccount: typeof targetAccount,
-                    nextAccount: Account,
+                    nextAccount: Account | null,
                     modelFamily: string,
                     quotaScore: number,
                     switchTitle: string,
-                    switchMsg: string
+                    switchMsg: string,
+                    modelSwitchMode?: { canFocusApp: boolean; geminiScore: number }
                 ) => {
                     // Do not show intrusive floating countdown overlay or notifications for IDE environment
                     const isIdeSwitch = targetEnv === 'ide' || (activeTargetAccounts?.ide === sourceAccount.id);
@@ -261,26 +269,30 @@ export function useQuotaAlertWatcher() {
                     lastAutoSwitchMap.set(sourceAccount.id, now);
 
                     try {
-                        let shouldSwitch = true;
+                        let shouldSwitch = false;
 
                         if (overlayEnabled) {
                             try {
                                 const action = await showFloatingOverlay({
                                     notification_type: 'countdown',
-                                    title: t('notifications.auto_switch_title', {
-                                        defaultValue: 'Antigravity Shield - Auto Switched',
-                                    }),
+                                    title: switchTitle,
                                     message: switchMsg,
                                     model_name: modelFamily,
                                     current_email: sourceAccount.email,
-                                    target_email: nextAccount.email,
+                                    target_email: nextAccount?.email,
                                     target_quota_score: quotaScore,
                                     countdown_secs: countdownSecs,
-                                    target_account_id: nextAccount.id,
+                                    target_account_id: nextAccount?.id,
                                     target_env: targetEnv,
+                                    can_focus_app: modelSwitchMode?.canFocusApp,
+                                    gemini_score: modelSwitchMode?.geminiScore,
                                 });
 
-                                if (action === 'snooze') {
+                                if (action === 'focus_app') {
+                                    console.log(`[QuotaAlertWatcher] User chose to focus app and continue with Gemini on ${sourceAccount.email}`);
+                                    lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 15 * 60 * 1000);
+                                    shouldSwitch = false;
+                                } else if (action === 'snooze') {
                                     console.log(`[QuotaAlertWatcher] Auto-switch snoozed for 5 minutes on ${sourceAccount.email}`);
                                     lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 5 * 60 * 1000);
                                     shouldSwitch = false;
@@ -288,22 +300,28 @@ export function useQuotaAlertWatcher() {
                                     console.log(`[QuotaAlertWatcher] Auto-switch cancelled for 30 minutes on ${sourceAccount.email}`);
                                     lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 30 * 60 * 1000);
                                     shouldSwitch = false;
-                                } else if (action === 'switch_now') {
+                                } else if (action === 'switch_now' && nextAccount) {
                                     console.log(`[QuotaAlertWatcher] User confirmed switch_now from overlay for ${sourceAccount.email}`);
-                                    // Give user and system a 15-minute grace period to prevent immediate re-prompting
                                     lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 15 * 60 * 1000);
                                     shouldSwitch = true;
                                 }
                             } catch (e) {
                                 console.warn('[QuotaAlertWatcher] Overlay notification failed, falling back to direct switch:', e);
+                                if (!modelSwitchMode?.canFocusApp && nextAccount) {
+                                    shouldSwitch = true;
+                                }
+                            }
+                        } else {
+                            if (!modelSwitchMode?.canFocusApp && nextAccount) {
+                                shouldSwitch = true;
                             }
                         }
 
-                        if (shouldSwitch) {
+                        if (shouldSwitch && nextAccount) {
                             try {
                                 console.log(`[QuotaAlertWatcher] Auto-switching target ${targetEnv || 'default'} from ${sourceAccount.email} to ${nextAccount.email} (${modelFamily} score: ${quotaScore}%)`);
                                 lastAutoSwitchMap.set(sourceAccount.id, Date.now() + 15 * 60 * 1000);
-                                lastAutoSwitchMap.set(nextAccount.id, Date.now());
+                                lastAutoSwitchMap.set(nextAccount.id, Date.now() + 15 * 60 * 1000);
                                 await switchAccount(nextAccount.id, targetEnv);
                                 
                                 // For IDE switch, do NOT show toast or desktop notification - keep it 100% silent and undisruptive
@@ -325,9 +343,43 @@ export function useQuotaAlertWatcher() {
                     }
                 };
 
+                // ── Strategy A: Claude is depleted, but Gemini on this account is healthy (> 15%) ────────
+                // Zero-restart: Offer to focus app and continue with Gemini without restarting the app!
+                if (claudeDepleted && !geminiDepleted && currentScores.geminiScore > 15) {
+                    const claudeStandby = getRecommendedBestAccount(accounts, targetAccount.id, {
+                        category: 'claude',
+                        excludedAccountIds: otherActiveSlots,
+                        minQuotaThreshold: 15,
+                    });
+
+                    const hasClaudeStandby = Boolean(claudeStandby.account && claudeStandby.claudeScore > 15);
+                    const nextAccount = hasClaudeStandby ? claudeStandby.account : null;
+                    const candidateScore = hasClaudeStandby ? claudeStandby.claudeScore : 0;
+
+                    const switchTitle = t('notifications.model_switch_title', {
+                        defaultValue: 'Antigravity Shield - Claude Quota Depleted',
+                    });
+                    const switchMsg = t('notifications.model_switch_msg', {
+                        defaultValue: `Claude quota depleted. Gemini is ready (${currentScores.geminiScore}%). Switch model in chat to continue.`,
+                        score: currentScores.geminiScore,
+                    });
+
+                    (async () => {
+                        await triggerGracefulAutoSwitch(
+                            targetAccount,
+                            nextAccount,
+                            'Claude',
+                            candidateScore,
+                            switchTitle,
+                            switchMsg,
+                            { canFocusApp: true, geminiScore: currentScores.geminiScore }
+                        );
+                    })();
+                    break;
+                }
+
+                // ── Strategy B: True Account Depletion or Gemini Depleted ─────────────────────────────
                 // Determine primary depleted model dynamically:
-                // 1. Sort by lowest percentage first.
-                // 2. Tie-breaker: If percentages are equal, prioritize modern flagship models (higher score) over legacy/lite models.
                 const sortedCritical = [...criticalModels].sort((a, b) => {
                     if (a.percentage !== b.percentage) {
                         return a.percentage - b.percentage;
@@ -340,13 +392,6 @@ export function useQuotaAlertWatcher() {
                 const modelLabel = getModelDisplayName(mostCritical) || mostCritical.display_name || mostCritical.name;
 
                 // Step 1: Find best standby account for the primary category
-                // Exclude accounts already actively running in other slots (e.g. IDE or Platform)
-                const otherActiveSlots = [
-                    activeTargetAccounts?.ide,
-                    activeTargetAccounts?.platform,
-                    activeTargetAccounts?.agy,
-                ].filter(id => id && id !== targetAccount.id);
-
                 let targetCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {
                     category: primaryCategory,
                     excludedAccountIds: otherActiveSlots,
@@ -354,8 +399,8 @@ export function useQuotaAlertWatcher() {
                 });
                 let candidateScore = primaryCategory === 'gemini' ? targetCandidate.geminiScore : targetCandidate.claudeScore;
 
-                // Step 2: Fallback to alternative category if primary category is fully depleted (<= DEPLETED_THRESHOLD) across candidate accounts
-                if (!targetCandidate.account || candidateScore <= DEPLETED_THRESHOLD) {
+                // Step 2: Only fallback to alternative category if BOTH categories on the CURRENT account are truly exhausted
+                if ((!targetCandidate.account || candidateScore <= DEPLETED_THRESHOLD) && currentScores.geminiScore <= DEPLETED_THRESHOLD) {
                     const fallbackCategory = primaryCategory === 'gemini' ? 'claude' : 'gemini';
                     const fallbackCandidate = getRecommendedBestAccount(accounts, targetAccount.id, {
                         category: fallbackCategory,

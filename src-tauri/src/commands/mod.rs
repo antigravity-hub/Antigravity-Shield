@@ -1452,4 +1452,9 @@ pub async fn get_overlay_payload() -> Option<crate::modules::overlay::OverlayNot
     crate::modules::overlay::get_overlay_payload()
 }
 
+#[tauri::command]
+pub async fn focus_target_app(target_ide: Option<String>) -> Result<(), String> {
+    crate::modules::process::focus_antigravity(target_ide.as_deref())
+}
+
 

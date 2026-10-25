@@ -42,7 +42,12 @@ mod win_graceful {
         fn GetWindowThreadProcessId(hWnd: HWND, lpdwProcessId: *mut DWORD) -> DWORD;
         fn PostMessageW(hWnd: HWND, Msg: UINT, wParam: usize, lParam: isize) -> BOOL;
         fn IsWindowVisible(hWnd: HWND) -> BOOL;
+        fn ShowWindow(hWnd: HWND, nCmdShow: i32) -> BOOL;
+        fn SetForegroundWindow(hWnd: HWND) -> BOOL;
+        fn BringWindowToTop(hWnd: HWND) -> BOOL;
     }
+
+    const SW_RESTORE: i32 = 9;
 
     struct WindowMatchData<'a> {
         target_pids: &'a [u32],
@@ -87,6 +92,35 @@ mod win_graceful {
             }
             count
         }
+    }
+
+    pub fn focus_windows(pids: &[u32]) -> bool {
+        let mut data = WindowMatchData {
+            target_pids: pids,
+            matched_hwnds: Vec::new(),
+        };
+
+        unsafe {
+            EnumWindows(enum_proc, &mut data as *mut _ as LPARAM);
+
+            let default_desktop_name: Vec<u16> = "Default\0".encode_utf16().collect();
+            let hdesk = OpenDesktopW(default_desktop_name.as_ptr(), 0, 0, DESKTOP_ENUMERATE);
+            if !hdesk.is_null() {
+                EnumDesktopWindows(hdesk, enum_proc, &mut data as *mut _ as LPARAM);
+                CloseDesktop(hdesk);
+            }
+
+            data.matched_hwnds.sort();
+            data.matched_hwnds.dedup();
+
+            if let Some(&hwnd) = data.matched_hwnds.first() {
+                ShowWindow(hwnd, SW_RESTORE);
+                BringWindowToTop(hwnd);
+                SetForegroundWindow(hwnd);
+                return true;
+            }
+        }
+        false
     }
 }
 
@@ -969,6 +1003,40 @@ pub fn clean_appimage_env(cmd: &mut Command) {
             .filter(|dir| !dir.starts_with("/tmp/.mount_"))
             .collect();
         cmd.env("XDG_DATA_DIRS", filtered_dirs.join(":"));
+    }
+}
+
+/// Brings the Antigravity (or IDE) window to the foreground, or starts it if not running
+pub fn focus_antigravity(target_ide: Option<&str>) -> Result<(), String> {
+    #[cfg(target_os = "windows")]
+    {
+        let pids = get_antigravity_pids(target_ide);
+        if !pids.is_empty() {
+            if win32_window_close::focus_windows(&pids) {
+                crate::modules::logger::log_info(&format!(
+                    "[Process] Brought Antigravity ({:?}) to foreground",
+                    target_ide
+                ));
+                return Ok(());
+            }
+        }
+        start_antigravity(target_ide)
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+        let app_name = if target_ide == Some("ide") {
+            "Antigravity IDE"
+        } else {
+            "Antigravity"
+        };
+        let _ = std::process::Command::new("open").args(["-a", app_name]).spawn();
+        Ok(())
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        start_antigravity(target_ide)
     }
 }
 

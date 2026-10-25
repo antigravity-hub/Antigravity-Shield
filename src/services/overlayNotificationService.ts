@@ -16,9 +16,11 @@ export interface OverlayNotificationOptions {
     countdown_secs?: number;
     target_account_id?: string;
     target_env?: string;
+    can_focus_app?: boolean;
+    gemini_score?: number;
 }
 
-export type OverlayUserAction = 'switch_now' | 'snooze' | 'cancel';
+export type OverlayUserAction = 'switch_now' | 'snooze' | 'cancel' | 'focus_app';
 
 export interface OverlayActionEvent {
     action: OverlayUserAction;

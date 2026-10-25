@@ -49,7 +49,7 @@ function Layout() {
         <div className="h-screen flex bg-[#FAFBFC] dark:bg-[#060807] text-slate-900 dark:text-slate-100 overflow-hidden">
             {/* Global window drag region - uses JS drag trigger to prevent HTML attribute dropping */}
             <div
-                className="fixed top-0 left-0 right-36 h-9"
+                className="fixed top-0 ltr:left-0 ltr:right-36 rtl:left-36 rtl:right-0 h-9"
                 style={{
                     zIndex: 9999,
                     backgroundColor: 'rgba(0,0,0,0.001)',

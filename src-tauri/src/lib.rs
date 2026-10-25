@@ -720,6 +720,7 @@ pub fn run() {
             commands::show_overlay_notification,
             commands::hide_overlay_notification,
             commands::get_overlay_payload,
+            commands::focus_target_app,
             proxy::cli_sync::get_cli_sync_status,
             proxy::cli_sync::execute_cli_sync,
             proxy::cli_sync::execute_cli_restore,

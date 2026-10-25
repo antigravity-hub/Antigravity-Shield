@@ -207,3 +207,41 @@ export function getRecommendedBestAccount(
         remainingMinutes: best ? (isClaude ? best.claudeResetMinutes : best.geminiResetMinutes) : 0,
     };
 }
+
+/**
+ * Calculates current real-time effective scores for Gemini and Claude on a given account.
+ */
+export function getAccountEffectiveScores(a: Account): { geminiScore: number; claudeScore: number } {
+    const pro5h = findQuotaModel(a.quota?.models, 'gemini-pro')?.percentage ?? null;
+    const flash5h = findQuotaModel(a.quota?.models, 'gemini-flash')?.percentage ?? null;
+    const weeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', 'weekly');
+    const fiveHourGroup = getBucketPercentage(a.quota?.quota_groups, 'gemini', '5h');
+
+    const modelScore = pro5h ?? flash5h ?? fiveHourGroup ?? 0;
+    let fiveHourScore = Math.min(
+        fiveHourGroup ?? modelScore,
+        weeklyGroup ?? 100,
+        modelScore
+    );
+    if ((weeklyGroup !== null && weeklyGroup < 1) || fiveHourScore <= 0) {
+        fiveHourScore = 0;
+    }
+
+    const claudeOpusModel = a.quota?.models?.find(m => m.name.toLowerCase().includes('opus') || m.name.toLowerCase().includes('claude'))?.percentage ?? null;
+    const claudeGeneralModel = findQuotaModel(a.quota?.models, 'claude')?.percentage ?? null;
+    const claude5hGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', '5h');
+    const claudeWeeklyGroup = getBucketPercentage(a.quota?.quota_groups, 'claude', 'weekly');
+
+    const claudeModelScore = claudeOpusModel ?? claudeGeneralModel ?? claude5hGroup ?? 0;
+    let claudeScore = Math.min(
+        claude5hGroup ?? claudeModelScore,
+        claudeWeeklyGroup ?? 100,
+        claudeModelScore
+    );
+    if ((claudeWeeklyGroup !== null && claudeWeeklyGroup < 1) || claudeScore <= 0) {
+        claudeScore = 0;
+    }
+
+    return { geminiScore: fiveHourScore, claudeScore };
+}
+
