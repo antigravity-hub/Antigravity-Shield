@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - Claude Kotası Tükendi",
+    "model_switch_msg": "Claude kotası tükendi. Bu hesapta Gemini hazır ({{score}}%). Sohbetten modeli değiştirin.",
+    "overlay_focus_app": "Uygulamaya odaklan ve Gemini'yi kullan",
+    "overlay_gemini_ready": "Gemini Hazır",
+    "overlay_switch_claude": "Claude Hesabına Geç"
   },
   "sidebar": {
     "sections": {

@@ -361,7 +361,7 @@ export const NotificationOverlay: React.FC = () => {
                                         </div>
                                     </div>
                                     <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[10px] font-mono whitespace-nowrap flex-shrink-0">
-                                        Claude 0%
+                                        {'Claude 0%'}
                                     </span>
                                 </div>
 

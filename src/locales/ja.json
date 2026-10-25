@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - Claude クォータ終了",
+    "model_switch_msg": "Claude のクォータが使い果たされました。このアカウントの Gemini が利用可能です ({{score}}%)。チャットでモデルを切り替えてください。",
+    "overlay_focus_app": "アプリをフォーカスして Gemini を使用",
+    "overlay_gemini_ready": "Gemini 準備完了",
+    "overlay_switch_claude": "Claude アカウントへ切り替え"
   },
   "sidebar": {
     "sections": {

@@ -58,7 +58,7 @@ const BRAND_INVARIANTS = new Set([
   '/v1/chat/completions', '/v1/messages', '/v1/models', 'WARP', 'Cloudflare WARP', 'POOL',
   'ATTENTION', 'HEALTHY', 'OK', 'ok', 'EN', 'ZH', 'FA', 'AR', 'JA', 'KO', 'RU',
   'TR', 'VI', 'ES', 'PT', 'MY', '@DrGuidance', 'machineId:', 'sqmId:',
-  'devDeviceId:', 'macMachineId:'
+  'devDeviceId:', 'macMachineId:', 'Claude 0%'
 ]);
 
 function isBrandOrTechnicalInvariant(str) {

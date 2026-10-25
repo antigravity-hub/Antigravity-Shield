@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - Claude 할당량 소진",
+    "model_switch_msg": "Claude 할당량이 소진되었습니다. 이 계정의 Gemini를 사용할 수 있습니다 ({{score}}%). 채팅에서 모델을 변경하세요.",
+    "overlay_focus_app": "앱으로 포커스하여 Gemini 사용",
+    "overlay_gemini_ready": "Gemini 준비됨",
+    "overlay_switch_claude": "Claude 계정으로 전환"
   },
   "sidebar": {
     "sections": {

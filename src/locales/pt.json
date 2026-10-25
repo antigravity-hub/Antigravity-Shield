@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - Cota do Claude esgotada",
+    "model_switch_msg": "Cota do Claude esgotada. O Gemini está pronto nesta conta ({{score}}%). Alterne o modelo no chat.",
+    "overlay_focus_app": "Focar app e usar Gemini",
+    "overlay_gemini_ready": "Gemini pronto",
+    "overlay_switch_claude": "Alternar para conta Claude"
   },
   "sidebar": {
     "sections": {

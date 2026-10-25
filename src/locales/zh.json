@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "平台",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - Claude 配额用尽",
+    "model_switch_msg": "Claude 配额已耗尽。当前账号的 Gemini 已就绪 ({{score}}%)。请在对话中切换模型。",
+    "overlay_focus_app": "聚焦应用并使用 Gemini",
+    "overlay_gemini_ready": "Gemini 已就绪",
+    "overlay_switch_claude": "切换至 Claude 账号"
   },
   "sidebar": {
     "sections": {

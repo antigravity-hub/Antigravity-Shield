@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - استنفاد حصة Claude",
+    "model_switch_msg": "تم استنفاد حصة Claude. نموذج Gemini جاهز في هذا الحساب ({{score}}%). قم بتبديل النموذج في المحادثة.",
+    "overlay_focus_app": "التركيز على التطبيق واستخدام Gemini",
+    "overlay_gemini_ready": "Gemini جاهز",
+    "overlay_switch_claude": "التبديل إلى حساب Claude"
   },
   "sidebar": {
     "sections": {

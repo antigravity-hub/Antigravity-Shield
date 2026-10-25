@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - Hết hạn mức Claude",
+    "model_switch_msg": "Hạn mức Claude đã hết. Gemini đã sẵn sàng trên tài khoản này ({{score}}%). Hãy chuyển mô hình trong khung chat.",
+    "overlay_focus_app": "Chuyển đến ứng dụng và dùng Gemini",
+    "overlay_gemini_ready": "Gemini sẵn sàng",
+    "overlay_switch_claude": "Chuyển sang tài khoản Claude"
   },
   "sidebar": {
     "sections": {

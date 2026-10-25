@@ -2496,7 +2496,12 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "model_switch_title": "Antigravity Shield - Claude သုံးစွဲခွင့်ကုန်ဆုံးပါပြီ",
+    "model_switch_msg": "Claude သုံးစွဲခွင့်ကုန်ဆုံးသွားပါပြီ။ ဤအကောင့်တွင် Gemini အဆင်သင့်ရှိပါသည် ({{score}}%)။ စကားပြောခန်းတွင် မော်ဒယ်လ်ပြောင်းပါ။",
+    "overlay_focus_app": "အက်ပ်သို့သွားပြီး Gemini သုံးမည်",
+    "overlay_gemini_ready": "Gemini အဆင်သင့်ဖြစ်ပါပြီ",
+    "overlay_switch_claude": "Claude အကောင့်သို့ပြောင်းမည်"
   },
   "sidebar": {
     "sections": {
