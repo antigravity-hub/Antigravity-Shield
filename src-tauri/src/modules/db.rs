@@ -45,11 +45,11 @@ pub fn get_all_candidate_db_paths(target_ide: Option<&str>) -> Vec<PathBuf> {
     }
 
     let folder_names: &[&str] = if target_ide == Some("ide") {
-        &["Antigravity IDE", "Antigravity"]
+        &["Antigravity IDE"]
     } else if target_ide == Some("platform") || target_ide == Some("code") || target_ide == Some("cursor") {
-        &["Antigravity", "Antigravity IDE"]
+        &["Antigravity"]
     } else {
-        &["Antigravity IDE", "Antigravity"]
+        &["Antigravity", "Antigravity IDE"]
     };
 
     #[cfg(target_os = "macos")]
@@ -100,20 +100,128 @@ pub fn get_db_path(target_ide: Option<&str>) -> Result<PathBuf, String> {
         .ok_or_else(|| "Failed to locate database path".to_string())
 }
 
-/// Detect active email currently logged into the local Antigravity database for a given target ("platform", "ide", etc.)
-pub fn detect_active_email_from_db(target_ide: Option<&str>) -> Option<String> {
+/// Get all possible Antigravity app_storage.json candidate paths
+pub fn get_all_candidate_app_storage_paths(target_ide: Option<&str>) -> Vec<PathBuf> {
+    let mut paths = Vec::new();
+
+    if let Some(user_data_dir) = crate::modules::process::get_user_data_dir_from_process(target_ide) {
+        paths.push(user_data_dir.join("app_storage.json"));
+    }
+
+    if let Some(antigravity_path) = get_antigravity_path(target_ide) {
+        if let Some(parent_dir) = antigravity_path.parent() {
+            paths.push(
+                PathBuf::from(parent_dir)
+                    .join("data")
+                    .join("user-data")
+                    .join("app_storage.json"),
+            );
+        }
+    }
+
+    let folder_names: &[&str] = if target_ide == Some("ide") {
+        &["Antigravity IDE"]
+    } else if target_ide == Some("platform") || target_ide == Some("code") || target_ide == Some("cursor") {
+        &["Antigravity"]
+    } else {
+        &["Antigravity", "Antigravity IDE"]
+    };
+
+    #[cfg(target_os = "macos")]
+    if let Some(home) = dirs::home_dir() {
+        for folder_name in folder_names {
+            paths.push(home.join(format!(
+                "Library/Application Support/{}/app_storage.json",
+                folder_name
+            )));
+        }
+    }
+
+    #[cfg(target_os = "windows")]
+    if let Ok(appdata) = std::env::var("APPDATA") {
+        for folder_name in folder_names {
+            paths.push(
+                PathBuf::from(&appdata)
+                    .join(folder_name)
+                    .join("app_storage.json"),
+            );
+        }
+    }
+
+    #[cfg(target_os = "linux")]
+    if let Some(home) = dirs::home_dir() {
+        for folder_name in folder_names {
+            paths.push(home.join(format!(
+                ".config/{}/app_storage.json",
+                folder_name
+            )));
+        }
+    }
+
+    paths
+}
+
+/// Detect active email from app_storage.json (used in modern Antigravity 2.x Jetski onboarding)
+pub fn detect_active_email_from_app_storage(target_ide: Option<&str>) -> Option<(String, std::time::SystemTime)> {
+    let candidates = get_all_candidate_app_storage_paths(target_ide);
+    for storage_path in candidates {
+        if !storage_path.exists() {
+            continue;
+        }
+
+        let mtime = std::fs::metadata(&storage_path)
+            .and_then(|m| m.modified())
+            .unwrap_or(std::time::SystemTime::UNIX_EPOCH);
+
+        let content = match std::fs::read_to_string(&storage_path) {
+            Ok(c) => c,
+            Err(_) => continue,
+        };
+
+        if let Ok(val) = serde_json::from_str::<serde_json::Value>(&content) {
+            if let Some(obj) = val.as_object() {
+                let check_keys = [
+                    "jetski.onboarding.lastLoginUsername",
+                    "jetski.auth.email",
+                    "lastLoginUsername",
+                    "user.email",
+                    "auth.email",
+                ];
+                for key in check_keys {
+                    if let Some(email_val) = obj.get(key).and_then(|v| v.as_str()) {
+                        let trimmed = email_val.trim();
+                        if !trimmed.is_empty() && trimmed.contains('@') {
+                            return Some((trimmed.to_string(), mtime));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    None
+}
+
+/// Detect active email from state.vscdb with file modified timestamp
+pub fn detect_active_email_from_db_with_mtime(target_ide: Option<&str>) -> Option<(String, std::time::SystemTime)> {
     let candidates = get_all_candidate_db_paths(target_ide);
     for db_path in candidates {
         if !db_path.exists() {
             continue;
         }
 
+        let mtime = std::fs::metadata(&db_path)
+            .and_then(|m| m.modified())
+            .unwrap_or(std::time::SystemTime::UNIX_EPOCH);
+
         // Open in read-only mode with URI flag to prevent database locking
         let conn = match rusqlite::Connection::open_with_flags(
             &db_path,
             rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_URI,
         ) {
-            Ok(c) => c,
+            Ok(c) => {
+                let _ = c.busy_timeout(std::time::Duration::from_millis(500));
+                c
+            }
             Err(_) => continue,
         };
 
@@ -131,7 +239,7 @@ pub fn detect_active_email_from_db(target_ide: Option<&str>) -> Option<String> {
                 if let Some(email) = val.get("email").and_then(|v| v.as_str()) {
                     let trimmed = email.trim();
                     if !trimmed.is_empty() && trimmed.contains('@') {
-                        return Some(trimmed.to_string());
+                        return Some((trimmed.to_string(), mtime));
                     }
                 }
             }
@@ -154,7 +262,7 @@ pub fn detect_active_email_from_db(target_ide: Option<&str>) -> Option<String> {
                             regex::Regex::new(r"[\w\.-]+@[\w\.-]+\.\w+").unwrap()
                         });
                         if let Some(mat) = EMAIL_RE.find(&text) {
-                            return Some(mat.as_str().to_string());
+                            return Some((mat.as_str().to_string(), mtime));
                         }
                     }
                 }
@@ -163,6 +271,49 @@ pub fn detect_active_email_from_db(target_ide: Option<&str>) -> Option<String> {
     }
 
     None
+}
+
+/// Detect active email across modern app_storage.json and state.vscdb
+pub fn detect_active_email(target_ide: Option<&str>) -> Option<String> {
+    // For Platform (Antigravity 2.x), app_storage.json is the authoritative canonical store for Jetski login
+    if let Some((email_app, _)) = detect_active_email_from_app_storage(target_ide) {
+        return Some(email_app);
+    }
+
+    // Fallback to SQLite state.vscdb (used by Antigravity IDE and legacy installations)
+    if let Some((email_db, _)) = detect_active_email_from_db_with_mtime(target_ide) {
+        return Some(email_db);
+    }
+
+    None
+}
+
+/// Detect active email currently logged into the local Antigravity database for a given target ("platform", "ide", etc.)
+pub fn detect_active_email_from_db(target_ide: Option<&str>) -> Option<String> {
+    detect_active_email(target_ide)
+}
+
+/// Update app_storage.json when switching account on Platform
+pub fn update_app_storage_email(email: &str, target_ide: Option<&str>) -> Result<(), String> {
+    let candidates = get_all_candidate_app_storage_paths(target_ide);
+    for storage_path in candidates {
+        if storage_path.exists() {
+            if let Ok(content) = std::fs::read_to_string(&storage_path) {
+                if let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&content) {
+                    if let Some(obj) = val.as_object_mut() {
+                        obj.insert(
+                            "jetski.onboarding.lastLoginUsername".to_string(),
+                            serde_json::Value::String(email.to_string()),
+                        );
+                        if let Ok(serialized) = serde_json::to_string_pretty(&val) {
+                            let _ = std::fs::write(&storage_path, serialized);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    Ok(())
 }
 
 /// Inject Token and Email into database

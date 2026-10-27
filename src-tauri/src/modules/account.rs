@@ -2004,8 +2004,8 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
     let mut index = load_account_index()?;
     let mut dirty = false;
 
-    // 1. Platform: prioritize dynamic disk detection from Antigravity Platform database
-    let platform = if let Some(detected_email) = crate::modules::db::detect_active_email_from_db(Some("platform")) {
+    // 1. Platform: prioritize dynamic disk detection from Antigravity Platform database or app_storage.json
+    let platform = if let Some(detected_email) = crate::modules::db::detect_active_email(Some("platform")) {
         if let Some(acc_id) = find_account_id_by_email(&detected_email) {
             if index.active_platform_account_id.as_deref() != Some(&acc_id) {
                 index.active_platform_account_id = Some(acc_id.clone());
@@ -2013,7 +2013,12 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
             }
             Some(acc_id)
         } else {
-            index.active_platform_account_id.clone()
+            // Detected an unindexed email on disk: clear previous stale platform account
+            if index.active_platform_account_id.is_some() {
+                index.active_platform_account_id = None;
+                dirty = true;
+            }
+            None
         }
     } else {
         index.active_platform_account_id.clone().or_else(|| {
@@ -2027,7 +2032,7 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
 
     // 2. IDE: prioritize live extension heartbeat, then dynamic database detection
     let detected_ide_email = crate::modules::ide_scanner::get_active_ide_email()
-        .or_else(|| crate::modules::db::detect_active_email_from_db(Some("ide")));
+        .or_else(|| crate::modules::db::detect_active_email(Some("ide")));
 
     let ide = if let Some(ref detected_email) = detected_ide_email {
         if let Some(acc_id) = find_account_id_by_email(detected_email) {
@@ -2037,7 +2042,12 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
             }
             Some(acc_id)
         } else {
-            index.active_ide_account_id.clone()
+            // Detected an unindexed email on disk for IDE: clear stale IDE account
+            if index.active_ide_account_id.is_some() {
+                index.active_ide_account_id = None;
+                dirty = true;
+            }
+            None
         }
     } else {
         index.active_ide_account_id.clone().or_else(|| {
@@ -2294,11 +2304,12 @@ pub fn toggle_proxy_status(
 
 /// Find account ID by email (from index)
 pub fn find_account_id_by_email(email: &str) -> Option<String> {
+    let clean = email.trim();
     load_account_index()
         .ok()?
         .accounts
         .into_iter()
-        .find(|a| a.email == email)
+        .find(|a| a.email.eq_ignore_ascii_case(clean))
         .map(|a| a.id)
 }
 

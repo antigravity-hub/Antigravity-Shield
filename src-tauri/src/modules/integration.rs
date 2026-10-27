@@ -115,6 +115,9 @@ impl SystemIntegration for DesktopIntegration {
                     let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
                 }
             }
+            if effective_ide == Some("platform") || effective_ide.is_none() {
+                let _ = db::update_app_storage_email(&account.email, effective_ide);
+            }
 
             // For IDE switches with connected extension, keep switch completely silent and undisruptive
             if target_ide != Some("ide") {
@@ -219,6 +222,9 @@ impl SystemIntegration for DesktopIntegration {
                         let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
                     }
                 }
+            }
+            if target_ide == Some("platform") || target_ide.is_none() {
+                let _ = db::update_app_storage_email(&account.email, target_ide);
             }
         } else {
             // ================== 原有 Antigravity 旧版或定制 IDE 逻辑 (< 2.0.0) ==================
