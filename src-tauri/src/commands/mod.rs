@@ -1405,6 +1405,7 @@ pub async fn scan_brain_conversations() -> Result<crate::modules::brain_scanner:
 
 #[tauri::command]
 pub async fn get_toolkit_status() -> Result<crate::modules::ide_scanner::ToolkitConnectionStatus, String> {
+    crate::proxy::server::touch_bridge_info();
     Ok(crate::modules::ide_scanner::get_connection_status())
 }
 

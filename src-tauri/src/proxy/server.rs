@@ -3128,6 +3128,29 @@ pub fn write_bridge_info(primary_port: u16, companion_port: Option<u16>) {
     }
 }
 
+/// Nudges bridge_info.json timestamp so IDE extensions immediately wake up and send heartbeat
+pub fn touch_bridge_info() {
+    if let Some(home) = dirs::home_dir() {
+        let info_path = home.join(".antigravity_shield").join("bridge_info.json");
+        if info_path.exists() {
+            if let Ok(content) = std::fs::read_to_string(&info_path) {
+                if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
+                    if let Some(obj) = json.as_object_mut() {
+                        let now = std::time::SystemTime::now()
+                            .duration_since(std::time::UNIX_EPOCH)
+                            .map(|d| d.as_secs())
+                            .unwrap_or(0);
+                        obj.insert("timestamp".to_string(), serde_json::json!(now));
+                        if let Ok(updated) = serde_json::to_string_pretty(&json) {
+                            let _ = std::fs::write(&info_path, updated);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 #[derive(Deserialize)]
 struct AdminInstallToolkitRequest {
     ide_id: String,

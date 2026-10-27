@@ -84,7 +84,7 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
         Some(instant) => {
             let elapsed = instant.elapsed().as_secs();
             // Connected if ping received in the last 60 seconds
-            let is_connected = elapsed <= 60;
+            let is_connected = elapsed <= 90;
             ToolkitConnectionStatus {
                 is_connected,
                 active_ide: if is_connected { ide } else { None },
@@ -108,7 +108,7 @@ pub fn get_connection_status() -> ToolkitConnectionStatus {
 pub fn is_toolkit_connected() -> bool {
     let last = LAST_HEARTBEAT.read().ok().and_then(|guard| *guard);
     match last {
-        Some(instant) => instant.elapsed().as_secs() <= 60,
+        Some(instant) => instant.elapsed().as_secs() <= 90,
         None => false,
     }
 }
@@ -116,7 +116,7 @@ pub fn is_toolkit_connected() -> bool {
 pub fn get_active_ide_email() -> Option<String> {
     let last = LAST_HEARTBEAT.read().ok().and_then(|guard| *guard);
     match last {
-        Some(instant) if instant.elapsed().as_secs() <= 60 => {
+        Some(instant) if instant.elapsed().as_secs() <= 90 => {
             ACTIVE_EMAIL.read().ok().and_then(|guard| guard.clone())
         }
         _ => None,
