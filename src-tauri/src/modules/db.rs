@@ -6,14 +6,6 @@ use rusqlite::Connection;
 use std::path::PathBuf;
 
 fn get_antigravity_path(target_ide: Option<&str>) -> Option<PathBuf> {
-    if let Ok(config) = crate::modules::config::load_app_config() {
-        if let Some(path_str) = config.antigravity_executable {
-            let path = PathBuf::from(path_str);
-            if path.exists() {
-                return Some(path);
-            }
-        }
-    }
     crate::modules::process::get_antigravity_executable_path(target_ide)
 }
 
@@ -276,7 +268,18 @@ pub fn detect_active_email_from_db_with_mtime(target_ide: Option<&str>) -> Optio
 /// Detect active email across modern app_storage.json and state.vscdb
 pub fn detect_active_email(target_ide: Option<&str>) -> Option<String> {
     // For Platform (Antigravity 2.x), app_storage.json is the authoritative canonical store for Jetski login
-    if let Some((email_app, _)) = detect_active_email_from_app_storage(target_ide) {
+    if target_ide == Some("platform") {
+        if let Some((email_app, _)) = detect_active_email_from_app_storage(target_ide) {
+            return Some(email_app);
+        }
+        // If app_storage.json candidate exists on disk for Platform, do NOT fall back to stale state.vscdb
+        let has_storage = get_all_candidate_app_storage_paths(target_ide)
+            .iter()
+            .any(|p| p.exists());
+        if has_storage {
+            return None;
+        }
+    } else if let Some((email_app, _)) = detect_active_email_from_app_storage(target_ide) {
         return Some(email_app);
     }
 
@@ -399,6 +402,14 @@ fn inject_new_format(
 
     let mut topic =
         protobuf::remove_unified_topic_entry(&current_topic, "oauthTokenInfoSentinelKey")?;
+    topic = protobuf::remove_unified_topic_entry(&topic, "authStateWithContextSentinelKey")?;
+
+    let auth_state_json = r#"{"state":"signedIn","context":{"project":"","showProjectError":false,"errorMessage":"","ineligibleMessage":"","verificationUrl":"","isGcpTos":false,"browserOpenFailed":false,"appealUrl":"","appealLinkText":""}}"#;
+    topic.extend(protobuf::create_unified_topic_entry_str(
+        "authStateWithContextSentinelKey",
+        auth_state_json,
+    ));
+
     topic.extend(protobuf::create_unified_topic_entry(
         "oauthTokenInfoSentinelKey",
         &oauth_info,

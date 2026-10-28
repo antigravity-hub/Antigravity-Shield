@@ -409,6 +409,17 @@ pub fn create_unified_topic_entry(sentinel_key: &str, payload: &[u8]) -> Vec<u8>
     encode_len_delim_field(1, &entry)
 }
 
+/// 创建包含纯文本 payload 的 unified-state Topic.data entry (例如 authStateWithContextSentinelKey)
+pub fn create_unified_topic_entry_str(sentinel_key: &str, text_val: &str) -> Vec<u8> {
+    let row = encode_string_field(1, text_val);
+    let entry = [
+        encode_string_field(1, sentinel_key),
+        encode_len_delim_field(2, &row),
+    ]
+    .concat();
+    encode_len_delim_field(1, &entry)
+}
+
 /// 从 Topic.data 中移除指定 map entry，保留同 topic 下其他 sentinel row。
 pub fn remove_unified_topic_entry(data: &[u8], target_key: &str) -> Result<Vec<u8>, String> {
     let mut result = Vec::new();

@@ -65,18 +65,8 @@ impl SystemIntegration for DesktopIntegration {
             return Ok(());
         }
 
-        // 0.5. [Two-Way Bridge] Check if IDE Toolkit extension is active & connected for Zero-Reload
-        let is_target_ide = target_ide == Some("ide")
-            || target_ide == Some("code")
-            || target_ide == Some("cursor")
-            || target_ide.is_none();
-        if is_target_ide && crate::modules::ide_scanner::is_toolkit_connected() {
-            crate::modules::logger::log_info(&format!(
-                "[Desktop] IDE Toolkit is connected! Performing Zero-Reload switch via two-way tunnel for: {}",
-                account.email
-            ));
-
-            // A. Dispatch real-time command to IDE extension
+        // 0.5. [Two-Way Bridge] If IDE Toolkit extension is active, push command
+        if crate::modules::ide_scanner::is_toolkit_connected() {
             crate::modules::ide_scanner::push_command(crate::modules::ide_scanner::ToolkitCommand {
                 id: uuid::Uuid::new_v4().to_string(),
                 action: "switch_account".to_string(),
@@ -84,51 +74,6 @@ impl SystemIntegration for DesktopIntegration {
                 email: account.email.clone(),
                 timestamp: chrono::Utc::now().timestamp(),
             });
-
-            // B. Silently update disk state.vscdb and storage.json without killing process
-            let effective_ide = if target_ide.is_none() {
-                Some("ide")
-            } else {
-                target_ide
-            };
-
-            if let Ok(storage_path) = device::get_storage_path(effective_ide) {
-                if let Some(ref profile) = account.device_profile {
-                    let _ = device::write_profile(&storage_path, profile);
-                }
-            }
-
-            if let Ok(db_path) = db::get_db_path(effective_ide) {
-                let _ = db::inject_token(
-                    &db_path,
-                    &account.token.access_token,
-                    &account.token.refresh_token,
-                    account.token.expiry_timestamp,
-                    &account.email,
-                    account.token.is_gcp_tos,
-                    account.token.project_id.as_deref(),
-                    account.token.id_token.as_deref(),
-                    account.token.oauth_client_key.as_deref(),
-                    effective_ide,
-                );
-                if let Some(ref profile) = account.device_profile {
-                    let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
-                }
-            }
-            if effective_ide == Some("platform") || effective_ide.is_none() {
-                let _ = db::update_app_storage_email(&account.email, effective_ide);
-            }
-
-            // For IDE switches with connected extension, keep switch completely silent and undisruptive
-            if target_ide != Some("ide") {
-                self.show_notification(
-                    "Antigravity Shield",
-                    &format!("⚡ Switched to {} (Zero-Reload)", account.email),
-                );
-            }
-            self.update_tray();
-
-            return Ok(());
         }
 
         // 1. Close external running process so file/keyring state can be reloaded cleanly
@@ -144,8 +89,8 @@ impl SystemIntegration for DesktopIntegration {
         // 2. 智能决策：是否使用最新的系统 Keychain 凭据管理器方式存储 Token
         let mut is_ide = target_ide == Some("ide");
 
-        // Auto-detect IDE: if the located executable is the IDE, treat as IDE mode
-        if !is_ide {
+        // Auto-detect IDE: if target_ide is unspecified and the located executable is IDE, treat as IDE mode
+        if target_ide.is_none() {
             if let Some(exe_path) = process::get_antigravity_executable_path(target_ide) {
                 let path_lower = exe_path.to_string_lossy().to_lowercase();
                 if path_lower.contains("antigravity ide") || path_lower.contains("antigravity-ide")
@@ -292,6 +237,11 @@ impl SystemIntegration for DesktopIntegration {
                 format!("⚡ Switched to {}", account.email)
             };
             self.show_notification(target_title, &notif_body);
+        }
+
+        // 4.5. Touch heartbeat so IDE scanner instantly reflects new email
+        if is_ide {
+            crate::modules::ide_scanner::touch_heartbeat(Some("Antigravity IDE"), Some(&account.email));
         }
 
         // 5. Update tray
