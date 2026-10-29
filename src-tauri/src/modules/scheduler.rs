@@ -425,6 +425,13 @@ pub fn start_scheduler(
 
                                                                     // Prioritize candidates that are NOT currently active on the other environment!
                                                                     // This prevents IDE and Platform from collapsing onto the same account.
+                                                                    if let Some(ref other_id) = other_active_id {
+                                                                        let unshared: Vec<_> = candidates.iter().filter(|c| &c.id != other_id).cloned().collect();
+                                                                        if !unshared.is_empty() {
+                                                                            candidates = unshared;
+                                                                        }
+                                                                    }
+
                                                                     candidates.sort_by(|a, b| {
                                                                         let a_is_other = other_active_id.as_deref() == Some(&a.id);
                                                                         let b_is_other = other_active_id.as_deref() == Some(&b.id);

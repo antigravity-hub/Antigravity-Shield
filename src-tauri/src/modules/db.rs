@@ -279,8 +279,10 @@ pub fn detect_active_email(target_ide: Option<&str>) -> Option<String> {
         if has_storage {
             return None;
         }
-    } else if let Some((email_app, _)) = detect_active_email_from_app_storage(target_ide) {
-        return Some(email_app);
+    } else if target_ide != Some("ide") {
+        if let Some((email_app, _)) = detect_active_email_from_app_storage(target_ide) {
+            return Some(email_app);
+        }
     }
 
     // Fallback to SQLite state.vscdb (used by Antigravity IDE and legacy installations)

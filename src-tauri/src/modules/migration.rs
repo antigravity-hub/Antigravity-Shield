@@ -514,8 +514,11 @@ fn extract_oauth_state_from_file(db_path: &PathBuf) -> Result<ImportedOAuthState
 pub fn get_refresh_token_from_db(target_ide: Option<&str>) -> Result<String, String> {
     use crate::modules::integration;
 
-    if let Ok(oauth_state) = integration::read_from_system_keyring() {
-        return Ok(oauth_state.refresh_token);
+    // System keyring (gemini:antigravity) belongs exclusively to Platform; never read for IDE
+    if target_ide != Some("ide") {
+        if let Ok(oauth_state) = integration::read_from_system_keyring() {
+            return Ok(oauth_state.refresh_token);
+        }
     }
 
     let candidate_paths = db::get_all_candidate_db_paths(target_ide);

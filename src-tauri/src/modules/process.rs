@@ -1349,25 +1349,27 @@ pub fn get_args_from_running_process(target_ide: Option<&str>) -> Option<Vec<Str
 
 /// Get --user-data-dir argument value (if exists)
 pub fn get_user_data_dir_from_process(target_ide: Option<&str>) -> Option<std::path::PathBuf> {
-    // Prefer getting startup arguments from config
-    if let Ok(config) = crate::modules::config::load_app_config() {
-        if let Some(args) = config.antigravity_args {
-            // Check arguments in config
-            for i in 0..args.len() {
-                if args[i] == "--user-data-dir" && i + 1 < args.len() {
-                    // Next argument is the path
-                    let path = std::path::PathBuf::from(&args[i + 1]);
-                    if path.exists() {
-                        return Some(path);
-                    }
-                } else if args[i].starts_with("--user-data-dir=") {
-                    // Argument and value in same string, e.g. --user-data-dir=/path/to/data
-                    let parts: Vec<&str> = args[i].splitn(2, '=').collect();
-                    if parts.len() == 2 {
-                        let path_str = parts[1];
-                        let path = std::path::PathBuf::from(path_str);
+    // Prefer getting startup arguments from config (only for Platform as config.antigravity_args belongs to Platform)
+    if target_ide != Some("ide") {
+        if let Ok(config) = crate::modules::config::load_app_config() {
+            if let Some(args) = config.antigravity_args {
+                // Check arguments in config
+                for i in 0..args.len() {
+                    if args[i] == "--user-data-dir" && i + 1 < args.len() {
+                        // Next argument is the path
+                        let path = std::path::PathBuf::from(&args[i + 1]);
                         if path.exists() {
                             return Some(path);
+                        }
+                    } else if args[i].starts_with("--user-data-dir=") {
+                        // Argument and value in same string, e.g. --user-data-dir=/path/to/data
+                        let parts: Vec<&str> = args[i].splitn(2, '=').collect();
+                        if parts.len() == 2 {
+                            let path_str = parts[1];
+                            let path = std::path::PathBuf::from(path_str);
+                            if path.exists() {
+                                return Some(path);
+                            }
                         }
                     }
                 }

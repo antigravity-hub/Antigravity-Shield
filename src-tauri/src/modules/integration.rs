@@ -66,25 +66,9 @@ impl SystemIntegration for DesktopIntegration {
         }
 
         // 2. Disambiguate Target: Is this switch targeted for the IDE environment?
-        let mut is_ide = target_ide == Some("ide");
-
-        // Auto-detect IDE mode only when target_ide is completely unspecified
-        if target_ide.is_none() {
-            if crate::modules::ide_scanner::is_toolkit_connected() {
-                is_ide = true;
-                crate::modules::logger::log_info(
-                    "[Desktop] Target unspecified but IDE Toolkit connected, prioritizing IDE switch.",
-                );
-            } else if let Some(exe_path) = process::get_antigravity_executable_path(target_ide) {
-                let path_lower = exe_path.to_string_lossy().to_lowercase();
-                if path_lower.contains("antigravity ide") || path_lower.contains("antigravity-ide") {
-                    is_ide = true;
-                    crate::modules::logger::log_info(
-                        "[Desktop] Auto-detected Antigravity IDE executable, using IDE account switch logic.",
-                    );
-                }
-            }
-        }
+        // Unspecified target strictly defaults to "platform" to prevent cross-contamination
+        let resolved_target = target_ide.unwrap_or("platform");
+        let is_ide = resolved_target == "ide";
 
         // ====================================================================
         // TARGET 1: ANTIGRAVITY IDE (Non-disruptive hot-swap, ZERO kill, ZERO restart)
