@@ -213,21 +213,33 @@ pub fn start_scheduler(
             // Rapid polling (35-45s) is strictly reserved for when runway drops below ~5 minutes.
             if cfg.auto_refresh {
                 let mut active_target_account_id = None;
+                let mut monitored_target = None;
                 // 1. Prioritize live heartbeat from connected IDE
                 if let Some(live_email) = crate::modules::ide_scanner::get_active_ide_email() {
                     if let Ok(Some(live_acc)) = crate::modules::account::find_account_by_email(&live_email) {
                         active_target_account_id = Some(live_acc.id);
+                        monitored_target = Some("ide");
                     }
                 }
                 // 2. Fall back to active target accounts
                 if active_target_account_id.is_none() {
                     if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
-                        active_target_account_id = targets.platform.or(targets.ide).or(targets.agy);
+                        if let Some(id) = targets.platform {
+                            active_target_account_id = Some(id);
+                            monitored_target = Some("platform");
+                        } else if let Some(id) = targets.ide {
+                            active_target_account_id = Some(id);
+                            monitored_target = Some("ide");
+                        } else if let Some(id) = targets.agy {
+                            active_target_account_id = Some(id);
+                            monitored_target = Some("agy");
+                        }
                     }
                 }
                 // 3. Fall back to current account
                 if active_target_account_id.is_none() {
                     active_target_account_id = crate::modules::account::get_current_account_id().ok().flatten();
+                    monitored_target = Some("platform");
                 }
 
                 if let Some(ref acc_id) = active_target_account_id {
@@ -391,6 +403,13 @@ pub fn start_scheduler(
                                                         if (new_min <= switch_threshold || is_weekly_exhausted) && (is_critical_runway || is_hard_floor || is_burst_danger) {
                                                             if now - last_auto_switch_time >= 60 {
                                                                 if let Ok(all_accs) = crate::modules::account::list_accounts() {
+                                                                    let active_targets = crate::modules::account::get_active_target_accounts().ok();
+                                                                    let other_active_id = match monitored_target {
+                                                                        Some("ide") => active_targets.as_ref().and_then(|t| t.platform.clone()),
+                                                                        Some("platform") => active_targets.as_ref().and_then(|t| t.ide.clone()),
+                                                                        _ => None,
+                                                                    };
+
                                                                     let mut candidates: Vec<_> = all_accs
                                                                         .into_iter()
                                                                         .filter(|a| {
@@ -404,7 +423,14 @@ pub fn start_scheduler(
                                                                         })
                                                                         .collect();
 
+                                                                    // Prioritize candidates that are NOT currently active on the other environment!
+                                                                    // This prevents IDE and Platform from collapsing onto the same account.
                                                                     candidates.sort_by(|a, b| {
+                                                                        let a_is_other = other_active_id.as_deref() == Some(&a.id);
+                                                                        let b_is_other = other_active_id.as_deref() == Some(&b.id);
+                                                                        if a_is_other != b_is_other {
+                                                                            return a_is_other.cmp(&b_is_other);
+                                                                        }
                                                                         let pct_b = b.quota.as_ref().map_or(0, |q| q.get_gemini_min_percentage());
                                                                         let pct_a = a.quota.as_ref().map_or(0, |q| q.get_gemini_min_percentage());
                                                                         pct_b.cmp(&pct_a)
@@ -425,11 +451,13 @@ pub fn start_scheduler(
                                                                             };
                                                                             let service = crate::modules::account_service::AccountService::new(sys_manager);
 
-                                                                            let target_env = if refreshed_acc.active_targets.contains(&"platform".to_string()) {
-                                                                                Some("platform")
-                                                                            } else {
-                                                                                Some("ide")
-                                                                            };
+                                                                            let target_env = monitored_target.or_else(|| {
+                                                                                if refreshed_acc.active_targets.contains(&"ide".to_string()) && !refreshed_acc.active_targets.contains(&"platform".to_string()) {
+                                                                                    Some("ide")
+                                                                                } else {
+                                                                                    Some("platform")
+                                                                                }
+                                                                            });
                                                                             if let Err(e) = service.switch_account(&best_cand.id, target_env).await {
                                                                                 logger::log_error(&format!("[Scheduler] Preemptive auto-switch execution failed: {}", e));
                                                                             } else {

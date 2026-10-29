@@ -574,6 +574,13 @@ fn get_antigravity_pids(target_ide: Option<&str>) -> Vec<u32> {
 
 /// Close Antigravity processes
 pub fn close_antigravity(timeout_secs: u64, target_ide: Option<&str>) -> Result<(), String> {
+    if target_ide == Some("ide") {
+        crate::modules::logger::log_info(
+            "[Process] Protection invariant: IDE close request intercepted. IDE processes will NOT be terminated."
+        );
+        return Ok(());
+    }
+
     crate::modules::logger::log_info(&format!("Closing Antigravity ({:?})...", target_ide));
 
     #[cfg(target_os = "windows")]
@@ -1043,6 +1050,13 @@ pub fn focus_antigravity(target_ide: Option<&str>) -> Result<(), String> {
 /// Start Antigravity
 #[allow(unused_mut)]
 pub fn start_antigravity(target_ide: Option<&str>) -> Result<(), String> {
+    if target_ide == Some("ide") {
+        crate::modules::logger::log_info(
+            "[Process] Protection invariant: IDE start request intercepted. IDE process launch skipped to prevent duplicate windows."
+        );
+        return Ok(());
+    }
+
     crate::modules::logger::log_info(&format!("Starting Antigravity ({:?})...", target_ide));
 
     // Prefer manually specified path and args from configuration

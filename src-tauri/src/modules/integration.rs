@@ -65,36 +65,19 @@ impl SystemIntegration for DesktopIntegration {
             return Ok(());
         }
 
-        // 0.5. [Two-Way Bridge] If IDE Toolkit extension is active, push command
-        if crate::modules::ide_scanner::is_toolkit_connected() {
-            crate::modules::ide_scanner::push_command(crate::modules::ide_scanner::ToolkitCommand {
-                id: uuid::Uuid::new_v4().to_string(),
-                action: "switch_account".to_string(),
-                account_id: account.id.clone(),
-                email: account.email.clone(),
-                timestamp: chrono::Utc::now().timestamp(),
-            });
-        }
-
-        // 1. Close external running process so file/keyring state can be reloaded cleanly
-        let was_running = process::is_antigravity_running(target_ide);
-        if was_running {
-            crate::modules::logger::log_info(&format!(
-                "[Desktop] Target ({:?}) is currently running. Closing before account injection...",
-                target_ide
-            ));
-            process::close_antigravity(20, target_ide)?;
-        }
-
-        // 2. 智能决策：是否使用最新的系统 Keychain 凭据管理器方式存储 Token
+        // 2. Disambiguate Target: Is this switch targeted for the IDE environment?
         let mut is_ide = target_ide == Some("ide");
 
-        // Auto-detect IDE: if target_ide is unspecified and the located executable is IDE, treat as IDE mode
+        // Auto-detect IDE mode only when target_ide is completely unspecified
         if target_ide.is_none() {
-            if let Some(exe_path) = process::get_antigravity_executable_path(target_ide) {
+            if crate::modules::ide_scanner::is_toolkit_connected() {
+                is_ide = true;
+                crate::modules::logger::log_info(
+                    "[Desktop] Target unspecified but IDE Toolkit connected, prioritizing IDE switch.",
+                );
+            } else if let Some(exe_path) = process::get_antigravity_executable_path(target_ide) {
                 let path_lower = exe_path.to_string_lossy().to_lowercase();
-                if path_lower.contains("antigravity ide") || path_lower.contains("antigravity-ide")
-                {
+                if path_lower.contains("antigravity ide") || path_lower.contains("antigravity-ide") {
                     is_ide = true;
                     crate::modules::logger::log_info(
                         "[Desktop] Auto-detected Antigravity IDE executable, using IDE account switch logic.",
@@ -103,54 +86,43 @@ impl SystemIntegration for DesktopIntegration {
             }
         }
 
-        let mut use_keyring = false;
+        // ====================================================================
+        // TARGET 1: ANTIGRAVITY IDE (Non-disruptive hot-swap, ZERO kill, ZERO restart)
+        // ====================================================================
+        if is_ide {
+            crate::modules::logger::log_info(&format!(
+                "[Desktop] Executing non-disruptive hot-swap for IDE target: {}",
+                account.email
+            ));
 
-        if !is_ide {
-            // 经典原生版：自动探测版本号
-            match version::get_antigravity_version(target_ide) {
-                Ok(ver) => {
-                    // If 版本号 >= 2.0.0
-                    if version::compare_version(&ver.short_version, "2.0.0")
-                        != std::cmp::Ordering::Less
-                    {
-                        use_keyring = true;
-                        crate::modules::logger::log_info(&format!(
-                            "[Desktop] Detected Antigravity version {} >= 2.0.0, using system Keyring.",
-                            ver.short_version
-                        ));
-                    } else {
-                        crate::modules::logger::log_info(&format!(
-                            "[Desktop] Detected Antigravity version {} < 2.0.0, falling back to legacy SQLite injection.",
-                            ver.short_version
-                        ));
-                    }
-                }
-                Err(e) => {
-                    // If 探测failed，为防止对最新版由于没有 storage.json 造成报错阻断，default作为新凭据注入
-                    use_keyring = true;
-                    crate::modules::logger::log_warn(&format!(
-                        "[Desktop] Failed to detect Antigravity version ({}), defaulting to system Keyring for robustness.",
-                        e
-                    ));
-                }
+            // A. Deliver switch command to IDE Toolkit extension (if connected)
+            if crate::modules::ide_scanner::is_toolkit_connected() {
+                crate::modules::ide_scanner::push_command(crate::modules::ide_scanner::ToolkitCommand {
+                    id: uuid::Uuid::new_v4().to_string(),
+                    action: "switch_account".to_string(),
+                    account_id: account.id.clone(),
+                    email: account.email.clone(),
+                    timestamp: chrono::Utc::now().timestamp(),
+                });
+                crate::modules::logger::log_info(&format!(
+                    "[Desktop] Dispatched switch_account command to IDE Toolkit extension for {}",
+                    account.email
+                ));
             }
-        }
 
-        if use_keyring {
-            // ================== 最新版 Antigravity 原生应用逻辑 (>= 2.0.0) ==================
-            // 2.1 写入系统 Keychain/Keyring
-            write_to_system_keyring(account)?;
-
-            // 2.2 原生应用可能没有 storage.json，但如果有的话，我们也可以尝试安全地写入设备 Profile，以兼容指纹info
-            if let Ok(storage_path) = device::get_storage_path(target_ide) {
+            // B. Sync device profile for IDE (if storage path exists)
+            if let Ok(storage_path) = device::get_storage_path(Some("ide")) {
                 if let Some(ref profile) = account.device_profile {
                     let _ = device::write_profile(&storage_path, profile);
                 }
             }
 
-            // 2.3 同样update SQLite data库（如果存在 state.vscdb），以保证双重一致性
-            if let Ok(db_path) = db::get_db_path(target_ide) {
+            // C. Dynamically inject token into IDE SQLite database (state.vscdb)
+            if let Ok(db_path) = db::get_db_path(Some("ide")) {
                 if db_path.exists() {
+                    let backup_path = db_path.with_extension("vscdb.backup");
+                    let _ = fs::copy(&db_path, &backup_path);
+
                     let _ = db::inject_token(
                         &db_path,
                         &account.token.access_token,
@@ -161,91 +133,103 @@ impl SystemIntegration for DesktopIntegration {
                         account.token.project_id.as_deref(),
                         account.token.id_token.as_deref(),
                         account.token.oauth_client_key.as_deref(),
-                        target_ide,
+                        Some("ide"),
                     );
                     if let Some(ref profile) = account.device_profile {
                         let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
                     }
+                    crate::modules::logger::log_info(&format!(
+                        "[Desktop] Token dynamically injected into IDE database: {:?}",
+                        db_path
+                    ));
                 }
             }
-            if target_ide == Some("platform") || target_ide.is_none() {
-                let _ = db::update_app_storage_email(&account.email, target_ide);
-            }
-        } else {
-            // ================== 原有 Antigravity 旧版或定制 IDE 逻辑 (< 2.0.0) ==================
-            // 2.1 get存储路径
-            let storage_path = device::get_storage_path(target_ide)?;
 
-            // 2.2 写入设备 Profile
+            // D. Touch heartbeat so IDE scanner immediately reports new active email
+            crate::modules::ide_scanner::touch_heartbeat(Some("Antigravity IDE"), Some(&account.email));
+
+            // E. Light notification & tray update (ZERO kill, ZERO restart)
+            self.show_notification("Antigravity IDE", &format!("⚡ Switched to {}", account.email));
+            self.update_tray();
+
+            return Ok(());
+        }
+
+        // ====================================================================
+        // TARGET 2: ANTIGRAVITY PLATFORM (Isolated process lifecycle)
+        // ====================================================================
+        let target_platform = Some("platform");
+
+        // 1. Close running platform process if active (IDE processes remain completely untouched)
+        let was_running = process::is_antigravity_running(target_platform);
+        if was_running {
+            crate::modules::logger::log_info(
+                "[Desktop] Antigravity Platform is currently running. Closing before account injection..."
+            );
+            process::close_antigravity(20, target_platform)?;
+        }
+
+        // 2. Token Injection for Platform
+        // 2.1 Write to system keychain/keyring (gemini:antigravity - exclusive to Platform)
+        write_to_system_keyring(account)?;
+
+        // 2.2 Write storage profile for platform
+        if let Ok(storage_path) = device::get_storage_path(target_platform) {
             if let Some(ref profile) = account.device_profile {
-                device::write_profile(&storage_path, profile)?;
-            }
-
-            // 2.3 data库handle与 Token 注入
-            let db_path = db::get_db_path(target_ide)?;
-            if db_path.exists() {
-                let backup_path = db_path.with_extension("vscdb.backup");
-                let _ = fs::copy(&db_path, &backup_path);
-            }
-
-            db::inject_token(
-                &db_path,
-                &account.token.access_token,
-                &account.token.refresh_token,
-                account.token.expiry_timestamp,
-                &account.email,
-                account.token.is_gcp_tos,
-                account.token.project_id.as_deref(),
-                account.token.id_token.as_deref(),
-                account.token.oauth_client_key.as_deref(),
-                target_ide,
-            )?;
-
-            // 2.4 同步 Service Machine ID 到data库
-            if let Some(ref profile) = account.device_profile {
-                let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                let _ = device::write_profile(&storage_path, profile);
             }
         }
 
-        // 3. Restart or start external process
+        // 2.3 Update SQLite database for platform if state.vscdb exists
+        if let Ok(db_path) = db::get_db_path(target_platform) {
+            if db_path.exists() {
+                let backup_path = db_path.with_extension("vscdb.backup");
+                let _ = fs::copy(&db_path, &backup_path);
+
+                let _ = db::inject_token(
+                    &db_path,
+                    &account.token.access_token,
+                    &account.token.refresh_token,
+                    account.token.expiry_timestamp,
+                    &account.email,
+                    account.token.is_gcp_tos,
+                    account.token.project_id.as_deref(),
+                    account.token.id_token.as_deref(),
+                    account.token.oauth_client_key.as_deref(),
+                    target_platform,
+                );
+                if let Some(ref profile) = account.device_profile {
+                    let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                }
+            }
+        }
+
+        // 2.4 Update app_storage.json for platform
+        let _ = db::update_app_storage_email(&account.email, target_platform);
+
+        // 3. Restart Platform only if it was running before
         if was_running {
-            crate::modules::logger::log_info(&format!(
-                "[Desktop] Target ({:?}) was running before switch. Restarting now...",
-                target_ide
-            ));
-            process::start_antigravity(target_ide)?;
+            crate::modules::logger::log_info(
+                "[Desktop] Antigravity Platform was running before switch. Restarting now..."
+            );
+            process::start_antigravity(target_platform)?;
         } else {
-            // If it was not running, try starting it or leave it ready
-            if let Err(e) = process::start_antigravity(target_ide) {
+            if let Err(e) = process::start_antigravity(target_platform) {
                 crate::modules::logger::log_info(&format!(
-                    "[Desktop] Target ({:?}) was not running and auto-start was skipped: {}",
-                    target_ide, e
+                    "[Desktop] Antigravity Platform was not running and auto-start was skipped: {}",
+                    e
                 ));
             }
         }
 
-        // 4. Send desktop notification (suppressed for IDE environment to prevent disruptive overlays)
-        if target_ide != Some("ide") {
-            let target_title = match target_ide {
-                Some("platform") => "Antigravity Platform",
-                Some(other) => other,
-                None => "Antigravity",
-            };
-            let notif_body = if was_running {
-                format!("⚡ Switched to {} (Restarted)", account.email)
-            } else {
-                format!("⚡ Switched to {}", account.email)
-            };
-            self.show_notification(target_title, &notif_body);
-        }
-
-        // 4.5. Touch heartbeat so IDE scanner instantly reflects new email
-        if is_ide {
-            crate::modules::ide_scanner::touch_heartbeat(Some("Antigravity IDE"), Some(&account.email));
-        }
-
-        // 5. Update tray
-        let _ = crate::modules::tray::update_tray_menus(&self.app_handle);
+        // 4. Notification & Tray
+        let notif_body = if was_running {
+            format!("⚡ Switched to {} (Restarted)", account.email)
+        } else {
+            format!("⚡ Switched to {}", account.email)
+        };
+        self.show_notification("Antigravity Platform", &notif_body);
+        self.update_tray();
 
         Ok(())
     }
