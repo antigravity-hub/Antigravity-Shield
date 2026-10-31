@@ -265,7 +265,25 @@ pub fn detect_active_email_from_db_with_mtime(target_ide: Option<&str>) -> Optio
     None
 }
 
-/// Detect active email across modern app_storage.json and state.vscdb
+/// Detect active email from ~/.gemini/google_accounts.json (used by modern Antigravity IDE and Gemini CLI)
+pub fn detect_active_email_from_gemini_accounts() -> Option<String> {
+    let home = dirs::home_dir()?;
+    let accounts_path = home.join(".gemini").join("google_accounts.json");
+    if !accounts_path.exists() {
+        return None;
+    }
+
+    let content = std::fs::read_to_string(&accounts_path).ok()?;
+    let val: serde_json::Value = serde_json::from_str(&content).ok()?;
+    let active = val.get("active").and_then(|v| v.as_str())?.trim();
+    if !active.is_empty() && active.contains('@') {
+        Some(active.to_string())
+    } else {
+        None
+    }
+}
+
+/// Detect active email across modern app_storage.json, state.vscdb, and ~/.gemini/google_accounts.json
 pub fn detect_active_email(target_ide: Option<&str>) -> Option<String> {
     // For Platform (Antigravity 2.x), app_storage.json is the authoritative canonical store for Jetski login
     if target_ide == Some("platform") {
@@ -279,7 +297,12 @@ pub fn detect_active_email(target_ide: Option<&str>) -> Option<String> {
         if has_storage {
             return None;
         }
-    } else if target_ide != Some("ide") {
+    } else if target_ide == Some("ide") {
+        // For IDE: prioritize ~/.gemini/google_accounts.json if present, as it is the canonical identity store for Antigravity IDE
+        if let Some(email_gemini) = detect_active_email_from_gemini_accounts() {
+            return Some(email_gemini);
+        }
+    } else {
         if let Some((email_app, _)) = detect_active_email_from_app_storage(target_ide) {
             return Some(email_app);
         }

@@ -129,10 +129,27 @@ impl SystemIntegration for DesktopIntegration {
                 }
             }
 
-            // D. Touch heartbeat so IDE scanner immediately reports new active email
+            // D. Sync file-based credentials to ~/.gemini/ (oauth_creds.json & google_accounts.json)
+            // for Antigravity IDE agent, AI chat, and settings UI parity
+            if let Err(e) = write_to_file_credentials(account) {
+                crate::modules::logger::log_warn(&format!(
+                    "[Desktop] IDE file credential sync warning: {}",
+                    e
+                ));
+            }
+
+            // E. Sync token to system credential store/keyring
+            if let Err(e) = write_to_system_keyring(account) {
+                crate::modules::logger::log_warn(&format!(
+                    "[Desktop] IDE keyring sync warning: {}",
+                    e
+                ));
+            }
+
+            // F. Touch heartbeat so IDE scanner immediately reports new active email
             crate::modules::ide_scanner::touch_heartbeat(Some("Antigravity IDE"), Some(&account.email));
 
-            // E. Light notification & tray update (ZERO kill, ZERO restart)
+            // G. Light notification & tray update (ZERO kill, ZERO restart)
             self.show_notification("Antigravity IDE", &format!("⚡ Switched to {}", account.email));
             self.update_tray();
 
