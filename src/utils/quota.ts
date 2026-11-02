@@ -444,7 +444,7 @@ export function isAccountQuotaExhausted(account: Account): boolean {
     } else if (geminiWeekly !== null) {
         isGeminiExhausted = geminiWeekly <= 0 || allGeminiModelsZero;
     } else if (gemini5h !== null) {
-        isGeminiExhausted = gemini5h <= 0 && allGeminiModelsZero;
+        isGeminiExhausted = gemini5h <= 0 || allGeminiModelsZero;
     } else if (hasGeminiModels) {
         isGeminiExhausted = allGeminiModelsZero;
     }
@@ -483,7 +483,7 @@ export function isAccountQuotaExhausted(account: Account): boolean {
     } else if (claudeWeekly !== null) {
         isClaudeExhausted = claudeWeekly <= 0 || allClaudeModelsZero;
     } else if (claude5h !== null) {
-        isClaudeExhausted = claude5h <= 0 && allClaudeModelsZero;
+        isClaudeExhausted = claude5h <= 0 || allClaudeModelsZero;
     } else if (claudeModels.length > 0) {
         isClaudeExhausted = allClaudeModelsZero;
     }
