@@ -588,7 +588,7 @@ function AccountRowContent({
                             return (
                                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default" title={account.quota.subscription_tier}>
                                     <AlertTriangle className="w-2.5 h-2.5" />
-                                    RESTRICTED (#3501)
+                                    {t('accounts.tier.region_blocked', 'REGION BLOCKED')}
                                 </span>
                             );
                         } else if (tier.includes('ultra')) {
@@ -614,7 +614,7 @@ function AccountRowContent({
                             );
                         } else {
                             return (
-                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 text-[10px] font-bold shadow-sm border border-gray-200 dark:border-white/10 hover:bg-gray-200 transition-colors cursor-default" title="Google AI Free">
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 text-[10px] font-bold shadow-sm border border-gray-200 dark:border-white/10 hover:bg-gray-200 transition-colors cursor-default" title={t('accounts.card.google_ai_free', "Google AI Free")}>
                                     <Circle className="w-2.5 h-2.5" />
                                     {t('accounts.free')}
                                 </span>

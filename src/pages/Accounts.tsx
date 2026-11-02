@@ -1484,11 +1484,11 @@ function Accounts() {
               className="px-2.5 py-2 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-medium rounded-lg hover:bg-amber-500/10 transition-colors flex items-center gap-1.5"
               onClick={handleRunPatcher}
               disabled={isPatching}
-              title={t("patcher.tooltip", "Bypass License #3501 and region block by patching language_server & main.js")}
+              title={t("patcher.tooltip", "Bypass Region Block for Antigravity IDE")}
             >
               <Wrench className={cn("w-3.5 h-3.5", isPatching && "animate-spin")} />
               <span className="hidden xl:inline">
-                {isPatching ? t("patcher.patching", "Patching...") : t("patcher.btn", "Fix License #3501")}
+                {isPatching ? t("patcher.patching", "Patching...") : t("patcher.btn", "Bypass Region Block")}
               </span>
             </button>
           </div>

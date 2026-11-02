@@ -58,7 +58,7 @@ export default function AntigravityCorePatcherCard({ compact = false }: Antigrav
                     </div>
                     <div className="min-w-0">
                         <h4 className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
-                            {t('patcher.compact_title', 'Fix License #3501 & Region')}
+                            {t('patcher.compact_title', 'Bypass Region Block')}
                         </h4>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
                             {lastResult ? (lastResult.success ? t('patcher.applied', 'Patched successfully') : t('patcher.completed', 'Completed')) : t('patcher.compact_desc', 'Language server & GCP ToS bypass')}
@@ -92,14 +92,14 @@ export default function AntigravityCorePatcherCard({ compact = false }: Antigrav
                     <div>
                         <div className="flex items-center gap-2">
                             <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                                {t('patcher.title', 'Antigravity IDE License #3501 & Region Bypass')}
+                                {t('patcher.title', 'Antigravity IDE Region Bypass')}
                             </h3>
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                {t('patcher.badge', 'Core Engine Patch')}
+                                {t('patcher.badge', 'Region Patcher')}
                             </span>
                         </div>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            {t('patcher.desc', 'Patches language_server eligibility check, bypasses GCP ToS gate in main.js, and purges IDE code caches to unblock restricted regions & accounts.')}
+                            {t('patcher.desc', 'Patches Antigravity IDE language_server and workbench to unblock restricted countries and geo-blocked accounts.')}
                         </p>
                     </div>
                 </div>
@@ -118,7 +118,7 @@ export default function AntigravityCorePatcherCard({ compact = false }: Antigrav
                         <span>
                             {isLoading
                                 ? t('patcher.running', 'Applying Patches...')
-                                : t('patcher.one_click', '1-Click Fix License & Region')}
+                                : t('patcher.one_click', '1-Click Region Bypass')}
                         </span>
                     </button>
                 </div>
@@ -142,19 +142,19 @@ export default function AntigravityCorePatcherCard({ compact = false }: Antigrav
                             <span className={lastResult.language_server_patched ? 'text-emerald-500 font-bold' : 'text-slate-400'}>
                                 {lastResult.language_server_patched ? '✓' : '•'}
                             </span>
-                            <span>Language Server: {lastResult.language_server_patched ? 'Patched' : 'Unchanged'}</span>
+                            <span>{t('patcher.target_ls', 'Language Server')}: {lastResult.language_server_patched ? t('patcher.patched', 'Patched') : t('patcher.unchanged', 'Unchanged')}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <span className={lastResult.main_js_patched ? 'text-emerald-500 font-bold' : 'text-slate-400'}>
                                 {lastResult.main_js_patched ? '✓' : '•'}
                             </span>
-                            <span>Workbench main.js: {lastResult.main_js_patched ? 'Patched' : 'Unchanged'}</span>
+                            <span>{t('patcher.target_js', 'Workbench main.js')}: {lastResult.main_js_patched ? t('patcher.patched', 'Patched') : t('patcher.unchanged', 'Unchanged')}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <span className={lastResult.cache_cleared ? 'text-emerald-500 font-bold' : 'text-slate-400'}>
                                 {lastResult.cache_cleared ? '✓' : '•'}
                             </span>
-                            <span>IDE Cache: {lastResult.cache_cleared ? 'Purged' : 'Skipped'}</span>
+                            <span>{t('patcher.target_cache', 'IDE Cache')}: {lastResult.cache_cleared ? t('patcher.purged', 'Purged') : t('patcher.skipped', 'Skipped')}</span>
                         </div>
                     </div>
                 </div>

@@ -2794,5 +2794,20 @@
       "antigravity_ide": "Antigravity IDE",
       "antigravity_cli_agy": "Antigravity CLI (agy)"
     }
+  },
+  "patcher": {
+    "btn": "Bypass Region Block",
+    "tooltip": "Bypass Region Block for Antigravity IDE",
+    "patching": "Patching...",
+    "title": "Antigravity IDE Region Bypass",
+    "compact_title": "Bypass Region Block",
+    "compact_desc": "Language server & region gate bypass",
+    "one_click": "1-Click Region Bypass",
+    "badge": "Region Patcher",
+    "desc": "Patches Antigravity IDE language_server and workbench to unblock restricted countries and geo-blocked accounts.",
+    "run": "Run Patch",
+    "running": "Applying Patches...",
+    "applied": "Patched successfully",
+    "completed": "Completed"
   }
 }

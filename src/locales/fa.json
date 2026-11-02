@@ -2794,5 +2794,20 @@
       "antigravity_ide": "محیط Antigravity IDE",
       "antigravity_cli_agy": "Antigravity CLI (agy)"
     }
+  },
+  "patcher": {
+    "btn": "رفع تحریم ریجن",
+    "tooltip": "رفع تحریم مکانی و ریجن Antigravity IDE با پچ هسته",
+    "patching": "در حال رفع تحریم...",
+    "title": "بایپس تحریم ریجن Antigravity IDE",
+    "compact_title": "رفع تحریم ریجن",
+    "compact_desc": "پچ language_server و دور زدن تحریم مکانی",
+    "one_click": "رفع فوری تحریم ریجن (۱ کلیک)",
+    "badge": "پچر ریجن",
+    "desc": "پچ کردن بررسی صلاحیت باینری language_server و دور زدن گیت ToS برای رفع تحریم مکانی و کشورهای مسدودشده.",
+    "run": "اجرای پچ",
+    "running": "در حال اجرای پچ...",
+    "applied": "تحریم با موفقیت رفع شد",
+    "completed": "پایان عملیات"
   }
 }

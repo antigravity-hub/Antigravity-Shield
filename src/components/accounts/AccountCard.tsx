@@ -375,7 +375,7 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                     return (
                                         <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[9px] font-bold shadow-sm" title={account.quota.subscription_tier}>
                                             <AlertTriangle className="w-2.5 h-2.5" />
-                                            RESTRICTED (#3501)
+                                            {t('accounts.tier.region_blocked', 'REGION BLOCKED')}
                                         </span>
                                     );
                                 } else if (tier.includes('ultra')) {
@@ -398,14 +398,14 @@ function AccountCard({ account, selected, onSelect, isCurrent: propIsCurrent, is
                                     );
                                 } else if (tier.includes('pro')) {
                                     return (
-                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[9px] font-bold shadow-sm" title="Google AI Pro">
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[9px] font-bold shadow-sm" title={t('accounts.card.google_ai_pro', "Google AI Pro")}>
                                             <Diamond className="w-2.5 h-2.5 fill-current" />
                                             PRO
                                         </span>
                                     );
                                 } else {
                                     return (
-                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 text-[9px] font-bold shadow-sm border border-gray-200 dark:border-white/10" title="Google AI Free">
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 text-[9px] font-bold shadow-sm border border-gray-200 dark:border-white/10" title={t('accounts.card.google_ai_free', "Google AI Free")}>
                                             <Circle className="w-2.5 h-2.5" />
                                             FREE
                                         </span>
