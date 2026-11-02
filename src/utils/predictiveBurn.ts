@@ -74,7 +74,7 @@ export function calculateAccountBurnVelocity(
   now = Date.now(),
   windowHours = 168 // 7 days default
 ): BurnVelocityMetrics {
-  let quotaRemainingPct = 100;
+  let quotaRemainingPct = 0;
   let resetTimeMs = now + windowHours * 3600 * 1000;
 
   // 1. Extract weekly quota and cycle reset via unified quota engine
@@ -91,6 +91,13 @@ export function calculateAccountBurnVelocity(
       );
     if (weeklyBucket && typeof weeklyBucket.remaining_fraction === 'number') {
       quotaRemainingPct = Math.max(0, Math.min(100, weeklyBucket.remaining_fraction * 100));
+    } else if (account.quota?.models && account.quota.models.length > 0) {
+      const numericModels = account.quota.models
+        .map((m) => m.percentage)
+        .filter((p): p is number => typeof p === 'number');
+      if (numericModels.length > 0) {
+        quotaRemainingPct = Math.min(...numericModels);
+      }
     }
   }
 
@@ -288,21 +295,21 @@ export function calculateFleetBurnVelocity(
 ): BurnVelocityMetrics {
   if (!accounts || accounts.length === 0) {
     return {
-      sustainabilityRatio: 1.0,
+      sustainabilityRatio: 0,
       hourlyBurnRatePct: 0,
-      runwayHoursRemaining: 168,
+      runwayHoursRemaining: 0,
       projectedDepletionDate: null,
       isDepletedBeforeReset: false,
       deficitHours: 0,
-      surplusHours: 168,
+      surplusHours: 0,
       zone: 'balanced',
-      zoneLabel: 'Balanced Pace',
+      zoneLabel: 'No Accounts',
       zoneTag: 'NEUTRAL',
-      zoneColor: '#38bdf8',
+      zoneColor: '#64748b',
       gaugeAngle: 90,
-      timeRemainingHours: 168,
-      quotaRemainingPct: 100,
-      timeRemainingPct: 100,
+      timeRemainingHours: 0,
+      quotaRemainingPct: 0,
+      timeRemainingPct: 0,
     };
   }
 
@@ -353,21 +360,21 @@ export function calculateFleetBurnVelocity(
   const validCount = accountItems.length;
   if (validCount === 0) {
     return {
-      sustainabilityRatio: 1.0,
+      sustainabilityRatio: 0,
       hourlyBurnRatePct: 0,
-      runwayHoursRemaining: 168,
+      runwayHoursRemaining: 0,
       projectedDepletionDate: null,
       isDepletedBeforeReset: false,
       deficitHours: 0,
-      surplusHours: 168,
-      zone: 'balanced',
-      zoneLabel: 'Balanced Fleet',
+      surplusHours: 0,
+      zone: 'critical',
+      zoneLabel: 'Unsynced Fleet',
       zoneTag: 'NEUTRAL',
-      zoneColor: '#38bdf8',
+      zoneColor: '#64748b',
       gaugeAngle: 90,
-      timeRemainingHours: 168,
-      quotaRemainingPct: 100,
-      timeRemainingPct: 100,
+      timeRemainingHours: 0,
+      quotaRemainingPct: 0,
+      timeRemainingPct: 0,
     };
   }
 

@@ -623,7 +623,9 @@ export const McpTab: React.FC = () => {
                         {!inspectingServer.isEnabled
                           ? t('ecosystem.mcp.disabled', "Server is disabled")
                           : inspectingServer.status === 'connected'
-                          ? t('ecosystem.mcp.status_operational', { ping: inspectingServer.lastPingMs || 12, defaultValue: 'Operational & Ready ({{ping}}ms)' })
+                          ? (inspectingServer.lastPingMs
+                              ? t('ecosystem.mcp.status_operational', { ping: inspectingServer.lastPingMs, defaultValue: 'Operational & Ready ({{ping}}ms)' })
+                              : t('ecosystem.mcp.status_operational_ready', 'Operational & Ready'))
                           : inspectingServer.status === 'needs_config'
                           ? t('ecosystem.mcp.status_needs_config_desc', 'Requires configuration completion or prerequisite service')
                           : t('ecosystem.mcp.status_connection_error', 'Connection error')}

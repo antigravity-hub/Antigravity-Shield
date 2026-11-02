@@ -26,12 +26,14 @@ pub fn find_language_server_paths() -> Vec<PathBuf> {
         if let Ok(local_appdata) = std::env::var("LOCALAPPDATA") {
             let base = PathBuf::from(&local_appdata);
             candidates.push(base.join("Programs").join("Antigravity IDE").join("resources").join("app").join("extensions").join("antigravity").join("bin").join("language_server_windows_x64.exe"));
+            candidates.push(base.join("Programs").join("Antigravity IDE").join("resources").join("app").join("extensions").join("antigravity").join("bin").join("language_server_windows_arm64.exe"));
             candidates.push(base.join("Programs").join("antigravity").join("resources").join("bin").join("language_server.exe"));
             candidates.push(base.join("Programs").join("Antigravity IDE").join("resources").join("app").join("extensions").join("antigravity").join("bin").join("language_server.exe"));
         }
         if let Ok(userprofile) = std::env::var("USERPROFILE") {
             let ubase = PathBuf::from(&userprofile);
             candidates.push(ubase.join(".antigravity").join("extensions").join("antigravity").join("bin").join("language_server_windows_x64.exe"));
+            candidates.push(ubase.join(".antigravity").join("extensions").join("antigravity").join("bin").join("language_server_windows_arm64.exe"));
             candidates.push(ubase.join(".antigravity-ide").join("extensions").join("antigravity").join("bin").join("language_server_windows_x64.exe"));
         }
     }
@@ -51,10 +53,18 @@ pub fn find_language_server_paths() -> Vec<PathBuf> {
     {
         candidates.push(PathBuf::from("/usr/share/antigravity-ide/resources/app/extensions/antigravity/bin/language_server"));
         candidates.push(PathBuf::from("/opt/antigravity/resources/app/extensions/antigravity/bin/language_server"));
+        candidates.push(PathBuf::from("/opt/antigravity-ide/resources/app/extensions/antigravity/bin/language_server"));
+        if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME") {
+            let xdg_p = PathBuf::from(&xdg);
+            candidates.push(xdg_p.join("Antigravity IDE/extensions/antigravity/bin/language_server"));
+            candidates.push(xdg_p.join("Antigravity/extensions/antigravity/bin/language_server"));
+        }
         if let Some(home) = dirs::home_dir() {
             candidates.push(home.join(".antigravity/extensions/antigravity/bin/language_server"));
             candidates.push(home.join(".antigravity-ide/extensions/antigravity/bin/language_server"));
             candidates.push(home.join(".config/Antigravity IDE/extensions/antigravity/bin/language_server"));
+            candidates.push(home.join(".config/Antigravity/extensions/antigravity/bin/language_server"));
+            candidates.push(home.join(".local/share/antigravity-ide/extensions/antigravity/bin/language_server"));
         }
     }
 
@@ -87,6 +97,7 @@ pub fn find_main_js_paths() -> Vec<PathBuf> {
         candidates.push(PathBuf::from("/usr/share/antigravity-ide/resources/app/out/main.js"));
         candidates.push(PathBuf::from("/usr/share/antigravity/resources/app/out/main.js"));
         candidates.push(PathBuf::from("/opt/antigravity/resources/app/out/main.js"));
+        candidates.push(PathBuf::from("/opt/antigravity-ide/resources/app/out/main.js"));
     }
 
     candidates.into_iter().filter(|p| p.exists()).collect()
@@ -100,6 +111,9 @@ pub fn kill_running_language_servers() {
             .args(["/F", "/IM", "language_server_windows_x64.exe"])
             .output();
         let _ = Command::new("taskkill")
+            .args(["/F", "/IM", "language_server_windows_arm64.exe"])
+            .output();
+        let _ = Command::new("taskkill")
             .args(["/F", "/IM", "language_server.exe"])
             .output();
     }
@@ -110,6 +124,9 @@ pub fn kill_running_language_servers() {
             .args(["-9", "-f", "language_server"])
             .output();
     }
+
+    // Give OS kernel time to release file locks on terminating processes
+    std::thread::sleep(std::time::Duration::from_millis(500));
 }
 
 /// Applies the byte pattern patch to a language_server binary:
@@ -159,7 +176,7 @@ pub fn patch_language_server_binary(file_path: &Path, details: &mut Vec<String>)
             && data[i + 14] == 0x60
         {
             // Create backup if not present
-            let backup = file_path.with_extension("exe.bak");
+            let backup = PathBuf::from(format!("{}.bak", file_path.to_string_lossy()));
             if !backup.exists() {
                 let _ = fs::copy(file_path, &backup);
             }
@@ -185,15 +202,20 @@ pub fn patch_language_server_binary(file_path: &Path, details: &mut Vec<String>)
         for j in (0..n.saturating_sub(20)).step_by(4) {
             let inst1 = u32::from_le_bytes(data[j..j + 4].try_into().unwrap());
             let inst2 = u32::from_le_bytes(data[j + 4..j + 8].try_into().unwrap());
-            let inst4 = u32::from_le_bytes(data[j + 12..j + 16].try_into().unwrap());
-            let inst5 = u32::from_le_bytes(data[j + 16..j + 20].try_into().unwrap());
+
+            // Check if already patched for ARM64:
+            if (inst1 & 0xfffffc00) == 0x39402000 && data[j + 4..j + 8] == [0x1f, 0x20, 0x03, 0xd5] {
+                already_patched = true;
+                details.push(format!("ARM64 eligibility gate at offset 0x{:x} is already patched in {:?}", j + 4, file_path));
+                break;
+            }
 
             // ldrb wA, [xB, #8] -> 0x39402000
             if (inst1 & 0xfffffc00) == 0x39402000 {
                 let a_reg = inst1 & 0x1f;
                 // cbz/tbz wA
                 if (inst2 & 0x7f00001f) == (0x34000000 | a_reg) || (inst2 & 0xff00001f) == (0x36000000 | a_reg) {
-                    let backup = file_path.with_extension("bak");
+                    let backup = PathBuf::from(format!("{}.bak", file_path.to_string_lossy()));
                     if !backup.exists() {
                         let _ = fs::copy(file_path, &backup);
                     }
@@ -309,7 +331,21 @@ pub fn clear_ide_caches(details: &mut Vec<String>) -> bool {
 
     for dir in cache_dirs {
         if dir.exists() {
-            if let Ok(_) = fs::remove_dir_all(&dir) {
+            let mut removed = false;
+            if fs::remove_dir_all(&dir).is_ok() {
+                removed = true;
+            } else if let Ok(entries) = fs::read_dir(&dir) {
+                for entry in entries.flatten() {
+                    let p = entry.path();
+                    if p.is_dir() {
+                        let _ = fs::remove_dir_all(&p);
+                    } else {
+                        let _ = fs::remove_file(&p);
+                    }
+                }
+                removed = true;
+            }
+            if removed {
                 cleared_any = true;
                 details.push(format!("Cleared cache directory: {:?}", dir));
             }

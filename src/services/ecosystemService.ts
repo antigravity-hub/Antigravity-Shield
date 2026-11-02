@@ -565,12 +565,13 @@ export async function testMcpServer(
     };
   }
 
-  const randomLatency = Math.floor(Math.random() * 15) + 10;
   return {
-    success: true,
-    latencyMs: randomLatency,
-    message: `اتصال با موفقیت برقرار شد. پروتکل stdio پاسخ داد (${randomLatency}ms). ${target.toolCount || 0} ابزار آماده تعامل با هوش مصنوعی است.`,
-    status: 'connected',
+    success: false,
+    latencyMs: 0,
+    message: isTauri()
+      ? 'ارتباط با پروسه بومی سرور MCP برقرار نشد. لطفاً از نصب بودن پیش‌نیازهای اجرایی و درستی فرمان اجرایی اطمینان حاصل کنید.'
+      : 'تست اتصال پروسه‌های MCP نیازمند کلاینت دسکتاپ (Tauri) است و در حالت وب امکان‌پذیر نمی‌باشد.',
+    status: 'error',
   };
 }
 

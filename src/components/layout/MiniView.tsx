@@ -486,21 +486,21 @@ export default function MiniView() {
                                             geminiProModel, 
                                             getModelDisplayName(geminiProModel), 
                                             'emerald',
-                                            gemini5hBucket !== null && gemini5hBucket < (geminiProModel?.percentage ?? 100) ? gemini5hBucket : geminiProModel?.percentage,
+                                            gemini5hBucket !== null && typeof geminiProModel?.percentage === 'number' && gemini5hBucket < geminiProModel.percentage ? gemini5hBucket : geminiProModel?.percentage,
                                             geminiResetFormatted ? `R: ${geminiResetFormatted}` : null
                                         )}
                                         {renderModelRow(
                                             geminiFlashModel, 
                                             getModelDisplayName(geminiFlashModel), 
                                             'emerald',
-                                            gemini5hBucket !== null && gemini5hBucket < (geminiFlashModel?.percentage ?? 100) ? gemini5hBucket : geminiFlashModel?.percentage,
+                                            gemini5hBucket !== null && typeof geminiFlashModel?.percentage === 'number' && gemini5hBucket < geminiFlashModel.percentage ? gemini5hBucket : geminiFlashModel?.percentage,
                                             geminiResetFormatted ? `R: ${geminiResetFormatted}` : null
                                         )}
                                         {renderModelRow(
                                             claudeModel, 
                                             getModelDisplayName(claudeModel, t('common.claude_series', 'Claude Series')), 
                                             'cyan',
-                                            claude5hBucket !== null && claude5hBucket < (claudeModel?.percentage ?? 100) ? claude5hBucket : claudeModel?.percentage,
+                                            claude5hBucket !== null && typeof claudeModel?.percentage === 'number' && claude5hBucket < claudeModel.percentage ? claude5hBucket : claudeModel?.percentage,
                                             claudeResetFormatted ? `R: ${claudeResetFormatted}` : null
                                         )}
 

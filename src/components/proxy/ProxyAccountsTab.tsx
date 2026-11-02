@@ -241,7 +241,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                             const isPreferred = preferredAccountId === acc.id;
                             const isBlocked = !!(acc.validation_blocked || acc.disabled || acc.proxy_disabled || acc.quota?.is_forbidden);
                             const blockReason = acc.validation_blocked_reason || acc.disabled_reason || acc.proxy_disabled_reason || (acc.quota?.is_forbidden ? 'Google TOS / Forbidden' : '');
-                            const tier = acc.quota?.subscription_tier || 'PRO';
+                            const tier = acc.quota?.subscription_tier || 'FREE';
                             const models = acc.quota?.models || [];
 
                             return (
@@ -315,7 +315,7 @@ export const ProxyAccountsTab: React.FC<ProxyAccountsTabProps> = ({
                                             <div className="text-[11px] text-gray-400 py-1">{t('proxy.accounts.no_detailed_quota_stats_receiv', "No detailed quota stats received yet.")}</div>
                                         ) : (
                                             models.slice(0, 4).map((m) => {
-                                                const pct = typeof m.percentage === 'number' ? m.percentage : 100;
+                                                const pct = typeof m.percentage === 'number' ? m.percentage : 0;
                                                 return (
                                                     <div key={m.name} className="space-y-1">
                                                         <div className="flex items-center justify-between text-[11px]">

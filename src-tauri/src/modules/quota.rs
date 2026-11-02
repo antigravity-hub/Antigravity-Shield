@@ -244,13 +244,13 @@ async fn fetch_project_id(
                             for it in ineligibles {
                                 if let Some(ref code) = it.reason_code {
                                     let c = code.to_uppercase();
-                                    if c.contains("3501") || c.contains("SUBSCRIPTION") || c.contains("LOCATION") || c.contains("REGION") {
+                                    if c.contains("3501") || c.contains("LOCATION") || c.contains("REGION") || c.contains("COUNTRY") || c.contains("GEOFENCE") {
                                         has_license_3501_ineligible = true;
                                         break;
                                     }
                                 }
                             }
-                            if ineligibles.len() > 0 && subscription_tier.is_none() {
+                            if subscription_tier.is_none() && ineligibles.len() > 0 {
                                 has_license_3501_ineligible = true;
                             }
                         }
@@ -340,8 +340,6 @@ pub async fn fetch_quota_with_cache(
             let check_restricted = |r: &str| {
                 let lr = r.to_lowercase();
                 lr.contains("3501")
-                    || lr.contains("subscription_required")
-                    || lr.contains("subscription required")
                     || lr.contains("valid license")
                     || lr.contains("location is not supported")
                     || lr.contains("user location is not supported")
@@ -357,9 +355,6 @@ pub async fn fetch_quota_with_cache(
                 if check_restricted(r) {
                     is_restricted_account = true;
                 }
-            }
-            if existing_acc.validation_blocked {
-                is_restricted_account = true;
             }
         }
     }
@@ -608,9 +603,16 @@ pub async fn fetch_quota_with_cache(
                                         };
 
                                         if matches_group {
+                                            let prev_pct = model.percentage;
                                             model.percentage = model.percentage.min(group_pct);
-                                            if !bucket.reset_time.is_empty() && (model.percentage == 0 || model.reset_time.is_empty()) {
-                                                model.reset_time = bucket.reset_time.clone();
+                                            if !bucket.reset_time.is_empty() {
+                                                if model.percentage == 0 {
+                                                    if prev_pct > 0 || model.reset_time.is_empty() || (is_weekly && group_pct == 0) {
+                                                        model.reset_time = bucket.reset_time.clone();
+                                                    }
+                                                } else if model.reset_time.is_empty() {
+                                                    model.reset_time = bucket.reset_time.clone();
+                                                }
                                             }
                                         }
                                     }
@@ -657,6 +659,9 @@ pub async fn fetch_quota_with_cache(
                         let has_active_3p = quota_data.models.iter().any(|m| {
                             (m.name.starts_with("claude") || m.name.starts_with("gpt")) && m.percentage > 0
                         });
+                        let has_any_3p = quota_data.models.iter().any(|m| {
+                            m.name.starts_with("claude") || m.name.starts_with("gpt")
+                        });
                         let has_only_flash = !quota_data.models.is_empty() && quota_data.models.iter().all(|m| {
                             !m.name.starts_with("claude") && !m.name.starts_with("gpt") && (m.name.contains("flash") || !m.name.contains("pro"))
                         });
@@ -669,9 +674,9 @@ pub async fn fetch_quota_with_cache(
                             {
                                 subscription_tier = Some("Google AI Pro".to_string());
                             }
-                        } else if has_only_flash || (!has_active_3p && quota_data.models.iter().all(|m| !m.name.starts_with("claude") && !m.name.starts_with("gpt"))) {
+                        } else if has_only_flash || !has_any_3p {
                             // If third-party models are unavailable or blocked and only Flash models are present, ensure it reflects Google AI Free
-                            if subscription_tier.as_deref() != Some("Google AI Pro") && subscription_tier.as_deref() != Some("Google AI Ultra") {
+                            if subscription_tier.as_deref() != Some("Google AI Ultra") {
                                 subscription_tier = Some("Google AI Free".to_string());
                             }
                         }
