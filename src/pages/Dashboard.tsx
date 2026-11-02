@@ -52,26 +52,38 @@ function Dashboard() {
     // 计算统计data (Family groups counted as 1 distinct pooled capacity unit)
     const stats = useMemo(() => {
         const capacityUnits = getDistinctCapacityUnits(accounts, currentAccount?.id);
-        const getGeminiProQuota = (a: Account) =>
-            findQuotaModel(a.quota?.models, 'gemini-pro')?.percentage || 0;
+        const getGeminiProQuota = (a: Account): number | null => {
+            const m = findQuotaModel(a.quota?.models, 'gemini-pro');
+            return m && typeof m.percentage === 'number' ? m.percentage : null;
+        };
+
+        const getGeminiImageQuota = (a: Account): number | null => {
+            const m = findImageQuotaModel(a.quota?.models);
+            return m && typeof m.percentage === 'number' ? m.percentage : null;
+        };
+
+        const getClaudeQuota = (a: Account): number | null => {
+            const m = findQuotaModel(a.quota?.models, 'claude');
+            return m && typeof m.percentage === 'number' ? m.percentage : null;
+        };
 
         const geminiQuotas = capacityUnits
             .map(a => getGeminiProQuota(a))
-            .filter(q => q > 0);
+            .filter((q): q is number => q !== null);
 
         const geminiImageQuotas = capacityUnits
-            .map(a => findImageQuotaModel(a.quota?.models)?.percentage || 0)
-            .filter(q => q > 0);
+            .map(a => getGeminiImageQuota(a))
+            .filter((q): q is number => q !== null);
 
         const claudeQuotas = capacityUnits
-            .map(a => findQuotaModel(a.quota?.models, 'claude')?.percentage || 0)
-            .filter(q => q > 0);
+            .map(a => getClaudeQuota(a))
+            .filter((q): q is number => q !== null);
 
         const lowQuotaCount = capacityUnits.filter(a => {
             if (a.quota?.is_forbidden) return false;
             const gemini = getGeminiProQuota(a);
-            const claude = findQuotaModel(a.quota?.models, 'claude')?.percentage || 0;
-            return gemini < 20 || claude < 20;
+            const claude = getClaudeQuota(a);
+            return (gemini !== null && gemini < 20) || (claude !== null && claude < 20);
         }).length;
 
         return {

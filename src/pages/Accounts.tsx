@@ -20,6 +20,7 @@ import {
   ToggleRight,
   Trash2,
   Upload,
+  Wrench,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -376,7 +377,7 @@ function Accounts() {
     }
 
     // 2. Weekly Quota fraction / percentage (0-100)
-    let weeklyQuotaScore = 100;
+    let weeklyQuotaScore = 0;
     let wSum = 0;
     let wCount = 0;
     for (const group of account.quota?.quota_groups || []) {
@@ -391,6 +392,8 @@ function Accounts() {
     }
     if (wCount > 0) {
       weeklyQuotaScore = Math.round(wSum / wCount);
+    } else if (account.quota && account.quota.models && account.quota.models.length > 0) {
+      weeklyQuotaScore = fiveHourScore;
     }
 
     // 3. Weekly reset countdown hours (from getAccountWeeklyReset)
@@ -988,6 +991,23 @@ function Accounts() {
     }
   };
 
+  const [isPatching, setIsPatching] = useState(false);
+  const handleRunPatcher = async () => {
+    if (!isTauri()) {
+      showToast(t("patcher.desktop_only", "Patcher is only supported in desktop environment"), "warning");
+      return;
+    }
+    setIsPatching(true);
+    try {
+      const res = await invoke<{ success: boolean; message: string }>("apply_core_engine_patch");
+      showToast(res.message, res.success ? "success" : "warning");
+    } catch (err) {
+      showToast(String(err), "error");
+    } finally {
+      setIsPatching(false);
+    }
+  };
+
   return (
     <div className={`h-full flex flex-col p-4 sm:p-5 gap-4 ${CONTAINER_MAX_WIDTH}`}>
       {/* 测试按钮 - 在最顶部 */}
@@ -1457,6 +1477,18 @@ function Accounts() {
                 {selectedIds.size > 0
                   ? t("accounts.export_selected", { count: selectedIds.size })
                   : t("common.export")}
+              </span>
+            </button>
+
+            <button
+              className="px-2.5 py-2 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-medium rounded-lg hover:bg-amber-500/10 transition-colors flex items-center gap-1.5"
+              onClick={handleRunPatcher}
+              disabled={isPatching}
+              title={t("patcher.tooltip", "Bypass License #3501 and region block by patching language_server & main.js")}
+            >
+              <Wrench className={cn("w-3.5 h-3.5", isPatching && "animate-spin")} />
+              <span className="hidden xl:inline">
+                {isPatching ? t("patcher.patching", "Patching...") : t("patcher.btn", "Fix License #3501")}
               </span>
             </button>
           </div>
