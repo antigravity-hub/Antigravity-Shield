@@ -156,7 +156,8 @@ export interface AppConfig {
     circuit_breaker: CircuitBreakerConfig; // [NEW] 熔断器config
     proxy: ProxyConfig;
     cloudflared: CloudflaredConfig;
-    auto_switch_on_quota?: boolean; // quota耗尽时自动轮换account
+    auto_switch_on_quota?: boolean;
+    auto_patch_on_region_error?: boolean; // پچ خودکار هنگام کشف تحریم ریجن // quota耗尽时自动轮换account
     auto_switch_threshold_percentage?: number; // 自动轮换阈值百分比 (default 5%)
     overlay_notifications_enabled?: boolean; // enabled悬浮HUD倒计时通知
     overlay_position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'; // 悬浮窗位置

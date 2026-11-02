@@ -4,21 +4,22 @@
  */
 import { useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import Toast, { ToastType } from './Toast';
+import Toast, { ToastType, ToastAction } from './Toast';
 
 export interface ToastItem {
     id: string;
     message: string;
     type: ToastType;
     duration?: number;
+    action?: ToastAction;
 }
 
 let toastCounter = 0;
-let addToastExternal: ((message: string, type: ToastType, duration?: number) => void) | null = null;
+let addToastExternal: ((message: string, type: ToastType, duration?: number, action?: ToastAction) => void) | null = null;
 
-export const showToast = (message: string, type: ToastType = 'info', duration: number = 3000) => {
+export const showToast = (message: string, type: ToastType = 'info', duration: number = 3000, action?: ToastAction) => {
     if (addToastExternal) {
-        addToastExternal(message, type, duration);
+        addToastExternal(message, type, duration, action);
     } else {
         console.warn('ToastContainer not mounted');
     }
@@ -27,7 +28,7 @@ export const showToast = (message: string, type: ToastType = 'info', duration: n
 const ToastContainer = () => {
     const [toasts, setToasts] = useState<ToastItem[]>([]);
 
-    const addToast = useCallback((message: string, type: ToastType, duration?: number) => {
+    const addToast = useCallback((message: string, type: ToastType, duration?: number, action?: ToastAction) => {
         const id = `toast-${Date.now()}-${toastCounter++}`;
         setToasts(prev => {
             // Prevent duplicate message stacking
@@ -36,7 +37,7 @@ const ToastContainer = () => {
             }
             // Limit visible toasts to maximum 3 to prevent screen flooding
             const trimmed = prev.length >= 3 ? prev.slice(prev.length - 2) : prev;
-            return [...trimmed, { id, message, type, duration }];
+            return [...trimmed, { id, message, type, duration, action }];
         });
     }, []);
 

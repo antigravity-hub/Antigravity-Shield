@@ -92,6 +92,7 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
                 auto_sync: false,
                 sync_interval: 5,
                 auto_switch_on_quota: true,
+                auto_patch_on_region_error: false,
                 auto_switch_threshold_percentage: 5,
                 auto_launch: true,
                 navigation_layout: 'sidebar',

@@ -2501,7 +2501,11 @@
     "overlay": {
       "platform": "پلتفرم",
       "esc": "Esc"
-    }
+    },
+    "auto_patch_title": "Antigravity Shield - رفع خودکار تحریم",
+    "auto_patch_success": "⚡ تحریم ریجن کشف شد و پچ خودکار با موفقیت اعمال گردید! ادیتور را یک‌بار ریستارت کنید.",
+    "region_block_title": "Antigravity Shield - هشدار تحریم ریجن",
+    "region_block_banner": "⚠️ اکانت {{email}} با تحریم ریجن مواجه شد. برای رفع فوری کلیک کنید."
   },
   "sidebar": {
     "sections": {
@@ -2808,6 +2812,8 @@
     "run": "اجرای پچ",
     "running": "در حال اجرای پچ...",
     "applied": "تحریم با موفقیت رفع شد",
-    "completed": "پایان عملیات"
+    "completed": "پایان عملیات",
+    "auto_patch_title": "پچ خودکار هنگام کشف تحریم ریجن",
+    "auto_patch_desc": "اجرای خودکار پچ هسته و پاکسازی کش‌ها به محض مشاهده ارور ریجن بدون نیاز به دخالت کاربر."
   }
 }

@@ -2501,7 +2501,11 @@
     "overlay": {
       "platform": "Platform",
       "esc": "Esc"
-    }
+    },
+    "auto_patch_title": "Antigravity Shield - Region Bypass",
+    "auto_patch_success": "⚡ Region restriction detected and automatically patched! Restart IDE to take effect.",
+    "region_block_title": "Antigravity Shield - Region Block",
+    "region_block_banner": "⚠️ Account {{email}} encountered a region block. Click below to bypass."
   },
   "sidebar": {
     "sections": {
@@ -2808,6 +2812,8 @@
     "run": "Run Patch",
     "running": "Applying Patches...",
     "applied": "Patched successfully",
-    "completed": "Completed"
+    "completed": "Completed",
+    "auto_patch_title": "Auto-Patch on Region Block Detection",
+    "auto_patch_desc": "Automatically patch language server & purge caches when region restriction is detected."
   }
 }

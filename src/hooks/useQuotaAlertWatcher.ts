@@ -12,11 +12,15 @@ import { showFloatingOverlay } from '../services/overlayNotificationService';
 import { getRecommendedBestAccount, getAccountEffectiveScores } from '../utils/bestAccount';
 import { extractModelScore, getModelDisplayName } from '../utils/modelCategory';
 import { useTranslation } from 'react-i18next';
+import { isTauri } from '../utils/env';
+import { invoke } from '@tauri-apps/api/core';
 
 // Cache last alert timestamp per (email:grouped_key) to prevent spamming
 const lastAlertMap = new Map<string, number>();
 const lastAutoSwitchMap = new Map<string, number>();
 let lastGlobalExhaustedAlert = 0;
+let lastRegionAlertTime = 0;
+const REGION_ALERT_COOLDOWN_MS = 15 * 60 * 1000; // 15 mins (Alert Storm Suppression Invariant)
 const ALERT_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes cooldown
 const AUTO_SWITCH_COOLDOWN_MS = 60 * 1000; // 1 minute cooldown per account
 const GLOBAL_EXHAUSTED_COOLDOWN_MS = 15 * 60 * 1000; // 15 minutes cooldown for global quota exhausted alerts
@@ -112,6 +116,73 @@ export function useQuotaAlertWatcher() {
 
         const now = Date.now();
         const autoSwitchEnabled = config?.auto_switch_on_quota !== false;
+
+        // 0. Proactive Region Restriction Watcher & Autonomous Self-Healing Gate
+        for (const targetId of targetIds) {
+            const targetAccount = accounts.find(a => a.id === targetId);
+            if (!targetAccount) continue;
+
+            const tier = (targetAccount.quota?.subscription_tier || '').toLowerCase();
+            const forbiddenReason = (targetAccount.quota?.forbidden_reason || '').toLowerCase();
+            const blockedReason = (targetAccount.validation_blocked_reason || '').toLowerCase();
+
+            const isRegionBlocked = tier.includes('restricted') ||
+                                    tier.includes('3501') ||
+                                    forbiddenReason.includes('region') ||
+                                    forbiddenReason.includes('location') ||
+                                    forbiddenReason.includes('country') ||
+                                    forbiddenReason.includes('license') ||
+                                    blockedReason.includes('region') ||
+                                    blockedReason.includes('location');
+
+            if (isRegionBlocked && now - lastRegionAlertTime > REGION_ALERT_COOLDOWN_MS) {
+                lastRegionAlertTime = now;
+
+                if (config?.auto_patch_on_region_error) {
+                    console.log([QuotaAlertWatcher] Auto-patching core engine for region blocked account ...);
+                    if (isTauri()) {
+                        invoke<{ success: boolean; message: string }>('apply_core_engine_patch')
+                            .then(res => {
+                                if (res.success) {
+                                    showToast(t('settings.core_patcher.auto_patch_success', 'Bypass Region Block patch applied automatically.'), 'success', 6000);
+                                    sendDesktopNotification('Antigravity Shield', t('settings.core_patcher.auto_patch_success', 'Bypass Region Block patch applied automatically.'));
+                                }
+                            })
+                            .catch(err => {
+                                console.error('[QuotaAlertWatcher] Auto-patch failed:', err);
+                            });
+                    }
+                } else {
+                    const bannerMsg = t('settings.core_patcher.region_detected_banner', {
+                        defaultValue: 'Region restriction detected on account {{email}}. Apply bypass patch?',
+                        email: targetAccount.email,
+                    });
+                    const actionLabel = t('settings.core_patcher.bypass_region_action', {
+                        defaultValue: 'Bypass Region Block',
+                    });
+
+                    showToast(bannerMsg, 'warning', 15000, {
+                        label: actionLabel,
+                        onClick: () => {
+                            if (isTauri()) {
+                                invoke<{ success: boolean; message: string }>('apply_core_engine_patch')
+                                    .then(res => {
+                                        if (res.success) {
+                                            showToast(t('settings.core_patcher.patch_success', 'Core Engine patch applied successfully! Restart IDE to complete.'), 'success', 6000);
+                                        } else {
+                                            showToast(res.message || 'Patch failed', 'error', 6000);
+                                        }
+                                    })
+                                    .catch(err => {
+                                        showToast(String(err), 'error', 6000);
+                                    });
+                            }
+                        }
+                    });
+                    sendDesktopNotification('Antigravity Shield', bannerMsg);
+                }
+            }
+        }
 
         for (const targetId of targetIds) {
             const targetAccount = accounts.find(a => a.id === targetId);

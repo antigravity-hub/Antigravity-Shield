@@ -8,6 +8,8 @@ import { ShieldCheck, Wrench, RefreshCw, AlertTriangle, CheckCircle2 } from 'luc
 import { request as invoke } from '../../utils/request';
 import { showToast } from '../common/ToastContainer';
 import { isTauri } from '../../utils/env';
+import { useConfigStore } from '../../stores/useConfigStore';
+import { Zap } from 'lucide-react';
 
 export interface PatcherExecutionResult {
     success: boolean;
@@ -26,6 +28,7 @@ export default function AntigravityCorePatcherCard({ compact = false }: Antigrav
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [lastResult, setLastResult] = useState<PatcherExecutionResult | null>(null);
+    const { config, saveConfig } = useConfigStore();
 
     const handleApplyPatch = async () => {
         if (!isTauri()) {
@@ -122,6 +125,34 @@ export default function AntigravityCorePatcherCard({ compact = false }: Antigrav
                         </span>
                     </button>
                 </div>
+            </div>
+
+            {/* Auto-Patch on Region Block Detection Toggle */}
+            <div className="flex items-center justify-between pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    <div>
+                        <div className="font-semibold text-slate-800 dark:text-slate-200">
+                            {t('patcher.auto_patch_title', 'Auto-Patch on Region Block Detection')}
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                            {t('patcher.auto_patch_desc', 'Automatically patch language server and workbench when region restriction is detected.')}
+                        </div>
+                    </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={config?.auto_patch_on_region_error ?? false}
+                        onChange={async (e) => {
+                            if (config) {
+                                await saveConfig({ ...config, auto_patch_on_region_error: e.target.checked }, true);
+                            }
+                        }}
+                    />
+                    <div className="w-9 h-5 bg-gray-200 dark:bg-base-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--color-primary-btn)] shadow-inner"></div>
+                </label>
             </div>
 
             {lastResult && (
