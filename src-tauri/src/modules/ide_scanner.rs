@@ -455,15 +455,39 @@ pub fn get_bundled_vsix_path() -> Option<PathBuf> {
         }
     }
 
-    // 3. Development fallback
-    for v in &["2.7.9", "2.7.8", "2.7.7", "2.7.6", "2.7.5", "2.7.4", "2.7.3", "2.7.2", "2.7.1", "2.7.0", "2.6.1", "2.6.0", "2.5.9", "2.5.8", "2.5.7", "2.5.6", "2.5.5", "2.5.3", "2.5.2", "2.5.1", "2.5.0", "2.4.3", "2.4.2", "2.4.1", "2.4.0", "2.3.0", "2.2.0", "2.1.1", "1.0.1", "1.0.0"] {
-        let cand = PathBuf::from(format!(
-            r"d:\Ershad Zolfi\programming\coding with Gemini\antigravity-toolkit-extension\antigravity-toolkit-{}.vsix",
-            v
-        ));
-        if cand.exists() {
-            return Some(cand);
+    // 3. Dynamic Development Directory Scan
+    let dev_dirs = [
+        PathBuf::from(r"d:\Ershad Zolfi\programming\coding with Gemini\antigravity-toolkit-extension"),
+        PathBuf::from("../antigravity-toolkit-extension"),
+    ];
+    let mut best_cand: Option<(String, PathBuf)> = None;
+    for dev_dir in &dev_dirs {
+        if dev_dir.exists() {
+            if let Ok(entries) = std::fs::read_dir(dev_dir) {
+                for entry in entries.flatten() {
+                    let path = entry.path();
+                    if path.is_file() {
+                        let name = entry.file_name().to_string_lossy().to_string();
+                        if name.starts_with("antigravity-toolkit-") && name.ends_with(".vsix") && !name.contains("beta") {
+                            let ver = get_vsix_version(&path).unwrap_or_default();
+                            match &best_cand {
+                                Some((current_ver, _)) => {
+                                    if is_version_newer(&ver, current_ver) {
+                                        best_cand = Some((ver, path));
+                                    }
+                                }
+                                None => {
+                                    best_cand = Some((ver, path));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+    }
+    if let Some((_, path)) = best_cand {
+        return Some(path);
     }
 
     None
