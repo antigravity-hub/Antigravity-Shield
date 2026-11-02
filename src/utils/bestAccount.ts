@@ -129,8 +129,12 @@ export function getRecommendedBestAccount(
         );
         const claudeWeeklyScore = claudeWeeklyGroup ?? 0;
 
-        // Disqualify Claude only if Claude weekly quota is depleted (< 1%) or effective score is 0
-        if ((claudeWeeklyGroup !== null && claudeWeeklyGroup < 1) || claudeScore <= 0) {
+        // Free tier accounts have 0 Claude quota per Google Policy (Nov 2026)
+        const tier = (a.quota?.subscription_tier || '').toLowerCase();
+        const isFreeTier = tier.includes('free') && !tier.includes('trial') && !tier.includes('pro');
+
+        // Disqualify Claude if Free tier, Claude weekly quota is depleted (< 1%), or effective score is 0
+        if (isFreeTier || (claudeWeeklyGroup !== null && claudeWeeklyGroup < 1) || claudeScore <= 0) {
             claudeScore = 0;
         }
 
@@ -238,7 +242,10 @@ export function getAccountEffectiveScores(a: Account): { geminiScore: number; cl
         claudeWeeklyGroup ?? 100,
         claudeModelScore
     );
-    if ((claudeWeeklyGroup !== null && claudeWeeklyGroup < 1) || claudeScore <= 0) {
+    const tier = (a.quota?.subscription_tier || '').toLowerCase();
+    const isFreeTier = tier.includes('free') && !tier.includes('trial') && !tier.includes('pro');
+
+    if (isFreeTier || (claudeWeeklyGroup !== null && claudeWeeklyGroup < 1) || claudeScore <= 0) {
         claudeScore = 0;
     }
 
