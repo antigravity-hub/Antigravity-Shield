@@ -584,7 +584,14 @@ function AccountRowContent({
 
                     {account.quota?.subscription_tier && (() => {
                         const tier = account.quota.subscription_tier.toLowerCase();
-                        if (tier.includes('ultra')) {
+                        if (tier.includes('restricted') || tier.includes('3501')) {
+                            return (
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default" title={account.quota.subscription_tier}>
+                                    <AlertTriangle className="w-2.5 h-2.5" />
+                                    RESTRICTED (#3501)
+                                </span>
+                            );
+                        } else if (tier.includes('ultra')) {
                             return (
                                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
                                     <Gem className="w-2.5 h-2.5 fill-current" />
@@ -594,7 +601,7 @@ function AccountRowContent({
                         } else if (tier.includes('pro')) {
                             const isTrial = tier.includes('trial');
                             return (
-                                <span className="relative inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 via-teal-600 to-[#129a5f] text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default">
+                                <span className="relative inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gradient-to-r from-emerald-600 via-teal-600 to-[#129a5f] text-white text-[10px] font-bold shadow-sm hover:scale-105 transition-transform cursor-default" title={account.quota.subscription_tier}>
                                     <Diamond className="w-2.5 h-2.5 fill-current" />
                                     {t('accounts.pro')}
                                     {isTrial && (
@@ -607,7 +614,7 @@ function AccountRowContent({
                             );
                         } else {
                             return (
-                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 text-[10px] font-bold shadow-sm border border-gray-200 dark:border-white/10 hover:bg-gray-200 transition-colors cursor-default">
+                                <span className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 text-[10px] font-bold shadow-sm border border-gray-200 dark:border-white/10 hover:bg-gray-200 transition-colors cursor-default" title="Google AI Free">
                                     <Circle className="w-2.5 h-2.5" />
                                     {t('accounts.free')}
                                 </span>

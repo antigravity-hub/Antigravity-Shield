@@ -778,6 +778,7 @@ pub fn run() {
             commands::get_antigravity_rtl_status,
             commands::patch_antigravity_rtl,
             commands::restore_antigravity_rtl,
+            commands::apply_core_engine_patch,
             // Skills Ecosystem commands
             commands::skills::list_installed_skills,
             commands::skills::read_skill_content,

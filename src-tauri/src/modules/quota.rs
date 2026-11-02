@@ -225,16 +225,39 @@ async fn fetch_project_id(
                     if let Some(ref current) = data.current_tier {
                         let cid = current.id.as_deref().unwrap_or("").to_lowercase();
                         if cid == "free-tier" {
-                            subscription_tier = Some("Google AI Pro (Trial)".to_string());
+                            subscription_tier = Some("Google AI Free".to_string());
                         } else if cid.contains("ultra") {
                             subscription_tier = Some("Google AI Ultra".to_string());
                         } else if cid == "g1-pro-tier" {
-                            subscription_tier = Some("Google AI Pro (Paid)".to_string());
+                            subscription_tier = Some("Google AI Pro".to_string());
                         } else if cid.contains("enterprise") || cid.contains("standard") {
                             subscription_tier = Some("Google Cloud Enterprise".to_string());
                         } else if let Some(ref name) = current.name {
                             subscription_tier = Some(name.clone());
                         }
+                    }
+
+                    // Check if ineligible tiers indicate License #3501 or region restriction
+                    let mut has_license_3501_ineligible = false;
+                    if let Some(ref ineligibles) = data.ineligible_tiers {
+                        if !ineligibles.is_empty() {
+                            for it in ineligibles {
+                                if let Some(ref code) = it.reason_code {
+                                    let c = code.to_uppercase();
+                                    if c.contains("3501") || c.contains("SUBSCRIPTION") || c.contains("LOCATION") || c.contains("REGION") {
+                                        has_license_3501_ineligible = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if ineligibles.len() > 0 && subscription_tier.is_none() {
+                                has_license_3501_ineligible = true;
+                            }
+                        }
+                    }
+
+                    if has_license_3501_ineligible {
+                        subscription_tier = Some("Restricted (License #3501)".to_string());
                     }
 
                     let is_ineligible = data.ineligible_tiers.is_some()
@@ -306,12 +329,52 @@ pub async fn fetch_quota_with_cache(
 ) -> crate::error::AppResult<(QuotaData, Option<String>)> {
     use crate::error::AppError;
 
-    // Optimization: Skip loadCodeAssist call if project_id is cached to save API quota
-    let (project_id, subscription_tier) = if let Some(pid) = cached_project_id {
-        (Some(pid.to_string()), None)
+    // Load existing account record if available to preserve subscription tier and check restriction flags
+    let mut existing_tier: Option<String> = None;
+    let mut is_restricted_account = false;
+    if let Some(acc_id) = account_id {
+        if let Ok(existing_acc) = crate::modules::account::load_account(acc_id) {
+            if let Some(ref q) = existing_acc.quota {
+                existing_tier = q.subscription_tier.clone();
+            }
+            let check_restricted = |r: &str| {
+                let lr = r.to_lowercase();
+                lr.contains("3501")
+                    || lr.contains("subscription_required")
+                    || lr.contains("subscription required")
+                    || lr.contains("valid license")
+                    || lr.contains("location is not supported")
+                    || lr.contains("user location is not supported")
+                    || lr.contains("geofenced")
+                    || lr.contains("region restricted")
+            };
+            if let Some(ref r) = existing_acc.disabled_reason {
+                if check_restricted(r) {
+                    is_restricted_account = true;
+                }
+            }
+            if let Some(ref r) = existing_acc.proxy_disabled_reason {
+                if check_restricted(r) {
+                    is_restricted_account = true;
+                }
+            }
+            if existing_acc.validation_blocked {
+                is_restricted_account = true;
+            }
+        }
+    }
+
+    // Optimization: Skip loadCodeAssist call if project_id is cached to save API quota,
+    // but preserve subscription_tier from existing account record so it is not lost!
+    let (project_id, mut subscription_tier) = if let Some(pid) = cached_project_id {
+        (Some(pid.to_string()), existing_tier.clone())
     } else {
         fetch_project_id(access_token, email, account_id).await
     };
+
+    if subscription_tier.is_none() && existing_tier.is_some() {
+        subscription_tier = existing_tier;
+    }
 
     // We keep project_id to store in the DB, but we NO LONGER force inject it into payload if it's absent
 
@@ -510,10 +573,54 @@ pub async fn fetch_quota_with_cache(
                         }
                     }
 
-                    // Set subscription tier
-                    quota_data.subscription_tier = subscription_tier.clone();
+                    // Best-effort: fetch grouped quota summary (weekly + 5h windows).
+                    // Failure here must not block the primary quota result.
+                    quota_data.quota_groups =
+                        fetch_quota_summary(access_token, email, project_id.as_deref(), account_id)
+                            .await;
+
+                    // If quota_groups contains 5h or weekly bucket with exhausted quota (e.g. remainingFraction == 0.0),
+                    // sync and enforce this on corresponding models so they reflect the real lockout!
+                    if let Some(ref groups) = quota_data.quota_groups {
+                        for group in groups {
+                            let g_name = group.display_name.to_lowercase();
+                            let is_claude = g_name.contains("claude") || g_name.contains("gpt");
+                            let is_gemini = g_name.contains("gemini") || (!is_claude);
+
+                            for bucket in &group.buckets {
+                                let b_win = bucket.window.to_lowercase();
+                                let b_id = bucket.bucket_id.to_lowercase();
+                                let b_disp = bucket.display_name.as_deref().unwrap_or("").to_lowercase();
+
+                                let is_weekly = b_win.contains("week") || b_id.contains("week") || b_disp.contains("week") || b_win.contains("168") || b_id.contains("168") || b_win.contains("7d") || b_id.contains("7d");
+                                let is_5h = !is_weekly && (b_win.contains("5h") || b_id.contains("5h") || b_disp.contains("5h") || b_win.contains("5 hour") || b_disp.contains("5 hour") || b_id.contains("5 hour") || b_win.contains("five") || b_id.contains("five") || b_win.contains("18000") || b_id.contains("18000") || b_win.contains("hour") || b_id.contains("hour") || b_disp.contains("hour"));
+
+                                if is_5h || is_weekly {
+                                    let group_pct = calculate_safe_percentage(bucket.remaining_fraction);
+                                    for model in &mut quota_data.models {
+                                        let m_name = model.name.to_lowercase();
+                                        let matches_group = if is_gemini && m_name.starts_with("gemini") {
+                                            true
+                                        } else if is_claude && (m_name.starts_with("claude") || m_name.starts_with("gpt")) {
+                                            true
+                                        } else {
+                                            false
+                                        };
+
+                                        if matches_group {
+                                            model.percentage = model.percentage.min(group_pct);
+                                            if !bucket.reset_time.is_empty() && (model.percentage == 0 || model.reset_time.is_empty()) {
+                                                model.reset_time = bucket.reset_time.clone();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     // Register discovered models into global DynamicModelRegistry
+                    // MUST run AFTER group buckets (5h and weekly) are applied so proxy model registry receives accurate capped percentages!
                     if let Some(acc_id) = account_id {
                         let mut discovered = Vec::new();
                         for mq in &quota_data.models {
@@ -542,53 +649,36 @@ pub async fn fetch_quota_with_cache(
                             );
                     }
 
-                    // Best-effort: fetch grouped quota summary (weekly + 5h windows).
-                    // Failure here must not block the primary quota result.
-                    quota_data.quota_groups =
-                        fetch_quota_summary(access_token, email, project_id.as_deref(), account_id)
-                            .await;
+                    // Ground Truth Tier validation:
+                    // If account encounters license error #3501 or region restriction, set tier to "Restricted (License #3501)"
+                    if is_restricted_account || subscription_tier.as_deref() == Some("Restricted (License #3501)") {
+                        subscription_tier = Some("Restricted (License #3501)".to_string());
+                    } else {
+                        let has_active_3p = quota_data.models.iter().any(|m| {
+                            (m.name.starts_with("claude") || m.name.starts_with("gpt")) && m.percentage > 0
+                        });
+                        let has_only_flash = !quota_data.models.is_empty() && quota_data.models.iter().all(|m| {
+                            !m.name.starts_with("claude") && !m.name.starts_with("gpt") && (m.name.contains("flash") || !m.name.contains("pro"))
+                        });
 
-                    // If quota_groups contains 5h bucket with exhausted quota (e.g. remainingFraction == 0.0),
-                    // sync and enforce this on corresponding models so they reflect the real 5h lockout!
-                    if let Some(ref groups) = quota_data.quota_groups {
-                        for group in groups {
-                            let g_name = group.display_name.to_lowercase();
-                            let is_claude = g_name.contains("claude") || g_name.contains("gpt");
-                            let is_gemini = g_name.contains("gemini") || (!is_claude);
-
-                            for bucket in &group.buckets {
-                                let b_win = bucket.window.to_lowercase();
-                                let b_id = bucket.bucket_id.to_lowercase();
-                                let b_disp = bucket.display_name.as_deref().unwrap_or("").to_lowercase();
-
-                                let is_weekly = b_win.contains("week") || b_id.contains("week") || b_disp.contains("week") || b_win.contains("168") || b_id.contains("168") || b_win.contains("7d") || b_id.contains("7d");
-                                let is_5h = !is_weekly && (b_win.contains("5h") || b_id.contains("5h") || b_disp.contains("5h") || b_win.contains("5 hour") || b_disp.contains("5 hour") || b_id.contains("5 hour") || b_win.contains("five") || b_id.contains("five") || b_win.contains("18000") || b_id.contains("18000") || b_win.contains("hour") || b_id.contains("hour") || b_disp.contains("hour"));
-
-                                if is_5h {
-                                    let group_pct = calculate_safe_percentage(bucket.remaining_fraction);
-                                    for model in &mut quota_data.models {
-                                        let m_name = model.name.to_lowercase();
-                                        let matches_group = if is_gemini && m_name.starts_with("gemini") {
-                                            true
-                                        } else if is_claude && (m_name.starts_with("claude") || m_name.starts_with("gpt")) {
-                                            true
-                                        } else {
-                                            false
-                                        };
-
-                                        if matches_group {
-                                            if group_pct < model.percentage {
-                                                model.percentage = group_pct;
-                                            }
-                                            if !bucket.reset_time.is_empty() && (model.percentage == 0 || model.reset_time.is_empty()) {
-                                                model.reset_time = bucket.reset_time.clone();
-                                            }
-                                        }
-                                    }
-                                }
+                        if has_active_3p {
+                            // If fetchAvailableModels returns active quota for 3p models, account is Pro
+                            if subscription_tier.as_deref().unwrap_or("").is_empty()
+                                || subscription_tier.as_deref() == Some("Google AI Free")
+                                || subscription_tier.as_deref() == Some("Google AI Pro (Trial)")
+                            {
+                                subscription_tier = Some("Google AI Pro".to_string());
+                            }
+                        } else if has_only_flash || (!has_active_3p && quota_data.models.iter().all(|m| !m.name.starts_with("claude") && !m.name.starts_with("gpt"))) {
+                            // If third-party models are unavailable or blocked and only Flash models are present, ensure it reflects Google AI Free
+                            if subscription_tier.as_deref() != Some("Google AI Pro") && subscription_tier.as_deref() != Some("Google AI Ultra") {
+                                subscription_tier = Some("Google AI Free".to_string());
                             }
                         }
                     }
+
+                    // Set finalized subscription tier
+                    quota_data.subscription_tier = subscription_tier.clone();
 
                     return Ok((quota_data, project_id.clone()));
                 }

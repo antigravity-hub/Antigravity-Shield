@@ -440,9 +440,9 @@ export function isAccountQuotaExhausted(account: Account): boolean {
 
     let isGeminiExhausted = false;
     if (geminiWeekly !== null && gemini5h !== null) {
-        isGeminiExhausted = geminiWeekly <= 0 && gemini5h <= 0;
+        isGeminiExhausted = geminiWeekly <= 0 || gemini5h <= 0;
     } else if (geminiWeekly !== null) {
-        isGeminiExhausted = geminiWeekly <= 0 && (gemini5h === 0 || allGeminiModelsZero);
+        isGeminiExhausted = geminiWeekly <= 0 || allGeminiModelsZero;
     } else if (gemini5h !== null) {
         isGeminiExhausted = gemini5h <= 0 && allGeminiModelsZero;
     } else if (hasGeminiModels) {
@@ -479,9 +479,9 @@ export function isAccountQuotaExhausted(account: Account): boolean {
 
     let isClaudeExhausted = false;
     if (claudeWeekly !== null && claude5h !== null) {
-        isClaudeExhausted = claudeWeekly <= 0 && claude5h <= 0;
+        isClaudeExhausted = claudeWeekly <= 0 || claude5h <= 0;
     } else if (claudeWeekly !== null) {
-        isClaudeExhausted = claudeWeekly <= 0 && (claude5h === 0 || allClaudeModelsZero);
+        isClaudeExhausted = claudeWeekly <= 0 || allClaudeModelsZero;
     } else if (claude5h !== null) {
         isClaudeExhausted = claude5h <= 0 && allClaudeModelsZero;
     } else if (claudeModels.length > 0) {

@@ -55,3 +55,5 @@ pub mod warp_manager;
 pub mod overlay;
 pub mod remote_mobile;
 pub mod skills;
+pub mod patcher;
+pub use patcher::*;

@@ -31,6 +31,7 @@ import { APP_VERSION, getAppVersion } from '../constants/version';
 import { CONTAINER_MAX_WIDTH } from '../constants/layout';
 import { copyToClipboard } from '../utils/clipboard';
 import AntigravityRtlCard from '../components/settings/AntigravityRtlCard';
+import AntigravityCorePatcherCard from '../components/settings/AntigravityCorePatcherCard';
 import { ACCENT_COLORS, DEFAULT_ACCENT_COLOR } from '../constants/accents';
 
 
@@ -1486,6 +1487,11 @@ function Settings() {
                                     {/* ماژول پیشرفته راست‌چین و فونت بومی وزیرمتن برای Antigravity 2.0 و IDE */}
                                     <div className="mt-4">
                                         <AntigravityRtlCard compact={false} />
+                                    </div>
+
+                                    {/* پچ هسته و دور زدن لایسنس ۳۵۰۱ و تحریم‌های منطقه‌ای */}
+                                    <div className="mt-4">
+                                        <AntigravityCorePatcherCard compact={false} />
                                     </div>
                                 </div>
 

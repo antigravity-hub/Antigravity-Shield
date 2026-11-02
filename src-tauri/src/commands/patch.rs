@@ -993,3 +993,9 @@ fn walk_dir_find(dir: &Path, target_filename: &str) -> std::io::Result<Vec<std::
     Ok(results)
 }
 
+#[tauri::command]
+pub async fn apply_core_engine_patch() -> Result<crate::modules::patcher::PatcherExecutionResult, String> {
+    tokio::task::spawn_blocking(crate::modules::patcher::run_fix_license_and_region_patch)
+        .await
+        .map_err(|e| format!("Task failed: {}", e))
+}

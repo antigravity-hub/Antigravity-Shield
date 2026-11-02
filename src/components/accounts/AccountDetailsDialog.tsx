@@ -40,11 +40,13 @@ export default function AccountDetailsDialog({ account, onClose, onViewError }: 
                         </div>
                         {account.quota?.subscription_tier && (() => {
                             const tier = account.quota.subscription_tier.toLowerCase();
+                            const isRestricted = tier.includes('restricted') || tier.includes('3501');
                             const isTrial = tier.includes('trial');
                             const isUltra = tier.includes('ultra');
                             const isPro = tier.includes('pro');
                             return (
                                 <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                                    isRestricted ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-500/30' :
                                     isUltra ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
                                     isPro ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
                                     'bg-gray-100 text-gray-600 dark:bg-base-300 dark:text-gray-400'
