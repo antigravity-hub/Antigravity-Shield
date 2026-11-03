@@ -164,6 +164,17 @@ impl SystemIntegration for DesktopIntegration {
             self.show_notification("Antigravity IDE", &format!("⚡ Switched to {}", account.email));
             self.update_tray();
 
+            // [FIX Issue #13] If Antigravity IDE is not currently running, launch it so user doesn't have to open it manually
+            if !process::is_antigravity_running(Some("ide")) {
+                crate::modules::logger::log_info("[Desktop] Antigravity IDE is not running. Launching IDE...");
+                if let Err(e) = process::start_antigravity(Some("ide")) {
+                    crate::modules::logger::log_warn(&format!(
+                        "[Desktop] Auto-launching Antigravity IDE failed: {}",
+                        e
+                    ));
+                }
+            }
+
             return Ok(());
         }
 

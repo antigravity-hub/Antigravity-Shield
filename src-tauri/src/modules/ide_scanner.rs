@@ -719,10 +719,28 @@ pub fn check_and_auto_upgrade_toolkit() -> Result<bool, String> {
     };
 
     let target_ver = get_vsix_version(&vsix_path).unwrap_or_else(|| "2.4.2".to_string());
-    let installed_ver = get_installed_toolkit_version(&[".antigravity-ide", ".antigravity"]);
+    let installed_ver = get_installed_toolkit_version(&[
+        ".antigravity-ide",
+        ".antigravity",
+        ".vscode",
+        ".vscode-insiders",
+        "Antigravity IDE",
+        "Antigravity",
+    ]);
 
     let should_upgrade = match installed_ver.as_deref() {
-        None => true,
+        None => {
+            // Only auto-install if Antigravity IDE executable is found on system and extension is missing
+            crate::modules::process::get_antigravity_executable_path(Some("ide")).is_some()
+                && !check_extension_installed(&[
+                    ".antigravity-ide",
+                    ".antigravity",
+                    ".vscode",
+                    ".vscode-insiders",
+                    "Antigravity IDE",
+                    "Antigravity",
+                ])
+        }
         Some(inst) => is_version_newer(&target_ver, inst),
     };
 
