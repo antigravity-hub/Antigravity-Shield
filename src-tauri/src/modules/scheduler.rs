@@ -221,25 +221,31 @@ pub fn start_scheduler(
                         monitored_target = Some("ide");
                     }
                 }
-                // 2. Fall back to active target accounts
+                // 2. Fall back to active target accounts (prioritize IDE over Platform)
                 if active_target_account_id.is_none() {
                     if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
-                        if let Some(id) = targets.platform {
-                            active_target_account_id = Some(id);
-                            monitored_target = Some("platform");
-                        } else if let Some(id) = targets.ide {
+                        if let Some(id) = targets.ide {
                             active_target_account_id = Some(id);
                             monitored_target = Some("ide");
+                        } else if let Some(id) = targets.platform {
+                            active_target_account_id = Some(id);
+                            monitored_target = Some("platform");
                         } else if let Some(id) = targets.agy {
                             active_target_account_id = Some(id);
                             monitored_target = Some("agy");
                         }
                     }
                 }
-                // 3. Fall back to current account
+                // 3. Fall back to current account (default safely to active IDE or ide)
                 if active_target_account_id.is_none() {
                     active_target_account_id = crate::modules::account::get_current_account_id().ok().flatten();
-                    monitored_target = Some("platform");
+                    monitored_target = if crate::modules::process::is_antigravity_running(Some("ide")) {
+                        Some("ide")
+                    } else if crate::modules::process::is_antigravity_running(Some("platform")) {
+                        Some("platform")
+                    } else {
+                        Some("ide")
+                    };
                 }
 
                 if let Some(ref acc_id) = active_target_account_id {
@@ -459,10 +465,12 @@ pub fn start_scheduler(
                                                                             let service = crate::modules::account_service::AccountService::new(sys_manager);
 
                                                                             let target_env = monitored_target.or_else(|| {
-                                                                                if refreshed_acc.active_targets.contains(&"ide".to_string()) && !refreshed_acc.active_targets.contains(&"platform".to_string()) {
+                                                                                if refreshed_acc.active_targets.contains(&"ide".to_string()) {
                                                                                     Some("ide")
-                                                                                } else {
+                                                                                } else if refreshed_acc.active_targets.contains(&"platform".to_string()) {
                                                                                     Some("platform")
+                                                                                } else {
+                                                                                    Some("ide")
                                                                                 }
                                                                             });
                                                                             if let Err(e) = service.switch_account(&best_cand.id, target_env).await {

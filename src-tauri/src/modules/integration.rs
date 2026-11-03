@@ -66,8 +66,19 @@ impl SystemIntegration for DesktopIntegration {
         }
 
         // 2. Disambiguate Target: Is this switch targeted for the IDE environment?
-        // Unspecified target strictly defaults to "platform" to prevent cross-contamination
-        let resolved_target = target_ide.unwrap_or("platform");
+        // If unspecified, safely prioritize "ide" if active IDE is running or default to "ide" to prevent headless platform spawning
+        let resolved_target = match target_ide {
+            Some(t) => t,
+            None => {
+                if process::is_antigravity_running(Some("ide")) {
+                    "ide"
+                } else if process::is_antigravity_running(Some("platform")) {
+                    "platform"
+                } else {
+                    "ide"
+                }
+            }
+        };
         let is_ide = resolved_target == "ide";
 
         // ====================================================================
@@ -215,12 +226,9 @@ impl SystemIntegration for DesktopIntegration {
             );
             process::start_antigravity(target_platform)?;
         } else {
-            if let Err(e) = process::start_antigravity(target_platform) {
-                crate::modules::logger::log_info(&format!(
-                    "[Desktop] Antigravity Platform was not running and auto-start was skipped: {}",
-                    e
-                ));
-            }
+            crate::modules::logger::log_info(
+                "[Desktop] Antigravity Platform was not running. Skipping auto-start."
+            );
         }
 
         // 4. Notification & Tray
