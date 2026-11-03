@@ -183,11 +183,14 @@ export function calculateAccountBurnVelocity(
 
   const timeRemainingHours = Math.max(0.1, (resetTimeMs - now) / (1000 * 3600));
   const timeRemainingPct = Math.max(0.1, Math.min(100, (timeRemainingHours / windowHours) * 100));
-  const timeElapsedHours = Math.max(0.5, windowHours - timeRemainingHours);
+  // Statistical smoothing: require a baseline of at least 12 hours for weekly window extrapolation
+  // to prevent dividing by tiny fractions (<1h) right after a cycle reset.
+  const timeElapsedHours = Math.max(12, windowHours - timeRemainingHours);
   const quotaUsedPct = Math.max(0, 100 - quotaRemainingPct);
 
-  // Velocity in % per hour
-  const hourlyBurnRatePct = quotaUsedPct > 0.5 ? quotaUsedPct / timeElapsedHours : 0;
+  // Velocity in % per hour (bounded by the 5-hour rolling limit rate ceiling of 20%/hr)
+  const rawBurnRate = quotaUsedPct > 0.5 ? quotaUsedPct / timeElapsedHours : 0;
+  const hourlyBurnRatePct = Math.min(20.0, rawBurnRate);
 
   // Runway in hours
   let runwayHoursRemaining = 999;
@@ -399,10 +402,14 @@ export function calculateFleetBurnVelocity(
     )
   );
 
-  const maxIndividualBurn = Math.max(...accountItems.map((a) => a.hourlyBurnRatePct), 0);
+  const maxIndividualBurn = Math.min(20.0, Math.max(...accountItems.map((a) => a.hourlyBurnRatePct), 0));
+  const maxFleetBurnCap = activeStreamsCount * 20.0;
   const totalFleetBurnRatePerHour = Math.min(
-    totalBurnRate,
-    Math.max(maxIndividualBurn, avgBurnRate * activeStreamsCount)
+    maxFleetBurnCap,
+    Math.min(
+      totalBurnRate,
+      Math.max(maxIndividualBurn, avgBurnRate * activeStreamsCount)
+    )
   );
 
   const HORIZON_HOURS = 336;

@@ -224,41 +224,10 @@ export function getAccountCycleReset(
         }
     }
 
-    // If weekly quota is 100% full (unused), it is fully ready!
-    if (windowType === 'weekly') {
-        const weeklyPct = getBucketPercentage(account.quota?.quota_groups, category, 'weekly');
-        let isFullyFull = false;
-        if (weeklyPct !== null && weeklyPct >= 100) {
-            isFullyFull = true;
-        } else if (weeklyPct === null && account.quota?.models) {
-            const targetModels = account.quota.models.filter(m => {
-                const mName = m.name.toLowerCase();
-                return category === 'claude'
-                    ? (mName.startsWith('claude') || mName.startsWith('gpt'))
-                    : (mName.startsWith('gemini') || !mName.startsWith('claude'));
-            });
-            if (targetModels.length > 0 && targetModels.every(m => (m.percentage ?? 0) >= 100)) {
-                isFullyFull = true;
-            }
-        }
-
-        if (isFullyFull) {
-            return {
-                resetTime,
-                totalHours: 0,
-                totalMinutes: 0,
-                exactDaysRemaining: 0,
-                daysRemaining: 0,
-                hoursInDay: 0,
-                minutesInHour: 0,
-                isReady: true,
-                isAvailable: true,
-            };
-        }
-    }
-
-    const diffMs = new Date(resetTime).getTime() - now;
-    if (diffMs <= 0) {
+    // For weekly window: If an account has an active, future reset_time, its 7-day cycle is warmed & running!
+    // It is ONLY truly "Ready" (untouched/unwarmed or replenished) if reset_time is missing or already expired.
+    const diffMs = resetTime ? new Date(resetTime).getTime() - now : 0;
+    if (!resetTime || diffMs <= 0) {
         return {
             resetTime,
             totalHours: 0,
@@ -269,6 +238,7 @@ export function getAccountCycleReset(
             minutesInHour: 0,
             isReady: true,
             isAvailable: true,
+            isWarmed: false,
         };
     }
 
