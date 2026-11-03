@@ -139,7 +139,7 @@ export function useQuotaAlertWatcher() {
                 lastRegionAlertTime = now;
 
                 if (config?.auto_patch_on_region_error) {
-                    console.log([QuotaAlertWatcher] Auto-patching core engine for region blocked account ...);
+                    console.log('[QuotaAlertWatcher] Auto-patching core engine for region blocked account ...');
                     if (isTauri()) {
                         invoke<{ success: boolean; message: string }>('apply_core_engine_patch')
                             .then(res => {
