@@ -6,23 +6,29 @@ use tracing::{info, warn};
 use crate::commands::patch::{get_antigravity_rtl_status, patch_antigravity_rtl};
 
 /// Autonomous Sentinel for Antigravity RTL & Vazirmatn
-/// 1. Runs immediately on Shield startup (after warmup) to ensure newly installed/launched IDEs are patched.
-/// 2. If Antigravity IDE or Platform is installed but unpatched (e.g. freshly installed or auto-updated),
-///    it automatically applies the RTL & Vazirmatn patch.
-/// 3. Runs continuously in background every 3 minutes to auto-heal when Antigravity auto-updates.
+/// 1. Runs once on Shield startup (after 5s warmup) — covers installation, reboot, and manual relaunch.
+/// 2. Runs on an ergonomic, low-overhead cycle of every 6 hours — zero CPU/disk thrashing.
+/// 3. Provides `trigger_rtl_check()` for on-demand trigger when an IDE launches.
 pub fn start_rtl_auto_sentinel(_app_handle: Option<tauri::AppHandle>) {
     tauri::async_runtime::spawn(async move {
-        // Initial warmup delay on Shield launch (4 seconds)
-        tokio::time::sleep(Duration::from_secs(4)).await;
+        // Initial warmup delay on Shield launch (5 seconds)
+        tokio::time::sleep(Duration::from_secs(5)).await;
 
         auto_check_and_patch().await;
 
-        // Recurring check interval: every 3 minutes
-        let mut interval = tokio::time::interval(Duration::from_secs(180));
+        // Ergonomic recurring interval: every 6 hours (matches Toolkit Updater)
+        let mut interval = tokio::time::interval(Duration::from_secs(6 * 3600));
         loop {
             interval.tick().await;
             auto_check_and_patch().await;
         }
+    });
+}
+
+/// On-demand check (can be triggered on process detection or UI open)
+pub fn trigger_rtl_check() {
+    tauri::async_runtime::spawn(async {
+        auto_check_and_patch().await;
     });
 }
 
