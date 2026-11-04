@@ -119,6 +119,13 @@ export interface SkillManifestMetadata {
   isUpstreamLive?: boolean;  // true if verified live public repo
 }
 
+// =========================================================================
+// Dual-Tier Distribution & Legal Governance Types (Milestone 1)
+// =========================================================================
+
+export type SkillDistributionMode = 'mirror' | 'reference_only';
+export type SkillLicenseType = 'permissive' | 'copyleft' | 'restricted' | 'unlicensed';
+
 export interface SkillItem extends SkillManifestMetadata {
   id: string;              // Unique identifier, e.g. "vercel-labs/skills/find-skills"
   slug?: string;           // URL-safe slug, e.g. "find-skills"
@@ -133,6 +140,19 @@ export interface SkillItem extends SkillManifestMetadata {
   icon?: string;           // Lucide icon identifier
   triggers?: string[];     // Array of triggers, e.g. ["/find-skills", "search skills"]
   scope?: 'global' | 'workspace'; // Scope
+
+  // Legal, Licensing & Provenance Governance (Milestone 1)
+  license?: string;                  // SPDX identifier, e.g. "MIT", "Apache-2.0", "BSD-3-Clause"
+  licenseType?: SkillLicenseType;    // 'permissive' | 'copyleft' | 'restricted' | 'unlicensed'
+  distributionMode?: SkillDistributionMode; // 'mirror' (Tier 1 safe mirror) vs 'reference_only' (Tier 2 upstream link)
+  spdxId?: string;                   // Canonical SPDX identifier
+  nativeInstallCmd?: string;         // Native CLI command: e.g. "npx skills add <source> --skill <id>"
+  rank?: number;                     // 1 to 1000 global leaderboard rank
+  upstreamCommitSha?: string;        // Exact Git commit SHA verified at audit
+  upstreamLicenseUrl?: string;       // Verified URL to upstream LICENSE or NOTICE
+  noticeText?: string;               // Mandatory third-party copyright/attribution notice
+  isUpstreamReachable?: boolean;     // Network reachability status from automated verification
+  tombstoned?: boolean;              // Deprecated / removed upstream flag for Safe Harbor compliance
 
   // Metrics & Badges
   installs?: number | string;       // Total install count (from Skills.sh telemetry, e.g. 1300000 or "1.3M")

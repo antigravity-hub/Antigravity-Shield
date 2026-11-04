@@ -53,10 +53,42 @@ async function main() {
 
   const minCatalog = [];
 
+  // Classification helper for Dual-Tier Distribution
+  function resolveSkillDistribution(skill) {
+    if (skill.distributionMode === 'mirror' || skill.distributionMode === 'reference_only') {
+      return skill.distributionMode;
+    }
+    // Heuristic inference based on license
+    const lic = (skill.license || skill.spdxId || '').toUpperCase();
+    const type = skill.licenseType;
+    if (type === 'permissive' || lic.includes('MIT') || lic.includes('APACHE') || lic.includes('BSD') || lic.includes('ISC') || lic.includes('UNLICENSE')) {
+      return 'mirror';
+    }
+    return 'reference_only';
+  }
+
+  function resolveNativeInstallCmd(skill, slug) {
+    if (skill.nativeInstallCmd) return skill.nativeInstallCmd;
+    if (skill.owner && skill.repo) {
+      return `npx skills add ${skill.owner}/${skill.repo} --skill ${slug}`;
+    }
+    const cleanSource = (skill.repository || skill.repoUrl || skill.remoteUrl || '').replace(/^https?:\/\/github\.com\//, '');
+    if (cleanSource) {
+      return `npx skills add ${cleanSource} --skill ${slug}`;
+    }
+    return `npx skills add ${skill.id}`;
+  }
+
   for (const skill of skills) {
     const slug = skill.slug || skill.name || skill.id.replace(/\//g, '__');
     const skillDocDir = path.join(exportDir, 'docs', slug);
     fs.mkdirSync(skillDocDir, { recursive: true });
+
+    const distributionMode = resolveSkillDistribution(skill);
+    const nativeInstallCmd = resolveNativeInstallCmd(skill, slug);
+    const license = skill.license || (distributionMode === 'mirror' ? 'MIT' : 'UNLICENSED');
+    const licenseType = skill.licenseType || (distributionMode === 'mirror' ? 'permissive' : 'restricted');
+    const spdxId = skill.spdxId || (distributionMode === 'mirror' ? license : undefined);
 
     let enHash = '';
     let faHash = '';
@@ -73,6 +105,39 @@ async function main() {
       faHash = crypto.createHash('sha256').update(skill.docsMarkdown.fa).digest('hex');
     }
 
+    // License & Safe Harbor Bundling
+    if (distributionMode === 'mirror') {
+      const licenseFile = path.join(skillDocDir, 'LICENSE.md');
+      const noticeContent = `# License & Attribution: ${skill.title || skill.name}
+
+- SPDX-License-Identifier: ${spdxId || license}
+- License Type: ${licenseType}
+- Distribution Mode: Tier 1 (Mirror)
+- Upstream Repository: ${skill.repository || skill.repoUrl || 'https://github.com/' + (skill.owner ? `${skill.owner}/${skill.repo}` : skill.id)}
+${skill.upstreamCommitSha ? `- Verified Upstream Commit: ${skill.upstreamCommitSha}` : ''}
+${skill.upstreamLicenseUrl ? `- Upstream License URL: ${skill.upstreamLicenseUrl}` : ''}
+
+## Notice & Attribution
+${skill.noticeText || `Copyright (c) ${skill.author || 'Upstream Author'}. Licensed under the ${license} license.`}
+`;
+      fs.writeFileSync(licenseFile, noticeContent, 'utf8');
+    } else {
+      const noticeFile = path.join(skillDocDir, 'NOTICE.md');
+      const noticeContent = `# Upstream Reference Notice: ${skill.title || skill.name}
+
+- License: ${license} (${licenseType})
+- Distribution Mode: Tier 2 (Reference-Only)
+- Upstream Repository: ${skill.repository || skill.repoUrl || 'N/A'}
+- Native CLI Installation: \`${nativeInstallCmd}\`
+
+## Legal Notice (Safe Harbor & Copyright Protection)
+This skill is indexed by Antigravity Hub as **Reference-Only**.
+Antigravity Shield does NOT mirror, bundle, or redistribute verbatim proprietary assets for this skill.
+To install and utilize this skill, execute the native upstream CLI command above.
+`;
+      fs.writeFileSync(noticeFile, noticeContent, 'utf8');
+    }
+
     manifest.skills[skill.id] = {
       id: skill.id,
       slug,
@@ -85,6 +150,17 @@ async function main() {
       isVerifiedMaker: skill.isVerifiedMaker || false,
       installs: skill.installs || 0,
       stars: skill.stars || 0,
+      rank: skill.rank || undefined,
+      license,
+      licenseType,
+      distributionMode,
+      spdxId,
+      nativeInstallCmd,
+      upstreamCommitSha: skill.upstreamCommitSha || undefined,
+      upstreamLicenseUrl: skill.upstreamLicenseUrl || undefined,
+      noticeText: skill.noticeText || undefined,
+      isUpstreamReachable: skill.isUpstreamReachable ?? true,
+      tombstoned: skill.tombstoned ?? false,
       hashes: {
         en: enHash,
         fa: faHash,
@@ -97,6 +173,11 @@ async function main() {
     minCatalog.push({
       ...minItem,
       slug,
+      distributionMode,
+      license,
+      licenseType,
+      nativeInstallCmd,
+      rank: skill.rank || undefined,
       docPath: `docs/${slug}/`,
     });
   }

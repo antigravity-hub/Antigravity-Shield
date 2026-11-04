@@ -89,6 +89,29 @@ pub struct SkillItem {
     pub companion_files: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_upstream_live: Option<bool>,
+    // Legal, Licensing & Provenance Governance (Milestone 1)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub license: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub license_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub distribution_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spdx_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub native_install_cmd: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rank: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub upstream_commit_sha: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub upstream_license_url: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub notice_text: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub is_upstream_reachable: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tombstoned: Option<bool>,
 }
 
 fn default_version() -> String {
