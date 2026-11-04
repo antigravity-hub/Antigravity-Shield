@@ -465,6 +465,8 @@ body, html, #root {
 /* ==========================================================================
    4. Blockquotes & GitHub Alerts (TIP, NOTE, IMPORTANT, WARNING, CAUTION)
    ========================================================================== */
+.markdown-alert,
+[role="article"] .markdown-alert,
 .rendered-markdown blockquote,
 .rendered-markdown .markdown-alert,
 .chat-widget .rendered-markdown blockquote,
@@ -484,11 +486,15 @@ body, html, #root {
   text-align-last: start !important;
 }
 
+.markdown-alert.markdown-alert-tip,
+[role="article"] .markdown-alert.markdown-alert-tip,
 .rendered-markdown .markdown-alert.markdown-alert-tip {
   border-inline-start-color: #93e9be !important;
   background: linear-gradient(135deg, rgba(147, 233, 190, 0.14) 0%, rgba(147, 233, 190, 0.04) 100%) !important;
 }
 
+.markdown-alert.markdown-alert-tip .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-tip .markdown-alert-title,
 .rendered-markdown .markdown-alert.markdown-alert-tip .markdown-alert-title {
   color: #93e9be !important;
   font-weight: 700 !important;
@@ -498,48 +504,97 @@ body, html, #root {
   gap: 6px !important;
 }
 
+.markdown-alert.markdown-alert-note,
+[role="article"] .markdown-alert.markdown-alert-note,
 .rendered-markdown .markdown-alert.markdown-alert-note {
   border-inline-start-color: #38bdf8 !important;
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(56, 189, 248, 0.04) 100%) !important;
 }
 
+.markdown-alert.markdown-alert-note .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-note .markdown-alert-title,
 .rendered-markdown .markdown-alert.markdown-alert-note .markdown-alert-title {
   color: #38bdf8 !important;
   font-weight: 700 !important;
   margin-bottom: 6px !important;
 }
 
+.markdown-alert.markdown-alert-important,
+[role="article"] .markdown-alert.markdown-alert-important,
 .rendered-markdown .markdown-alert.markdown-alert-important {
   border-inline-start-color: #a78bfa !important;
   background: linear-gradient(135deg, rgba(167, 139, 250, 0.14) 0%, rgba(167, 139, 250, 0.04) 100%) !important;
 }
 
+.markdown-alert.markdown-alert-important .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-important .markdown-alert-title,
 .rendered-markdown .markdown-alert.markdown-alert-important .markdown-alert-title {
   color: #c4b5fd !important;
   font-weight: 700 !important;
   margin-bottom: 6px !important;
 }
 
+.markdown-alert.markdown-alert-warning,
+[role="article"] .markdown-alert.markdown-alert-warning,
 .rendered-markdown .markdown-alert.markdown-alert-warning {
   border-inline-start-color: #f59e0b !important;
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0.04) 100%) !important;
 }
 
+.markdown-alert.markdown-alert-warning .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-warning .markdown-alert-title,
 .rendered-markdown .markdown-alert.markdown-alert-warning .markdown-alert-title {
   color: #fbbf24 !important;
   font-weight: 700 !important;
   margin-bottom: 6px !important;
 }
 
+.markdown-alert.markdown-alert-caution,
+[role="article"] .markdown-alert.markdown-alert-caution,
 .rendered-markdown .markdown-alert.markdown-alert-caution {
   border-inline-start-color: #ef4444 !important;
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.14) 0%, rgba(239, 68, 68, 0.04) 100%) !important;
 }
 
+.markdown-alert.markdown-alert-caution .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-caution .markdown-alert-title,
 .rendered-markdown .markdown-alert.markdown-alert-caution .markdown-alert-title {
   color: #f87171 !important;
   font-weight: 700 !important;
   margin-bottom: 6px !important;
+}
+
+/* ==========================================================================
+   4.1 User Message Bubble & Auto-BiDi Direction
+   ========================================================================== */
+[data-testid="user-input-step"],
+[aria-label="User message"],
+.interactive-request {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[data-testid="user-input-step"] .whitespace-pre-wrap,
+[aria-label="User message"] .whitespace-pre-wrap,
+.interactive-request .value .rendered-markdown {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  text-align: -webkit-match-parent !important;
+  line-height: 1.85 !important;
+}
+
+[data-testid="user-input-step"]:dir(rtl),
+[aria-label="User message"]:dir(rtl),
+.interactive-request:dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+[data-testid="user-input-step"]:dir(ltr),
+[aria-label="User message"]:dir(ltr),
+.interactive-request:dir(ltr) {
+  direction: ltr !important;
+  text-align: left !important;
 }
 
 /* ==========================================================================
@@ -771,6 +826,30 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     }
                     if let Some(app_dir) = out_dir.parent() {
                         update_product_checksum(app_dir, "jetskiMain.tailwind.css", &jetski_css);
+                    }
+                }
+
+                // Also enhance Jetski Agent React bundle with dir:auto for native BiDi
+                let main_js = out_dir.join("jetskiAgent").join("main.js");
+                if main_js.exists() {
+                    let main_bak = out_dir.join("jetskiAgent").join("main.js.bak");
+                    if !main_bak.exists() {
+                        let _ = fs::copy(&main_js, &main_bak);
+                    }
+                    if let Ok(js_content) = fs::read_to_string(&main_js) {
+                        let target1 = r#"f("div",{role:"article","aria-label":"User message""#;
+                        let rep1 = r#"f("div",{dir:"auto",role:"article","aria-label":"User message""#;
+                        let target2 = r#"f("div",{role:"article","aria-label":"Agent response""#;
+                        let rep2 = r#"f("div",{dir:"auto",role:"article","aria-label":"Agent response""#;
+
+                        if js_content.contains(target1) || js_content.contains(target2) {
+                            let patched_js = js_content.replace(target1, rep1).replace(target2, rep2);
+                            let _ = fs::write(&main_js, &patched_js);
+                            if let Some(app_dir) = out_dir.parent() {
+                                update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
+                            }
+                            applied_count += 1;
+                        }
                     }
                 }
                 if let Some(app_dir) = out_dir.parent() {

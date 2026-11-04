@@ -56,4 +56,5 @@ pub mod overlay;
 pub mod remote_mobile;
 pub mod skills;
 pub mod patcher;
+pub mod rtl_sentinel;
 pub use patcher::*;
