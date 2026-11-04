@@ -1400,13 +1400,19 @@ export const SkillsTab: React.FC = () => {
                         {t('ecosystem.install_instruction', 'Install via Terminal or 1-Click:')}
                       </span>
                       <code
-                        className="text-[11px] font-mono px-2 py-0.5 rounded-md"
+                        className="text-[11px] font-mono px-2 py-0.5 rounded-md cursor-pointer hover:opacity-85 transition-opacity"
+                        onClick={() => {
+                          const cmd = inspectingSkill.nativeInstallCmd || `npx skills add ${inspectingSkill.id}`;
+                          navigator.clipboard.writeText(cmd);
+                          handleCopyTrigger(cmd);
+                        }}
+                        title={t('ecosystem.skills.copy_command', "Copy command")}
                         style={{
                           backgroundColor: 'var(--color-badge-bg)',
                           color: 'var(--color-accent)',
                         }}
                       >
-                        {t('ecosystem.skills.npx_skills_add', "npx skills add")} {inspectingSkill.id}
+                        {inspectingSkill.nativeInstallCmd || `${t('ecosystem.skills.npx_skills_add', "npx skills add")} ${inspectingSkill.id}`}
                       </code>
                     </div>
 
