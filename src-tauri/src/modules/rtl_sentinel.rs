@@ -35,13 +35,13 @@ pub fn trigger_rtl_check() {
 async fn auto_check_and_patch() {
     match get_antigravity_rtl_status().await {
         Ok(status) => {
+            // Antigravity Desktop Platform (resources/app.asar) is sealed with Electron v44 block integrity.
+            // Only Antigravity IDE (unpacked web assets & product.json) is auto-patched.
             let ide_needs_patch = status.ide_css_path.is_some() && !status.ide_is_patched;
-            let desktop_needs_patch = status.desktop_asar_path.is_some() && !status.desktop_is_patched;
 
-            if ide_needs_patch || desktop_needs_patch {
+            if ide_needs_patch {
                 info!(
-                    "[RTL Sentinel] Detected unpatched Antigravity installation/update (IDE: {}, Desktop: {}). Auto-patching...",
-                    ide_needs_patch, desktop_needs_patch
+                    "[RTL Sentinel] Detected unpatched Antigravity IDE installation/update. Auto-patching...",
                 );
                 match patch_antigravity_rtl().await {
                     Ok(msg) => {
