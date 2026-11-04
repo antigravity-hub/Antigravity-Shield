@@ -8,6 +8,54 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 const exportDir = path.resolve(projectRoot, 'hub-export');
 
+// Classification helper for Dual-Tier Distribution
+export function resolveSkillDistribution(skill) {
+  if (skill.distributionMode === 'mirror' || skill.distributionMode === 'reference_only') {
+    return skill.distributionMode;
+  }
+  const lic = (skill.license || skill.spdxId || '').toUpperCase().trim();
+  const type = skill.licenseType;
+
+  // Strict negative guards for proprietary, unlicensed, and copyleft works
+  if (
+    lic === 'UNLICENSED' ||
+    lic.includes('PROPRIETARY') ||
+    lic.includes('ALL RIGHTS RESERVED') ||
+    type === 'unlicensed' ||
+    type === 'restricted' ||
+    type === 'copyleft'
+  ) {
+    return 'reference_only';
+  }
+
+  // Permissive check (exact or word-bounded matching for Unlicense to prevent matching UNLICENSED)
+  const isUnlicense = lic === 'UNLICENSE' || lic === 'THE UNLICENSE' || /\bTHE UNLICENSE\b/.test(lic) || /\bUNLICENSE\b/.test(lic);
+  if (
+    type === 'permissive' ||
+    lic.includes('MIT') ||
+    lic.includes('APACHE') ||
+    lic.includes('BSD') ||
+    lic.includes('ISC') ||
+    isUnlicense ||
+    lic.startsWith('CC0')
+  ) {
+    return 'mirror';
+  }
+  return 'reference_only';
+}
+
+export function resolveNativeInstallCmd(skill, slug) {
+  if (skill.nativeInstallCmd) return skill.nativeInstallCmd;
+  if (skill.owner && skill.repo) {
+    return `npx skills add ${skill.owner}/${skill.repo} --skill ${slug}`;
+  }
+  const cleanSource = (skill.repository || skill.repoUrl || skill.remoteUrl || '').replace(/^https?:\/\/github\.com\//, '');
+  if (cleanSource) {
+    return `npx skills add ${cleanSource} --skill ${slug}`;
+  }
+  return `npx skills add ${skill.id}`;
+}
+
 async function main() {
   console.log('[Hub Export] Starting extraction of skills catalog...');
   
@@ -52,32 +100,6 @@ async function main() {
   };
 
   const minCatalog = [];
-
-  // Classification helper for Dual-Tier Distribution
-  function resolveSkillDistribution(skill) {
-    if (skill.distributionMode === 'mirror' || skill.distributionMode === 'reference_only') {
-      return skill.distributionMode;
-    }
-    // Heuristic inference based on license
-    const lic = (skill.license || skill.spdxId || '').toUpperCase();
-    const type = skill.licenseType;
-    if (type === 'permissive' || lic.includes('MIT') || lic.includes('APACHE') || lic.includes('BSD') || lic.includes('ISC') || lic.includes('UNLICENSE')) {
-      return 'mirror';
-    }
-    return 'reference_only';
-  }
-
-  function resolveNativeInstallCmd(skill, slug) {
-    if (skill.nativeInstallCmd) return skill.nativeInstallCmd;
-    if (skill.owner && skill.repo) {
-      return `npx skills add ${skill.owner}/${skill.repo} --skill ${slug}`;
-    }
-    const cleanSource = (skill.repository || skill.repoUrl || skill.remoteUrl || '').replace(/^https?:\/\/github\.com\//, '');
-    if (cleanSource) {
-      return `npx skills add ${cleanSource} --skill ${slug}`;
-    }
-    return `npx skills add ${skill.id}`;
-  }
 
   for (const skill of skills) {
     const slug = skill.slug || skill.name || skill.id.replace(/\//g, '__');
@@ -268,7 +290,12 @@ jobs:
   console.log('[Hub Export] Successfully prepared all files in hub-export/ ready for GitHub sync!');
 }
 
-main().catch((err) => {
-  console.error('[Hub Export] Error:', err);
-  process.exit(1);
-});
+const isDirectRun = !process.argv[1] || process.argv[1] === fileURLToPath(import.meta.url) || process.argv[1].endsWith('exportHubSkills.mjs');
+
+if (isDirectRun) {
+  main().catch((err) => {
+    console.error('[Hub Export] Error:', err);
+    process.exit(1);
+  });
+}
+
