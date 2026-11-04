@@ -228,7 +228,58 @@ body, html, #root {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-/* Headings: Seafoam Green (#2dd4bf / #5eead4) - SCOPED TO MARKDOWN & CHAT ONLY */
+/* ==========================================================================
+   1. Dynamic BiDi (RTL/LTR Auto-Detection) & Full Justification
+   ========================================================================== */
+
+/* User Input Bubble & Sent Prompt Turns: Auto-detect English (LTR) vs Persian (RTL) */
+[data-testid="user-input-step"],
+[data-testid="user-input-step"] *,
+[class*="group/user-input-step"],
+[class*="group/user-input-step"] *,
+.interactive-item-container.interactive-request,
+.interactive-item-container.interactive-request * {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[data-testid="user-input-step"] .whitespace-pre-wrap,
+[data-testid="user-input-step"] [class*="whitespace-pre-wrap"],
+.interactive-item-container.interactive-request .value,
+.interactive-request .value {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  line-height: 1.85 !important;
+}
+
+/* Markdown Body & Paragraphs: Full Justification (Full Align) with BiDi Auto-Detection */
+.rendered-markdown,
+.chat-widget .rendered-markdown,
+.interactive-session .rendered-markdown,
+.antigravity-agent-side-panel,
+.antigravity-agent-manager,
+.animate-markdown {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+.rendered-markdown p,
+.rendered-markdown dd,
+.rendered-markdown dt,
+.chat-widget .rendered-markdown p,
+.antigravity-agent-side-panel p,
+.antigravity-agent-manager p,
+.animate-markdown p {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+  line-height: 2.1 !important;
+  margin-bottom: 1rem !important;
+}
+
+/* ==========================================================================
+   2. Headings: Seafoam Green (#93e9be) Palette
+   ========================================================================== */
 .rendered-markdown h1,
 .rendered-markdown h2,
 .rendered-markdown h3,
@@ -261,12 +312,11 @@ body, html, #root {
 .animate-markdown h6 {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   font-weight: 700 !important;
-  color: #5eead4 !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
-  margin-top: 1.25rem !important;
-  margin-bottom: 0.65rem !important;
-  letter-spacing: 0 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+  letter-spacing: -0.01em !important;
 }
 
 .rendered-markdown h1,
@@ -275,9 +325,9 @@ body, html, #root {
 .antigravity-agent-manager h1,
 .animate-markdown h1 {
   font-size: 1.45rem !important;
-  color: #2dd4bf !important;
-  border-bottom: 1px solid rgba(45, 212, 191, 0.25) !important;
-  padding-bottom: 0.35rem !important;
+  color: #93e9be !important;
+  border-bottom: 1px solid rgba(147, 233, 190, 0.3) !important;
+  padding-bottom: 0.4rem !important;
 }
 
 .rendered-markdown h2,
@@ -286,7 +336,7 @@ body, html, #root {
 .antigravity-agent-manager h2,
 .animate-markdown h2 {
   font-size: 1.25rem !important;
-  color: #5eead4 !important;
+  color: #93e9be !important;
 }
 
 .rendered-markdown h3,
@@ -294,8 +344,8 @@ body, html, #root {
 .antigravity-agent-side-panel h3,
 .antigravity-agent-manager h3,
 .animate-markdown h3 {
-  font-size: 1.1rem !important;
-  color: #99f6e4 !important;
+  font-size: 1.12rem !important;
+  color: #a7f3d0 !important;
 }
 
 .rendered-markdown h4,
@@ -314,29 +364,12 @@ body, html, #root {
 .animate-markdown h5,
 .animate-markdown h6 {
   font-size: 1rem !important;
-  color: #a7f3d0 !important;
+  color: #bbf7d0 !important;
 }
 
-/* Paragraphs & Text: Scoped to Markdown & Chat */
-.rendered-markdown p,
-.rendered-markdown blockquote,
-.rendered-markdown dd,
-.rendered-markdown dt,
-.chat-widget .rendered-markdown p,
-.chat-widget .rendered-markdown blockquote,
-.antigravity-agent-side-panel p,
-.antigravity-agent-side-panel blockquote,
-.antigravity-agent-manager p,
-.antigravity-agent-manager blockquote,
-.animate-markdown p,
-.animate-markdown blockquote {
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
-  unicode-bidi: plaintext !important;
-  text-align: start !important;
-  line-height: 1.85 !important;
-}
-
-/* Lists (ul, ol, li) with perfect RTL bullet placement - Scoped to Markdown & Chat */
+/* ==========================================================================
+   3. Lists, Counters & Highlighted Numbered Points (#93e9be)
+   ========================================================================== */
 .rendered-markdown ul,
 .rendered-markdown ol,
 .chat-widget .rendered-markdown ul,
@@ -355,21 +388,49 @@ body, html, #root {
 .rendered-markdown li,
 .chat-widget .rendered-markdown li,
 .antigravity-agent-side-panel li,
-.antigravity-agent-side-panel li,
 .antigravity-agent-manager li,
 .animate-markdown li {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
-  text-align: start !important;
-  line-height: 1.85 !important;
-  margin-bottom: 0.35rem !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+  line-height: 2 !important;
+  margin-bottom: 0.45rem !important;
 }
 
+/* Bullet markers and number markers colored in Seafoam #93e9be */
+.rendered-markdown li::marker,
+.chat-widget .rendered-markdown li::marker,
+.antigravity-agent-side-panel li::marker,
+.antigravity-agent-manager li::marker,
+.animate-markdown li::marker {
+  color: #93e9be !important;
+  font-weight: 700 !important;
+}
+
+/* Highlight list titles/numbered points: e.g. "۱. نقطه دقیق سوییچ" */
+.rendered-markdown li > strong:first-child,
+.rendered-markdown li > p:first-child > strong:first-child,
+.chat-widget .rendered-markdown li > strong:first-child,
+.chat-widget .rendered-markdown li > p:first-child > strong:first-child,
+.antigravity-agent-side-panel li > strong:first-child,
+.antigravity-agent-side-panel li > p:first-child > strong:first-child {
+  color: #93e9be !important;
+  font-weight: 700 !important;
+}
+
+/* General strong emphasis: harmonized soft seafoam tint */
+.rendered-markdown strong,
+.chat-widget .rendered-markdown strong {
+  color: #c6f6d5 !important;
+  font-weight: 700 !important;
+}
+
+/* Direction-specific list padding */
 .rendered-markdown li:dir(rtl),
 .chat-widget .rendered-markdown li:dir(rtl),
 [dir="rtl"] .rendered-markdown li {
-  direction: rtl !important;
-  text-align: right !important;
   padding-right: 0.25rem !important;
   padding-left: 0 !important;
 }
@@ -380,7 +441,6 @@ body, html, #root {
 .chat-widget .rendered-markdown ol:dir(rtl),
 [dir="rtl"] .rendered-markdown ul,
 [dir="rtl"] .rendered-markdown ol {
-  direction: rtl !important;
   padding-right: 1.75rem !important;
   padding-left: 0 !important;
 }
@@ -388,8 +448,8 @@ body, html, #root {
 .rendered-markdown li:dir(ltr),
 .chat-widget .rendered-markdown li:dir(ltr),
 [dir="ltr"] .rendered-markdown li {
-  direction: ltr !important;
-  text-align: left !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0 !important;
 }
 
 .rendered-markdown ul:dir(ltr),
@@ -398,12 +458,93 @@ body, html, #root {
 .chat-widget .rendered-markdown ol:dir(ltr),
 [dir="ltr"] .rendered-markdown ul,
 [dir="ltr"] .rendered-markdown ol {
-  direction: ltr !important;
   padding-left: 1.75rem !important;
   padding-right: 0 !important;
 }
 
-/* Inputs & Textareas */
+/* ==========================================================================
+   4. Blockquotes & GitHub Alerts (TIP, NOTE, IMPORTANT, WARNING, CAUTION)
+   ========================================================================== */
+.rendered-markdown blockquote,
+.rendered-markdown .markdown-alert,
+.chat-widget .rendered-markdown blockquote,
+.antigravity-agent-side-panel blockquote,
+.antigravity-agent-manager blockquote,
+.animate-markdown blockquote {
+  border: none !important;
+  border-inline-start: 4px solid #93e9be !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  margin: 16px 0 !important;
+  background: rgba(147, 233, 190, 0.08) !important;
+  backdrop-filter: blur(8px) !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-tip {
+  border-inline-start-color: #93e9be !important;
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.14) 0%, rgba(147, 233, 190, 0.04) 100%) !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: #93e9be !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-note {
+  border-inline-start-color: #38bdf8 !important;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(56, 189, 248, 0.04) 100%) !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: #38bdf8 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-important {
+  border-inline-start-color: #a78bfa !important;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.14) 0%, rgba(167, 139, 250, 0.04) 100%) !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: #c4b5fd !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-warning {
+  border-inline-start-color: #f59e0b !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0.04) 100%) !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: #fbbf24 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-caution {
+  border-inline-start-color: #ef4444 !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.14) 0%, rgba(239, 68, 68, 0.04) 100%) !important;
+}
+
+.rendered-markdown .markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: #f87171 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+/* ==========================================================================
+   5. Inputs & Textareas BiDi
+   ========================================================================== */
 textarea, input[type="text"], input:not([type]), [contenteditable="true"] {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
@@ -420,7 +561,9 @@ textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
   text-align: left !important;
 }
 
-/* Markdown Tables: Seafoam Green Luxury */
+/* ==========================================================================
+   6. Seafoam Green Luxury Markdown Tables (#93e9be)
+   ========================================================================== */
 .rendered-markdown table,
 .chat-widget .rendered-markdown table,
 .antigravity-agent-side-panel table,
@@ -430,10 +573,11 @@ textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
   border-spacing: 0 !important;
   border-radius: 8px !important;
   overflow: hidden !important;
-  border: 1px solid rgba(45, 212, 191, 0.35) !important;
-  margin: 1rem 0 !important;
+  border: 1px solid rgba(147, 233, 190, 0.3) !important;
+  margin: 1.25rem 0 !important;
   width: 100% !important;
   background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .rendered-markdown th,
@@ -441,14 +585,14 @@ textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
 .antigravity-agent-side-panel th,
 .antigravity-agent-manager th,
 .animate-markdown th {
-  background: linear-gradient(180deg, rgba(20, 184, 166, 0.28) 0%, rgba(13, 148, 136, 0.16) 100%) !important;
-  color: #5eead4 !important;
+  background: linear-gradient(180deg, rgba(147, 233, 190, 0.22) 0%, rgba(147, 233, 190, 0.10) 100%) !important;
+  color: #93e9be !important;
   font-family: 'Vazirmatn', sans-serif !important;
   font-weight: 700 !important;
   font-size: 0.95rem !important;
   padding: 10px 14px !important;
-  border-bottom: 2px solid rgba(45, 212, 191, 0.45) !important;
-  border-inline-end: 1px solid rgba(45, 212, 191, 0.12) !important;
+  border-bottom: 2px solid rgba(147, 233, 190, 0.35) !important;
+  border-inline-end: 1px solid rgba(147, 233, 190, 0.12) !important;
   text-align: start !important;
 }
 
@@ -462,8 +606,8 @@ textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
 .antigravity-agent-manager td,
 .animate-markdown td {
   padding: 8px 14px !important;
-  border-bottom: 1px solid rgba(45, 212, 191, 0.12) !important;
-  border-inline-end: 1px solid rgba(45, 212, 191, 0.08) !important;
+  border-bottom: 1px solid rgba(147, 233, 190, 0.12) !important;
+  border-inline-end: 1px solid rgba(147, 233, 190, 0.08) !important;
   font-family: 'Vazirmatn', sans-serif !important;
   font-size: 0.92rem !important;
   line-height: 1.75 !important;
@@ -477,11 +621,11 @@ textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
 }
 
 .rendered-markdown tbody tr:nth-child(even) {
-  background: rgba(20, 184, 166, 0.04) !important;
+  background: rgba(147, 233, 190, 0.03) !important;
 }
 
 .rendered-markdown tbody tr:hover {
-  background: rgba(45, 212, 191, 0.12) !important;
+  background: rgba(147, 233, 190, 0.1) !important;
   transition: background 0.18s ease-in-out !important;
 }
 
@@ -491,15 +635,26 @@ textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
 
 .rendered-markdown td:first-child {
   font-weight: 700 !important;
-  color: #5eead4 !important;
+  color: #93e9be !important;
 }
 
-/* Code blocks: isolated monospace */
+/* ==========================================================================
+   7. Code blocks & Monospace Isolation
+   ========================================================================== */
 pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-line, .view-lines {
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace !important;
   direction: ltr !important;
   text-align: left !important;
   unicode-bidi: isolate !important;
+}
+
+:not(pre) > code {
+  background: rgba(147, 233, 190, 0.12) !important;
+  border: 1px solid rgba(147, 233, 190, 0.25) !important;
+  color: #93e9be !important;
+  padding: 1px 6px !important;
+  border-radius: 4px !important;
+  font-size: 0.9em !important;
 }
 
 /* RTL-PATCH-END */
