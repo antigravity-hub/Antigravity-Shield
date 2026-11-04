@@ -228,10 +228,37 @@ body, html, #root {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-/* Headings: Seafoam Green (#2dd4bf / #5eead4) */
-h1, h2, h3, h4, h5, h6,
-.heading-seafoam,
-[class*="heading"] {
+/* Headings: Seafoam Green (#2dd4bf / #5eead4) - SCOPED TO MARKDOWN & CHAT ONLY */
+.rendered-markdown h1,
+.rendered-markdown h2,
+.rendered-markdown h3,
+.rendered-markdown h4,
+.rendered-markdown h5,
+.rendered-markdown h6,
+.chat-widget .rendered-markdown h1,
+.chat-widget .rendered-markdown h2,
+.chat-widget .rendered-markdown h3,
+.chat-widget .rendered-markdown h4,
+.chat-widget .rendered-markdown h5,
+.chat-widget .rendered-markdown h6,
+.antigravity-agent-side-panel h1,
+.antigravity-agent-side-panel h2,
+.antigravity-agent-side-panel h3,
+.antigravity-agent-side-panel h4,
+.antigravity-agent-side-panel h5,
+.antigravity-agent-side-panel h6,
+.antigravity-agent-manager h1,
+.antigravity-agent-manager h2,
+.antigravity-agent-manager h3,
+.antigravity-agent-manager h4,
+.antigravity-agent-manager h5,
+.antigravity-agent-manager h6,
+.animate-markdown h1,
+.animate-markdown h2,
+.animate-markdown h3,
+.animate-markdown h4,
+.animate-markdown h5,
+.animate-markdown h6 {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   font-weight: 700 !important;
   color: #5eead4 !important;
@@ -242,44 +269,95 @@ h1, h2, h3, h4, h5, h6,
   letter-spacing: 0 !important;
 }
 
-h1 {
+.rendered-markdown h1,
+.chat-widget .rendered-markdown h1,
+.antigravity-agent-side-panel h1,
+.antigravity-agent-manager h1,
+.animate-markdown h1 {
   font-size: 1.45rem !important;
   color: #2dd4bf !important;
   border-bottom: 1px solid rgba(45, 212, 191, 0.25) !important;
   padding-bottom: 0.35rem !important;
 }
 
-h2, .heading-seafoam {
+.rendered-markdown h2,
+.chat-widget .rendered-markdown h2,
+.antigravity-agent-side-panel h2,
+.antigravity-agent-manager h2,
+.animate-markdown h2 {
   font-size: 1.25rem !important;
   color: #5eead4 !important;
 }
 
-h3 {
+.rendered-markdown h3,
+.chat-widget .rendered-markdown h3,
+.antigravity-agent-side-panel h3,
+.antigravity-agent-manager h3,
+.animate-markdown h3 {
   font-size: 1.1rem !important;
   color: #99f6e4 !important;
 }
 
-h4, h5, h6 {
+.rendered-markdown h4,
+.rendered-markdown h5,
+.rendered-markdown h6,
+.chat-widget .rendered-markdown h4,
+.chat-widget .rendered-markdown h5,
+.chat-widget .rendered-markdown h6,
+.antigravity-agent-side-panel h4,
+.antigravity-agent-side-panel h5,
+.antigravity-agent-side-panel h6,
+.antigravity-agent-manager h4,
+.antigravity-agent-manager h5,
+.antigravity-agent-manager h6,
+.animate-markdown h4,
+.animate-markdown h5,
+.animate-markdown h6 {
   font-size: 1rem !important;
   color: #a7f3d0 !important;
 }
 
-/* Paragraphs & Text */
-p, blockquote, dd, dt {
+/* Paragraphs & Text: Scoped to Markdown & Chat */
+.rendered-markdown p,
+.rendered-markdown blockquote,
+.rendered-markdown dd,
+.rendered-markdown dt,
+.chat-widget .rendered-markdown p,
+.chat-widget .rendered-markdown blockquote,
+.antigravity-agent-side-panel p,
+.antigravity-agent-side-panel blockquote,
+.antigravity-agent-manager p,
+.antigravity-agent-manager blockquote,
+.animate-markdown p,
+.animate-markdown blockquote {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
   line-height: 1.85 !important;
 }
 
-/* Lists (ul, ol, li) with perfect RTL bullet placement */
-ul, ol {
+/* Lists (ul, ol, li) with perfect RTL bullet placement - Scoped to Markdown & Chat */
+.rendered-markdown ul,
+.rendered-markdown ol,
+.chat-widget .rendered-markdown ul,
+.chat-widget .rendered-markdown ol,
+.antigravity-agent-side-panel ul,
+.antigravity-agent-side-panel ol,
+.antigravity-agent-manager ul,
+.antigravity-agent-manager ol,
+.animate-markdown ul,
+.animate-markdown ol {
   padding-inline-start: 1.75rem !important;
   padding-inline-end: 0 !important;
   margin-inline-start: 0 !important;
 }
 
-li {
+.rendered-markdown li,
+.chat-widget .rendered-markdown li,
+.antigravity-agent-side-panel li,
+.antigravity-agent-side-panel li,
+.antigravity-agent-manager li,
+.animate-markdown li {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: start !important;
@@ -287,25 +365,39 @@ li {
   margin-bottom: 0.35rem !important;
 }
 
-li:dir(rtl), [dir="rtl"] li {
+.rendered-markdown li:dir(rtl),
+.chat-widget .rendered-markdown li:dir(rtl),
+[dir="rtl"] .rendered-markdown li {
   direction: rtl !important;
   text-align: right !important;
   padding-right: 0.25rem !important;
   padding-left: 0 !important;
 }
 
-ul:dir(rtl), ol:dir(rtl), [dir="rtl"] ul, [dir="rtl"] ol {
+.rendered-markdown ul:dir(rtl),
+.rendered-markdown ol:dir(rtl),
+.chat-widget .rendered-markdown ul:dir(rtl),
+.chat-widget .rendered-markdown ol:dir(rtl),
+[dir="rtl"] .rendered-markdown ul,
+[dir="rtl"] .rendered-markdown ol {
   direction: rtl !important;
   padding-right: 1.75rem !important;
   padding-left: 0 !important;
 }
 
-li:dir(ltr), [dir="ltr"] li {
+.rendered-markdown li:dir(ltr),
+.chat-widget .rendered-markdown li:dir(ltr),
+[dir="ltr"] .rendered-markdown li {
   direction: ltr !important;
   text-align: left !important;
 }
 
-ul:dir(ltr), ol:dir(ltr), [dir="ltr"] ul, [dir="ltr"] ol {
+.rendered-markdown ul:dir(ltr),
+.rendered-markdown ol:dir(ltr),
+.chat-widget .rendered-markdown ul:dir(ltr),
+.chat-widget .rendered-markdown ol:dir(ltr),
+[dir="ltr"] .rendered-markdown ul,
+[dir="ltr"] .rendered-markdown ol {
   direction: ltr !important;
   padding-left: 1.75rem !important;
   padding-right: 0 !important;
@@ -328,8 +420,82 @@ textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
   text-align: left !important;
 }
 
+/* Markdown Tables: Seafoam Green Luxury */
+.rendered-markdown table,
+.chat-widget .rendered-markdown table,
+.antigravity-agent-side-panel table,
+.antigravity-agent-manager table,
+.animate-markdown table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(45, 212, 191, 0.35) !important;
+  margin: 1rem 0 !important;
+  width: 100% !important;
+  background: rgba(15, 23, 42, 0.45) !important;
+}
+
+.rendered-markdown th,
+.chat-widget .rendered-markdown th,
+.antigravity-agent-side-panel th,
+.antigravity-agent-manager th,
+.animate-markdown th {
+  background: linear-gradient(180deg, rgba(20, 184, 166, 0.28) 0%, rgba(13, 148, 136, 0.16) 100%) !important;
+  color: #5eead4 !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  padding: 10px 14px !important;
+  border-bottom: 2px solid rgba(45, 212, 191, 0.45) !important;
+  border-inline-end: 1px solid rgba(45, 212, 191, 0.12) !important;
+  text-align: start !important;
+}
+
+.rendered-markdown th:last-child {
+  border-inline-end: none !important;
+}
+
+.rendered-markdown td,
+.chat-widget .rendered-markdown td,
+.antigravity-agent-side-panel td,
+.antigravity-agent-manager td,
+.animate-markdown td {
+  padding: 8px 14px !important;
+  border-bottom: 1px solid rgba(45, 212, 191, 0.12) !important;
+  border-inline-end: 1px solid rgba(45, 212, 191, 0.08) !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+  font-size: 0.92rem !important;
+  line-height: 1.75 !important;
+  color: #e2e8f0 !important;
+  text-align: start !important;
+  vertical-align: middle !important;
+}
+
+.rendered-markdown td:last-child {
+  border-inline-end: none !important;
+}
+
+.rendered-markdown tbody tr:nth-child(even) {
+  background: rgba(20, 184, 166, 0.04) !important;
+}
+
+.rendered-markdown tbody tr:hover {
+  background: rgba(45, 212, 191, 0.12) !important;
+  transition: background 0.18s ease-in-out !important;
+}
+
+.rendered-markdown tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.rendered-markdown td:first-child {
+  font-weight: 700 !important;
+  color: #5eead4 !important;
+}
+
 /* Code blocks: isolated monospace */
-pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor * {
+pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-line, .view-lines {
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace !important;
   direction: ltr !important;
   text-align: left !important;
