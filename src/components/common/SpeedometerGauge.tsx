@@ -300,7 +300,7 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
   // SVG Geometry Dimensions - Ultra-Compact & Low Profile
   const cx = 130;
   const cy = 115;
-  const radius = 86;
+  const radius = 80;
 
   // Ticks at boundary between zones
   const tickAngles = useMemo(() => {
@@ -327,14 +327,45 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
   const zoneLabelItems = useMemo(() => {
     if (!showZoneLabels) return [];
 
-    // If using the standard 5 zones, position identically to design
+    // If using the standard 5 zones, position cleanly outside the arc perimeter
+    // with directional anchors to prevent any overlapping with the gauge track
     if (zones === DEFAULT_GAUGE_ZONES || zones.length === 5) {
       return [
-        { label: t(`dashboard.velocity_gauge.arc_${zones[0].id || 'critical'}`, zones[0].label), color: zones[0].color, x: 24, y: 106, anchor: 'middle' },
-        { label: t(`dashboard.velocity_gauge.arc_${zones[1].id || 'high'}`, zones[1].label), color: zones[1].color, x: 52, y: 52, anchor: 'middle' },
-        { label: t(`dashboard.velocity_gauge.arc_${zones[2].id || 'balanced'}`, zones[2].label), color: zones[2].color, x: 130, y: 16, anchor: 'middle' },
-        { label: t(`dashboard.velocity_gauge.arc_${zones[3].id || 'safe'}`, zones[3].label), color: zones[3].color, x: 208, y: 52, anchor: 'middle' },
-        { label: t(`dashboard.velocity_gauge.arc_${zones[4].id || 'surplus'}`, zones[4].label), color: zones[4].color, x: 236, y: 106, anchor: 'middle' },
+        {
+          label: t(`dashboard.velocity_gauge.arc_${zones[0].id || 'critical'}`, zones[0].label),
+          color: zones[0].color,
+          x: 36,
+          y: 88,
+          anchor: 'end',
+        },
+        {
+          label: t(`dashboard.velocity_gauge.arc_${zones[1].id || 'high'}`, zones[1].label),
+          color: zones[1].color,
+          x: 60,
+          y: 34,
+          anchor: 'middle',
+        },
+        {
+          label: t(`dashboard.velocity_gauge.arc_${zones[2].id || 'balanced'}`, zones[2].label),
+          color: zones[2].color,
+          x: 130,
+          y: 15,
+          anchor: 'middle',
+        },
+        {
+          label: t(`dashboard.velocity_gauge.arc_${zones[3].id || 'safe'}`, zones[3].label),
+          color: zones[3].color,
+          x: 200,
+          y: 34,
+          anchor: 'middle',
+        },
+        {
+          label: t(`dashboard.velocity_gauge.arc_${zones[4].id || 'surplus'}`, zones[4].label),
+          color: zones[4].color,
+          x: 224,
+          y: 88,
+          anchor: 'start',
+        },
       ];
     }
 
@@ -344,8 +375,8 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
       const midVal = (z.from + z.to) / 2;
       const frac = span > 0 ? (midVal - min) / span : 0.5;
       const angle = frac * 180;
-      // Label slightly above the arc radius
-      const pt = polarToCartesian(cx, cy, radius + 15, angle);
+      // Label placed with comfortable clearance outside the arc radius
+      const pt = polarToCartesian(cx, cy, radius + 22, angle);
       return {
         label: t(`dashboard.velocity_gauge.arc_${z.id}`, z.label),
         color: z.color,
