@@ -1016,6 +1016,21 @@ button[data-project-card="true"] svg {
 .agy-sidebar-row.agy-sidebar-row[class*="pl-"] {
   padding-left: 36px !important;
   position: relative !important;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+/* Row container stays motionless on hover so vertical line NEVER jumps */
+.agy-sidebar-row.agy-sidebar-row[class*="pl-"]:hover {
+  transform: none !important;
+  background: rgba(147, 233, 190, 0.08) !important;
+  border-color: rgba(147, 233, 190, 0.20) !important;
+}
+
+/* Animate only the inner text slightly forward on hover */
+.agy-sidebar-row[class*="pl-"]:hover a,
+.agy-sidebar-row[class*="pl-"]:hover .grow {
+  transform: translateX(2px) !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 /* Tree vertical line running down the project branch */
@@ -1045,16 +1060,105 @@ button[data-project-card="true"] svg {
   z-index: 2 !important;
 }
 
-.agy-sidebar-row[class*="pl-"]:hover::before,
-.agy-sidebar-row[class*="pl-"]:hover::after {
+.agy-sidebar-row[class*="pl-"]:hover::before {
   background: #93e9be !important;
   box-shadow: 0 0 6px rgba(147, 233, 190, 0.5) !important;
+}
+
+.agy-sidebar-row[class*="pl-"]:hover::after {
+  width: 14px !important;
+  background: #93e9be !important;
+  box-shadow: 0 0 6px rgba(147, 233, 190, 0.6) !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
 .agy-sidebar-row[class*="pl-"].bg-sidebar-muted::after {
   background: #93e9be !important;
   box-shadow: 0 0 8px rgba(147, 233, 190, 0.6) !important;
+}
+
+/* 8.8 Pinned Conversations Luxury VIP Card Treatment */
+[data-pinned="true"],
+[data-testid="conversation-row-sidebar"][data-pinned="true"] {
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.05) 0%, rgba(147, 233, 190, 0.01) 100%) !important;
+  border: 1px solid rgba(147, 233, 190, 0.18) !important;
+  border-left: 3px solid rgba(147, 233, 190, 0.65) !important;
+  border-inline-start: 3px solid rgba(147, 233, 190, 0.65) !important;
+  border-radius: 9px !important;
+  margin-bottom: 5px !important;
+  padding: 7px 10px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-pinned="true"]:hover,
+[data-testid="conversation-row-sidebar"][data-pinned="true"]:hover {
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.12) 0%, rgba(147, 233, 190, 0.03) 100%) !important;
+  border-color: rgba(147, 233, 190, 0.38) !important;
+  border-left-color: #93e9be !important;
+  border-inline-start-color: #93e9be !important;
+  box-shadow: 0 0 14px -2px rgba(147, 233, 190, 0.25), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+  transform: translateX(2px) !important;
+}
+
+/* Active Pinned Item */
+[data-pinned="true"]:has(a[aria-current="page"]),
+[data-pinned="true"].bg-sidebar-muted,
+[data-pinned="true"][data-selected="true"] {
+  background: linear-gradient(90deg, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 100%) !important;
+  border-color: rgba(147, 233, 190, 0.48) !important;
+  border-left: 3.5px solid #93e9be !important;
+  border-inline-start: 3.5px solid #93e9be !important;
+  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.30) !important;
+}
+
+/* Pinned Title Typography */
+[data-pinned="true"] span.truncate {
+  font-weight: 600 !important;
+  color: #f1f5f9 !important;
+  letter-spacing: -0.01em !important;
+}
+
+[data-pinned="true"]:hover span.truncate {
+  color: #bbf7d0 !important;
+}
+
+[data-pinned="true"]:has(a[aria-current="page"]) span.truncate {
+  color: #93e9be !important;
+  font-weight: 700 !important;
+}
+
+/* Project Subtext Pill Micro-Badge */
+[data-pinned="true"] span.text-xs.select-none:has(svg),
+[data-pinned="true"] span:has(> svg):has(> span) {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-top: 4px !important;
+  padding: 1.5px 7px !important;
+  border-radius: 6px !important;
+  background: rgba(147, 233, 190, 0.09) !important;
+  border: 1px solid rgba(147, 233, 190, 0.22) !important;
+  color: #a7f3d0 !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  width: fit-content !important;
+  transition: all 0.15s ease !important;
+}
+
+[data-pinned="true"] span.text-xs.select-none:has(svg) svg,
+[data-pinned="true"] span:has(> svg):has(> span) svg {
+  color: #93e9be !important;
+  width: 12px !important;
+  height: 12px !important;
+  filter: drop-shadow(0 0 3px rgba(147, 233, 190, 0.3)) !important;
+}
+
+[data-pinned="true"]:hover span.text-xs.select-none:has(svg),
+[data-pinned="true"]:hover span:has(> svg):has(> span) {
+  background: rgba(147, 233, 190, 0.16) !important;
+  border-color: rgba(147, 233, 190, 0.40) !important;
+  color: #bbf7d0 !important;
 }
 
 /* RTL-PATCH-END */
