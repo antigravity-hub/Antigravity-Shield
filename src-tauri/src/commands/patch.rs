@@ -506,7 +506,9 @@ body, html, #root {
 [role="article"] [dir="rtl"] li,
 .rendered-markdown [dir="rtl"] li {
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
   padding-right: 0.25rem !important;
   padding-left: 0 !important;
 }
@@ -686,8 +688,9 @@ body, html, #root {
 .interactive-request .value .rendered-markdown {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
-  text-align: start !important;
-  text-align: -webkit-match-parent !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
   line-height: 1.85 !important;
 }
 
@@ -700,12 +703,14 @@ textarea, input[type="text"], input:not([type]), [contenteditable="true"] {
   text-align: start !important;
 }
 
-textarea:dir(rtl), input:dir(rtl), [contenteditable="true"]:dir(rtl) {
+textarea:dir(rtl), input:dir(rtl), [contenteditable="true"]:dir(rtl),
+textarea[dir="rtl"], input[dir="rtl"], [contenteditable="true"][dir="rtl"] {
   direction: rtl !important;
   text-align: right !important;
 }
 
-textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr) {
+textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr),
+textarea[dir="ltr"], input[dir="ltr"], [contenteditable="true"][dir="ltr"] {
   direction: ltr !important;
   text-align: left !important;
 }
