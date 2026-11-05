@@ -778,6 +778,158 @@ pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-lin
   font-size: 0.9em !important;
 }
 
+
+/* ==========================================================================
+   8. UI/UX Pro Max - High-End Luxury Sidebar Architecture (Platform & IDE)
+   ========================================================================== */
+
+/* 8.1 Sidebar Container & Smooth Dark-Glass Scrollbar */
+[data-testid="conversation-list-sidebar"] {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(147, 233, 190, 0.25) transparent !important;
+}
+
+[data-testid="conversation-list-sidebar"]::-webkit-scrollbar {
+  width: 4px !important;
+}
+[data-testid="conversation-list-sidebar"]::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+[data-testid="conversation-list-sidebar"]::-webkit-scrollbar-thumb {
+  background: rgba(147, 233, 190, 0.2) !important;
+  border-radius: 4px !important;
+}
+[data-testid="conversation-list-sidebar"]::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 233, 190, 0.45) !important;
+}
+
+/* 8.2 Top Navigation Action Hero ("New Conversation") */
+[data-testid="new-conversation-button"],
+a.agy-button[href="/"] {
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.15) 0%, rgba(147, 233, 190, 0.04) 100%) !important;
+  border: 1px solid rgba(147, 233, 190, 0.28) !important;
+  border-radius: 9px !important;
+  color: #93e9be !important;
+  font-weight: 600 !important;
+  font-size: 0.86rem !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-testid="new-conversation-button"]:hover,
+a.agy-button[href="/"]:hover {
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.25) 0%, rgba(147, 233, 190, 0.09) 100%) !important;
+  border-color: rgba(147, 233, 190, 0.55) !important;
+  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.35) !important;
+  transform: translateY(-0.5px) !important;
+  color: #bbf7d0 !important;
+}
+
+[data-testid="new-conversation-button"] svg,
+a.agy-button[href="/"] svg {
+  color: #93e9be !important;
+}
+
+/* Secondary Navigation Buttons (Automations, Customizations) */
+[data-testid="automations-button"],
+[data-testid="sidebar-navigation-items"] a[href="/customizations"] {
+  border-radius: 8px !important;
+  transition: all 0.18s ease !important;
+  font-size: 0.85rem !important;
+  color: #94a3b8 !important;
+}
+
+[data-testid="automations-button"]:hover,
+[data-testid="sidebar-navigation-items"] a[href="/customizations"]:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #e2e8f0 !important;
+  transform: translateX(1px) !important;
+}
+
+/* 8.3 Section Headers (Pinned Conversations, Projects) */
+[data-testid="conversation-list-sidebar"] [class*="section-header"],
+[data-testid="conversation-list-sidebar"] [data-testid*="section-header"] {
+  margin-top: 14px !important;
+  margin-bottom: 4px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+  height: 28px !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+[data-testid="conversation-list-sidebar"] [class*="section-header"] h2,
+[data-testid="conversation-list-sidebar"] h2 {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.085em !important;
+  color: rgba(147, 233, 190, 0.75) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Vazirmatn', sans-serif !important;
+  opacity: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+[data-testid="conversation-list-sidebar"] [class*="section-header"]:hover h2 {
+  color: #93e9be !important;
+  transition: color 0.15s ease !important;
+}
+
+[data-testid="conversation-list-sidebar"] [class*="section-header"] svg {
+  color: rgba(147, 233, 190, 0.6) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease !important;
+}
+
+[data-testid="conversation-list-sidebar"] [class*="section-header"]:hover svg {
+  color: #93e9be !important;
+}
+
+/* 8.4 Conversation & Project Item Rows */
+.agy-sidebar-row {
+  border-radius: 8px !important;
+  margin-bottom: 2px !important;
+  padding: 6px 10px !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border: 1px solid transparent !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  font-size: 0.88rem !important;
+  color: #cbd5e1 !important;
+}
+
+.agy-sidebar-row:hover {
+  background: rgba(147, 233, 190, 0.07) !important;
+  border-color: rgba(147, 233, 190, 0.16) !important;
+  color: #f1f5f9 !important;
+  transform: translateX(2px) !important;
+}
+
+/* Active / Selected Conversation Row */
+.agy-sidebar-row:has(a[aria-current="page"]),
+.agy-sidebar-row.bg-sidebar-muted,
+.agy-sidebar-row[data-active="true"] {
+  background: linear-gradient(90deg, rgba(147, 233, 190, 0.15) 0%, rgba(147, 233, 190, 0.03) 100%) !important;
+  border: 1px solid rgba(147, 233, 190, 0.28) !important;
+  border-inline-start: 3px solid #93e9be !important;
+  box-shadow: 0 2px 10px -2px rgba(147, 233, 190, 0.18) !important;
+}
+
+.agy-sidebar-row:has(a[aria-current="page"]) span,
+.agy-sidebar-row.bg-sidebar-muted span {
+  color: #93e9be !important;
+  font-weight: 600 !important;
+}
+
+.agy-sidebar-row:has(a[aria-current="page"]) svg,
+.agy-sidebar-row.bg-sidebar-muted svg {
+  color: #93e9be !important;
+}
+
 /* RTL-PATCH-END */
 /* [/Antigravity-Shield-RTL-Vazirmatn] */
 "#;
