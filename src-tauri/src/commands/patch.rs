@@ -1096,7 +1096,7 @@ button[data-project-card="true"] svg {
 #agy-project-pulse-bar {
   display: flex !important;
   align-items: center !important;
-  gap: 7px !important;
+  gap: 6px !important;
   padding: 6px 8px 8px 8px !important;
   overflow-x: auto !important;
   scrollbar-width: none !important;
@@ -1105,6 +1105,25 @@ button[data-project-card="true"] svg {
 }
 #agy-project-pulse-bar::-webkit-scrollbar {
   display: none !important;
+}
+.agy-pulse-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 3px 8px !important;
+  border-radius: 9999px !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  outline: none !important;
+  user-select: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.agy-pulse-badge:hover {
+  transform: scale(1.12) !important;
+  z-index: 5 !important;
 }
 .agy-pulse-gem {
   width: 15px !important;

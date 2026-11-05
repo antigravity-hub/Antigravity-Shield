@@ -97,6 +97,43 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
     let js = format!(
         r#"
 (() => {{
+    const PALETTE = [
+        {{"name": "Emerald", "color": "#10b981", "glow": "rgba(16, 185, 129, 0.55)", "bg": "rgba(16, 185, 129, 0.12)", "border": "rgba(16, 185, 129, 0.40)"}},
+        {{"name": "Amber", "color": "#f59e0b", "glow": "rgba(245, 158, 11, 0.55)", "bg": "rgba(245, 158, 11, 0.12)", "border": "rgba(245, 158, 11, 0.40)"}},
+        {{"name": "Purple", "color": "#a855f7", "glow": "rgba(168, 85, 247, 0.55)", "bg": "rgba(168, 85, 247, 0.12)", "border": "rgba(168, 85, 247, 0.40)"}},
+        {{"name": "Pink", "color": "#ec4899", "glow": "rgba(236, 72, 153, 0.55)", "bg": "rgba(236, 72, 153, 0.12)", "border": "rgba(236, 72, 153, 0.40)"}},
+        {{"name": "Sky", "color": "#0ea5e9", "glow": "rgba(14, 165, 233, 0.55)", "bg": "rgba(14, 165, 233, 0.12)", "border": "rgba(14, 165, 233, 0.40)"}},
+        {{"name": "Lime", "color": "#84cc16", "glow": "rgba(132, 204, 22, 0.55)", "bg": "rgba(132, 204, 22, 0.12)", "border": "rgba(132, 204, 22, 0.40)"}},
+        {{"name": "Red", "color": "#ef4444", "glow": "rgba(239, 68, 68, 0.55)", "bg": "rgba(239, 68, 68, 0.12)", "border": "rgba(239, 68, 68, 0.40)"}},
+        {{"name": "Gold", "color": "#eab308", "glow": "rgba(234, 179, 8, 0.55)", "bg": "rgba(234, 179, 8, 0.12)", "border": "rgba(234, 179, 8, 0.40)"}},
+        {{"name": "Indigo", "color": "#6366f1", "glow": "rgba(99, 102, 241, 0.55)", "bg": "rgba(99, 102, 241, 0.12)", "border": "rgba(99, 102, 241, 0.40)"}},
+        {{"name": "Cyan", "color": "#06b6d4", "glow": "rgba(6, 182, 212, 0.55)", "bg": "rgba(6, 182, 212, 0.12)", "border": "rgba(6, 182, 212, 0.40)"}},
+        {{"name": "Rose", "color": "#f43f5e", "glow": "rgba(244, 63, 94, 0.55)", "bg": "rgba(244, 63, 94, 0.12)", "border": "rgba(244, 63, 94, 0.40)"}},
+        {{"name": "Teal", "color": "#14b8a6", "glow": "rgba(20, 184, 166, 0.55)", "bg": "rgba(20, 184, 166, 0.12)", "border": "rgba(20, 184, 166, 0.40)"}},
+        {{"name": "Fuchsia", "color": "#d946ef", "glow": "rgba(217, 70, 239, 0.55)", "bg": "rgba(217, 70, 239, 0.12)", "border": "rgba(217, 70, 239, 0.40)"}},
+        {{"name": "Orange", "color": "#f97316", "glow": "rgba(249, 115, 22, 0.55)", "bg": "rgba(249, 115, 22, 0.12)", "border": "rgba(249, 115, 22, 0.40)"}},
+        {{"name": "Blue", "color": "#2563eb", "glow": "rgba(37, 99, 235, 0.55)", "bg": "rgba(37, 99, 235, 0.12)", "border": "rgba(37, 99, 235, 0.35)"}},
+        {{"name": "Crimson", "color": "#e11d48", "glow": "rgba(225, 29, 72, 0.55)", "bg": "rgba(225, 29, 72, 0.12)", "border": "rgba(225, 29, 72, 0.40)"}}
+    ];
+
+    function getInitials(name) {{
+        const clean = name.replace(/[^a-zA-Z0-9]/g, ' ').trim();
+        const parts = clean.split(/\\s+/);
+        if (parts.length >= 2) {{
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }}
+        if (name.length <= 4) return name.toUpperCase();
+        return name.slice(0, 3).toUpperCase();
+    }}
+
+    function hashProject(name) {{
+        let h = 0;
+        for (let i = 0; i < name.length; i++) {{
+            h = (h * 37 + name.charCodeAt(i) * (i + 7)) & 0xFFFFFFFF;
+        }}
+        return Math.abs(h) % PALETTE.length;
+    }}
+
     function applyStyles() {{
         let style = document.getElementById('antigravity-shield-platform-rtl');
         if (!style) {{
@@ -108,26 +145,190 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
             style.textContent = `{}`;
         }}
 
-        const isPersian = (text) => /[\u0600-\u06FF]/.test(text);
+        const isPersian = (text) => /[\\u0600-\\u06FF]/.test(text);
 
+        // 0. Inline code with Persian text
+        document.querySelectorAll(':not(pre) > code').forEach(code => {{
+            const txt = (code.textContent || '').trim();
+            if (isPersian(txt)) {{
+                code.setAttribute('dir', 'rtl');
+                code.style.direction = 'rtl';
+                code.style.fontFamily = "'Vazirmatn', 'Cascadia Code', monospace";
+            }}
+        }});
+
+        // 1. Input boxes & Textareas
+        document.querySelectorAll('[contenteditable="true"], textarea, input[type="text"], input:not([type])').forEach(el => {{
+            if (!el.getAttribute('dir')) {{
+                el.setAttribute('dir', 'auto');
+            }}
+            const txt = (el.innerText || el.value || el.textContent || '').trim();
+            if (txt) {{
+                const hasRtl = isPersian(txt);
+                el.setAttribute('dir', hasRtl ? 'rtl' : 'ltr');
+                el.style.direction = hasRtl ? 'rtl' : 'ltr';
+                el.style.textAlign = hasRtl ? 'right' : 'left';
+            }}
+        }});
+
+        // 1.5. Dynamic Project Chromatic Fingerprinting & Pulse Strip
+        const listContainer = document.querySelector('div.bg-sidebar.pt-1')?.parentElement;
+        if (listContainer) {{
+            let currPal = null;
+            const projectMap = [];
+            const usedIndices = new Set();
+
+            Array.from(listContainer.children).forEach(c => {{
+                const header = c.querySelector('button[data-testid="project-header"]');
+                if (header) {{
+                    const name = (header.getAttribute('data-project-label') || header.innerText || '').trim();
+                    let idx = hashProject(name);
+                    while (usedIndices.has(idx) && usedIndices.size < PALETTE.length) {{
+                        idx = (idx + 3) % PALETTE.length;
+                    }}
+                    usedIndices.add(idx);
+                    const pal = PALETTE[idx];
+                    currPal = pal;
+                    projectMap.push({{ name, initials: getInitials(name), pal, header }});
+
+                    c.style.setProperty('--proj-color', pal.color);
+                    c.style.setProperty('--proj-glow', pal.glow);
+                    c.style.setProperty('--proj-bg', pal.bg);
+
+                    header.style.setProperty('--proj-color', pal.color);
+                    header.style.setProperty('--proj-glow', pal.glow);
+                    header.style.setProperty('--proj-bg', pal.bg);
+                    header.style.setProperty('border', `1px solid ${{pal.border}}`, 'important');
+                    header.style.setProperty('background', pal.bg, 'important');
+                    
+                    const titleSpan = header.querySelector('span.truncate') || header.querySelector('span');
+                    if (titleSpan) {{
+                        titleSpan.style.setProperty('color', pal.color, 'important');
+                        titleSpan.style.setProperty('font-weight', '700', 'important');
+                    }}
+                    const iconSvg = header.querySelector('svg');
+                    if (iconSvg) {{
+                        iconSvg.style.setProperty('color', pal.color, 'important');
+                        iconSvg.style.setProperty('filter', `drop-shadow(0 0 5px ${{pal.glow}})`, 'important');
+                    }}
+                }} else if (currPal && (c.querySelector('.agy-sidebar-row[class*="pl-"]') || c.classList.contains('pb-[1px]'))) {{
+                    c.style.setProperty('--proj-color', currPal.color);
+                    c.style.setProperty('--proj-glow', currPal.glow);
+                    c.style.setProperty('--proj-bg', currPal.bg);
+                    const row = c.querySelector('.agy-sidebar-row[class*="pl-"]');
+                    if (row) {{
+                        row.style.setProperty('--proj-color', currPal.color);
+                        row.style.setProperty('--proj-glow', currPal.glow);
+                        row.style.setProperty('--proj-bg', currPal.bg);
+                    }}
+                }} else if (!c.querySelector('.agy-sidebar-row[class*="pl-"]')) {{
+                    currPal = null;
+                }}
+            }});
+
+            const projectsHeader = document.querySelector('[data-testid="section-header"][data-title="Projects"]');
+            if (projectsHeader) {{
+                let pulseBar = document.getElementById('agy-project-pulse-bar');
+                if (!pulseBar) {{
+                    pulseBar = document.createElement('div');
+                    pulseBar.id = 'agy-project-pulse-bar';
+                    pulseBar.style.cssText = 'display: flex !important; align-items: center !important; gap: 6px !important; padding: 6px 8px 8px 8px !important; overflow-x: auto !important; scrollbar-width: none !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; margin-bottom: 6px !important;';
+                    projectsHeader.insertAdjacentElement('afterend', pulseBar);
+                }}
+
+                pulseBar.innerHTML = '';
+                projectMap.slice(0, 12).forEach(p => {{
+                    const badge = document.createElement('button');
+                    badge.title = p.name;
+                    badge.setAttribute('aria-label', p.name);
+                    badge.className = 'agy-pulse-badge';
+                    badge.style.cssText = `
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        padding: 3px 8px !important;
+                        border-radius: 9999px !important;
+                        background: ${{p.pal.bg}} !important;
+                        border: 1.5px solid ${{p.pal.color}} !important;
+                        color: ${{p.pal.color}} !important;
+                        box-shadow: 0 0 8px ${{p.pal.glow}} !important;
+                        font-size: 0.68rem !important;
+                        font-weight: 800 !important;
+                        letter-spacing: 0.05em !important;
+                        cursor: pointer !important;
+                        flex-shrink: 0 !important;
+                        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                        user-select: none !important;
+                    `;
+                    badge.textContent = p.initials;
+
+                    badge.onmouseenter = () => {{
+                        badge.style.transform = 'scale(1.12)';
+                        badge.style.boxShadow = `0 0 14px ${{p.pal.color}}`;
+                    }};
+                    badge.onmouseleave = () => {{
+                        badge.style.transform = 'none';
+                        badge.style.boxShadow = `0 0 8px ${{p.pal.glow}}`;
+                    }};
+
+                    badge.onclick = (e) => {{
+                        e.stopPropagation();
+                        p.header.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+                        if (p.header.getAttribute('aria-expanded') === 'false') {{
+                            p.header.click();
+                        }}
+                        setTimeout(() => {{
+                            const parentItem = p.header.closest('div.bg-sidebar.pt-1');
+                            let next = parentItem ? parentItem.nextElementSibling : null;
+                            while (next && !next.querySelector('button[data-testid="project-header"]')) {{
+                                const convLink = next.querySelector('.agy-sidebar-row[class*="pl-"] a');
+                                if (convLink) {{
+                                    convLink.click();
+                                    break;
+                                }}
+                                next = next.nextElementSibling;
+                            }}
+                        }}, 180);
+                    }};
+
+                    pulseBar.appendChild(badge);
+                }});
+            }}
+        }}
+
+        // 2. Sent user bubbles and assistant articles
         document.querySelectorAll('[role="article"]').forEach(art => {{
             const isUser = art.getAttribute('aria-label') === 'User message';
             if (isUser) {{
-                if (isPersian(art.textContent || '')) {{
-                    art.setAttribute('dir', 'rtl');
-                    art.style.textAlign = 'right';
+                art.removeAttribute('dir');
+                art.style.direction = 'ltr';
+                art.style.textAlign = 'right';
+                const textEl = art.querySelector('.whitespace-pre-wrap') || art;
+                if (isPersian(textEl.textContent || '')) {{
+                    textEl.setAttribute('dir', 'rtl');
+                    textEl.style.direction = 'rtl';
                 }} else {{
-                    art.setAttribute('dir', 'ltr');
-                    art.style.textAlign = 'left';
+                    textEl.setAttribute('dir', 'ltr');
+                    textEl.style.direction = 'ltr';
                 }}
+                textEl.style.textAlign = 'justify';
+                textEl.style.textJustify = 'inter-word';
+                textEl.style.textAlignLast = 'start';
             }} else {{
                 art.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, ol, ul, blockquote').forEach(el => {{
                     if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre')) return;
                     const txt = (el.textContent || '').trim();
                     if (isPersian(txt)) {{
                         el.setAttribute('dir', 'rtl');
+                        el.style.direction = 'rtl';
                     }} else if (txt.length > 0) {{
                         el.setAttribute('dir', 'ltr');
+                        el.style.direction = 'ltr';
+                    }}
+                    if (el.tagName === 'P' || el.tagName === 'LI') {{
+                        el.style.textAlign = 'justify';
+                        el.style.textJustify = 'inter-word';
+                        el.style.textAlignLast = 'start';
                     }}
                 }});
             }}
@@ -136,17 +337,38 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
 
     applyStyles();
 
-    if (!window.__shield_platform_observer) {{
-        window.__shield_platform_observer = new MutationObserver(() => {{
-            applyStyles();
-        }});
-        window.__shield_platform_observer.observe(document.body, {{ childList: true, subtree: true }});
+    if (!window.__shield_input_listener_attached) {{
+        window.__shield_input_listener_attached = true;
+        document.addEventListener('input', (e) => {{
+            const target = e.target;
+            if (target && (target.isContentEditable || target.matches('textarea, input'))) {{
+                const txt = (target.innerText || target.value || target.textContent || '').trim();
+                if (txt) {{
+                    const hasRtl = /[\\u0600-\\u06FF]/.test(txt);
+                    target.setAttribute('dir', hasRtl ? 'rtl' : 'ltr');
+                    target.style.direction = hasRtl ? 'rtl' : 'ltr';
+                    target.style.textAlign = hasRtl ? 'right' : 'left';
+                }} else {{
+                    target.setAttribute('dir', 'auto');
+                    target.style.direction = '';
+                    target.style.textAlign = '';
+                }}
+            }}
+        }}, true);
     }}
+
+    if (window.__shield_platform_observer) {{
+        window.__shield_platform_observer.disconnect();
+    }}
+    window.__shield_platform_observer = new MutationObserver(() => {{
+        applyStyles();
+    }});
+    window.__shield_platform_observer.observe(document.body, {{ childList: true, subtree: true }});
 
     return 'PLATFORM_CDP_BRIDGE_ACTIVE';
 }})()
 "#,
-        escaped_css
+        escaped_css, escaped_css
     );
 
     let payload = serde_json::to_vec(&serde_json::json!({
