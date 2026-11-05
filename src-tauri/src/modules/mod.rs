@@ -57,4 +57,5 @@ pub mod remote_mobile;
 pub mod skills;
 pub mod patcher;
 pub mod rtl_sentinel;
+pub mod platform_cdp;
 pub use patcher::*;

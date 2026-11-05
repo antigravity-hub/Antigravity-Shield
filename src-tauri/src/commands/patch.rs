@@ -734,21 +734,9 @@ pub async fn get_antigravity_rtl_status() -> Result<AntigravityRtlStatus, String
             let bak = format!("{}.bak", p.to_string_lossy());
             desktop_backup = Path::new(&bak).exists();
 
-            if let Ok(content) = fs::read(&p) {
-                // Check if patched signature exists in binary/archive
-                let signature = b"Antigravity-Shield-RTL-Vazirmatn";
-                desktop_patched = content.windows(signature.len()).any(|w| w == signature);
-            }
-            if !desktop_patched {
-                if let Some(parent) = p.parent() {
-                    let preload_p = parent.join("app").join("dist").join("preload.js");
-                    if preload_p.exists() {
-                        if let Ok(c) = fs::read_to_string(&preload_p) {
-                            desktop_patched = c.contains("Antigravity-Shield-RTL-Vazirmatn");
-                        }
-                    }
-                }
-            }
+            // Antigravity Desktop 2.0 uses Electron v44 (ASAR integrity sealed).
+            // Status is verified via the live Chrome DevTools Protocol (CDP) bridge.
+            desktop_patched = crate::modules::platform_cdp::is_platform_active();
             break;
         }
     }
@@ -856,6 +844,13 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.css", css_path);
                 }
             }
+        }
+    }
+
+    // Inject live into Antigravity Desktop Platform via Chrome DevTools Protocol
+    if let Ok(count) = crate::modules::platform_cdp::inject_platform_rtl().await {
+        if count > 0 {
+            applied_count += 1;
         }
     }
 

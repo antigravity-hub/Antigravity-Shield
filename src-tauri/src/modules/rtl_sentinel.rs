@@ -14,6 +14,9 @@ pub fn start_rtl_auto_sentinel(_app_handle: Option<tauri::AppHandle>) {
         // Initial warmup delay on Shield launch (5 seconds)
         tokio::time::sleep(Duration::from_secs(5)).await;
 
+        // Start live continuous CDP bridge for Antigravity Platform
+        crate::modules::platform_cdp::start_platform_cdp_watcher();
+
         auto_check_and_patch().await;
 
         // Ergonomic recurring interval: every 6 hours (matches Toolkit Updater)
@@ -43,6 +46,9 @@ async fn auto_check_and_patch() {
                 info!(
                     "[RTL Sentinel] Detected unpatched Antigravity IDE installation/update. Auto-patching...",
                 );
+                // Also trigger live Platform injection
+                let _ = crate::modules::platform_cdp::inject_platform_rtl().await;
+
                 match patch_antigravity_rtl().await {
                     Ok(msg) => {
                         info!("[RTL Sentinel] Successfully auto-patched: {}", msg);
