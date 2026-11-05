@@ -1129,7 +1129,7 @@ button[data-project-card="true"] svg {
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
-  padding: 6px 8px 8px 8px !important;
+  padding: 10px 10px 10px 10px !important;
   overflow-x: auto !important;
   scrollbar-width: none !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
@@ -1154,7 +1154,8 @@ button[data-project-card="true"] svg {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 .agy-pulse-badge:hover {
-  transform: scale(1.12) !important;
+  transform: scale(1.08) !important;
+  filter: brightness(1.25) !important;
   z-index: 5 !important;
 }
 .agy-pulse-gem {

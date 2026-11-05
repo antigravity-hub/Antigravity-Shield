@@ -221,7 +221,7 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
             if (!pulseBar) {{
                 pulseBar = document.createElement('div');
                 pulseBar.id = 'agy-project-pulse-bar';
-                pulseBar.style.cssText = 'display: flex !important; align-items: center !important; gap: 6px !important; padding: 6px 8px 8px 8px !important; overflow-x: auto !important; scrollbar-width: none !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; margin-bottom: 6px !important;';
+                pulseBar.style.cssText = 'display: flex !important; align-items: center !important; gap: 6px !important; padding: 10px 10px 10px 10px !important; overflow-x: auto !important; scrollbar-width: none !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; margin-bottom: 6px !important;';
                 projectsHeader.insertAdjacentElement('afterend', pulseBar);
             }}
 
@@ -265,11 +265,13 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                     badge.textContent = getInitials(p.name);
 
                     badge.onmouseenter = () => {{
-                        badge.style.transform = 'scale(1.15)';
-                        badge.style.boxShadow = `0 0 14px ${{pal.color}}`;
+                        badge.style.transform = 'scale(1.08)';
+                        badge.style.filter = 'brightness(1.25)';
+                        badge.style.boxShadow = `0 0 10px ${{pal.color}}`;
                     }};
                     badge.onmouseleave = () => {{
                         badge.style.transform = 'none';
+                        badge.style.filter = 'none';
                         badge.style.boxShadow = `0 0 8px ${{pal.glow}}`;
                     }};
 
