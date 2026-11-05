@@ -1311,7 +1311,9 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                             ("role:\"article\",\"aria-label\":\"Agent response\"",
                              "dir:\"auto\",role:\"article\",\"aria-label\":\"Agent response\""),
                             ("\"aria-required\":E,autoCapitalize:m,className:g,contentEditable:I",
-                             "\"aria-required\":E,dir:\"auto\",autoCapitalize:m,className:g,contentEditable:I")
+                             "\"aria-required\":E,dir:\"auto\",autoCapitalize:m,className:g,contentEditable:I"),
+                            ("const a=ORr(e,t.tagName,!1),o=zti(e,t);let s=L8e(e,t);",
+                             "const a=ORr(e,t.tagName,!1),o=zti(e,t);if(t.tagName!==\"svg\"&&!o.dir)o.dir=\"auto\";let s=L8e(e,t);")
                         ];
 
                         let mut patched_js = js_content;
@@ -1329,6 +1331,22 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         }
                         if let Some(app_dir) = out_dir.parent() {
                             update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
+                        }
+                    }
+                }
+                for html_rel in &["vs/code/electron-browser/workbench/workbench.html", "vs/code/electron-browser/workbench/workbench-jetski-agent.html"] {
+                    let hp = out_dir.join(html_rel.replace('/', std::path::MAIN_SEPARATOR_STR));
+                    if hp.exists() {
+                        if let Ok(hc) = fs::read_to_string(&hp) {
+                            let old_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tvscode-remote-resource:";
+                            let new_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tdata:\n\t\t\t\t\tvscode-remote-resource:";
+                            if hc.contains(old_fsrc) {
+                                let new_hc = hc.replace(old_fsrc, new_fsrc);
+                                let _ = fs::write(&hp, new_hc);
+                            }
+                        }
+                        if let Some(app_dir) = out_dir.parent() {
+                            update_product_checksum(app_dir, html_rel, &hp);
                         }
                     }
                 }
