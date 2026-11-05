@@ -338,14 +338,19 @@ body, html, #root {
   line-height: 1.5 !important;
 }
 
-/* RTL Headings: Border on the RIGHT, Gradient fades to the left */
-h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[dir="rtl"],
+/* RTL Headings inside messages: Border on the RIGHT, Gradient fades to the left */
 [role="article"] h1[dir="rtl"], [role="article"] h2[dir="rtl"], [role="article"] h3[dir="rtl"],
 [role="article"] h4[dir="rtl"], [role="article"] h5[dir="rtl"], [role="article"] h6[dir="rtl"],
-[dir="rtl"] [role="article"] h1, [dir="rtl"] [role="article"] h2, [dir="rtl"] [role="article"] h3,
-[dir="rtl"] [role="article"] h4, [dir="rtl"] [role="article"] h5, [dir="rtl"] [role="article"] h6,
-[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6,
-h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl) {
+.rendered-markdown h1[dir="rtl"], .rendered-markdown h2[dir="rtl"], .rendered-markdown h3[dir="rtl"],
+.rendered-markdown h4[dir="rtl"], .rendered-markdown h5[dir="rtl"], .rendered-markdown h6[dir="rtl"],
+[role="article"] [dir="rtl"] h1, [role="article"] [dir="rtl"] h2, [role="article"] [dir="rtl"] h3,
+[role="article"] [dir="rtl"] h4, [role="article"] [dir="rtl"] h5, [role="article"] [dir="rtl"] h6,
+.rendered-markdown [dir="rtl"] h1, .rendered-markdown [dir="rtl"] h2, .rendered-markdown [dir="rtl"] h3,
+.rendered-markdown [dir="rtl"] h4, .rendered-markdown [dir="rtl"] h5, .rendered-markdown [dir="rtl"] h6,
+[role="article"] h1:dir(rtl), [role="article"] h2:dir(rtl), [role="article"] h3:dir(rtl),
+[role="article"] h4:dir(rtl), [role="article"] h5:dir(rtl), [role="article"] h6:dir(rtl),
+.rendered-markdown h1:dir(rtl), .rendered-markdown h2:dir(rtl), .rendered-markdown h3:dir(rtl),
+.rendered-markdown h4:dir(rtl), .rendered-markdown h5:dir(rtl), .rendered-markdown h6:dir(rtl) {
   background: linear-gradient(to left, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
   border-radius: 4px 10px 10px 4px !important;
   border-right: 4px solid #93e9be !important;
@@ -354,14 +359,19 @@ h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl) {
   direction: rtl !important;
 }
 
-/* LTR Headings: Border on the LEFT, Gradient fades to the right */
-h1[dir="ltr"], h2[dir="ltr"], h3[dir="ltr"], h4[dir="ltr"], h5[dir="ltr"], h6[dir="ltr"],
+/* LTR Headings inside messages: Border on the LEFT, Gradient fades to the right */
 [role="article"] h1[dir="ltr"], [role="article"] h2[dir="ltr"], [role="article"] h3[dir="ltr"],
 [role="article"] h4[dir="ltr"], [role="article"] h5[dir="ltr"], [role="article"] h6[dir="ltr"],
-[dir="ltr"] [role="article"] h1, [dir="ltr"] [role="article"] h2, [dir="ltr"] [role="article"] h3,
-[dir="ltr"] [role="article"] h4, [dir="ltr"] [role="article"] h5, [dir="ltr"] [role="article"] h6,
-[dir="ltr"] h1, [dir="ltr"] h2, [dir="ltr"] h3, [dir="ltr"] h4, [dir="ltr"] h5, [dir="ltr"] h6,
-h1:dir(ltr), h2:dir(ltr), h3:dir(ltr), h4:dir(ltr), h5:dir(ltr), h6:dir(ltr) {
+.rendered-markdown h1[dir="ltr"], .rendered-markdown h2[dir="ltr"], .rendered-markdown h3[dir="ltr"],
+.rendered-markdown h4[dir="ltr"], .rendered-markdown h5[dir="ltr"], .rendered-markdown h6[dir="ltr"],
+[role="article"] [dir="ltr"] h1, [role="article"] [dir="ltr"] h2, [role="article"] [dir="ltr"] h3,
+[role="article"] [dir="ltr"] h4, [role="article"] [dir="ltr"] h5, [role="article"] [dir="ltr"] h6,
+.rendered-markdown [dir="ltr"] h1, .rendered-markdown [dir="ltr"] h2, .rendered-markdown [dir="ltr"] h3,
+.rendered-markdown [dir="ltr"] h4, .rendered-markdown [dir="ltr"] h5, .rendered-markdown [dir="ltr"] h6,
+[role="article"] h1:dir(ltr), [role="article"] h2:dir(ltr), [role="article"] h3:dir(ltr),
+[role="article"] h4:dir(ltr), [role="article"] h5:dir(ltr), [role="article"] h6:dir(ltr),
+.rendered-markdown h1:dir(ltr), .rendered-markdown h2:dir(ltr), .rendered-markdown h3:dir(ltr),
+.rendered-markdown h4:dir(ltr), .rendered-markdown h5:dir(ltr), .rendered-markdown h6:dir(ltr) {
   background: linear-gradient(to right, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
   border-radius: 10px 4px 4px 10px !important;
   border-left: 4px solid #93e9be !important;
@@ -478,23 +488,23 @@ h1:dir(ltr), h2:dir(ltr), h3:dir(ltr), h4:dir(ltr), h5:dir(ltr), h6:dir(ltr) {
   font-weight: 700 !important;
 }
 
-/* Direction-specific list padding & markers (RTL on RIGHT, LTR on LEFT) */
-ul[dir="rtl"], ol[dir="rtl"], [role="article"] ul[dir="rtl"], [role="article"] ol[dir="rtl"],
+/* Direction-specific list padding & markers inside messages (RTL on RIGHT, LTR on LEFT) */
+[role="article"] ul[dir="rtl"], [role="article"] ol[dir="rtl"],
 .rendered-markdown ul:dir(rtl), .rendered-markdown ol:dir(rtl),
 .chat-widget .rendered-markdown ul:dir(rtl), .chat-widget .rendered-markdown ol:dir(rtl),
-[dir="rtl"] .rendered-markdown ul, [dir="rtl"] .rendered-markdown ol,
-[dir="rtl"] ul, [dir="rtl"] ol {
+[role="article"] [dir="rtl"] ul, [role="article"] [dir="rtl"] ol,
+.rendered-markdown [dir="rtl"] ul, .rendered-markdown [dir="rtl"] ol {
   direction: rtl !important;
   text-align: right !important;
   padding-right: 1.75rem !important;
   padding-left: 0 !important;
 }
 
-li[dir="rtl"], [role="article"] li[dir="rtl"],
+[role="article"] li[dir="rtl"],
 .rendered-markdown li:dir(rtl),
 .chat-widget .rendered-markdown li:dir(rtl),
-[dir="rtl"] .rendered-markdown li,
-[dir="rtl"] li {
+[role="article"] [dir="rtl"] li,
+.rendered-markdown [dir="rtl"] li {
   direction: rtl !important;
   text-align: right !important;
   padding-right: 0.25rem !important;
