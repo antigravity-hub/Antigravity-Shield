@@ -171,87 +171,89 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
             }}
         }});
 
-        // 1.5. Dynamic Project Chromatic Fingerprinting & Pulse Strip
-        const listContainer = document.querySelector('div.bg-sidebar.pt-1')?.parentElement;
-        if (listContainer) {{
-            let currPal = null;
-            const projectMap = [];
-            const usedIndices = new Set();
+        function getTop10Projects() {{
+            const sidebar = document.querySelector('[data-testid="conversation-list-sidebar"]') || 
+                            document.querySelector('nav') || 
+                            document.querySelector('aside');
+            if (!sidebar) return [];
+            
+            function findProjectsHook(fiber) {{
+                if (!fiber) return null;
+                let s = fiber.memoizedState;
+                while (s) {{
+                    const ms = s.memoizedState;
+                    if (Array.isArray(ms) && ms.length > 0 && ms[0] && ms[0].kind === 'project' && ms[0].entries) {{
+                        return ms;
+                    }}
+                    s = s.next;
+                }}
+                let found = findProjectsHook(fiber.child);
+                if (found) return found;
+                return findProjectsHook(fiber.sibling);
+            }}
 
-            Array.from(listContainer.children).forEach(c => {{
-                const header = c.querySelector('button[data-testid="project-header"]');
-                if (header) {{
-                    const name = (header.getAttribute('data-project-label') || header.innerText || '').trim();
-                    let idx = hashProject(name);
-                    while (usedIndices.has(idx) && usedIndices.size < PALETTE.length) {{
+            const key = Object.keys(sidebar).find(k => k.startsWith('__reactFiber$') || k.startsWith('__reactInternalInstance$'));
+            let root = sidebar[key];
+            while (root && root.return) {{
+                root = root.return;
+                if (root.elementType?.name === 'kGc' || root.elementType?.name === 'mGc') break;
+            }}
+            
+            const projects = findProjectsHook(root) || [];
+            const realProjects = projects.filter(p => p.id !== 'outside-of-project' && p.kind === 'project');
+            
+            return realProjects.map(p => {{
+                const maxTime = Math.max(0, ...(p.entries || []).map(e => e.timeKey || 0));
+                return {{
+                    id: p.id,
+                    name: (p.label || p.id).trim(),
+                    maxTime,
+                    firstConvId: p.entries?.[0]?.cascadeId
+                }};
+            }}).sort((a, b) => b.maxTime - a.maxTime).slice(0, 10);
+        }}
+
+        // 1.5. Stable Top 10 Projects Pulse Bar (Sorted by last prompt timestamp)
+        const top10 = getTop10Projects();
+        const projectsHeader = document.querySelector('[data-testid="section-header"][data-title="Projects"]');
+        if (projectsHeader && top10.length > 0) {{
+            let pulseBar = document.getElementById('agy-project-pulse-bar');
+            if (!pulseBar) {{
+                pulseBar = document.createElement('div');
+                pulseBar.id = 'agy-project-pulse-bar';
+                pulseBar.style.cssText = 'display: flex !important; align-items: center !important; gap: 6px !important; padding: 6px 8px 8px 8px !important; overflow-x: auto !important; scrollbar-width: none !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; margin-bottom: 6px !important;';
+                projectsHeader.insertAdjacentElement('afterend', pulseBar);
+            }}
+
+            const fingerprint = top10.map(p => p.id + ':' + p.maxTime).join('|');
+            if (pulseBar.getAttribute('data-fingerprint') !== fingerprint) {{
+                pulseBar.setAttribute('data-fingerprint', fingerprint);
+                pulseBar.innerHTML = '';
+                
+                const usedColors = new Set();
+                top10.forEach((p, rank) => {{
+                    let idx = hashProject(p.name);
+                    while (usedColors.has(idx) && usedColors.size < PALETTE.length) {{
                         idx = (idx + 3) % PALETTE.length;
                     }}
-                    usedIndices.add(idx);
+                    usedColors.add(idx);
                     const pal = PALETTE[idx];
-                    currPal = pal;
-                    projectMap.push({{ name, initials: getInitials(name), pal, header }});
 
-                    c.style.setProperty('--proj-color', pal.color);
-                    c.style.setProperty('--proj-glow', pal.glow);
-                    c.style.setProperty('--proj-bg', pal.bg);
-
-                    header.style.setProperty('--proj-color', pal.color);
-                    header.style.setProperty('--proj-glow', pal.glow);
-                    header.style.setProperty('--proj-bg', pal.bg);
-                    header.style.setProperty('border', `1px solid ${{pal.border}}`, 'important');
-                    header.style.setProperty('background', pal.bg, 'important');
-                    
-                    const titleSpan = header.querySelector('span.truncate') || header.querySelector('span');
-                    if (titleSpan) {{
-                        titleSpan.style.setProperty('color', pal.color, 'important');
-                        titleSpan.style.setProperty('font-weight', '700', 'important');
-                    }}
-                    const iconSvg = header.querySelector('svg');
-                    if (iconSvg) {{
-                        iconSvg.style.setProperty('color', pal.color, 'important');
-                        iconSvg.style.setProperty('filter', `drop-shadow(0 0 5px ${{pal.glow}})`, 'important');
-                    }}
-                }} else if (currPal && (c.querySelector('.agy-sidebar-row[class*="pl-"]') || c.classList.contains('pb-[1px]'))) {{
-                    c.style.setProperty('--proj-color', currPal.color);
-                    c.style.setProperty('--proj-glow', currPal.glow);
-                    c.style.setProperty('--proj-bg', currPal.bg);
-                    const row = c.querySelector('.agy-sidebar-row[class*="pl-"]');
-                    if (row) {{
-                        row.style.setProperty('--proj-color', currPal.color);
-                        row.style.setProperty('--proj-glow', currPal.glow);
-                        row.style.setProperty('--proj-bg', currPal.bg);
-                    }}
-                }} else if (!c.querySelector('.agy-sidebar-row[class*="pl-"]')) {{
-                    currPal = null;
-                }}
-            }});
-
-            const projectsHeader = document.querySelector('[data-testid="section-header"][data-title="Projects"]');
-            if (projectsHeader) {{
-                let pulseBar = document.getElementById('agy-project-pulse-bar');
-                if (!pulseBar) {{
-                    pulseBar = document.createElement('div');
-                    pulseBar.id = 'agy-project-pulse-bar';
-                    pulseBar.style.cssText = 'display: flex !important; align-items: center !important; gap: 6px !important; padding: 6px 8px 8px 8px !important; overflow-x: auto !important; scrollbar-width: none !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; margin-bottom: 6px !important;';
-                    projectsHeader.insertAdjacentElement('afterend', pulseBar);
-                }}
-
-                pulseBar.innerHTML = '';
-                projectMap.slice(0, 12).forEach(p => {{
                     const badge = document.createElement('button');
-                    badge.title = p.name;
-                    badge.setAttribute('aria-label', p.name);
                     badge.className = 'agy-pulse-badge';
+                    badge.title = `${{rank + 1}}. ${{p.name}}`;
                     badge.style.cssText = `
+                        background: ${{pal.bg}} !important;
+                        border: 1.5px solid ${{pal.color}} !important;
+                        box-shadow: 0 0 8px ${{pal.glow}} !important;
+                        color: ${{pal.color}} !important;
+                        border-radius: 9999px !important;
+                        padding: 3px 8px !important;
+                        height: 24px !important;
                         display: inline-flex !important;
                         align-items: center !important;
                         justify-content: center !important;
-                        padding: 3px 8px !important;
-                        border-radius: 9999px !important;
-                        background: ${{p.pal.bg}} !important;
-                        border: 1.5px solid ${{p.pal.color}} !important;
-                        color: ${{p.pal.color}} !important;
-                        box-shadow: 0 0 8px ${{p.pal.glow}} !important;
+                        font-family: inherit !important;
                         font-size: 0.68rem !important;
                         font-weight: 800 !important;
                         letter-spacing: 0.05em !important;
@@ -260,40 +262,101 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
                         user-select: none !important;
                     `;
-                    badge.textContent = p.initials;
+                    badge.textContent = getInitials(p.name);
 
                     badge.onmouseenter = () => {{
-                        badge.style.transform = 'scale(1.12)';
-                        badge.style.boxShadow = `0 0 14px ${{p.pal.color}}`;
+                        badge.style.transform = 'scale(1.15)';
+                        badge.style.boxShadow = `0 0 14px ${{pal.color}}`;
                     }};
                     badge.onmouseleave = () => {{
                         badge.style.transform = 'none';
-                        badge.style.boxShadow = `0 0 8px ${{p.pal.glow}}`;
+                        badge.style.boxShadow = `0 0 8px ${{pal.glow}}`;
                     }};
 
                     badge.onclick = (e) => {{
                         e.stopPropagation();
-                        p.header.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
-                        if (p.header.getAttribute('aria-expanded') === 'false') {{
-                            p.header.click();
-                        }}
-                        setTimeout(() => {{
-                            const parentItem = p.header.closest('div.bg-sidebar.pt-1');
-                            let next = parentItem ? parentItem.nextElementSibling : null;
-                            while (next && !next.querySelector('button[data-testid="project-header"]')) {{
-                                const convLink = next.querySelector('.agy-sidebar-row[class*="pl-"] a');
-                                if (convLink) {{
-                                    convLink.click();
-                                    break;
-                                }}
-                                next = next.nextElementSibling;
+                        const header = Array.from(document.querySelectorAll('button[data-testid="project-header"]'))
+                            .find(h => (h.getAttribute('data-project-label') || h.innerText || '').trim() === p.name);
+                        if (header) {{
+                            header.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+                            if (header.getAttribute('aria-expanded') === 'false') {{
+                                header.click();
                             }}
-                        }}, 180);
+                            setTimeout(() => {{
+                                const parent = header.closest('div.bg-sidebar.pt-1');
+                                let next = parent ? parent.nextElementSibling : null;
+                                if (next) {{
+                                    const link = next.querySelector('.agy-sidebar-row[class*="pl-"] a');
+                                    if (link) link.click();
+                                }}
+                            }}, 180);
+                        }} else if (p.firstConvId) {{
+                            const a = document.createElement('a');
+                            a.href = `/c/${{p.firstConvId}}?project=${{p.id}}`;
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                        }}
                     }};
 
                     pulseBar.appendChild(badge);
                 }});
             }}
+        }}
+
+        // Color currently visible sidebar items
+        const listContainer = document.querySelector('div.bg-sidebar.pt-1')?.parentElement;
+        if (listContainer) {{
+            let currPal = null;
+            Array.from(listContainer.children).forEach(c => {{
+                const header = c.querySelector('button[data-testid="project-header"]');
+                if (header) {{
+                    const name = (header.getAttribute('data-project-label') || header.innerText || '').trim();
+                    const idx = hashProject(name);
+                    const pal = PALETTE[idx];
+                    currPal = pal;
+
+                    if (c.style.getPropertyValue('--proj-color') !== pal.color) {{
+                        c.style.setProperty('--proj-color', pal.color);
+                        c.style.setProperty('--proj-glow', pal.glow);
+                        c.style.setProperty('--proj-bg', pal.bg);
+                    }}
+
+                    if (header.style.getPropertyValue('--proj-color') !== pal.color) {{
+                        header.style.setProperty('--proj-color', pal.color);
+                        header.style.setProperty('--proj-glow', pal.glow);
+                        header.style.setProperty('--proj-bg', pal.bg);
+                        header.style.setProperty('border', `1px solid ${{pal.border}}`, 'important');
+                        header.style.setProperty('background', pal.bg, 'important');
+                    }}
+
+                    const titleSpan = header.querySelector('span.truncate') || header.querySelector('span');
+                    if (titleSpan && titleSpan.style.color !== pal.color) {{
+                        titleSpan.style.setProperty('color', pal.color, 'important');
+                        titleSpan.style.setProperty('font-weight', '700', 'important');
+                    }}
+
+                    const iconSvg = header.querySelector('svg');
+                    if (iconSvg && iconSvg.style.color !== pal.color) {{
+                        iconSvg.style.setProperty('color', pal.color, 'important');
+                        iconSvg.style.setProperty('filter', `drop-shadow(0 0 5px ${{pal.glow}})`, 'important');
+                    }}
+                }} else if (currPal && (c.querySelector('.agy-sidebar-row[class*="pl-"]') || c.classList.contains('pb-[1px]'))) {{
+                    if (c.style.getPropertyValue('--proj-color') !== currPal.color) {{
+                        c.style.setProperty('--proj-color', currPal.color);
+                        c.style.setProperty('--proj-glow', currPal.glow);
+                        c.style.setProperty('--proj-bg', currPal.bg);
+                    }}
+                    const row = c.querySelector('.agy-sidebar-row[class*="pl-"]');
+                    if (row && row.style.getPropertyValue('--proj-color') !== currPal.color) {{
+                        row.style.setProperty('--proj-color', currPal.color);
+                        row.style.setProperty('--proj-glow', currPal.glow);
+                        row.style.setProperty('--proj-bg', currPal.bg);
+                    }}
+                }} else if (!c.querySelector('.agy-sidebar-row[class*="pl-"]')) {{
+                    currPal = null;
+                }}
+            }});
         }}
 
         // 2. Sent user bubbles and assistant articles
@@ -360,8 +423,19 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
     if (window.__shield_platform_observer) {{
         window.__shield_platform_observer.disconnect();
     }}
-    window.__shield_platform_observer = new MutationObserver(() => {{
-        applyStyles();
+    let __shield_debounce_timer = null;
+    window.__shield_platform_observer = new MutationObserver((mutations) => {{
+        let isSelf = mutations.every(m => {{
+            const id = m.target?.id || '';
+            const tag = m.target?.tagName || '';
+            return id === 'antigravity-shield-platform-rtl' || id === 'agy-project-pulse-bar' || m.target?.classList?.contains('agy-pulse-badge') || tag === 'STYLE';
+        }});
+        if (isSelf) return;
+
+        if (__shield_debounce_timer) clearTimeout(__shield_debounce_timer);
+        __shield_debounce_timer = setTimeout(() => {{
+            applyStyles();
+        }}, 350);
     }});
     window.__shield_platform_observer.observe(document.body, {{ childList: true, subtree: true }});
 
