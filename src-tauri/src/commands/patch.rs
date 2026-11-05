@@ -816,19 +816,26 @@ pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-lin
    8. UI/UX Pro Max - High-End Luxury Sidebar Architecture (Platform & IDE)
    ========================================================================== */
 
-/* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar */
+/* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar (Strictly scoped to ASIDE) */
 aside div.flex-1.min-h-0.overflow-y-auto,
-aside div:has(> * > [data-testid="conversation-list-sidebar"]),
-[data-testid="sidebar-split"] div.overflow-y-auto:not([data-testid="conversation-list-sidebar"]) {
+aside div:has(> * > [data-testid="conversation-list-sidebar"]) {
   overflow: hidden !important;
   overflow-y: hidden !important;
   scrollbar-width: none !important;
 }
-aside div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
-[data-testid="sidebar-split"] div.overflow-y-auto:not([data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
+aside div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+}
+
+/* Ensure Main Conversation Page & Autoscroll Viewport Can Always Scroll */
+[data-testid="autoscroll-viewport"],
+[data-testid="conversation-view"],
+main div.overflow-y-auto,
+div.overflow-y-auto.isolate {
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
 }
 
 /* 8.2 Single Sleek 4px Dark-Glass Webkit Scrollbar for Sidebar */
@@ -1251,24 +1258,32 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                 applied_count += 1;
             }
 
-            // Also patch Jetski Agent Chat CSS (jetskiMain.tailwind.css)
+            // Also patch all IDE CSS files and Jetski Agent
             if let Some(out_dir) = css_path.parent().and_then(|p| p.parent()).and_then(|p| p.parent()) {
-                let jetski_css = out_dir.join("jetskiMain.tailwind.css");
-                if jetski_css.exists() {
-                    let jetski_bak = out_dir.join("jetskiMain.tailwind.css.bak");
-                    if !jetski_bak.exists() {
-                        let _ = fs::copy(&jetski_css, &jetski_bak);
-                    }
-                    if let Ok(mut jc) = fs::read_to_string(&jetski_css) {
-                        if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
-                            jc.push_str("\n\n");
-                            jc.push_str(VAZIRMATN_RTL_CSS);
-                            let _ = fs::write(&jetski_css, &jc);
-                            applied_count += 1;
+                let css_targets = [
+                    "jetskiMain.tailwind.css",
+                    "tw-base.tailwind.css",
+                    "jetskiAgent/main.css"
+                ];
+
+                for rel_css in &css_targets {
+                    let target_path = out_dir.join(rel_css.replace('/', std::path::MAIN_SEPARATOR_STR));
+                    if target_path.exists() {
+                        let bak_path = target_path.with_extension(format!("{}.bak", target_path.extension().unwrap_or_default().to_string_lossy()));
+                        if !bak_path.exists() {
+                            let _ = fs::copy(&target_path, &bak_path);
                         }
-                    }
-                    if let Some(app_dir) = out_dir.parent() {
-                        update_product_checksum(app_dir, "jetskiMain.tailwind.css", &jetski_css);
+                        if let Ok(mut jc) = fs::read_to_string(&target_path) {
+                            if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
+                                jc.push_str("\n\n");
+                                jc.push_str(VAZIRMATN_RTL_CSS);
+                                let _ = fs::write(&target_path, &jc);
+                                applied_count += 1;
+                            }
+                        }
+                        if let Some(app_dir) = out_dir.parent() {
+                            update_product_checksum(app_dir, rel_css, &target_path);
+                        }
                     }
                 }
 
@@ -1280,32 +1295,41 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         let _ = fs::copy(&main_js, &main_bak);
                     }
                     if let Ok(js_content) = fs::read_to_string(&main_js) {
-                        let target1 = r#"f("div",{role:"article","aria-label":"User message""#;
-                        let rep1 = r#"f("div",{dir:"auto",role:"article","aria-label":"User message""#;
-                        let target2 = r#"f("div",{role:"article","aria-label":"Agent response""#;
-                        let rep2 = r#"f("div",{dir:"auto",role:"article","aria-label":"Agent response""#;
-                        let t_div = r#"rn f("div",{className:Lt("leading-relaxed","select-text","text-sm","flex flex-col""#;
-                        let r_div = r#"rn f("div",{dir:"auto",className:Lt("leading-relaxed","select-text","text-sm","flex flex-col""#;
-                        let t_comp = r#"components:{code:M,a:J,li:re,input:v9s,img:j,table:Q,tr:K,th:z,td:q,blockquote:se,p:ne,hr:fe,"agent-embed":le}"#;
-                        let r_comp = r#"components:{h1:pe=>f("h1",{dir:"auto",...pe}),h2:pe=>f("h2",{dir:"auto",...pe}),h3:pe=>f("h3",{dir:"auto",...pe}),h4:pe=>f("h4",{dir:"auto",...pe}),h5:pe=>f("h5",{dir:"auto",...pe}),h6:pe=>f("h6",{dir:"auto",...pe}),ul:pe=>f("ul",{dir:"auto",...pe}),ol:pe=>f("ol",{dir:"auto",...pe}),code:M,a:J,li:re,input:v9s,img:j,table:Q,tr:K,th:z,td:q,blockquote:se,p:ne,hr:fe,"agent-embed":le}"#;
-                        let t_p = r#"ne=ie(pe=>f("p",{...pe,className:Lt(pe.className),children:h?f(n9s,{paragraphs:eb.toArray(pe.children)}):pe.children}),[h])"#;
-                        let r_p = r#"ne=ie(pe=>f("p",{dir:"auto",...pe,className:Lt(pe.className),children:h?f(n9s,{paragraphs:eb.toArray(pe.children)}):pe.children}),[h])"#;
-                        let t_li = r#"re=ie(pe=>f(V9s,{...pe,animate:h}),[h])"#;
-                        let r_li = r#"re=ie(pe=>f(V9s,{dir:"auto",...pe,animate:h}),[h])"#;
+                        let replacements = [
+                            ("heading({tokens:e,depth:t}){return`<h${t}>${this.parser.parseInline(e)}</h${t}>\n`}",
+                             "heading({tokens:e,depth:t}){return`<h${t} dir=\"auto\">${this.parser.parseInline(e)}</h${t}>\n`}"),
+                            ("paragraph({tokens:e}){return`<p>${this.parser.parseInline(e)}</p>\n`}",
+                             "paragraph({tokens:e}){return`<p dir=\"auto\">${this.parser.parseInline(e)}</p>\n`}"),
+                            ("return t+=this.parser.parse(e.tokens,!!e.loose),`<li>${t}</li>\n`}",
+                             "return t+=this.parser.parse(e.tokens,!!e.loose),`<li dir=\"auto\">${t}</li>\n`}"),
+                            ("let i=t?\"ol\":\"ul\",a=t&&r!==1?' start=\"'+r+'\"':\"\";return\"<\"+i+a+`>\n`+n+\"</\"+i+`>\n`}",
+                             "let i=t?\"ol\":\"ul\",a=t&&r!==1?' start=\"'+r+'\"':\"\";return\"<\"+i+a+` dir=\"auto\">\n`+n+\"</\"+i+`>\n`}"),
+                            ("blockquote({tokens:e}){return`<blockquote>\n${this.parser.parse(e)}</blockquote>\n`}",
+                             "blockquote({tokens:e}){return`<blockquote dir=\"auto\">\n${this.parser.parse(e)}</blockquote>\n`}"),
+                            ("role:\"article\",\"aria-label\":\"User message\"",
+                             "dir:\"auto\",role:\"article\",\"aria-label\":\"User message\""),
+                            ("role:\"article\",\"aria-label\":\"Agent response\"",
+                             "dir:\"auto\",role:\"article\",\"aria-label\":\"Agent response\""),
+                            ("\"aria-required\":E,autoCapitalize:m,className:g,contentEditable:I",
+                             "\"aria-required\":E,dir:\"auto\",autoCapitalize:m,className:g,contentEditable:I")
+                        ];
 
                         let mut patched_js = js_content;
-                        if patched_js.contains(target1) { patched_js = patched_js.replace(target1, rep1); }
-                        if patched_js.contains(target2) { patched_js = patched_js.replace(target2, rep2); }
-                        if patched_js.contains(t_div) { patched_js = patched_js.replace(t_div, r_div); }
-                        if patched_js.contains(t_comp) { patched_js = patched_js.replace(t_comp, r_comp); }
-                        if patched_js.contains(t_p) { patched_js = patched_js.replace(t_p, r_p); }
-                        if patched_js.contains(t_li) { patched_js = patched_js.replace(t_li, r_li); }
+                        let mut changes = 0;
+                        for (target, rep) in replacements {
+                            if patched_js.contains(target) && !patched_js.contains(rep) {
+                                patched_js = patched_js.replace(target, rep);
+                                changes += 1;
+                            }
+                        }
 
-                        let _ = fs::write(&main_js, &patched_js);
+                        if changes > 0 {
+                            let _ = fs::write(&main_js, &patched_js);
+                            applied_count += 1;
+                        }
                         if let Some(app_dir) = out_dir.parent() {
                             update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
                         }
-                        applied_count += 1;
                     }
                 }
                 if let Some(app_dir) = out_dir.parent() {
@@ -1429,6 +1453,7 @@ fn update_product_checksum(app_dir: &Path, rel_key: &str, file_path: &Path) {
         if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
             if let Some(checksums) = json.get_mut("checksums").and_then(|c| c.as_object_mut()) {
                 checksums.insert(rel_key.to_string(), serde_json::Value::String(trimmed_hash.to_string()));
+                checksums.insert(format!("out/{}", rel_key), serde_json::Value::String(trimmed_hash.to_string()));
                 if let Ok(serialized) = serde_json::to_string_pretty(&json) {
                     let _ = fs::write(&product_path, serialized);
                 }
