@@ -1393,7 +1393,7 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     }
                 }
 
-                // Also enhance Jetski Agent React bundle with dir:auto for native BiDi
+                // Also enhance Jetski Agent React bundle with intelligent Persian BiDi detection
                 let main_js = out_dir.join("jetskiAgent").join("main.js");
                 if main_js.exists() {
                     let main_bak = out_dir.join("jetskiAgent").join("main.js.bak");
@@ -1402,38 +1402,14 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     }
                     if let Ok(js_content) = fs::read_to_string(&main_js) {
                         let replacements = [
-                            ("heading({tokens:e,depth:t}){return`<h${t}>${this.parser.parseInline(e)}</h${t}>\n`}",
-                             "heading({tokens:e,depth:t}){return`<h${t} dir=\"auto\">${this.parser.parseInline(e)}</h${t}>\n`}"),
-                            ("paragraph({tokens:e}){return`<p>${this.parser.parseInline(e)}</p>\n`}",
-                             "paragraph({tokens:e}){return`<p dir=\"auto\">${this.parser.parseInline(e)}</p>\n`}"),
-                            ("return t+=this.parser.parse(e.tokens,!!e.loose),`<li>${t}</li>\n`}",
-                             "return t+=this.parser.parse(e.tokens,!!e.loose),`<li dir=\"auto\">${t}</li>\n`}"),
-                            ("let i=t?\"ol\":\"ul\",a=t&&r!==1?' start=\"'+r+'\"':\"\";return\"<\"+i+a+`>\n`+n+\"</\"+i+`>\n`}",
-                             "let i=t?\"ol\":\"ul\",a=t&&r!==1?' start=\"'+r+'\"':\"\";return\"<\"+i+a+` dir=\"auto\">\n`+n+\"</\"+i+`>\n`}"),
-                            ("blockquote({tokens:e}){return`<blockquote>\n${this.parser.parse(e)}</blockquote>\n`}",
-                             "blockquote({tokens:e}){return`<blockquote dir=\"auto\">\n${this.parser.parse(e)}</blockquote>\n`}"),
-                            ("role:\"article\",\"aria-label\":\"User message\"",
-                             "dir:\"auto\",role:\"article\",\"aria-label\":\"User message\""),
-                            ("role:\"article\",\"aria-label\":\"Agent response\"",
-                             "dir:\"auto\",role:\"article\",\"aria-label\":\"Agent response\""),
-                            ("\"aria-required\":E,autoCapitalize:m,className:g,contentEditable:I",
-                             "\"aria-required\":E,dir:\"auto\",autoCapitalize:m,className:g,contentEditable:I"),
-                            ("const a=ORr(e,t.tagName,!1),o=zti(e,t);let s=L8e(e,t);",
-                             "const a=ORr(e,t.tagName,!1),o=zti(e,t);if(t.tagName!==\"svg\"&&!o.dir)o.dir=\"auto\";let s=L8e(e,t);"),
-                            ("YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{...e,className:ke(e.className)",
-                             "YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{dir:\"auto\",...e,className:ke(e.className)"),
-                            ("OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{...r,className:ke(r.className)",
-                             "OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{dir:\"auto\",...r,className:ke(r.className)"),
-                            ("return d(\"li\",{...n,style:{...n.style,...s},className:ke(n.className,\"task-list-item\")",
-                             "return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:ke(n.className,\"task-list-item\")"),
-                            ("return d(\"li\",{...n,style:{...n.style,...s},className:ke(n.className,\"task-checked\")",
-                             "return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:ke(n.className,\"task-checked\")"),
-                            ("return d(\"li\",{...n,style:{...n.style,...s},className:n.className,children:u(i)})",
-                             "return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:n.className,children:u(i)})"),
-                            ("QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{...e,",
-                             "QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{dir:\"auto\",...e,"),
-                            ("return d(\"div\",{className:ke(\"leading-relaxed\",",
-                             "return d(\"div\",{dir:\"auto\",className:ke(\"leading-relaxed\","),
+                            ("d(\"div\",{dir:\"auto\",className:ke(\"leading-relaxed\"",
+                             "d(\"div\",{dir:/[\\u0600-\\u06FF]/.test(D)?\"rtl\":\"auto\",className:ke(\"leading-relaxed\""),
+                            ("YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{dir:\"auto\",...e,className:ke(e.className)",
+                             "YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{dir:/[\\u0600-\\u06FF]/.test(typeof e.children===\"string\"?e.children:JSON.stringify(e.children||\"\"))?\"rtl\":\"auto\",...e,className:ke(e.className)"),
+                            ("OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{dir:\"auto\",...r,className:ke(r.className)",
+                             "OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{dir:/[\\u0600-\\u06FF]/.test(typeof r.children===\"string\"?r.children:JSON.stringify(r.children||\"\"))?\"rtl\":\"auto\",...r,className:ke(r.className)"),
+                            ("return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:n.className,children:u(i)})",
+                             "return d(\"li\",{dir:/[\\u0600-\\u06FF]/.test(typeof i===\"string\"?i:JSON.stringify(i||\"\"))?\"rtl\":\"auto\",...n,style:{...n.style,...s},className:n.className,children:u(i)})"),
                             ("table th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}",
                              "table th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\np, li, dd, dt, h1, h2, h3, h4, h5, h6, blockquote, span {\n  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;\n}\np, li {\n  unicode-bidi: plaintext !important;\n  text-align: justify !important;\n  text-justify: inter-word !important;\n  text-align-last: start !important;\n  line-height: 1.85 !important;\n}")
                         ];
@@ -1453,6 +1429,65 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         }
                         if let Some(app_dir) = out_dir.parent() {
                             update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
+                        }
+                    }
+                }
+
+                // Inject BiDi Sentinel into jetskiAgent.js
+                let jetski_agent_js = out_dir.join("vs").join("code").join("electron-browser").join("workbench").join("jetskiAgent.js");
+                if jetski_agent_js.exists() {
+                    let agent_bak = jetski_agent_js.with_extension("js.bak");
+                    if !agent_bak.exists() {
+                        let _ = fs::copy(&jetski_agent_js, &agent_bak);
+                    }
+                    if let Ok(mut jc) = fs::read_to_string(&jetski_agent_js) {
+                        if !jc.contains("[Antigravity-Shield-IDE-BiDi-Sentinel]") {
+                            let sentinel_code = r#"
+// [Antigravity-Shield-IDE-BiDi-Sentinel]
+(()=>{
+  const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
+  function patchBiDi(root = document) {
+    if (!root || !root.querySelectorAll) return;
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, [data-testid="user-message-bubble"], div[role="article"]');
+    for (let i = 0; i < targets.length; i++) {
+      const el = targets[i];
+      if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre')) continue;
+      const txt = el.textContent || '';
+      if (isPersian(txt)) {
+        if (el.getAttribute('dir') !== 'rtl') el.setAttribute('dir', 'rtl');
+        if (el.style.direction !== 'rtl') el.style.direction = 'rtl';
+        if (el.tagName !== 'P' && el.style.textAlign !== 'right') el.style.textAlign = 'right';
+      }
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => patchBiDi());
+  } else {
+    patchBiDi();
+  }
+  const obs = new MutationObserver((mutations) => {
+    for (let i = 0; i < mutations.length; i++) {
+      const m = mutations[i];
+      if (m.type === 'childList') {
+        for (let j = 0; j < m.addedNodes.length; j++) {
+          const n = m.addedNodes[j];
+          if (n.nodeType === 1) patchBiDi(n);
+        }
+      } else if (m.type === 'characterData') {
+        const p = m.target.parentElement;
+        if (p) patchBiDi(p);
+      }
+    }
+  });
+  obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+})();
+"#;
+                            jc.push_str(sentinel_code);
+                            let _ = fs::write(&jetski_agent_js, &jc);
+                            applied_count += 1;
+                        }
+                        if let Some(app_dir) = out_dir.parent() {
+                            update_product_checksum(app_dir, "vs/code/electron-browser/workbench/jetskiAgent.js", &jetski_agent_js);
                         }
                     }
                 }
@@ -1482,12 +1517,29 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                 for html_rel in &["vs/code/electron-browser/workbench/workbench.html", "vs/code/electron-browser/workbench/workbench-jetski-agent.html"] {
                     let hp = out_dir.join(html_rel.replace('/', std::path::MAIN_SEPARATOR_STR));
                     if hp.exists() {
-                        if let Ok(hc) = fs::read_to_string(&hp) {
+                        if let Ok(mut hc) = fs::read_to_string(&hp) {
                             let old_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tvscode-remote-resource:";
                             let new_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tdata:\n\t\t\t\t\tvscode-remote-resource:";
+                            let mut html_changed = false;
                             if hc.contains(old_fsrc) {
-                                let new_hc = hc.replace(old_fsrc, new_fsrc);
-                                let _ = fs::write(&hp, new_hc);
+                                hc = hc.replace(old_fsrc, new_fsrc);
+                                html_changed = true;
+                            }
+                            if *html_rel == "vs/code/electron-browser/workbench/workbench-jetski-agent.html" && !hc.contains("antigravity-shield-ide-bidi") {
+                                let bidi_style = r#"	<style id="antigravity-shield-ide-bidi">
+		[dir="rtl"] { direction: rtl !important; text-align: right !important; }
+		li[dir="rtl"] { direction: rtl !important; text-align: right !important; text-align-last: right !important; unicode-bidi: plaintext !important; }
+		p[dir="rtl"] { direction: rtl !important; text-align: justify !important; text-justify: inter-word !important; text-align-last: start !important; }
+		blockquote[dir="rtl"] { direction: rtl !important; text-align: right !important; border-left: none !important; border-right: 4px solid var(--border) !important; }
+		code[dir="rtl"] { direction: rtl !important; font-family: 'Vazirmatn', monospace !important; }
+	</style>
+</head>"#;
+                                hc = hc.replace("</head>", bidi_style);
+                                html_changed = true;
+                            }
+                            if html_changed {
+                                let _ = fs::write(&hp, hc);
+                                applied_count += 1;
                             }
                         }
                         if let Some(app_dir) = out_dir.parent() {
