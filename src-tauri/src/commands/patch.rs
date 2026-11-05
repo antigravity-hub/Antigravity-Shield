@@ -282,9 +282,25 @@ body, html, #root {
   unicode-bidi: plaintext !important;
   text-align: justify !important;
   text-justify: inter-word !important;
-  text-align-last: start !important;
+  text-align-last: auto !important;
   line-height: 2.1 !important;
   margin-bottom: 1rem !important;
+}
+
+/* Persian Paragraphs & Lists: Force Direction RTL, Right-Align Last Line */
+[role="article"] p:dir(rtl),
+.rendered-markdown p:dir(rtl),
+.chat-widget .rendered-markdown p:dir(rtl),
+[role="article"] [dir="rtl"] p,
+.rendered-markdown [dir="rtl"] p,
+p:dir(rtl),
+p[dir="rtl"],
+p[dir="auto"]:dir(rtl) {
+  direction: rtl !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: right !important;
+  unicode-bidi: plaintext !important;
 }
 
 /* ==========================================================================
@@ -1342,7 +1358,13 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                             let _ = fs::copy(&target_path, &bak_path);
                         }
                         if let Ok(mut jc) = fs::read_to_string(&target_path) {
-                            if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
+                            let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
+                            let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
+                            if let (Some(s), Some(e)) = (jc.find(p_start), jc.find(p_end)) {
+                                jc.replace_range(s..e + p_end.len(), &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
+                                let _ = fs::write(&target_path, &jc);
+                                applied_count += 1;
+                            } else if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
                                 jc.push_str("\n\n");
                                 jc.push_str(VAZIRMATN_RTL_CSS);
                                 let _ = fs::write(&target_path, &jc);
