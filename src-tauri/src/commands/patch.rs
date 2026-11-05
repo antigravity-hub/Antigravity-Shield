@@ -994,8 +994,8 @@ button[data-project-card="true"] svg {
 .agy-sidebar-row[data-active="true"] {
   background: linear-gradient(90deg, rgba(147, 233, 190, 0.15) 0%, rgba(147, 233, 190, 0.03) 100%) !important;
   border: 1px solid rgba(147, 233, 190, 0.28) !important;
-  border-inline-start: 3px solid #93e9be !important;
-  box-shadow: 0 2px 10px -2px rgba(147, 233, 190, 0.18) !important;
+  border-inline-start: 1px solid #93e9be !important;
+  box-shadow: inset 3px 0 0 0 #93e9be, 0 2px 10px -2px rgba(147, 233, 190, 0.18) !important;
 }
 
 .agy-sidebar-row:has(a[aria-current="page"]) span,
@@ -1077,7 +1077,10 @@ button[data-project-card="true"] svg {
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"]),
 .agy-sidebar-row[class*="pl-"].bg-sidebar-muted,
 .agy-sidebar-row[class*="pl-"].bg-sidebar-secondary {
-  border-inline-start: 3px solid var(--proj-color, #93e9be) !important;
+  border: 1px solid var(--proj-color, rgba(147, 233, 190, 0.28)) !important;
+  border-left: 1px solid var(--proj-color, #93e9be) !important;
+  border-inline-start: 1px solid var(--proj-color, #93e9be) !important;
+  box-shadow: inset 3px 0 0 0 var(--proj-color, #93e9be), 0 2px 10px -2px var(--proj-glow, rgba(147, 233, 190, 0.18)) !important;
 }
 
 /* 8.9 Recent Project Pulse Strip */
