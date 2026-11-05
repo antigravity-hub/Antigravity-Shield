@@ -779,7 +779,7 @@ textarea[dir="ltr"], input[dir="ltr"], [contenteditable="true"][dir="ltr"] {
 /* ==========================================================================
    7. Code blocks & Monospace Isolation
    ========================================================================== */
-pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-line, .view-lines {
+pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines, kbd, samp {
   font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace !important;
   direction: ltr !important;
   text-align: left !important;
@@ -787,12 +787,21 @@ pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-lin
 }
 
 :not(pre) > code {
+  font-family: 'Cascadia Code', 'Fira Code', 'Vazirmatn', Consolas, monospace !important;
   background: rgba(147, 233, 190, 0.12) !important;
   border: 1px solid rgba(147, 233, 190, 0.25) !important;
   color: #93e9be !important;
   padding: 1px 6px !important;
   border-radius: 4px !important;
   font-size: 0.9em !important;
+  unicode-bidi: plaintext !important;
+}
+
+:not(pre) > code[dir="rtl"],
+:not(pre) > code:dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+  font-family: 'Vazirmatn', 'Cascadia Code', monospace !important;
 }
 
 
