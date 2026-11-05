@@ -7,131 +7,6 @@ use tracing::{debug, info, warn};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
 
-pub const COMPLETE_VAZIRMATN_RTL_CSS: &str = r#"
-/* Antigravity Shield — Platform Native Vazirmatn & RTL Suite */
-@font-face {
-    font-family: 'Vazirmatn';
-    src: local('Vazirmatn'), local('Vazirmatn-Regular');
-    font-weight: 400;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Vazirmatn';
-    src: local('Vazirmatn Medium'), local('Vazirmatn-Medium');
-    font-weight: 500;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Vazirmatn';
-    src: local('Vazirmatn SemiBold'), local('Vazirmatn-SemiBold');
-    font-weight: 600;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Vazirmatn';
-    src: local('Vazirmatn Bold'), local('Vazirmatn-Bold');
-    font-weight: 700;
-    font-style: normal;
-}
-
-[role="article"],
-[data-message-author-role],
-.chat-message,
-.prose {
-    font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    text-align: justify !important;
-    text-justify: inter-word !important;
-    text-align-last: start !important;
-    line-height: 1.85 !important;
-    letter-spacing: -0.01em !important;
-}
-
-[role="article"] h1, [role="article"] h2, [role="article"] h3,
-[role="article"] h4, [role="article"] h5, [role="article"] h6 {
-    font-family: 'Vazirmatn', sans-serif !important;
-    color: #93e9be !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.02em !important;
-    margin-top: 1rem !important;
-    margin-bottom: 0.5rem !important;
-}
-
-[role="article"] ol > li::marker,
-[role="article"] ul > li::marker {
-    color: #93e9be !important;
-    font-weight: 700 !important;
-}
-
-[role="article"] ol > li > strong:first-child,
-[role="article"] ul > li > strong:first-child {
-    color: #93e9be !important;
-    font-weight: 700 !important;
-}
-
-[role="article"] code,
-[role="article"] pre,
-[role="article"] kbd,
-[role="article"] samp {
-    font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace !important;
-    direction: ltr !important;
-    unicode-bidi: embed !important;
-    text-align: left !important;
-}
-
-.markdown-alert,
-blockquote:has([class*="markdown-alert"]) {
-    border-radius: 12px !important;
-    padding: 12px 16px !important;
-    margin: 14px 0 !important;
-    backdrop-filter: blur(8px) !important;
-    border-inline-start-width: 4px !important;
-    border-inline-start-style: solid !important;
-}
-
-.markdown-alert-tip {
-    border-inline-start-color: #93e9be !important;
-    background: rgba(147, 233, 190, 0.08) !important;
-    color: inherit !important;
-}
-.markdown-alert-tip .markdown-alert-title {
-    color: #93e9be !important;
-    font-weight: 700 !important;
-}
-
-.markdown-alert-note {
-    border-inline-start-color: #60a5fa !important;
-    background: rgba(96, 165, 250, 0.08) !important;
-}
-.markdown-alert-note .markdown-alert-title {
-    color: #60a5fa !important;
-    font-weight: 700 !important;
-}
-
-.markdown-alert-important {
-    border-inline-start-color: #a78bfa !important;
-    background: rgba(167, 139, 250, 0.08) !important;
-}
-.markdown-alert-important .markdown-alert-title {
-    color: #a78bfa !important;
-}
-
-.markdown-alert-warning {
-    border-inline-start-color: #fbbf24 !important;
-    background: rgba(251, 191, 36, 0.08) !important;
-}
-.markdown-alert-warning .markdown-alert-title {
-    color: #fbbf24 !important;
-}
-
-.markdown-alert-caution {
-    border-inline-start-color: #f87171 !important;
-    background: rgba(248, 113, 113, 0.08) !important;
-}
-.markdown-alert-caution .markdown-alert-title {
-    color: #f87171 !important;
-}
-"#;
-
 pub fn get_devtools_port() -> Option<u16> {
     let port_path = dirs::config_dir()?.join("Antigravity").join("DevToolsActivePort");
     if !port_path.exists() {
@@ -213,7 +88,8 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         return Err("WebSocket handshake failed".into());
     }
 
-    let escaped_css = COMPLETE_VAZIRMATN_RTL_CSS
+    let raw_css = crate::commands::patch::VAZIRMATN_RTL_CSS;
+    let escaped_css = raw_css
         .replace('\\', "\\\\")
         .replace('`', "\\`")
         .replace('$', "\\$");
@@ -230,28 +106,39 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         }}
         style.textContent = `{}`;
 
-        document.querySelectorAll('[role="article"]').forEach(a => {{
-            if (a.getAttribute('dir') !== 'auto') {{
-                a.setAttribute('dir', 'auto');
+        const isPersian = (text) => /[\u0600-\u06FF]/.test(text);
+
+        document.querySelectorAll('[role="article"]').forEach(art => {{
+            const isUser = art.getAttribute('aria-label') === 'User message';
+            if (isUser) {{
+                if (isPersian(art.textContent || '')) {{
+                    art.setAttribute('dir', 'rtl');
+                    art.style.textAlign = 'right';
+                }} else {{
+                    art.setAttribute('dir', 'ltr');
+                    art.style.textAlign = 'left';
+                }}
+            }} else {{
+                art.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, ol, ul, blockquote').forEach(el => {{
+                    if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre')) return;
+                    const txt = (el.textContent || '').trim();
+                    if (isPersian(txt)) {{
+                        el.setAttribute('dir', 'rtl');
+                    }} else if (txt.length > 0) {{
+                        el.setAttribute('dir', 'ltr');
+                    }}
+                }});
             }}
         }});
     }}
 
     applyStyles();
 
-    if (!window.__shield_rtl_observer) {{
-        window.__shield_rtl_observer = new MutationObserver((mutations) => {{
-            for (const m of mutations) {{
-                if (m.addedNodes.length > 0) {{
-                    document.querySelectorAll('[role="article"]').forEach(a => {{
-                        if (a.getAttribute('dir') !== 'auto') {{
-                            a.setAttribute('dir', 'auto');
-                        }}
-                    }});
-                }}
-            }}
+    if (!window.__shield_platform_observer) {{
+        window.__shield_platform_observer = new MutationObserver(() => {{
+            applyStyles();
         }});
-        window.__shield_rtl_observer.observe(document.body, {{ childList: true, subtree: true }});
+        window.__shield_platform_observer.observe(document.body, {{ childList: true, subtree: true }});
     }}
 
     return 'PLATFORM_CDP_BRIDGE_ACTIVE';
@@ -270,7 +157,6 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
     }))
     .map_err(|e| e.to_string())?;
 
-    // Build RFC 6455 masked text frame
     let mut frame = Vec::new();
     frame.push(0x81); // FIN + Text opcode
 
@@ -285,7 +171,7 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         frame.extend_from_slice(&(len as u64).to_be_bytes());
     }
 
-    let mask = [0x54, 0x61, 0x75, 0x72]; // Masking key
+    let mask = [0x54, 0x61, 0x75, 0x72];
     frame.extend_from_slice(&mask);
 
     for (i, b) in payload.iter().enumerate() {
@@ -301,18 +187,13 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
 /// Continuous low-overhead watcher that ensures Antigravity Platform stays patched
 pub fn start_platform_cdp_watcher() {
     tauri::async_runtime::spawn(async move {
-        // Initial warmup delay
         tokio::time::sleep(Duration::from_secs(4)).await;
 
-        let mut interval = tokio::time::interval(Duration::from_secs(12));
+        let mut interval = tokio::time::interval(Duration::from_secs(10));
         loop {
             interval.tick().await;
             if is_platform_active() {
-                if let Ok(count) = inject_platform_rtl().await {
-                    if count > 0 {
-                        debug!("[CDP Bridge] Injected live RTL & Vazirmatn into {} platform target(s)", count);
-                    }
-                }
+                let _ = inject_platform_rtl().await;
             }
         }
     });

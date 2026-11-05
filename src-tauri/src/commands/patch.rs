@@ -205,7 +205,7 @@ pub struct AntigravityRtlStatus {
     pub ide_has_backup: bool,
 }
 
-const VAZIRMATN_RTL_CSS: &str = r#"
+pub const VAZIRMATN_RTL_CSS: &str = r#"
 /* [Antigravity-Shield-RTL-Vazirmatn] */
 /* RTL-PATCH-START */
 
