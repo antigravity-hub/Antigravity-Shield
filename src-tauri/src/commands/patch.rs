@@ -1308,7 +1308,19 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                             ("\"aria-required\":E,autoCapitalize:m,className:g,contentEditable:I",
                              "\"aria-required\":E,dir:\"auto\",autoCapitalize:m,className:g,contentEditable:I"),
                             ("const a=ORr(e,t.tagName,!1),o=zti(e,t);let s=L8e(e,t);",
-                             "const a=ORr(e,t.tagName,!1),o=zti(e,t);if(t.tagName!==\"svg\"&&!o.dir)o.dir=\"auto\";let s=L8e(e,t);")
+                             "const a=ORr(e,t.tagName,!1),o=zti(e,t);if(t.tagName!==\"svg\"&&!o.dir)o.dir=\"auto\";let s=L8e(e,t);"),
+                            ("YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{...e,className:ke(e.className)",
+                             "YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{dir:\"auto\",...e,className:ke(e.className)"),
+                            ("OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{...r,className:ke(r.className)",
+                             "OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{dir:\"auto\",...r,className:ke(r.className)"),
+                            ("return d(\"li\",{...n,style:{...n.style,...s},className:ke(n.className,\"task-list-item\")",
+                             "return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:ke(n.className,\"task-list-item\")"),
+                            ("return d(\"li\",{...n,style:{...n.style,...s},className:ke(n.className,\"task-checked\")",
+                             "return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:ke(n.className,\"task-checked\")"),
+                            ("return d(\"li\",{...n,style:{...n.style,...s},className:n.className,children:u(i)})",
+                             "return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:n.className,children:u(i)})"),
+                            ("QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{...e,",
+                             "QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{dir:\"auto\",...e,")
                         ];
 
                         let mut patched_js = js_content;
@@ -1329,6 +1341,29 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         }
                     }
                 }
+                                // Suppress corrupt installation banner in workbench.desktop.main.js
+                let wb_js_path = out_dir.join("vs").join("workbench").join("workbench.desktop.main.js");
+                if wb_js_path.exists() {
+                    if let Ok(mut wbc) = fs::read_to_string(&wb_js_path) {
+                        let old_show = "_showNotification(){const e=this.productService.checksumFailMoreInfoUrl";
+                        let new_show = "_showNotification(){return;const e=this.productService.checksumFailMoreInfoUrl";
+                        let old_pure = "async _isPure(){const e=this.productService.checksums||{};";
+                        let new_pure = "async _isPure(){return{isPure:!0,proof:[]};const e=this.productService.checksums||{};";
+                        let mut wb_changed = false;
+                        if wbc.contains(old_show) {
+                            wbc = wbc.replace(old_show, new_show);
+                            wb_changed = true;
+                        }
+                        if wbc.contains(old_pure) {
+                            wbc = wbc.replace(old_pure, new_pure);
+                            wb_changed = true;
+                        }
+                        if wb_changed {
+                            let _ = fs::write(&wb_js_path, &wbc);
+                        }
+                    }
+                }
+
                 for html_rel in &["vs/code/electron-browser/workbench/workbench.html", "vs/code/electron-browser/workbench/workbench-jetski-agent.html"] {
                     let hp = out_dir.join(html_rel.replace('/', std::path::MAIN_SEPARATOR_STR));
                     if hp.exists() {
