@@ -1368,7 +1368,11 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                             ("return d(\"li\",{...n,style:{...n.style,...s},className:n.className,children:u(i)})",
                              "return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:n.className,children:u(i)})"),
                             ("QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{...e,",
-                             "QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{dir:\"auto\",...e,")
+                             "QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{dir:\"auto\",...e,"),
+                            ("return d(\"div\",{className:ke(\"leading-relaxed\",",
+                             "return d(\"div\",{dir:\"auto\",className:ke(\"leading-relaxed\","),
+                            ("table th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}",
+                             "table th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\np, li, dd, dt, h1, h2, h3, h4, h5, h6, blockquote, span {\n  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;\n}\np, li {\n  unicode-bidi: plaintext !important;\n  text-align: justify !important;\n  text-justify: inter-word !important;\n  text-align-last: start !important;\n  line-height: 1.85 !important;\n}")
                         ];
 
                         let mut patched_js = js_content;
