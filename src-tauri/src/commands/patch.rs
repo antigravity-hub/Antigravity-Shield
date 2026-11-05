@@ -631,12 +631,51 @@ body, html, #root {
 }
 
 /* ==========================================================================
-   4.1 User Message Bubble & Auto-BiDi Direction
+   4.1 User Message Bubble & Auto-BiDi Direction (Always Right-Aligned)
    ========================================================================== */
 [data-testid="user-input-step"],
 [aria-label="User message"],
 .interactive-request {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  direction: ltr !important;
+  align-items: flex-end !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+[data-testid="user-input-step"] > div,
+[aria-label="User message"] > div,
+.interactive-request > div {
+  direction: ltr !important;
+  justify-content: flex-end !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+/* User Message Bubble Container with Soft Non-Intrusive Seafoam Glow */
+[data-testid="user-input-step"] .agy-user-bubble-frame,
+[aria-label="User message"] .agy-user-bubble-frame,
+.interactive-request .agy-user-bubble-frame {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  border: 1px solid rgba(147, 233, 190, 0.32) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.20), 0 3px 10px rgba(0, 0, 0, 0.35) !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+[data-testid="user-input-step"] .agy-user-bubble-frame:hover,
+[aria-label="User message"] .agy-user-bubble-frame:hover,
+.interactive-request .agy-user-bubble-frame:hover {
+  border-color: rgba(147, 233, 190, 0.48) !important;
+  box-shadow: 0 0 20px -2px rgba(147, 233, 190, 0.30), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-testid="user-input-step"] .agy-user-bubble,
+[aria-label="User message"] .agy-user-bubble,
+.interactive-request .agy-user-bubble {
+  background: linear-gradient(135deg, rgba(22, 27, 34, 0.95) 0%, rgba(18, 22, 28, 0.95) 100%) !important;
+  border-radius: 15px !important;
 }
 
 [data-testid="user-input-step"] .whitespace-pre-wrap,
@@ -647,20 +686,6 @@ body, html, #root {
   text-align: start !important;
   text-align: -webkit-match-parent !important;
   line-height: 1.85 !important;
-}
-
-[data-testid="user-input-step"]:dir(rtl),
-[aria-label="User message"]:dir(rtl),
-.interactive-request:dir(rtl) {
-  direction: rtl !important;
-  text-align: right !important;
-}
-
-[data-testid="user-input-step"]:dir(ltr),
-[aria-label="User message"]:dir(ltr),
-.interactive-request:dir(ltr) {
-  direction: ltr !important;
-  text-align: left !important;
 }
 
 /* ==========================================================================
@@ -783,12 +808,28 @@ pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-lin
    8. UI/UX Pro Max - High-End Luxury Sidebar Architecture (Platform & IDE)
    ========================================================================== */
 
-/* 8.1 Sidebar Container & Smooth Dark-Glass Scrollbar */
+/* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar */
+div:has(> [data-testid="conversation-list-sidebar"]),
+div:has(> * > [data-testid="conversation-list-sidebar"]),
+div:has(> * > * > [data-testid="conversation-list-sidebar"]),
+aside .overflow-y-auto:not([data-testid="conversation-list-sidebar"]),
+[data-testid="sidebar-split"] .overflow-y-auto:not([data-testid="conversation-list-sidebar"]) {
+  scrollbar-width: none !important;
+}
+div:has(> [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
+div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
+aside .overflow-y-auto:not([data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
+[data-testid="sidebar-split"] .overflow-y-auto:not([data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 8.2 Single Sleek 4px Dark-Glass Scrollbar for Sidebar */
 [data-testid="conversation-list-sidebar"] {
   scrollbar-width: thin !important;
   scrollbar-color: rgba(147, 233, 190, 0.25) transparent !important;
 }
-
 [data-testid="conversation-list-sidebar"]::-webkit-scrollbar {
   width: 4px !important;
 }
@@ -803,7 +844,7 @@ pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-lin
   background: rgba(147, 233, 190, 0.45) !important;
 }
 
-/* 8.2 Top Navigation Action Hero ("New Conversation") */
+/* 8.3 Top Navigation Action Hero ("New Conversation") */
 [data-testid="new-conversation-button"],
 a.agy-button[href="/"] {
   background: linear-gradient(135deg, rgba(147, 233, 190, 0.15) 0%, rgba(147, 233, 190, 0.04) 100%) !important;
@@ -847,7 +888,7 @@ a.agy-button[href="/"] svg {
   transform: translateX(1px) !important;
 }
 
-/* 8.3 Section Headers (Pinned Conversations, Projects) */
+/* 8.4 Section Headers (Pinned Conversations, Projects) */
 [data-testid="conversation-list-sidebar"] [class*="section-header"],
 [data-testid="conversation-list-sidebar"] [data-testid*="section-header"] {
   margin-top: 14px !important;
@@ -890,11 +931,52 @@ a.agy-button[href="/"] svg {
   color: #93e9be !important;
 }
 
-/* 8.4 Conversation & Project Item Rows */
+/* 8.5 Project Folders (Colored Name & Card Elevation) */
+button[data-testid="project-header"],
+button[data-project-card="true"] {
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.08) 0%, rgba(147, 233, 190, 0.02) 100%) !important;
+  border: 1px solid rgba(147, 233, 190, 0.18) !important;
+  border-radius: 8px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  padding-left: 8px !important;
+  margin-bottom: 2px !important;
+}
+
+button[data-testid="project-header"]:hover,
+button[data-project-card="true"]:hover {
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.18) 0%, rgba(147, 233, 190, 0.05) 100%) !important;
+  border-color: rgba(147, 233, 190, 0.4) !important;
+  box-shadow: 0 0 12px -2px rgba(147, 233, 190, 0.25) !important;
+  transform: translateY(-0.5px) !important;
+}
+
+button[data-testid="project-header"] span.truncate,
+button[data-project-card="true"] span.truncate {
+  color: #93e9be !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+  letter-spacing: 0.01em !important;
+}
+
+button[data-testid="project-header"]:hover span.truncate,
+button[data-project-card="true"]:hover span.truncate {
+  color: #bbf7d0 !important;
+}
+
+button[data-testid="project-header"] svg,
+button[data-project-card="true"] svg {
+  color: #93e9be !important;
+  filter: drop-shadow(0 0 4px rgba(147, 233, 190, 0.35)) !important;
+}
+
+/* 8.6 General Conversation Rows */
 .agy-sidebar-row {
   border-radius: 8px !important;
   margin-bottom: 2px !important;
-  padding: 6px 10px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  padding-right: 10px !important;
+  padding-left: 10px !important;
   transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
   border: 1px solid transparent !important;
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
@@ -928,6 +1010,51 @@ a.agy-button[href="/"] svg {
 .agy-sidebar-row:has(a[aria-current="page"]) svg,
 .agy-sidebar-row.bg-sidebar-muted svg {
   color: #93e9be !important;
+}
+
+/* 8.7 Project Child Conversations (Indented Forward & Hierarchy Tree Guide Line) */
+.agy-sidebar-row.agy-sidebar-row[class*="pl-"] {
+  padding-left: 36px !important;
+  position: relative !important;
+}
+
+/* Tree vertical line running down the project branch */
+.agy-sidebar-row[class*="pl-"]::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 19px !important;
+  top: -3px !important;
+  bottom: -3px !important;
+  width: 1.5px !important;
+  background: rgba(147, 233, 190, 0.25) !important;
+  transition: background 0.18s ease !important;
+  z-index: 2 !important;
+}
+
+/* Tree horizontal connector branch into conversation item */
+.agy-sidebar-row[class*="pl-"]::after {
+  content: '' !important;
+  position: absolute !important;
+  left: 19px !important;
+  top: 50% !important;
+  width: 11px !important;
+  height: 1.5px !important;
+  background: rgba(147, 233, 190, 0.25) !important;
+  border-radius: 0 2px 2px 0 !important;
+  transition: background 0.18s ease, width 0.18s ease !important;
+  z-index: 2 !important;
+}
+
+.agy-sidebar-row[class*="pl-"]:hover::before,
+.agy-sidebar-row[class*="pl-"]:hover::after {
+  background: #93e9be !important;
+  box-shadow: 0 0 6px rgba(147, 233, 190, 0.5) !important;
+}
+
+.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
+.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::after {
+  background: #93e9be !important;
+  box-shadow: 0 0 8px rgba(147, 233, 190, 0.6) !important;
 }
 
 /* RTL-PATCH-END */
