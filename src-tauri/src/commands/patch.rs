@@ -366,7 +366,10 @@ p[dir="auto"]:dir(rtl) {
   text-align: start !important;
 }
 
-/* Persian Headings: Strictly right-align & reset left padding */
+/* Persian Headings: Strictly right-align & reset left padding (Universal IDE & Platform) */
+h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl),
+h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[dir="rtl"],
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6,
 [role="article"] h1:dir(rtl), [role="article"] h2:dir(rtl), [role="article"] h3:dir(rtl),
 [role="article"] h4:dir(rtl), [role="article"] h5:dir(rtl), [role="article"] h6:dir(rtl),
 [role="article"] [dir="rtl"] h1, [role="article"] [dir="rtl"] h2, [role="article"] [dir="rtl"] h3,
@@ -493,7 +496,10 @@ p[dir="auto"]:dir(rtl) {
   font-weight: 700 !important;
 }
 
-/* Direction-specific list padding & markers inside messages (RTL on RIGHT, LTR on LEFT) */
+/* Direction-specific list padding & markers inside messages (Universal IDE & Platform) */
+ul:dir(rtl), ol:dir(rtl),
+ul[dir="rtl"], ol[dir="rtl"],
+[dir="rtl"] ul, [dir="rtl"] ol,
 [role="article"] ul:dir(rtl), [role="article"] ol:dir(rtl),
 [role="article"] [dir="rtl"] ul, [role="article"] [dir="rtl"] ol,
 [role="article"] ul[dir="rtl"], [role="article"] ol[dir="rtl"],
@@ -512,6 +518,8 @@ p[dir="auto"]:dir(rtl) {
   margin-inline-end: 0 !important;
 }
 
+ul:dir(rtl) ul, ol:dir(rtl) ol,
+ul:dir(rtl) ol, ol:dir(rtl) ul,
 [role="article"] ul:dir(rtl) ul, [role="article"] ol:dir(rtl) ol,
 [role="article"] ul:dir(rtl) ol, [role="article"] ol:dir(rtl) ul,
 .rendered-markdown ul:dir(rtl) ul, .rendered-markdown ol:dir(rtl) ol {
@@ -523,15 +531,19 @@ p[dir="auto"]:dir(rtl) {
   margin-right: 0 !important;
 }
 
+li:dir(rtl),
+li[dir="rtl"],
+li[dir="auto"]:dir(rtl),
+[dir="rtl"] li,
 [role="article"] li[dir="rtl"],
 .rendered-markdown li:dir(rtl),
 .chat-widget .rendered-markdown li:dir(rtl),
 [role="article"] [dir="rtl"] li,
 .rendered-markdown [dir="rtl"] li {
   direction: rtl !important;
-  text-align: justify !important;
-  text-justify: inter-word !important;
-  text-align-last: start !important;
+  text-align: right !important;
+  text-align-last: right !important;
+  unicode-bidi: plaintext !important;
   padding-right: 0.25rem !important;
   padding-left: 0 !important;
 }
@@ -664,7 +676,12 @@ p[dir="auto"]:dir(rtl) {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-/* User Message Bubble: Precise styling on the actual message bubble frame */
+/* User Message Bubble: In IDE preserve native layout; In Platform style .agy-user-bubble */
+[data-testid="user-message-bubble"] {
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .agy-user-bubble-frame {
   border: none !important;
   box-shadow: none !important;
@@ -675,7 +692,6 @@ p[dir="auto"]:dir(rtl) {
   margin-left: auto !important;
 }
 
-[data-testid="user-message-bubble"],
 .agy-user-bubble {
   border: 1px solid rgba(147, 233, 190, 0.35) !important;
   border-radius: 14px !important;
@@ -691,7 +707,6 @@ p[dir="auto"]:dir(rtl) {
   box-shadow: none !important;
 }
 
-[data-testid="user-message-bubble"]:hover,
 .agy-user-bubble:hover {
   border-color: rgba(147, 233, 190, 0.55) !important;
   box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.30), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
@@ -1121,7 +1136,7 @@ button[data-project-card="true"] svg {
   border: 1px solid var(--proj-color, rgba(147, 233, 190, 0.28)) !important;
   border-left: 1px solid transparent !important;
   border-inline-start: 1px solid transparent !important;
-  box-shadow: inset 3px 0 0 0 var(--proj-color, #93e9be), 0 2px 10px -2px var(--proj-glow, rgba(147, 233, 190, 0.18)) !important;
+  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(147, 233, 190, 0.18)) !important;
 }
 
 /* 8.9 Recent Project Pulse Strip */
@@ -1129,7 +1144,7 @@ button[data-project-card="true"] svg {
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
-  padding: 10px 10px 10px 10px !important;
+  padding: 14px 10px 12px 10px !important;
   overflow-x: auto !important;
   scrollbar-width: none !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
