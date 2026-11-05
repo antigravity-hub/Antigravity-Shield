@@ -334,7 +334,7 @@ body, html, #root {
   letter-spacing: -0.01em !important;
   display: block !important;
   box-sizing: border-box !important;
-  padding: 8px 16px !important;
+  padding: 6px 0 !important;
   line-height: 1.5 !important;
 }
 
@@ -348,6 +348,23 @@ body, html, #root {
 .animate-markdown h1, .animate-markdown h2 {
   unicode-bidi: plaintext !important;
   text-align: start !important;
+}
+
+/* Persian Headings: Strictly right-align & reset left padding */
+[role="article"] h1:dir(rtl), [role="article"] h2:dir(rtl), [role="article"] h3:dir(rtl),
+[role="article"] h4:dir(rtl), [role="article"] h5:dir(rtl), [role="article"] h6:dir(rtl),
+[role="article"] [dir="rtl"] h1, [role="article"] [dir="rtl"] h2, [role="article"] [dir="rtl"] h3,
+[role="article"] [dir="rtl"] h4, [role="article"] [dir="rtl"] h5, [role="article"] [dir="rtl"] h6,
+[role="article"] h1[dir="rtl"], [role="article"] h2[dir="rtl"], [role="article"] h3[dir="rtl"],
+[role="article"] h4[dir="rtl"], [role="article"] h5[dir="rtl"], [role="article"] h6[dir="rtl"],
+.rendered-markdown h1:dir(rtl), .rendered-markdown h2:dir(rtl), .rendered-markdown h3:dir(rtl),
+.rendered-markdown h4:dir(rtl), .rendered-markdown h5:dir(rtl), .rendered-markdown h6:dir(rtl),
+.rendered-markdown [dir="rtl"] h1, .rendered-markdown [dir="rtl"] h2, .rendered-markdown [dir="rtl"] h3 {
+  direction: rtl !important;
+  text-align: right !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
 }
 
 .rendered-markdown h1,
@@ -401,6 +418,8 @@ body, html, #root {
 /* ==========================================================================
    3. Lists, Counters & Highlighted Numbered Points (#93e9be)
    ========================================================================== */
+[role="article"] ul,
+[role="article"] ol,
 .rendered-markdown ul,
 .rendered-markdown ol,
 .chat-widget .rendered-markdown ul,
@@ -459,15 +478,33 @@ body, html, #root {
 }
 
 /* Direction-specific list padding & markers inside messages (RTL on RIGHT, LTR on LEFT) */
+[role="article"] ul:dir(rtl), [role="article"] ol:dir(rtl),
+[role="article"] [dir="rtl"] ul, [role="article"] [dir="rtl"] ol,
 [role="article"] ul[dir="rtl"], [role="article"] ol[dir="rtl"],
+[role="article"] [style*="direction: rtl"] ul, [role="article"] [style*="direction: rtl"] ol,
+[role="article"] ul[style*="direction: rtl"], [role="article"] ol[style*="direction: rtl"],
 .rendered-markdown ul:dir(rtl), .rendered-markdown ol:dir(rtl),
 .chat-widget .rendered-markdown ul:dir(rtl), .chat-widget .rendered-markdown ol:dir(rtl),
-[role="article"] [dir="rtl"] ul, [role="article"] [dir="rtl"] ol,
 .rendered-markdown [dir="rtl"] ul, .rendered-markdown [dir="rtl"] ol {
   direction: rtl !important;
   text-align: right !important;
   padding-right: 1.75rem !important;
+  padding-inline-start: 1.75rem !important;
   padding-left: 0 !important;
+  padding-inline-end: 0 !important;
+  margin-left: 0 !important;
+  margin-inline-end: 0 !important;
+}
+
+[role="article"] ul:dir(rtl) ul, [role="article"] ol:dir(rtl) ol,
+[role="article"] ul:dir(rtl) ol, [role="article"] ol:dir(rtl) ul,
+.rendered-markdown ul:dir(rtl) ul, .rendered-markdown ol:dir(rtl) ol {
+  padding-right: 1.25rem !important;
+  padding-inline-start: 1.25rem !important;
+  padding-left: 0 !important;
+  padding-inline-end: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 [role="article"] li[dir="rtl"],
@@ -612,16 +649,34 @@ body, html, #root {
 }
 
 /* User Message Bubble: Precise styling on the actual message bubble frame */
-.agy-user-bubble-frame,
-[data-testid="user-message-bubble"] {
+.agy-user-bubble-frame {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+}
+
+[data-testid="user-message-bubble"],
+.agy-user-bubble {
   border: 1px solid rgba(147, 233, 190, 0.35) !important;
   border-radius: 14px !important;
   box-shadow: 0 0 12px -2px rgba(147, 233, 190, 0.20), 0 3px 8px rgba(0, 0, 0, 0.3) !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  background: #16161a !important;
 }
 
-.agy-user-bubble-frame:hover,
-[data-testid="user-message-bubble"]:hover {
+.agy-user-bubble-frame:hover {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-testid="user-message-bubble"]:hover,
+.agy-user-bubble:hover {
   border-color: rgba(147, 233, 190, 0.55) !important;
   box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.30), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
 }

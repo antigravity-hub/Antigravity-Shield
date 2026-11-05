@@ -366,6 +366,21 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                 art.removeAttribute('dir');
                 art.style.direction = 'ltr';
                 art.style.textAlign = 'right';
+                const frame = art.querySelector('.agy-user-bubble-frame');
+                if (frame) {{
+                    frame.style.setProperty('border', 'none', 'important');
+                    frame.style.setProperty('box-shadow', 'none', 'important');
+                    frame.style.setProperty('background', 'transparent', 'important');
+                    frame.style.setProperty('padding', '0', 'important');
+                    frame.style.setProperty('width', 'fit-content', 'important');
+                    frame.style.setProperty('max-width', '100%', 'important');
+                    frame.style.setProperty('margin-left', 'auto', 'important');
+                }}
+                const bubble = art.querySelector('.agy-user-bubble');
+                if (bubble) {{
+                    bubble.style.setProperty('width', 'fit-content', 'important');
+                    bubble.style.setProperty('max-width', '100%', 'important');
+                }}
                 const textEl = art.querySelector('.whitespace-pre-wrap') || art;
                 if (isPersian(textEl.textContent || '')) {{
                     textEl.setAttribute('dir', 'rtl');
@@ -384,6 +399,17 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                     if (isPersian(txt)) {{
                         el.setAttribute('dir', 'rtl');
                         el.style.direction = 'rtl';
+                        if (el.tagName.startsWith('H')) {{
+                            el.style.textAlign = 'right';
+                            el.style.paddingLeft = '0px';
+                            el.style.marginLeft = '0px';
+                        }} else if (el.tagName === 'UL' || el.tagName === 'OL') {{
+                            el.style.setProperty('padding-left', '0px', 'important');
+                            el.style.setProperty('padding-inline-end', '0px', 'important');
+                            el.style.setProperty('margin-left', '0px', 'important');
+                            el.style.setProperty('padding-right', '1.75rem', 'important');
+                            el.style.setProperty('padding-inline-start', '1.75rem', 'important');
+                        }}
                     }} else if (txt.length > 0) {{
                         el.setAttribute('dir', 'ltr');
                         el.style.direction = 'ltr';
@@ -392,6 +418,10 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                         el.style.textAlign = 'justify';
                         el.style.textJustify = 'inter-word';
                         el.style.textAlignLast = 'start';
+                        if (isPersian(txt)) {{
+                            el.style.paddingLeft = '0px';
+                            el.style.marginLeft = '0px';
+                        }}
                     }}
                 }});
             }}
