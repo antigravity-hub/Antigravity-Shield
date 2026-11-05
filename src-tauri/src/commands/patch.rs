@@ -940,11 +940,11 @@ a.agy-button[href="/"] svg {
   color: #93e9be !important;
 }
 
-/* 8.5 Project Folders (Colored Name & Card Elevation) */
+/* 8.5 Dynamic Chromatic Project Folders & Tree Guide Lines */
 button[data-testid="project-header"],
 button[data-project-card="true"] {
-  background: linear-gradient(135deg, rgba(147, 233, 190, 0.08) 0%, rgba(147, 233, 190, 0.02) 100%) !important;
-  border: 1px solid rgba(147, 233, 190, 0.18) !important;
+  background: var(--proj-bg, linear-gradient(135deg, rgba(147, 233, 190, 0.08) 0%, rgba(147, 233, 190, 0.02) 100%)) !important;
+  border: 1px solid var(--proj-color, rgba(147, 233, 190, 0.18)) !important;
   border-radius: 8px !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   padding-left: 8px !important;
@@ -953,15 +953,15 @@ button[data-project-card="true"] {
 
 button[data-testid="project-header"]:hover,
 button[data-project-card="true"]:hover {
-  background: linear-gradient(135deg, rgba(147, 233, 190, 0.18) 0%, rgba(147, 233, 190, 0.05) 100%) !important;
-  border-color: rgba(147, 233, 190, 0.4) !important;
-  box-shadow: 0 0 12px -2px rgba(147, 233, 190, 0.25) !important;
+  background: var(--proj-bg, linear-gradient(135deg, rgba(147, 233, 190, 0.18) 0%, rgba(147, 233, 190, 0.05) 100%)) !important;
+  border-color: var(--proj-color, rgba(147, 233, 190, 0.4)) !important;
+  box-shadow: 0 0 12px -2px var(--proj-glow, rgba(147, 233, 190, 0.25)) !important;
   transform: translateY(-0.5px) !important;
 }
 
 button[data-testid="project-header"] span.truncate,
 button[data-project-card="true"] span.truncate {
-  color: #93e9be !important;
+  color: var(--proj-color, #93e9be) !important;
   font-weight: 600 !important;
   font-size: 0.88rem !important;
   letter-spacing: 0.01em !important;
@@ -969,13 +969,13 @@ button[data-project-card="true"] span.truncate {
 
 button[data-testid="project-header"]:hover span.truncate,
 button[data-project-card="true"]:hover span.truncate {
-  color: #bbf7d0 !important;
+  color: #fff !important;
 }
 
 button[data-testid="project-header"] svg,
 button[data-project-card="true"] svg {
-  color: #93e9be !important;
-  filter: drop-shadow(0 0 4px rgba(147, 233, 190, 0.35)) !important;
+  color: var(--proj-color, #93e9be) !important;
+  filter: drop-shadow(0 0 4px var(--proj-glow, rgba(147, 233, 190, 0.35))) !important;
 }
 
 /* 8.6 General Conversation Rows */
@@ -1049,8 +1049,8 @@ button[data-project-card="true"] svg {
   top: -3px !important;
   bottom: -3px !important;
   width: 1.5px !important;
-  background: rgba(147, 233, 190, 0.25) !important;
-  transition: background 0.18s ease !important;
+  background: var(--proj-glow, rgba(147, 233, 190, 0.25)) !important;
+  transition: background 0.18s ease, box-shadow 0.18s ease !important;
   z-index: 2 !important;
 }
 
@@ -1062,27 +1062,65 @@ button[data-project-card="true"] svg {
   top: 50% !important;
   width: 11px !important;
   height: 1.5px !important;
-  background: rgba(147, 233, 190, 0.25) !important;
+  background: var(--proj-glow, rgba(147, 233, 190, 0.25)) !important;
   border-radius: 0 2px 2px 0 !important;
-  transition: background 0.18s ease, width 0.18s ease !important;
+  transition: background 0.18s ease, box-shadow 0.18s ease !important;
   z-index: 2 !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:hover::before {
-  background: #93e9be !important;
-  box-shadow: 0 0 6px rgba(147, 233, 190, 0.5) !important;
+  background: var(--proj-color, #93e9be) !important;
+  box-shadow: 0 0 5px var(--proj-glow, rgba(147, 233, 190, 0.4)) !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:hover::after {
   width: 11px !important;
-  background: #93e9be !important;
-  box-shadow: 0 0 5px rgba(147, 233, 190, 0.5) !important;
+  background: var(--proj-color, #93e9be) !important;
+  box-shadow: 0 0 5px var(--proj-glow, rgba(147, 233, 190, 0.5)) !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::after {
-  background: #93e9be !important;
-  box-shadow: 0 0 8px rgba(147, 233, 190, 0.6) !important;
+.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::after,
+.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::after {
+  background: var(--proj-color, #93e9be) !important;
+  box-shadow: 0 0 8px var(--proj-glow, rgba(147, 233, 190, 0.6)) !important;
+}
+
+.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"]),
+.agy-sidebar-row[class*="pl-"].bg-sidebar-muted,
+.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary {
+  border-inline-start: 3px solid var(--proj-color, #93e9be) !important;
+}
+
+/* 8.9 Recent Project Pulse Strip */
+#agy-project-pulse-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 6px 8px 8px 8px !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  margin-bottom: 6px !important;
+}
+#agy-project-pulse-bar::-webkit-scrollbar {
+  display: none !important;
+}
+.agy-pulse-gem {
+  width: 15px !important;
+  height: 15px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+  cursor: pointer !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+  outline: none !important;
+}
+.agy-pulse-gem:hover {
+  transform: scale(1.3) !important;
+  border-color: #fff !important;
+  z-index: 5 !important;
 }
 
 /* 8.8 Pinned Conversations Luxury VIP Card Treatment */
