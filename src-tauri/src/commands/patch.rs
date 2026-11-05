@@ -338,46 +338,16 @@ body, html, #root {
   line-height: 1.5 !important;
 }
 
-/* RTL Headings inside messages: Border on the RIGHT, Gradient fades to the left */
-[role="article"] h1[dir="rtl"], [role="article"] h2[dir="rtl"], [role="article"] h3[dir="rtl"],
-[role="article"] h4[dir="rtl"], [role="article"] h5[dir="rtl"], [role="article"] h6[dir="rtl"],
-.rendered-markdown h1[dir="rtl"], .rendered-markdown h2[dir="rtl"], .rendered-markdown h3[dir="rtl"],
-.rendered-markdown h4[dir="rtl"], .rendered-markdown h5[dir="rtl"], .rendered-markdown h6[dir="rtl"],
-[role="article"] [dir="rtl"] h1, [role="article"] [dir="rtl"] h2, [role="article"] [dir="rtl"] h3,
-[role="article"] [dir="rtl"] h4, [role="article"] [dir="rtl"] h5, [role="article"] [dir="rtl"] h6,
-.rendered-markdown [dir="rtl"] h1, .rendered-markdown [dir="rtl"] h2, .rendered-markdown [dir="rtl"] h3,
-.rendered-markdown [dir="rtl"] h4, .rendered-markdown [dir="rtl"] h5, .rendered-markdown [dir="rtl"] h6,
-[role="article"] h1:dir(rtl), [role="article"] h2:dir(rtl), [role="article"] h3:dir(rtl),
-[role="article"] h4:dir(rtl), [role="article"] h5:dir(rtl), [role="article"] h6:dir(rtl),
-.rendered-markdown h1:dir(rtl), .rendered-markdown h2:dir(rtl), .rendered-markdown h3:dir(rtl),
-.rendered-markdown h4:dir(rtl), .rendered-markdown h5:dir(rtl), .rendered-markdown h6:dir(rtl) {
-  background: linear-gradient(to left, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
-  border-radius: 4px 10px 10px 4px !important;
-  border-right: 4px solid #93e9be !important;
-  border-left: none !important;
-  text-align: right !important;
-  direction: rtl !important;
-}
-
-/* LTR Headings inside messages: Border on the LEFT, Gradient fades to the right */
-[role="article"] h1[dir="ltr"], [role="article"] h2[dir="ltr"], [role="article"] h3[dir="ltr"],
-[role="article"] h4[dir="ltr"], [role="article"] h5[dir="ltr"], [role="article"] h6[dir="ltr"],
-.rendered-markdown h1[dir="ltr"], .rendered-markdown h2[dir="ltr"], .rendered-markdown h3[dir="ltr"],
-.rendered-markdown h4[dir="ltr"], .rendered-markdown h5[dir="ltr"], .rendered-markdown h6[dir="ltr"],
-[role="article"] [dir="ltr"] h1, [role="article"] [dir="ltr"] h2, [role="article"] [dir="ltr"] h3,
-[role="article"] [dir="ltr"] h4, [role="article"] [dir="ltr"] h5, [role="article"] [dir="ltr"] h6,
-.rendered-markdown [dir="ltr"] h1, .rendered-markdown [dir="ltr"] h2, .rendered-markdown [dir="ltr"] h3,
-.rendered-markdown [dir="ltr"] h4, .rendered-markdown [dir="ltr"] h5, .rendered-markdown [dir="ltr"] h6,
-[role="article"] h1:dir(ltr), [role="article"] h2:dir(ltr), [role="article"] h3:dir(ltr),
-[role="article"] h4:dir(ltr), [role="article"] h5:dir(ltr), [role="article"] h6:dir(ltr),
-.rendered-markdown h1:dir(ltr), .rendered-markdown h2:dir(ltr), .rendered-markdown h3:dir(ltr),
-.rendered-markdown h4:dir(ltr), .rendered-markdown h5:dir(ltr), .rendered-markdown h6:dir(ltr) {
-  background: linear-gradient(to right, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
-  border-radius: 10px 4px 4px 10px !important;
-  border-left: 4px solid #93e9be !important;
-  border-right: none !important;
-  text-align: left !important;
-  direction: ltr !important;
+/* Clean Heading Typography with Natural BiDi Alignment */
+[role="article"] h1, [role="article"] h2, [role="article"] h3,
+[role="article"] h4, [role="article"] h5, [role="article"] h6,
+.rendered-markdown h1, .rendered-markdown h2, .rendered-markdown h3,
+.rendered-markdown h4, .rendered-markdown h5, .rendered-markdown h6,
+.chat-widget .rendered-markdown h1, .chat-widget .rendered-markdown h2,
+.antigravity-agent-side-panel h1, .antigravity-agent-manager h1,
+.animate-markdown h1, .animate-markdown h2 {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
 }
 
 .rendered-markdown h1,
@@ -1078,8 +1048,8 @@ button[data-project-card="true"] svg {
 .agy-sidebar-row[class*="pl-"].bg-sidebar-muted,
 .agy-sidebar-row[class*="pl-"].bg-sidebar-secondary {
   border: 1px solid var(--proj-color, rgba(147, 233, 190, 0.28)) !important;
-  border-left: 1px solid var(--proj-color, #93e9be) !important;
-  border-inline-start: 1px solid var(--proj-color, #93e9be) !important;
+  border-left: 1px solid transparent !important;
+  border-inline-start: 1px solid transparent !important;
   box-shadow: inset 3px 0 0 0 var(--proj-color, #93e9be), 0 2px 10px -2px var(--proj-glow, rgba(147, 233, 190, 0.18)) !important;
 }
 
