@@ -652,30 +652,33 @@ body, html, #root {
   margin-right: 0 !important;
 }
 
-/* User Message Bubble Container with Soft Non-Intrusive Seafoam Glow */
+/* User Message Bubble Container with Flush Single Border and Soft Seafoam Glow */
 [data-testid="user-input-step"] .agy-user-bubble-frame,
 [aria-label="User message"] .agy-user-bubble-frame,
 .interactive-request .agy-user-bubble-frame {
   margin-left: auto !important;
   margin-right: 0 !important;
-  border: 1px solid rgba(147, 233, 190, 0.32) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.20), 0 3px 10px rgba(0, 0, 0, 0.35) !important;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
-}
-
-[data-testid="user-input-step"] .agy-user-bubble-frame:hover,
-[aria-label="User message"] .agy-user-bubble-frame:hover,
-.interactive-request .agy-user-bubble-frame:hover {
-  border-color: rgba(147, 233, 190, 0.48) !important;
-  box-shadow: 0 0 20px -2px rgba(147, 233, 190, 0.30), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
 }
 
 [data-testid="user-input-step"] .agy-user-bubble,
 [aria-label="User message"] .agy-user-bubble,
 .interactive-request .agy-user-bubble {
-  background: linear-gradient(135deg, rgba(22, 27, 34, 0.95) 0%, rgba(18, 22, 28, 0.95) 100%) !important;
-  border-radius: 15px !important;
+  border: 1px solid rgba(147, 233, 190, 0.35) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.22), 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+  background: linear-gradient(135deg, rgba(22, 27, 34, 0.98) 0%, rgba(18, 22, 28, 0.98) 100%) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+[data-testid="user-input-step"] .agy-user-bubble:hover,
+[aria-label="User message"] .agy-user-bubble:hover,
+.interactive-request .agy-user-bubble:hover {
+  border-color: rgba(147, 233, 190, 0.55) !important;
+  box-shadow: 0 0 20px -2px rgba(147, 233, 190, 0.32), 0 4px 14px rgba(0, 0, 0, 0.45) !important;
 }
 
 [data-testid="user-input-step"] .whitespace-pre-wrap,
@@ -809,39 +812,37 @@ pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-lin
    ========================================================================== */
 
 /* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar */
-div:has(> [data-testid="conversation-list-sidebar"]),
-div:has(> * > [data-testid="conversation-list-sidebar"]),
-div:has(> * > * > [data-testid="conversation-list-sidebar"]),
-aside .overflow-y-auto:not([data-testid="conversation-list-sidebar"]),
-[data-testid="sidebar-split"] .overflow-y-auto:not([data-testid="conversation-list-sidebar"]) {
+aside div.flex-1.min-h-0.overflow-y-auto,
+aside div:has(> * > [data-testid="conversation-list-sidebar"]),
+[data-testid="sidebar-split"] div.overflow-y-auto:not([data-testid="conversation-list-sidebar"]) {
+  overflow: hidden !important;
+  overflow-y: hidden !important;
   scrollbar-width: none !important;
 }
-div:has(> [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
-div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
-aside .overflow-y-auto:not([data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
-[data-testid="sidebar-split"] .overflow-y-auto:not([data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
+aside div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
+[data-testid="sidebar-split"] div.overflow-y-auto:not([data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
 }
 
-/* 8.2 Single Sleek 4px Dark-Glass Scrollbar for Sidebar */
+/* 8.2 Single Sleek 4px Dark-Glass Webkit Scrollbar for Sidebar */
 [data-testid="conversation-list-sidebar"] {
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(147, 233, 190, 0.25) transparent !important;
+  scrollbar-width: none !important; /* Disables native Windows grey scrollbar */
 }
 [data-testid="conversation-list-sidebar"]::-webkit-scrollbar {
+  display: block !important;
   width: 4px !important;
 }
 [data-testid="conversation-list-sidebar"]::-webkit-scrollbar-track {
   background: transparent !important;
 }
 [data-testid="conversation-list-sidebar"]::-webkit-scrollbar-thumb {
-  background: rgba(147, 233, 190, 0.2) !important;
+  background: rgba(147, 233, 190, 0.3) !important;
   border-radius: 4px !important;
 }
 [data-testid="conversation-list-sidebar"]::-webkit-scrollbar-thumb:hover {
-  background: rgba(147, 233, 190, 0.45) !important;
+  background: rgba(147, 233, 190, 0.6) !important;
 }
 
 /* 8.3 Top Navigation Action Hero ("New Conversation") */
