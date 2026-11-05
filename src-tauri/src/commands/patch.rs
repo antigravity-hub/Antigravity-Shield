@@ -334,12 +334,12 @@ body, html, #root {
   letter-spacing: -0.01em !important;
   display: block !important;
   box-sizing: border-box !important;
-  border-inline-start: 4px solid #93e9be !important;
   padding: 8px 16px !important;
   line-height: 1.5 !important;
 }
 
-/* RTL Headings: Gradient fades to the left */
+/* RTL Headings: Border on the RIGHT, Gradient fades to the left */
+h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[dir="rtl"],
 [role="article"] h1[dir="rtl"], [role="article"] h2[dir="rtl"], [role="article"] h3[dir="rtl"],
 [role="article"] h4[dir="rtl"], [role="article"] h5[dir="rtl"], [role="article"] h6[dir="rtl"],
 [dir="rtl"] [role="article"] h1, [dir="rtl"] [role="article"] h2, [dir="rtl"] [role="article"] h3,
@@ -348,10 +348,14 @@ body, html, #root {
 h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl) {
   background: linear-gradient(to left, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
   border-radius: 4px 10px 10px 4px !important;
+  border-right: 4px solid #93e9be !important;
+  border-left: none !important;
   text-align: right !important;
+  direction: rtl !important;
 }
 
-/* LTR Headings: Gradient fades to the right */
+/* LTR Headings: Border on the LEFT, Gradient fades to the right */
+h1[dir="ltr"], h2[dir="ltr"], h3[dir="ltr"], h4[dir="ltr"], h5[dir="ltr"], h6[dir="ltr"],
 [role="article"] h1[dir="ltr"], [role="article"] h2[dir="ltr"], [role="article"] h3[dir="ltr"],
 [role="article"] h4[dir="ltr"], [role="article"] h5[dir="ltr"], [role="article"] h6[dir="ltr"],
 [dir="ltr"] [role="article"] h1, [dir="ltr"] [role="article"] h2, [dir="ltr"] [role="article"] h3,
@@ -360,16 +364,10 @@ h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl) {
 h1:dir(ltr), h2:dir(ltr), h3:dir(ltr), h4:dir(ltr), h5:dir(ltr), h6:dir(ltr) {
   background: linear-gradient(to right, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
   border-radius: 10px 4px 4px 10px !important;
+  border-left: 4px solid #93e9be !important;
+  border-right: none !important;
   text-align: left !important;
-}
-
-/* Fallback default heading background if dir is not explicitly set */
-[role="article"] h1, [role="article"] h2, [role="article"] h3,
-[role="article"] h4, [role="article"] h5, [role="article"] h6,
-.rendered-markdown h1, .rendered-markdown h2, .rendered-markdown h3,
-.rendered-markdown h4, .rendered-markdown h5, .rendered-markdown h6 {
-  background: linear-gradient(to left, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
-  border-radius: 4px 10px 10px 4px !important;
+  direction: ltr !important;
 }
 
 .rendered-markdown h1,
@@ -480,21 +478,26 @@ h1:dir(ltr), h2:dir(ltr), h3:dir(ltr), h4:dir(ltr), h5:dir(ltr), h6:dir(ltr) {
   font-weight: 700 !important;
 }
 
-/* Direction-specific list padding */
-.rendered-markdown li:dir(rtl),
-.chat-widget .rendered-markdown li:dir(rtl),
-[dir="rtl"] .rendered-markdown li {
-  padding-right: 0.25rem !important;
+/* Direction-specific list padding & markers (RTL on RIGHT, LTR on LEFT) */
+ul[dir="rtl"], ol[dir="rtl"], [role="article"] ul[dir="rtl"], [role="article"] ol[dir="rtl"],
+.rendered-markdown ul:dir(rtl), .rendered-markdown ol:dir(rtl),
+.chat-widget .rendered-markdown ul:dir(rtl), .chat-widget .rendered-markdown ol:dir(rtl),
+[dir="rtl"] .rendered-markdown ul, [dir="rtl"] .rendered-markdown ol,
+[dir="rtl"] ul, [dir="rtl"] ol {
+  direction: rtl !important;
+  text-align: right !important;
+  padding-right: 1.75rem !important;
   padding-left: 0 !important;
 }
 
-.rendered-markdown ul:dir(rtl),
-.rendered-markdown ol:dir(rtl),
-.chat-widget .rendered-markdown ul:dir(rtl),
-.chat-widget .rendered-markdown ol:dir(rtl),
-[dir="rtl"] .rendered-markdown ul,
-[dir="rtl"] .rendered-markdown ol {
-  padding-right: 1.75rem !important;
+li[dir="rtl"], [role="article"] li[dir="rtl"],
+.rendered-markdown li:dir(rtl),
+.chat-widget .rendered-markdown li:dir(rtl),
+[dir="rtl"] .rendered-markdown li,
+[dir="rtl"] li {
+  direction: rtl !important;
+  text-align: right !important;
+  padding-right: 0.25rem !important;
   padding-left: 0 !important;
 }
 
@@ -882,15 +885,28 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         let rep1 = r#"f("div",{dir:"auto",role:"article","aria-label":"User message""#;
                         let target2 = r#"f("div",{role:"article","aria-label":"Agent response""#;
                         let rep2 = r#"f("div",{dir:"auto",role:"article","aria-label":"Agent response""#;
+                        let t_div = r#"rn f("div",{className:Lt("leading-relaxed","select-text","text-sm","flex flex-col""#;
+                        let r_div = r#"rn f("div",{dir:"auto",className:Lt("leading-relaxed","select-text","text-sm","flex flex-col""#;
+                        let t_comp = r#"components:{code:M,a:J,li:re,input:v9s,img:j,table:Q,tr:K,th:z,td:q,blockquote:se,p:ne,hr:fe,"agent-embed":le}"#;
+                        let r_comp = r#"components:{h1:pe=>f("h1",{dir:"auto",...pe}),h2:pe=>f("h2",{dir:"auto",...pe}),h3:pe=>f("h3",{dir:"auto",...pe}),h4:pe=>f("h4",{dir:"auto",...pe}),h5:pe=>f("h5",{dir:"auto",...pe}),h6:pe=>f("h6",{dir:"auto",...pe}),ul:pe=>f("ul",{dir:"auto",...pe}),ol:pe=>f("ol",{dir:"auto",...pe}),code:M,a:J,li:re,input:v9s,img:j,table:Q,tr:K,th:z,td:q,blockquote:se,p:ne,hr:fe,"agent-embed":le}"#;
+                        let t_p = r#"ne=ie(pe=>f("p",{...pe,className:Lt(pe.className),children:h?f(n9s,{paragraphs:eb.toArray(pe.children)}):pe.children}),[h])"#;
+                        let r_p = r#"ne=ie(pe=>f("p",{dir:"auto",...pe,className:Lt(pe.className),children:h?f(n9s,{paragraphs:eb.toArray(pe.children)}):pe.children}),[h])"#;
+                        let t_li = r#"re=ie(pe=>f(V9s,{...pe,animate:h}),[h])"#;
+                        let r_li = r#"re=ie(pe=>f(V9s,{dir:"auto",...pe,animate:h}),[h])"#;
 
-                        if js_content.contains(target1) || js_content.contains(target2) {
-                            let patched_js = js_content.replace(target1, rep1).replace(target2, rep2);
-                            let _ = fs::write(&main_js, &patched_js);
-                            if let Some(app_dir) = out_dir.parent() {
-                                update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
-                            }
-                            applied_count += 1;
+                        let mut patched_js = js_content;
+                        if patched_js.contains(target1) { patched_js = patched_js.replace(target1, rep1); }
+                        if patched_js.contains(target2) { patched_js = patched_js.replace(target2, rep2); }
+                        if patched_js.contains(t_div) { patched_js = patched_js.replace(t_div, r_div); }
+                        if patched_js.contains(t_comp) { patched_js = patched_js.replace(t_comp, r_comp); }
+                        if patched_js.contains(t_p) { patched_js = patched_js.replace(t_p, r_p); }
+                        if patched_js.contains(t_li) { patched_js = patched_js.replace(t_li, r_li); }
+
+                        let _ = fs::write(&main_js, &patched_js);
+                        if let Some(app_dir) = out_dir.parent() {
+                            update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
                         }
+                        applied_count += 1;
                     }
                 }
                 if let Some(app_dir) = out_dir.parent() {
