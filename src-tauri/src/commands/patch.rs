@@ -640,47 +640,32 @@ body, html, #root {
 .interactive-request {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   direction: ltr !important;
+  display: flex !important;
+  flex-direction: column !important;
   align-items: flex-end !important;
   margin-left: auto !important;
   margin-right: 0 !important;
+  width: 100% !important;
 }
 
 [data-testid="user-input-step"] > div,
 [aria-label="User message"] > div,
 .interactive-request > div {
   direction: ltr !important;
-  justify-content: flex-end !important;
   margin-left: auto !important;
   margin-right: 0 !important;
-}
-
-/* User Message Bubble Container with Flush Single Border and Soft Seafoam Glow */
-[data-testid="user-input-step"] .agy-user-bubble-frame,
-[aria-label="User message"] .agy-user-bubble-frame,
-.interactive-request .agy-user-bubble-frame {
-  margin-left: auto !important;
-  margin-right: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-}
-
-[data-testid="user-input-step"] .agy-user-bubble,
-[aria-label="User message"] .agy-user-bubble,
-.interactive-request .agy-user-bubble {
   border: 1px solid rgba(147, 233, 190, 0.35) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.22), 0 4px 12px rgba(0, 0, 0, 0.35) !important;
-  background: linear-gradient(135deg, rgba(22, 27, 34, 0.98) 0%, rgba(18, 22, 28, 0.98) 100%) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 0 12px -2px rgba(147, 233, 190, 0.20), 0 3px 8px rgba(0, 0, 0, 0.3) !important;
+  overflow: hidden !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
-[data-testid="user-input-step"] .agy-user-bubble:hover,
-[aria-label="User message"] .agy-user-bubble:hover,
-.interactive-request .agy-user-bubble:hover {
+[data-testid="user-input-step"] > div:hover,
+[aria-label="User message"] > div:hover,
+.interactive-request > div:hover {
   border-color: rgba(147, 233, 190, 0.55) !important;
-  box-shadow: 0 0 20px -2px rgba(147, 233, 190, 0.32), 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.30), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
 }
 
 [data-testid="user-input-step"] .whitespace-pre-wrap,
@@ -700,7 +685,6 @@ body, html, #root {
 textarea, input[type="text"], input:not([type]), [contenteditable="true"] {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
-  text-align: start !important;
 }
 
 textarea:dir(rtl), input:dir(rtl), [contenteditable="true"]:dir(rtl),
@@ -816,14 +800,17 @@ pre, code, pre *, code *, kbd, samp, .monaco-editor, .monaco-editor *, .view-lin
    8. UI/UX Pro Max - High-End Luxury Sidebar Architecture (Platform & IDE)
    ========================================================================== */
 
-/* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar (Strictly scoped to ASIDE) */
-aside div.flex-1.min-h-0.overflow-y-auto,
-aside div:has(> * > [data-testid="conversation-list-sidebar"]) {
+/* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar */
+div.flex-1.min-h-0.overflow-y-auto:has([data-testid="conversation-list-sidebar"]),
+[data-testid="sidebar-split"] div:has(> * > [data-testid="conversation-list-sidebar"]),
+[data-testid="sidebar-split"] div:has(> [data-testid="conversation-list-sidebar"]) {
   overflow: hidden !important;
   overflow-y: hidden !important;
   scrollbar-width: none !important;
 }
-aside div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
+div.flex-1.min-h-0.overflow-y-auto:has([data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
+[data-testid="sidebar-split"] div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
+[data-testid="sidebar-split"] div:has(> [data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
@@ -1042,8 +1029,7 @@ button[data-project-card="true"] svg {
 /* Animate only the inner text slightly forward on hover */
 .agy-sidebar-row[class*="pl-"]:hover a,
 .agy-sidebar-row[class*="pl-"]:hover .grow {
-  transform: translateX(2px) !important;
-  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: none !important;
 }
 
 /* Tree vertical line running down the project branch */
@@ -1079,9 +1065,9 @@ button[data-project-card="true"] svg {
 }
 
 .agy-sidebar-row[class*="pl-"]:hover::after {
-  width: 14px !important;
+  width: 11px !important;
   background: #93e9be !important;
-  box-shadow: 0 0 6px rgba(147, 233, 190, 0.6) !important;
+  box-shadow: 0 0 5px rgba(147, 233, 190, 0.5) !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
