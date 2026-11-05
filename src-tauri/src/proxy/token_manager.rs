@@ -128,6 +128,9 @@ pub struct ProxyToken {
     pub project_id: Option<String>,
     pub subscription_tier: Option<String>, // "FREE" | "PRO" | "ULTRA"
     pub remaining_quota: Option<i32>,      // [FIX #563] Remaining quota for priority sorting
+    pub min_quota_pct: Option<i32>,        // [NEW] Minimum remaining quota across all models/buckets
+    pub weekly_exhausted: bool,            // [NEW] Whether weekly quota limit has been hit
+    pub is_forbidden: bool,                // [NEW] Whether account was marked forbidden
     pub protected_models: HashSet<String>, // [NEW #621]
     pub health_score: f32,                 // [NEW] Health score (0.0 - 1.0)
     pub reset_time: Option<i64>,           // [NEW] Quota refresh timestamp (used for sort optimization)
@@ -137,6 +140,23 @@ pub struct ProxyToken {
     pub model_quotas: HashMap<String, i32>, // [OPTIMIZATION] In-memory cache for model-specific quotas
     pub model_limits: HashMap<String, u64>, // [NEW] max_output_tokens per model from quota data
     pub device_profile: Option<crate::models::DeviceProfile>, // [NEW M1] Per-account isolated device fingerprint
+}
+
+impl ProxyToken {
+    /// Return true if account has healthy quota (>5%) and is not forbidden or weekly exhausted
+    pub fn is_quota_healthy(&self, target_model: &str) -> bool {
+        if self.is_forbidden || self.weekly_exhausted || self.validation_blocked {
+            return false;
+        }
+        let target_quota = self
+            .model_quotas
+            .get(target_model)
+            .copied()
+            .or(self.min_quota_pct)
+            .or(self.remaining_quota)
+            .unwrap_or(100);
+        target_quota > 5
+    }
 }
 
 /// 403 Classification and Quarantine Protocol
@@ -937,6 +957,22 @@ impl TokenManager {
             .and_then(|q| self.calculate_quota_stats(q));
         // .filter(|&r| r > 0); // 移除 >0 过滤，因为 0% 也是有效data，只是优先级低
 
+        // [AUTO-SWITCH QUOTA INTEGRATION] Extract minimum remaining quota, weekly exhaustion and forbidden status
+        let (min_quota_pct, weekly_exhausted, is_forbidden) = if let Some(q_val) = account.get("quota") {
+            let q_data: Option<crate::models::QuotaData> = serde_json::from_value(q_val.clone()).ok();
+            if let Some(q) = q_data {
+                (
+                    Some(q.get_minimum_remaining_percentage()),
+                    q.has_weekly_limit_hit() || q.is_gemini_exhausted(),
+                    q.is_forbidden,
+                )
+            } else {
+                (None, false, false)
+            }
+        } else {
+            (None, false, false)
+        };
+
         // 【新增 #621】提取受限model列表
         let protected_models: HashSet<String> = account
             .get("protected_models")
@@ -1084,6 +1120,9 @@ impl TokenManager {
             project_id,
             subscription_tier,
             remaining_quota,
+            min_quota_pct,
+            weekly_exhausted,
+            is_forbidden,
             protected_models,
             health_score,
             reset_time,
@@ -1642,40 +1681,34 @@ impl TokenManager {
             return Some(available[0]);
         }
 
-        // P2C: 从前 min(P2C_POOL_SIZE, len) 个中随机选 2 个
-        let pool_size = available.len().min(Self::P2C_POOL_SIZE);
-        let mut rng = rand::thread_rng();
+        // 优先选择健康且剩余配额最高的账号（消除随机骰子引起的频繁跳变）
+        let healthy: Vec<&ProxyToken> = available
+            .iter()
+            .filter(|t| t.is_quota_healthy(normalized_target))
+            .copied()
+            .collect();
 
-        let pick1 = rng.gen_range(0..pool_size);
-        let pick2 = rng.gen_range(0..pool_size);
-        // 确保选择不同的两个候选
-        let pick2 = if pick2 == pick1 {
-            (pick1 + 1) % pool_size
-        } else {
-            pick2
-        };
+        let pool = if !healthy.is_empty() { &healthy } else { &available };
 
-        let c1 = available[pick1];
-        let c2 = available[pick2];
+        let selected = pool.iter().max_by_key(|t| {
+            t.model_quotas
+                .get(normalized_target)
+                .copied()
+                .or(t.min_quota_pct)
+                .or(t.remaining_quota)
+                .unwrap_or(0)
+        });
 
-        // 选择quota更高的
-        let selected = if c1.remaining_quota.unwrap_or(0) >= c2.remaining_quota.unwrap_or(0) {
-            c1
-        } else {
-            c2
-        };
+        if let Some(&sel) = selected {
+            tracing::debug!(
+                "🎯 [Deterministic High-Quota Selection] Selected {} (quota: {:?}%)",
+                sel.email,
+                sel.model_quotas.get(normalized_target).copied().or(sel.min_quota_pct).or(sel.remaining_quota)
+            );
+            return Some(sel);
+        }
 
-        tracing::debug!(
-            "🎲 [P2C] Selected {} ({}%) from [{}({}%), {}({}%)]",
-            selected.email,
-            selected.remaining_quota.unwrap_or(0),
-            c1.email,
-            c1.remaining_quota.unwrap_or(0),
-            c2.email,
-            c2.remaining_quota.unwrap_or(0)
-        );
-
-        Some(selected)
+        Some(available[0])
     }
 
     /// 先发送取消信号，再带超时等待任务完成
@@ -2027,8 +2060,20 @@ impl TokenManager {
         // 【新增 / Issue #3348】checkquota保护Whether enabled（优先从内存缓存读取，避免热路径读盘）
         let quota_protection_enabled = self.is_quota_protection_enabled();
 
-        // ===== [FIX #820] 固定account模式：优先使用指定account =====
-        let preferred_id = self.preferred_account_id.read().await.clone();
+        // ===== [FIX #820] 固定account模式与配额预警智能自动切换 (Persistent Sticky Lock & Preemptive Auto-Switch) =====
+        let mut preferred_id = self.preferred_account_id.read().await.clone();
+
+        // 如果未显式配置 preferred_account_id，自动同步 Shield IDE/Platform 的当前激活账号
+        if preferred_id.is_none() {
+            if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
+                if let Some(target_acc_id) = targets.ide.or(targets.platform).or(targets.agy) {
+                    if tokens_snapshot.iter().any(|t| t.account_id == target_acc_id) {
+                        preferred_id = Some(target_acc_id);
+                    }
+                }
+            }
+        }
+
         if let Some(ref pref_id) = preferred_id {
             // 查找优先account
             if let Some(preferred_token) = tokens_snapshot
@@ -2084,12 +2129,20 @@ impl TokenManager {
                             && preferred_token
                                 .protected_models
                                 .contains(&normalized_target);
+                        let is_quota_healthy = preferred_token.is_quota_healthy(&normalized_target);
 
-                        if !is_rate_limited && !is_quota_protected {
+                        if !is_rate_limited && !is_quota_protected && is_quota_healthy {
                             tracing::info!(
-                                "🔒 [FIX #820] Using preferred account: {} (fixed mode)",
-                                preferred_token.email
+                                "🔒 [Persistent Pinned] Using active account: {} (quota: {:?}%)",
+                                preferred_token.email,
+                                preferred_token.min_quota_pct.or(preferred_token.remaining_quota)
                             );
+
+                            // 锁定 preferred_account_id 确保后续请求持续命中同一账号
+                            {
+                                let mut preferred = self.preferred_account_id.write().await;
+                                *preferred = Some(preferred_token.account_id.clone());
+                            }
 
                             // 直接使用优先account，跳过轮询逻辑
                             let mut token = preferred_token.clone();
@@ -2152,10 +2205,80 @@ impl TokenManager {
                                 0,
                             ));
                         } else {
-                            if is_rate_limited {
-                                tracing::warn!("🔒 [FIX #820] Preferred account {} is rate-limited, falling back to round-robin", preferred_token.email);
+                            let reason = if is_rate_limited {
+                                "rate-limited"
+                            } else if !is_quota_healthy {
+                                "quota exhausted (<=5% or weekly limit reached)"
                             } else {
-                                tracing::warn!("🔒 [FIX #820] Preferred account {} is quota-protected for {}, falling back to round-robin", preferred_token.email, target_model);
+                                "quota-protected"
+                            };
+                            tracing::warn!(
+                                "🔄 [Preemptive Auto-Switch] Active account {} is {} (quota: {:?}%), executing atomic handover to healthy standby...",
+                                preferred_token.email,
+                                reason,
+                                preferred_token.min_quota_pct.or(preferred_token.remaining_quota)
+                            );
+
+                            // 从排序完备的 tokens_snapshot 中寻找最高配额的健康备选账号
+                            let mut standby_token = None;
+                            for cand in &tokens_snapshot {
+                                if cand.account_id != preferred_token.account_id
+                                    && cand.is_quota_healthy(&normalized_target)
+                                    && !self.is_rate_limited(&cand.account_id, Some(&normalized_target)).await
+                                    && !self.is_quarantined(&cand.account_id)
+                                    && !(quota_protection_enabled && cand.protected_models.contains(&normalized_target))
+                                {
+                                    standby_token = Some(cand.clone());
+                                    break;
+                                }
+                            }
+
+                            if let Some(standby) = standby_token {
+                                tracing::info!(
+                                    "🔄 [Preemptive Auto-Switch] Successfully switched proxy from {} to {} (new quota: {:?}%)",
+                                    preferred_token.email,
+                                    standby.email,
+                                    standby.min_quota_pct.or(standby.remaining_quota)
+                                );
+                                // 原子切换 preferred 账号
+                                {
+                                    let mut pref = self.preferred_account_id.write().await;
+                                    *pref = Some(standby.account_id.clone());
+                                }
+
+                                let mut token = standby.clone();
+                                let now = chrono::Utc::now().timestamp();
+                                if now >= token.timestamp - 90 {
+                                    if let Ok(refreshed) = self.refresh_account_token(&token.account_id).await {
+                                        token = refreshed;
+                                    }
+                                }
+                                let project_id = if let Some(pid) = &token.project_id {
+                                    if pid.is_empty() { None } else { Some(pid.clone()) }
+                                } else { None };
+                                let project_id = if let Some(pid) = project_id {
+                                    pid
+                                } else {
+                                    match crate::proxy::project_resolver::fetch_project_id(&token.access_token).await {
+                                        Ok(pid) => {
+                                            if let Some(mut entry) = self.tokens.get_mut(&token.account_id) {
+                                                entry.project_id = Some(pid.clone());
+                                            }
+                                            let write_path = token.account_path.clone();
+                                            let pid_clone = pid.clone();
+                                            tokio::task::spawn_blocking(move || {
+                                                let Ok(_lk) = crate::modules::account::lock_account_file_updates() else { return; };
+                                                let Ok(raw) = std::fs::read_to_string(&write_path) else { return; };
+                                                let Ok(mut val) = serde_json::from_str::<serde_json::Value>(&raw) else { return; };
+                                                val["token"]["project_id"] = pid_clone.into();
+                                                if let Ok(s) = serde_json::to_string_pretty(&val) { let _ = std::fs::write(&write_path, s); }
+                                            });
+                                            pid
+                                        }
+                                        Err(_) => "bamboo-precept-lgxtn".to_string(),
+                                    }
+                                };
+                                return Ok((token.access_token, project_id, token.email, token.account_id, 0));
                             }
                         }
                     }
@@ -2209,12 +2332,12 @@ impl TokenManager {
                             .unwrap_or_else(|| bound_token.account_id.clone());
                         // [FIX] Pass None for specific model wait time if not applicable
                         let reset_sec = self.rate_limit_tracker.get_remaining_wait(&key, None);
-                        if reset_sec > 0 {
-                            // 【修复 Issue #284】立即解绑并Switch account，不再阻塞等待
-                            // 原因：阻塞等待会导致并发request时客户端 socket 超时 (UND_ERR_SOCKET)
+                        let is_healthy = bound_token.is_quota_healthy(&normalized_target);
+                        if reset_sec > 0 || !is_healthy {
+                            // 【修复 Issue #284 & 配额保护】立即解绑并Switch account
                             tracing::debug!(
-                                "Sticky Session: Bound account {} is rate-limited ({}s), unbinding and switching.",
-                                bound_token.email, reset_sec
+                                "Sticky Session: Bound account {} is rate-limited ({}s) or quota exhausted (healthy: {}), unbinding and switching.",
+                                bound_token.email, reset_sec, is_healthy
                             );
                             self.session_accounts.remove(sid);
                         } else if !attempted.contains(&bound_id)
@@ -2309,6 +2432,12 @@ impl TokenManager {
                         need_update_last_used =
                             Some((selected.account_id.clone(), std::time::Instant::now()));
 
+                        // [PINNING] 锁定 preferred_account_id 保证无 session_id 客户端（如 GameGuidance）零跳变
+                        {
+                            let mut pref = self.preferred_account_id.write().await;
+                            *pref = Some(selected.account_id.clone());
+                        }
+
                         // If 是会话首次分配且需要粘性，在此建立绑定
                         if let Some(sid) = session_id {
                             if scheduling.mode != SchedulingMode::PerformanceFirst {
@@ -2346,6 +2475,12 @@ impl TokenManager {
                 ) {
                     tracing::debug!("  {} - SELECTED via P2C", selected.email);
                     target_token = Some(selected.clone());
+
+                    // [PINNING] 锁定 preferred_account_id 保证后续请求持续稳定在此账号
+                    {
+                        let mut pref = self.preferred_account_id.write().await;
+                        *pref = Some(selected.account_id.clone());
+                    }
 
                     if rotate {
                         tracing::debug!("Force Rotation: Switched to account: {}", selected.email);
@@ -4815,6 +4950,9 @@ mod tests {
             project_id: None,
             subscription_tier: tier.map(|s| s.to_string()),
             remaining_quota,
+            min_quota_pct: remaining_quota,
+            weekly_exhausted: false,
+            is_forbidden: false,
             protected_models: HashSet::new(),
             health_score,
             reset_time,
@@ -5160,6 +5298,9 @@ mod tests {
             project_id: None,
             subscription_tier: Some("PRO".to_string()),
             remaining_quota,
+            min_quota_pct: remaining_quota,
+            weekly_exhausted: false,
+            is_forbidden: false,
             protected_models,
             health_score: 1.0,
             reset_time: None,

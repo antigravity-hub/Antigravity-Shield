@@ -1931,8 +1931,15 @@ pub async fn handle_chat_completions(
             None, // body
         );
 
-        // 3. 提取 SessionId (粘性指纹)
-        let session_id = SessionManager::extract_openai_session_id(&openai_req);
+        // 3. 提取 SessionId (粘性指纹，优先 HTTP Headers 与 request.user)
+        let session_id = headers
+            .get("x-session-id")
+            .or_else(|| headers.get("session-id"))
+            .or_else(|| headers.get("x-conversation-id"))
+            .and_then(|v| v.to_str().ok())
+            .map(|s| s.to_string())
+            .or_else(|| openai_req.user.clone())
+            .unwrap_or_else(|| SessionManager::extract_openai_session_id(&openai_req));
 
         // 4. get Token (使用准确的 request_type)
         // 关键：在retry尝试时根据 force_rotate 决定是否轮换account

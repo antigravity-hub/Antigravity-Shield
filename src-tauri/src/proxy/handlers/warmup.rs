@@ -361,13 +361,18 @@ pub async fn handle_warmup(
                 if status_code == 403 {
                     let is_third_party = req.model.to_lowercase().contains("claude")
                         || req.model.to_lowercase().contains("gpt");
+                    let error_lower = error_text.to_lowercase();
+                    let is_confirmed_tos = error_text.contains("TOS_VIOLATION")
+                        || error_lower.contains("terms of service")
+                        || error_lower.contains("account suspended")
+                        || error_lower.contains("abuse");
 
                     if is_third_party {
                         warn!(
                             "[Warmup-API] 403 Forbidden on optional model {} for {}, skipping forbidden mark",
                             req.model, req.email
                         );
-                    } else {
+                    } else if is_confirmed_tos {
                         let resolved_account_id = if !account_id.is_empty() {
                             account_id.clone()
                         } else {
@@ -378,7 +383,7 @@ pub async fn handle_warmup(
 
                         if !resolved_account_id.is_empty() {
                             warn!(
-                                "[Warmup-API] 403 Forbidden detected for {}, marking account as forbidden",
+                                "[Warmup-API] Confirmed TOS violation (403) detected for {}, marking account as forbidden",
                                 req.email
                             );
                             let _ = crate::modules::account::mark_account_forbidden(
@@ -387,10 +392,15 @@ pub async fn handle_warmup(
                             );
                         } else {
                             warn!(
-                                "[Warmup-API] 403 Forbidden detected for {} but could not resolve account_id, skipping mark",
+                                "[Warmup-API] Confirmed TOS violation (403) detected for {} but could not resolve account_id, skipping mark",
                                 req.email
                             );
                         }
+                    } else {
+                        warn!(
+                            "[Warmup-API] 403 Forbidden without TOS violation for {} (model {}), NOT marking account forbidden: {}",
+                            req.email, req.model, error_text
+                        );
                     }
                 }
 

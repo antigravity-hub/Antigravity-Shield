@@ -51,6 +51,9 @@ pub struct OpenAIRequest {
     // [NEW] Direct imageSize support (for Gemini native parameter)
     #[serde(default, rename = "imageSize")]
     pub image_size: Option<String>,
+    // [NEW] Standard OpenAI user identifier for sticky sessions
+    #[serde(default)]
+    pub user: Option<String>,
 }
 
 /// Thinking config (兼容 Anthropic 和 OpenAI 扩展协议)

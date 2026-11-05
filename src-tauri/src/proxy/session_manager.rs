@@ -88,33 +88,76 @@ impl SessionManager {
 
     /// 根据 OpenAI request生成稳定的会话指纹
     pub fn extract_openai_session_id(request: &OpenAIRequest) -> String {
-        let mut hasher = Sha256::new();
-
-        let mut content_found = false;
-        for msg in &request.messages {
-            if msg.role != "user" {
-                continue;
+        // 1. 如果请求体包含明确的 user 标识，优先以此建立稳定指纹
+        if let Some(ref user) = request.user {
+            let trimmed = user.trim();
+            if !trimmed.is_empty() {
+                let mut hasher = Sha256::new();
+                hasher.update(trimmed.as_bytes());
+                let hash = format!("{:x}", hasher.finalize());
+                let sid = format!("sid-{}", &hash[..16]);
+                tracing::debug!("[SessionManager-OpenAI] Generated user-based fingerprint: {}", sid);
+                return sid;
             }
-            if let Some(content) = &msg.content {
-                let text = match content {
-                    OpenAIContent::String(s) => s.clone(),
-                    OpenAIContent::Array(blocks) => blocks
-                        .iter()
-                        .filter_map(|block| match block {
-                            crate::proxy::mappers::openai::models::OpenAIContentBlock::Text {
-                                text,
-                            } => Some(text.as_str()),
-                            _ => None,
-                        })
-                        .collect::<Vec<_>>()
-                        .join(" "),
-                };
+        }
 
-                let clean_text = text.trim();
-                if clean_text.len() > 10 && !clean_text.contains("<system-reminder>") {
-                    hasher.update(clean_text.as_bytes());
-                    content_found = true;
-                    break;
+        let mut hasher = Sha256::new();
+        let mut content_found = false;
+
+        // 2. 优先尝试从 system 消息中提取稳定的会话锚点（防止外部多轮工具调用时指纹飘移）
+        for msg in &request.messages {
+            if msg.role == "system" {
+                if let Some(content) = &msg.content {
+                    let text = match content {
+                        OpenAIContent::String(s) => s.clone(),
+                        OpenAIContent::Array(blocks) => blocks
+                            .iter()
+                            .filter_map(|block| match block {
+                                crate::proxy::mappers::openai::models::OpenAIContentBlock::Text {
+                                    text,
+                                } => Some(text.as_str()),
+                                _ => None,
+                            })
+                            .collect::<Vec<_>>()
+                            .join(" "),
+                    };
+                    let clean = text.trim();
+                    if clean.len() > 10 {
+                        hasher.update(clean.as_bytes());
+                        content_found = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 3. 回退到首个 user 消息提取指纹
+        if !content_found {
+            for msg in &request.messages {
+                if msg.role != "user" {
+                    continue;
+                }
+                if let Some(content) = &msg.content {
+                    let text = match content {
+                        OpenAIContent::String(s) => s.clone(),
+                        OpenAIContent::Array(blocks) => blocks
+                            .iter()
+                            .filter_map(|block| match block {
+                                crate::proxy::mappers::openai::models::OpenAIContentBlock::Text {
+                                    text,
+                                } => Some(text.as_str()),
+                                _ => None,
+                            })
+                            .collect::<Vec<_>>()
+                            .join(" "),
+                    };
+
+                    let clean_text = text.trim();
+                    if clean_text.len() > 10 && !clean_text.contains("<system-reminder>") {
+                        hasher.update(clean_text.as_bytes());
+                        content_found = true;
+                        break;
+                    }
                 }
             }
         }
