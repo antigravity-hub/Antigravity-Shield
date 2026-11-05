@@ -639,31 +639,19 @@ body, html, #root {
 [aria-label="User message"],
 .interactive-request {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
-  direction: ltr !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-end !important;
-  margin-left: auto !important;
-  margin-right: 0 !important;
-  width: 100% !important;
 }
 
-[data-testid="user-input-step"] > div,
-[aria-label="User message"] > div,
-.interactive-request > div {
-  direction: ltr !important;
-  margin-left: auto !important;
-  margin-right: 0 !important;
+/* User Message Bubble: Precise styling on the actual message bubble frame */
+.agy-user-bubble-frame,
+[data-testid="user-message-bubble"] {
   border: 1px solid rgba(147, 233, 190, 0.35) !important;
   border-radius: 14px !important;
   box-shadow: 0 0 12px -2px rgba(147, 233, 190, 0.20), 0 3px 8px rgba(0, 0, 0, 0.3) !important;
-  overflow: hidden !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
-[data-testid="user-input-step"] > div:hover,
-[aria-label="User message"] > div:hover,
-.interactive-request > div:hover {
+.agy-user-bubble-frame:hover,
+[data-testid="user-message-bubble"]:hover {
   border-color: rgba(147, 233, 190, 0.55) !important;
   box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.30), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
 }
