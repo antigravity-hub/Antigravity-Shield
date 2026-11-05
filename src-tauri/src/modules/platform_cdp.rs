@@ -104,7 +104,9 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
             style.id = 'antigravity-shield-platform-rtl';
             document.head.appendChild(style);
         }}
-        style.textContent = `{}`;
+        if (style.textContent !== `{}`) {{
+            style.textContent = `{}`;
+        }}
 
         const isPersian = (text) => /[\u0600-\u06FF]/.test(text);
 

@@ -257,17 +257,27 @@ body, html, #root {
 .interactive-session .rendered-markdown,
 .antigravity-agent-side-panel,
 .antigravity-agent-manager,
-.animate-markdown {
+.animate-markdown,
+[role="article"] {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
+[role="article"] p,
+[role="article"] li,
+[role="article"] dd,
+[role="article"] dt,
 .rendered-markdown p,
+.rendered-markdown li,
 .rendered-markdown dd,
 .rendered-markdown dt,
 .chat-widget .rendered-markdown p,
+.chat-widget .rendered-markdown li,
 .antigravity-agent-side-panel p,
+.antigravity-agent-side-panel li,
 .antigravity-agent-manager p,
-.animate-markdown p {
+.antigravity-agent-manager li,
+.animate-markdown p,
+.animate-markdown li {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: justify !important;
@@ -278,8 +288,14 @@ body, html, #root {
 }
 
 /* ==========================================================================
-   2. Headings: Seafoam Green (#93e9be) Palette
+   2. Headings: Seafoam Green (#93e9be) Palette with Gradient Background
    ========================================================================== */
+[role="article"] h1,
+[role="article"] h2,
+[role="article"] h3,
+[role="article"] h4,
+[role="article"] h5,
+[role="article"] h6,
 .rendered-markdown h1,
 .rendered-markdown h2,
 .rendered-markdown h3,
@@ -313,10 +329,47 @@ body, html, #root {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   font-weight: 700 !important;
   unicode-bidi: plaintext !important;
-  text-align: start !important;
   margin-top: 1.5rem !important;
   margin-bottom: 0.75rem !important;
   letter-spacing: -0.01em !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  border-inline-start: 4px solid #93e9be !important;
+  padding: 8px 16px !important;
+  line-height: 1.5 !important;
+}
+
+/* RTL Headings: Gradient fades to the left */
+[role="article"] h1[dir="rtl"], [role="article"] h2[dir="rtl"], [role="article"] h3[dir="rtl"],
+[role="article"] h4[dir="rtl"], [role="article"] h5[dir="rtl"], [role="article"] h6[dir="rtl"],
+[dir="rtl"] [role="article"] h1, [dir="rtl"] [role="article"] h2, [dir="rtl"] [role="article"] h3,
+[dir="rtl"] [role="article"] h4, [dir="rtl"] [role="article"] h5, [dir="rtl"] [role="article"] h6,
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6,
+h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl) {
+  background: linear-gradient(to left, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
+  border-radius: 4px 10px 10px 4px !important;
+  text-align: right !important;
+}
+
+/* LTR Headings: Gradient fades to the right */
+[role="article"] h1[dir="ltr"], [role="article"] h2[dir="ltr"], [role="article"] h3[dir="ltr"],
+[role="article"] h4[dir="ltr"], [role="article"] h5[dir="ltr"], [role="article"] h6[dir="ltr"],
+[dir="ltr"] [role="article"] h1, [dir="ltr"] [role="article"] h2, [dir="ltr"] [role="article"] h3,
+[dir="ltr"] [role="article"] h4, [dir="ltr"] [role="article"] h5, [dir="ltr"] [role="article"] h6,
+[dir="ltr"] h1, [dir="ltr"] h2, [dir="ltr"] h3, [dir="ltr"] h4, [dir="ltr"] h5, [dir="ltr"] h6,
+h1:dir(ltr), h2:dir(ltr), h3:dir(ltr), h4:dir(ltr), h5:dir(ltr), h6:dir(ltr) {
+  background: linear-gradient(to right, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
+  border-radius: 10px 4px 4px 10px !important;
+  text-align: left !important;
+}
+
+/* Fallback default heading background if dir is not explicitly set */
+[role="article"] h1, [role="article"] h2, [role="article"] h3,
+[role="article"] h4, [role="article"] h5, [role="article"] h6,
+.rendered-markdown h1, .rendered-markdown h2, .rendered-markdown h3,
+.rendered-markdown h4, .rendered-markdown h5, .rendered-markdown h6 {
+  background: linear-gradient(to left, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 55%, transparent 100%) !important;
+  border-radius: 4px 10px 10px 4px !important;
 }
 
 .rendered-markdown h1,
