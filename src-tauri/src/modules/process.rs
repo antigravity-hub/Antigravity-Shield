@@ -1050,9 +1050,9 @@ pub fn focus_antigravity(target_ide: Option<&str>) -> Result<(), String> {
 /// Start Antigravity
 #[allow(unused_mut)]
 pub fn start_antigravity(target_ide: Option<&str>) -> Result<(), String> {
-    if target_ide == Some("ide") {
+    if target_ide == Some("ide") && is_antigravity_running(Some("ide")) {
         crate::modules::logger::log_info(
-            "[Process] Protection invariant: IDE start request intercepted. IDE process launch skipped to prevent duplicate windows."
+            "[Process] Protection invariant: Antigravity IDE is already running. Process launch skipped to prevent duplicate windows."
         );
         return Ok(());
     }
@@ -1445,7 +1445,7 @@ pub fn get_antigravity_executable_path(target_ide: Option<&str>) -> Option<std::
 /// Check standard installation locations
 fn check_standard_locations(target_ide: Option<&str>) -> Option<std::path::PathBuf> {
     let folder_names: &[&str] = if target_ide == Some("ide") {
-        &["Antigravity IDE"]
+        &["Antigravity IDE", "antigravity-ide"]
     } else if target_ide == Some("platform") || target_ide == Some("code") || target_ide == Some("cursor") {
         &["Antigravity"]
     } else {
@@ -1484,6 +1484,14 @@ fn check_standard_locations(target_ide: Option<&str>) -> Option<std::path::PathB
                         .join(folder_name)
                         .join(format!("{}.exe", folder_name)),
                 );
+                if target_ide == Some("ide") {
+                    possible_paths.push(
+                        std::path::PathBuf::from(local)
+                            .join("Programs")
+                            .join(folder_name)
+                            .join("Antigravity.exe"),
+                    );
+                }
             }
 
             // System installation location
