@@ -545,6 +545,8 @@ pub fn run() {
             if let Ok(cfg) = modules::config::load_app_config() {
                 if cfg.auto_launch {
                     let _ = commands::autostart::set_system_autostart(app.handle(), true);
+                    #[cfg(target_os = "windows")]
+                    commands::autostart::fix_windows_autostart_quotes();
                 } else {
                     #[cfg(target_os = "windows")]
                     commands::autostart::sync_windows_startup_approved(false);

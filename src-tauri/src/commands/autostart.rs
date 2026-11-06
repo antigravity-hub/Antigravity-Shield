@@ -49,6 +49,33 @@ pub fn sync_windows_startup_approved(enable: bool) {
     }
 }
 
+/// Enforces quotes around executable paths in HKCU\...\Run.
+/// When paths contain spaces (e.g. "D:\Program Files\..."), unquoted registry keys
+/// cause Windows Explorer to fail launching on boot (attempting to launch "D:\Program.exe").
+#[cfg(target_os = "windows")]
+pub fn fix_windows_autostart_quotes() {
+    use winreg::enums::*;
+    use winreg::RegKey;
+
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let subkey_path = r"Software\Microsoft\Windows\CurrentVersion\Run";
+
+    if let Ok(key) = hkcu.open_subkey_with_flags(subkey_path, KEY_READ | KEY_WRITE) {
+        for &app_name in STARTUP_APPS {
+            if let Ok(val) = key.get_value::<String, _>(app_name) {
+                if !val.starts_with('"') && val.contains(' ') {
+                    if let Some(exe_idx) = val.to_lowercase().find(".exe") {
+                        let exe_path = &val[..exe_idx + 4];
+                        let args = &val[exe_idx + 4..];
+                        let quoted = format!(""{}"{}", exe_path, args);
+                        let _ = key.set_value(app_name, &quoted);
+                    }
+                }
+            }
+        }
+    }
+}
+
 /// Applies auto-launch state to the underlying operating system.
 pub fn set_system_autostart(app: &tauri::AppHandle, enable: bool) -> Result<(), String> {
     let manager = app.autolaunch();
@@ -59,9 +86,12 @@ pub fn set_system_autostart(app: &tauri::AppHandle, enable: bool) -> Result<(), 
             .map_err(|e| format!("enabled自动启动failed: {}", e))?;
 
         #[cfg(target_os = "windows")]
-        sync_windows_startup_approved(true);
+        {
+            sync_windows_startup_approved(true);
+            fix_windows_autostart_quotes();
+        }
 
-        crate::modules::logger::log_info("已enabled系统开机自动启动并同步注册表批准status");
+        crate::modules::logger::log_info("已enabled系统开机自动启动并同步注册表批准status与引号转义");
     } else {
         match manager.disable() {
             Ok(_) => {
