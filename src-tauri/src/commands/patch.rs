@@ -206,49 +206,230 @@ pub struct AntigravityRtlStatus {
 }
 
 pub const VAZIRMATN_RTL_CSS: &str = r#"
+/* [Antigravity-Emerald-Raindrop-Cascade-And-Bidi-List-Shield] */
 
-/* [Antigravity-Styled-Seafoam-Markers] */
-ul:dir(rtl), ol:dir(rtl), ul[dir="rtl"], ol[dir="rtl"], ul:has(> li:dir(rtl)), ol:has(> li:dir(rtl)) {
-  direction: rtl !important;
-  text-align: right !important;
-  padding-right: 1.75rem !important;
-  padding-left: 0 !important;
+@keyframes agyRaindropFlow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 36px;
+  }
 }
 
-li:dir(rtl), li[dir="rtl"], li:dir(rtl) p, [dir="rtl"] li {
+@keyframes agyPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
+    transform: scale(1.15);
+  }
+}
+
+/* Kill default browser markers completely so they NEVER jump to the left */
+ul, ol, [role="article"] ul, [role="article"] ol,
+.rendered-markdown ul, .rendered-markdown ol {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+ul > li::marker, ol > li::marker,
+[role="article"] ul > li::marker, [role="article"] ol > li::marker {
+  display: none !important;
+  content: "" !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+/* Persian Unordered List Container */
+ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
+[role="article"] ul:has(> li:dir(rtl)),
+[role="article"] ul {
+  list-style: none !important;
+  margin: 0.8rem 0 !important;
+  padding: 0 !important;
+  padding-right: 28px !important;
+  padding-left: 0 !important;
+  position: relative !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Layer 1 List Item */
+ul:dir(rtl) > li, [dir="rtl"] ul > li, ul[dir="rtl"] > li,
+[role="article"] ul > li {
+  list-style: none !important;
+  position: relative !important;
+  padding-right: 18px !important;
+  padding-left: 0 !important;
+  margin-bottom: 14px !important;
+  line-height: 2 !important;
+  color: #f1f5f9 !important;
   direction: rtl !important;
   text-align: right !important;
   text-align-last: right !important;
+}
+
+/* Vertical Raindrop Animated Spine (Line under bullet) */
+ul:dir(rtl) > li::before, [dir="rtl"] ul > li::before, ul[dir="rtl"] > li::before,
+[role="article"] ul > li::before {
+  content: "" !important;
+  position: absolute !important;
+  right: -14px !important;
+  top: 18px !important;
+  bottom: -14px !important;
+  width: 2.5px !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(16, 185, 129, 0.9) 0px,
+    rgba(52, 211, 153, 0.4) 6px,
+    transparent 10px,
+    transparent 14px,
+    rgba(16, 185, 129, 0.95) 20px,
+    rgba(56, 189, 248, 0.8) 26px,
+    transparent 30px
+  ) !important;
+  background-size: 2.5px 36px !important;
+  animation: agyRaindropFlow 1.6s linear infinite !important;
+  border-radius: 2px !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+}
+
+/* Last item in Layer 1 stops spine early */
+ul:dir(rtl) > li:last-child::before, [dir="rtl"] ul > li:last-child::before, ul[dir="rtl"] > li:last-child::before,
+[role="article"] ul > li:last-child::before {
+  bottom: 8px !important;
+}
+
+/* Layer 1 Glowing Emerald Node (The Bullet Droplet) */
+ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
+[role="article"] ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -19px !important;
+  top: 8px !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  animation: agyPulseGlow 2.5s ease-in-out infinite !important;
+  z-index: 2 !important;
+}
+
+/* ==========================================================================
+   Layer 2: Nested Sub-Lists (انشعاب لایه دوم با شاخه خمیده و قطره فیروزه‌ای)
+   ========================================================================== */
+ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul,
+[role="article"] ul > li > ul {
+  position: relative !important;
+  margin-top: 10px !important;
+  margin-right: 14px !important;
+  padding-right: 22px !important;
+  padding-left: 0 !important;
+  border-right: 1.5px dashed rgba(52, 211, 153, 0.45) !important;
+}
+
+ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li, ul[dir="rtl"] > li > ul > li,
+[role="article"] ul > li > ul > li {
+  position: relative !important;
+  padding-right: 18px !important;
+  margin-bottom: 10px !important;
+  color: #cbd5e1 !important;
+  font-size: 0.96em !important;
+}
+
+/* Layer 2 Curved Branch Connector */
+ul:dir(rtl) > li > ul > li::before, [dir="rtl"] ul > li > ul > li::before, ul[dir="rtl"] > li > ul > li::before,
+[role="article"] ul > li > ul > li::before {
+  content: "" !important;
+  position: absolute !important;
+  right: -23px !important;
+  top: 12px !important;
+  width: 20px !important;
+  height: 14px !important;
+  border-bottom: 2px solid rgba(52, 211, 153, 0.7) !important;
+  border-right: 2px solid rgba(52, 211, 153, 0.7) !important;
+  border-bottom-right-radius: 10px !important;
+  background: none !important;
+  animation: none !important;
+  z-index: 1 !important;
+}
+
+/* Layer 2 Mini Cyan-Mint Droplet */
+ul:dir(rtl) > li > ul > li::after, [dir="rtl"] ul > li > ul > li::after, ul[dir="rtl"] > li > ul > li::after,
+[role="article"] ul > li > ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -5px !important;
+  top: 9px !important;
+  width: 9px !important;
+  height: 9px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #bae6fd 0%, #38bdf8 60%, #0284c7 100%) !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.85) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+  z-index: 2 !important;
+  animation: none !important;
+}
+
+/* ==========================================================================
+   Numbered lists (OL): Persian Counter Anchored on the RIGHT
+   ========================================================================== */
+ol:dir(rtl), [dir="rtl"] ol, ol[dir="rtl"],
+[role="article"] ol:has(> li:dir(rtl)),
+[role="article"] ol {
+  counter-reset: agy-counter !important;
+  list-style: none !important;
+  margin: 0.8rem 0 !important;
+  padding: 0 !important;
+  padding-right: 32px !important;
+  padding-left: 0 !important;
+  position: relative !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+ol:dir(rtl) > li, [dir="rtl"] ol > li, ol[dir="rtl"] > li,
+[role="article"] ol > li {
+  counter-increment: agy-counter !important;
+  list-style: none !important;
+  position: relative !important;
+  padding-right: 18px !important;
+  padding-left: 0 !important;
+  margin-bottom: 12px !important;
   line-height: 2 !important;
-  margin-bottom: 0.45rem !important;
+  color: #f1f5f9 !important;
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
 }
 
-/* Styled Bullet Markers - Vibrant Seafoam Green */
-.rendered-markdown ul > li::marker,
-.chat-widget .rendered-markdown ul > li::marker,
-.antigravity-agent-side-panel ul > li::marker,
-.antigravity-agent-manager ul > li::marker,
-.animate-markdown ul > li::marker,
-.leading-relaxed ul > li::marker,
-[role="article"] ul > li::marker,
-ul > li::marker {
-  color: #10b981 !important;
-  font-size: 1.2em !important;
-  font-weight: 900 !important;
-}
-
-/* Styled Numeric Counters - Glowing Mint */
-.rendered-markdown ol > li::marker,
-.chat-widget .rendered-markdown ol > li::marker,
-.antigravity-agent-side-panel ol > li::marker,
-.antigravity-agent-manager ol > li::marker,
-.animate-markdown ol > li::marker,
-.leading-relaxed ol > li::marker,
-[role="article"] ol > li::marker,
-ol > li::marker {
+/* Custom Styled Number Badge on the RIGHT - Always attached to the text */
+ol:dir(rtl) > li::before, [dir="rtl"] ol > li::before, ol[dir="rtl"] > li::before,
+[role="article"] ol > li::before {
+  content: counter(agy-counter) "." !important;
+  position: absolute !important;
+  right: -24px !important;
+  top: 0px !important;
   color: #34d399 !important;
   font-weight: 800 !important;
+  font-size: 1.1em !important;
   font-family: 'Vazirmatn', sans-serif !important;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.4) !important;
+  display: inline-block !important;
+  width: 22px !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+ol:dir(rtl) > li::after, [dir="rtl"] ol > li::after, ol[dir="rtl"] > li::after,
+[role="article"] ol > li::after {
+  content: none !important;
+  display: none !important;
 }
 
 /* Universal Vazirmatn Font Enforcement on font-sans */
@@ -256,7 +437,6 @@ ol > li::marker {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-/* [Antigravity-Shield-RTL-Vazirmatn] */
 /* RTL-PATCH-START */
 
 @font-face {
@@ -1870,206 +2050,4 @@ pub async fn apply_core_engine_patch() -> Result<crate::modules::patcher::Patche
     tokio::task::spawn_blocking(crate::modules::patcher::run_fix_license_and_region_patch)
         .await
         .map_err(|e| format!("Task failed: {}", e))
-}
-
-
-/* ==========================================================================
-   ✨ EMERALD RAINDROP CASCADE (سلسله‌مراتب درختی قطره‌بارانی زمردی)
-   ========================================================================== */
-
-@keyframes agyRaindropFlow {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 40px; }
-}
-
-@keyframes agyPulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.25);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.95), 0 0 18px rgba(52, 211, 153, 0.6);
-    transform: scale(1.18);
-  }
-}
-
-/* Persian Unordered List Container */
-[role="article"] ul:dir(rtl),
-.rendered-markdown ul:dir(rtl),
-.animate-markdown ul:dir(rtl),
-ul[dir="rtl"],
-ul:has(> li:dir(rtl)) {
-  list-style: none !important;
-  margin: 0.6rem 0 !important;
-  padding: 0 !important;
-  position: relative !important;
-  direction: rtl !important;
-  text-align: right !important;
-}
-
-/* Layer 1 List Item */
-[role="article"] ul:dir(rtl) > li,
-.rendered-markdown ul:dir(rtl) > li,
-.animate-markdown ul:dir(rtl) > li,
-ul[dir="rtl"] > li,
-ul:has(> li:dir(rtl)) > li {
-  list-style: none !important;
-  position: relative !important;
-  padding-right: 26px !important;
-  padding-left: 0 !important;
-  margin-bottom: 12px !important;
-  line-height: 2 !important;
-  color: #f1f5f9 !important;
-  direction: rtl !important;
-  text-align: right !important;
-  text-align-last: right !important;
-}
-
-/* Vertical Animated Raindrop Spine */
-[role="article"] ul:dir(rtl) > li::before,
-.rendered-markdown ul:dir(rtl) > li::before,
-.animate-markdown ul:dir(rtl) > li::before,
-ul[dir="rtl"] > li::before,
-ul:has(> li:dir(rtl)) > li::before {
-  content: "" !important;
-  position: absolute !important;
-  right: 5px !important;
-  top: 14px !important;
-  bottom: -14px !important;
-  width: 2px !important;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(16, 185, 129, 0.85) 0%,
-    rgba(52, 211, 153, 0.3) 25%,
-    rgba(16, 185, 129, 0.95) 50%,
-    transparent 55%,
-    rgba(16, 185, 129, 0.4) 75%,
-    rgba(52, 211, 153, 0.85) 100%
-  ) !important;
-  background-size: 2px 30px !important;
-  animation: agyRaindropFlow 1.8s linear infinite !important;
-  opacity: 0.8 !important;
-}
-
-[role="article"] ul:dir(rtl) > li:last-child::before,
-.rendered-markdown ul:dir(rtl) > li:last-child::before,
-.animate-markdown ul:dir(rtl) > li:last-child::before,
-ul[dir="rtl"] > li:last-child::before,
-ul:has(> li:dir(rtl)) > li:last-child::before {
-  bottom: 8px !important;
-}
-
-/* Layer 1 Glowing Emerald Node */
-[role="article"] ul:dir(rtl) > li::after,
-.rendered-markdown ul:dir(rtl) > li::after,
-.animate-markdown ul:dir(rtl) > li::after,
-ul[dir="rtl"] > li::after,
-ul:has(> li:dir(rtl)) > li::after {
-  content: "" !important;
-  position: absolute !important;
-  right: 0px !important;
-  top: 9px !important;
-  width: 12px !important;
-  height: 12px !important;
-  border-radius: 50% !important;
-  background: radial-gradient(circle at 35% 35%, #6ee7b7 0%, #10b981 60%, #047857 100%) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
-  animation: agyPulseGlow 2.4s ease-in-out infinite !important;
-  z-index: 2 !important;
-}
-
-/* ==========================================================================
-   Layer 2: Nested Sub-Lists (انشعاب لایه دوم با اتصال خمیده و قطره فیروزه‌ای)
-   ========================================================================== */
-[role="article"] ul:dir(rtl) > li > ul,
-.rendered-markdown ul:dir(rtl) > li > ul,
-.animate-markdown ul:dir(rtl) > li > ul,
-ul[dir="rtl"] > li > ul {
-  position: relative !important;
-  margin-top: 8px !important;
-  margin-right: 12px !important;
-  padding-right: 18px !important;
-  border-right: 1.5px dashed rgba(52, 211, 153, 0.35) !important;
-}
-
-[role="article"] ul:dir(rtl) > li > ul > li,
-.rendered-markdown ul:dir(rtl) > li > ul > li,
-.animate-markdown ul:dir(rtl) > li > ul > li,
-ul[dir="rtl"] > li > ul > li {
-  position: relative !important;
-  padding-right: 20px !important;
-  margin-bottom: 8px !important;
-  color: #cbd5e1 !important;
-  font-size: 0.95em !important;
-}
-
-/* Layer 2 Curved Branch Connector */
-[role="article"] ul:dir(rtl) > li > ul > li::before,
-.rendered-markdown ul:dir(rtl) > li > ul > li::before,
-.animate-markdown ul:dir(rtl) > li > ul > li::before,
-ul[dir="rtl"] > li > ul > li::before {
-  content: "" !important;
-  position: absolute !important;
-  right: -19px !important;
-  top: 11px !important;
-  width: 17px !important;
-  height: 12px !important;
-  border-bottom: 1.5px solid rgba(52, 211, 153, 0.6) !important;
-  border-right: 1.5px solid rgba(52, 211, 153, 0.6) !important;
-  border-bottom-right-radius: 8px !important;
-  background: none !important;
-  animation: none !important;
-}
-
-/* Layer 2 Mini Cyan-Mint Droplet */
-[role="article"] ul:dir(rtl) > li > ul > li::after,
-.rendered-markdown ul:dir(rtl) > li > ul > li::after,
-.animate-markdown ul:dir(rtl) > li > ul > li::after,
-ul[dir="rtl"] > li > ul > li::after {
-  content: "" !important;
-  position: absolute !important;
-  right: 2px !important;
-  top: 8px !important;
-  width: 8px !important;
-  height: 8px !important;
-  border-radius: 50% !important;
-  background: #38bdf8 !important;
-  box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.7) !important;
-  z-index: 2 !important;
-  animation: none !important;
-}
-
-/* Numbered lists: Right-anchored with styled seafoam numbers */
-[role="article"] ol:dir(rtl),
-.rendered-markdown ol:dir(rtl),
-.animate-markdown ol:dir(rtl),
-ol[dir="rtl"],
-ol:has(> li:dir(rtl)) {
-  direction: rtl !important;
-  text-align: right !important;
-  padding-right: 1.85rem !important;
-  padding-left: 0 !important;
-}
-
-[role="article"] ol:dir(rtl) > li,
-.rendered-markdown ol:dir(rtl) > li,
-.animate-markdown ol:dir(rtl) > li,
-ol[dir="rtl"] > li,
-ol:has(> li:dir(rtl)) > li {
-  direction: rtl !important;
-  text-align: right !important;
-  text-align-last: right !important;
-  line-height: 2 !important;
-  margin-bottom: 0.5rem !important;
-}
-
-[role="article"] ol:dir(rtl) > li::marker,
-.rendered-markdown ol:dir(rtl) > li::marker,
-.animate-markdown ol:dir(rtl) > li::marker,
-ol[dir="rtl"] > li::marker,
-ol:has(> li:dir(rtl)) > li::marker {
-  color: #34d399 !important;
-  font-weight: 800 !important;
-  font-family: 'Vazirmatn', sans-serif !important;
 }
