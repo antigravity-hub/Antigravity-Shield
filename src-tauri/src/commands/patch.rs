@@ -330,7 +330,7 @@ ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
 }
 
 /* ==========================================================================
-   Layer 2: Nested Sub-Lists (انشعاب ارگانیک متصل به ستون والد با قطره نئونی)
+   Layer 2: Nested Sub-Lists (طرح درختی نئونی مینیمال - Minimal Neon Tree)
    ========================================================================== */
 [role="article"] ul ul,
 .rendered-markdown ul ul,
@@ -338,35 +338,23 @@ ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
 .rendered-markdown [dir="rtl"] ul ul,
 ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
   position: relative !important;
-  margin: 6px 0 10px 0 !important;
+  margin: 8px 0 12px 0 !important;
   padding: 0 !important;
-  padding-right: 0 !important;
+  padding-right: 18px !important;
+  padding-left: 0 !important;
   border: none !important;
+  border-right: 1.5px solid rgba(56, 189, 248, 0.35) !important;
   list-style: none !important;
 }
 
-/* Connecting Arm from Parent Spine (-14px) to Sub-List Spine (11px) */
 [role="article"] ul ul::before,
 .rendered-markdown ul ul::before,
 [role="article"] [dir="rtl"] ul ul::before,
 .rendered-markdown [dir="rtl"] ul ul::before,
 ul:dir(rtl) > li > ul::before {
-  content: "" !important;
-  position: absolute !important;
-  right: -14px !important;
-  top: -6px !important;
-  width: 25px !important;
-  height: 20px !important;
-  border-bottom: 1.5px solid rgba(52, 211, 153, 0.75) !important;
-  border-right: 1.5px solid rgba(52, 211, 153, 0.75) !important;
-  border-bottom-right-radius: 8px !important;
-  border-top: none !important;
-  border-left: none !important;
-  background: none !important;
-  z-index: 1 !important;
+  display: none !important;
 }
 
-/* Layer 2 List Item: Specificity high enough to prevent squashing */
 [role="article"] ul ul li,
 .rendered-markdown ul ul li,
 [role="article"] [dir="rtl"] ul ul li,
@@ -374,7 +362,7 @@ ul:dir(rtl) > li > ul::before {
 [role="article"] ul:dir(rtl) > li > ul > li,
 ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
   position: relative !important;
-  padding-right: 34px !important;
+  padding-right: 18px !important;
   padding-left: 0 !important;
   margin-bottom: 8px !important;
   color: #cbd5e1 !important;
@@ -383,33 +371,15 @@ ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
   list-style: none !important;
 }
 
-/* Vertical stem between sub-items */
 [role="article"] ul ul li::before,
 .rendered-markdown ul ul li::before,
 [role="article"] [dir="rtl"] ul ul li::before,
 .rendered-markdown [dir="rtl"] ul ul li::before,
 [role="article"] ul:dir(rtl) > li > ul > li::before,
 ul:dir(rtl) > li > ul > li::before {
-  content: "" !important;
-  position: absolute !important;
-  right: 11px !important;
-  top: 14px !important;
-  bottom: -8px !important;
-  width: 1.5px !important;
-  background: rgba(52, 211, 153, 0.5) !important;
-  z-index: 1 !important;
-}
-
-/* Terminate cleanly on last child - NO unwanted trailing stub */
-[role="article"] ul ul li:last-child::before,
-.rendered-markdown ul ul li:last-child::before,
-[role="article"] [dir="rtl"] ul ul li:last-child::before,
-.rendered-markdown [dir="rtl"] ul ul li:last-child::before,
-ul:dir(rtl) > li > ul > li:last-child::before {
   display: none !important;
 }
 
-/* Cyan Droplet Node */
 [role="article"] ul ul li::after,
 .rendered-markdown ul ul li::after,
 [role="article"] [dir="rtl"] ul ul li::after,
@@ -418,14 +388,14 @@ ul:dir(rtl) > li > ul > li:last-child::before {
 ul:dir(rtl) > li > ul > li::after, [dir="rtl"] ul > li > ul > li::after {
   content: "" !important;
   position: absolute !important;
-  right: 7px !important;
+  right: -21.5px !important;
   top: 10px !important;
-  width: 8px !important;
-  height: 8px !important;
+  width: 7px !important;
+  height: 7px !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #bae6fd 0%, #38bdf8 60%, #0284c7 100%) !important;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
   z-index: 2 !important;
   animation: none !important;
 }
@@ -1362,38 +1332,37 @@ button[data-project-card="true"] svg {
 }
 
 .agy-sidebar-row:hover {
-  background: rgba(147, 233, 190, 0.07) !important;
-  border-color: rgba(147, 233, 190, 0.16) !important;
+  background: var(--proj-bg, rgba(255, 255, 255, 0.04)) !important;
+  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 25%, transparent) !important;
   color: #f1f5f9 !important;
-  transform: translateX(2px) !important;
+  transform: translateX(1px) !important;
 }
 
 /* Active / Selected Conversation Row */
 .agy-sidebar-row:has(a[aria-current="page"]),
 .agy-sidebar-row.bg-sidebar-muted,
 .agy-sidebar-row[data-active="true"] {
-  background: linear-gradient(90deg, rgba(147, 233, 190, 0.15) 0%, rgba(147, 233, 190, 0.03) 100%) !important;
-  border: 1px solid rgba(147, 233, 190, 0.28) !important;
-  border-inline-start: 1px solid #93e9be !important;
-  box-shadow: inset 3px 0 0 0 #93e9be, 0 2px 10px -2px rgba(147, 233, 190, 0.18) !important;
+  background: var(--proj-bg, rgba(255, 255, 255, 0.08)) !important;
+  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 40%, transparent) !important;
+  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.15)) !important;
 }
 
 .agy-sidebar-row:has(a[aria-current="page"]) span,
 .agy-sidebar-row.bg-sidebar-muted span {
-  color: #93e9be !important;
+  color: var(--proj-color, #93e9be) !important;
   font-weight: 600 !important;
 }
 
 .agy-sidebar-row:has(a[aria-current="page"]) svg,
 .agy-sidebar-row.bg-sidebar-muted svg {
-  color: #93e9be !important;
+  color: var(--proj-color, #93e9be) !important;
 }
 
 /* 8.7 Project Child Conversations (Indented Forward & Hierarchy Tree Guide Line) */
 .agy-sidebar-row.agy-sidebar-row[class*="pl-"] {
-  margin-left: 20px !important;
-  width: calc(100% - 24px) !important;
-  padding-left: 14px !important;
+  margin-left: 28px !important;
+  width: calc(100% - 32px) !important;
+  padding-left: 10px !important;
   position: relative !important;
   border-radius: 8px !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -1404,7 +1373,7 @@ button[data-project-card="true"] svg {
 .agy-sidebar-row[class*="pl-"]::before {
   content: '' !important;
   position: absolute !important;
-  left: -13px !important;
+  left: -15px !important;
   top: -2px !important;
   bottom: -2px !important;
   width: 1.5px !important;
@@ -1425,9 +1394,9 @@ button[data-project-card="true"] svg {
 .agy-sidebar-row[class*="pl-"]::after {
   content: '' !important;
   position: absolute !important;
-  left: -13px !important;
+  left: -15px !important;
   top: 50% !important;
-  width: 12px !important;
+  width: 14px !important;
   height: 1.5px !important;
   background-image: repeating-linear-gradient(
     to right,
@@ -1447,7 +1416,7 @@ button[data-project-card="true"] svg {
   transform: translateX(1px) !important;
   background: var(--proj-bg, rgba(255, 255, 255, 0.05)) !important;
   border-color: color-mix(in srgb, var(--proj-color, #93e9be) 35%, transparent) !important;
-  box-shadow: 0 0 12px -2px var(--proj-glow, rgba(255, 255, 255, 0.15)) !important;
+  box-shadow: 0 0 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.15)) !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:hover::before {
@@ -1691,10 +1660,20 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
             }
 
             let mut content = fs::read_to_string(css_path).map_err(|e| e.to_string())?;
-            if !content.contains("Antigravity-Shield-RTL-Vazirmatn") {
+            let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
+            let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
+            if let (Some(s), Some(e)) = (content.find(p_start), content.rfind(p_end)) {
+                content.replace_range(s..e + p_end.len(), &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
+                fs::write(css_path, &content).map_err(|e| e.to_string())?;
+                applied_count += 1;
+            } else if !content.contains("Antigravity-Shield-RTL-Vazirmatn") {
+                content.push_str("\n\n");
+                content.push_str(p_start);
                 content.push_str("\n");
                 content.push_str(VAZIRMATN_RTL_CSS);
-                fs::write(css_path, content).map_err(|e| e.to_string())?;
+                content.push_str("\n");
+                content.push_str(p_end);
+                fs::write(css_path, &content).map_err(|e| e.to_string())?;
                 applied_count += 1;
             }
 

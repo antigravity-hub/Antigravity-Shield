@@ -1208,14 +1208,16 @@ pub fn list_accounts() -> Result<Vec<Account>, String> {
         match load_account(&summary.id) {
             Ok(mut account) => {
                 let mut targets = Vec::new();
-                if active_platform.as_deref() == Some(&account.id) {
-                    targets.push("platform".to_string());
-                }
-                if active_ide.as_deref() == Some(&account.id) {
-                    targets.push("ide".to_string());
-                }
-                if active_cli.as_deref() == Some(&account.id) {
-                    targets.push("agy".to_string());
+                if is_account_activeable(&account) {
+                    if active_platform.as_deref() == Some(&account.id) {
+                        targets.push("platform".to_string());
+                    }
+                    if active_ide.as_deref() == Some(&account.id) {
+                        targets.push("ide".to_string());
+                    }
+                    if active_cli.as_deref() == Some(&account.id) {
+                        targets.push("agy".to_string());
+                    }
                 }
                 account.active_targets = targets;
                 accounts.push(account);
@@ -1999,6 +2001,17 @@ pub fn set_current_account_id_with_target(
     save_account_index(&index)
 }
 
+/// Check whether an account is healthy and usable as an active target
+pub fn is_account_activeable(acc: &Account) -> bool {
+    let is_forbidden = acc.quota.as_ref().map(|q| q.is_forbidden).unwrap_or(false);
+    !acc.disabled && !acc.proxy_disabled && !acc.validation_blocked && !is_forbidden
+}
+
+/// Check by account ID whether an account is healthy and usable as an active target
+pub fn is_account_id_activeable(account_id: &str) -> bool {
+    load_account(account_id).map(|a| is_account_activeable(&a)).unwrap_or(false)
+}
+
 /// Get active target accounts for all environments
 pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccounts, String> {
     let mut index = load_account_index()?;
@@ -2007,11 +2020,20 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
     // 1. Platform: prioritize dynamic disk detection from Antigravity Platform database or app_storage.json
     let platform = if let Some(detected_email) = crate::modules::db::detect_active_email(Some("platform")) {
         if let Some(acc_id) = find_account_id_by_email(&detected_email) {
-            if index.active_platform_account_id.as_deref() != Some(&acc_id) {
-                index.active_platform_account_id = Some(acc_id.clone());
-                dirty = true;
+            if is_account_id_activeable(&acc_id) {
+                if index.active_platform_account_id.as_deref() != Some(&acc_id) {
+                    index.active_platform_account_id = Some(acc_id.clone());
+                    dirty = true;
+                }
+                Some(acc_id)
+            } else {
+                // Detected account is disabled/suspended: clear active platform binding
+                if index.active_platform_account_id.as_deref() == Some(&acc_id) {
+                    index.active_platform_account_id = None;
+                    dirty = true;
+                }
+                None
             }
-            Some(acc_id)
         } else {
             // Detected an unindexed email on disk: clear previous stale platform account
             if index.active_platform_account_id.is_some() {
@@ -2021,9 +2043,9 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
             None
         }
     } else {
-        index.active_platform_account_id.clone().or_else(|| {
+        index.active_platform_account_id.clone().filter(|id| is_account_id_activeable(id)).or_else(|| {
             if index.current_target_ide.as_deref() == Some("platform") || index.current_target_ide.is_none() {
-                index.current_account_id.clone()
+                index.current_account_id.clone().filter(|id| is_account_id_activeable(id))
             } else {
                 None
             }
@@ -2036,11 +2058,20 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
 
     let ide = if let Some(ref detected_email) = detected_ide_email {
         if let Some(acc_id) = find_account_id_by_email(detected_email) {
-            if index.active_ide_account_id.as_deref() != Some(&acc_id) {
-                index.active_ide_account_id = Some(acc_id.clone());
-                dirty = true;
+            if is_account_id_activeable(&acc_id) {
+                if index.active_ide_account_id.as_deref() != Some(&acc_id) {
+                    index.active_ide_account_id = Some(acc_id.clone());
+                    dirty = true;
+                }
+                Some(acc_id)
+            } else {
+                // Detected account is disabled/suspended: clear active IDE binding
+                if index.active_ide_account_id.as_deref() == Some(&acc_id) {
+                    index.active_ide_account_id = None;
+                    dirty = true;
+                }
+                None
             }
-            Some(acc_id)
         } else {
             // Detected an unindexed email on disk for IDE: clear stale IDE account
             if index.active_ide_account_id.is_some() {
@@ -2050,9 +2081,9 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
             None
         }
     } else {
-        index.active_ide_account_id.clone().or_else(|| {
+        index.active_ide_account_id.clone().filter(|id| is_account_id_activeable(id)).or_else(|| {
             if index.current_target_ide.as_deref() == Some("ide") {
-                index.current_account_id.clone()
+                index.current_account_id.clone().filter(|id| is_account_id_activeable(id))
             } else {
                 None
             }
@@ -2060,13 +2091,33 @@ pub fn get_active_target_accounts() -> Result<crate::models::ActiveTargetAccount
     };
 
     // 3. CLI (agy)
-    let agy = index.active_cli_account_id.clone().or_else(|| {
+    let agy = index.active_cli_account_id.clone().filter(|id| is_account_id_activeable(id)).or_else(|| {
         if index.current_target_ide.as_deref() == Some("agy") || index.current_target_ide.as_deref() == Some("cli") {
-            index.current_account_id.clone()
+            index.current_account_id.clone().filter(|id| is_account_id_activeable(id))
         } else {
             None
         }
     });
+
+    // Clean index if any active targets point to non-activeable accounts
+    if let Some(ref id) = index.active_platform_account_id {
+        if !is_account_id_activeable(id) {
+            index.active_platform_account_id = None;
+            dirty = true;
+        }
+    }
+    if let Some(ref id) = index.active_ide_account_id {
+        if !is_account_id_activeable(id) {
+            index.active_ide_account_id = None;
+            dirty = true;
+        }
+    }
+    if let Some(ref id) = index.active_cli_account_id {
+        if !is_account_id_activeable(id) {
+            index.active_cli_account_id = None;
+            dirty = true;
+        }
+    }
 
     if dirty {
         let _ = save_account_index(&index);
@@ -2296,8 +2347,19 @@ pub fn toggle_proxy_status(
     let mut index = load_account_index()?;
     if let Some(summary) = index.accounts.iter_mut().find(|a| a.id == account_id) {
         summary.proxy_disabled = !enable;
-        save_account_index(&index)?;
     }
+    if !enable {
+        if index.active_platform_account_id.as_deref() == Some(account_id) {
+            index.active_platform_account_id = None;
+        }
+        if index.active_ide_account_id.as_deref() == Some(account_id) {
+            index.active_ide_account_id = None;
+        }
+        if index.active_cli_account_id.as_deref() == Some(account_id) {
+            index.active_cli_account_id = None;
+        }
+    }
+    save_account_index(&index)?;
 
     Ok(())
 }
@@ -2347,8 +2409,17 @@ pub fn mark_account_forbidden(account_id: &str, reason: &str) -> Result<(), Stri
     let mut index = load_account_index()?;
     if let Some(summary) = index.accounts.iter_mut().find(|a| a.id == account_id) {
         summary.proxy_disabled = true;
-        save_account_index(&index)?;
     }
+    if index.active_platform_account_id.as_deref() == Some(account_id) {
+        index.active_platform_account_id = None;
+    }
+    if index.active_ide_account_id.as_deref() == Some(account_id) {
+        index.active_ide_account_id = None;
+    }
+    if index.active_cli_account_id.as_deref() == Some(account_id) {
+        index.active_cli_account_id = None;
+    }
+    save_account_index(&index)?;
 
     // 4. Notify frontend to refresh account list
     crate::modules::log_bridge::emit_accounts_refreshed();
