@@ -288,6 +288,42 @@ body, html, #root {
 }
 
 /* Persian Paragraphs & Lists: Force Direction RTL, Right-Align Last Line */
+[role="article"] li:dir(rtl),
+.rendered-markdown li:dir(rtl),
+.chat-widget .rendered-markdown li:dir(rtl),
+.antigravity-agent-side-panel li:dir(rtl),
+.antigravity-agent-manager li:dir(rtl),
+.animate-markdown li:dir(rtl),
+[role="article"] [dir="rtl"] li,
+.rendered-markdown [dir="rtl"] li,
+li:dir(rtl),
+li[dir="rtl"],
+li[dir="auto"]:dir(rtl),
+[role="article"] ul:has(> li:dir(rtl)),
+[role="article"] ol:has(> li:dir(rtl)),
+.rendered-markdown ul:has(> li:dir(rtl)),
+.rendered-markdown ol:has(> li:dir(rtl)),
+.animate-markdown ul:has(> li:dir(rtl)),
+.animate-markdown ol:has(> li:dir(rtl)),
+ul[dir="rtl"],
+ol[dir="rtl"] {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+}
+
+[role="article"] li:dir(rtl) p,
+.rendered-markdown li:dir(rtl) p,
+.chat-widget .rendered-markdown li:dir(rtl),
+.antigravity-agent-side-panel li:dir(rtl) p,
+.antigravity-agent-manager li:dir(rtl) p,
+.animate-markdown li:dir(rtl) p {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+}
+
+/* Persian Paragraphs & Lists: Force Direction RTL, Right-Align Last Line */
 [role="article"] p:dir(rtl),
 .rendered-markdown p:dir(rtl),
 .chat-widget .rendered-markdown p:dir(rtl),
