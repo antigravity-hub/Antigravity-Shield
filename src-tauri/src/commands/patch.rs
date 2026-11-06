@@ -206,6 +206,56 @@ pub struct AntigravityRtlStatus {
 }
 
 pub const VAZIRMATN_RTL_CSS: &str = r#"
+
+/* [Antigravity-Styled-Seafoam-Markers] */
+ul:dir(rtl), ol:dir(rtl), ul[dir="rtl"], ol[dir="rtl"], ul:has(> li:dir(rtl)), ol:has(> li:dir(rtl)) {
+  direction: rtl !important;
+  text-align: right !important;
+  padding-right: 1.75rem !important;
+  padding-left: 0 !important;
+}
+
+li:dir(rtl), li[dir="rtl"], li:dir(rtl) p, [dir="rtl"] li {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+  line-height: 2 !important;
+  margin-bottom: 0.45rem !important;
+}
+
+/* Styled Bullet Markers - Vibrant Seafoam Green */
+.rendered-markdown ul > li::marker,
+.chat-widget .rendered-markdown ul > li::marker,
+.antigravity-agent-side-panel ul > li::marker,
+.antigravity-agent-manager ul > li::marker,
+.animate-markdown ul > li::marker,
+.leading-relaxed ul > li::marker,
+[role="article"] ul > li::marker,
+ul > li::marker {
+  color: #10b981 !important;
+  font-size: 1.2em !important;
+  font-weight: 900 !important;
+}
+
+/* Styled Numeric Counters - Glowing Mint */
+.rendered-markdown ol > li::marker,
+.chat-widget .rendered-markdown ol > li::marker,
+.antigravity-agent-side-panel ol > li::marker,
+.antigravity-agent-manager ol > li::marker,
+.animate-markdown ol > li::marker,
+.leading-relaxed ol > li::marker,
+[role="article"] ol > li::marker,
+ol > li::marker {
+  color: #34d399 !important;
+  font-weight: 800 !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+}
+
+/* Universal Vazirmatn Font Enforcement on font-sans */
+.font-sans, [class*="font-sans"], body, html {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
 /* [Antigravity-Shield-RTL-Vazirmatn] */
 /* RTL-PATCH-START */
 
