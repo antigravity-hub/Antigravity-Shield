@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Antigravity Shield — AI Proxy & Fleet Management Engine
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
@@ -31,6 +31,7 @@ interface AccountState {
     switchAccount: (accountId: string, targetIde?: string) => Promise<void>;
     refreshQuota: (accountId: string) => Promise<void>;
     clearAccountValidation: (accountId: string) => Promise<void>;
+    recheckAccount: (accountId: string) => Promise<accountService.RecheckResult>;
     refreshActiveAccountQuota: () => Promise<void>;
     refreshAllQuotas: (silent?: boolean) => Promise<accountService.RefreshStats>;
     reorderAccounts: (accountIds: string[]) => Promise<void>;
@@ -251,6 +252,17 @@ export const useAccountStore = create<AccountState>((set, get) => ({
                     : state.currentAccount,
                 lastSyncedAt: Date.now()
             }));
+        } catch (error) {
+            set({ error: String(error) });
+            throw error;
+        }
+    },
+
+    recheckAccount: async (accountId: string) => {
+        try {
+            const res = await accountService.recheckAccount(accountId);
+            await get().fetchAccounts();
+            return res;
         } catch (error) {
             set({ error: String(error) });
             throw error;

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Antigravity Shield — AI Proxy & Fleet Management Engine
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
@@ -54,6 +54,24 @@ export async function fetchAccountQuota(accountId: string): Promise<QuotaData> {
 
 export async function clearAccountValidation(accountId: string): Promise<void> {
     return await invoke('clear_account_validation', { accountId });
+}
+
+export interface InferenceProbeResult {
+    healthy: boolean;
+    status: string;
+    message: string;
+    http_status?: number;
+    url?: string;
+}
+
+export interface RecheckResult {
+    quota_ok: boolean;
+    probe: InferenceProbeResult;
+    verdict: string;
+}
+
+export async function recheckAccount(accountId: string): Promise<RecheckResult> {
+    return await invoke('recheck_account', { accountId });
 }
 
 export interface RefreshStats {

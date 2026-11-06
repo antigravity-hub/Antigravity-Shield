@@ -1,7 +1,7 @@
-// Antigravity Shield — AI Proxy & Fleet Management Engine
+﻿// Antigravity Shield — AI Proxy & Fleet Management Engine
 // Repository: https://github.com/antigravity-hub/Antigravity-Shield
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json;
 use std::collections::HashMap;
 use std::fs;
@@ -29,6 +29,180 @@ fn get_account_lock(account_id: &str) -> Arc<Mutex<()>> {
         .clone()
 }
 
+
+// ============================================================================
+// Two-Stage Re-check: Inference Probe
+// ============================================================================
+
+/// Result returned by `inference_probe` — describes what the inference layer says about the account.
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct InferenceProbeResult {
+    /// Overall health verdict
+    pub healthy: bool,
+    /// One of: "ok" | "tos_violation" | "validation_required" | "region_restricted" | "quota_exhausted" | "unknown_error"
+    pub status: String,
+    /// Human-readable explanation
+    pub message: String,
+    /// Raw HTTP status code from the inference layer (None if network error)
+    pub http_status: Option<u16>,
+    /// Extracted appeal / verification URL from the error body, if available
+    pub url: Option<String>,
+}
+
+/// Probe the **inference layer** (generateContent) with a minimal real prompt.
+///
+/// Stage 2 of Re-check: quota API (fetchAvailableModels) always returns 200 even for
+/// TOS-suspended accounts. Only the inference server enforces TOS, region locks, and
+/// verification challenges. We send a 1-word prompt to trigger these without burning quota.
+pub async fn inference_probe(account: &mut Account) -> InferenceProbeResult {
+    use crate::modules::oauth;
+    use crate::modules::quota::create_standard_client;
+
+    let token = match oauth::ensure_fresh_token(&account.token, Some(&account.id)).await {
+        Ok(t) => t,
+        Err(e) => {
+            return InferenceProbeResult {
+                healthy: false,
+                status: "unknown_error".to_string(),
+                message: format!("Token refresh failed: {}", e),
+                http_status: None,
+                url: None,
+            };
+        }
+    };
+
+    let client = create_standard_client(Some(&account.id)).await;
+
+    let payload = serde_json::json!({
+        "contents": [{"parts": [{"text": "hi"}], "role": "user"}],
+        "generationConfig": {"maxOutputTokens": 5}
+    });
+
+    let probe_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+
+    let response = match client
+        .post(probe_url)
+        .bearer_auth(&token.access_token)
+        .header(rquest::header::CONTENT_TYPE, "application/json")
+        .json(&payload)
+        .send()
+        .await
+    {
+        Ok(r) => r,
+        Err(e) => {
+            return InferenceProbeResult {
+                healthy: false,
+                status: "unknown_error".to_string(),
+                message: format!("Network error: {}", e),
+                http_status: None,
+                url: None,
+            };
+        }
+    };
+
+    let http_status = response.status().as_u16();
+    let body_text = response.text().await.unwrap_or_default();
+    let body_lower = body_text.to_lowercase();
+
+    crate::modules::logger::log_info(&format!(
+        "[InferenceProbe] {} -> HTTP {} | {}",
+        account.email,
+        http_status,
+        &body_text.chars().take(120).collect::<String>()
+    ));
+
+    if http_status == 200 {
+        return InferenceProbeResult {
+            healthy: true,
+            status: "ok".to_string(),
+            message: "Account is healthy — inference layer responded 200.".to_string(),
+            http_status: Some(200),
+            url: None,
+        };
+    }
+
+    // Extract appeal / validation URL from error body
+    let mut extracted_url: Option<String> = None;
+    if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&body_text) {
+        if let Some(details) = parsed.pointer("/error/details").and_then(|d| d.as_array()) {
+            'outer: for detail in details {
+                if let Some(meta) = detail.get("metadata") {
+                    for key in &["appeal_url", "validation_url"] {
+                        if let Some(u) = meta.get(key).and_then(|v| v.as_str()) {
+                            extracted_url = Some(u.to_string());
+                            break 'outer;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if extracted_url.is_none() {
+        if let Some(pos) = body_text.find("https://forms.gle/") {
+            let sub = &body_text[pos..];
+            let end = sub
+                .find(|c: char| c.is_whitespace() || c == '"' || c == '\'' || c == '\\' || c == ',' || c == '}')
+                .unwrap_or(sub.len());
+            extracted_url = Some(sub[..end].to_string());
+        }
+    }
+
+    // Classify the error
+    if is_tos_violation_text(&body_lower) {
+        return InferenceProbeResult {
+            healthy: false,
+            status: "tos_violation".to_string(),
+            message: "Account suspended for TOS violation — appeal required.".to_string(),
+            http_status: Some(http_status),
+            url: extracted_url.or_else(|| Some("https://forms.gle/hGzM9MEUv2azZsrb9".to_string())),
+        };
+    }
+
+    if body_lower.contains("validation_required")
+        || body_lower.contains("verify your account")
+        || body_lower.contains("further action is required")
+    {
+        return InferenceProbeResult {
+            healthy: false,
+            status: "validation_required".to_string(),
+            message: "Account requires Google identity verification.".to_string(),
+            http_status: Some(http_status),
+            url: extracted_url,
+        };
+    }
+
+    if body_lower.contains("location is not supported")
+        || body_lower.contains("user location is not supported")
+        || body_lower.contains("geofenced")
+        || body_lower.contains("3501")
+    {
+        return InferenceProbeResult {
+            healthy: false,
+            status: "region_restricted".to_string(),
+            message: "Account is region-restricted — location not supported by Google AI.".to_string(),
+            http_status: Some(http_status),
+            url: None,
+        };
+    }
+
+    if body_lower.contains("resource_exhausted") {
+        return InferenceProbeResult {
+            healthy: false,
+            status: "quota_exhausted".to_string(),
+            message: "Inference quota exhausted — wait for reset.".to_string(),
+            http_status: Some(http_status),
+            url: None,
+        };
+    }
+
+    InferenceProbeResult {
+        healthy: false,
+        status: "unknown_error".to_string(),
+        message: format!("HTTP {}: {}", http_status, &body_text.chars().take(300).collect::<String>()),
+        http_status: Some(http_status),
+        url: None,
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2932,7 +3106,6 @@ pub async fn check_and_trigger_warmup_for_recovered_models() {
         tokio::time::sleep(tokio::time::Duration::from_millis(2000)).await;
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;

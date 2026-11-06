@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Antigravity Shield — AI Proxy & Fleet Management Engine
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
@@ -57,7 +57,7 @@ import { categorizeModel } from '../../utils/modelCategory';
 import { getAccountFiveHourReset, isAccountQuotaExhausted } from '../../utils/quota';
 import { clusterAccountsByFamily, FamilyGroup } from '../../utils/familyGroup';
 import { cn } from '../../utils/cn';
-import { getValidationBlockedStatusLabel } from './accountValidationStatus';
+import { getValidationBlockedStatusLabel, isValidationBlockedTos } from './accountValidationStatus';
 import { getLiveLimitForModel } from '../../utils/liveLimit';
 import { AccountActionControls } from './AccountActionControls';
 import HelpTooltip from '../common/HelpTooltip';
@@ -564,10 +564,19 @@ function AccountRowContent({
                         <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); onViewError(); }}
-                            className="px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 dark:hover:bg-amber-900/80 text-amber-700 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 shadow-sm border border-amber-200/60 dark:border-amber-800/60 cursor-pointer transition-colors"
+                            className={cn(
+                                "px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm border cursor-pointer transition-colors",
+                                isValidationBlockedTos(account.validation_blocked_reason)
+                                    ? "bg-red-100 hover:bg-red-200 dark:bg-red-900/50 dark:hover:bg-red-900/80 text-red-600 dark:text-red-400 border-red-200/60 dark:border-red-800/60"
+                                    : "bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/50 dark:hover:bg-amber-900/80 text-amber-700 dark:text-amber-400 border-amber-200/60 dark:border-amber-800/60"
+                            )}
                             title={t('accounts.click_to_view_error', 'Click to view verification details and link')}
                         >
-                            <Clock className="w-2.5 h-2.5" />
+                            {isValidationBlockedTos(account.validation_blocked_reason) ? (
+                                <AlertTriangle className="w-2.5 h-2.5" />
+                            ) : (
+                                <Clock className="w-2.5 h-2.5" />
+                            )}
                             <span className="underline decoration-dotted underline-offset-2">{validationBlockedLabel}</span>
                         </button>
                     )}

@@ -1283,6 +1283,148 @@ pub async fn clear_account_validation(account_id: String) -> Result<(), String> 
 }
 
 // ============================================================================
+// Two-Stage Re-check Command
+// ============================================================================
+
+pub use modules::account::InferenceProbeResult;
+
+/// Re-check an account in two stages:
+///  Stage 1 — `fetchAvailableModels` (quota API): confirms the token is valid and account exists.
+///  Stage 2 — `generateContent` inference probe: detects TOS bans, region locks, verification requirements.
+///
+/// Returns a structured `RecheckResult` so the frontend can show the right UI state without guessing.
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+pub struct RecheckResult {
+    /// Was Stage 1 (quota API) successful?
+    pub quota_ok: bool,
+    /// Stage 2 inference probe result
+    pub probe: InferenceProbeResult,
+    /// High-level verdict: "healthy" | "tos_violation" | "validation_required" | "region_restricted" | "quota_stage1_failed" | "unknown_error"
+    pub verdict: String,
+}
+
+#[tauri::command]
+pub async fn recheck_account(
+    app: tauri::AppHandle,
+    proxy_state: tauri::State<'_, crate::commands::proxy::ProxyServiceState>,
+    account_id: String,
+) -> Result<RecheckResult, String> {
+    modules::logger::log_info(&format!("[Recheck] Two-stage recheck started for: {}", account_id));
+
+    let mut account = modules::load_account(&account_id)
+        .map_err(|e| format!("Account not found: {}", e))?;
+
+    // --- Stage 1: Clear any stale validation_blocked flag, then hit quota API ---
+    // We reset first so we don't get a cached-200 from a previously-cleared state
+    if account.validation_blocked {
+        let _ = modules::account::set_account_validation_blocked(&account_id, false, None, None);
+        // Reload fresh after clearing
+        if let Ok(fresh) = modules::load_account(&account_id) {
+            account = fresh;
+        }
+    }
+
+    let quota_ok = match modules::account::fetch_quota_with_retry(&mut account).await {
+        Ok(quota) => {
+            let _ = modules::update_account_quota(&account_id, quota.clone());
+            crate::modules::tray::update_tray_menus(&app);
+            let instance_lock = proxy_state.instance.read().await;
+            if let Some(instance) = instance_lock.as_ref() {
+                if quota.models.iter().any(|m| m.percentage > 0) {
+                    instance.token_manager.clear_rate_limit_memory(&account_id);
+                }
+                let _ = instance.token_manager.reload_account(&account_id).await;
+            }
+            true
+        }
+        Err(e) => {
+            modules::logger::log_warn(&format!("[Recheck] Stage 1 failed for {}: {}", account.email, e));
+            return Ok(RecheckResult {
+                quota_ok: false,
+                probe: InferenceProbeResult {
+                    healthy: false,
+                    status: "unknown_error".to_string(),
+                    message: format!("Quota API failed: {}", e),
+                    http_status: None,
+                    url: None,
+                },
+                verdict: "quota_stage1_failed".to_string(),
+            });
+        }
+    };
+
+    // --- Stage 2: Inference probe ---
+    // Reload account to get the freshest token after quota fetch potentially refreshed it
+    if let Ok(fresh) = modules::load_account(&account_id) {
+        account = fresh;
+    }
+    let probe = modules::account::inference_probe(&mut account).await;
+
+    // --- Apply state changes based on probe result ---
+    match probe.status.as_str() {
+        "ok" => {
+            // Account is healthy — ensure proxy_disabled is cleared if it was set
+            if account.proxy_disabled {
+                let _ = modules::account::toggle_proxy_disabled(&account_id, true, None);
+                let instance_lock = proxy_state.instance.read().await;
+                if let Some(instance) = instance_lock.as_ref() {
+                    let _ = instance.token_manager.reload_account(&account_id).await;
+                }
+            }
+        }
+        "tos_violation" => {
+            // Re-mark as TOS suspended so UI reflects correct state
+            if let Ok(mut acc) = modules::load_account(&account_id) {
+                acc.proxy_disabled = true;
+                acc.proxy_disabled_reason = Some(format!("TOS Violation (confirmed by inference probe): {}", probe.message));
+                acc.proxy_disabled_at = Some(chrono::Utc::now().timestamp());
+                acc.validation_blocked = false;
+                acc.validation_blocked_reason = None;
+                if let Some(ref url) = probe.url {
+                    acc.validation_url = Some(url.clone());
+                }
+                if let Some(ref mut q) = acc.quota {
+                    q.is_forbidden = true;
+                    q.forbidden_reason = Some(probe.message.clone());
+                }
+                let _ = modules::account::save_account(&acc);
+                let instance_lock = proxy_state.instance.read().await;
+                if let Some(instance) = instance_lock.as_ref() {
+                    let _ = instance.token_manager.reload_account(&account_id).await;
+                }
+            }
+        }
+        "validation_required" => {
+            // Re-mark validation_blocked with the correct reason
+            let _ = modules::account::set_account_validation_blocked(
+                &account_id,
+                true,
+                Some(&probe.message),
+                probe.url.as_deref(),
+            );
+        }
+        _ => {}
+    }
+
+    let verdict = if probe.healthy {
+        "healthy".to_string()
+    } else {
+        probe.status.clone()
+    };
+
+    modules::logger::log_info(&format!(
+        "[Recheck] {} -> verdict: {} | probe: {} (HTTP {:?})",
+        account.email, verdict, probe.status, probe.http_status
+    ));
+
+    Ok(RecheckResult {
+        quota_ok,
+        probe,
+        verdict,
+    })
+}
+
+// ============================================================================
 // HTTP API set命令
 // ============================================================================
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Antigravity Shield — AI Proxy & Fleet Management Engine
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
@@ -66,7 +66,7 @@ function Accounts() {
     deleteAccounts,
     switchAccount,
     refreshQuota,
-    clearAccountValidation,
+    recheckAccount,
     toggleProxyStatus,
     reorderAccounts,
     warmUpAccounts,
@@ -543,22 +543,18 @@ function Accounts() {
       return next;
     });
     try {
-      const targetAcc = accounts.find((a) => a.id === accountId);
-      if (targetAcc?.validation_blocked) {
-        await clearAccountValidation(accountId);
+      const res = await recheckAccount(accountId);
+      if (res.verdict === 'healthy') {
+        showToast(t("accounts.recheck_success", "Account verified: quota and inference live & healthy!"), "success");
+      } else if (res.verdict === 'tos_violation') {
+        showToast(t("accounts.recheck_tos", "Account is still suspended by Google (TOS violation). Appeal is pending."), "error");
+      } else if (res.verdict === 'validation_required') {
+        showToast(t("accounts.recheck_verification", "Google identity verification challenge required."), "warning");
+      } else if (res.verdict === 'region_restricted') {
+        showToast(t("accounts.recheck_region", "Region restricted: location not supported by Google AI."), "warning");
+      } else {
+        showToast(`${t("common.error")}: ${res.probe?.message || res.verdict}`, "error");
       }
-      await refreshQuota(accountId);
-      if (targetAcc?.proxy_disabled) {
-        // If account was marked proxy_disabled (e.g. from prior TOS/suspension),
-        // auto-reinstate it in the proxy pool and reload fresh accounts state!
-        try {
-          await toggleProxyStatus(accountId, true);
-          await fetchAccounts();
-        } catch (e) {
-          console.warn("[Accounts] Failed to auto-reinstate proxy status:", e);
-        }
-      }
-      showToast(t("common.success"), "success");
     } catch (error) {
       showToast(`${t("common.error")}: ${error}`, "error");
     } finally {
