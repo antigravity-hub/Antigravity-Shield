@@ -347,9 +347,9 @@ fn clean_image_model_name(model_name: &str) -> String {
         }
     }
 
-    // [Imagen 3 & Standard Mapping]
-    // Map standard image generation aliases (e.g. dall-e-3, imagen-3) to Google Imagen 3
-    if clean_name == "dall-e-3" || clean_name == "dall-e-2" || clean_name == "imagen-3" {
+    // [Google Imagen 3 Normalization]
+    // Map short family name imagen-3 to the official Google model ID imagen-3.0-generate-002
+    if clean_name == "imagen-3" {
         return "imagen-3.0-generate-002".to_string();
     }
 
