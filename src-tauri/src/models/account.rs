@@ -80,6 +80,19 @@ pub struct Account {
     /// current激活的环境目标 (platform / ide / agy)
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub active_targets: Vec<String>,
+    /// [Enterprise GCP Vertex AI] 账号类型 ("standard" | "enterprise")
+    #[serde(default = "default_account_type")]
+    pub account_type: String,
+    /// [Enterprise GCP Vertex AI] GCP Project ID
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project_id: Option<String>,
+    /// [Enterprise GCP Vertex AI] 绑定的 OAuth Client 类型 ("antigravity" | "antigravity_gcp")
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth_client_type: Option<String>,
+}
+
+fn default_account_type() -> String {
+    "standard".to_string()
 }
 
 impl Account {
@@ -111,6 +124,9 @@ impl Account {
             proxy_bound_at: None,
             custom_label: None,
             active_targets: Vec::new(),
+            account_type: default_account_type(),
+            project_id: None,
+            oauth_client_type: None,
         }
     }
 

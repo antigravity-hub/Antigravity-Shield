@@ -1462,4 +1462,44 @@ pub async fn focus_target_app(target_ide: Option<String>) -> Result<(), String> 
     crate::modules::process::focus_antigravity(target_ide.as_deref())
 }
 
+/// [Enterprise GCP Vertex AI] Auto-discover active GCP Project ID via CloudCode API
+#[tauri::command]
+pub async fn auto_discover_gcp_project_id(access_token: String) -> Result<String, String> {
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let res = client
+        .post("https://cloudcode-pa.googleapis.com/v1internal:loadCodeAssist")
+        .header("Authorization", format!("Bearer {}", access_token))
+        .header("User-Agent", "antigravity")
+        .json(&serde_json::json!({
+            "metadata": {
+                "ideType": "ANTIGRAVITY",
+                "platform": "DESKTOP"
+            }
+        }))
+        .send()
+        .await
+        .map_err(|e| format!("Failed to connect to Google CloudCode PA: {}", e))?;
+
+    if !res.status().is_success() {
+        return Err(format!("Google API returned status {}", res.status()));
+    }
+
+    let body: serde_json::Value = res.json().await.map_err(|e| e.to_string())?;
+    if let Some(project) = body.get("cloudaicompanionProject").and_then(|v| v.as_str()) {
+        return Ok(project.to_string());
+    }
+    if let Some(project) = body.get("currentProject").and_then(|v| v.as_str()) {
+        return Ok(project.to_string());
+    }
+    if let Some(project) = body.get("projectId").and_then(|v| v.as_str()) {
+        return Ok(project.to_string());
+    }
+
+    Err("No active GCP Vertex AI Project ID found for this account".to_string())
+}
+
 

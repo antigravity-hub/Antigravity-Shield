@@ -347,6 +347,12 @@ fn clean_image_model_name(model_name: &str) -> String {
         }
     }
 
+    // [Imagen 3 & Standard Mapping]
+    // Map standard image generation aliases (e.g. dall-e-3, imagen-3) to Google Imagen 3
+    if clean_name == "dall-e-3" || clean_name == "dall-e-2" || clean_name == "imagen-3" {
+        return "imagen-3.0-generate-002".to_string();
+    }
+
     clean_name
 }
 
@@ -1072,6 +1078,15 @@ pub fn sanitize_system_prompt_for_tokens(text: &str) -> String {
     }
 
     cleaned
+}
+
+/// [Prompt Sanitization Isolation Guard]
+/// Guarantees that the active user turn (the final user message in the conversation)
+/// is passed 100% untouched to the upstream LLM without token pruning, prompt truncation,
+/// or brand name filtering. Code blocks, indentation, quotes, and competitor brand mentions
+/// (e.g., Anthropic, DeepSeek, OpenAI) are preserved in their exact original form.
+pub fn is_current_user_turn(idx: usize, total_messages: usize, role: &str) -> bool {
+    role == "user" && (idx + 1 >= total_messages || idx + 2 >= total_messages)
 }
 
 /// [FIX] Parse markdown base64 images from text and split into Gemini parts

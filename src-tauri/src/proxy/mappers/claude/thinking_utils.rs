@@ -175,22 +175,36 @@ pub fn get_signature_family(signature: &str) -> Option<String> {
     SignatureCache::global().get_signature_family(signature)
 }
 
-/// [CRITICAL] Sanitize thinking blocks and check cross-model compatibility
+/// [CRITICAL] Sanitize thinking blocks, check cross-model compatibility, and perform Smart Context Compaction
 pub fn filter_invalid_thinking_blocks_with_family(
     messages: &mut [Message],
     target_family: Option<&str>,
 ) {
     let mut stripped_count = 0;
 
-    for msg in messages.iter_mut() {
+    // [Smart Context Compaction & Thinking Pruning]
+    // Find the index of the most recent assistant message. Historical thinking blocks
+    // from completed past turns are not required by the upstream API and bloat the context
+    // window by tens of thousands of tokens, triggering 400 "prompt is too long" errors.
+    let last_assistant_idx = messages.iter().rposition(|m| m.role == "assistant");
+
+    for (idx, msg) in messages.iter_mut().enumerate() {
         if msg.role != "assistant" {
             continue;
         }
+
+        let is_historical_turn = last_assistant_idx.map_or(false, |last_idx| idx < last_idx);
 
         if let MessageContent::Array(blocks) = &mut msg.content {
             let original_len = blocks.len();
             blocks.retain(|block| {
                 if let ContentBlock::Thinking { signature, .. } = block {
+                    // [Smart Context Compaction] Strip historical thinking blocks from completed past turns
+                    if is_historical_turn {
+                        stripped_count += 1;
+                        return false;
+                    }
+
                     // 1. Basic length check - allow empty signatures to pass through for compatibility
                     let sig = match signature {
                         Some(s) if s.len() >= MIN_SIGNATURE_LENGTH || s.is_empty() => s,

@@ -730,6 +730,7 @@ pub fn run() {
             commands::hide_overlay_notification,
             commands::get_overlay_payload,
             commands::focus_target_app,
+            commands::auto_discover_gcp_project_id,
             proxy::cli_sync::get_cli_sync_status,
             proxy::cli_sync::execute_cli_sync,
             proxy::cli_sync::execute_cli_restore,
