@@ -321,57 +321,102 @@ ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
 }
 
 /* ==========================================================================
-   Layer 2: Nested Sub-Lists (انشعاب لایه دوم با شاخه خمیده و قطره فیروزه‌ای)
+   Layer 2: Nested Sub-Lists (انشعاب ارگانیک متصل به ستون والد با قطره نئونی)
    ========================================================================== */
-ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul,
-[role="article"] ul > li > ul {
+[role="article"] ul ul,
+.rendered-markdown ul ul,
+[role="article"] [dir="rtl"] ul ul,
+.rendered-markdown [dir="rtl"] ul ul,
+ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
   position: relative !important;
-  margin-top: 10px !important;
-  margin-right: 14px !important;
-  padding-right: 22px !important;
-  padding-left: 0 !important;
-  border-right: 1.5px dashed rgba(52, 211, 153, 0.45) !important;
+  margin: 6px 0 10px 0 !important;
+  padding: 0 !important;
+  padding-right: 0 !important;
+  border: none !important;
+  list-style: none !important;
 }
 
-ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li, ul[dir="rtl"] > li > ul > li,
-[role="article"] ul > li > ul > li {
-  position: relative !important;
-  padding-right: 18px !important;
-  margin-bottom: 10px !important;
-  color: #cbd5e1 !important;
-  font-size: 0.96em !important;
-}
-
-/* Layer 2 Curved Branch Connector */
-ul:dir(rtl) > li > ul > li::before, [dir="rtl"] ul > li > ul > li::before, ul[dir="rtl"] > li > ul > li::before,
-[role="article"] ul > li > ul > li::before {
+/* Connecting Arm from Parent Spine (-14px) to Sub-List Spine (11px) */
+[role="article"] ul ul::before,
+.rendered-markdown ul ul::before,
+[role="article"] [dir="rtl"] ul ul::before,
+.rendered-markdown [dir="rtl"] ul ul::before,
+ul:dir(rtl) > li > ul::before {
   content: "" !important;
   position: absolute !important;
-  right: -23px !important;
-  top: 12px !important;
-  width: 20px !important;
-  height: 14px !important;
-  border-bottom: 2px solid rgba(52, 211, 153, 0.7) !important;
-  border-right: 2px solid rgba(52, 211, 153, 0.7) !important;
-  border-bottom-right-radius: 10px !important;
+  right: -14px !important;
+  top: -6px !important;
+  width: 25px !important;
+  height: 20px !important;
+  border-bottom: 1.5px solid rgba(52, 211, 153, 0.75) !important;
+  border-right: 1.5px solid rgba(52, 211, 153, 0.75) !important;
+  border-bottom-right-radius: 8px !important;
+  border-top: none !important;
+  border-left: none !important;
   background: none !important;
-  animation: none !important;
   z-index: 1 !important;
 }
 
-/* Layer 2 Mini Cyan-Mint Droplet */
-ul:dir(rtl) > li > ul > li::after, [dir="rtl"] ul > li > ul > li::after, ul[dir="rtl"] > li > ul > li::after,
-[role="article"] ul > li > ul > li::after {
+/* Layer 2 List Item: Specificity high enough to prevent squashing */
+[role="article"] ul ul li,
+.rendered-markdown ul ul li,
+[role="article"] [dir="rtl"] ul ul li,
+.rendered-markdown [dir="rtl"] ul ul li,
+[role="article"] ul:dir(rtl) > li > ul > li,
+ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
+  position: relative !important;
+  padding-right: 34px !important;
+  padding-left: 0 !important;
+  margin-bottom: 8px !important;
+  color: #cbd5e1 !important;
+  font-size: 0.95em !important;
+  line-height: 2 !important;
+  list-style: none !important;
+}
+
+/* Vertical stem between sub-items */
+[role="article"] ul ul li::before,
+.rendered-markdown ul ul li::before,
+[role="article"] [dir="rtl"] ul ul li::before,
+.rendered-markdown [dir="rtl"] ul ul li::before,
+[role="article"] ul:dir(rtl) > li > ul > li::before,
+ul:dir(rtl) > li > ul > li::before {
   content: "" !important;
   position: absolute !important;
-  right: -5px !important;
-  top: 9px !important;
-  width: 9px !important;
-  height: 9px !important;
+  right: 11px !important;
+  top: 14px !important;
+  bottom: -8px !important;
+  width: 1.5px !important;
+  background: rgba(52, 211, 153, 0.5) !important;
+  z-index: 1 !important;
+}
+
+/* Terminate cleanly on last child - NO unwanted trailing stub */
+[role="article"] ul ul li:last-child::before,
+.rendered-markdown ul ul li:last-child::before,
+[role="article"] [dir="rtl"] ul ul li:last-child::before,
+.rendered-markdown [dir="rtl"] ul ul li:last-child::before,
+ul:dir(rtl) > li > ul > li:last-child::before {
+  display: none !important;
+}
+
+/* Cyan Droplet Node */
+[role="article"] ul ul li::after,
+.rendered-markdown ul ul li::after,
+[role="article"] [dir="rtl"] ul ul li::after,
+.rendered-markdown [dir="rtl"] ul ul li::after,
+[role="article"] ul:dir(rtl) > li > ul > li::after,
+ul:dir(rtl) > li > ul > li::after, [dir="rtl"] ul > li > ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 7px !important;
+  top: 10px !important;
+  width: 8px !important;
+  height: 8px !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at 35% 35%, #bae6fd 0%, #38bdf8 60%, #0284c7 100%) !important;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.85) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
   z-index: 2 !important;
   animation: none !important;
 }
