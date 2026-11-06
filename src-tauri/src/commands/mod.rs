@@ -973,6 +973,10 @@ pub async fn send_desktop_notification(
 /// Displays main application window
 #[tauri::command]
 pub async fn show_main_window(window: tauri::Window) -> Result<(), String> {
+    if std::env::args().any(|arg| arg == "--minimized" || arg == "-m") {
+        crate::modules::logger::log_info("Detected --minimized flag: keeping window hidden in system tray on autostart");
+        return Ok(());
+    }
     window.show().map_err(|e| e.to_string())
 }
 

@@ -111,10 +111,14 @@ pub fn determine_retry_strategy(
 ) -> RetryStrategy {
     if status_code == 429 {
         return match crate::proxy::upstream::retry::parse_legacy_retry_delay(error_text) {
-            Some(delay_ms) if delay_ms > 0 && delay_ms <= 2000 => {
+            // [Imagen 3 & Micro-gap Quota Rescue]
+            // Google upstream burst delay for Imagen 3 is typically ~1.17s-2.0s.
+            // With parse_legacy_retry_delay's +1500ms padding, delay_ms reaches ~2.6s-3.5s.
+            // Allowing up to 3500ms prevents blind account-hopping avalanches on transient burst limits.
+            Some(delay_ms) if delay_ms > 0 && delay_ms <= 3500 => {
                 let actual_delay = delay_ms.saturating_add(100);
                 tracing::info!(
-                    "Grace Retry Triggered: Delay {}ms is within window, using same account",
+                    "Grace Retry Triggered: Delay {}ms is within micro-gap burst window, waiting in-place on same account",
                     actual_delay
                 );
                 RetryStrategy::GraceRetry(Duration::from_millis(actual_delay))

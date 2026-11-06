@@ -452,13 +452,18 @@ pub fn run() {
                 info!("Tray disabled for this session");
             }
 
+            let is_minimized_launch = std::env::args().any(|arg| arg == "--minimized" || arg == "-m");
             if let Some(window) = app.get_webview_window("main") {
                 #[cfg(target_os = "macos")]
                 let _ = window.set_decorations(true);
 
-                let _ = window.show();
-                let _ = window.set_focus();
-                info!("Main window explicitly shown and focused");
+                if !is_minimized_launch {
+                    let _ = window.show();
+                    let _ = window.set_focus();
+                    info!("Main window explicitly shown and focused");
+                } else {
+                    info!("Started with --minimized: main window kept silently in system tray");
+                }
             }
 
             // 立即启动管理service器 (8045)，以便 Web 端能访问
