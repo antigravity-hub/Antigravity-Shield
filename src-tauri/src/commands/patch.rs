@@ -1333,76 +1333,92 @@ button[data-project-card="true"] svg {
 
 /* 8.7 Project Child Conversations (Indented Forward & Hierarchy Tree Guide Line) */
 .agy-sidebar-row.agy-sidebar-row[class*="pl-"] {
-  padding-left: 36px !important;
+  margin-left: 20px !important;
+  width: calc(100% - 24px) !important;
+  padding-left: 14px !important;
   position: relative !important;
-  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease !important;
+  border-radius: 8px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border: 1px solid transparent !important;
 }
 
-/* Row container stays motionless on hover so vertical line NEVER jumps */
-.agy-sidebar-row.agy-sidebar-row[class*="pl-"]:hover {
-  transform: none !important;
-  background: rgba(147, 233, 190, 0.08) !important;
-  border-color: rgba(147, 233, 190, 0.20) !important;
-}
-
-/* Animate only the inner text slightly forward on hover */
-.agy-sidebar-row[class*="pl-"]:hover a,
-.agy-sidebar-row[class*="pl-"]:hover .grow {
-  transform: none !important;
-}
-
-/* Tree vertical line running down the project branch */
+/* Dotted / Dashed Elegant Vertical Trunk (نقطه خط‌چین محوشونده) */
 .agy-sidebar-row[class*="pl-"]::before {
   content: '' !important;
   position: absolute !important;
-  left: 19px !important;
-  top: -3px !important;
-  bottom: -3px !important;
+  left: -13px !important;
+  top: -2px !important;
+  bottom: -2px !important;
   width: 1.5px !important;
-  background: var(--proj-glow, rgba(147, 233, 190, 0.25)) !important;
-  transition: background 0.18s ease, box-shadow 0.18s ease !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--proj-color, #93e9be) 0px,
+    var(--proj-color, #93e9be) 3px,
+    transparent 3px,
+    transparent 7px
+  ) !important;
+  background-size: 1.5px 7px !important;
+  opacity: 0.65 !important;
+  transition: all 0.2s ease !important;
   z-index: 2 !important;
 }
 
-/* Tree horizontal connector branch into conversation item */
+/* Subtle Horizontal Branch Connector into Card (-|) */
 .agy-sidebar-row[class*="pl-"]::after {
   content: '' !important;
   position: absolute !important;
-  left: 19px !important;
+  left: -13px !important;
   top: 50% !important;
-  width: 11px !important;
+  width: 12px !important;
   height: 1.5px !important;
-  background: var(--proj-glow, rgba(147, 233, 190, 0.25)) !important;
-  border-radius: 0 2px 2px 0 !important;
-  transition: background 0.18s ease, box-shadow 0.18s ease !important;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--proj-color, #93e9be) 0px,
+    var(--proj-color, #93e9be) 3px,
+    transparent 3px,
+    transparent 6px
+  ) !important;
+  opacity: 0.75 !important;
+  border-radius: 1px !important;
+  transition: all 0.2s ease !important;
   z-index: 2 !important;
 }
 
+/* Hover State: Inherit SUBTLE highlight of Project Color (Zero Hardcoded Green!) */
+.agy-sidebar-row.agy-sidebar-row[class*="pl-"]:hover {
+  transform: translateX(1px) !important;
+  background: var(--proj-bg, rgba(255, 255, 255, 0.05)) !important;
+  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 35%, transparent) !important;
+  box-shadow: 0 0 12px -2px var(--proj-glow, rgba(255, 255, 255, 0.15)) !important;
+}
+
 .agy-sidebar-row[class*="pl-"]:hover::before {
-  background: var(--proj-color, #93e9be) !important;
-  box-shadow: 0 0 5px var(--proj-glow, rgba(147, 233, 190, 0.4)) !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 3px var(--proj-glow, rgba(147, 233, 190, 0.4))) !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:hover::after {
-  width: 11px !important;
-  background: var(--proj-color, #93e9be) !important;
-  box-shadow: 0 0 5px var(--proj-glow, rgba(147, 233, 190, 0.5)) !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 3px var(--proj-glow, rgba(147, 233, 190, 0.4))) !important;
 }
 
-.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::after,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::after {
-  background: var(--proj-color, #93e9be) !important;
-  box-shadow: 0 0 8px var(--proj-glow, rgba(147, 233, 190, 0.6)) !important;
-}
-
+/* Active / Selected State: Pure Project Palette */
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"]),
 .agy-sidebar-row[class*="pl-"].bg-sidebar-muted,
 .agy-sidebar-row[class*="pl-"].bg-sidebar-secondary {
-  border: 1px solid var(--proj-color, rgba(147, 233, 190, 0.28)) !important;
-  border-left: 1px solid transparent !important;
-  border-inline-start: 1px solid transparent !important;
-  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(147, 233, 190, 0.18)) !important;
+  background: var(--proj-bg, rgba(255, 255, 255, 0.08)) !important;
+  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 50%, transparent) !important;
+  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.2)) !important;
+}
+
+.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::before,
+.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::before {
+  opacity: 0.9 !important;
+}
+
+.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
+.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::after {
+  opacity: 1 !important;
 }
 
 /* 8.9 Recent Project Pulse Strip */
