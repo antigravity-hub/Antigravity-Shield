@@ -1491,7 +1491,7 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         }
                     }
                 }
-                                // Suppress corrupt installation banner in workbench.desktop.main.js
+                                // Suppress corrupt installation banner and inject intelligent Persian BiDi in workbench.desktop.main.js
                 let wb_js_path = out_dir.join("vs").join("workbench").join("workbench.desktop.main.js");
                 if wb_js_path.exists() {
                     if let Ok(mut wbc) = fs::read_to_string(&wb_js_path) {
@@ -1508,8 +1508,92 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                             wbc = wbc.replace(old_pure, new_pure);
                             wb_changed = true;
                         }
+
+                        let wb_replacements = [
+                            ("oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{...t,className:ht(t.className),children:v(W0n,{animate:e,paragraphs:BN.toArray(t.children),claimStaggerDelays:i})})}",
+                             "oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{...t,dir:\"auto\",className:ht(t.className),children:v(W0n,{animate:e,paragraphs:BN.toArray(t.children),claimStaggerDelays:i})})}"),
+                            ("aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{...t,animate:e,claimStaggerDelays:i})}",
+                             "aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{...t,dir:\"auto\",animate:e,claimStaggerDelays:i})}"),
+                            ("_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,className:ht(i.className),children:v(W0n,{animate:n,paragraphs:BN.toArray(i.children),claimStaggerDelays:r})})};return e.displayName=`HeaderComponent(${t})`,e}",
+                             "_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,dir:\"auto\",className:ht(i.className),children:v(W0n,{animate:n,paragraphs:BN.toArray(i.children),claimStaggerDelays:r})})};return e.displayName=`HeaderComponent(${t})`,e}"),
+                            ("return v(\"div\",{className:ht(\"leading-relaxed\",\"select-text\",\"text-sm\",\"flex flex-col\",",
+                             "return v(\"div\",{dir:\"auto\",className:ht(\"leading-relaxed\",\"select-text\",\"text-sm\",\"flex flex-col\","),
+                            ("ref:se,\"data-testid\":\"user-message-bubble\",className:ht(\"relative flex flex-row items-center gap-2 p-1.5 rounded-[calc(theme(borderRadius.xl)-1px)] bg-card overflow-hidden\"),children:[v(\"div\",{ref:b,\"data-no-scroll-jump\":u?\"\":void 0",
+                             "ref:se,dir:\"auto\",\"data-testid\":\"user-message-bubble\",className:ht(\"relative flex flex-row items-center gap-2 p-1.5 rounded-[calc(theme(borderRadius.xl)-1px)] bg-card overflow-hidden\"),children:[v(\"div\",{ref:b,dir:\"auto\",\"data-no-scroll-jump\":u?\"\":void 0")
+                        ];
+                        for (target, rep) in wb_replacements {
+                            if wbc.contains(target) && !wbc.contains(rep) {
+                                wbc = wbc.replace(target, rep);
+                                wb_changed = true;
+                            }
+                        }
+
                         if wb_changed {
                             let _ = fs::write(&wb_js_path, &wbc);
+                            applied_count += 1;
+                        }
+                        if let Some(app_dir) = out_dir.parent() {
+                            update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.js", &wb_js_path);
+                        }
+                    }
+                }
+
+                // Inject BiDi Sentinel into workbench.js
+                let wb_entry_path = out_dir.join("vs").join("code").join("electron-browser").join("workbench").join("workbench.js");
+                if wb_entry_path.exists() {
+                    let wb_entry_bak = wb_entry_path.with_extension("js.bak");
+                    if !wb_entry_bak.exists() {
+                        let _ = fs::copy(&wb_entry_path, &wb_entry_bak);
+                    }
+                    if let Ok(mut wbe_content) = fs::read_to_string(&wb_entry_path) {
+                        if !wbe_content.contains("[Antigravity-Shield-IDE-BiDi-Sentinel]") {
+                            let sentinel_code = r#"
+// [Antigravity-Shield-IDE-BiDi-Sentinel]
+(()=>{
+  const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
+  function patchBiDi(root = document) {
+    if (!root || !root.querySelectorAll) return;
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, [data-testid="user-message-bubble"], [role="article"], .leading-relaxed');
+    for (let i = 0; i < targets.length; i++) {
+      const el = targets[i];
+      if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre')) continue;
+      const txt = el.textContent || '';
+      if (isPersian(txt)) {
+        if (el.getAttribute('dir') !== 'rtl') el.setAttribute('dir', 'rtl');
+        if (el.style.direction !== 'rtl') el.style.direction = 'rtl';
+        if (el.style.fontFamily !== "'Vazirmatn'") el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
+        if (el.tagName !== 'P' && el.style.textAlign !== 'right') el.style.textAlign = 'right';
+      }
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => patchBiDi());
+  } else {
+    patchBiDi();
+  }
+  const obs = new MutationObserver((mutations) => {
+    for (let i = 0; i < mutations.length; i++) {
+      const m = mutations[i];
+      if (m.type === 'childList') {
+        for (let j = 0; j < m.addedNodes.length; j++) {
+          const n = m.addedNodes[j];
+          if (n.nodeType === 1) patchBiDi(n);
+        }
+      } else if (m.type === 'characterData') {
+        const p = m.target.parentElement;
+        if (p) patchBiDi(p);
+      }
+    }
+  });
+  obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+})();
+"#;
+                            wbe_content.push_str(sentinel_code);
+                            let _ = fs::write(&wb_entry_path, &wbe_content);
+                            applied_count += 1;
+                        }
+                        if let Some(app_dir) = out_dir.parent() {
+                            update_product_checksum(app_dir, "vs/code/electron-browser/workbench/workbench.js", &wb_entry_path);
                         }
                     }
                 }
