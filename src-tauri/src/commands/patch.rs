@@ -1,4 +1,4 @@
-// Antigravity Shield — AI Proxy & Fleet Management Engine
+﻿// Antigravity Shield — AI Proxy & Fleet Management Engine
 // Repository: https://github.com/antigravity-hub/Antigravity-Shield
 
 use std::fs;
@@ -215,27 +215,7 @@ pub const VAZIRMATN_RTL_CSS: &str = r#"
   font-display: swap;
 }
 
-/* [Antigravity-Emerald-Raindrop-Cascade-And-Bidi-List-Shield] */
-
-@keyframes agyRaindropFlow {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 36px;
-  }
-}
-
-@keyframes agyPulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
-    transform: scale(1.15);
-  }
-}
+/* [Antigravity-Clean-Bidi-List-Shield] - Ultra Minimal & Ergonomic */
 
 /* Kill default browser markers completely so they NEVER jump to the left */
 ul, ol, [role="article"] ul, [role="article"] ol,
@@ -257,9 +237,9 @@ ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
 [role="article"] ul:has(> li:dir(rtl)),
 [role="article"] ul {
   list-style: none !important;
-  margin: 0.8rem 0 !important;
+  margin: 0.6rem 0 !important;
   padding: 0 !important;
-  padding-right: 28px !important;
+  padding-right: 20px !important;
   padding-left: 0 !important;
   position: relative !important;
   direction: rtl !important;
@@ -271,66 +251,49 @@ ul:dir(rtl) > li, [dir="rtl"] ul > li, ul[dir="rtl"] > li,
 [role="article"] ul > li {
   list-style: none !important;
   position: relative !important;
-  padding-right: 18px !important;
+  padding-right: 14px !important;
   padding-left: 0 !important;
-  margin-bottom: 14px !important;
-  line-height: 2 !important;
+  margin-bottom: 8px !important;
+  line-height: 1.9 !important;
   color: #f1f5f9 !important;
   direction: rtl !important;
   text-align: right !important;
   text-align-last: right !important;
 }
 
-/* Vertical Raindrop Animated Spine (Line under bullet) */
+/* Completely remove vertical spine / connecting dashed lines */
 ul:dir(rtl) > li::before, [dir="rtl"] ul > li::before, ul[dir="rtl"] > li::before,
-[role="article"] ul > li::before {
-  content: "" !important;
-  position: absolute !important;
-  right: -14px !important;
-  top: 18px !important;
-  bottom: -14px !important;
-  width: 2.5px !important;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(16, 185, 129, 0.9) 0px,
-    rgba(52, 211, 153, 0.4) 6px,
-    transparent 10px,
-    transparent 14px,
-    rgba(16, 185, 129, 0.95) 20px,
-    rgba(56, 189, 248, 0.8) 26px,
-    transparent 30px
-  ) !important;
-  background-size: 2.5px 36px !important;
-  animation: agyRaindropFlow 1.6s linear infinite !important;
-  border-radius: 2px !important;
-  opacity: 0.85 !important;
-  z-index: 1 !important;
-}
-
-/* Last item in Layer 1 stops spine early */
+[role="article"] ul > li::before,
 ul:dir(rtl) > li:last-child::before, [dir="rtl"] ul > li:last-child::before, ul[dir="rtl"] > li:last-child::before,
 [role="article"] ul > li:last-child::before {
-  bottom: 8px !important;
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: none !important;
+  background: none !important;
+  animation: none !important;
 }
 
-/* Layer 1 Glowing Emerald Node (The Bullet Droplet) */
+/* Layer 1 Minimal Subtle Bullet Dot (No neon glow, no pulse, no vertical dashed line) */
 ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
 [role="article"] ul > li::after {
   content: "" !important;
   position: absolute !important;
-  right: -19px !important;
-  top: 8px !important;
-  width: 12px !important;
-  height: 12px !important;
+  right: -13px !important;
+  top: 11px !important;
+  width: 5px !important;
+  height: 5px !important;
   border-radius: 50% !important;
-  background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
-  animation: agyPulseGlow 2.5s ease-in-out infinite !important;
-  z-index: 2 !important;
+  background: #10b981 !important;
+  border: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+  z-index: 1 !important;
 }
 
 /* ==========================================================================
-   Layer 2: Nested Sub-Lists (طرح درختی نئونی مینیمال - Minimal Neon Tree)
+   Layer 2: Nested Sub-Lists (Minimal & Clean)
    ========================================================================== */
 [role="article"] ul ul,
 .rendered-markdown ul ul,
@@ -338,12 +301,11 @@ ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
 .rendered-markdown [dir="rtl"] ul ul,
 ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
   position: relative !important;
-  margin: 8px 0 12px 0 !important;
+  margin: 6px 0 8px 0 !important;
   padding: 0 !important;
-  padding-right: 18px !important;
+  padding-right: 16px !important;
   padding-left: 0 !important;
   border: none !important;
-  border-right: 1.5px solid rgba(56, 189, 248, 0.35) !important;
   list-style: none !important;
 }
 
@@ -353,6 +315,7 @@ ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
 .rendered-markdown [dir="rtl"] ul ul::before,
 ul:dir(rtl) > li > ul::before {
   display: none !important;
+  content: none !important;
 }
 
 [role="article"] ul ul li,
@@ -362,12 +325,12 @@ ul:dir(rtl) > li > ul::before {
 [role="article"] ul:dir(rtl) > li > ul > li,
 ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
   position: relative !important;
-  padding-right: 18px !important;
+  padding-right: 12px !important;
   padding-left: 0 !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 6px !important;
   color: #cbd5e1 !important;
   font-size: 0.95em !important;
-  line-height: 2 !important;
+  line-height: 1.8 !important;
   list-style: none !important;
 }
 
@@ -378,6 +341,7 @@ ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
 [role="article"] ul:dir(rtl) > li > ul > li::before,
 ul:dir(rtl) > li > ul > li::before {
   display: none !important;
+  content: none !important;
 }
 
 [role="article"] ul ul li::after,
@@ -388,18 +352,17 @@ ul:dir(rtl) > li > ul > li::before {
 ul:dir(rtl) > li > ul > li::after, [dir="rtl"] ul > li > ul > li::after {
   content: "" !important;
   position: absolute !important;
-  right: -21.5px !important;
+  right: -11px !important;
   top: 10px !important;
-  width: 7px !important;
-  height: 7px !important;
+  width: 4.5px !important;
+  height: 4.5px !important;
   border-radius: 50% !important;
-  background: radial-gradient(circle at 35% 35%, #bae6fd 0%, #38bdf8 60%, #0284c7 100%) !important;
-  box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  background: transparent !important;
+  border: 1.5px solid #38bdf8 !important;
+  box-shadow: none !important;
   z-index: 2 !important;
   animation: none !important;
 }
-
 /* ==========================================================================
    Numbered lists (OL): Persian Counter Anchored on the RIGHT
    ========================================================================== */
