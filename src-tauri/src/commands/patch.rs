@@ -1994,8 +1994,8 @@ button[data-project-card="true"] {
 button[data-testid="project-header"]:hover,
 button[data-project-card="true"]:hover {
   background: var(--proj-bg, linear-gradient(135deg, rgba(147, 233, 190, 0.18) 0%, rgba(147, 233, 190, 0.05) 100%)) !important;
-  border-color: var(--proj-color, rgba(147, 233, 190, 0.4)) !important;
-  box-shadow: 0 0 12px -2px var(--proj-glow, rgba(147, 233, 190, 0.25)) !important;
+  border-color: var(--proj-color, rgba(147, 233, 190, 0.6)) !important;
+  box-shadow: none !important;
   transform: translateY(-0.5px) !important;
 }
 

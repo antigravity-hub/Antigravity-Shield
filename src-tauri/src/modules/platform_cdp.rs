@@ -126,27 +126,28 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         return name.slice(0, 3).toUpperCase();
     }}
 
-    // Clean Curated Collision-Free Project Palette Engine
-    const CURATED_MAP = {{
-        'Antigravity-Shield': PALETTE.find(p => p.name === 'Crimson') || PALETTE[15],
-        'matchcut': PALETTE.find(p => p.name === 'Purple') || PALETTE[2],
-        'wizwiz-q22': PALETTE.find(p => p.name === 'Teal') || PALETTE[11],
-        'سایت اصلی کوپرینت': PALETTE.find(p => p.name === 'Amber') || PALETTE[1],
-        'openjutsu': PALETTE.find(p => p.name === 'Sky') || PALETTE[4],
-        'atrclick': PALETTE.find(p => p.name === 'Emerald') || PALETTE[0],
-        'Guidegram': PALETTE.find(p => p.name === 'Indigo') || PALETTE[8],
-        'GG - GameGuidance': PALETTE.find(p => p.name === 'Orange') || PALETTE[13],
-        'v2rayGuard': PALETTE.find(p => p.name === 'Rose') || PALETTE[10]
-    }};
+    // Universal Dynamic Collision-Free Project Palette Engine (100% Generic - Zero Hardcoding)
+    if (!window.__shield_project_cache) {{
+        window.__shield_project_cache = {{}};
+        try {{
+            const raw = localStorage.getItem('antigravity_dynamic_project_palette');
+            if (raw) window.__shield_project_cache = JSON.parse(raw);
+        }} catch(e) {{}}
+    }}
 
-    window.__shield_project_color_map = new Map(Object.entries(CURATED_MAP));
-    const usedIndices = new Set(Object.values(CURATED_MAP).map(p => PALETTE.indexOf(p)));
+    if (!window.__shield_used_indices) {{
+        window.__shield_used_indices = new Set(
+            Object.values(window.__shield_project_cache)
+                .map(p => PALETTE.findIndex(x => x.name === p.name))
+                .filter(i => i >= 0)
+        );
+    }}
 
     function getProjectPalette(name) {{
         if (!name) return PALETTE[0];
         const key = name.trim();
-        if (window.__shield_project_color_map.has(key)) {{
-            return window.__shield_project_color_map.get(key);
+        if (window.__shield_project_cache[key]) {{
+            return window.__shield_project_cache[key];
         }}
         let h = 2166136261;
         for (let i = 0; i < key.length; i++) {{
@@ -155,13 +156,17 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         }}
         let idx = Math.abs(h) % PALETTE.length;
         let attempts = 0;
-        while (usedIndices.has(idx) && usedIndices.size < PALETTE.length && attempts < PALETTE.length) {{
-            idx = (idx + 3) % PALETTE.length;
+        // Coprime step (+5) traverses the 16-color wheel with maximum chromatic distance
+        while (window.__shield_used_indices.has(idx) && window.__shield_used_indices.size < PALETTE.length && attempts < PALETTE.length) {{
+            idx = (idx + 5) % PALETTE.length;
             attempts++;
         }}
-        usedIndices.add(idx);
+        window.__shield_used_indices.add(idx);
         const pal = PALETTE[idx];
-        window.__shield_project_color_map.set(key, pal);
+        window.__shield_project_cache[key] = pal;
+        try {{
+            localStorage.setItem('antigravity_dynamic_project_palette', JSON.stringify(window.__shield_project_cache));
+        }} catch(e) {{}}
         return pal;
     }}
 
