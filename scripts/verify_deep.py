@@ -88,15 +88,18 @@ for css_rel in ["vs/workbench/workbench.desktop.main.css", "jetskiAgent/main.css
     with open(p, 'r', encoding='utf-8') as f:
         c = f.read()
     has_raindrop = "@keyframes agyRaindropFlow" in c
-    has_pulse = "@keyframes agyPulseGlow" in c
+    has_pulse = "@keyframes agyPulseGlow" in c or "@keyframes agyEmeraldPulseGlow" in c
+    has_cyan_pulse = "@keyframes agyCyanPulseGlow" in c
     has_curved_arm = "right: -20px !important;" in c and "width: 22px !important;" in c
     has_child_node = "right: 2px !important;" in c
+    has_gap_fix = "margin-right: 0 !important;" in c and "padding-right: 0 !important;" in c
     has_cyber_emerald = "--sidebar: #090e13" in c and "--sidebar-primary: #10b981" in c
+    has_vscode_tokens = "--vscode-sideBar-background" in c
     
-    if has_raindrop and has_pulse and has_curved_arm and has_child_node and has_cyber_emerald:
-        print(f"[PASS] {css_rel} has live raindrop spine, pulse glow, precision curved arm, and cyber emerald sidebar.")
+    if has_raindrop and has_pulse and has_cyan_pulse and has_curved_arm and has_child_node and has_gap_fix and has_cyber_emerald and has_vscode_tokens:
+        print(f"[PASS] {css_rel} has live raindrop spine, pulse glows, precision curved arm, gap fix, and cyber emerald sidebar tokens.")
     else:
-        print(f"[FAIL] {css_rel} missing expected rules! raindrop={has_raindrop}, pulse={has_pulse}, arm={has_curved_arm}, node={has_child_node}, emerald={has_cyber_emerald}")
+        print(f"[FAIL] {css_rel} missing expected rules! raindrop={has_raindrop}, pulse={has_pulse}, cyan_pulse={has_cyan_pulse}, arm={has_curved_arm}, node={has_child_node}, gap_fix={has_gap_fix}, emerald={has_cyber_emerald}, vscode_tokens={has_vscode_tokens}")
         failures += 1
 
 # 5. HTML Style Block & CSP Verification
@@ -115,7 +118,7 @@ for h_rel in html_files:
         hc = f.read()
     has_style_id = '<style id="antigravity-shield-ide-bidi">' in hc
     has_font = "font-family: 'Vazirmatn'" in hc or "font-family: \"Vazirmatn\"" in hc
-    has_sublist = "border-bottom-right-radius: 9px" in hc
+    has_sublist = "border-radius: 0 0 9px 0" in hc or "border-bottom-right-radius: 9px" in hc
     has_csp_data = "data:" in hc
 
     if has_style_id and has_font and has_sublist and has_csp_data:

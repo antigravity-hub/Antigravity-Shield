@@ -226,6 +226,17 @@ pub const VAZIRMATN_RTL_CSS: &str = r#"
   }
 }
 
+@keyframes agyEmeraldPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
+    transform: scale(1.15);
+  }
+}
+
 @keyframes agyPulseGlow {
   0%, 100% {
     box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
@@ -234,6 +245,17 @@ pub const VAZIRMATN_RTL_CSS: &str = r#"
   50% {
     box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
     transform: scale(1.15);
+  }
+}
+
+@keyframes agyCyanPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(6, 182, 212, 0.7), 0 0 12px rgba(56, 189, 248, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.95), 0 0 18px rgba(56, 189, 248, 0.7);
+    transform: scale(1.18);
   }
 }
 
@@ -255,7 +277,7 @@ ul > li::marker, ol > li::marker,
   color: transparent !important;
 }
 
-/* Persian Unordered List Container */
+/* Persian Unordered List Container (Top-level) */
 ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
 [role="article"] ul:has(> li:dir(rtl)),
 [role="article"] ul,
@@ -319,11 +341,13 @@ ul:dir(rtl) > li::before, [dir="rtl"] ul > li::before, ul[dir="rtl"] > li::befor
   display: block !important;
 }
 
-/* Last item in Layer 1 stops spine at the bullet */
-ul:dir(rtl) > li:last-child::before, [dir="rtl"] ul > li:last-child::before, ul[dir="rtl"] > li:last-child::before,
-[role="article"] ul > li:last-child::before,
-.rendered-markdown ul > li:last-child::before,
-.animate-markdown ul > li:last-child::before {
+/* Last item in Layer 1 stops spine at the bullet ONLY if it has no nested sublist */
+ul:dir(rtl) > li:last-child:not(:has(ul))::before,
+[dir="rtl"] ul > li:last-child:not(:has(ul))::before,
+ul[dir="rtl"] > li:last-child:not(:has(ul))::before,
+[role="article"] ul > li:last-child:not(:has(ul))::before,
+.rendered-markdown ul > li:last-child:not(:has(ul))::before,
+.animate-markdown ul > li:last-child:not(:has(ul))::before {
   bottom: 8px !important;
 }
 
@@ -342,7 +366,7 @@ ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
   background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
   border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.7) !important;
-  animation: agyPulseGlow 2.5s ease-in-out infinite !important;
+  animation: agyEmeraldPulseGlow 2.5s ease-in-out infinite !important;
   z-index: 3 !important;
   display: block !important;
 }
@@ -353,13 +377,38 @@ ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
 ul ul,
 [role="article"] ul ul,
 .rendered-markdown ul ul,
+.rendered-markdown ul[dir="rtl"] ul,
+.rendered-markdown [dir="rtl"] ul ul,
+.rendered-markdown ul ul:dir(rtl),
+.rendered-markdown ul:dir(rtl) ul,
+.rendered-markdown ul:dir(rtl) ul:dir(rtl),
 .animate-markdown ul ul,
+.animate-markdown ul[dir="rtl"] ul,
+.animate-markdown [dir="rtl"] ul ul,
+.animate-markdown ul ul:dir(rtl),
+.animate-markdown ul:dir(rtl) ul,
+.animate-markdown ul:dir(rtl) ul:dir(rtl),
+[role="article"] ul[dir="rtl"] ul,
+[role="article"] [dir="rtl"] ul ul,
+[role="article"] ul ul:dir(rtl),
+[role="article"] ul:dir(rtl) ul,
+[role="article"] ul:dir(rtl) ul:dir(rtl),
+[dir="rtl"] ul ul,
+ul[dir="rtl"] ul,
+ul:dir(rtl) ul,
+ul:dir(rtl) ul:dir(rtl),
 ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
   position: relative !important;
   margin: 8px 0 10px 0 !important;
+  margin-right: 0 !important;
+  margin-inline-start: 0 !important;
+  margin-left: 0 !important;
+  margin-inline-end: 0 !important;
   padding: 0 !important;
   padding-right: 0 !important;
+  padding-inline-start: 0 !important;
   padding-left: 0 !important;
+  padding-inline-end: 0 !important;
   border: none !important;
   list-style: none !important;
 }
@@ -367,7 +416,20 @@ ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
 ul ul > li,
 [role="article"] ul ul > li,
 .rendered-markdown ul ul > li,
+.rendered-markdown ul[dir="rtl"] ul > li,
+.rendered-markdown [dir="rtl"] ul ul > li,
+.rendered-markdown ul ul:dir(rtl) > li,
 .animate-markdown ul ul > li,
+.animate-markdown ul[dir="rtl"] ul > li,
+.animate-markdown [dir="rtl"] ul ul > li,
+.animate-markdown ul ul:dir(rtl) > li,
+[role="article"] ul[dir="rtl"] ul > li,
+[role="article"] [dir="rtl"] ul ul > li,
+[role="article"] ul ul:dir(rtl) > li,
+[dir="rtl"] ul ul > li,
+ul[dir="rtl"] ul > li,
+ul:dir(rtl) ul > li,
+ul:dir(rtl) ul:dir(rtl) > li,
 ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
   position: relative !important;
   padding-right: 22px !important;
@@ -383,21 +445,40 @@ ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
 ul ul > li::before,
 [role="article"] ul ul > li::before,
 .rendered-markdown ul ul > li::before,
+.rendered-markdown ul[dir="rtl"] ul > li::before,
+.rendered-markdown [dir="rtl"] ul ul > li::before,
+.rendered-markdown ul ul:dir(rtl) > li::before,
 .animate-markdown ul ul > li::before,
-ul:dir(rtl) > li > ul > li::before {
+.animate-markdown ul[dir="rtl"] ul > li::before,
+.animate-markdown [dir="rtl"] ul ul > li::before,
+.animate-markdown ul ul:dir(rtl) > li::before,
+[role="article"] ul[dir="rtl"] ul > li::before,
+[role="article"] [dir="rtl"] ul ul > li::before,
+[role="article"] ul ul:dir(rtl) > li::before,
+[dir="rtl"] ul ul > li::before,
+ul[dir="rtl"] ul > li::before,
+ul:dir(rtl) ul > li::before,
+ul:dir(rtl) ul:dir(rtl) > li::before,
+ul:dir(rtl) > li > ul > li::before,
+ul ul > li:last-child::before,
+.rendered-markdown ul ul > li:last-child::before {
   content: "" !important;
   position: absolute !important;
   right: -20px !important; /* Starts EXACTLY on the parent spine! */
   top: -6px !important;
+  bottom: auto !important; /* Prevent Level 1 bottom stretching */
   width: 22px !important;
   height: 18px !important;
   border-right: 1.5px solid rgba(6, 182, 212, 0.7) !important;
   border-bottom: 1.5px solid rgba(6, 182, 212, 0.7) !important;
-  border-bottom-right-radius: 9px !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-radius: 0 0 9px 0 !important;
   background: none !important;
+  background-image: none !important;
   box-shadow: 0 0 6px rgba(6, 182, 212, 0.3) !important;
   pointer-events: none !important;
-  z-index: 1 !important;
+  z-index: 2 !important;
   display: block !important;
   animation: none !important;
 }
@@ -406,20 +487,111 @@ ul:dir(rtl) > li > ul > li::before {
 ul ul > li::after,
 [role="article"] ul ul > li::after,
 .rendered-markdown ul ul > li::after,
+.rendered-markdown ul[dir="rtl"] ul > li::after,
+.rendered-markdown [dir="rtl"] ul ul > li::after,
+.rendered-markdown ul ul:dir(rtl) > li::after,
 .animate-markdown ul ul > li::after,
-ul:dir(rtl) > li > ul > li::after {
+.animate-markdown ul[dir="rtl"] ul > li::after,
+.animate-markdown [dir="rtl"] ul ul > li::after,
+.animate-markdown ul ul:dir(rtl) > li::after,
+[role="article"] ul[dir="rtl"] ul > li::after,
+[role="article"] [dir="rtl"] ul ul > li::after,
+[role="article"] ul ul:dir(rtl) > li::after,
+[dir="rtl"] ul ul > li::after,
+ul[dir="rtl"] ul > li::after,
+ul:dir(rtl) ul > li::after,
+ul:dir(rtl) ul:dir(rtl) > li::after,
+ul:dir(rtl) > li > ul > li::after,
+ul ul > li:last-child::after,
+.rendered-markdown ul ul > li:last-child::after {
   content: "" !important;
   position: absolute !important;
   right: 2px !important; /* Sits precisely at the end of the curved arm! */
   top: 9px !important;
+  bottom: auto !important;
   width: 7px !important;
   height: 7px !important;
   border-radius: 50% !important;
   background: #38bdf8 !important;
   box-shadow: 0 0 8px #38bdf8, 0 0 14px rgba(56, 189, 248, 0.7) !important;
   border: 1px solid #ffffff !important;
-  animation: agyPulseGlow 3s ease-in-out infinite !important;
+  animation: agyCyanPulseGlow 3s ease-in-out infinite !important;
+  z-index: 3 !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   Layer 3: Multi-level Nested Sub-Lists (Level 3+)
+   ========================================================================== */
+ul ul ul,
+[role="article"] ul ul ul,
+.rendered-markdown ul ul ul,
+.animate-markdown ul ul ul {
+  position: relative !important;
+  margin: 6px 0 6px 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  padding-right: 18px !important;
+  border: none !important;
+  list-style: none !important;
+}
+
+ul ul ul > li,
+[role="article"] ul ul ul > li,
+.rendered-markdown ul ul ul > li,
+.animate-markdown ul ul ul > li {
+  position: relative !important;
+  padding-right: 16px !important;
+  padding-left: 0 !important;
+  margin-bottom: 6px !important;
+  color: #94a3b8 !important;
+  font-size: 0.9em !important;
+  line-height: 1.7 !important;
+  list-style: none !important;
+}
+
+ul ul ul > li::before,
+[role="article"] ul ul ul > li::before,
+.rendered-markdown ul ul ul > li::before,
+.animate-markdown ul ul ul > li::before {
+  content: "" !important;
+  position: absolute !important;
+  right: 0px !important;
+  top: -4px !important;
+  bottom: auto !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-right: 1.5px solid rgba(147, 233, 190, 0.5) !important;
+  border-bottom: 1.5px solid rgba(147, 233, 190, 0.5) !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-radius: 0 0 7px 0 !important;
+  background: none !important;
+  background-image: none !important;
+  box-shadow: 0 0 4px rgba(147, 233, 190, 0.25) !important;
+  pointer-events: none !important;
   z-index: 2 !important;
+  display: block !important;
+  animation: none !important;
+}
+
+ul ul ul > li::after,
+[role="article"] ul ul ul > li::after,
+.rendered-markdown ul ul ul > li::after,
+.animate-markdown ul ul ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 14px !important;
+  top: 8px !important;
+  bottom: auto !important;
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: #93e9be !important;
+  box-shadow: 0 0 6px rgba(147, 233, 190, 0.6) !important;
+  border: none !important;
+  animation: none !important;
+  z-index: 3 !important;
   display: block !important;
 }
 /* ==========================================================================
@@ -751,25 +923,8 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 }
 
 /* ==========================================================================
-   3. Lists, Counters & Highlighted Numbered Points (#93e9be)
+   3. Highlighted List Titles, Numbered Points & Typography
    ========================================================================== */
-[role="article"] ul,
-[role="article"] ol,
-.rendered-markdown ul,
-.rendered-markdown ol,
-.chat-widget .rendered-markdown ul,
-.chat-widget .rendered-markdown ol,
-.antigravity-agent-side-panel ul,
-.antigravity-agent-side-panel ol,
-.antigravity-agent-manager ul,
-.antigravity-agent-manager ol,
-.animate-markdown ul,
-.animate-markdown ol {
-  padding-inline-start: 1.75rem !important;
-  padding-inline-end: 0 !important;
-  margin-inline-start: 0 !important;
-}
-
 .rendered-markdown li,
 .chat-widget .rendered-markdown li,
 .antigravity-agent-side-panel li,
@@ -780,18 +935,6 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
   text-align: justify !important;
   text-justify: inter-word !important;
   text-align-last: start !important;
-  line-height: 2 !important;
-  margin-bottom: 0.45rem !important;
-}
-
-/* Bullet markers and number markers colored in Seafoam #93e9be */
-.rendered-markdown li::marker,
-.chat-widget .rendered-markdown li::marker,
-.antigravity-agent-side-panel li::marker,
-.antigravity-agent-manager li::marker,
-.animate-markdown li::marker {
-  color: #93e9be !important;
-  font-weight: 700 !important;
 }
 
 /* Highlight list titles/numbered points: e.g. "۱. نقطه دقیق سوییچ" */
@@ -810,58 +953,6 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 .chat-widget .rendered-markdown strong {
   color: #c6f6d5 !important;
   font-weight: 700 !important;
-}
-
-/* Direction-specific list padding & markers inside messages (Universal IDE & Platform) */
-ul:dir(rtl), ol:dir(rtl),
-ul[dir="rtl"], ol[dir="rtl"],
-[dir="rtl"] ul, [dir="rtl"] ol,
-[role="article"] ul:dir(rtl), [role="article"] ol:dir(rtl),
-[role="article"] [dir="rtl"] ul, [role="article"] [dir="rtl"] ol,
-[role="article"] ul[dir="rtl"], [role="article"] ol[dir="rtl"],
-[role="article"] [style*="direction: rtl"] ul, [role="article"] [style*="direction: rtl"] ol,
-[role="article"] ul[style*="direction: rtl"], [role="article"] ol[style*="direction: rtl"],
-.rendered-markdown ul:dir(rtl), .rendered-markdown ol:dir(rtl),
-.chat-widget .rendered-markdown ul:dir(rtl), .chat-widget .rendered-markdown ol:dir(rtl),
-.rendered-markdown [dir="rtl"] ul, .rendered-markdown [dir="rtl"] ol {
-  direction: rtl !important;
-  text-align: right !important;
-  padding-right: 1.75rem !important;
-  padding-inline-start: 1.75rem !important;
-  padding-left: 0 !important;
-  padding-inline-end: 0 !important;
-  margin-left: 0 !important;
-  margin-inline-end: 0 !important;
-}
-
-ul:dir(rtl) ul, ol:dir(rtl) ol,
-ul:dir(rtl) ol, ol:dir(rtl) ul,
-[role="article"] ul:dir(rtl) ul, [role="article"] ol:dir(rtl) ol,
-[role="article"] ul:dir(rtl) ol, [role="article"] ol:dir(rtl) ul,
-.rendered-markdown ul:dir(rtl) ul, .rendered-markdown ol:dir(rtl) ol {
-  padding-right: 1.25rem !important;
-  padding-inline-start: 1.25rem !important;
-  padding-left: 0 !important;
-  padding-inline-end: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-li:dir(rtl),
-li[dir="rtl"],
-li[dir="auto"]:dir(rtl),
-[dir="rtl"] li,
-[role="article"] li[dir="rtl"],
-.rendered-markdown li:dir(rtl),
-.chat-widget .rendered-markdown li:dir(rtl),
-[role="article"] [dir="rtl"] li,
-.rendered-markdown [dir="rtl"] li {
-  direction: rtl !important;
-  text-align: right !important;
-  text-align-last: right !important;
-  unicode-bidi: plaintext !important;
-  padding-right: 0.25rem !important;
-  padding-left: 0 !important;
 }
 
 .rendered-markdown li:dir(ltr),
@@ -1170,7 +1261,7 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
    ========================================================================== */
 
 /* 8.0 Cyber Emerald Sidebar Palette & Contrast Upgrade (Platform & IDE) */
-:root, [data-theme], body {
+:root, [data-theme], body, .monaco-workbench {
   --sidebar: #090e13 !important;
   --sidebar-foreground: #f1f5f9 !important;
   --sidebar-primary: #10b981 !important;
@@ -1180,6 +1271,29 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
   --sidebar-border: rgba(16, 185, 129, 0.22) !important;
   --sidebar-ring: #10b981 !important;
   --sidebar-muted: rgba(16, 185, 129, 0.10) !important;
+
+  /* VS Code / Monaco Workbench Native Sidebar Tokens */
+  --vscode-sideBar-background: #080d12 !important;
+  --vscode-sideBar-foreground: #cbd5e1 !important;
+  --vscode-sideBar-border: rgba(16, 185, 129, 0.22) !important;
+  --vscode-sideBarTitle-foreground: #34d399 !important;
+  --vscode-sideBarSectionHeader-background: #0c141c !important;
+  --vscode-sideBarSectionHeader-foreground: #a7f3d0 !important;
+  --vscode-sideBarSectionHeader-border: rgba(16, 185, 129, 0.18) !important;
+  --vscode-activityBar-background: #060a0e !important;
+  --vscode-activityBar-foreground: #10b981 !important;
+  --vscode-activityBar-inactiveForeground: rgba(148, 163, 184, 0.5) !important;
+  --vscode-activityBar-activeBorder: #10b981 !important;
+  --vscode-activityBarBadge-background: #10b981 !important;
+  --vscode-activityBarBadge-foreground: #ffffff !important;
+  --vscode-list-activeSelectionBackground: rgba(16, 185, 129, 0.18) !important;
+  --vscode-list-activeSelectionForeground: #f1f5f9 !important;
+  --vscode-list-inactiveSelectionBackground: rgba(16, 185, 129, 0.10) !important;
+  --vscode-list-inactiveSelectionForeground: #e2e8f0 !important;
+  --vscode-list-hoverBackground: rgba(16, 185, 129, 0.08) !important;
+  --vscode-list-hoverForeground: #ffffff !important;
+  --vscode-list-highlightForeground: #34d399 !important;
+  --vscode-tree-indentGuidesStroke: rgba(16, 185, 129, 0.22) !important;
 }
 
 .bg-sidebar {
@@ -1205,6 +1319,15 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
   background-color: #080d12 !important;
   color: #e2e8f0 !important;
   border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.monaco-workbench .part.sidebar .monaco-list {
+  background-color: #080d12 !important;
+  color: #cbd5e1 !important;
+}
+
+.monaco-workbench .part.sidebar .monaco-list-row {
+  color: #cbd5e1 !important;
 }
 
 .part.sidebar .title-label h2,
@@ -1686,8 +1809,18 @@ pub async fn get_antigravity_rtl_status() -> Result<AntigravityRtlStatus, String
 
     // 1. Detect Desktop 2.0 app.asar
     let possible_desktop_paths = vec![
-        dirs::data_local_dir().map(|d| d.join("Programs").join("antigravity").join("resources").join("app.asar")),
-        dirs::data_local_dir().map(|d| d.join("Programs").join("Antigravity").join("resources").join("app.asar")),
+        dirs::data_local_dir().map(|d| {
+            d.join("Programs")
+                .join("antigravity")
+                .join("resources")
+                .join("app.asar")
+        }),
+        dirs::data_local_dir().map(|d| {
+            d.join("Programs")
+                .join("Antigravity")
+                .join("resources")
+                .join("app.asar")
+        }),
     ];
 
     for p in possible_desktop_paths.into_iter().flatten() {
@@ -1709,8 +1842,26 @@ pub async fn get_antigravity_rtl_status() -> Result<AntigravityRtlStatus, String
     let mut ide_backup = false;
 
     let possible_ide_paths = vec![
-        dirs::data_local_dir().map(|d| d.join("Programs").join("Antigravity IDE").join("resources").join("app").join("out").join("vs").join("workbench").join("workbench.desktop.main.css")),
-        dirs::data_local_dir().map(|d| d.join("Programs").join("antigravity-ide").join("resources").join("app").join("out").join("vs").join("workbench").join("workbench.desktop.main.css")),
+        dirs::data_local_dir().map(|d| {
+            d.join("Programs")
+                .join("Antigravity IDE")
+                .join("resources")
+                .join("app")
+                .join("out")
+                .join("vs")
+                .join("workbench")
+                .join("workbench.desktop.main.css")
+        }),
+        dirs::data_local_dir().map(|d| {
+            d.join("Programs")
+                .join("antigravity-ide")
+                .join("resources")
+                .join("app")
+                .join("out")
+                .join("vs")
+                .join("workbench")
+                .join("workbench.desktop.main.css")
+        }),
     ];
 
     for p in possible_ide_paths.into_iter().flatten() {
@@ -1754,7 +1905,10 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
             let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
             let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
             if let (Some(s), Some(e)) = (content.find(p_start), content.rfind(p_end)) {
-                content.replace_range(s..e + p_end.len(), &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
+                content.replace_range(
+                    s..e + p_end.len(),
+                    &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end),
+                );
                 fs::write(css_path, &content).map_err(|e| e.to_string())?;
                 applied_count += 1;
             } else if !content.contains("Antigravity-Shield-RTL-Vazirmatn") {
@@ -1769,17 +1923,20 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
             }
 
             // Clean up bloated patches from tailwind files and ensure pristine state
-            if let Some(out_dir) = css_path.parent().and_then(|p| p.parent()).and_then(|p| p.parent()) {
-                let clean_targets = [
-                    "jetskiMain.tailwind.css",
-                    "tw-base.tailwind.css",
-                ];
+            if let Some(out_dir) = css_path
+                .parent()
+                .and_then(|p| p.parent())
+                .and_then(|p| p.parent())
+            {
+                let clean_targets = ["jetskiMain.tailwind.css", "tw-base.tailwind.css"];
 
                 for rel_css in &clean_targets {
-                    let target_path = out_dir.join(rel_css.replace('/', std::path::MAIN_SEPARATOR_STR));
+                    let target_path =
+                        out_dir.join(rel_css.replace('/', std::path::MAIN_SEPARATOR_STR));
                     if target_path.exists() {
                         if let Ok(content) = fs::read_to_string(&target_path) {
-                            if let Some(pos) = content.find("/* [Antigravity-Shield-RTL-Vazirmatn") {
+                            if let Some(pos) = content.find("/* [Antigravity-Shield-RTL-Vazirmatn")
+                            {
                                 let cleaned = content[..pos].trim_end().to_string();
                                 let _ = fs::write(&target_path, cleaned);
                                 applied_count += 1;
@@ -1802,7 +1959,10 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
                         let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
                         if let (Some(s), Some(e)) = (jc.find(p_start), jc.find(p_end)) {
-                            jc.replace_range(s..e + p_end.len(), &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
+                            jc.replace_range(
+                                s..e + p_end.len(),
+                                &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end),
+                            );
                             let _ = fs::write(&agent_css, &jc);
                             applied_count += 1;
                         } else if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
@@ -1828,25 +1988,28 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     }
                 }
 
-                let wb_js_path = out_dir.join("vs").join("workbench").join("workbench.desktop.main.js");
-                let wb_orig = out_dir.join("vs").join("workbench").join("workbench.desktop.main.js.orig");
+                let wb_js_path = out_dir
+                    .join("vs")
+                    .join("workbench")
+                    .join("workbench.desktop.main.js");
+                let wb_orig = out_dir
+                    .join("vs")
+                    .join("workbench")
+                    .join("workbench.desktop.main.js.orig");
                 if wb_orig.exists() && wb_js_path.exists() {
                     let _ = fs::copy(&wb_orig, &wb_js_path);
                     applied_count += 1;
                     if let Some(app_dir) = out_dir.parent() {
-                        update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.js", &wb_js_path);
+                        update_product_checksum(
+                            app_dir,
+                            "vs/workbench/workbench.desktop.main.js",
+                            &wb_js_path,
+                        );
                     }
                 }
 
-                // Inject BiDi Sentinel into workbench.js
-                let wb_entry_path = out_dir.join("vs").join("code").join("electron-browser").join("workbench").join("workbench.js");
-                if wb_entry_path.exists() {
-                    let wb_entry_bak = format!("{}.bak", wb_entry_path.to_string_lossy());
-                    if !Path::new(&wb_entry_bak).exists() {
-                        let _ = fs::copy(&wb_entry_path, &wb_entry_bak);
-                    }
-                    if let Ok(mut wbe_content) = fs::read_to_string(&wb_entry_path) {
-                        let sentinel_code = r#"
+                // Inject BiDi Sentinel into jetskiAgent.js and workbench.js
+                let sentinel_code = r#"
 // [Antigravity-Shield-IDE-BiDi-Sentinel]
 (()=>{
   const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
@@ -1910,15 +2073,31 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
   }, true);
 })();
 "#;
-                        if wbe_content.contains("// [Antigravity-Shield-IDE-BiDi-Sentinel]") {
-                            let idx = wbe_content.find("// [Antigravity-Shield-IDE-BiDi-Sentinel]").unwrap();
-                            wbe_content.truncate(idx);
+
+                for js_rel in &[
+                    "vs/code/electron-browser/workbench/jetskiAgent.js",
+                    "vs/code/electron-browser/workbench/workbench.js",
+                ] {
+                    let entry_path =
+                        out_dir.join(js_rel.replace('/', std::path::MAIN_SEPARATOR_STR));
+                    if entry_path.exists() {
+                        let entry_bak = format!("{}.bak", entry_path.to_string_lossy());
+                        if !Path::new(&entry_bak).exists() {
+                            let _ = fs::copy(&entry_path, &entry_bak);
                         }
-                        wbe_content.push_str(sentinel_code);
-                        let _ = fs::write(&wb_entry_path, &wbe_content);
-                        applied_count += 1;
-                        if let Some(app_dir) = out_dir.parent() {
-                            update_product_checksum(app_dir, "vs/code/electron-browser/workbench/workbench.js", &wb_entry_path);
+                        if let Ok(mut content) = fs::read_to_string(&entry_path) {
+                            if content.contains("// [Antigravity-Shield-IDE-BiDi-Sentinel]") {
+                                let idx = content
+                                    .find("// [Antigravity-Shield-IDE-BiDi-Sentinel]")
+                                    .unwrap();
+                                content.truncate(idx);
+                            }
+                            content.push_str(sentinel_code);
+                            let _ = fs::write(&entry_path, &content);
+                            applied_count += 1;
+                            if let Some(app_dir) = out_dir.parent() {
+                                update_product_checksum(app_dir, js_rel, &entry_path);
+                            }
                         }
                     }
                 }
@@ -1942,11 +2121,16 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                                 hc = hc.replace(old_fsrc, new_fsrc);
                                 html_changed = true;
                             }
-                            if hc.contains("style-src 'unsafe-inline';") && !hc.contains("font-src") {
-                                hc = hc.replace("style-src 'unsafe-inline';", "style-src 'unsafe-inline'; font-src 'self' data:;");
+                            if hc.contains("style-src 'unsafe-inline';") && !hc.contains("font-src")
+                            {
+                                hc = hc.replace(
+                                    "style-src 'unsafe-inline';",
+                                    "style-src 'unsafe-inline'; font-src 'self' data:;",
+                                );
                                 html_changed = true;
                             }
-                            let bidi_style = format!(r#"	<style id="antigravity-shield-ide-bidi">
+                            let bidi_style = format!(
+                                r#"	<style id="antigravity-shield-ide-bidi">
 {}
 
 		body, html, #root, [dir="rtl"] {{
@@ -2010,10 +2194,17 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
 			text-align: left !important;
 		}}
 	</style>
-</head>"#, VAZIRMATN_RTL_CSS);
-                            if let Some(s_pos) = hc.find("<style id=\"antigravity-shield-ide-bidi\">") {
+</head>"#,
+                                VAZIRMATN_RTL_CSS
+                            );
+                            if let Some(s_pos) =
+                                hc.find("<style id=\"antigravity-shield-ide-bidi\">")
+                            {
                                 if let Some(e_pos) = hc[s_pos..].find("</style>") {
-                                    hc.replace_range(s_pos..s_pos + e_pos + 8, bidi_style.trim_end_matches("\n</head>").trim_start());
+                                    hc.replace_range(
+                                        s_pos..s_pos + e_pos + 8,
+                                        bidi_style.trim_end_matches("\n</head>").trim_start(),
+                                    );
                                     html_changed = true;
                                 }
                             } else {
@@ -2031,7 +2222,11 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     }
                 }
                 if let Some(app_dir) = out_dir.parent() {
-                    update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.css", css_path);
+                    update_product_checksum(
+                        app_dir,
+                        "vs/workbench/workbench.desktop.main.css",
+                        css_path,
+                    );
                 }
             }
         }
@@ -2045,7 +2240,10 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
     }
 
     if applied_count > 0 {
-        Ok(format!("پچ راست‌چین و فونت وزیرمتن با موفقیت بر روی {} ماژول اعمال شد.", applied_count))
+        Ok(format!(
+            "پچ راست‌چین و فونت وزیرمتن با موفقیت بر روی {} ماژول اعمال شد.",
+            applied_count
+        ))
     } else {
         Ok("پچ پیش از این اعمال شده بود یا موردی برای تغییر یافت نشد.".into())
     }
@@ -2059,23 +2257,49 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
     // 1. Comprehensive restore of all IDE files and checksums
     if let Some(css_path_str) = status.ide_css_path {
         let css_path = Path::new(&css_path_str);
-        if let Some(out_dir) = css_path.parent().and_then(|p| p.parent()).and_then(|p| p.parent()) {
+        if let Some(out_dir) = css_path
+            .parent()
+            .and_then(|p| p.parent())
+            .and_then(|p| p.parent())
+        {
             let files_to_restore = [
-                ("vs/workbench/workbench.desktop.main.css", "vs/workbench/workbench.desktop.main.css"),
+                (
+                    "vs/workbench/workbench.desktop.main.css",
+                    "vs/workbench/workbench.desktop.main.css",
+                ),
                 ("jetskiMain.tailwind.css", "jetskiMain.tailwind.css"),
                 ("tw-base.tailwind.css", "tw-base.tailwind.css"),
                 ("jetskiAgent/main.css", "jetskiAgent/main.css"),
                 ("jetskiAgent/main.js", "jetskiAgent/main.js"),
-                ("vs/code/electron-browser/workbench/jetskiAgent.js", "vs/code/electron-browser/workbench/jetskiAgent.js"),
-                ("vs/workbench/workbench.desktop.main.js", "vs/workbench/workbench.desktop.main.js"),
-                ("vs/code/electron-browser/workbench/workbench.js", "vs/code/electron-browser/workbench/workbench.js"),
-                ("vs/code/electron-browser/workbench/workbench.html", "vs/code/electron-browser/workbench/workbench.html"),
-                ("vs/code/electron-browser/workbench/workbench-jetski-agent.html", "vs/code/electron-browser/workbench/workbench-jetski-agent.html"),
-                ("vs/workbench/contrib/webview/browser/pre/index.html", "vs/workbench/contrib/webview/browser/pre/index.html"),
+                (
+                    "vs/code/electron-browser/workbench/jetskiAgent.js",
+                    "vs/code/electron-browser/workbench/jetskiAgent.js",
+                ),
+                (
+                    "vs/workbench/workbench.desktop.main.js",
+                    "vs/workbench/workbench.desktop.main.js",
+                ),
+                (
+                    "vs/code/electron-browser/workbench/workbench.js",
+                    "vs/code/electron-browser/workbench/workbench.js",
+                ),
+                (
+                    "vs/code/electron-browser/workbench/workbench.html",
+                    "vs/code/electron-browser/workbench/workbench.html",
+                ),
+                (
+                    "vs/code/electron-browser/workbench/workbench-jetski-agent.html",
+                    "vs/code/electron-browser/workbench/workbench-jetski-agent.html",
+                ),
+                (
+                    "vs/workbench/contrib/webview/browser/pre/index.html",
+                    "vs/workbench/contrib/webview/browser/pre/index.html",
+                ),
             ];
 
             for (rel_key, rel_path) in &files_to_restore {
-                let target_path = out_dir.join(rel_path.replace('/', std::path::MAIN_SEPARATOR_STR));
+                let target_path =
+                    out_dir.join(rel_path.replace('/', std::path::MAIN_SEPARATOR_STR));
                 let bak_path = format!("{}.bak", target_path.to_string_lossy());
                 let orig_path = format!("{}.orig", target_path.to_string_lossy());
                 let source_restore = if Path::new(&orig_path).exists() {
@@ -2097,7 +2321,9 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
                     // Fallback cleanup if backup file is missing
                     if target_path.extension().map_or(false, |ext| ext == "css") {
                         if let Ok(content) = fs::read_to_string(&target_path) {
-                            if let Some(pos) = content.find("/* [Antigravity-Shield-RTL-Vazirmatn] */") {
+                            if let Some(pos) =
+                                content.find("/* [Antigravity-Shield-RTL-Vazirmatn] */")
+                            {
                                 let cleaned = &content[..pos];
                                 let _ = fs::write(&target_path, cleaned.trim_end());
                                 restored_count += 1;
@@ -2108,7 +2334,9 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
                         }
                     } else if target_path.extension().map_or(false, |ext| ext == "html") {
                         if let Ok(content) = fs::read_to_string(&target_path) {
-                            if let Some(s_pos) = content.find("<style id=\"antigravity-shield-ide-bidi\">") {
+                            if let Some(s_pos) =
+                                content.find("<style id=\"antigravity-shield-ide-bidi\">")
+                            {
                                 if let Some(e_pos) = content[s_pos..].find("</style>") {
                                     let mut cleaned = content.clone();
                                     cleaned.replace_range(s_pos..s_pos + e_pos + 8, "");
@@ -2122,7 +2350,9 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
                         }
                     } else if target_path.extension().map_or(false, |ext| ext == "js") {
                         if let Ok(content) = fs::read_to_string(&target_path) {
-                            if let Some(pos) = content.find("// [Antigravity-Shield-IDE-BiDi-Sentinel]") {
+                            if let Some(pos) =
+                                content.find("// [Antigravity-Shield-IDE-BiDi-Sentinel]")
+                            {
                                 let cleaned = &content[..pos];
                                 let _ = fs::write(&target_path, cleaned.trim_end());
                                 restored_count += 1;
@@ -2155,15 +2385,18 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
     }
 
     if restored_count > 0 {
-        Ok(format!("بازگردانی با موفقیت انجام شد. {} ماژول به حالت پیش‌فرض بازگشتند.", restored_count))
+        Ok(format!(
+            "بازگردانی با موفقیت انجام شد. {} ماژول به حالت پیش‌فرض بازگشتند.",
+            restored_count
+        ))
     } else {
         Ok("فایل پشتیبانی برای بازگردانی یافت نشد.".into())
     }
 }
 
 fn update_product_checksum(app_dir: &Path, rel_key: &str, file_path: &Path) {
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
     use sha2::{Digest, Sha256};
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
 
     let product_path = app_dir.join("product.json");
     if !product_path.exists() || !file_path.exists() {
@@ -2182,8 +2415,14 @@ fn update_product_checksum(app_dir: &Path, rel_key: &str, file_path: &Path) {
     if let Ok(content) = fs::read_to_string(&product_path) {
         if let Ok(mut json) = serde_json::from_str::<serde_json::Value>(&content) {
             if let Some(checksums) = json.get_mut("checksums").and_then(|c| c.as_object_mut()) {
-                checksums.insert(rel_key.to_string(), serde_json::Value::String(trimmed_hash.to_string()));
-                checksums.insert(format!("out/{}", rel_key), serde_json::Value::String(trimmed_hash.to_string()));
+                checksums.insert(
+                    rel_key.to_string(),
+                    serde_json::Value::String(trimmed_hash.to_string()),
+                );
+                checksums.insert(
+                    format!("out/{}", rel_key),
+                    serde_json::Value::String(trimmed_hash.to_string()),
+                );
                 if let Ok(serialized) = serde_json::to_string_pretty(&json) {
                     let _ = fs::write(&product_path, serialized);
                 }
@@ -2211,7 +2450,8 @@ fn walk_dir_find(dir: &Path, target_filename: &str) -> std::io::Result<Vec<std::
 }
 
 #[tauri::command]
-pub async fn apply_core_engine_patch() -> Result<crate::modules::patcher::PatcherExecutionResult, String> {
+pub async fn apply_core_engine_patch(
+) -> Result<crate::modules::patcher::PatcherExecutionResult, String> {
     tokio::task::spawn_blocking(crate::modules::patcher::run_fix_license_and_region_patch)
         .await
         .map_err(|e| format!("Task failed: {}", e))
