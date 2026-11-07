@@ -126,12 +126,37 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         return name.slice(0, 3).toUpperCase();
     }}
 
-    function hashProject(name) {{
-        let h = 0;
-        for (let i = 0; i < name.length; i++) {{
-            h = (h * 37 + name.charCodeAt(i) * (i + 7)) & 0xFFFFFFFF;
+    // Unified Collision-Free Project Palette Engine
+    if (!window.__shield_project_color_map) {{
+        window.__shield_project_color_map = new Map();
+        window.__shield_used_indices = new Set();
+    }}
+
+    function getProjectPalette(name) {{
+        if (!name) return PALETTE[0];
+        const key = name.trim();
+        if (window.__shield_project_color_map.has(key)) {{
+            return window.__shield_project_color_map.get(key);
         }}
-        return Math.abs(h) % PALETTE.length;
+        let h = 2166136261;
+        for (let i = 0; i < key.length; i++) {{
+            h ^= key.charCodeAt(i);
+            h = Math.imul(h, 16777619);
+        }}
+        let idx = Math.abs(h) % PALETTE.length;
+        let attempts = 0;
+        while (window.__shield_used_indices.has(idx) && window.__shield_used_indices.size < PALETTE.length && attempts < PALETTE.length) {{
+            idx = (idx + 5) % PALETTE.length;
+            attempts++;
+        }}
+        window.__shield_used_indices.add(idx);
+        const pal = PALETTE[idx];
+        window.__shield_project_color_map.set(key, pal);
+        return pal;
+    }}
+
+    function hashProject(name) {{
+        return getProjectPalette(name);
     }}
 
     function applyStyles() {{
@@ -230,14 +255,8 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                 pulseBar.setAttribute('data-fingerprint', fingerprint);
                 pulseBar.innerHTML = '';
                 
-                const usedColors = new Set();
                 top10.forEach((p, rank) => {{
-                    let idx = hashProject(p.name);
-                    while (usedColors.has(idx) && usedColors.size < PALETTE.length) {{
-                        idx = (idx + 3) % PALETTE.length;
-                    }}
-                    usedColors.add(idx);
-                    const pal = PALETTE[idx];
+                    const pal = getProjectPalette(p.name);
 
                     const badge = document.createElement('button');
                     badge.className = 'agy-pulse-badge';
@@ -314,8 +333,7 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                 const header = c.querySelector('button[data-testid="project-header"]');
                 if (header) {{
                     const name = (header.getAttribute('data-project-label') || header.innerText || '').trim();
-                    const idx = hashProject(name);
-                    const pal = PALETTE[idx];
+                    const pal = getProjectPalette(name);
                     currPal = pal;
 
                     if (c.style.getPropertyValue('--proj-color') !== pal.color) {{
