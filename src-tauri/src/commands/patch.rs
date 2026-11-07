@@ -1294,6 +1294,33 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
   --vscode-list-hoverForeground: #ffffff !important;
   --vscode-list-highlightForeground: #34d399 !important;
   --vscode-tree-indentGuidesStroke: rgba(16, 185, 129, 0.22) !important;
+
+  /* VS Code Auxiliary Bar (Secondary Sidebar / Chat Panel) Cyber Emerald Tokens */
+  --vscode-auxiliaryBar-background: #080d12 !important;
+  --vscode-auxiliaryBar-foreground: #cbd5e1 !important;
+  --vscode-auxiliaryBar-border: rgba(16, 185, 129, 0.22) !important;
+  --vscode-auxiliaryBarTitle-background: #080d12 !important;
+  --vscode-auxiliaryBarTitle-foreground: #34d399 !important;
+  --vscode-auxiliaryBarSectionHeader-background: #0c141c !important;
+  --vscode-auxiliaryBarSectionHeader-foreground: #a7f3d0 !important;
+  --vscode-auxiliaryBarSectionHeader-border: rgba(16, 185, 129, 0.18) !important;
+
+  /* VS Code Chat & Agent Widget Tokens */
+  --vscode-chat-requestBackground: #0f1c24 !important;
+  --vscode-chat-requestBorder: rgba(16, 185, 129, 0.35) !important;
+  --vscode-chat-avatarBackground: #10b981 !important;
+  --vscode-chat-avatarForeground: #ffffff !important;
+  --vscode-chat-slashCommandBackground: rgba(16, 185, 129, 0.16) !important;
+  --vscode-chat-slashCommandForeground: #6ee7b7 !important;
+  --vscode-interactive-activeCodeBorder: #10b981 !important;
+  --vscode-interactive-inactiveCodeBorder: rgba(16, 185, 129, 0.20) !important;
+
+  /* VS Code Panel Tokens */
+  --vscode-panel-background: #080d12 !important;
+  --vscode-panel-border: rgba(16, 185, 129, 0.22) !important;
+  --vscode-panelTitle-activeForeground: #34d399 !important;
+  --vscode-panelTitle-activeBorder: #10b981 !important;
+  --vscode-panelTitle-inactiveForeground: rgba(148, 163, 184, 0.6) !important;
 }
 
 .bg-sidebar {
@@ -1310,32 +1337,170 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
   background-color: rgba(16, 185, 129, 0.08) !important;
 }
 
-/* IDE Sidebar & File Tree Cyber Emerald Contrast Enhancement */
+/* IDE Sidebar, Auxiliary Bar & File Tree Cyber Emerald Contrast Enhancement */
 .part.sidebar,
 .part.activitybar,
+.part.auxiliarybar,
+.part.auxiliarybar.basepanel,
 .composite.title,
 .monaco-workbench .part.sidebar,
-.monaco-workbench .part.activitybar {
+.monaco-workbench .part.activitybar,
+.monaco-workbench .part.auxiliarybar,
+.monaco-workbench .part.auxiliarybar > .title,
+.monaco-workbench .part.auxiliarybar > .content,
+.monaco-workbench .part.auxiliarybar .pane-body,
+.monaco-workbench .part.auxiliarybar .split-view-view,
+.monaco-workbench .part.auxiliarybar .pane-header,
+.monaco-workbench .part.auxiliarybar .pane-composite-part {
   background-color: #080d12 !important;
-  color: #e2e8f0 !important;
-  border-color: rgba(16, 185, 129, 0.25) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(16, 185, 129, 0.22) !important;
 }
 
-.monaco-workbench .part.sidebar .monaco-list {
+.monaco-workbench .part.sidebar .monaco-list,
+.monaco-workbench .part.auxiliarybar .monaco-list,
+.monaco-workbench .part.auxiliarybar .monaco-list-rows {
   background-color: #080d12 !important;
   color: #cbd5e1 !important;
 }
 
-.monaco-workbench .part.sidebar .monaco-list-row {
+.monaco-workbench .part.sidebar .monaco-list-row,
+.monaco-workbench .part.auxiliarybar .monaco-list-row {
   color: #cbd5e1 !important;
 }
 
 .part.sidebar .title-label h2,
 .part.sidebar .title-actions,
+.part.auxiliarybar .title-label,
+.part.auxiliarybar .title-label h2,
+.part.auxiliarybar .title-actions,
+.part.auxiliarybar .composite-bar-container,
+.part.auxiliarybar .title-actions .action-label,
 .explorer-viewlet .title {
   color: #34d399 !important;
   font-weight: 700 !important;
   letter-spacing: 0.04em !important;
+}
+
+.part.auxiliarybar .monaco-action-bar .action-item .action-label {
+  color: #a7f3d0 !important;
+}
+
+/* Antigravity Agent & Conversation View Containers (Right Side Panel) */
+[data-testid="conversation-view"],
+.jetski-custom-editor-pane,
+.antigravity-onboarding,
+div:has(> [data-testid="conversation-view"]) {
+  background-color: #080d12 !important;
+  color: #cbd5e1 !important;
+  --background: #080d12 !important;
+  --content: #080d12 !important;
+  --card: #0c141c !important;
+  --card-border: rgba(16, 185, 129, 0.22) !important;
+  --secondary: #0c141c !important;
+  --secondary-foreground: #a7f3d0 !important;
+  --muted: rgba(16, 185, 129, 0.08) !important;
+  --muted-foreground: #94a3b8 !important;
+  --border: rgba(16, 185, 129, 0.20) !important;
+  --primary: #10b981 !important;
+  --primary-foreground: #ffffff !important;
+  --placeholder: rgba(148, 163, 184, 0.5) !important;
+}
+
+/* User Message Bubble in Agent Chat */
+[data-testid="user-message-bubble"],
+.relative.p-px.rounded-xl.bg-card-border > div {
+  background-color: #0f1c24 !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 0 14px -2px rgba(16, 185, 129, 0.18) !important;
+  color: #f1f5f9 !important;
+}
+
+.bg-card-border {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Agent Bottom Chat Input Card & Border */
+[data-testid="conversation-view"] .border-border,
+[data-testid="conversation-view"] .bg-card,
+[data-testid="conversation-view"] [data-testid="user-input-step"],
+[data-testid="conversation-view"] div[data-testid="user-input-step"] {
+  border-color: rgba(16, 185, 129, 0.22) !important;
+}
+
+[data-testid="conversation-view"] textarea,
+[data-testid="conversation-view"] input,
+[data-testid="conversation-view"] [contenteditable="true"] {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* Agent Trajectory / Steps / Tool Badges */
+[data-testid="conversation-view"] [data-testid*="step"],
+[data-testid="conversation-view"] .group\/user-input-step {
+  color: #cbd5e1 !important;
+}
+
+/* Comprehensive Vazirmatn Typography for Right Auxiliary Bar & Chat Panel */
+.part.auxiliarybar,
+.part.auxiliarybar *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-testid="conversation-view"],
+[data-testid="conversation-view"] *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-testid="user-message-bubble"],
+[data-testid="user-message-bubble"] *:not(pre):not(code),
+[data-testid="user-input-step"],
+[data-testid="user-input-step"] *:not(pre):not(code),
+.jetski-custom-editor-pane,
+.jetski-custom-editor-pane *:not(pre):not(code) {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* Monospace preservation for code within Auxiliary Bar & Chat */
+.part.auxiliarybar pre,
+.part.auxiliarybar pre *,
+.part.auxiliarybar code,
+.part.auxiliarybar .monaco-editor,
+.part.auxiliarybar .monaco-editor *,
+[data-testid="conversation-view"] pre,
+[data-testid="conversation-view"] pre *,
+[data-testid="conversation-view"] code,
+[data-testid="conversation-view"] .monaco-editor,
+[data-testid="conversation-view"] .monaco-editor * {
+  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* BiDi Auto-Alignment for Chat Bubbles, Markdown and Prompts */
+.part.auxiliarybar p,
+.part.auxiliarybar li,
+.part.auxiliarybar div[role="article"],
+.part.auxiliarybar .rendered-markdown,
+[data-testid="conversation-view"] p,
+[data-testid="conversation-view"] li,
+[data-testid="conversation-view"] div[role="article"],
+[data-testid="conversation-view"] .rendered-markdown,
+[data-testid="conversation-view"] .whitespace-pre-wrap,
+[data-testid="user-message-bubble"],
+[data-testid="user-message-bubble"] div,
+[data-testid="user-message-bubble"] span,
+[data-testid="user-message-bubble"] p {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+}
+
+/* Explicit RTL Direction when element is marked or detected RTL */
+.part.auxiliarybar [dir="rtl"],
+.part.auxiliarybar :dir(rtl),
+[data-testid="conversation-view"] [dir="rtl"],
+[data-testid="conversation-view"] :dir(rtl),
+[data-testid="user-message-bubble"][dir="rtl"],
+[data-testid="user-message-bubble"] :dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+  unicode-bidi: isolate !important;
 }
 
 .monaco-list-row:hover:not(.selected) {
@@ -1904,20 +2069,24 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
             let mut content = fs::read_to_string(css_path).map_err(|e| e.to_string())?;
             let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
             let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
-            if let (Some(s), Some(e)) = (content.find(p_start), content.rfind(p_end)) {
-                content.replace_range(
-                    s..e + p_end.len(),
-                    &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end),
-                );
+            if let Some(s) = content.find(p_start) {
+                content.truncate(s);
+                content.push_str(p_start);
+                content.push('\n');
+                content.push_str(VAZIRMATN_RTL_CSS);
+                content.push('\n');
+                content.push_str(p_end);
+                content.push('\n');
                 fs::write(css_path, &content).map_err(|e| e.to_string())?;
                 applied_count += 1;
             } else if !content.contains("Antigravity-Shield-RTL-Vazirmatn") {
                 content.push_str("\n\n");
                 content.push_str(p_start);
-                content.push_str("\n");
+                content.push('\n');
                 content.push_str(VAZIRMATN_RTL_CSS);
-                content.push_str("\n");
+                content.push('\n');
                 content.push_str(p_end);
+                content.push('\n');
                 fs::write(css_path, &content).map_err(|e| e.to_string())?;
                 applied_count += 1;
             }
@@ -1958,16 +2127,24 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     if let Ok(mut jc) = fs::read_to_string(&agent_css) {
                         let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
                         let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
-                        if let (Some(s), Some(e)) = (jc.find(p_start), jc.find(p_end)) {
-                            jc.replace_range(
-                                s..e + p_end.len(),
-                                &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end),
-                            );
+                        if let Some(s) = jc.find(p_start) {
+                            jc.truncate(s);
+                            jc.push_str(p_start);
+                            jc.push('\n');
+                            jc.push_str(VAZIRMATN_RTL_CSS);
+                            jc.push('\n');
+                            jc.push_str(p_end);
+                            jc.push('\n');
                             let _ = fs::write(&agent_css, &jc);
                             applied_count += 1;
                         } else if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
                             jc.push_str("\n\n");
-                            jc.push_str(&format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
+                            jc.push_str(p_start);
+                            jc.push('\n');
+                            jc.push_str(VAZIRMATN_RTL_CSS);
+                            jc.push('\n');
+                            jc.push_str(p_end);
+                            jc.push('\n');
                             let _ = fs::write(&agent_css, &jc);
                             applied_count += 1;
                         }
@@ -2015,7 +2192,7 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
   const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
   function patchBiDi(root = document) {
     if (!root || !root.querySelectorAll) return;
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [role="article"], .leading-relaxed');
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] p, .part.auxiliarybar p, .part.auxiliarybar span');
     for (let i = 0; i < targets.length; i++) {
       const el = targets[i];
       if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) continue;

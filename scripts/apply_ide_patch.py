@@ -68,10 +68,9 @@ for css_rel in ["vs/workbench/workbench.desktop.main.css", "jetskiAgent/main.css
     if os.path.exists(p):
         with open(p, 'r', encoding='utf-8') as f:
             c = f.read()
-        if p_start in c and p_end in c:
+        if p_start in c:
             s = c.find(p_start)
-            e = c.find(p_end) + len(p_end)
-            c = c[:s] + p_start + "\n" + VAZIRMATN_RTL_CSS + "\n" + p_end + c[e:]
+            c = c[:s].rstrip() + "\n\n" + p_start + "\n" + VAZIRMATN_RTL_CSS + "\n" + p_end + "\n"
         else:
             c = c.rstrip() + css_patch_block
         with open(p, 'w', encoding='utf-8') as f:
@@ -85,7 +84,7 @@ sentinel_code = r'''
   const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
   function patchBiDi(root = document) {
     if (!root || !root.querySelectorAll) return;
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], div[role="article"], .leading-relaxed');
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] p, .part.auxiliarybar p, .part.auxiliarybar span');
     for (let i = 0; i < targets.length; i++) {
       const el = targets[i];
       if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) continue;
