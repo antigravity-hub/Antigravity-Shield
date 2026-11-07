@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Antigravity Shield — AI Proxy & Fleet Management Engine
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
@@ -114,13 +114,28 @@ export function isValidUserActionUrl(url: string | null | undefined): boolean {
  * Check if an account error corresponds to a Google Terms of Service suspension / appeal requirement
  */
 export function isAccountTosViolation(account: {
+    disabled?: boolean;
+    proxy_disabled?: boolean;
+    validation_blocked?: boolean;
     validation_blocked_reason?: string;
     disabled_reason?: string;
     proxy_disabled_reason?: string;
     validation_url?: string;
-    quota?: { forbidden_reason?: string; disabled_reason?: string; error_details?: string };
+    quota?: { is_forbidden?: boolean; forbidden_reason?: string; disabled_reason?: string; error_details?: string };
 } | null | undefined): boolean {
     if (!account) return false;
+
+    // Guard: Account MUST actually be in a restricted/blocked state to be considered suspended
+    const isRestricted = Boolean(
+        account.disabled ||
+        account.proxy_disabled ||
+        account.validation_blocked ||
+        account.quota?.is_forbidden
+    );
+    if (!isRestricted) {
+        return false;
+    }
+
     const combined = [
         account.validation_blocked_reason,
         account.disabled_reason,
