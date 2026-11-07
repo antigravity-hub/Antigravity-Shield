@@ -126,11 +126,21 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         return name.slice(0, 3).toUpperCase();
     }}
 
-    // Unified Collision-Free Project Palette Engine
-    if (!window.__shield_project_color_map) {{
-        window.__shield_project_color_map = new Map();
-        window.__shield_used_indices = new Set();
-    }}
+    // Clean Curated Collision-Free Project Palette Engine
+    const CURATED_MAP = {{
+        'Antigravity-Shield': PALETTE.find(p => p.name === 'Crimson') || PALETTE[15],
+        'matchcut': PALETTE.find(p => p.name === 'Purple') || PALETTE[2],
+        'wizwiz-q22': PALETTE.find(p => p.name === 'Teal') || PALETTE[11],
+        'سایت اصلی کوپرینت': PALETTE.find(p => p.name === 'Amber') || PALETTE[1],
+        'openjutsu': PALETTE.find(p => p.name === 'Sky') || PALETTE[4],
+        'atrclick': PALETTE.find(p => p.name === 'Emerald') || PALETTE[0],
+        'Guidegram': PALETTE.find(p => p.name === 'Indigo') || PALETTE[8],
+        'GG - GameGuidance': PALETTE.find(p => p.name === 'Orange') || PALETTE[13],
+        'v2rayGuard': PALETTE.find(p => p.name === 'Rose') || PALETTE[10]
+    }};
+
+    window.__shield_project_color_map = new Map(Object.entries(CURATED_MAP));
+    const usedIndices = new Set(Object.values(CURATED_MAP).map(p => PALETTE.indexOf(p)));
 
     function getProjectPalette(name) {{
         if (!name) return PALETTE[0];
@@ -145,11 +155,11 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         }}
         let idx = Math.abs(h) % PALETTE.length;
         let attempts = 0;
-        while (window.__shield_used_indices.has(idx) && window.__shield_used_indices.size < PALETTE.length && attempts < PALETTE.length) {{
-            idx = (idx + 5) % PALETTE.length;
+        while (usedIndices.has(idx) && usedIndices.size < PALETTE.length && attempts < PALETTE.length) {{
+            idx = (idx + 3) % PALETTE.length;
             attempts++;
         }}
-        window.__shield_used_indices.add(idx);
+        usedIndices.add(idx);
         const pal = PALETTE[idx];
         window.__shield_project_color_map.set(key, pal);
         return pal;
