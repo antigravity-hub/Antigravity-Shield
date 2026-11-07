@@ -1,15 +1,17 @@
-import os, re, sys, hashlib, json
+import os, re, sys, hashlib, json, shutil, base64
+
+sys.stdout.reconfigure(encoding='utf-8')
 
 APP_DIR = r"C:\Users\ersha\AppData\Local\Programs\Antigravity IDE\resources\app"
 OUT_DIR = os.path.join(APP_DIR, "out")
-PATCH_RS = r"d:\Ershad Zolfi\programming\coding with Gemini\Antigravity-Manager-Guidance\src-tauri\src\commands\patch.rs"
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PATCH_RS = os.path.join(REPO_ROOT, "src-tauri", "src", "commands", "patch.rs")
 
 def compute_checksum(filepath):
     with open(filepath, 'rb') as f:
         data = f.read()
     return hashlib.sha256(data).digest()
 
-import base64
 def compute_b64_hash(filepath):
     raw = compute_checksum(filepath)
     return base64.b64encode(raw).decode('utf-8').rstrip('=')
@@ -22,6 +24,7 @@ if not m:
     print("Cannot find VAZIRMATN_RTL_CSS in patch.rs")
     sys.exit(1)
 VAZIRMATN_RTL_CSS = m.group(1).strip()
+print(f"Extracted VAZIRMATN_RTL_CSS: {len(VAZIRMATN_RTL_CSS):,} bytes")
 
 # 2. Ultra Sentinel
 SENTINEL_CODE = """
@@ -140,7 +143,64 @@ SENTINEL_CODE = """
 })();
 """
 
-# 3. Patch CSS files idempotently
+# 3. Patch workbench.desktop.main.js with Native Preact AST dir="auto" and Vazirmatn
+wb_main_path = os.path.join(OUT_DIR, "vs", "workbench", "workbench.desktop.main.js")
+wb_orig_path = wb_main_path + ".orig"
+
+if not os.path.exists(wb_orig_path):
+    shutil.copy2(wb_main_path, wb_orig_path)
+    print(f"Created backup of pristine bundle: {wb_orig_path}")
+
+# Always patch from pristine original for idempotency and rock-solid consistency
+with open(wb_orig_path, 'r', encoding='utf-8') as f:
+    wb_content = f.read()
+
+wb_replacements = [
+    # 1. oDd (paragraph renderer)
+    ('oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v("p",{...t,className:ht(t.className)',
+     'oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v("p",{dir:"auto",...t,className:ht(t.className)'),
+    
+    # 2. aDd (list item renderer)
+    ('aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{...t,animate:e,claimStaggerDelays:i})}',
+     'aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{dir:"auto",...t,animate:e,claimStaggerDelays:i})}'),
+
+    # 3. _3e (heading renderer)
+    ('_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,className:ht(i.className)',
+     '_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{dir:"auto",...i,className:ht(i.className)'),
+
+    # 4. pDd (CustomMarkdown wrapper div)
+    ('return v("div",{className:ht("leading-relaxed","select-text","text-sm","flex flex-col","[&_strong]:font-semibold","[&_b]:font-semibold",',
+     'return v("div",{dir:"auto",className:ht("leading-relaxed","select-text","text-sm","flex flex-col","[&_strong]:font-semibold","[&_b]:font-semibold",'),
+
+    # 5. wNd (CustomMarkdown internal style)
+    ('wNd=`\ndiv:has(> table),\ntable th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\n`',
+     'wNd=`\ndiv:has(> table),\ntable th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\np, li, dd, dt, h1, h2, h3, h4, h5, h6, blockquote, span {\n  font-family: \'Vazirmatn\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', Tahoma, sans-serif !important;\n  unicode-bidi: plaintext !important;\n}\np:dir(rtl), li:dir(rtl), h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl), blockquote:dir(rtl) {\n  text-align: right !important;\n  direction: rtl !important;\n}\n`'),
+
+    # 6. PHd (last text response wrapper)
+    ('function PHd({step:t}){let{renderers:e}=Ur(),i=e.markdown,n=(t.step.case==="plannerResponse"?t.step.value:null)?.response;if(!n)return null;let r=t.status===Kr.RUNNING||t.status===Kr.GENERATING,s=Pm(t.metadata,null);return v("div",{className:"px-2 py-1"',
+     'function PHd({step:t}){let{renderers:e}=Ur(),i=e.markdown,n=(t.step.case==="plannerResponse"?t.step.value:null)?.response;if(!n)return null;let r=t.status===Kr.RUNNING||t.status===Kr.GENERATING,s=Pm(t.metadata,null);return v("div",{dir:"auto",className:"px-2 py-1"'),
+
+    # 7. zHd (Agent response)
+    ('v("div",{role:"article","aria-label":"Agent response","data-quotable":"true",children:',
+     'v("div",{dir:"auto",role:"article","aria-label":"Agent response","data-quotable":"true",children:'),
+
+    # 8. LPd (User message bubble)
+    ('LPd=({items:t})=>{let{chatParams:{artifactsDir:e},trajectorySummariesProvider:i,stepHandler:n,isBrowserPaneAvailable:r,openUrlInBrowserPane:s}=Ur(),o=Kt().get("browserAuxPane");return v("div",{"data-quotable":"true",className:"whitespace-pre-wrap text-sm"',
+     'LPd=({items:t})=>{let{chatParams:{artifactsDir:e},trajectorySummariesProvider:i,stepHandler:n,isBrowserPaneAvailable:r,openUrlInBrowserPane:s}=Ur(),o=Kt().get("browserAuxPane");return v("div",{dir:"auto","data-quotable":"true",className:"whitespace-pre-wrap text-sm"'),
+]
+
+for idx, (target, replacement) in enumerate(wb_replacements, 1):
+    if target in wb_content:
+        wb_content = wb_content.replace(target, replacement, 1)
+        print(f"Applied replacement {idx} to workbench.desktop.main.js")
+    else:
+        print(f"Warning: replacement {idx} target not found!")
+
+with open(wb_main_path, 'w', encoding='utf-8') as f:
+    f.write(wb_content)
+print(f"Saved patched workbench.desktop.main.js: {os.path.getsize(wb_main_path):,} bytes")
+
+# 4. Patch CSS files idempotently
 css_targets = [
     os.path.join(OUT_DIR, "vs", "workbench", "workbench.desktop.main.css"),
     os.path.join(OUT_DIR, "jetskiAgent", "main.css")
@@ -157,7 +217,7 @@ for cp in css_targets:
         f.write(content)
     print(f"Patched CSS: {cp}")
 
-# 4. Patch JS Sentinel files
+# 5. Patch JS Sentinel files
 js_targets = [
     os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "workbench.js"),
     os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "jetskiAgent.js")
@@ -174,7 +234,7 @@ for jp in js_targets:
         f.write(content)
     print(f"Patched Sentinel in: {jp}")
 
-# 5. Patch HTML Style Block
+# 6. Patch HTML Style Block
 html_targets = [
     os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "workbench.html"),
     os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "workbench-jetski-agent.html"),
@@ -188,13 +248,12 @@ for hp in html_targets:
         content = f.read()
     if '<style id="antigravity-shield-ide-bidi">' in content:
         content = re.sub(r'<style id="antigravity-shield-ide-bidi">.*?</style>', '', content, flags=re.DOTALL)
-    # Inject before </head>
     content = content.replace('</head>', f'{STYLE_BLOCK}\n</head>')
     with open(hp, 'w', encoding='utf-8') as f:
         f.write(content)
     print(f"Patched HTML: {hp}")
 
-# 6. Update product.json checksums
+# 7. Update product.json checksums
 product_json_path = os.path.join(APP_DIR, "product.json")
 with open(product_json_path, 'r', encoding='utf-8') as f:
     pj = json.load(f)
@@ -219,10 +278,22 @@ for rel, path in all_patched:
     if os.path.exists(path):
         h = compute_b64_hash(path)
         checksums[rel] = h
+        checksums[f"out/{rel}"] = h
         print(f"Updated checksum: {rel} -> {h}")
 
 pj["checksums"] = checksums
 with open(product_json_path, 'w', encoding='utf-8') as f:
     json.dump(pj, f, indent=2)
 
-print("\n--- Running deep verification ---")
+# 8. Clear Electron V8 code cache so changes take effect immediately
+roaming_ide = os.path.expandvars(r"%APPDATA%\Antigravity IDE")
+for sub in ["Cache", os.path.join("Code Cache", "js"), "CachedData"]:
+    cdir = os.path.join(roaming_ide, sub)
+    if os.path.exists(cdir):
+        try:
+            shutil.rmtree(cdir)
+            print(f"Cleared V8 cache dir: {cdir}")
+        except Exception as e:
+            print(f"Note: Could not clear {cdir}: {e}")
+
+print("\n=== IDE PATCH APPLICATION COMPLETE ===")

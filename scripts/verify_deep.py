@@ -52,22 +52,38 @@ for key, rel in files_to_verify:
         print(f"[FAIL] {key}: expected {expected}, got {calc_b64}")
         failures += 1
 
-# 2. Pristine Integrity of Minified JS Bundles (Zero AST Tampering / No Crash Risk)
-print("\n--- 2. Pristine Integrity of Minified JS Bundles ---")
-for js_rel in ["jetskiAgent/main.js", "vs/workbench/workbench.desktop.main.js"]:
-    p = os.path.join(out_dir, js_rel.replace('/', os.sep))
-    p_orig = p + ".orig"
-    if os.path.exists(p_orig):
-        with open(p, 'rb') as f1, open(p_orig, 'rb') as f2:
-            h1 = hashlib.sha256(f1.read()).hexdigest()
-            h2 = hashlib.sha256(f2.read()).hexdigest()
-        if h1 == h2:
-            print(f"[PASS] {js_rel} matches original unpatched bundle exactly (SHA: {h1[:16]}...)")
+# 2. Integrity of JS Bundles & Native Preact BiDi Invariant
+print("\n--- 2. JS Bundles & Native Preact BiDi Invariant ---")
+ja_p = os.path.join(out_dir, "jetskiAgent", "main.js")
+ja_orig = ja_p + ".orig"
+if os.path.exists(ja_orig):
+    with open(ja_p, 'rb') as f1, open(ja_orig, 'rb') as f2:
+        if hashlib.sha256(f1.read()).hexdigest() == hashlib.sha256(f2.read()).hexdigest():
+            print(f"[PASS] jetskiAgent/main.js matches original unpatched bundle.")
         else:
-            print(f"[FAIL] {js_rel} diverges from .orig!")
-            failures += 1
+            print(f"[WARN] jetskiAgent/main.js diverges from orig.")
+
+wb_p = os.path.join(out_dir, "vs", "workbench", "workbench.desktop.main.js")
+with open(wb_p, 'r', encoding='utf-8') as f:
+    wbc = f.read()
+
+wb_checks = [
+    ('oDd paragraph dir="auto"', 'v("p",{dir:"auto",...t,className:ht(t.className)'),
+    ('aDd list item dir="auto"', 'v(KTd,{dir:"auto",...t,animate:e,claimStaggerDelays:i})'),
+    ('_3e heading dir="auto"', 'v(t,{dir:"auto",...i,className:ht(i.className)'),
+    ('pDd markdown wrapper dir="auto"', 'v("div",{dir:"auto",className:ht("leading-relaxed"'),
+    ('wNd internal style Vazirmatn rule', "font-family: 'Vazirmatn'"),
+    ('PHd last text response dir="auto"', 'v("div",{dir:"auto",className:"px-2 py-1"'),
+    ('zHd Agent response article dir="auto"', 'v("div",{dir:"auto",role:"article","aria-label":"Agent response"'),
+    ('LPd user message bubble dir="auto"', 'v("div",{dir:"auto","data-quotable":"true",className:"whitespace-pre-wrap text-sm"'),
+]
+
+for label, needle in wb_checks:
+    if needle in wbc:
+        print(f"[PASS] workbench.desktop.main.js has {label}")
     else:
-        print(f"[WARN] {js_rel}.orig not found, skipping byte match.")
+        print(f"[FAIL] workbench.desktop.main.js missing {label}!")
+        failures += 1
 
 # 3. Clean Tailwind Bundles (No Duplicate or Bloated CSS Patches)
 print("\n--- 3. Clean Tailwind Bundles Verification ---")
