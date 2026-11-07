@@ -1,4 +1,9 @@
-import os, sys, json, hashlib, base64, re
+import os
+import sys
+import json
+import hashlib
+import base64
+
 sys.stdout.reconfigure(encoding='utf-8')
 
 app_dir = r"C:\Users\ersha\AppData\Local\Programs\Antigravity IDE\resources\app"
@@ -6,7 +11,7 @@ out_dir = os.path.join(app_dir, "out")
 product_json_path = os.path.join(app_dir, "product.json")
 
 print("==================================================")
-print("   DEEP FORENSIC VERIFICATION FOR ANTIGRAVITY IDE 2.6.0")
+print("   DEEP VERIFICATION FOR ROCK-SOLID ANTIGRAVITY IDE")
 print("==================================================")
 
 failures = 0
@@ -27,6 +32,7 @@ files_to_verify = [
     ("vs/code/electron-browser/workbench/workbench.js", "out/vs/code/electron-browser/workbench/workbench.js"),
     ("vs/code/electron-browser/workbench/workbench.html", "out/vs/code/electron-browser/workbench/workbench.html"),
     ("vs/code/electron-browser/workbench/workbench-jetski-agent.html", "out/vs/code/electron-browser/workbench/workbench-jetski-agent.html"),
+    ("vs/workbench/contrib/webview/browser/pre/index.html", "out/vs/workbench/contrib/webview/browser/pre/index.html"),
 ]
 
 print("\n--- 1. Checksums Verification against product.json ---")
@@ -46,91 +52,98 @@ for key, rel in files_to_verify:
         print(f"[FAIL] {key}: expected {expected}, got {calc_b64}")
         failures += 1
 
-# 2. Forensic AST / Text Pattern Verification in jetskiAgent/main.js
-print("\n--- 2. jetskiAgent/main.js Pattern Verification ---")
-with open(os.path.join(out_dir, "jetskiAgent", "main.js"), 'r', encoding='utf-8') as f:
-    jc = f.read()
-
-jc_checks = [
-    ("WBa table header BiDi", 'WBa=({node:e,...t})=>d("th",{...t,dir:'),
-    ("QBa blockquote BiDi", 'QBa=e=>{let t=pVe(),isR=Boolean(e?.children&&'),
-    ("UZa in-progress task BiDi", 'if(a)return d("li",{...n,dir:'),
-    ("UZa checked task BiDi", 'if(o){let{checkbox:h,inlineContent:f,sublists:E}=vdn(i);return d("li",{...n,dir:'),
-    ("YBa paragraph object spread order", 'YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d("p",{...e,dir:'),
-    ("OO header object spread order", 'OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{...r,dir:')
-]
-
-for name, sub in jc_checks:
-    if sub in jc:
-        print(f"[PASS] {name} verified.")
+# 2. Pristine Integrity of Minified JS Bundles (Zero AST Tampering / No Crash Risk)
+print("\n--- 2. Pristine Integrity of Minified JS Bundles ---")
+for js_rel in ["jetskiAgent/main.js", "vs/workbench/workbench.desktop.main.js"]:
+    p = os.path.join(out_dir, js_rel.replace('/', os.sep))
+    p_orig = p + ".orig"
+    if os.path.exists(p_orig):
+        with open(p, 'rb') as f1, open(p_orig, 'rb') as f2:
+            h1 = hashlib.sha256(f1.read()).hexdigest()
+            h2 = hashlib.sha256(f2.read()).hexdigest()
+        if h1 == h2:
+            print(f"[PASS] {js_rel} matches original unpatched bundle exactly (SHA: {h1[:16]}...)")
+        else:
+            print(f"[FAIL] {js_rel} diverges from .orig!")
+            failures += 1
     else:
-        print(f"[FAIL] {name} NOT matched!")
+        print(f"[WARN] {js_rel}.orig not found, skipping byte match.")
+
+# 3. Clean Tailwind Bundles (No Duplicate or Bloated CSS Patches)
+print("\n--- 3. Clean Tailwind Bundles Verification ---")
+for tw_rel in ["jetskiMain.tailwind.css", "tw-base.tailwind.css"]:
+    p = os.path.join(out_dir, tw_rel.replace('/', os.sep))
+    with open(p, 'r', encoding='utf-8') as f:
+        c = f.read()
+    if "/* [Antigravity-Shield-RTL-Vazirmatn" in c:
+        print(f"[FAIL] {tw_rel} still contains patch bloat!")
+        failures += 1
+    else:
+        print(f"[PASS] {tw_rel} is completely clean ({len(c):,} bytes).")
+
+# 4. Idempotent CSS & High-End Neon Nested List Geometry Verification
+print("\n--- 4. CSS & Animated Sublist Geometry Verification ---")
+for css_rel in ["vs/workbench/workbench.desktop.main.css", "jetskiAgent/main.css"]:
+    p = os.path.join(out_dir, css_rel.replace('/', os.sep))
+    with open(p, 'r', encoding='utf-8') as f:
+        c = f.read()
+    has_raindrop = "@keyframes agyRaindropFlow" in c
+    has_pulse = "@keyframes agyPulseGlow" in c
+    has_curved_arm = "right: -20px !important;" in c and "width: 22px !important;" in c
+    has_child_node = "right: 2px !important;" in c
+    has_cyber_emerald = "--sidebar: #090e13" in c and "--sidebar-primary: #10b981" in c
+    
+    if has_raindrop and has_pulse and has_curved_arm and has_child_node and has_cyber_emerald:
+        print(f"[PASS] {css_rel} has live raindrop spine, pulse glow, precision curved arm, and cyber emerald sidebar.")
+    else:
+        print(f"[FAIL] {css_rel} missing expected rules! raindrop={has_raindrop}, pulse={has_pulse}, arm={has_curved_arm}, node={has_child_node}, emerald={has_cyber_emerald}")
         failures += 1
 
-# 3. Forensic Pattern Verification in workbench.desktop.main.js
-print("\n--- 3. workbench.desktop.main.js Pattern Verification ---")
-with open(os.path.join(out_dir, "vs", "workbench", "workbench.desktop.main.js"), 'r', encoding='utf-8') as f:
-    wc = f.read()
-
-wc_checks = [
-    ("rDd table header BiDi", 'rDd=({node:t,...e})=>v("th",{...e,dir:'),
-    ("dDd blockquote BiDi", 'dDd=t=>{let e=m8t(),isR=Boolean(t?.children&&'),
-    ("KTd in-progress task BiDi", 'if(s)return v("li",{...n,dir:'),
-    ("KTd checked task BiDi", 'if(o){let{checkbox:u,inlineContent:h,sublists:f}=pMo(r);return v("li",{...n,dir:'),
-    ("oDd paragraph object spread order", 'oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v("p",{...t,dir:'),
-    ("_3e header object spread order", '_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,dir:')
+# 5. HTML Style Block & CSP Verification
+print("\n--- 5. HTML Style Block & CSP Verification ---")
+html_files = [
+    "vs/code/electron-browser/workbench/workbench.html",
+    "vs/code/electron-browser/workbench/workbench-jetski-agent.html",
+    "vs/workbench/contrib/webview/browser/pre/index.html",
 ]
+for h_rel in html_files:
+    p = os.path.join(out_dir, h_rel.replace('/', os.sep))
+    if not os.path.exists(p):
+        print(f"[WARN] {h_rel} not found on disk.")
+        continue
+    with open(p, 'r', encoding='utf-8') as f:
+        hc = f.read()
+    has_style_id = '<style id="antigravity-shield-ide-bidi">' in hc
+    has_font = "font-family: 'Vazirmatn'" in hc or "font-family: \"Vazirmatn\"" in hc
+    has_sublist = "border-bottom-right-radius: 9px" in hc
+    has_csp_data = "data:" in hc
 
-for name, sub in wc_checks:
-    if sub in wc:
-        print(f"[PASS] {name} verified.")
+    if has_style_id and has_font and has_sublist and has_csp_data:
+        print(f"[PASS] {h_rel} contains comprehensive style tag and data: in CSP.")
     else:
-        print(f"[FAIL] {name} NOT matched!")
+        print(f"[FAIL] {h_rel}: style_id={has_style_id}, font={has_font}, sublist={has_sublist}, csp_data={has_csp_data}")
         failures += 1
 
-# 4. DOM Sentinels Verification
-print("\n--- 4. DOM Sentinels Verification ---")
+# 6. DOM Sentinels Verification
+print("\n--- 6. DOM Sentinels Verification in JS Entry Points ---")
 for js_rel in ["vs/code/electron-browser/workbench/jetskiAgent.js", "vs/code/electron-browser/workbench/workbench.js"]:
-    with open(os.path.join(out_dir, js_rel.replace('/', os.sep)), 'r', encoding='utf-8') as f:
+    p = os.path.join(out_dir, js_rel.replace('/', os.sep))
+    with open(p, 'r', encoding='utf-8') as f:
         sc = f.read()
     has_sentinel = "// [Antigravity-Shield-IDE-BiDi-Sentinel]" in sc
     has_input_listener = "document.addEventListener('input'" in sc
-    has_font = "Vazirmatn" in sc
-    has_isolate = "unicode-bidi" in sc
-    if has_sentinel and has_input_listener and has_font and has_isolate:
-        print(f"[PASS] Sentinel in {js_rel} verified (contains observer, input listener, and Vazirmatn isolation).")
+    if has_sentinel and has_input_listener:
+        print(f"[PASS] {js_rel} has non-invasive DOM BiDi sentinel.")
     else:
-        print(f"[FAIL] Sentinel in {js_rel} incomplete! sentinel={has_sentinel}, input={has_input_listener}")
+        print(f"[FAIL] {js_rel} sentinel check failed!")
         failures += 1
-
-# 5. HTML Style & Font Embedding Verification
-print("\n--- 5. HTML Style & Font Embedding Verification ---")
-for html_rel in ["vs/code/electron-browser/workbench/workbench.html", "vs/code/electron-browser/workbench/workbench-jetski-agent.html"]:
-    with open(os.path.join(out_dir, html_rel.replace('/', os.sep)), 'r', encoding='utf-8') as f:
-        hc = f.read()
-    has_style = '<style id="antigravity-shield-ide-bidi">' in hc
-    has_font_src = "font-src" in hc and "data:" in hc
-    has_vazir_b64 = "data:font/woff2;base64," in hc
-    has_table_rtl = 'th[dir="rtl"]' in hc
-    has_input_rtl = 'contenteditable' in hc
-    has_pre_isol = 'monaco-editor' in hc
-    if has_style and has_font_src and has_vazir_b64 and has_table_rtl and has_input_rtl and has_pre_isol:
-        print(f"[PASS] {html_rel} verified (Base64 WOFF2, font-src CSP, table & input RTL, pre isolation).")
-    else:
-        print(f"[FAIL] {html_rel} incomplete! style={has_style}, font_src={has_font_src}, b64={has_vazir_b64}")
-        failures += 1
-
-# 6. Cache directories verification
-print("\n--- 6. Electron V8 Cache Clearance Verification ---")
-roaming_ide = os.path.expandvars(r"%APPDATA%\Antigravity IDE")
-for sub in ["Cache", os.path.join("Code Cache", "js"), "CachedData"]:
-    cdir = os.path.join(roaming_ide, sub)
-    exists = os.path.exists(cdir)
-    print(f"[INFO] Cache dir '{sub}': {'EXISTS (may re-create on run)' if exists else 'PURGED'}")
 
 print("\n==================================================")
 if failures == 0:
-    print(">>> FINAL RESULT: ALL 100% FORENSIC CHECKS PASSED SUCCESSFULLY! <<<")
+    print("   ALL VERIFICATION CHECKS PASSED PERFECTLY! (0 FAILURES)")
+    print("==================================================")
+    sys.exit(0)
 else:
-    print(f">>> FINAL RESULT: {failures} CHECKS FAILED! <<<")
-print("==================================================")
+    print(f"   VERIFICATION FAILED WITH {failures} ISSUES!")
+    print("==================================================")
+    sys.exit(1)

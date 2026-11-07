@@ -1,4 +1,4 @@
-﻿// Antigravity Shield — AI Proxy & Fleet Management Engine
+// Antigravity Shield — AI Proxy & Fleet Management Engine
 // Repository: https://github.com/antigravity-hub/Antigravity-Shield
 
 use std::fs;
@@ -215,17 +215,40 @@ pub const VAZIRMATN_RTL_CSS: &str = r#"
   font-display: swap;
 }
 
-/* [Antigravity-Clean-Bidi-List-Shield] - Ultra Minimal & Ergonomic */
+/* [Antigravity-Emerald-Raindrop-Cascade-And-Bidi-List-Shield] - Live Neon Pulse & Ergonomic Tree */
+
+@keyframes agyRaindropFlow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 36px;
+  }
+}
+
+@keyframes agyPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
+    transform: scale(1.15);
+  }
+}
 
 /* Kill default browser markers completely so they NEVER jump to the left */
 ul, ol, [role="article"] ul, [role="article"] ol,
-.rendered-markdown ul, .rendered-markdown ol {
+.rendered-markdown ul, .rendered-markdown ol,
+.animate-markdown ul, .animate-markdown ol {
   list-style: none !important;
   list-style-type: none !important;
 }
 
 ul > li::marker, ol > li::marker,
-[role="article"] ul > li::marker, [role="article"] ol > li::marker {
+[role="article"] ul > li::marker, [role="article"] ol > li::marker,
+.rendered-markdown ul > li::marker, .rendered-markdown ol > li::marker,
+.animate-markdown ul > li::marker, .animate-markdown ol > li::marker {
   display: none !important;
   content: "" !important;
   font-size: 0 !important;
@@ -235,11 +258,15 @@ ul > li::marker, ol > li::marker,
 /* Persian Unordered List Container */
 ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
 [role="article"] ul:has(> li:dir(rtl)),
-[role="article"] ul {
+[role="article"] ul,
+.rendered-markdown ul:dir(rtl),
+.rendered-markdown ul[dir="rtl"],
+.animate-markdown ul:dir(rtl),
+.animate-markdown ul[dir="rtl"] {
   list-style: none !important;
-  margin: 0.6rem 0 !important;
+  margin: 0.75rem 0 !important;
   padding: 0 !important;
-  padding-right: 20px !important;
+  padding-right: 28px !important;
   padding-left: 0 !important;
   position: relative !important;
   direction: rtl !important;
@@ -248,120 +275,152 @@ ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
 
 /* Layer 1 List Item */
 ul:dir(rtl) > li, [dir="rtl"] ul > li, ul[dir="rtl"] > li,
-[role="article"] ul > li {
+[role="article"] ul > li,
+.rendered-markdown ul > li,
+.animate-markdown ul > li {
   list-style: none !important;
   position: relative !important;
-  padding-right: 14px !important;
+  padding-right: 0 !important;
   padding-left: 0 !important;
-  margin-bottom: 8px !important;
-  line-height: 1.9 !important;
+  margin-bottom: 14px !important;
+  line-height: 1.85 !important;
   color: #f1f5f9 !important;
   direction: rtl !important;
   text-align: right !important;
   text-align-last: right !important;
 }
 
-/* Completely remove vertical spine / connecting dashed lines */
+/* Vertical Raindrop Animated Spine on Parent */
 ul:dir(rtl) > li::before, [dir="rtl"] ul > li::before, ul[dir="rtl"] > li::before,
 [role="article"] ul > li::before,
-ul:dir(rtl) > li:last-child::before, [dir="rtl"] ul > li:last-child::before, ul[dir="rtl"] > li:last-child::before,
-[role="article"] ul > li:last-child::before {
-  display: none !important;
-  content: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  border: none !important;
-  background: none !important;
-  animation: none !important;
-}
-
-/* Layer 1 Minimal Subtle Bullet Dot (No neon glow, no pulse, no vertical dashed line) */
-ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
-[role="article"] ul > li::after {
+.rendered-markdown ul > li::before,
+.animate-markdown ul > li::before {
   content: "" !important;
   position: absolute !important;
-  right: -13px !important;
-  top: 11px !important;
-  width: 5px !important;
-  height: 5px !important;
-  border-radius: 50% !important;
-  background: #10b981 !important;
-  border: none !important;
-  box-shadow: none !important;
-  animation: none !important;
+  right: -20px !important;
+  top: 14px !important;
+  bottom: -14px !important;
+  width: 2px !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(16, 185, 129, 0.9) 0px,
+    rgba(52, 211, 153, 0.4) 6px,
+    transparent 10px,
+    transparent 14px,
+    rgba(16, 185, 129, 0.95) 20px,
+    rgba(56, 189, 248, 0.8) 26px,
+    transparent 30px
+  ) !important;
+  background-size: 2px 36px !important;
+  animation: agyRaindropFlow 1.6s linear infinite !important;
+  border-radius: 2px !important;
+  opacity: 0.85 !important;
   z-index: 1 !important;
+  display: block !important;
+}
+
+/* Last item in Layer 1 stops spine at the bullet */
+ul:dir(rtl) > li:last-child::before, [dir="rtl"] ul > li:last-child::before, ul[dir="rtl"] > li:last-child::before,
+[role="article"] ul > li:last-child::before,
+.rendered-markdown ul > li:last-child::before,
+.animate-markdown ul > li:last-child::before {
+  bottom: 8px !important;
+}
+
+/* Layer 1 Glowing Emerald Node (The Bullet Droplet) */
+ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
+[role="article"] ul > li::after,
+.rendered-markdown ul > li::after,
+.animate-markdown ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -25px !important;
+  top: 7px !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7) !important;
+  animation: agyPulseGlow 2.5s ease-in-out infinite !important;
+  z-index: 3 !important;
+  display: block !important;
 }
 
 /* ==========================================================================
-   Layer 2: Nested Sub-Lists (Minimal & Clean)
+   Layer 2: Nested Sub-Lists (اتصال بدون درز شاخه خمیده با ستون فقرات والد)
    ========================================================================== */
+ul ul,
 [role="article"] ul ul,
 .rendered-markdown ul ul,
-[role="article"] [dir="rtl"] ul ul,
-.rendered-markdown [dir="rtl"] ul ul,
+.animate-markdown ul ul,
 ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
   position: relative !important;
-  margin: 6px 0 8px 0 !important;
+  margin: 8px 0 10px 0 !important;
   padding: 0 !important;
-  padding-right: 16px !important;
+  padding-right: 0 !important;
   padding-left: 0 !important;
   border: none !important;
   list-style: none !important;
 }
 
-[role="article"] ul ul::before,
-.rendered-markdown ul ul::before,
-[role="article"] [dir="rtl"] ul ul::before,
-.rendered-markdown [dir="rtl"] ul ul::before,
-ul:dir(rtl) > li > ul::before {
-  display: none !important;
-  content: none !important;
-}
-
-[role="article"] ul ul li,
-.rendered-markdown ul ul li,
-[role="article"] [dir="rtl"] ul ul li,
-.rendered-markdown [dir="rtl"] ul ul li,
-[role="article"] ul:dir(rtl) > li > ul > li,
+ul ul > li,
+[role="article"] ul ul > li,
+.rendered-markdown ul ul > li,
+.animate-markdown ul ul > li,
 ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
   position: relative !important;
-  padding-right: 12px !important;
+  padding-right: 22px !important;
   padding-left: 0 !important;
-  margin-bottom: 6px !important;
+  margin-bottom: 8px !important;
   color: #cbd5e1 !important;
   font-size: 0.95em !important;
-  line-height: 1.8 !important;
+  line-height: 1.75 !important;
   list-style: none !important;
 }
 
-[role="article"] ul ul li::before,
-.rendered-markdown ul ul li::before,
-[role="article"] [dir="rtl"] ul ul li::before,
-.rendered-markdown [dir="rtl"] ul ul li::before,
-[role="article"] ul:dir(rtl) > li > ul > li::before,
+/* Curved Branch: seamlessly connects right from the parent spine (-20px) to the child node */
+ul ul > li::before,
+[role="article"] ul ul > li::before,
+.rendered-markdown ul ul > li::before,
+.animate-markdown ul ul > li::before,
 ul:dir(rtl) > li > ul > li::before {
-  display: none !important;
-  content: none !important;
-}
-
-[role="article"] ul ul li::after,
-.rendered-markdown ul ul li::after,
-[role="article"] [dir="rtl"] ul ul li::after,
-.rendered-markdown [dir="rtl"] ul ul li::after,
-[role="article"] ul:dir(rtl) > li > ul > li::after,
-ul:dir(rtl) > li > ul > li::after, [dir="rtl"] ul > li > ul > li::after {
   content: "" !important;
   position: absolute !important;
-  right: -11px !important;
-  top: 10px !important;
-  width: 4.5px !important;
-  height: 4.5px !important;
-  border-radius: 50% !important;
-  background: transparent !important;
-  border: 1.5px solid #38bdf8 !important;
-  box-shadow: none !important;
-  z-index: 2 !important;
+  right: -20px !important; /* Starts EXACTLY on the parent spine! */
+  top: -6px !important;
+  width: 22px !important;
+  height: 18px !important;
+  border-right: 1.5px solid rgba(6, 182, 212, 0.7) !important;
+  border-bottom: 1.5px solid rgba(6, 182, 212, 0.7) !important;
+  border-bottom-right-radius: 9px !important;
+  background: none !important;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.3) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  display: block !important;
   animation: none !important;
+}
+
+/* Glowing Cyan-Mint Node at the tip of the curved branch */
+ul ul > li::after,
+[role="article"] ul ul > li::after,
+.rendered-markdown ul ul > li::after,
+.animate-markdown ul ul > li::after,
+ul:dir(rtl) > li > ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 2px !important; /* Sits precisely at the end of the curved arm! */
+  top: 9px !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #38bdf8 !important;
+  box-shadow: 0 0 8px #38bdf8, 0 0 14px rgba(56, 189, 248, 0.7) !important;
+  border: 1px solid #ffffff !important;
+  animation: agyPulseGlow 3s ease-in-out infinite !important;
+  z-index: 2 !important;
+  display: block !important;
 }
 /* ==========================================================================
    Numbered lists (OL): Persian Counter Anchored on the RIGHT
@@ -1110,6 +1169,75 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
    8. UI/UX Pro Max - High-End Luxury Sidebar Architecture (Platform & IDE)
    ========================================================================== */
 
+/* 8.0 Cyber Emerald Sidebar Palette & Contrast Upgrade (Platform & IDE) */
+:root, [data-theme], body {
+  --sidebar: #090e13 !important;
+  --sidebar-foreground: #f1f5f9 !important;
+  --sidebar-primary: #10b981 !important;
+  --sidebar-primary-foreground: #ffffff !important;
+  --sidebar-accent: rgba(16, 185, 129, 0.14) !important;
+  --sidebar-accent-foreground: #6ee7b7 !important;
+  --sidebar-border: rgba(16, 185, 129, 0.22) !important;
+  --sidebar-ring: #10b981 !important;
+  --sidebar-muted: rgba(16, 185, 129, 0.10) !important;
+}
+
+.bg-sidebar {
+  background-color: #090e13 !important;
+  border-color: rgba(16, 185, 129, 0.20) !important;
+}
+
+.bg-sidebar-muted {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #a7f3d0 !important;
+}
+
+.bg-sidebar-secondary {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+/* IDE Sidebar & File Tree Cyber Emerald Contrast Enhancement */
+.part.sidebar,
+.part.activitybar,
+.composite.title,
+.monaco-workbench .part.sidebar,
+.monaco-workbench .part.activitybar {
+  background-color: #080d12 !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.part.sidebar .title-label h2,
+.part.sidebar .title-actions,
+.explorer-viewlet .title {
+  color: #34d399 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.monaco-list-row:hover:not(.selected) {
+  background-color: rgba(16, 185, 129, 0.09) !important;
+}
+
+.monaco-list-row.selected,
+.monaco-list-row.focused {
+  background-color: rgba(16, 185, 129, 0.20) !important;
+  color: #a7f3d0 !important;
+}
+
+.monaco-list-row.selected .label-name,
+.monaco-list-row.focused .label-name {
+  color: #6ee7b7 !important;
+  font-weight: 600 !important;
+}
+
+.monaco-tree-indent-guides .monaco-list-row .indent-guide {
+  border-right-color: rgba(16, 185, 129, 0.25) !important;
+}
+.monaco-tree-indent-guides .monaco-list-row:hover .indent-guide.active {
+  border-right-color: #10b981 !important;
+}
+
 /* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar */
 div.flex-1.min-h-0.overflow-y-auto:has([data-testid="conversation-list-sidebar"]),
 [data-testid="sidebar-split"] div:has(> * > [data-testid="conversation-list-sidebar"]),
@@ -1640,32 +1768,20 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                 applied_count += 1;
             }
 
-            // Also patch all IDE CSS files and Jetski Agent
+            // Clean up bloated patches from tailwind files and ensure pristine state
             if let Some(out_dir) = css_path.parent().and_then(|p| p.parent()).and_then(|p| p.parent()) {
-                let css_targets = [
+                let clean_targets = [
                     "jetskiMain.tailwind.css",
                     "tw-base.tailwind.css",
-                    "jetskiAgent/main.css"
                 ];
 
-                for rel_css in &css_targets {
+                for rel_css in &clean_targets {
                     let target_path = out_dir.join(rel_css.replace('/', std::path::MAIN_SEPARATOR_STR));
                     if target_path.exists() {
-                        let bak_path = format!("{}.bak", target_path.to_string_lossy());
-                        if !Path::new(&bak_path).exists() {
-                            let _ = fs::copy(&target_path, &bak_path);
-                        }
-                        if let Ok(mut jc) = fs::read_to_string(&target_path) {
-                            let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
-                            let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
-                            if let (Some(s), Some(e)) = (jc.find(p_start), jc.find(p_end)) {
-                                jc.replace_range(s..e + p_end.len(), &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
-                                let _ = fs::write(&target_path, &jc);
-                                applied_count += 1;
-                            } else if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
-                                jc.push_str("\n\n");
-                                jc.push_str(VAZIRMATN_RTL_CSS);
-                                let _ = fs::write(&target_path, &jc);
+                        if let Ok(content) = fs::read_to_string(&target_path) {
+                            if let Some(pos) = content.find("/* [Antigravity-Shield-RTL-Vazirmatn") {
+                                let cleaned = content[..pos].trim_end().to_string();
+                                let _ = fs::write(&target_path, cleaned);
                                 applied_count += 1;
                             }
                         }
@@ -1675,211 +1791,50 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     }
                 }
 
-                // Also enhance Jetski Agent React bundle with intelligent Persian BiDi detection
+                // Idempotently patch jetskiAgent/main.css
+                let agent_css = out_dir.join("jetskiAgent").join("main.css");
+                if agent_css.exists() {
+                    let bak_path = format!("{}.bak", agent_css.to_string_lossy());
+                    if !Path::new(&bak_path).exists() {
+                        let _ = fs::copy(&agent_css, &bak_path);
+                    }
+                    if let Ok(mut jc) = fs::read_to_string(&agent_css) {
+                        let p_start = "/* [Antigravity-Shield-RTL-Vazirmatn] */";
+                        let p_end = "/* [/Antigravity-Shield-RTL-Vazirmatn] */";
+                        if let (Some(s), Some(e)) = (jc.find(p_start), jc.find(p_end)) {
+                            jc.replace_range(s..e + p_end.len(), &format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
+                            let _ = fs::write(&agent_css, &jc);
+                            applied_count += 1;
+                        } else if !jc.contains("Antigravity-Shield-RTL-Vazirmatn") {
+                            jc.push_str("\n\n");
+                            jc.push_str(&format!("{}\n{}\n{}", p_start, VAZIRMATN_RTL_CSS, p_end));
+                            let _ = fs::write(&agent_css, &jc);
+                            applied_count += 1;
+                        }
+                    }
+                    if let Some(app_dir) = out_dir.parent() {
+                        update_product_checksum(app_dir, "jetskiAgent/main.css", &agent_css);
+                    }
+                }
+
+                // Restore minified JS bundles from .orig/.bak if available to prevent crashes
                 let main_js = out_dir.join("jetskiAgent").join("main.js");
-                if main_js.exists() {
-                    let main_bak = format!("{}.bak", main_js.to_string_lossy());
-                    if !Path::new(&main_bak).exists() {
-                        let _ = fs::copy(&main_js, &main_bak);
-                    }
-                    if let Ok(js_content) = fs::read_to_string(&main_js) {
-                        let replacements = [
-                            ("d(\"div\",{dir:\"auto\",className:ke(\"leading-relaxed\"",
-                             "d(\"div\",{dir:/[\\u0600-\\u06FF]/.test(D)?\"rtl\":\"auto\",className:ke(\"leading-relaxed\""),
-                            ("YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{...e,dir:\"auto\",className:ke(e.className)",
-                             "YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{...e,dir:/[\\u0600-\\u06FF]/.test(typeof e.children===\"string\"?e.children:JSON.stringify(e.children||\"\"))?\"rtl\":\"auto\",className:ke(e.className)"),
-                            ("YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{dir:/[\\u0600-\\u06FF]/.test(typeof e.children===\"string\"?e.children:JSON.stringify(e.children||\"\"))?\"rtl\":\"auto\",...e,className:ke(e.className)",
-                             "YBa=e=>{let{animate:t,claimStaggerDelays:r}=a9();return d(\"p\",{...e,dir:/[\\u0600-\\u06FF]/.test(typeof e.children===\"string\"?e.children:JSON.stringify(e.children||\"\"))?\"rtl\":\"auto\",className:ke(e.className)"),
-                            ("OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{...r,dir:\"auto\",className:ke(r.className)",
-                             "OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{...r,dir:/[\\u0600-\\u06FF]/.test(typeof r.children===\"string\"?r.children:JSON.stringify(r.children||\"\"))?\"rtl\":\"auto\",className:ke(r.className)"),
-                            ("OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{dir:/[\\u0600-\\u06FF]/.test(typeof r.children===\"string\"?r.children:JSON.stringify(r.children||\"\"))?\"rtl\":\"auto\",...r,className:ke(r.className)",
-                             "OO=e=>{let t=r=>{let{animate:n,claimStaggerDelays:i}=a9();return d(e,{...r,dir:/[\\u0600-\\u06FF]/.test(typeof r.children===\"string\"?r.children:JSON.stringify(r.children||\"\"))?\"rtl\":\"auto\",className:ke(r.className)"),
-                            ("return d(\"li\",{dir:/[\\u0600-\\u06FF]/.test(typeof i===\"string\"?i:JSON.stringify(i||\"\"))?\"rtl\":\"auto\",...n,style:{...n.style,...s},className:n.className,children:u(i)})",
-                             "return d(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof i===\"string\"?i:JSON.stringify(i||\"\"))?\"rtl\":\"auto\",style:{...n.style,...s},className:n.className,children:u(i)})"),
-                            ("return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:n.className,children:u(i)})",
-                             "return d(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof i===\"string\"?i:JSON.stringify(i||\"\"))?\"rtl\":\"auto\",style:{...n.style,...s},className:n.className,children:u(i)})"),
-                            ("return d(\"li\",{...n,style:{...n.style,...s},className:n.className,children:u(i)})",
-                             "return d(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof i===\"string\"?i:JSON.stringify(i||\"\"))?\"rtl\":\"auto\",style:{...n.style,...s},className:n.className,children:u(i)})"),
-                            ("WBa=({node:e,...t})=>d(\"th\",{...t,className:ke(\"bg-secondary px-3 py-2 text-left font-medium leading-snug border\",t.className),children:d(Pdn,{children:t.children})})",
-                             "WBa=({node:e,...t})=>d(\"th\",{...t,dir:/[\\u0600-\\u06FF]/.test(typeof t.children===\"string\"?t.children:\"\")?\"rtl\":\"auto\",className:ke(\"bg-secondary px-3 py-2 font-medium leading-snug border\",t.className),children:d(Pdn,{children:t.children})})"),
-                            ("QBa=e=>{let t=pVe();return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{dir:\"auto\",...e,style:{...e.style,...t}}):d(\"blockquote\",{...e,style:{borderLeft:\"4px solid var(--border)\",backgroundColor:\"var(--muted)\",padding:\"0.5rem 1rem\",margin:\"0.5rem 0\",...t}})}",
-                             "QBa=e=>{let t=pVe(),isR=Boolean(e?.children&&/[\\u0600-\\u06FF]/.test(typeof e.children===\"string\"?e.children:\"\"));return e.className?.includes(\"markdown-alert\")?d(\"blockquote\",{...e,dir:isR?\"rtl\":\"auto\",style:{...e.style,...t}}):d(\"blockquote\",{...e,dir:isR?\"rtl\":\"auto\",style:{borderLeft:isR?\"none\":\"4px solid var(--border)\",borderRight:isR?\"4px solid var(--border)\":\"none\",backgroundColor:\"var(--muted)\",padding:\"0.5rem 1rem\",margin:\"0.5rem 0\",...t}})}"),
-                            ("if(a)return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:ke(n.className,\"task-list-item\"),children:[d(Adn,{status:\"in-progress\",className:ke(\"align-text-bottom\",bdn)}),\" \",u(i)]});",
-                             "if(a)return d(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof i===\"string\"?i:\"\")?\"rtl\":\"auto\",style:{...n.style,...s},className:ke(n.className,\"task-list-item\"),children:[d(Adn,{status:\"in-progress\",className:ke(\"align-text-bottom\",bdn)}),\" \",u(i)]});"),
-                            ("if(o){let{checkbox:h,inlineContent:f,sublists:E}=vdn(i);return d(\"li\",{dir:\"auto\",...n,style:{...n.style,...s},className:ke(n.className,\"task-checked\"),children:[h,d(\"span\",{className:\"task-checked-content\",children:Rdn(f)?f:l(f)}),E]})}",
-                             "if(o){let{checkbox:h,inlineContent:f,sublists:E}=vdn(i);return d(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof i===\"string\"?i:\"\")?\"rtl\":\"auto\",style:{...n.style,...s},className:ke(n.className,\"task-checked\"),children:[h,d(\"span\",{className:\"task-checked-content\",children:Rdn(f)?f:l(f)}),E]})}"),
-                            ("table th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}",
-                             "table th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\np, li, dd, dt, h1, h2, h3, h4, h5, h6, blockquote, span {\n  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;\n}\np, li {\n  unicode-bidi: isolate !important;\n  text-align: right !important;\n  text-align-last: right !important;\n  line-height: 1.85 !important;\n}")
-                        ];
-
-                        let mut patched_js = js_content;
-                        let mut changes = 0;
-                        for (target, rep) in replacements {
-                            if patched_js.contains(target) && !patched_js.contains(rep) {
-                                patched_js = patched_js.replace(target, rep);
-                                changes += 1;
-                            }
-                        }
-
-                        if changes > 0 {
-                            let _ = fs::write(&main_js, &patched_js);
-                            applied_count += 1;
-                        }
-                        if let Some(app_dir) = out_dir.parent() {
-                            update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
-                        }
+                let main_orig = out_dir.join("jetskiAgent").join("main.js.orig");
+                if main_orig.exists() && main_js.exists() {
+                    let _ = fs::copy(&main_orig, &main_js);
+                    applied_count += 1;
+                    if let Some(app_dir) = out_dir.parent() {
+                        update_product_checksum(app_dir, "jetskiAgent/main.js", &main_js);
                     }
                 }
 
-                // Inject BiDi Sentinel into jetskiAgent.js
-                let jetski_agent_js = out_dir.join("vs").join("code").join("electron-browser").join("workbench").join("jetskiAgent.js");
-                if jetski_agent_js.exists() {
-                    let agent_bak = format!("{}.bak", jetski_agent_js.to_string_lossy());
-                    if !Path::new(&agent_bak).exists() {
-                        let _ = fs::copy(&jetski_agent_js, &agent_bak);
-                    }
-                    if let Ok(mut jc) = fs::read_to_string(&jetski_agent_js) {
-                        let sentinel_code = r#"
-// [Antigravity-Shield-IDE-BiDi-Sentinel]
-(()=>{
-  const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
-  function patchBiDi(root = document) {
-    if (!root || !root.querySelectorAll) return;
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], div[role="article"], .leading-relaxed');
-    for (let i = 0; i < targets.length; i++) {
-      const el = targets[i];
-      if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) continue;
-      const txt = el.textContent || '';
-      if (isPersian(txt)) {
-        if (el.getAttribute('dir') !== 'rtl') el.setAttribute('dir', 'rtl');
-        if (el.style.direction !== 'rtl') el.style.setProperty('direction', 'rtl', 'important');
-        if (el.style.fontFamily !== "'Vazirmatn'") el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
-        if (el.style.unicodeBidi !== 'isolate') el.style.setProperty('unicode-bidi', 'isolate', 'important');
-        if (el.style.textAlign !== 'right') el.style.setProperty('text-align', 'right', 'important');
-        if (el.tagName === 'BLOCKQUOTE') {
-          el.style.setProperty('border-left', 'none', 'important');
-          el.style.setProperty('border-right', '4px solid var(--border, #93e9be)', 'important');
-        }
-      }
-    }
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => patchBiDi());
-  } else {
-    patchBiDi();
-  }
-  const obs = new MutationObserver((mutations) => {
-    for (let i = 0; i < mutations.length; i++) {
-      const m = mutations[i];
-      if (m.type === 'childList') {
-        for (let j = 0; j < m.addedNodes.length; j++) {
-          const n = m.addedNodes[j];
-          if (n.nodeType === 1) patchBiDi(n);
-        }
-      } else if (m.type === 'characterData') {
-        const p = m.target.parentElement;
-        if (p) patchBiDi(p);
-      }
-    }
-  });
-  obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
-
-  document.addEventListener('input', (e) => {
-    const el = e.target;
-    if (!el) return;
-    if (el.isContentEditable || el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
-      const val = el.value || el.textContent || '';
-      if (isPersian(val)) {
-        el.setAttribute('dir', 'rtl');
-        el.style.setProperty('direction', 'rtl', 'important');
-        el.style.setProperty('text-align', 'right', 'important');
-        el.style.setProperty('unicode-bidi', 'isolate', 'important');
-      } else if (val.trim().length > 0) {
-        el.setAttribute('dir', 'ltr');
-        el.style.setProperty('direction', 'ltr');
-        el.style.setProperty('text-align', 'left');
-      }
-    }
-  }, true);
-})();
-"#;
-                        if jc.contains("// [Antigravity-Shield-IDE-BiDi-Sentinel]") {
-                            let idx = jc.find("// [Antigravity-Shield-IDE-BiDi-Sentinel]").unwrap();
-                            jc.truncate(idx);
-                        }
-                        jc.push_str(sentinel_code);
-                        let _ = fs::write(&jetski_agent_js, &jc);
-                        applied_count += 1;
-                        if let Some(app_dir) = out_dir.parent() {
-                            update_product_checksum(app_dir, "vs/code/electron-browser/workbench/jetskiAgent.js", &jetski_agent_js);
-                        }
-                    }
-                }
-
-                // Suppress corrupt installation banner and inject intelligent Persian BiDi in workbench.desktop.main.js
                 let wb_js_path = out_dir.join("vs").join("workbench").join("workbench.desktop.main.js");
-                if wb_js_path.exists() {
-                    let wb_bak = format!("{}.bak", wb_js_path.to_string_lossy());
-                    if !Path::new(&wb_bak).exists() {
-                        let _ = fs::copy(&wb_js_path, &wb_bak);
-                    }
-                    if let Ok(mut wbc) = fs::read_to_string(&wb_js_path) {
-                        let old_show = "_showNotification(){const e=this.productService.checksumFailMoreInfoUrl";
-                        let new_show = "_showNotification(){return;const e=this.productService.checksumFailMoreInfoUrl";
-                        let old_pure = "async _isPure(){const e=this.productService.checksums||{};";
-                        let new_pure = "async _isPure(){return{isPure:!0,proof:[]};const e=this.productService.checksums||{};";
-                        let mut wb_changed = false;
-                        if wbc.contains(old_show) {
-                            wbc = wbc.replace(old_show, new_show);
-                            wb_changed = true;
-                        }
-                        if wbc.contains(old_pure) {
-                            wbc = wbc.replace(old_pure, new_pure);
-                            wb_changed = true;
-                        }
-
-                        let wb_replacements = [
-                            ("oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{...t,className:ht(t.className),children:v(W0n,{animate:e,paragraphs:BN.toArray(t.children),claimStaggerDelays:i})})}",
-                             "oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{...t,dir:/[\\u0600-\\u06FF]/.test(typeof t.children===\"string\"?t.children:JSON.stringify(t.children||\"\"))?\"rtl\":\"auto\",className:ht(t.className),children:v(W0n,{animate:e,paragraphs:BN.toArray(t.children),claimStaggerDelays:i})})}"),
-                            ("oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{...t,dir:\"auto\",className:ht(t.className),children:v(W0n,{animate:e,paragraphs:BN.toArray(t.children),claimStaggerDelays:i})})}",
-                             "oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{...t,dir:/[\\u0600-\\u06FF]/.test(typeof t.children===\"string\"?t.children:JSON.stringify(t.children||\"\"))?\"rtl\":\"auto\",className:ht(t.className),children:v(W0n,{animate:e,paragraphs:BN.toArray(t.children),claimStaggerDelays:i})})}"),
-                            ("aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{...t,animate:e,claimStaggerDelays:i})}",
-                             "aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{...t,dir:\"auto\",animate:e,claimStaggerDelays:i})}"),
-                            ("return v(\"li\",{dir:/[\\u0600-\\u06FF]/.test(typeof r===\"string\"?r:JSON.stringify(r||\"\"))?\"rtl\":\"auto\",...n,style:{...n.style,...a},className:n.className,children:d(r)})",
-                             "return v(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof r===\"string\"?r:JSON.stringify(r||\"\"))?\"rtl\":\"auto\",style:{...n.style,...a},className:n.className,children:d(r)})"),
-                            ("return v(\"li\",{...n,style:{...n.style,...a},className:n.className,children:d(r)})",
-                             "return v(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof r===\"string\"?r:JSON.stringify(r||\"\"))?\"rtl\":\"auto\",style:{...n.style,...a},className:n.className,children:d(r)})"),
-                            ("_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,className:ht(i.className),children:v(W0n,{animate:n,paragraphs:BN.toArray(i.children),claimStaggerDelays:r})})};return e.displayName=`HeaderComponent(${t})`,e}",
-                             "_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,dir:/[\\u0600-\\u06FF]/.test(typeof i.children===\"string\"?i.children:JSON.stringify(i.children||\"\"))?\"rtl\":\"auto\",className:ht(i.className),children:v(W0n,{animate:n,paragraphs:BN.toArray(i.children),claimStaggerDelays:r})})};return e.displayName=`HeaderComponent(${t})`,e}"),
-                            ("_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,dir:\"auto\",className:ht(i.className),children:v(W0n,{animate:n,paragraphs:BN.toArray(i.children),claimStaggerDelays:r})})};return e.displayName=`HeaderComponent(${t})`,e}",
-                             "_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,dir:/[\\u0600-\\u06FF]/.test(typeof i.children===\"string\"?i.children:JSON.stringify(i.children||\"\"))?\"rtl\":\"auto\",className:ht(i.className),children:v(W0n,{animate:n,paragraphs:BN.toArray(i.children),claimStaggerDelays:r})})};return e.displayName=`HeaderComponent(${t})`,e}"),
-                            ("return v(\"div\",{className:ht(\"leading-relaxed\",\"select-text\",\"text-sm\",\"flex flex-col\",",
-                             "return v(\"div\",{dir:\"auto\",className:ht(\"leading-relaxed\",\"select-text\",\"text-sm\",\"flex flex-col\","),
-                            ("ref:se,\"data-testid\":\"user-message-bubble\",className:ht(\"relative flex flex-row items-center gap-2 p-1.5 rounded-[calc(theme(borderRadius.xl)-1px)] bg-card overflow-hidden\"),children:[v(\"div\",{ref:b,\"data-no-scroll-jump\":u?\"\":void 0",
-                             "ref:se,dir:\"auto\",\"data-testid\":\"user-message-bubble\",className:ht(\"relative flex flex-row items-center gap-2 p-1.5 rounded-[calc(theme(borderRadius.xl)-1px)] bg-card overflow-hidden\"),children:[v(\"div\",{ref:b,dir:\"auto\",\"data-no-scroll-jump\":u?\"\":void 0"),
-                            ("rDd=({node:t,...e})=>v(\"th\",{...e,className:ht(\"bg-secondary px-3 py-2 text-left font-medium leading-snug border\",e.className),children:v(PMo,{children:e.children})})",
-                             "rDd=({node:t,...e})=>v(\"th\",{...e,dir:/[\\u0600-\\u06FF]/.test(typeof e.children===\"string\"?e.children:\"\")?\"rtl\":\"auto\",className:ht(\"bg-secondary px-3 py-2 font-medium leading-snug border\",e.className),children:v(PMo,{children:e.children})})"),
-                            ("dDd=t=>{let e=m8t();return t.className?.includes(\"markdown-alert\")?v(\"blockquote\",{...t,style:{...t.style,...e}}):v(\"blockquote\",{...t,style:{borderLeft:\"4px solid var(--border)\",backgroundColor:\"var(--muted)\",padding:\"0.5rem 1rem\",margin:\"0.5rem 0\",...e}})}",
-                             "dDd=t=>{let e=m8t(),isR=Boolean(t?.children&&/[\\u0600-\\u06FF]/.test(typeof t.children===\"string\"?t.children:\"\"));return t.className?.includes(\"markdown-alert\")?v(\"blockquote\",{...t,dir:isR?\"rtl\":\"auto\",style:{...t.style,...e}}):v(\"blockquote\",{...t,dir:isR?\"rtl\":\"auto\",style:{borderLeft:isR?\"none\":\"4px solid var(--border)\",borderRight:isR?\"4px solid var(--border)\":\"none\",backgroundColor:\"var(--muted)\",padding:\"0.5rem 1rem\",margin:\"0.5rem 0\",...e}})}"),
-                            ("if(s)return v(\"li\",{...n,style:{...n.style,...a},className:ht(n.className,\"task-list-item\"),children:[v(hMo,{status:\"in-progress\",className:ht(\"align-text-bottom\",fMo)}),\" \",d(r)]});",
-                             "if(s)return v(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof r===\"string\"?r:\"\")?\"rtl\":\"auto\",style:{...n.style,...a},className:ht(n.className,\"task-list-item\"),children:[v(hMo,{status:\"in-progress\",className:ht(\"align-text-bottom\",fMo)}),\" \",d(r)]});"),
-                            ("if(o){let{checkbox:u,inlineContent:h,sublists:f}=pMo(r);return v(\"li\",{...n,style:{...n.style,...a},className:ht(n.className,\"task-checked\"),children:[u,v(\"span\",{className:\"task-checked-content\",children:gMo(h)?h:l(h)}),f]})}",
-                             "if(o){let{checkbox:u,inlineContent:h,sublists:f}=pMo(r);return v(\"li\",{...n,dir:/[\\u0600-\\u06FF]/.test(typeof r===\"string\"?r:\"\")?\"rtl\":\"auto\",style:{...n.style,...a},className:ht(n.className,\"task-checked\"),children:[u,v(\"span\",{className:\"task-checked-content\",children:gMo(h)?h:l(h)}),f]})}"),
-                        ];
-                        for (target, rep) in wb_replacements {
-                            if wbc.contains(target) && !wbc.contains(rep) {
-                                wbc = wbc.replace(target, rep);
-                                wb_changed = true;
-                            }
-                        }
-
-                        if wb_changed {
-                            let _ = fs::write(&wb_js_path, &wbc);
-                            applied_count += 1;
-                        }
-                        if let Some(app_dir) = out_dir.parent() {
-                            update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.js", &wb_js_path);
-                        }
+                let wb_orig = out_dir.join("vs").join("workbench").join("workbench.desktop.main.js.orig");
+                if wb_orig.exists() && wb_js_path.exists() {
+                    let _ = fs::copy(&wb_orig, &wb_js_path);
+                    applied_count += 1;
+                    if let Some(app_dir) = out_dir.parent() {
+                        update_product_checksum(app_dir, "vs/workbench/workbench.desktop.main.js", &wb_js_path);
                     }
                 }
 
@@ -1968,7 +1923,11 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     }
                 }
 
-                for html_rel in &["vs/code/electron-browser/workbench/workbench.html", "vs/code/electron-browser/workbench/workbench-jetski-agent.html"] {
+                for html_rel in &[
+                    "vs/code/electron-browser/workbench/workbench.html",
+                    "vs/code/electron-browser/workbench/workbench-jetski-agent.html",
+                    "vs/workbench/contrib/webview/browser/pre/index.html",
+                ] {
                     let hp = out_dir.join(html_rel.replace('/', std::path::MAIN_SEPARATOR_STR));
                     if hp.exists() {
                         let html_bak = format!("{}.bak", hp.to_string_lossy());
@@ -1976,11 +1935,15 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                             let _ = fs::copy(&hp, &html_bak);
                         }
                         if let Ok(mut hc) = fs::read_to_string(&hp) {
+                            let mut html_changed = false;
                             let old_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tvscode-remote-resource:";
                             let new_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tdata:\n\t\t\t\t\tvscode-remote-resource:";
-                            let mut html_changed = false;
                             if hc.contains(old_fsrc) {
                                 hc = hc.replace(old_fsrc, new_fsrc);
+                                html_changed = true;
+                            }
+                            if hc.contains("style-src 'unsafe-inline';") && !hc.contains("font-src") {
+                                hc = hc.replace("style-src 'unsafe-inline';", "style-src 'unsafe-inline'; font-src 'self' data:;");
                                 html_changed = true;
                             }
                             let bidi_style = format!(r#"	<style id="antigravity-shield-ide-bidi">
@@ -2108,13 +2071,23 @@ pub async fn restore_antigravity_rtl() -> Result<String, String> {
                 ("vs/code/electron-browser/workbench/workbench.js", "vs/code/electron-browser/workbench/workbench.js"),
                 ("vs/code/electron-browser/workbench/workbench.html", "vs/code/electron-browser/workbench/workbench.html"),
                 ("vs/code/electron-browser/workbench/workbench-jetski-agent.html", "vs/code/electron-browser/workbench/workbench-jetski-agent.html"),
+                ("vs/workbench/contrib/webview/browser/pre/index.html", "vs/workbench/contrib/webview/browser/pre/index.html"),
             ];
 
             for (rel_key, rel_path) in &files_to_restore {
                 let target_path = out_dir.join(rel_path.replace('/', std::path::MAIN_SEPARATOR_STR));
                 let bak_path = format!("{}.bak", target_path.to_string_lossy());
-                if Path::new(&bak_path).exists() {
-                    if fs::copy(&bak_path, &target_path).is_ok() {
+                let orig_path = format!("{}.orig", target_path.to_string_lossy());
+                let source_restore = if Path::new(&orig_path).exists() {
+                    Some(orig_path)
+                } else if Path::new(&bak_path).exists() {
+                    Some(bak_path)
+                } else {
+                    None
+                };
+
+                if let Some(src) = source_restore {
+                    if fs::copy(&src, &target_path).is_ok() {
                         restored_count += 1;
                         if let Some(app_dir) = out_dir.parent() {
                             update_product_checksum(app_dir, rel_key, &target_path);

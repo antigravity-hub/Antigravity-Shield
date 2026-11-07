@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Sublist Design Comparison</title>
+<style>
+@font-face {
+  font-family: 'Vazirmatn';
+  src: local('Vazirmatn'), local('Segoe UI'), sans-serif;
+}
+
+body {
+  background: #090d16;
+  color: #e2e8f0;
+  font-family: 'Vazirmatn', -apple-system, sans-serif;
+  padding: 40px;
+  direction: rtl;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+h2 {
+  font-size: 16px;
+  color: #38bdf8;
+  margin-top: 0;
+  border-bottom: 1px solid #1f2937;
+  padding-bottom: 12px;
+}
+
+ul {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative;
+}
+
+/* ----------------------------------------------------
+   DESIGN A: Emerald Raindrop Spine & Curved Neon Branch
+   ---------------------------------------------------- */
+@keyframes agyRaindropFlow {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 36px; }
+}
+
+@keyframes agyPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
+    transform: scale(1.15);
+  }
+}
+
+.design-a > ul {
+  padding-right: 28px !important;
+  position: relative !important;
+}
+
+.design-a > ul > li {
+  position: relative !important;
+  padding-right: 0 !important;
+  margin-bottom: 20px !important;
+  font-size: 15px !important;
+  line-height: 1.85 !important;
+}
+
+/* Parent Vertical Raindrop Spine */
+.design-a > ul > li::before {
+  content: "" !important;
+  position: absolute !important;
+  right: -20px !important;
+  top: 14px !important;
+  bottom: -14px !important;
+  width: 2px !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(16, 185, 129, 0.9) 0px,
+    rgba(52, 211, 153, 0.4) 6px,
+    transparent 10px,
+    transparent 14px,
+    rgba(16, 185, 129, 0.95) 20px,
+    rgba(56, 189, 248, 0.8) 26px,
+    transparent 30px
+  ) !important;
+  background-size: 2px 36px !important;
+  animation: agyRaindropFlow 1.6s linear infinite !important;
+  border-radius: 2px !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+}
+
+.design-a > ul > li:last-child::before {
+  bottom: 8px !important;
+}
+
+/* Parent Glowing Emerald Node */
+.design-a > ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -25px !important;
+  top: 7px !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7) !important;
+  animation: agyPulseGlow 2.5s ease-in-out infinite !important;
+  z-index: 3 !important;
+}
+
+/* Sub-list container */
+.design-a ul ul {
+  margin-top: 10px !important;
+  margin-bottom: 12px !important;
+  padding: 0 !important;
+  position: relative !important;
+}
+
+.design-a ul ul > li {
+  position: relative !important;
+  padding-right: 22px !important;
+  margin-bottom: 10px !important;
+  font-size: 13.5px !important;
+  color: #cbd5e1 !important;
+  line-height: 1.75 !important;
+}
+
+/* Curved Branch: seamlessly connects right from the parent spine (-20px) to the child node */
+.design-a ul ul > li::before {
+  content: "" !important;
+  position: absolute !important;
+  right: -20px !important; /* starts EXACTLY on the parent spine! */
+  top: -6px !important;
+  width: 22px !important;
+  height: 18px !important;
+  border-right: 1.5px solid rgba(6, 182, 212, 0.7) !important;
+  border-bottom: 1.5px solid rgba(6, 182, 212, 0.7) !important;
+  border-bottom-right-radius: 9px !important;
+  background: none !important;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.3) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  animation: none !important;
+}
+
+/* Glowing Cyan-Mint Node at the tip of the curved branch */
+.design-a ul ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 2px !important; /* sits precisely at the tip of the curved arm */
+  top: 9px !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #38bdf8 !important;
+  box-shadow: 0 0 8px #38bdf8, 0 0 14px rgba(56, 189, 248, 0.7) !important;
+  border: 1px solid #ffffff !important;
+  animation: agyPulseGlow 3s ease-in-out infinite !important;
+  z-index: 2 !important;
+}
+
+/* ----------------------------------------------------
+   DESIGN B: Frosted Neon Card Matrix (Ultra-Clean Bento)
+   ---------------------------------------------------- */
+.design-b > ul {
+  padding-right: 32px !important;
+  border-right: 2px dashed rgba(16, 185, 129, 0.4) !important;
+}
+
+.design-b > ul > li {
+  position: relative;
+  margin-bottom: 24px;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.design-b > ul > li::before {
+  content: "";
+  position: absolute;
+  right: -39px;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #047857;
+  box-shadow: 0 0 14px #10b981;
+  z-index: 3;
+}
+
+/* Sub-list inside an ultra-sleek, frosted translucent capsule */
+.design-b ul ul {
+  margin-top: 10px !important;
+  margin-bottom: 12px !important;
+  padding: 12px 18px 12px 14px !important;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-right: 3px solid #06b6d4 !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 0 12px rgba(6, 182, 212, 0.05);
+}
+
+.design-b ul ul > li {
+  position: relative;
+  padding-right: 18px;
+  margin-bottom: 8px;
+  font-size: 13.5px;
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+
+.design-b ul ul > li:last-child {
+  margin-bottom: 0;
+}
+
+.design-b ul ul > li::before {
+  content: "▸";
+  position: absolute;
+  right: 0;
+  top: -1px;
+  color: #38bdf8;
+  font-size: 14px;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+}
+
+code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #38bdf8;
+  unicode-bidi: isolate;
+  direction: ltr;
+  display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<div class="card design-a">
+  <h2>طرح الف: شاخه مدار پیوسته نئونی (Continuous Circuit Branch)</h2>
+  <ul>
+    <li>
+      <strong>حل باگ‌های ساختاری و معماری:</strong>
+      <p style="margin: 4px 0 8px 0; color: #94a3b8;">کالبدشکافی کامل سیستم و جداسازی جریان داده‌ها</p>
+      <ul>
+        <li>اعتبارسنجی ابعاد کانتینر با توابع <code>computeMediaBoxDimensions</code> پیش از دانلود</li>
+        <li>همگام‌سازی ابعاد تصویر بر اساس هدرهای باینری و متادیتای تلگرام</li>
+      </ul>
+    </li>
+    <li>
+      <strong>حل بیرون‌زدگی و پایداری کادر:</strong>
+      <ul>
+        <li>محو شدن انتهای خط اتصال قبل از مرز کادر پروژه</li>
+        <li>حذف کامل هاور سبز نامتجانس و جایگزینی با رنگ نیتیو پروژه</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div class="card design-b">
+  <h2>طرح ب: کپسول مات سایبری بنتو (Frosted Bento Capsule)</h2>
+  <ul>
+    <li>
+      <strong>حل باگ‌های ساختاری و معماری:</strong>
+      <p style="margin: 4px 0 8px 0; color: #94a3b8;">کالبدشکافی کامل سیستم و جداسازی جریان داده‌ها</p>
+      <ul>
+        <li>اعتبارسنجی ابعاد کانتینر با توابع <code>computeMediaBoxDimensions</code> پیش از دانلود</li>
+        <li>همگام‌سازی ابعاد تصویر بر اساس هدرهای باینری و متادیتای تلگرام</li>
+      </ul>
+    </li>
+    <li>
+      <strong>حل بیرون‌زدگی و پایداری کادر:</strong>
+      <ul>
+        <li>محو شدن انتهای خط اتصال قبل از مرز کادر پروژه</li>
+        <li>حذف کامل هاور سبز نامتجانس و جایگزینی با رنگ نیتیو پروژه</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+</body>
+</html>
