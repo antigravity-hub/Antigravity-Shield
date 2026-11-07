@@ -485,7 +485,7 @@ div.break-words ul ul:dir(rtl),
 div.break-words ul[dir="rtl"] ul,
 ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
   position: relative !important;
-  margin: 8px 0 10px 0 !important;
+  margin: 6px 0 8px 0 !important;
   margin-right: 0 !important;
   margin-inline-start: 0 !important;
   margin-left: 0 !important;
@@ -525,17 +525,17 @@ div.break-words ul ul > li,
 div.break-words ul ul > li:dir(rtl),
 ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
   position: relative !important;
-  padding-right: 22px !important;
+  padding-right: 14px !important;
   padding-left: 0 !important;
   margin-left: 0 !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 7px !important;
   color: #cbd5e1 !important;
-  font-size: 0.95em !important;
+  font-size: 0.93em !important;
   line-height: 1.75 !important;
   list-style: none !important;
 }
 
-/* Curved Branch: seamlessly connects right from the parent spine (-20px) to the child node */
+/* Level 2 Sub-list Elbow Box: REMOVED COMPLETELY (Zero awkward floating boxes!) */
 ul ul > li::before,
 [role="article"] ul ul > li::before,
 .rendered-markdown ul ul > li::before,
@@ -565,28 +565,15 @@ ul ul > li:last-child::before,
 .rendered-markdown ul ul > li:last-child::before,
 [data-testid="conversation-view"] ul ul > li:last-child::before,
 div.break-words ul ul > li:last-child::before {
-  content: "" !important;
-  position: absolute !important;
-  right: -20px !important; /* Starts EXACTLY on the parent spine! */
-  top: -6px !important;
-  bottom: auto !important; /* Prevent Level 1 bottom stretching */
-  width: 22px !important;
-  height: 18px !important;
-  border-right: 1.5px solid rgba(6, 182, 212, 0.7) !important;
-  border-bottom: 1.5px solid rgba(6, 182, 212, 0.7) !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-radius: 0 0 9px 0 !important;
-  background: none !important;
-  background-image: none !important;
-  box-shadow: 0 0 6px rgba(6, 182, 212, 0.3) !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
-  display: block !important;
-  animation: none !important;
+  display: none !important;
+  content: none !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  box-shadow: none !important;
 }
 
-/* Glowing Cyan-Mint Node at the tip of the curved branch */
+/* Sleek Minimal Glowing Cyan Bullet Node (Tightly positioned 8-9px from text) */
 ul ul > li::after,
 [role="article"] ul ul > li::after,
 .rendered-markdown ul ul > li::after,
@@ -618,16 +605,16 @@ ul ul > li:last-child::after,
 div.break-words ul ul > li:last-child::after {
   content: "" !important;
   position: absolute !important;
-  right: 2px !important; /* Sits precisely at the end of the curved arm! */
-  top: 9px !important;
+  right: 0px !important;
+  top: 10px !important;
   bottom: auto !important;
-  width: 7px !important;
-  height: 7px !important;
+  width: 5px !important;
+  height: 5px !important;
   border-radius: 50% !important;
-  background: #38bdf8 !important;
-  box-shadow: 0 0 8px #38bdf8, 0 0 14px rgba(56, 189, 248, 0.7) !important;
-  border: 1px solid #ffffff !important;
-  animation: agyCyanPulseGlow 3s ease-in-out infinite !important;
+  background: #06b6d4 !important;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.75), 0 0 10px rgba(56, 189, 248, 0.45) !important;
+  border: none !important;
+  animation: none !important;
   z-index: 3 !important;
   display: block !important;
 }
@@ -640,10 +627,10 @@ ul ul ul,
 .rendered-markdown ul ul ul,
 .animate-markdown ul ul ul {
   position: relative !important;
-  margin: 6px 0 6px 0 !important;
+  margin: 4px 0 6px 0 !important;
   margin-right: 0 !important;
   padding: 0 !important;
-  padding-right: 18px !important;
+  padding-right: 0 !important;
   border: none !important;
   list-style: none !important;
 }
@@ -653,7 +640,7 @@ ul ul ul > li,
 .rendered-markdown ul ul ul > li,
 .animate-markdown ul ul ul > li {
   position: relative !important;
-  padding-right: 16px !important;
+  padding-right: 12px !important;
   padding-left: 0 !important;
   margin-bottom: 6px !important;
   color: #94a3b8 !important;
@@ -666,25 +653,11 @@ ul ul ul > li::before,
 [role="article"] ul ul ul > li::before,
 .rendered-markdown ul ul ul > li::before,
 .animate-markdown ul ul ul > li::before {
-  content: "" !important;
-  position: absolute !important;
-  right: 0px !important;
-  top: -4px !important;
-  bottom: auto !important;
-  width: 14px !important;
-  height: 14px !important;
-  border-right: 1.5px solid rgba(147, 233, 190, 0.5) !important;
-  border-bottom: 1.5px solid rgba(147, 233, 190, 0.5) !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-radius: 0 0 7px 0 !important;
-  background: none !important;
-  background-image: none !important;
-  box-shadow: 0 0 4px rgba(147, 233, 190, 0.25) !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
-  display: block !important;
-  animation: none !important;
+  display: none !important;
+  content: none !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 ul ul ul > li::after,
@@ -693,19 +666,17 @@ ul ul ul > li::after,
 .animate-markdown ul ul ul > li::after {
   content: "" !important;
   position: absolute !important;
-  right: 14px !important;
-  top: 8px !important;
-  bottom: auto !important;
-  width: 5px !important;
-  height: 5px !important;
+  right: 0px !important;
+  top: 10px !important;
+  width: 4px !important;
+  height: 4px !important;
   border-radius: 50% !important;
-  background: #93e9be !important;
-  box-shadow: 0 0 6px rgba(147, 233, 190, 0.6) !important;
+  background: #94a3b8 !important;
+  box-shadow: 0 0 4px rgba(148, 163, 184, 0.5) !important;
   border: none !important;
-  animation: none !important;
-  z-index: 3 !important;
   display: block !important;
 }
+
 /* ==========================================================================
    Numbered lists (OL): Persian Counter Anchored on the RIGHT
    ========================================================================== */
@@ -2062,30 +2033,37 @@ button[data-project-card="true"] svg {
   color: #cbd5e1 !important;
 }
 
-.agy-sidebar-row:hover {
-  background: var(--proj-bg, rgba(255, 255, 255, 0.04)) !important;
-  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 25%, transparent) !important;
+/* Hover on Inactive Row: Faint, delicate highlight (2.5x lighter than active, zero visual clash!) */
+.agy-sidebar-row:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover {
+  background: color-mix(in srgb, var(--proj-color, #93e9be) 4.5%, transparent) !important;
+  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 15%, transparent) !important;
+  box-shadow: none !important;
   color: #f1f5f9 !important;
   transform: translateX(1px) !important;
 }
 
-/* Active / Selected Conversation Row */
+/* Active / Selected Conversation Row: Confident, solid highlight with glow */
 .agy-sidebar-row:has(a[aria-current="page"]),
 .agy-sidebar-row.bg-sidebar-muted,
+.agy-sidebar-row.bg-sidebar-secondary,
 .agy-sidebar-row[data-active="true"] {
-  background: var(--proj-bg, rgba(255, 255, 255, 0.08)) !important;
-  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 40%, transparent) !important;
-  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.15)) !important;
+  background: var(--proj-bg, rgba(255, 255, 255, 0.12)) !important;
+  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 42%, transparent) !important;
+  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.18)) !important;
 }
 
 .agy-sidebar-row:has(a[aria-current="page"]) span,
-.agy-sidebar-row.bg-sidebar-muted span {
+.agy-sidebar-row.bg-sidebar-muted span,
+.agy-sidebar-row.bg-sidebar-secondary span,
+.agy-sidebar-row[data-active="true"] span {
   color: var(--proj-color, #93e9be) !important;
   font-weight: 600 !important;
 }
 
 .agy-sidebar-row:has(a[aria-current="page"]) svg,
-.agy-sidebar-row.bg-sidebar-muted svg {
+.agy-sidebar-row.bg-sidebar-muted svg,
+.agy-sidebar-row.bg-sidebar-secondary svg,
+.agy-sidebar-row[data-active="true"] svg {
   color: var(--proj-color, #93e9be) !important;
 }
 
@@ -2100,7 +2078,7 @@ button[data-project-card="true"] svg {
   border: 1px solid transparent !important;
 }
 
-/* Dotted / Dashed Elegant Vertical Trunk (نقطه خط‌چین محوشونده) */
+/* Dotted / Dashed Elegant Vertical Trunk */
 .agy-sidebar-row[class*="pl-"]::before {
   content: '' !important;
   position: absolute !important;
@@ -2142,40 +2120,45 @@ button[data-project-card="true"] svg {
   z-index: 2 !important;
 }
 
-/* Hover State: Inherit SUBTLE highlight of Project Color (Zero Hardcoded Green!) */
-.agy-sidebar-row.agy-sidebar-row[class*="pl-"]:hover {
+/* Hover State on Inactive Child Conversation: Delicate, faint highlight (Zero clashing with active!) */
+.agy-sidebar-row.agy-sidebar-row[class*="pl-"]:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover {
   transform: translateX(1px) !important;
-  background: var(--proj-bg, rgba(255, 255, 255, 0.05)) !important;
-  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 35%, transparent) !important;
-  box-shadow: 0 0 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.15)) !important;
+  background: color-mix(in srgb, var(--proj-color, #93e9be) 4.5%, transparent) !important;
+  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 18%, transparent) !important;
+  box-shadow: none !important;
 }
 
-.agy-sidebar-row[class*="pl-"]:hover::before {
-  opacity: 1 !important;
-  filter: drop-shadow(0 0 3px var(--proj-glow, rgba(147, 233, 190, 0.4))) !important;
+.agy-sidebar-row[class*="pl-"]:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover::before {
+  opacity: 0.8 !important;
+  filter: drop-shadow(0 0 2px var(--proj-glow, rgba(147, 233, 190, 0.3))) !important;
 }
 
-.agy-sidebar-row[class*="pl-"]:hover::after {
-  opacity: 1 !important;
-  filter: drop-shadow(0 0 3px var(--proj-glow, rgba(147, 233, 190, 0.4))) !important;
+.agy-sidebar-row[class*="pl-"]:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover::after {
+  opacity: 0.8 !important;
+  filter: drop-shadow(0 0 2px var(--proj-glow, rgba(147, 233, 190, 0.3))) !important;
 }
 
-/* Active / Selected State: Pure Project Palette */
+/* Active / Selected State: Pure Project Palette (Prominent, High-Contrast 12% Background) */
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"]),
 .agy-sidebar-row[class*="pl-"].bg-sidebar-muted,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary {
-  background: var(--proj-bg, rgba(255, 255, 255, 0.08)) !important;
-  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 50%, transparent) !important;
-  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.2)) !important;
+.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary,
+.agy-sidebar-row[class*="pl-"][data-active="true"] {
+  background: var(--proj-bg, rgba(255, 255, 255, 0.12)) !important;
+  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 45%, transparent) !important;
+  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.20)) !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::before,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::before {
+.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::before,
+.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::before,
+.agy-sidebar-row[class*="pl-"][data-active="true"]::before {
   opacity: 0.9 !important;
 }
 
 .agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::after {
+.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::after,
+.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::after,
+.agy-sidebar-row[class*="pl-"][data-active="true"]::after {
   opacity: 1 !important;
 }
 
