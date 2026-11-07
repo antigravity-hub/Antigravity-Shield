@@ -1362,13 +1362,35 @@ pub async fn recheck_account(
 
     // --- Apply state changes based on probe result ---
     match probe.status.as_str() {
-        "ok" => {
-            // Account is healthy — ensure proxy_disabled is cleared if it was set
-            if account.proxy_disabled {
-                let _ = modules::account::toggle_proxy_disabled(&account_id, true, None);
-                let instance_lock = proxy_state.instance.read().await;
-                if let Some(instance) = instance_lock.as_ref() {
-                    let _ = instance.token_manager.reload_account(&account_id).await;
+        "ok" | "quota_exhausted" => {
+            // Account is healthy — ensure proxy_disabled, validation_blocked, and is_forbidden are cleared
+            if let Ok(mut acc) = modules::load_account(&account_id) {
+                let mut changed = false;
+                if acc.proxy_disabled {
+                    acc.proxy_disabled = false;
+                    acc.proxy_disabled_reason = None;
+                    acc.proxy_disabled_at = None;
+                    changed = true;
+                }
+                if acc.validation_blocked {
+                    acc.validation_blocked = false;
+                    acc.validation_blocked_reason = None;
+                    acc.validation_url = None;
+                    changed = true;
+                }
+                if let Some(ref mut q) = acc.quota {
+                    if q.is_forbidden {
+                        q.is_forbidden = false;
+                        q.forbidden_reason = None;
+                        changed = true;
+                    }
+                }
+                if changed {
+                    let _ = modules::account::save_account(&acc);
+                    let instance_lock = proxy_state.instance.read().await;
+                    if let Some(instance) = instance_lock.as_ref() {
+                        let _ = instance.token_manager.reload_account(&account_id).await;
+                    }
                 }
             }
         }
@@ -1402,6 +1424,21 @@ pub async fn recheck_account(
                 Some(&probe.message),
                 probe.url.as_deref(),
             );
+        }
+        "subscription_required" => {
+            if let Ok(mut acc) = modules::load_account(&account_id) {
+                acc.proxy_disabled = true;
+                acc.proxy_disabled_reason = Some(probe.message.clone());
+                acc.proxy_disabled_at = Some(chrono::Utc::now().timestamp());
+                acc.validation_blocked = false;
+                acc.validation_blocked_reason = None;
+                acc.validation_url = probe.url.clone();
+                let _ = modules::account::save_account(&acc);
+                let instance_lock = proxy_state.instance.read().await;
+                if let Some(instance) = instance_lock.as_ref() {
+                    let _ = instance.token_manager.reload_account(&account_id).await;
+                }
+            }
         }
         _ => {}
     }

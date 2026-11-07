@@ -73,50 +73,105 @@ pub async fn inference_probe(account: &mut Account) -> InferenceProbeResult {
 
     let client = create_standard_client(Some(&account.id)).await;
 
+    let project_id = account
+        .project_id
+        .clone()
+        .unwrap_or_else(|| "antigravity-hub".to_string());
+    let timestamp_ms = chrono::Utc::now().timestamp_millis();
+    let random_hex = &uuid::Uuid::new_v4().simple().to_string()[..8];
+    let request_id = format!("agent/{}/{}", timestamp_ms, random_hex);
+
     let payload = serde_json::json!({
-        "contents": [{"parts": [{"text": "hi"}], "role": "user"}],
-        "generationConfig": {"maxOutputTokens": 5}
+        "project": project_id,
+        "model": "gemini-2.5-flash",
+        "request": {
+            "contents": [{"parts": [{"text": "hi"}], "role": "user"}],
+            "generationConfig": {"temperature": 0.0, "maxOutputTokens": 5}
+        },
+        "userAgent": "antigravity",
+        "requestType": "agent",
+        "requestId": request_id,
+        "enabledCreditTypes": ["GOOGLE_ONE_AI"]
     });
 
-    let probe_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+    let probe_urls = [
+        "https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent",
+        "https://cloudcode-pa.googleapis.com/v1internal:generateContent",
+    ];
 
-    let response = match client
-        .post(probe_url)
-        .bearer_auth(&token.access_token)
-        .header(rquest::header::CONTENT_TYPE, "application/json")
-        .json(&payload)
-        .send()
-        .await
-    {
-        Ok(r) => r,
-        Err(e) => {
+    let mut last_response = None;
+
+    for url in &probe_urls {
+        match client
+            .post(*url)
+            .bearer_auth(&token.access_token)
+            .header(rquest::header::CONTENT_TYPE, "application/json")
+            .header(rquest::header::USER_AGENT, "antigravity/1.10.4 windows/amd64")
+            .json(&payload)
+            .send()
+            .await
+        {
+            Ok(r) => {
+                let status = r.status().as_u16();
+                let body = r.text().await.unwrap_or_default();
+
+                crate::modules::logger::log_info(&format!(
+                    "[InferenceProbe] {} via {} -> HTTP {} | {}",
+                    account.email,
+                    url,
+                    status,
+                    &body.chars().take(120).collect::<String>()
+                ));
+
+                if status == 200 {
+                    return InferenceProbeResult {
+                        healthy: true,
+                        status: "ok".to_string(),
+                        message: "Account is healthy — inference layer responded 200 and generated tokens.".to_string(),
+                        http_status: Some(200),
+                        url: None,
+                    };
+                }
+
+                // If 403 Forbidden (TOS/Validation), this is definitive across all endpoints
+                if status == 403 {
+                    last_response = Some((status, body));
+                    break;
+                }
+
+                last_response = Some((status, body));
+            }
+            Err(e) => {
+                crate::modules::logger::log_warn(&format!(
+                    "[InferenceProbe] Network probe failed on {}: {}",
+                    url, e
+                ));
+            }
+        }
+    }
+
+    let (http_status, body_text) = match last_response {
+        Some(res) => res,
+        None => {
             return InferenceProbeResult {
                 healthy: false,
                 status: "unknown_error".to_string(),
-                message: format!("Network error: {}", e),
+                message: "Network error on all inference probe endpoints".to_string(),
                 http_status: None,
                 url: None,
             };
         }
     };
 
-    let http_status = response.status().as_u16();
-    let body_text = response.text().await.unwrap_or_default();
     let body_lower = body_text.to_lowercase();
 
-    crate::modules::logger::log_info(&format!(
-        "[InferenceProbe] {} -> HTTP {} | {}",
-        account.email,
-        http_status,
-        &body_text.chars().take(120).collect::<String>()
-    ));
-
-    if http_status == 200 {
+    // 429 Quota Exhausted is NOT a suspension or policy violation! The account is healthy!
+    if http_status == 429 || body_lower.contains("resource_exhausted") {
         return InferenceProbeResult {
             healthy: true,
-            status: "ok".to_string(),
-            message: "Account is healthy — inference layer responded 200.".to_string(),
-            http_status: Some(200),
+            status: "quota_exhausted".to_string(),
+            message: "Inference quota temporarily exhausted for current window (429) — account is healthy and will resume upon quota reset.".to_string(),
+            http_status: Some(http_status),
             url: None,
         };
     }
