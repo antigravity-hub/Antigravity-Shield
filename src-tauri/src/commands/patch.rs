@@ -1386,7 +1386,12 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
   color: #a7f3d0 !important;
 }
 
-/* Antigravity Agent & Conversation View Containers (Right Side Panel) */
+/* Antigravity Aux Pane, Agent & Conversation View Containers (Right Side Panel) */
+[data-aux-pane-open],
+[data-aux-pane-open] > div,
+[data-aux-pane-focus-scope="true"],
+div:has(> [data-aux-pane-open]),
+div:has(> [data-aux-pane-focus-scope="true"]),
 [data-testid="conversation-view"],
 .jetski-custom-editor-pane,
 .antigravity-onboarding,
@@ -1405,6 +1410,38 @@ div:has(> [data-testid="conversation-view"]) {
   --primary: #10b981 !important;
   --primary-foreground: #ffffff !important;
   --placeholder: rgba(148, 163, 184, 0.5) !important;
+}
+
+/* Aux Pane Tab Bar & Buttons */
+button[data-tab-id] {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+button[data-tab-id].bg-secondary,
+button[data-tab-id][class*="bg-secondary"] {
+  background-color: #0c141c !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15) !important;
+}
+button[data-tab-id]:hover:not([class*="bg-secondary"]) {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  color: #f1f5f9 !important;
+}
+
+/* Aux Pane Sash Divider */
+[data-testid="aux-pane-sash"] {
+  background-color: rgba(16, 185, 129, 0.22) !important;
+}
+[data-testid="aux-pane-sash"]:hover {
+  background-color: #10b981 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5) !important;
+}
+
+/* Aux Pane Tab Header & Dividers */
+.group\/file-row,
+[data-aux-pane-focus-scope="true"] .border-border,
+[data-aux-pane-open] .border-border {
+  border-color: rgba(16, 185, 129, 0.20) !important;
 }
 
 /* User Message Bubble in Agent Chat */
@@ -1442,9 +1479,13 @@ div:has(> [data-testid="conversation-view"]) {
   color: #cbd5e1 !important;
 }
 
-/* Comprehensive Vazirmatn Typography for Right Auxiliary Bar & Chat Panel */
+/* Comprehensive Vazirmatn Typography for Right Auxiliary Bar, Aux Pane, Documentation & Chat Panel */
 .part.auxiliarybar,
 .part.auxiliarybar *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-aux-pane-open],
+[data-aux-pane-open] *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-aux-pane-focus-scope="true"],
+[data-aux-pane-focus-scope="true"] *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
 [data-testid="conversation-view"],
 [data-testid="conversation-view"] *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
 [data-testid="user-message-bubble"],
@@ -1452,16 +1493,30 @@ div:has(> [data-testid="conversation-view"]) {
 [data-testid="user-input-step"],
 [data-testid="user-input-step"] *:not(pre):not(code),
 .jetski-custom-editor-pane,
-.jetski-custom-editor-pane *:not(pre):not(code) {
+.jetski-custom-editor-pane *:not(pre):not(code),
+.leading-relaxed,
+.leading-relaxed *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+.rendered-markdown,
+.rendered-markdown *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon) {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-/* Monospace preservation for code within Auxiliary Bar & Chat */
+/* Monospace preservation for code within Auxiliary Bar, Aux Pane & Chat */
 .part.auxiliarybar pre,
 .part.auxiliarybar pre *,
 .part.auxiliarybar code,
 .part.auxiliarybar .monaco-editor,
 .part.auxiliarybar .monaco-editor *,
+[data-aux-pane-open] pre,
+[data-aux-pane-open] pre *,
+[data-aux-pane-open] code,
+[data-aux-pane-open] .monaco-editor,
+[data-aux-pane-open] .monaco-editor *,
+[data-aux-pane-focus-scope="true"] pre,
+[data-aux-pane-focus-scope="true"] pre *,
+[data-aux-pane-focus-scope="true"] code,
+[data-aux-pane-focus-scope="true"] .monaco-editor,
+[data-aux-pane-focus-scope="true"] .monaco-editor *,
 [data-testid="conversation-view"] pre,
 [data-testid="conversation-view"] pre *,
 [data-testid="conversation-view"] code,
@@ -1477,6 +1532,16 @@ div:has(> [data-testid="conversation-view"]) {
 .part.auxiliarybar li,
 .part.auxiliarybar div[role="article"],
 .part.auxiliarybar .rendered-markdown,
+[data-aux-pane-open] p,
+[data-aux-pane-open] li,
+[data-aux-pane-open] div[role="article"],
+[data-aux-pane-open] .rendered-markdown,
+[data-aux-pane-open] .whitespace-pre-wrap,
+[data-aux-pane-focus-scope="true"] p,
+[data-aux-pane-focus-scope="true"] li,
+[data-aux-pane-focus-scope="true"] div[role="article"],
+[data-aux-pane-focus-scope="true"] .rendered-markdown,
+[data-aux-pane-focus-scope="true"] .whitespace-pre-wrap,
 [data-testid="conversation-view"] p,
 [data-testid="conversation-view"] li,
 [data-testid="conversation-view"] div[role="article"],
@@ -1493,6 +1558,10 @@ div:has(> [data-testid="conversation-view"]) {
 /* Explicit RTL Direction when element is marked or detected RTL */
 .part.auxiliarybar [dir="rtl"],
 .part.auxiliarybar :dir(rtl),
+[data-aux-pane-open] [dir="rtl"],
+[data-aux-pane-open] :dir(rtl),
+[data-aux-pane-focus-scope="true"] [dir="rtl"],
+[data-aux-pane-focus-scope="true"] :dir(rtl),
 [data-testid="conversation-view"] [dir="rtl"],
 [data-testid="conversation-view"] :dir(rtl),
 [data-testid="user-message-bubble"][dir="rtl"],
@@ -2192,7 +2261,7 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
   const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
   function patchBiDi(root = document) {
     if (!root || !root.querySelectorAll) return;
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] p, .part.auxiliarybar p, .part.auxiliarybar span');
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] p, .part.auxiliarybar p, .part.auxiliarybar span, [data-aux-pane-open] p, [data-aux-pane-open] span, [data-aux-pane-open] div, [data-aux-pane-focus-scope="true"] p, [data-aux-pane-focus-scope="true"] span, [data-aux-pane-focus-scope="true"] div, button[data-tab-id] span');
     for (let i = 0; i < targets.length; i++) {
       const el = targets[i];
       if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) continue;

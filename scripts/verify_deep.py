@@ -95,7 +95,7 @@ for css_rel in ["vs/workbench/workbench.desktop.main.css", "jetskiAgent/main.css
     has_gap_fix = "margin-right: 0 !important;" in c and "padding-right: 0 !important;" in c
     has_cyber_emerald = "--sidebar: #090e13" in c and "--sidebar-primary: #10b981" in c
     has_vscode_tokens = "--vscode-sideBar-background" in c
-    has_auxiliary_tokens = "--vscode-auxiliaryBar-background" in c and ".part.auxiliarybar" in c and '[data-testid="conversation-view"]' in c
+    has_auxiliary_tokens = "--vscode-auxiliaryBar-background" in c and ".part.auxiliarybar" in c and '[data-testid="conversation-view"]' in c and '[data-aux-pane-open]' in c and '[data-aux-pane-focus-scope="true"]' in c
     
     if has_raindrop and has_pulse and has_cyan_pulse and has_curved_arm and has_child_node and has_gap_fix and has_cyber_emerald and has_vscode_tokens and has_auxiliary_tokens:
         print(f"[PASS] {css_rel} has live raindrop spine, pulse glows, precision curved arm, gap fix, cyber emerald sidebar & auxiliaryBar tokens.")
