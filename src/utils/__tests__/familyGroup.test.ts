@@ -162,6 +162,38 @@ test('handles accounts with missing or empty quota gracefully', () => {
     assertEqual(result.familyGroups.length, 0, 'No family groups should be created for empty accounts');
 });
 
+test('accounts with divergent 3p bucket reset times are NOT in same family', () => {
+    const acc1 = makeMockAccount('acc-1', 'atrclick@gmail.com', '2026-11-14T12:53:16Z', '2026-11-07T17:53:16Z');
+    const acc2 = makeMockAccount('acc-2', 'faststars@gmail.com', '2026-11-14T12:53:17Z', '2026-11-07T17:53:17Z');
+    // Add divergent 3p buckets (2 days apart)
+    acc1.quota?.quota_groups?.[0].buckets?.push({
+        bucket_id: '3p-weekly',
+        window: 'weekly',
+        remaining_fraction: 0.99,
+        reset_time: '2026-11-09T20:45:38Z',
+    });
+    acc2.quota?.quota_groups?.[0].buckets?.push({
+        bucket_id: '3p-weekly',
+        window: 'weekly',
+        remaining_fraction: 0.99,
+        reset_time: '2026-11-11T21:18:50Z',
+    });
+    assert(!areAccountsInSameFamily(acc1, acc2), 'Divergent 3p bucket resets must NOT be matched as family');
+});
+
+test('idle unused accounts with 1s sequential poll drift are NOT matched as family', () => {
+    const acc1 = makeMockAccount('acc-1', 'idle1@gmail.com', '2026-11-14T12:53:16Z', '2026-11-07T17:53:16Z');
+    const acc2 = makeMockAccount('acc-2', 'idle2@gmail.com', '2026-11-14T12:53:17Z', '2026-11-07T17:53:17Z');
+    // 100% idle
+    if (acc1.quota?.quota_groups?.[0].buckets) {
+        acc1.quota.quota_groups[0].buckets.forEach(b => b.remaining_fraction = 1.0);
+    }
+    if (acc2.quota?.quota_groups?.[0].buckets) {
+        acc2.quota.quota_groups[0].buckets.forEach(b => b.remaining_fraction = 1.0);
+    }
+    assert(!areAccountsInSameFamily(acc1, acc2), 'Idle accounts with 1s drift must NOT be matched as family');
+});
+
 console.log(`\nTests finished: ${passed} passed, ${failed} failed.`);
 if (failed > 0) {
     throw new Error(`Test suite failed: ${failed} assertion(s) failed.`);
