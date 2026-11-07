@@ -262,7 +262,12 @@ pub const VAZIRMATN_RTL_CSS: &str = r#"
 /* Kill default browser markers completely so they NEVER jump to the left */
 ul, ol, [role="article"] ul, [role="article"] ol,
 .rendered-markdown ul, .rendered-markdown ol,
-.animate-markdown ul, .animate-markdown ol {
+.animate-markdown ul, .animate-markdown ol,
+[data-testid="conversation-view"] ul, [data-testid="conversation-view"] ol,
+.jetski-custom-editor-pane ul, .jetski-custom-editor-pane ol,
+[data-aux-pane-open] ul, [data-aux-pane-open] ol,
+.part.auxiliarybar ul, .part.auxiliarybar ol,
+div.break-words ul, div.break-words ol {
   list-style: none !important;
   list-style-type: none !important;
 }
@@ -270,7 +275,12 @@ ul, ol, [role="article"] ul, [role="article"] ol,
 ul > li::marker, ol > li::marker,
 [role="article"] ul > li::marker, [role="article"] ol > li::marker,
 .rendered-markdown ul > li::marker, .rendered-markdown ol > li::marker,
-.animate-markdown ul > li::marker, .animate-markdown ol > li::marker {
+.animate-markdown ul > li::marker, .animate-markdown ol > li::marker,
+[data-testid="conversation-view"] ul > li::marker, [data-testid="conversation-view"] ol > li::marker,
+.jetski-custom-editor-pane ul > li::marker, .jetski-custom-editor-pane ol > li::marker,
+[data-aux-pane-open] ul > li::marker, [data-aux-pane-open] ol > li::marker,
+.part.auxiliarybar ul > li::marker, .part.auxiliarybar ol > li::marker,
+div.break-words ul > li::marker, div.break-words ol > li::marker {
   display: none !important;
   content: "" !important;
   font-size: 0 !important;
@@ -279,17 +289,34 @@ ul > li::marker, ol > li::marker,
 
 /* Persian Unordered List Container (Top-level) */
 ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
+ul:has(> li:dir(rtl)), ul:has(> li[dir="rtl"]), ul:has(> li[dir="auto"]:dir(rtl)),
 [role="article"] ul:has(> li:dir(rtl)),
 [role="article"] ul,
 .rendered-markdown ul:dir(rtl),
 .rendered-markdown ul[dir="rtl"],
 .animate-markdown ul:dir(rtl),
-.animate-markdown ul[dir="rtl"] {
+.animate-markdown ul[dir="rtl"],
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ul:dir(rtl),
+[data-testid="conversation-view"] ul[dir="rtl"],
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ul:dir(rtl),
+.jetski-custom-editor-pane ul[dir="rtl"],
+[data-aux-pane-open] ul:has(> li:dir(rtl)),
+[data-aux-pane-open] ul:dir(rtl),
+[data-aux-pane-open] ul[dir="rtl"],
+.part.auxiliarybar ul:has(> li:dir(rtl)),
+.part.auxiliarybar ul:dir(rtl),
+.part.auxiliarybar ul[dir="rtl"],
+div.break-words ul:has(> li:dir(rtl)),
+div.break-words ul:dir(rtl),
+div.break-words ul[dir="rtl"] {
   list-style: none !important;
   margin: 0.75rem 0 !important;
   padding: 0 !important;
   padding-right: 28px !important;
   padding-left: 0 !important;
+  margin-left: 0 !important;
   position: relative !important;
   direction: rtl !important;
   text-align: right !important;
@@ -297,13 +324,25 @@ ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
 
 /* Layer 1 List Item */
 ul:dir(rtl) > li, [dir="rtl"] ul > li, ul[dir="rtl"] > li,
+ul:has(> li:dir(rtl)) > li:dir(rtl), ul:has(> li:dir(rtl)) > li[dir="rtl"],
 [role="article"] ul > li,
 .rendered-markdown ul > li,
-.animate-markdown ul > li {
+.animate-markdown ul > li,
+[data-testid="conversation-view"] ul > li:dir(rtl),
+[data-testid="conversation-view"] ul > li[dir="rtl"],
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)) > li,
+.jetski-custom-editor-pane ul > li:dir(rtl),
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)) > li,
+.part.auxiliarybar ul > li:dir(rtl),
+.part.auxiliarybar ul:has(> li:dir(rtl)) > li,
+div.break-words ul > li:dir(rtl),
+div.break-words ul > li[dir="rtl"],
+div.break-words ul:has(> li:dir(rtl)) > li {
   list-style: none !important;
   position: relative !important;
   padding-right: 0 !important;
   padding-left: 0 !important;
+  margin-left: 0 !important;
   margin-bottom: 14px !important;
   line-height: 1.85 !important;
   color: #f1f5f9 !important;
@@ -314,9 +353,20 @@ ul:dir(rtl) > li, [dir="rtl"] ul > li, ul[dir="rtl"] > li,
 
 /* Vertical Raindrop Animated Spine on Parent */
 ul:dir(rtl) > li::before, [dir="rtl"] ul > li::before, ul[dir="rtl"] > li::before,
+ul:has(> li:dir(rtl)) > li:dir(rtl)::before, ul:has(> li:dir(rtl)) > li[dir="rtl"]::before,
 [role="article"] ul > li::before,
 .rendered-markdown ul > li::before,
-.animate-markdown ul > li::before {
+.animate-markdown ul > li::before,
+[data-testid="conversation-view"] ul > li:dir(rtl)::before,
+[data-testid="conversation-view"] ul > li[dir="rtl"]::before,
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)) > li::before,
+.jetski-custom-editor-pane ul > li:dir(rtl)::before,
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)) > li::before,
+.part.auxiliarybar ul > li:dir(rtl)::before,
+.part.auxiliarybar ul:has(> li:dir(rtl)) > li::before,
+div.break-words ul > li:dir(rtl)::before,
+div.break-words ul > li[dir="rtl"]::before,
+div.break-words ul:has(> li:dir(rtl)) > li::before {
   content: "" !important;
   position: absolute !important;
   right: -20px !important;
@@ -347,17 +397,44 @@ ul:dir(rtl) > li:last-child:not(:has(ul))::before,
 ul[dir="rtl"] > li:last-child:not(:has(ul))::before,
 [role="article"] ul > li:last-child:not(:has(ul))::before,
 .rendered-markdown ul > li:last-child:not(:has(ul))::before,
-.animate-markdown ul > li:last-child:not(:has(ul))::before {
+.animate-markdown ul > li:last-child:not(:has(ul))::before,
+[data-testid="conversation-view"] ul > li:last-child:not(:has(ul))::before,
+.jetski-custom-editor-pane ul > li:last-child:not(:has(ul))::before,
+.part.auxiliarybar ul > li:last-child:not(:has(ul))::before,
+div.break-words ul > li:last-child:not(:has(ul))::before {
   bottom: 8px !important;
 }
 
 /* Layer 1 Glowing Emerald Node (The Bullet Droplet) */
 ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
+ul:has(> li:dir(rtl)) > li:dir(rtl)::after, ul:has(> li:dir(rtl)) > li[dir="rtl"]::after,
 [role="article"] ul > li::after,
 .rendered-markdown ul > li::after,
-.animate-markdown ul > li::after {
+.animate-markdown ul > li::after,
+[data-testid="conversation-view"] ul > li:dir(rtl)::after,
+[data-testid="conversation-view"] ul > li[dir="rtl"]::after,
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)) > li::after,
+.jetski-custom-editor-pane ul > li:dir(rtl)::after,
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)) > li::after,
+.part.auxiliarybar ul > li:dir(rtl)::after,
+.part.auxiliarybar ul:has(> li:dir(rtl)) > li::after,
+div.break-words ul > li:dir(rtl)::after,
+div.break-words ul > li[dir="rtl"]::after,
+div.break-words ul:has(> li:dir(rtl)) > li::after {
   content: "" !important;
   position: absolute !important;
+  right: -25px !important;
+  top: 7px !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7) !important;
+  animation: agyEmeraldPulseGlow 2.5s ease-in-out infinite !important;
+  z-index: 3 !important;
+  display: block !important;
+}
   right: -25px !important;
   top: 7px !important;
   width: 12px !important;
@@ -397,6 +474,15 @@ ul ul,
 ul[dir="rtl"] ul,
 ul:dir(rtl) ul,
 ul:dir(rtl) ul:dir(rtl),
+[data-testid="conversation-view"] ul ul,
+[data-testid="conversation-view"] ul ul:dir(rtl),
+[data-testid="conversation-view"] ul[dir="rtl"] ul,
+.jetski-custom-editor-pane ul ul,
+[data-aux-pane-open] ul ul,
+.part.auxiliarybar ul ul,
+div.break-words ul ul,
+div.break-words ul ul:dir(rtl),
+div.break-words ul[dir="rtl"] ul,
 ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
   position: relative !important;
   margin: 8px 0 10px 0 !important;
@@ -430,10 +516,18 @@ ul ul > li,
 ul[dir="rtl"] ul > li,
 ul:dir(rtl) ul > li,
 ul:dir(rtl) ul:dir(rtl) > li,
+[data-testid="conversation-view"] ul ul > li,
+[data-testid="conversation-view"] ul ul > li:dir(rtl),
+.jetski-custom-editor-pane ul ul > li,
+[data-aux-pane-open] ul ul > li,
+.part.auxiliarybar ul ul > li,
+div.break-words ul ul > li,
+div.break-words ul ul > li:dir(rtl),
 ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
   position: relative !important;
   padding-right: 22px !important;
   padding-left: 0 !important;
+  margin-left: 0 !important;
   margin-bottom: 8px !important;
   color: #cbd5e1 !important;
   font-size: 0.95em !important;
@@ -459,9 +553,18 @@ ul ul > li::before,
 ul[dir="rtl"] ul > li::before,
 ul:dir(rtl) ul > li::before,
 ul:dir(rtl) ul:dir(rtl) > li::before,
+[data-testid="conversation-view"] ul ul > li::before,
+[data-testid="conversation-view"] ul ul > li:dir(rtl)::before,
+.jetski-custom-editor-pane ul ul > li::before,
+[data-aux-pane-open] ul ul > li::before,
+.part.auxiliarybar ul ul > li::before,
+div.break-words ul ul > li::before,
+div.break-words ul ul > li:dir(rtl)::before,
 ul:dir(rtl) > li > ul > li::before,
 ul ul > li:last-child::before,
-.rendered-markdown ul ul > li:last-child::before {
+.rendered-markdown ul ul > li:last-child::before,
+[data-testid="conversation-view"] ul ul > li:last-child::before,
+div.break-words ul ul > li:last-child::before {
   content: "" !important;
   position: absolute !important;
   right: -20px !important; /* Starts EXACTLY on the parent spine! */
@@ -501,9 +604,18 @@ ul ul > li::after,
 ul[dir="rtl"] ul > li::after,
 ul:dir(rtl) ul > li::after,
 ul:dir(rtl) ul:dir(rtl) > li::after,
+[data-testid="conversation-view"] ul ul > li::after,
+[data-testid="conversation-view"] ul ul > li:dir(rtl)::after,
+.jetski-custom-editor-pane ul ul > li::after,
+[data-aux-pane-open] ul ul > li::after,
+.part.auxiliarybar ul ul > li::after,
+div.break-words ul ul > li::after,
+div.break-words ul ul > li:dir(rtl)::after,
 ul:dir(rtl) > li > ul > li::after,
 ul ul > li:last-child::after,
-.rendered-markdown ul ul > li:last-child::after {
+.rendered-markdown ul ul > li:last-child::after,
+[data-testid="conversation-view"] ul ul > li:last-child::after,
+div.break-words ul ul > li:last-child::after {
   content: "" !important;
   position: absolute !important;
   right: 2px !important; /* Sits precisely at the end of the curved arm! */
@@ -598,26 +710,55 @@ ul ul ul > li::after,
    Numbered lists (OL): Persian Counter Anchored on the RIGHT
    ========================================================================== */
 ol:dir(rtl), [dir="rtl"] ol, ol[dir="rtl"],
+ol:has(> li:dir(rtl)), ol:has(> li[dir="rtl"]), ol:has(> li[dir="auto"]:dir(rtl)),
 [role="article"] ol:has(> li:dir(rtl)),
-[role="article"] ol {
+[role="article"] ol,
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ol:dir(rtl),
+[data-testid="conversation-view"] ol[dir="rtl"],
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ol:dir(rtl),
+.jetski-custom-editor-pane ol[dir="rtl"],
+[data-aux-pane-open] ol:has(> li:dir(rtl)),
+[data-aux-pane-open] ol:dir(rtl),
+[data-aux-pane-open] ol[dir="rtl"],
+.part.auxiliarybar ol:has(> li:dir(rtl)),
+.part.auxiliarybar ol:dir(rtl),
+.part.auxiliarybar ol[dir="rtl"],
+div.break-words ol:has(> li:dir(rtl)),
+div.break-words ol:dir(rtl),
+div.break-words ol[dir="rtl"] {
   counter-reset: agy-counter !important;
   list-style: none !important;
   margin: 0.8rem 0 !important;
   padding: 0 !important;
   padding-right: 32px !important;
   padding-left: 0 !important;
+  margin-left: 0 !important;
   position: relative !important;
   direction: rtl !important;
   text-align: right !important;
 }
 
 ol:dir(rtl) > li, [dir="rtl"] ol > li, ol[dir="rtl"] > li,
-[role="article"] ol > li {
+ol:has(> li:dir(rtl)) > li:dir(rtl), ol:has(> li:dir(rtl)) > li[dir="rtl"],
+[role="article"] ol > li,
+[data-testid="conversation-view"] ol > li:dir(rtl),
+[data-testid="conversation-view"] ol > li[dir="rtl"],
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)) > li,
+.jetski-custom-editor-pane ol > li:dir(rtl),
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)) > li,
+.part.auxiliarybar ol > li:dir(rtl),
+.part.auxiliarybar ol:has(> li:dir(rtl)) > li,
+div.break-words ol > li:dir(rtl),
+div.break-words ol > li[dir="rtl"],
+div.break-words ol:has(> li:dir(rtl)) > li {
   counter-increment: agy-counter !important;
   list-style: none !important;
   position: relative !important;
   padding-right: 18px !important;
   padding-left: 0 !important;
+  margin-left: 0 !important;
   margin-bottom: 12px !important;
   line-height: 2 !important;
   color: #f1f5f9 !important;
@@ -628,7 +769,18 @@ ol:dir(rtl) > li, [dir="rtl"] ol > li, ol[dir="rtl"] > li,
 
 /* Custom Styled Number Badge on the RIGHT - Always attached to the text */
 ol:dir(rtl) > li::before, [dir="rtl"] ol > li::before, ol[dir="rtl"] > li::before,
-[role="article"] ol > li::before {
+ol:has(> li:dir(rtl)) > li:dir(rtl)::before, ol:has(> li:dir(rtl)) > li[dir="rtl"]::before,
+[role="article"] ol > li::before,
+[data-testid="conversation-view"] ol > li:dir(rtl)::before,
+[data-testid="conversation-view"] ol > li[dir="rtl"]::before,
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)) > li::before,
+.jetski-custom-editor-pane ol > li:dir(rtl)::before,
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)) > li::before,
+.part.auxiliarybar ol > li:dir(rtl)::before,
+.part.auxiliarybar ol:has(> li:dir(rtl)) > li::before,
+div.break-words ol > li:dir(rtl)::before,
+div.break-words ol > li[dir="rtl"]::before,
+div.break-words ol:has(> li:dir(rtl)) > li::before {
   content: counter(agy-counter) "." !important;
   position: absolute !important;
   right: -24px !important;
@@ -645,7 +797,9 @@ ol:dir(rtl) > li::before, [dir="rtl"] ol > li::before, ol[dir="rtl"] > li::befor
 }
 
 ol:dir(rtl) > li::after, [dir="rtl"] ol > li::after, ol[dir="rtl"] > li::after,
-[role="article"] ol > li::after {
+[role="article"] ol > li::after,
+[data-testid="conversation-view"] ol > li::after,
+div.break-words ol > li::after {
   content: none !important;
   display: none !important;
 }
@@ -747,12 +901,27 @@ body, html, #root {
 li:dir(rtl),
 li[dir="rtl"],
 li[dir="auto"]:dir(rtl),
+[data-testid="conversation-view"] li:dir(rtl),
+[data-testid="conversation-view"] li[dir="rtl"],
+div.break-words li:dir(rtl),
+div.break-words li[dir="rtl"],
+.jetski-custom-editor-pane li:dir(rtl),
+.part.auxiliarybar li:dir(rtl),
+[data-aux-pane-open] li:dir(rtl),
 [role="article"] ul:has(> li:dir(rtl)),
 [role="article"] ol:has(> li:dir(rtl)),
 .rendered-markdown ul:has(> li:dir(rtl)),
 .rendered-markdown ol:has(> li:dir(rtl)),
 .animate-markdown ul:has(> li:dir(rtl)),
 .animate-markdown ol:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)),
+div.break-words ul:has(> li:dir(rtl)),
+div.break-words ol:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)),
+.part.auxiliarybar ul:has(> li:dir(rtl)),
+.part.auxiliarybar ol:has(> li:dir(rtl)),
 ul[dir="rtl"],
 ol[dir="rtl"] {
   direction: rtl !important;
@@ -765,7 +934,12 @@ ol[dir="rtl"] {
 .chat-widget .rendered-markdown li:dir(rtl),
 .antigravity-agent-side-panel li:dir(rtl) p,
 .antigravity-agent-manager li:dir(rtl) p,
-.animate-markdown li:dir(rtl) p {
+.animate-markdown li:dir(rtl) p,
+[data-testid="conversation-view"] li:dir(rtl) p,
+div.break-words li:dir(rtl) p,
+.jetski-custom-editor-pane li:dir(rtl) p,
+.part.auxiliarybar li:dir(rtl) p,
+[data-aux-pane-open] li:dir(rtl) p {
   direction: rtl !important;
   text-align: right !important;
   text-align-last: right !important;
@@ -779,7 +953,12 @@ ol[dir="rtl"] {
 .rendered-markdown [dir="rtl"] p,
 p:dir(rtl),
 p[dir="rtl"],
-p[dir="auto"]:dir(rtl) {
+p[dir="auto"]:dir(rtl),
+[data-testid="conversation-view"] p:dir(rtl),
+div.break-words p:dir(rtl),
+.jetski-custom-editor-pane p:dir(rtl),
+.part.auxiliarybar p:dir(rtl),
+[data-aux-pane-open] p:dir(rtl) {
   direction: rtl !important;
   text-align: right !important;
   text-align-last: right !important;
@@ -829,7 +1008,37 @@ p[dir="auto"]:dir(rtl) {
 .animate-markdown h3,
 .animate-markdown h4,
 .animate-markdown h5,
-.animate-markdown h6 {
+.animate-markdown h6,
+[data-testid="conversation-view"] h1,
+[data-testid="conversation-view"] h2,
+[data-testid="conversation-view"] h3,
+[data-testid="conversation-view"] h4,
+[data-testid="conversation-view"] h5,
+[data-testid="conversation-view"] h6,
+div.break-words h1,
+div.break-words h2,
+div.break-words h3,
+div.break-words h4,
+div.break-words h5,
+div.break-words h6,
+.jetski-custom-editor-pane h1,
+.jetski-custom-editor-pane h2,
+.jetski-custom-editor-pane h3,
+.jetski-custom-editor-pane h4,
+.jetski-custom-editor-pane h5,
+.jetski-custom-editor-pane h6,
+.part.auxiliarybar h1,
+.part.auxiliarybar h2,
+.part.auxiliarybar h3,
+.part.auxiliarybar h4,
+.part.auxiliarybar h5,
+.part.auxiliarybar h6,
+[data-aux-pane-open] h1,
+[data-aux-pane-open] h2,
+[data-aux-pane-open] h3,
+[data-aux-pane-open] h4,
+[data-aux-pane-open] h5,
+[data-aux-pane-open] h6 {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   font-weight: 700 !important;
   unicode-bidi: plaintext !important;
@@ -849,7 +1058,17 @@ p[dir="auto"]:dir(rtl) {
 .rendered-markdown h4, .rendered-markdown h5, .rendered-markdown h6,
 .chat-widget .rendered-markdown h1, .chat-widget .rendered-markdown h2,
 .antigravity-agent-side-panel h1, .antigravity-agent-manager h1,
-.animate-markdown h1, .animate-markdown h2 {
+.animate-markdown h1, .animate-markdown h2,
+[data-testid="conversation-view"] h1, [data-testid="conversation-view"] h2, [data-testid="conversation-view"] h3,
+[data-testid="conversation-view"] h4, [data-testid="conversation-view"] h5, [data-testid="conversation-view"] h6,
+div.break-words h1, div.break-words h2, div.break-words h3,
+div.break-words h4, div.break-words h5, div.break-words h6,
+.jetski-custom-editor-pane h1, .jetski-custom-editor-pane h2, .jetski-custom-editor-pane h3,
+.jetski-custom-editor-pane h4, .jetski-custom-editor-pane h5, .jetski-custom-editor-pane h6,
+.part.auxiliarybar h1, .part.auxiliarybar h2, .part.auxiliarybar h3,
+.part.auxiliarybar h4, .part.auxiliarybar h5, .part.auxiliarybar h6,
+[data-aux-pane-open] h1, [data-aux-pane-open] h2, [data-aux-pane-open] h3,
+[data-aux-pane-open] h4, [data-aux-pane-open] h5, [data-aux-pane-open] h6 {
   unicode-bidi: plaintext !important;
   text-align: start !important;
 }
@@ -866,7 +1085,21 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 [role="article"] h4[dir="rtl"], [role="article"] h5[dir="rtl"], [role="article"] h6[dir="rtl"],
 .rendered-markdown h1:dir(rtl), .rendered-markdown h2:dir(rtl), .rendered-markdown h3:dir(rtl),
 .rendered-markdown h4:dir(rtl), .rendered-markdown h5:dir(rtl), .rendered-markdown h6:dir(rtl),
-.rendered-markdown [dir="rtl"] h1, .rendered-markdown [dir="rtl"] h2, .rendered-markdown [dir="rtl"] h3 {
+.rendered-markdown [dir="rtl"] h1, .rendered-markdown [dir="rtl"] h2, .rendered-markdown [dir="rtl"] h3,
+[data-testid="conversation-view"] h1:dir(rtl), [data-testid="conversation-view"] h2:dir(rtl), [data-testid="conversation-view"] h3:dir(rtl),
+[data-testid="conversation-view"] h4:dir(rtl), [data-testid="conversation-view"] h5:dir(rtl), [data-testid="conversation-view"] h6:dir(rtl),
+[data-testid="conversation-view"] h1[dir="rtl"], [data-testid="conversation-view"] h2[dir="rtl"], [data-testid="conversation-view"] h3[dir="rtl"],
+[data-testid="conversation-view"] h4[dir="rtl"], [data-testid="conversation-view"] h5[dir="rtl"], [data-testid="conversation-view"] h6[dir="rtl"],
+div.break-words h1:dir(rtl), div.break-words h2:dir(rtl), div.break-words h3:dir(rtl),
+div.break-words h4:dir(rtl), div.break-words h5:dir(rtl), div.break-words h6:dir(rtl),
+div.break-words h1[dir="rtl"], div.break-words h2[dir="rtl"], div.break-words h3[dir="rtl"],
+div.break-words h4[dir="rtl"], div.break-words h5[dir="rtl"], div.break-words h6[dir="rtl"],
+.jetski-custom-editor-pane h1:dir(rtl), .jetski-custom-editor-pane h2:dir(rtl), .jetski-custom-editor-pane h3:dir(rtl),
+.jetski-custom-editor-pane h4:dir(rtl), .jetski-custom-editor-pane h5:dir(rtl), .jetski-custom-editor-pane h6:dir(rtl),
+.part.auxiliarybar h1:dir(rtl), .part.auxiliarybar h2:dir(rtl), .part.auxiliarybar h3:dir(rtl),
+.part.auxiliarybar h4:dir(rtl), .part.auxiliarybar h5:dir(rtl), .part.auxiliarybar h6:dir(rtl),
+[data-aux-pane-open] h1:dir(rtl), [data-aux-pane-open] h2:dir(rtl), [data-aux-pane-open] h3:dir(rtl),
+[data-aux-pane-open] h4:dir(rtl), [data-aux-pane-open] h5:dir(rtl), [data-aux-pane-open] h6:dir(rtl) {
   direction: rtl !important;
   text-align: right !important;
   padding-left: 0 !important;
@@ -878,7 +1111,12 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 .chat-widget .rendered-markdown h1,
 .antigravity-agent-side-panel h1,
 .antigravity-agent-manager h1,
-.animate-markdown h1 {
+.animate-markdown h1,
+[data-testid="conversation-view"] h1,
+div.break-words h1,
+.jetski-custom-editor-pane h1,
+.part.auxiliarybar h1,
+[data-aux-pane-open] h1 {
   font-size: 1.45rem !important;
   color: #93e9be !important;
   border-bottom: 1px solid rgba(147, 233, 190, 0.3) !important;
@@ -889,7 +1127,12 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 .chat-widget .rendered-markdown h2,
 .antigravity-agent-side-panel h2,
 .antigravity-agent-manager h2,
-.animate-markdown h2 {
+.animate-markdown h2,
+[data-testid="conversation-view"] h2,
+div.break-words h2,
+.jetski-custom-editor-pane h2,
+.part.auxiliarybar h2,
+[data-aux-pane-open] h2 {
   font-size: 1.25rem !important;
   color: #93e9be !important;
 }
@@ -898,7 +1141,12 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 .chat-widget .rendered-markdown h3,
 .antigravity-agent-side-panel h3,
 .antigravity-agent-manager h3,
-.animate-markdown h3 {
+.animate-markdown h3,
+[data-testid="conversation-view"] h3,
+div.break-words h3,
+.jetski-custom-editor-pane h3,
+.part.auxiliarybar h3,
+[data-aux-pane-open] h3 {
   font-size: 1.12rem !important;
   color: #a7f3d0 !important;
 }
@@ -917,7 +1165,22 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 .antigravity-agent-manager h6,
 .animate-markdown h4,
 .animate-markdown h5,
-.animate-markdown h6 {
+.animate-markdown h6,
+[data-testid="conversation-view"] h4,
+[data-testid="conversation-view"] h5,
+[data-testid="conversation-view"] h6,
+div.break-words h4,
+div.break-words h5,
+div.break-words h6,
+.jetski-custom-editor-pane h4,
+.jetski-custom-editor-pane h5,
+.jetski-custom-editor-pane h6,
+.part.auxiliarybar h4,
+.part.auxiliarybar h5,
+.part.auxiliarybar h6,
+[data-aux-pane-open] h4,
+[data-aux-pane-open] h5,
+[data-aux-pane-open] h6 {
   font-size: 1rem !important;
   color: #bbf7d0 !important;
 }
@@ -929,7 +1192,12 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 .chat-widget .rendered-markdown li,
 .antigravity-agent-side-panel li,
 .antigravity-agent-manager li,
-.animate-markdown li {
+.animate-markdown li,
+[data-testid="conversation-view"] li,
+div.break-words li,
+.jetski-custom-editor-pane li,
+.part.auxiliarybar li,
+[data-aux-pane-open] li {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
   unicode-bidi: plaintext !important;
   text-align: justify !important;
@@ -943,14 +1211,29 @@ h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[di
 .chat-widget .rendered-markdown li > strong:first-child,
 .chat-widget .rendered-markdown li > p:first-child > strong:first-child,
 .antigravity-agent-side-panel li > strong:first-child,
-.antigravity-agent-side-panel li > p:first-child > strong:first-child {
+.antigravity-agent-side-panel li > p:first-child > strong:first-child,
+[data-testid="conversation-view"] li > strong:first-child,
+[data-testid="conversation-view"] li > p:first-child > strong:first-child,
+div.break-words li > strong:first-child,
+div.break-words li > p:first-child > strong:first-child,
+.jetski-custom-editor-pane li > strong:first-child,
+.jetski-custom-editor-pane li > p:first-child > strong:first-child,
+.part.auxiliarybar li > strong:first-child,
+.part.auxiliarybar li > p:first-child > strong:first-child,
+[data-aux-pane-open] li > strong:first-child,
+[data-aux-pane-open] li > p:first-child > strong:first-child {
   color: #93e9be !important;
   font-weight: 700 !important;
 }
 
 /* General strong emphasis: harmonized soft seafoam tint */
 .rendered-markdown strong,
-.chat-widget .rendered-markdown strong {
+.chat-widget .rendered-markdown strong,
+[data-testid="conversation-view"] strong,
+div.break-words strong,
+.jetski-custom-editor-pane strong,
+.part.auxiliarybar strong,
+[data-aux-pane-open] strong {
   color: #c6f6d5 !important;
   font-weight: 700 !important;
 }

@@ -105,8 +105,22 @@ export function areAccountsInSameFamily(a: Account, b: Account): boolean {
     if (!a || !b || a.id === b.id) return false;
     if (!a.quota || !b.quota) return false;
 
+    // Guard: Blocked/Suspended accounts should not be dynamically clustered into active quota family pools
+    if ((a.disabled || a.proxy_disabled || a.quota.is_forbidden) &&
+        (b.disabled || b.proxy_disabled || b.quota.is_forbidden)) {
+        return false;
+    }
+
     const fpA = extractAccountQuotaFingerprint(a);
     const fpB = extractAccountQuotaFingerprint(b);
+
+    // Negative Guard 0: If ANY shared bucket or model reset time diverges (> 60s), they CANNOT be the same family pool!
+    for (const [key, secA] of Object.entries(fpA.modelResets)) {
+        const secB = fpB.modelResets[key];
+        if (secB !== undefined && Math.abs(secA - secB) > 60) {
+            return false;
+        }
+    }
 
     // Negative guard 1: If both have weekly resets and they do NOT match down to the second, NOT family
     if (fpA.weeklyResetSec !== null && fpB.weeklyResetSec !== null) {
@@ -136,10 +150,22 @@ export function areAccountsInSameFamily(a: Account, b: Account): boolean {
         }
     }
 
-    // Rule 1 (Primary - User spec): Both have valid weekly reset AND 5-hour reset matching down to the second (<= 1s)
+    // Negative Guard 5: Idle Quota Artifact Guard.
+    // When both accounts are completely unused (remaining fraction === 1.0 or null on both),
+    // Google returns a synthetic `now + window` reset time. If two accounts were polled sequentially
+    // during a batch refresh, their reset times differ by 1-2 seconds.
+    // In a genuine family group, the reset timestamp in Google's database is identical (0s diff).
+    const isBothIdle = (fpA.weeklyFraction === null || fpA.weeklyFraction >= 0.999) &&
+                       (fpB.weeklyFraction === null || fpB.weeklyFraction >= 0.999) &&
+                       (fpA.fiveHourFraction === null || fpA.fiveHourFraction >= 0.999) &&
+                       (fpB.fiveHourFraction === null || fpB.fiveHourFraction >= 0.999);
+
+    const maxToleranceSec = isBothIdle ? 0 : 1;
+
+    // Rule 1 (Primary - User spec): Both have valid weekly reset AND 5-hour reset matching down to the second (<= maxToleranceSec)
     if (fpA.weeklyResetSec !== null && fpB.weeklyResetSec !== null && fpA.fiveHourResetSec !== null && fpB.fiveHourResetSec !== null) {
-        const weeklyMatch = Math.abs(fpA.weeklyResetSec - fpB.weeklyResetSec) <= 1;
-        const fiveHourMatch = Math.abs(fpA.fiveHourResetSec - fpB.fiveHourResetSec) <= 1;
+        const weeklyMatch = Math.abs(fpA.weeklyResetSec - fpB.weeklyResetSec) <= maxToleranceSec;
+        const fiveHourMatch = Math.abs(fpA.fiveHourResetSec - fpB.fiveHourResetSec) <= maxToleranceSec;
         if (weeklyMatch && fiveHourMatch) {
             return true;
         }
@@ -147,12 +173,12 @@ export function areAccountsInSameFamily(a: Account, b: Account): boolean {
 
     // Rule 2: Identical weekly reset down to the second AND matching reset on any active model
     if (fpA.weeklyResetSec !== null && fpB.weeklyResetSec !== null) {
-        const weeklyMatch = Math.abs(fpA.weeklyResetSec - fpB.weeklyResetSec) <= 1;
+        const weeklyMatch = Math.abs(fpA.weeklyResetSec - fpB.weeklyResetSec) <= maxToleranceSec;
         if (weeklyMatch) {
             // Check if any model reset matches down to the second
             for (const [modelName, secA] of Object.entries(fpA.modelResets)) {
                 const secB = fpB.modelResets[modelName];
-                if (secB !== undefined && Math.abs(secA - secB) <= 1) {
+                if (secB !== undefined && Math.abs(secA - secB) <= maxToleranceSec) {
                     // Check quota fraction correlation on this model if available
                     const fracA = fpA.modelFractions[modelName];
                     const fracB = fpB.modelFractions[modelName];
@@ -170,11 +196,11 @@ export function areAccountsInSameFamily(a: Account, b: Account): boolean {
 
     // Rule 3: Both have 5-hour reset matching down to the second AND model reset matching
     if (fpA.fiveHourResetSec !== null && fpB.fiveHourResetSec !== null) {
-        const fiveHourMatch = Math.abs(fpA.fiveHourResetSec - fpB.fiveHourResetSec) <= 1;
+        const fiveHourMatch = Math.abs(fpA.fiveHourResetSec - fpB.fiveHourResetSec) <= maxToleranceSec;
         if (fiveHourMatch) {
             for (const [modelName, secA] of Object.entries(fpA.modelResets)) {
                 const secB = fpB.modelResets[modelName];
-                if (secB !== undefined && Math.abs(secA - secB) <= 1) {
+                if (secB !== undefined && Math.abs(secA - secB) <= maxToleranceSec) {
                     const fracA = fpA.modelFractions[modelName];
                     const fracB = fpB.modelFractions[modelName];
                     if (fracA !== undefined && fracB !== undefined) {

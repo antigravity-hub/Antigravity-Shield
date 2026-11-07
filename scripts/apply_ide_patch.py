@@ -84,7 +84,7 @@ sentinel_code = r'''
   const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
   function patchBiDi(root = document) {
     if (!root || !root.querySelectorAll) return;
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] p, .part.auxiliarybar p, .part.auxiliarybar span, [data-aux-pane-open] p, [data-aux-pane-open] span, [data-aux-pane-open] div, [data-aux-pane-focus-scope="true"] p, [data-aux-pane-focus-scope="true"] span, [data-aux-pane-focus-scope="true"] div, button[data-tab-id] span');
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] p, [data-testid="conversation-view"] li, div.break-words p, div.break-words li, div.break-words h1, div.break-words h2, div.break-words h3, div.break-words h4, div.break-words h5, div.break-words h6, .part.auxiliarybar p, .part.auxiliarybar span, .part.auxiliarybar li, [data-aux-pane-open] p, [data-aux-pane-open] span, [data-aux-pane-open] div, [data-aux-pane-open] li, [data-aux-pane-focus-scope="true"] p, [data-aux-pane-focus-scope="true"] span, [data-aux-pane-focus-scope="true"] div, button[data-tab-id] span');
     for (let i = 0; i < targets.length; i++) {
       const el = targets[i];
       if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) continue;
@@ -95,7 +95,27 @@ sentinel_code = r'''
         if (el.style.fontFamily !== "'Vazirmatn'") el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
         if (el.style.unicodeBidi !== 'isolate') el.style.setProperty('unicode-bidi', 'isolate', 'important');
         if (el.style.textAlign !== 'right') el.style.setProperty('text-align', 'right', 'important');
-        if (el.tagName === 'BLOCKQUOTE') {
+        if (el.tagName === 'LI') {
+          el.style.setProperty('padding-left', '0', 'important');
+          el.style.setProperty('margin-left', '0', 'important');
+          const parentList = el.closest('ul, ol');
+          if (parentList) {
+            if (parentList.getAttribute('dir') !== 'rtl') parentList.setAttribute('dir', 'rtl');
+            parentList.style.setProperty('direction', 'rtl', 'important');
+            parentList.style.setProperty('text-align', 'right', 'important');
+            parentList.style.setProperty('padding-left', '0', 'important');
+            parentList.style.setProperty('margin-left', '0', 'important');
+            if (parentList.tagName === 'UL') {
+              parentList.style.setProperty('padding-right', '28px', 'important');
+            } else if (parentList.tagName === 'OL') {
+              parentList.style.setProperty('padding-right', '32px', 'important');
+            }
+          }
+        } else if (/^H[1-6]$/.test(el.tagName)) {
+          el.style.setProperty('padding-left', '0', 'important');
+          el.style.setProperty('padding-right', '0', 'important');
+          el.style.setProperty('margin-left', '0', 'important');
+        } else if (el.tagName === 'BLOCKQUOTE') {
           el.style.setProperty('border-left', 'none', 'important');
           el.style.setProperty('border-right', '4px solid var(--border, #93e9be)', 'important');
         }
