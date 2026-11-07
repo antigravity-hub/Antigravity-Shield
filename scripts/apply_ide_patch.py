@@ -41,7 +41,6 @@ SENTINEL_CODE = """
       if (el.getAttribute('dir') !== 'rtl') el.setAttribute('dir', 'rtl');
       if (el.style.direction !== 'rtl') el.style.setProperty('direction', 'rtl', 'important');
       if (el.style.fontFamily !== "'Vazirmatn'") el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
-      if (el.style.unicodeBidi !== 'isolate') el.style.setProperty('unicode-bidi', 'isolate', 'important');
       if (el.style.textAlign !== 'right') el.style.setProperty('text-align', 'right', 'important');
 
       if (el.tagName === 'LI') {
@@ -174,7 +173,7 @@ wb_replacements = [
 
     # 5. wNd (CustomMarkdown internal style)
     ('wNd=`\ndiv:has(> table),\ntable th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\n`',
-     'wNd=`\ndiv:has(> table),\ntable th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\np, li, dd, dt, h1, h2, h3, h4, h5, h6, blockquote, span {\n  font-family: \'Vazirmatn\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', Tahoma, sans-serif !important;\n  unicode-bidi: plaintext !important;\n}\np:dir(rtl), li:dir(rtl), h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl), blockquote:dir(rtl) {\n  text-align: right !important;\n  direction: rtl !important;\n}\n`'),
+     'wNd=`\ndiv:has(> table),\ntable th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\np, li, dd, dt, h1, h2, h3, h4, h5, h6, blockquote, span, div {\n  font-family: \'Vazirmatn\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', Tahoma, sans-serif !important;\n}\np[dir="auto"], div[dir="auto"], span[dir="auto"], li[dir="auto"] {\n  unicode-bidi: plaintext !important;\n}\np:dir(rtl), li:dir(rtl), h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl), blockquote:dir(rtl), [dir="rtl"], :dir(rtl) {\n  text-align: right !important;\n  direction: rtl !important;\n}\nul, ol {\n  padding-left: 0 !important;\n  margin-left: 0 !important;\n}\nul:dir(rtl), ol:dir(rtl), ul:has(> li:dir(rtl)), ol:has(> li:dir(rtl)) {\n  padding-right: 28px !important;\n  direction: rtl !important;\n  text-align: right !important;\n}\n`'),
 
     # 6. PHd (last text response wrapper)
     ('function PHd({step:t}){let{renderers:e}=Ur(),i=e.markdown,n=(t.step.case==="plannerResponse"?t.step.value:null)?.response;if(!n)return null;let r=t.status===Kr.RUNNING||t.status===Kr.GENERATING,s=Pm(t.metadata,null);return v("div",{className:"px-2 py-1"',
@@ -187,6 +186,14 @@ wb_replacements = [
     # 8. LPd (User message bubble)
     ('LPd=({items:t})=>{let{chatParams:{artifactsDir:e},trajectorySummariesProvider:i,stepHandler:n,isBrowserPaneAvailable:r,openUrlInBrowserPane:s}=Ur(),o=Kt().get("browserAuxPane");return v("div",{"data-quotable":"true",className:"whitespace-pre-wrap text-sm"',
      'LPd=({items:t})=>{let{chatParams:{artifactsDir:e},trajectorySummariesProvider:i,stepHandler:n,isBrowserPaneAvailable:r,openUrlInBrowserPane:s}=Ur(),o=Kt().get("browserAuxPane");return v("div",{dir:"auto","data-quotable":"true",className:"whitespace-pre-wrap text-sm"'),
+
+    # 9. ConversationView root container
+    ('style:a?sWe.container:void 0,"data-testid":"conversation-view"',
+     'dir:"auto",style:a?sWe.container:void 0,"data-testid":"conversation-view"'),
+
+    # 10. User message bubble wrapper
+    ('children:v("div",{ref:se,"data-testid":"user-message-bubble"',
+     'children:v("div",{ref:se,dir:"auto","data-testid":"user-message-bubble"')
 ]
 
 for idx, (target, replacement) in enumerate(wb_replacements, 1):
@@ -207,6 +214,9 @@ css_targets = [
 ]
 
 for cp in css_targets:
+    if not os.path.exists(cp):
+        print(f"Skipping missing CSS: {cp}")
+        continue
     with open(cp, 'r', encoding='utf-8') as f:
         content = f.read()
     if "/* [Antigravity-Shield-RTL-Vazirmatn]" in content:
@@ -224,12 +234,14 @@ js_targets = [
 ]
 
 for jp in js_targets:
+    if not os.path.exists(jp):
+        continue
     with open(jp, 'r', encoding='utf-8') as f:
         content = f.read()
     if "// [Antigravity-Shield-IDE-BiDi-Sentinel]" in content:
         pos = content.find("// [Antigravity-Shield-IDE-BiDi-Sentinel]")
         content = content[:pos].rstrip() + "\n\n"
-    content = content + SENTINEL_CODE.strip() + "\n"
+    content = content + f"{SENTINEL_CODE}\n"
     with open(jp, 'w', encoding='utf-8') as f:
         f.write(content)
     print(f"Patched Sentinel in: {jp}")
@@ -244,6 +256,8 @@ html_targets = [
 STYLE_BLOCK = f'<style id="antigravity-shield-ide-bidi">\n{VAZIRMATN_RTL_CSS}\n</style>'
 
 for hp in html_targets:
+    if not os.path.exists(hp):
+        continue
     with open(hp, 'r', encoding='utf-8') as f:
         content = f.read()
     if '<style id="antigravity-shield-ide-bidi">' in content:
@@ -261,17 +275,16 @@ with open(product_json_path, 'r', encoding='utf-8') as f:
 checksums = pj.get("checksums", {})
 
 all_patched = [
+    ("vs/workbench/workbench.desktop.main.js", wb_main_path),
     ("vs/workbench/workbench.desktop.main.css", os.path.join(OUT_DIR, "vs", "workbench", "workbench.desktop.main.css")),
     ("jetskiAgent/main.css", os.path.join(OUT_DIR, "jetskiAgent", "main.css")),
+    ("jetskiMain.tailwind.css", os.path.join(OUT_DIR, "jetskiMain.tailwind.css")),
+    ("tw-base.tailwind.css", os.path.join(OUT_DIR, "tw-base.tailwind.css")),
     ("vs/code/electron-browser/workbench/workbench.js", os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "workbench.js")),
     ("vs/code/electron-browser/workbench/jetskiAgent.js", os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "jetskiAgent.js")),
     ("vs/code/electron-browser/workbench/workbench.html", os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "workbench.html")),
     ("vs/code/electron-browser/workbench/workbench-jetski-agent.html", os.path.join(OUT_DIR, "vs", "code", "electron-browser", "workbench", "workbench-jetski-agent.html")),
     ("vs/workbench/contrib/webview/browser/pre/index.html", os.path.join(OUT_DIR, "vs", "workbench", "contrib", "webview", "browser", "pre", "index.html")),
-    ("jetskiMain.tailwind.css", os.path.join(OUT_DIR, "jetskiMain.tailwind.css")),
-    ("tw-base.tailwind.css", os.path.join(OUT_DIR, "tw-base.tailwind.css")),
-    ("jetskiAgent/main.js", os.path.join(OUT_DIR, "jetskiAgent", "main.js")),
-    ("vs/workbench/workbench.desktop.main.js", os.path.join(OUT_DIR, "vs", "workbench", "workbench.desktop.main.js"))
 ]
 
 for rel, path in all_patched:

@@ -775,8 +775,16 @@ div.break-words ol > li::after {
   display: none !important;
 }
 
-/* Universal Vazirmatn Font Enforcement on font-sans */
-.font-sans, [class*="font-sans"], body, html {
+/* Universal Vazirmatn Font Enforcement on Monaco Workbench & Whole App */
+.monaco-workbench,
+.monaco-workbench.windows,
+.monaco-workbench.mac,
+.monaco-workbench.linux,
+.font-sans,
+[class*="font-sans"],
+body,
+html,
+#root {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
@@ -1735,97 +1743,113 @@ button[data-tab-id]:hover:not([class*="bg-secondary"]) {
   color: #cbd5e1 !important;
 }
 
-/* Comprehensive Vazirmatn Typography for Right Auxiliary Bar, Aux Pane, Documentation & Chat Panel */
+/* ==========================================================================
+   Comprehensive Vazirmatn Typography for Right Auxiliary Bar, Aux Pane, & Chat Panel
+   ========================================================================== */
+.monaco-workbench,
+.monaco-workbench.windows,
 .part.auxiliarybar,
-.part.auxiliarybar *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+.part.auxiliarybar *,
 [data-aux-pane-open],
-[data-aux-pane-open] *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-aux-pane-open] *,
 [data-aux-pane-focus-scope="true"],
-[data-aux-pane-focus-scope="true"] *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-aux-pane-focus-scope="true"] *,
 [data-testid="conversation-view"],
-[data-testid="conversation-view"] *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-testid="conversation-view"] *,
 [data-testid="user-message-bubble"],
-[data-testid="user-message-bubble"] *:not(pre):not(code),
+[data-testid="user-message-bubble"] *,
 [data-testid="user-input-step"],
-[data-testid="user-input-step"] *:not(pre):not(code),
-.jetski-custom-editor-pane,
-.jetski-custom-editor-pane *:not(pre):not(code),
-.leading-relaxed,
-.leading-relaxed *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon),
+[data-testid="user-input-step"] *,
+[role="article"],
+[role="article"] *,
+div.break-words,
+div.break-words *,
+div.leading-relaxed,
+div.leading-relaxed *,
 .rendered-markdown,
-.rendered-markdown *:not(pre):not(code):not(.monaco-editor):not(.monaco-editor *):not(.codicon) {
+.rendered-markdown * {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
 /* Monospace preservation for code within Auxiliary Bar, Aux Pane & Chat */
-.part.auxiliarybar pre,
-.part.auxiliarybar pre *,
-.part.auxiliarybar code,
-.part.auxiliarybar .monaco-editor,
-.part.auxiliarybar .monaco-editor *,
-[data-aux-pane-open] pre,
-[data-aux-pane-open] pre *,
-[data-aux-pane-open] code,
-[data-aux-pane-open] .monaco-editor,
-[data-aux-pane-open] .monaco-editor *,
-[data-aux-pane-focus-scope="true"] pre,
-[data-aux-pane-focus-scope="true"] pre *,
-[data-aux-pane-focus-scope="true"] code,
-[data-aux-pane-focus-scope="true"] .monaco-editor,
-[data-aux-pane-focus-scope="true"] .monaco-editor *,
-[data-testid="conversation-view"] pre,
-[data-testid="conversation-view"] pre *,
-[data-testid="conversation-view"] code,
-[data-testid="conversation-view"] .monaco-editor,
-[data-testid="conversation-view"] .monaco-editor * {
+pre,
+pre *,
+code,
+code *,
+.monaco-editor,
+.monaco-editor *,
+.view-line,
+.view-lines,
+.codicon,
+.codicon:before,
+.codicon:after,
+[class*="codicon"] {
   font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
-  direction: ltr !important;
-  text-align: left !important;
 }
 
-/* BiDi Auto-Alignment for Chat Bubbles, Markdown and Prompts */
-.part.auxiliarybar p,
-.part.auxiliarybar li,
-.part.auxiliarybar div[role="article"],
-.part.auxiliarybar .rendered-markdown,
-[data-aux-pane-open] p,
-[data-aux-pane-open] li,
-[data-aux-pane-open] div[role="article"],
-[data-aux-pane-open] .rendered-markdown,
-[data-aux-pane-open] .whitespace-pre-wrap,
-[data-aux-pane-focus-scope="true"] p,
-[data-aux-pane-focus-scope="true"] li,
-[data-aux-pane-focus-scope="true"] div[role="article"],
-[data-aux-pane-focus-scope="true"] .rendered-markdown,
-[data-aux-pane-focus-scope="true"] .whitespace-pre-wrap,
-[data-testid="conversation-view"] p,
-[data-testid="conversation-view"] li,
-[data-testid="conversation-view"] div[role="article"],
-[data-testid="conversation-view"] .rendered-markdown,
-[data-testid="conversation-view"] .whitespace-pre-wrap,
+.codicon,
+.codicon:before,
+.codicon:after,
+[class*="codicon"] {
+  font-family: 'codicon' !important;
+}
+
+/* ==========================================================================
+   RTL & BiDi Auto-Alignment for Chat Bubbles, Markdown and Prompts
+   ========================================================================== */
+/* Persian / RTL text inside Conversation View, Chat, Bubbles, Markdown */
+[data-testid="conversation-view"] [dir="auto"]:dir(rtl),
+[data-testid="conversation-view"] [dir="rtl"],
+[data-testid="conversation-view"] :dir(rtl),
+[data-testid="conversation-view"] p[dir="auto"],
+[data-testid="conversation-view"] p:dir(rtl),
+[data-testid="conversation-view"] p[dir="rtl"],
+[data-testid="conversation-view"] li:dir(rtl),
+[data-testid="conversation-view"] li[dir="rtl"],
+[data-testid="conversation-view"] h1:dir(rtl),
+[data-testid="conversation-view"] h2:dir(rtl),
+[data-testid="conversation-view"] h3:dir(rtl),
+[data-testid="conversation-view"] h4:dir(rtl),
+[data-testid="conversation-view"] h5:dir(rtl),
+[data-testid="conversation-view"] h6:dir(rtl),
+[data-testid="conversation-view"] blockquote:dir(rtl),
+[data-testid="conversation-view"] div[role="article"]:dir(rtl),
+[data-testid="conversation-view"] div.break-words:dir(rtl),
 [data-testid="user-message-bubble"],
-[data-testid="user-message-bubble"] div,
-[data-testid="user-message-bubble"] span,
-[data-testid="user-message-bubble"] p {
-  unicode-bidi: plaintext !important;
-  text-align: start !important;
-}
-
-/* Explicit RTL Direction when element is marked or detected RTL */
+[data-testid="user-message-bubble"] *,
+[data-testid="user-input-step"],
+[data-testid="user-input-step"] *,
 .part.auxiliarybar [dir="rtl"],
 .part.auxiliarybar :dir(rtl),
 [data-aux-pane-open] [dir="rtl"],
 [data-aux-pane-open] :dir(rtl),
 [data-aux-pane-focus-scope="true"] [dir="rtl"],
 [data-aux-pane-focus-scope="true"] :dir(rtl),
-[data-testid="conversation-view"] [dir="rtl"],
-[data-testid="conversation-view"] :dir(rtl),
-[data-testid="user-message-bubble"][dir="rtl"],
-[data-testid="user-message-bubble"] :dir(rtl) {
+[role="article"]:dir(rtl),
+[role="article"] [dir="auto"]:dir(rtl),
+div.break-words [dir="auto"]:dir(rtl),
+div.break-words :dir(rtl),
+div.leading-relaxed :dir(rtl) {
   direction: rtl !important;
   text-align: right !important;
   text-align-last: right !important;
-  unicode-bidi: isolate !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* BiDi Neutral Text with Auto Direction inside Conversation View */
+[data-testid="conversation-view"] [dir="auto"],
+[data-testid="conversation-view"] p,
+[data-testid="conversation-view"] li,
+[data-testid="conversation-view"] div[role="article"],
+[data-testid="conversation-view"] .rendered-markdown,
+[data-testid="conversation-view"] .whitespace-pre-wrap,
+[data-testid="user-message-bubble"][dir="auto"],
+[data-testid="user-input-step"][dir="auto"],
+[role="article"] [dir="auto"],
+div.break-words[dir="auto"],
+div.leading-relaxed[dir="auto"] {
+  unicode-bidi: plaintext !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
 .monaco-list-row:hover:not(.selected) {

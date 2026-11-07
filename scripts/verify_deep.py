@@ -76,6 +76,8 @@ wb_checks = [
     ('PHd last text response dir="auto"', 'v("div",{dir:"auto",className:"px-2 py-1"'),
     ('zHd Agent response article dir="auto"', 'v("div",{dir:"auto",role:"article","aria-label":"Agent response"'),
     ('LPd user message bubble dir="auto"', 'v("div",{dir:"auto","data-quotable":"true",className:"whitespace-pre-wrap text-sm"'),
+    ('ConversationView container dir="auto"', 'dir:"auto",style:a?sWe.container:void 0,"data-testid":"conversation-view"'),
+    ('user-message-bubble wrapper dir="auto"', 'dir:"auto","data-testid":"user-message-bubble"'),
 ]
 
 for label, needle in wb_checks:
