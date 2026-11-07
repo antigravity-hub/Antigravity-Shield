@@ -937,8 +937,10 @@ div.break-words p:dir(rtl),
   line-height: 2 !important;
 }
 
-[dir="rtl"] :is(span, strong, em, b, i, a, code) {
+/* Isolate embedded English/code in RTL without breaking Persian word order */
+[dir="rtl"] :is(code, pre, .monaco-editor, [dir="ltr"]) {
   unicode-bidi: isolate !important;
+  direction: ltr !important;
 }
 
 /* ==========================================================================
@@ -2527,7 +2529,7 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
   const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
   function patchBiDi(root = document) {
     if (!root || !root.querySelectorAll) return;
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] p, .part.auxiliarybar p, .part.auxiliarybar span, [data-aux-pane-open] p, [data-aux-pane-open] span, [data-aux-pane-open] div, [data-aux-pane-focus-scope="true"] p, [data-aux-pane-focus-scope="true"] span, [data-aux-pane-focus-scope="true"] div, button[data-tab-id] span');
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] p, [data-testid="conversation-view"] li, .part.auxiliarybar p, [data-aux-pane-open] p, [data-aux-pane-focus-scope="true"] p');
     for (let i = 0; i < targets.length; i++) {
       const el = targets[i];
       if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) continue;
@@ -2536,7 +2538,6 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
         if (el.getAttribute('dir') !== 'rtl') el.setAttribute('dir', 'rtl');
         if (el.style.direction !== 'rtl') el.style.setProperty('direction', 'rtl', 'important');
         if (el.style.fontFamily !== "'Vazirmatn'") el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
-        if (el.style.unicodeBidi !== 'isolate') el.style.setProperty('unicode-bidi', 'isolate', 'important');
         if (el.style.textAlign !== 'right') el.style.setProperty('text-align', 'right', 'important');
         if (el.tagName === 'BLOCKQUOTE') {
           el.style.setProperty('border-left', 'none', 'important');
@@ -2696,8 +2697,10 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
 			unicode-bidi: isolate !important;
 		}}
 
-		[dir="rtl"] :is(span, strong, em, b, i, a, code) {{
+		/* Isolate embedded English/code in RTL without breaking Persian word order */
+		[dir="rtl"] :is(code, pre, .monaco-editor, [dir="ltr"]) {{
 			unicode-bidi: isolate !important;
+			direction: ltr !important;
 		}}
 
 		pre, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines {{
