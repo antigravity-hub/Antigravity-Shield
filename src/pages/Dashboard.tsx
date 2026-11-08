@@ -3,7 +3,7 @@
  * Repository: https://github.com/antigravity-hub/Antigravity-Shield
  */
 import { save } from '@tauri-apps/plugin-dialog';
-import { AlertTriangle, ArrowRight, Bot, Download, RefreshCw, Sparkles, Users, ShieldCheck, Zap } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Bot, Download, RefreshCw, Sparkles, Users, ShieldCheck, Zap, Cpu } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ import NetworkHealthPulse from '../components/dashboard/NetworkHealthPulse';
 import { exportAccounts } from '../services/accountService';
 import { useAccountStore } from '../stores/useAccountStore';
 import { useConfigStore } from '../stores/useConfigStore';
+import { useMemoryStore } from '../stores/useMemoryStore';
 import { Account } from '../types/account';
 import { cn } from '../utils/cn';
 import { isTauri } from '../utils/env';
@@ -41,6 +42,7 @@ function Dashboard() {
         loading
     } = useAccountStore();
     const { config, loadConfig, toggleAutoWarm } = useConfigStore();
+    const { isPurging: isMemoryPurging, purgeMemory } = useMemoryStore();
     const isAutoWarmEnabled = config?.scheduled_warmup?.enabled ?? true;
 
     useEffect(() => {
@@ -268,6 +270,20 @@ function Dashboard() {
                                 "w-2 h-2 rounded-full",
                                 isAutoWarmEnabled ? "bg-amber-500 animate-pulse shadow-[0_0_6px_rgba(245,158,11,0.8)]" : "bg-slate-400"
                             )} />
+                        </button>
+                        <button
+                            onClick={() => purgeMemory()}
+                            disabled={isMemoryPurging}
+                            className={cn(
+                                "px-3.5 py-2 text-xs font-bold rounded-xl transition-all duration-200 flex items-center gap-2 border cursor-pointer active:scale-95 shadow-sm",
+                                isMemoryPurging
+                                    ? "opacity-70 cursor-not-allowed bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10"
+                                    : "bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10"
+                            )}
+                            title={t('dashboard.purge_ram_title', 'Trim idle Antigravity memory & purge working sets')}
+                        >
+                            <Cpu className={cn("w-3.5 h-3.5", isMemoryPurging ? "animate-spin text-amber-500" : "")} style={{ color: isMemoryPurging ? undefined : 'var(--color-accent)' }} />
+                            <span className="hidden sm:inline">{isMemoryPurging ? t('dashboard.purging_ram', 'Purging...') : t('dashboard.purge_ram', 'Purge RAM')}</span>
                         </button>
                         <AddAccountDialog onAdd={handleAddAccount} />
                         <button

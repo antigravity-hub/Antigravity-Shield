@@ -15,8 +15,11 @@ import {
   CheckCircle2,
   Sparkles,
   AlertTriangle,
+  Cpu,
+  Zap as ZapIcon,
 } from 'lucide-react';
 import { useToolkitStore, IdeInfo } from '../../stores/useToolkitStore';
+import { useMemoryStore } from '../../stores/useMemoryStore';
 import { showToast } from '../common/ToastContainer';
 
 export const ToolkitIntegrationModal: React.FC = () => {
@@ -32,6 +35,19 @@ export const ToolkitIntegrationModal: React.FC = () => {
     installToIde,
     fetchStatus,
   } = useToolkitStore();
+
+  const {
+    summary: memorySummary,
+    isPurging: isMemoryPurging,
+    fetchSummary: fetchMemorySummary,
+    purgeMemory,
+  } = useMemoryStore();
+
+  React.useEffect(() => {
+    if (isModalOpen) {
+      fetchMemorySummary();
+    }
+  }, [isModalOpen, fetchMemorySummary]);
 
   const [ideToConfirm, setIdeToConfirm] = React.useState<IdeInfo | null>(null);
 
@@ -150,6 +166,86 @@ export const ToolkitIntegrationModal: React.FC = () => {
                 <span>{t('toolkit.modal.rescan', 'Rescan')}</span>
               </button>
             </div>
+          </div>
+
+          {/* Antigravity RAM & Resource Guard */}
+          <div className="p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div
+                  className="p-2 rounded-xl shrink-0"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--color-primary-btn), var(--color-accent))',
+                    color: '#ffffff',
+                    boxShadow: '0 2px 8px -1px var(--color-accent-glow)',
+                  }}
+                >
+                  <Cpu className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                      {t('toolkit.modal.ram_guard_title', 'Antigravity Memory & RAM Optimizer')}
+                    </h4>
+                    <span
+                      className="px-1.5 py-0.2 text-[9px] font-bold rounded-md uppercase tracking-wider shrink-0"
+                      style={{
+                        backgroundColor: 'var(--color-badge-bg)',
+                        color: 'var(--color-accent)',
+                        borderColor: 'var(--color-badge-border)',
+                      }}
+                    >
+                      SHIELD TURBO
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                    {memorySummary ? (
+                      `${memorySummary.total_processes} ${t('toolkit.modal.processes', 'processes')} • ${memorySummary.total_memory_mb >= 1024 ? (memorySummary.total_memory_mb / 1024).toFixed(1) + ' GB' : memorySummary.total_memory_mb.toFixed(0) + ' MB'} ${t('toolkit.modal.ram_occupied', 'RAM occupied')}`
+                    ) : (
+                      t('toolkit.modal.ram_monitoring', 'Scanning memory footprint...')
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => purgeMemory()}
+                disabled={isMemoryPurging}
+                className="px-3 py-1.5 text-white text-xs font-bold rounded-xl transition-all duration-200 flex items-center gap-1.5 shadow-sm border cursor-pointer active:scale-95 disabled:opacity-60 shrink-0"
+                style={{
+                  backgroundColor: 'var(--color-primary-btn)',
+                  borderColor: 'var(--color-accent-hover, rgba(147, 233, 190, 0.3))',
+                  boxShadow: '0 2px 8px var(--color-accent-glow)',
+                }}
+                title={t('toolkit.modal.ram_purge_tooltip', 'Trim idle Chromium pages & reap orphaned zombie processes')}
+              >
+                <ZapIcon className={`w-3.5 h-3.5 ${isMemoryPurging ? 'animate-spin' : ''}`} />
+                <span>{isMemoryPurging ? t('toolkit.modal.purging', 'Purging...') : t('toolkit.modal.purge_ram', 'Purge RAM')}</span>
+              </button>
+            </div>
+
+            {memorySummary && (
+              <div className="grid grid-cols-3 gap-2 pt-1 border-t border-slate-200/50 dark:border-slate-800/60 text-center">
+                <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20 border border-slate-200/60 dark:border-white/5">
+                  <div className="text-[10px] text-slate-400 uppercase font-semibold">IDE & Webviews</div>
+                  <div className="text-xs font-bold text-slate-700 dark:text-slate-200 mt-0.5">
+                    {memorySummary.ide_memory_mb >= 1024 ? `${(memorySummary.ide_memory_mb / 1024).toFixed(1)} GB` : `${memorySummary.ide_memory_mb.toFixed(0)} MB`}
+                  </div>
+                </div>
+                <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20 border border-slate-200/60 dark:border-white/5">
+                  <div className="text-[10px] text-slate-400 uppercase font-semibold">AGY Daemons</div>
+                  <div className="text-xs font-bold text-slate-700 dark:text-slate-200 mt-0.5">
+                    {memorySummary.cli_memory_mb >= 1024 ? `${(memorySummary.cli_memory_mb / 1024).toFixed(1)} GB` : `${memorySummary.cli_memory_mb.toFixed(0)} MB`}
+                  </div>
+                </div>
+                <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20 border border-slate-200/60 dark:border-white/5">
+                  <div className="text-[10px] text-slate-400 uppercase font-semibold">Sidecars & Other</div>
+                  <div className="text-xs font-bold text-slate-700 dark:text-slate-200 mt-0.5">
+                    {(memorySummary.sidecar_memory_mb + memorySummary.other_memory_mb) >= 1024 ? `${((memorySummary.sidecar_memory_mb + memorySummary.other_memory_mb) / 1024).toFixed(1)} GB` : `${(memorySummary.sidecar_memory_mb + memorySummary.other_memory_mb).toFixed(0)} MB`}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* IDE List Header */}
