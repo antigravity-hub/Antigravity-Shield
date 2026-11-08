@@ -39,7 +39,7 @@ impl SystemIntegration for DesktopIntegration {
         ));
 
         if target_ide == Some("agy") {
-            write_to_system_keyring_for_target(account, Some("agy"))?;
+            write_to_system_keyring(account)?;
             let _ = write_to_file_credentials(account);
 
             if let Ok(storage_path) = device::get_storage_path(target_ide) {
@@ -152,8 +152,8 @@ impl SystemIntegration for DesktopIntegration {
                 ));
             }
 
-            // E. Sync token to system credential store/keyring for IDE (gemini:antigravity_ide)
-            if let Err(e) = write_to_system_keyring_for_target(account, Some("ide")) {
+            // E. Sync token to system credential store/keyring (gemini:antigravity)
+            if let Err(e) = write_to_system_keyring(account) {
                 crate::modules::logger::log_warn(&format!(
                     "[Desktop] IDE keyring sync warning: {}",
                     e
@@ -199,8 +199,8 @@ impl SystemIntegration for DesktopIntegration {
         }
 
         // 2. Token Injection for Platform
-        // 2.1 Write to system keychain/keyring for Platform (gemini:antigravity - isolated from IDE)
-        write_to_system_keyring_for_target(account, Some("platform"))?;
+        // 2.1 Write to system keychain/keyring (gemini:antigravity - shared across IDE and Platform)
+        write_to_system_keyring(account)?;
 
         // 2.2 Write storage profile for platform
         if let Ok(storage_path) = device::get_storage_path(target_platform) {
@@ -336,16 +336,8 @@ pub fn show_os_notification(title: &str, body: &str) {
     }
 }
 
-/// 辅助方法：向宿主操作系统的 Keychain/Credentials Manager 写入 Token（向后兼容默认 Target）
+/// 辅助方法：向宿主操作系统的 Keychain/Credentials Manager 写入 Token
 pub(crate) fn write_to_system_keyring(account: &crate::models::Account) -> Result<(), String> {
-    write_to_system_keyring_for_target(account, None)
-}
-
-/// 辅助方法：根据 Target (IDE / Platform / Default) 分离写入独立的系统 Keyring
-pub(crate) fn write_to_system_keyring_for_target(
-    account: &crate::models::Account,
-    target: Option<&str>,
-) -> Result<(), String> {
     // 1. 构建 Token 的 JSON Payload，并将过期时间戳格式化为符合 RFC3339 的带微s格式
     let expiry_datetime = chrono::DateTime::from_timestamp(account.token.expiry_timestamp, 0)
         .unwrap_or_else(|| chrono::Utc::now());
@@ -376,19 +368,9 @@ pub(crate) fn write_to_system_keyring_for_target(
     })
     .map_err(|e| format!("Failed to serialize keyring JSON: {}", e))?;
 
-    // Determine isolated target keyring names based on target profile
-    // IDE uses 'antigravity_ide' profile -> keyring 'gemini:antigravity_ide'
-    // Platform uses default 'antigravity' profile -> keyring 'gemini:antigravity'
-    let is_ide = target == Some("ide") || target == Some("agy");
-    let (keyring_account_name, win_target_name) = if is_ide {
-        ("antigravity_ide", "gemini:antigravity_ide")
-    } else {
-        ("antigravity", "gemini:antigravity")
-    };
-
     crate::modules::logger::log_info(&format!(
-        "[Desktop] Writing token to system credential store (Key: {}, Account: {}) for: {}",
-        win_target_name, keyring_account_name, account.email
+        "[Desktop] Writing token to system credential store for: {}",
+        account.email
     ));
 
     // 2. 跨平台凭据注入
@@ -406,7 +388,7 @@ pub(crate) fn write_to_system_keyring_for_target(
                 "-s",
                 "gemini",
                 "-a",
-                keyring_account_name,
+                "antigravity",
             ])
             .output();
 
@@ -417,7 +399,7 @@ pub(crate) fn write_to_system_keyring_for_target(
                 "-s",
                 "gemini",
                 "-a",
-                keyring_account_name,
+                "antigravity",
                 "-w",
                 &full_keyring_value,
                 "-A",
@@ -465,14 +447,16 @@ pub(crate) fn write_to_system_keyring_for_target(
             fn CredDeleteW(target_name: *const u16, type_: u32, flags: u32) -> i32;
         }
 
+        let target = "gemini:antigravity";
+        let user = "antigravity";
         let secret = payload_json.as_bytes();
 
-        let target_wide: Vec<u16> = std::ffi::OsStr::new(win_target_name)
+        let target_wide: Vec<u16> = std::ffi::OsStr::new(target)
             .encode_wide()
             .chain(std::iter::once(0))
             .collect();
 
-        let user_wide: Vec<u16> = std::ffi::OsStr::new(keyring_account_name)
+        let user_wide: Vec<u16> = std::ffi::OsStr::new(user)
             .encode_wide()
             .chain(std::iter::once(0))
             .collect();
@@ -520,7 +504,7 @@ pub(crate) fn write_to_system_keyring_for_target(
                 "service",
                 "gemini",
                 "username",
-                keyring_account_name,
+                "antigravity",
             ])
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())

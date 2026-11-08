@@ -346,34 +346,20 @@ if os.path.exists(agy_ext_js):
     target_anchor = 'a.search=m.toString();return a.toString()}setupFontChangeListener'
     hook_anchor = 'a.search=m.toString();try{return require("./rtl-proxy.js").wrap(a.toString())}catch(e){return a.toString()}}setupFontChangeListener'
     
-    changed = False
     if target_anchor in ext_content:
         ext_bak = agy_ext_js + ".orig"
         if not os.path.exists(ext_bak):
             shutil.copyfile(agy_ext_js, ext_bak)
         ext_content = ext_content.replace(target_anchor, hook_anchor)
-        changed = True
-        print(f"Patched agy extension RTL proxy: {agy_ext_js}")
-
-    # Isolation patch: decouple IDE from Platform by redirecting app_data_dir
-    # This gives IDE its own isolated keyring (gemini:antigravity_ide) and daemon hub directory
-    target_dir_flag = '"--app_data_dir=antigravity"'
-    isolated_dir_flag = '"--app_data_dir=antigravity_ide"'
-    if target_dir_flag in ext_content:
-        ext_bak = agy_ext_js + ".orig"
-        if not os.path.exists(ext_bak):
-            shutil.copyfile(agy_ext_js, ext_bak)
-        ext_content = ext_content.replace(target_dir_flag, isolated_dir_flag)
-        changed = True
-        print(f"Patched agy extension isolated data dir: {isolated_dir_flag}")
-
-    if changed:
         with open(agy_ext_js, 'w', encoding='utf-8') as f:
             f.write(ext_content)
             f.flush()
             os.fsync(f.fileno())
+        print(f"Patched agy extension: {agy_ext_js}")
+    elif "rtl-proxy.js" in ext_content:
+        print(f"Agy extension already patched: {agy_ext_js}")
     else:
-        print(f"Agy extension already up-to-date: {agy_ext_js}")
+        print(f"Warning: agy extension anchor not found in {agy_ext_js}")
 
 # 7. Update product.json checksums
 product_json_path = os.path.join(APP_DIR, "product.json")
