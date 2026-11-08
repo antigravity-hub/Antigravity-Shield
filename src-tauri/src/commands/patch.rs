@@ -1407,7 +1407,8 @@ textarea, input[type="text"], input:not([type]), [contenteditable="true"] {
 textarea:dir(rtl), input:dir(rtl), [contenteditable="true"]:dir(rtl),
 textarea[dir="rtl"], input[dir="rtl"], [contenteditable="true"][dir="rtl"] {
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
 }
 
 textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr),
@@ -1517,7 +1518,8 @@ pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines,
 :not(pre) > code[dir="rtl"],
 :not(pre) > code:dir(rtl) {
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
   font-family: 'Vazirmatn', 'Cascadia Code', monospace !important;
 }
 
@@ -1859,7 +1861,8 @@ div.break-words [dir="auto"]:dir(rtl),
 div.break-words :dir(rtl),
 div.leading-relaxed :dir(rtl) {
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
   text-align-last: start !important;
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
@@ -2088,35 +2091,55 @@ div.break-words p, div.break-words li,
    User Prompt Bubble: Dynamic Floating Geometry & Docking
    ========================================================================== */
 
-/* Inner Bubble always fills 100% of its outer border frame - No margin offsets! */
-[data-testid="user-message-bubble"],
-[data-testid="user-input-step"] > div {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  display: flex !important;
-  box-sizing: border-box !important;
-}
-
-/* Outer Border Card: The single cohesive bubble frame (Width: fit-content) */
+/* 1. Eliminate Outer Wrapper Green Ghost Artifact: Wrapper must be 100% transparent */
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]),
-div:has(> [data-testid="user-message-bubble"]),
-.agy-user-bubble-frame,
-.agy-user-bubble,
-[aria-label="User message"] {
+div:has(> [data-testid="user-message-bubble"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
   width: fit-content !important;
   max-width: 85% !important;
-  display: block !important;
-  box-sizing: border-box !important;
 }
 
-/* RTL: Outer Card Docks Flush to the RIGHT with 0 margin-right */
+/* 2. Self-Contained User Message Bubble with Natural Horizontal Expansion (No word collapse!) */
+[data-testid="user-message-bubble"],
+[data-testid="user-input-step"] > div:has([data-testid="user-message-bubble"]) {
+  background-color: #0f1c24 !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 14px -2px rgba(16, 185, 129, 0.18) !important;
+  color: #f1f5f9 !important;
+  width: fit-content !important;
+  max-width: 85% !important;
+  display: flex !important;
+  box-sizing: border-box !important;
+  padding: 8px 14px !important;
+}
+
+/* Stop Flex-1 Collapse: Allow text to expand horizontally to its full line width! */
+[data-testid="user-message-bubble"] > div:first-child,
+[data-testid="user-message-bubble"] .flex-1,
+[data-testid="user-message-bubble"] [class*="flex-1"] {
+  flex: 0 1 auto !important;
+  min-width: fit-content !important;
+  width: auto !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.8 !important;
+}
+
+/* RTL: Outer Card & Row Docks Flush to the RIGHT with 0 margin-right */
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]:dir(rtl)),
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"][dir="rtl"]),
 .relative.p-px.rounded-xl.bg-card-border:has([dir="rtl"]),
 div:has(> [data-testid="user-message-bubble"]:dir(rtl)),
 div:has(> [data-testid="user-message-bubble"][dir="rtl"]),
 div:has(> [dir="rtl"] > [data-testid="user-message-bubble"]),
+[data-testid="user-message-bubble"]:dir(rtl),
+[data-testid="user-message-bubble"][dir="rtl"],
 [data-testid="user-input-step"]:dir(rtl),
 [data-testid="user-input-step"][dir="rtl"],
 [aria-label="User message"]:dir(rtl),
@@ -2131,13 +2154,15 @@ div:has(> [dir="rtl"] > [data-testid="user-message-bubble"]),
   direction: rtl !important;
 }
 
-/* LTR: Outer Card Docks Flush to the LEFT */
+/* LTR: Outer Card & Row Docks Flush to the LEFT */
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]:dir(ltr)),
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"][dir="ltr"]),
 .relative.p-px.rounded-xl.bg-card-border:has([dir="ltr"]),
 div:has(> [data-testid="user-message-bubble"]:dir(ltr)),
 div:has(> [data-testid="user-message-bubble"][dir="ltr"]),
 div:has(> [dir="ltr"] > [data-testid="user-message-bubble"]),
+[data-testid="user-message-bubble"]:dir(ltr),
+[data-testid="user-message-bubble"][dir="ltr"],
 [data-testid="user-input-step"]:dir(ltr),
 [data-testid="user-input-step"][dir="ltr"],
 [aria-label="User message"]:dir(ltr),
@@ -2152,11 +2177,13 @@ div:has(> [dir="ltr"] > [data-testid="user-message-bubble"]),
   direction: ltr !important;
 }
 
-/* Outer Row Container (div.w-full holding the bubble) flex-aligns to the edge */
+/* Outer Row Container (div.w-full & user-input-step) flex-aligns to the edge */
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"]:dir(rtl)),
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"][dir="rtl"]),
 div.w-full:has([data-testid="user-message-bubble"]:dir(rtl)),
-div.w-full:has([data-testid="user-message-bubble"][dir="rtl"]) {
+div.w-full:has([data-testid="user-message-bubble"][dir="rtl"]),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"]:dir(rtl)),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"][dir="rtl"]) {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
@@ -2167,7 +2194,9 @@ div.w-full:has([data-testid="user-message-bubble"][dir="rtl"]) {
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"]:dir(ltr)),
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"][dir="ltr"]),
 div.w-full:has([data-testid="user-message-bubble"]:dir(ltr)),
-div.w-full:has([data-testid="user-message-bubble"][dir="ltr"]) {
+div.w-full:has([data-testid="user-message-bubble"][dir="ltr"]),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"]:dir(ltr)),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"][dir="ltr"]) {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;

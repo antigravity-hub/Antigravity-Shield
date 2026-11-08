@@ -210,35 +210,55 @@ blockquote:has(> .markdown-alert),
    User Prompt Bubble: Dynamic Floating Geometry & Docking
    ========================================================================== */
 
-/* Inner Bubble always fills 100% of its outer border frame - No margin offsets! */
-[data-testid="user-message-bubble"],
-[data-testid="user-input-step"] > div {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  display: flex !important;
-  box-sizing: border-box !important;
-}
-
-/* Outer Border Card: The single cohesive bubble frame (Width: fit-content) */
+/* 1. Eliminate Outer Wrapper Green Ghost Artifact: Wrapper must be 100% transparent */
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]),
-div:has(> [data-testid="user-message-bubble"]),
-.agy-user-bubble-frame,
-.agy-user-bubble,
-[aria-label="User message"] {
+div:has(> [data-testid="user-message-bubble"]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
   width: fit-content !important;
   max-width: 85% !important;
-  display: block !important;
-  box-sizing: border-box !important;
 }
 
-/* RTL: Outer Card Docks Flush to the RIGHT with 0 margin-right */
+/* 2. Self-Contained User Message Bubble with Natural Horizontal Expansion (No word collapse!) */
+[data-testid="user-message-bubble"],
+[data-testid="user-input-step"] > div:has([data-testid="user-message-bubble"]) {
+  background-color: #0f1c24 !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 14px -2px rgba(16, 185, 129, 0.18) !important;
+  color: #f1f5f9 !important;
+  width: fit-content !important;
+  max-width: 85% !important;
+  display: flex !important;
+  box-sizing: border-box !important;
+  padding: 8px 14px !important;
+}
+
+/* Stop Flex-1 Collapse: Allow text to expand horizontally to its full line width! */
+[data-testid="user-message-bubble"] > div:first-child,
+[data-testid="user-message-bubble"] .flex-1,
+[data-testid="user-message-bubble"] [class*="flex-1"] {
+  flex: 0 1 auto !important;
+  min-width: fit-content !important;
+  width: auto !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.8 !important;
+}
+
+/* RTL: Outer Card & Row Docks Flush to the RIGHT with 0 margin-right */
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]:dir(rtl)),
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"][dir="rtl"]),
 .relative.p-px.rounded-xl.bg-card-border:has([dir="rtl"]),
 div:has(> [data-testid="user-message-bubble"]:dir(rtl)),
 div:has(> [data-testid="user-message-bubble"][dir="rtl"]),
 div:has(> [dir="rtl"] > [data-testid="user-message-bubble"]),
+[data-testid="user-message-bubble"]:dir(rtl),
+[data-testid="user-message-bubble"][dir="rtl"],
 [data-testid="user-input-step"]:dir(rtl),
 [data-testid="user-input-step"][dir="rtl"],
 [aria-label="User message"]:dir(rtl),
@@ -253,13 +273,15 @@ div:has(> [dir="rtl"] > [data-testid="user-message-bubble"]),
   direction: rtl !important;
 }
 
-/* LTR: Outer Card Docks Flush to the LEFT */
+/* LTR: Outer Card & Row Docks Flush to the LEFT */
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]:dir(ltr)),
 .relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"][dir="ltr"]),
 .relative.p-px.rounded-xl.bg-card-border:has([dir="ltr"]),
 div:has(> [data-testid="user-message-bubble"]:dir(ltr)),
 div:has(> [data-testid="user-message-bubble"][dir="ltr"]),
 div:has(> [dir="ltr"] > [data-testid="user-message-bubble"]),
+[data-testid="user-message-bubble"]:dir(ltr),
+[data-testid="user-message-bubble"][dir="ltr"],
 [data-testid="user-input-step"]:dir(ltr),
 [data-testid="user-input-step"][dir="ltr"],
 [aria-label="User message"]:dir(ltr),
@@ -274,11 +296,13 @@ div:has(> [dir="ltr"] > [data-testid="user-message-bubble"]),
   direction: ltr !important;
 }
 
-/* Outer Row Container (div.w-full holding the bubble) flex-aligns to the edge */
+/* Outer Row Container (div.w-full & user-input-step) flex-aligns to the edge */
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"]:dir(rtl)),
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"][dir="rtl"]),
 div.w-full:has([data-testid="user-message-bubble"]:dir(rtl)),
-div.w-full:has([data-testid="user-message-bubble"][dir="rtl"]) {
+div.w-full:has([data-testid="user-message-bubble"][dir="rtl"]),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"]:dir(rtl)),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"][dir="rtl"]) {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
@@ -289,7 +313,9 @@ div.w-full:has([data-testid="user-message-bubble"][dir="rtl"]) {
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"]:dir(ltr)),
 div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"][dir="ltr"]),
 div.w-full:has([data-testid="user-message-bubble"]:dir(ltr)),
-div.w-full:has([data-testid="user-message-bubble"][dir="ltr"]) {
+div.w-full:has([data-testid="user-message-bubble"][dir="ltr"]),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"]:dir(ltr)),
+[data-testid="user-input-step"]:has([data-testid="user-message-bubble"][dir="ltr"]) {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
@@ -375,28 +401,57 @@ const SCRIPT_INJECT = `
       var cardWrapper = el.closest('.relative.p-px.rounded-xl.bg-card-border') || el.parentElement;
       var rowContainer = cardWrapper ? cardWrapper.parentElement : null;
 
-      // Inner card always fits 100% of wrapper - no margin offset!
-      el.style.setProperty('width', '100%', 'important');
-      el.style.setProperty('max-width', '100%', 'important');
-      el.style.setProperty('margin', '0px', 'important');
-      el.style.setProperty('display', 'flex', 'important');
-      el.style.setProperty('box-sizing', 'border-box', 'important');
-
       if (cardWrapper && cardWrapper !== document.body) {
+        cardWrapper.style.setProperty('background', 'transparent', 'important');
+        cardWrapper.style.setProperty('background-color', 'transparent', 'important');
+        cardWrapper.style.setProperty('border', 'none', 'important');
+        cardWrapper.style.setProperty('padding', '0px', 'important');
+        cardWrapper.style.setProperty('box-shadow', 'none', 'important');
         cardWrapper.style.setProperty('width', 'fit-content', 'important');
         cardWrapper.style.setProperty('max-width', '85%', 'important');
-        cardWrapper.style.setProperty('box-sizing', 'border-box', 'important');
-        cardWrapper.style.setProperty('padding', '1px', 'important');
+      }
 
-        if (persian) {
+      // Bubble card itself with natural horizontal expansion
+      el.style.setProperty('background-color', '#0f1c24', 'important');
+      el.style.setProperty('border', '1px solid rgba(16, 185, 129, 0.35)', 'important');
+      el.style.setProperty('border-radius', '12px', 'important');
+      el.style.setProperty('box-shadow', '0 0 14px -2px rgba(16, 185, 129, 0.18)', 'important');
+      el.style.setProperty('width', 'fit-content', 'important');
+      el.style.setProperty('max-width', '85%', 'important');
+      el.style.setProperty('display', 'flex', 'important');
+      el.style.setProperty('box-sizing', 'border-box', 'important');
+      el.style.setProperty('padding', '8px 14px', 'important');
+
+      // Stop Flex-1 Collapse: Allow text to expand horizontally to its full line width!
+      var textChild = el.querySelector('.flex-1') || el.firstElementChild;
+      if (textChild) {
+        textChild.style.setProperty('flex', '0 1 auto', 'important');
+        textChild.style.setProperty('min-width', 'fit-content', 'important');
+        textChild.style.setProperty('width', 'auto', 'important');
+        textChild.style.setProperty('white-space', 'pre-wrap', 'important');
+        textChild.style.setProperty('line-height', '1.8', 'important');
+      }
+
+      if (persian) {
+        el.setAttribute('dir', 'rtl');
+        el.style.setProperty('direction', 'rtl', 'important');
+        el.style.setProperty('margin-left', 'auto', 'important');
+        el.style.setProperty('margin-right', '0px', 'important');
+        el.style.setProperty('align-self', 'flex-end', 'important');
+        if (cardWrapper && cardWrapper !== document.body) {
           cardWrapper.setAttribute('dir', 'rtl');
-          cardWrapper.style.setProperty('direction', 'rtl', 'important');
           cardWrapper.style.setProperty('margin-left', 'auto', 'important');
           cardWrapper.style.setProperty('margin-right', '0px', 'important');
           cardWrapper.style.setProperty('align-self', 'flex-end', 'important');
-        } else if (txt.length > 0) {
+        }
+      } else if (txt.length > 0) {
+        el.setAttribute('dir', 'ltr');
+        el.style.setProperty('direction', 'ltr', 'important');
+        el.style.setProperty('margin-right', 'auto', 'important');
+        el.style.setProperty('margin-left', '0px', 'important');
+        el.style.setProperty('align-self', 'flex-start', 'important');
+        if (cardWrapper && cardWrapper !== document.body) {
           cardWrapper.setAttribute('dir', 'ltr');
-          cardWrapper.style.setProperty('direction', 'ltr', 'important');
           cardWrapper.style.setProperty('margin-right', 'auto', 'important');
           cardWrapper.style.setProperty('margin-left', '0px', 'important');
           cardWrapper.style.setProperty('align-self', 'flex-start', 'important');
