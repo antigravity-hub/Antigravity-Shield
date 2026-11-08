@@ -1933,3 +1933,48 @@ div.break-words p, div.break-words li,
   align-self: flex-start !important;
   direction: ltr !important;
 }
+
+
+/* ==========================================================================
+   Chat Composer & Toolbar Layout Shield (Model Selector LEFT, Send Button RIGHT)
+   ========================================================================== */
+form,
+[data-testid="chat-input"],
+[data-testid="composer"],
+div:has(> textarea),
+div:has(> [contenteditable="true"]),
+div:has(> [data-lexical-editor="true"]),
+.relative.p-px.rounded-xl.bg-card-border:has(textarea),
+.relative.p-px.rounded-xl.bg-card-border:has([contenteditable="true"]) {
+  direction: ltr !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  align-self: stretch !important;
+}
+
+/* Ensure the footer toolbar row (model selector on left, send button on right) stays LTR */
+form div[class*="flex"],
+[data-testid="chat-input"] div[class*="flex"],
+div:has(> textarea) div[class*="flex"],
+.relative.p-px.rounded-xl.bg-card-border div[class*="flex"] {
+  direction: ltr !important;
+}
+
+/* Only the text inside textarea or contenteditable responds to Persian RTL typing */
+textarea:dir(rtl), textarea[dir="rtl"],
+[contenteditable="true"]:dir(rtl), [contenteditable="true"][dir="rtl"],
+div[data-lexical-editor="true"]:dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: plaintext !important;
+}
+
+textarea:dir(ltr), textarea[dir="ltr"],
+[contenteditable="true"]:dir(ltr), [contenteditable="true"][dir="ltr"],
+div[data-lexical-editor="true"]:dir(ltr) {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: plaintext !important;
+}
