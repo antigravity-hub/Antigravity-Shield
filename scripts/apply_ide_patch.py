@@ -30,11 +30,45 @@ print(f"Extracted VAZIRMATN_RTL_CSS: {len(VAZIRMATN_RTL_CSS):,} bytes")
 SENTINEL_CODE = """
 // [Antigravity-Shield-IDE-BiDi-Sentinel]
 (()=>{
-  const isPersian = (s) => /[\\u0600-\\u06FF]/.test(s);
+  const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
 
   function applyBiDiToElement(el) {
     if (!el || el.nodeType !== 1) return;
-    if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) return;
+
+    // 1. Guard against global document and shell nodes
+    if (el === document.body || el === document.documentElement || el.tagName === 'BODY' || el.tagName === 'HTML') return;
+    if (el.classList.contains('monaco-workbench')) return;
+
+    // 2. Guard against sidebar, editor, and terminal panels
+    if (el.closest('.part.sidebar') || el.closest('.sidebar')) return;
+    if (el.closest('.part.editor') || el.closest('.editor') || el.closest('.monaco-editor')) return;
+
+    // 3. Guard against chat container / viewport / layout wrappers (Container Scope Inversion Guard)
+    if (
+      el.classList.contains('auxiliarybar') ||
+      el.getAttribute('data-testid') === 'conversation-view' ||
+      el.getAttribute('data-testid') === 'autoscroll-viewport' ||
+      el.getAttribute('data-testid') === 'chat-message' ||
+      el.getAttribute('role') === 'article' ||
+      el.hasAttribute('data-aux-pane-open') ||
+      el.hasAttribute('data-aux-pane-focus-scope') ||
+      el.classList.contains('rendered-markdown') ||
+      el.classList.contains('prose') ||
+      el.classList.contains('markdown-body')
+    ) {
+      return;
+    }
+
+    // 4. Guard against code blocks, preformatted text, thinking traces, and icon fonts
+    if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('code')) return;
+    if (el.classList.contains('cursor-edit') || el.closest('.cursor-edit')) return;
+    if (
+      el.classList.contains('codicon') ||
+      el.classList.contains('google-symbols') ||
+      (typeof el.className === 'string' && el.className.includes('codicon-'))
+    ) {
+      return;
+    }
 
     const txt = el.textContent || '';
     if (isPersian(txt)) {
@@ -72,10 +106,10 @@ SENTINEL_CODE = """
 
   function patchBiDi(root = document) {
     if (!root) return;
-    if (root.nodeType === 1) applyBiDiToElement(root);
+    // CRITICAL: NEVER call applyBiDiToElement(root) directly to prevent container scope inversion
     if (!root.querySelectorAll) return;
 
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, div.break-words, div.break-words > *, [data-testid="user-message-bubble"], [data-testid="user-message-bubble"] div, [data-testid="user-message-bubble"] span, [data-testid="user-input-step"], [data-testid="user-input-step"] div, [data-testid="user-input-step"] span, [role="article"], [role="article"] p, [role="article"] div, [role="article"] span, [role="article"] li, .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"], [data-testid="conversation-view"] p, [data-testid="conversation-view"] span, [data-testid="conversation-view"] div, [data-testid="conversation-view"] li, .part.auxiliarybar, .part.auxiliarybar p, .part.auxiliarybar span, .part.auxiliarybar div, .part.auxiliarybar li, [data-aux-pane-open], [data-aux-pane-open] p, [data-aux-pane-open] span, [data-aux-pane-open] div, [data-aux-pane-open] li, [data-aux-pane-focus-scope="true"] p, [data-aux-pane-focus-scope="true"] span, [data-aux-pane-focus-scope="true"] div, button[data-tab-id] span');
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-input-step"], [role="article"] > p, [role="article"] > li');
     for (let i = 0; i < targets.length; i++) {
       applyBiDiToElement(targets[i]);
     }
@@ -101,11 +135,19 @@ SENTINEL_CODE = """
       if (m.type === 'childList') {
         for (let j = 0; j < m.addedNodes.length; j++) {
           const n = m.addedNodes[j];
-          if (n.nodeType === 1) patchBiDi(n);
+          if (n.nodeType === 1) {
+            if (n.matches && n.matches('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-input-step"]')) {
+              applyBiDiToElement(n);
+            }
+            patchBiDi(n);
+          }
         }
       } else if (m.type === 'characterData') {
         const p = m.target.parentElement;
-        if (p) applyBiDiToElement(p);
+        if (p) {
+          const block = p.closest('p, li, h1, h2, h3, h4, h5, h6, blockquote, [data-testid="user-message-bubble"], [data-testid="user-input-step"]') || p;
+          applyBiDiToElement(block);
+        }
       }
     }
   });
@@ -124,6 +166,8 @@ SENTINEL_CODE = """
   document.addEventListener('input', (e) => {
     const el = e.target;
     if (!el) return;
+    // Guard against editor, sidebar, or terminal input fields
+    if (el.closest('.part.sidebar') || el.closest('.sidebar') || el.closest('.part.editor') || el.closest('.editor') || el.closest('.monaco-editor')) return;
     if (el.isContentEditable || el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
       const val = el.value || el.textContent || '';
       if (isPersian(val)) {
@@ -205,6 +249,8 @@ for idx, (target, replacement) in enumerate(wb_replacements, 1):
 
 with open(wb_main_path, 'w', encoding='utf-8') as f:
     f.write(wb_content)
+    f.flush()
+    os.fsync(f.fileno())
 print(f"Saved patched workbench.desktop.main.js: {os.path.getsize(wb_main_path):,} bytes")
 
 # 4. Patch CSS files idempotently
@@ -260,8 +306,15 @@ for hp in html_targets:
         continue
     with open(hp, 'r', encoding='utf-8') as f:
         content = f.read()
+    old_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tvscode-remote-resource:"
+    new_fsrc = "\t\t\t\tfont-src\n\t\t\t\t\t'self'\n\t\t\t\t\tdata:\n\t\t\t\t\tvscode-remote-resource:"
+    if old_fsrc in content:
+        content = content.replace(old_fsrc, new_fsrc)
+    if "style-src 'unsafe-inline';" in content and "font-src" not in content:
+        content = content.replace("style-src 'unsafe-inline';", "style-src 'unsafe-inline'; font-src 'self' data:;")
+
     if '<style id="antigravity-shield-ide-bidi">' in content:
-        content = re.sub(r'<style id="antigravity-shield-ide-bidi">.*?</style>', '', content, flags=re.DOTALL)
+        content = re.sub(r'\s*<style id="antigravity-shield-ide-bidi">.*?</style>\s*', '\n', content, flags=re.DOTALL)
     content = content.replace('</head>', f'{STYLE_BLOCK}\n</head>')
     with open(hp, 'w', encoding='utf-8') as f:
         f.write(content)

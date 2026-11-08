@@ -213,6 +213,7 @@ pub const VAZIRMATN_RTL_CSS: &str = r#"
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F;
 }
 
 /* [Antigravity-Emerald-Raindrop-Cascade-And-Bidi-List-Shield] - Live Neon Pulse & Ergonomic Tree */
@@ -797,6 +798,7 @@ html,
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F;
 }
 
 :root {
@@ -1746,52 +1748,79 @@ button[data-tab-id]:hover:not([class*="bg-secondary"]) {
 /* ==========================================================================
    Comprehensive Vazirmatn Typography for Right Auxiliary Bar, Aux Pane, & Chat Panel
    ========================================================================== */
-.monaco-workbench,
-.monaco-workbench.windows,
 .part.auxiliarybar,
-.part.auxiliarybar *,
+.part.auxiliarybar *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 [data-aux-pane-open],
-[data-aux-pane-open] *,
+[data-aux-pane-open] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 [data-aux-pane-focus-scope="true"],
-[data-aux-pane-focus-scope="true"] *,
+[data-aux-pane-focus-scope="true"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 [data-testid="conversation-view"],
-[data-testid="conversation-view"] *,
+[data-testid="conversation-view"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-testid="chat-message"],
+[data-testid="chat-message"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 [data-testid="user-message-bubble"],
-[data-testid="user-message-bubble"] *,
+[data-testid="user-message-bubble"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 [data-testid="user-input-step"],
-[data-testid="user-input-step"] *,
+[data-testid="user-input-step"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-testid="user-message-content"],
+[data-testid="user-message-content"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 [role="article"],
-[role="article"] *,
+[role="article"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 div.break-words,
-div.break-words *,
+div.break-words *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 div.leading-relaxed,
-div.leading-relaxed *,
+div.leading-relaxed *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
 .rendered-markdown,
-.rendered-markdown * {
+.rendered-markdown *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+.prose,
+.prose *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+.markdown-body,
+.markdown-body *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit) {
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-/* Monospace preservation for code within Auxiliary Bar, Aux Pane & Chat */
-pre,
-pre *,
-code,
-code *,
-.monaco-editor,
-.monaco-editor *,
-.view-line,
-.view-lines,
-.codicon,
-.codicon:before,
-.codicon:after,
-[class*="codicon"] {
-  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
+/* BiDi Auto-Alignment & Text Normalization for Chat Pane */
+[data-testid="conversation-view"],
+[data-testid="chat-message"],
+[data-testid="user-input-step"],
+[data-testid="user-message-bubble"],
+[data-testid="user-message-content"],
+[role="article"],
+.leading-relaxed,
+.rendered-markdown,
+.prose,
+.markdown-body,
+div[data-lexical-editor="true"],
+#antigravity\.agentSidePanelInputBox [contenteditable="true"],
+textarea[data-testid="ask-question-writein"] {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  line-height: 1.7 !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-.codicon,
-.codicon:before,
-.codicon:after,
-[class*="codicon"] {
-  font-family: 'codicon' !important;
+/* Double Scrollbar Elimination in Conversation View */
+[data-testid="conversation-view"] .chat-message,
+[data-testid="conversation-view"] [class*="prose"],
+[data-testid="conversation-view"] [role="article"],
+[data-testid="conversation-view"] .leading-relaxed {
+  overflow-y: visible !important;
+  overflow-x: visible !important;
+  max-height: none !important;
+  scrollbar-width: none !important;
+}
+
+[data-testid="autoscroll-viewport"] {
+  overflow-y: auto !important;
+}
+
+[data-testid="conversation-view"] .chat-message::-webkit-scrollbar,
+[data-testid="conversation-view"] [class*="prose"]::-webkit-scrollbar,
+[data-testid="conversation-view"] [role="article"]::-webkit-scrollbar,
+[data-testid="conversation-view"] .leading-relaxed::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* ==========================================================================
@@ -1801,7 +1830,6 @@ code *,
 [data-testid="conversation-view"] [dir="auto"]:dir(rtl),
 [data-testid="conversation-view"] [dir="rtl"],
 [data-testid="conversation-view"] :dir(rtl),
-[data-testid="conversation-view"] p[dir="auto"],
 [data-testid="conversation-view"] p:dir(rtl),
 [data-testid="conversation-view"] p[dir="rtl"],
 [data-testid="conversation-view"] li:dir(rtl),
@@ -1815,10 +1843,10 @@ code *,
 [data-testid="conversation-view"] blockquote:dir(rtl),
 [data-testid="conversation-view"] div[role="article"]:dir(rtl),
 [data-testid="conversation-view"] div.break-words:dir(rtl),
-[data-testid="user-message-bubble"],
-[data-testid="user-message-bubble"] *,
-[data-testid="user-input-step"],
-[data-testid="user-input-step"] *,
+[data-testid="user-message-bubble"]:dir(rtl),
+[data-testid="user-message-bubble"]:dir(rtl) *,
+[data-testid="user-input-step"]:dir(rtl),
+[data-testid="user-input-step"]:dir(rtl) *,
 .part.auxiliarybar [dir="rtl"],
 .part.auxiliarybar :dir(rtl),
 [data-aux-pane-open] [dir="rtl"],
@@ -1843,488 +1871,153 @@ div.leading-relaxed :dir(rtl) {
 [data-testid="conversation-view"] div[role="article"],
 [data-testid="conversation-view"] .rendered-markdown,
 [data-testid="conversation-view"] .whitespace-pre-wrap,
+[role="article"] p,
+.rendered-markdown p,
 [data-testid="user-message-bubble"][dir="auto"],
 [data-testid="user-input-step"][dir="auto"],
 [role="article"] [dir="auto"],
 div.break-words[dir="auto"],
 div.leading-relaxed[dir="auto"] {
   unicode-bidi: plaintext !important;
+  text-align: start !important;
+  text-align-last: start !important;
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
-.monaco-list-row:hover:not(.selected) {
-  background-color: rgba(16, 185, 129, 0.09) !important;
+/* ==========================================================================
+   High-Specificity LTR Isolation & Monospace Protection (POST-RTL SHIELD)
+   ========================================================================== */
+[data-testid="conversation-view"] pre,
+[data-testid="conversation-view"] code,
+[data-testid="conversation-view"] pre *,
+[data-testid="conversation-view"] code *,
+[data-testid="conversation-view"] pre code,
+[data-testid="conversation-view"] :dir(rtl) pre,
+[data-testid="conversation-view"] :dir(rtl) code,
+[data-testid="conversation-view"] :dir(rtl) pre *,
+[data-testid="conversation-view"] :dir(rtl) code *,
+[role="article"] pre,
+[role="article"] code,
+[role="article"] pre *,
+[role="article"] code *,
+[role="article"] :dir(rtl) pre,
+[role="article"] :dir(rtl) code,
+[role="article"] :dir(rtl) pre *,
+[role="article"] :dir(rtl) code *,
+.part.auxiliarybar pre,
+.part.auxiliarybar code,
+.part.auxiliarybar pre *,
+.part.auxiliarybar code *,
+.part.auxiliarybar :dir(rtl) pre,
+.part.auxiliarybar :dir(rtl) code,
+.prose pre,
+.prose code,
+.prose pre *,
+.prose code *,
+.prose :dir(rtl) pre,
+.prose :dir(rtl) code,
+.markdown-body pre,
+.markdown-body code,
+.markdown-body pre *,
+.markdown-body code *,
+div.leading-relaxed pre,
+div.leading-relaxed code,
+div.leading-relaxed :dir(rtl) pre,
+div.leading-relaxed :dir(rtl) code,
+div.break-words pre,
+div.break-words code,
+pre,
+code,
+pre *,
+code * {
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  unicode-bidi: isolate !important;
+  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
 }
 
-.monaco-list-row.selected,
-.monaco-list-row.focused {
-  background-color: rgba(16, 185, 129, 0.20) !important;
-  color: #a7f3d0 !important;
+/* Monaco Editor Container & Line Level LTR Isolation */
+[data-testid="conversation-view"] .monaco-editor,
+[data-testid="conversation-view"] .monaco-editor *,
+[data-testid="conversation-view"] :dir(rtl) .monaco-editor,
+[data-testid="conversation-view"] :dir(rtl) .monaco-editor *,
+[role="article"] .monaco-editor,
+[role="article"] .monaco-editor *,
+.part.auxiliarybar .monaco-editor,
+.part.auxiliarybar .monaco-editor *,
+.monaco-editor,
+.monaco-editor *,
+.view-line,
+.view-lines {
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  unicode-bidi: isolate !important;
+  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
 }
 
-.monaco-list-row.selected .label-name,
-.monaco-list-row.focused .label-name {
-  color: #6ee7b7 !important;
-  font-weight: 600 !important;
+/* Thinking / Reasoning Trace Block Strict LTR Shield */
+[data-testid="conversation-view"] .cursor-edit,
+[data-testid="conversation-view"] .cursor-edit *,
+[data-testid="conversation-view"] .cursor-edit.text-secondary-foreground,
+[data-testid="conversation-view"] .cursor-edit.text-secondary-foreground *,
+[data-testid="conversation-view"] :dir(rtl) .cursor-edit,
+[data-testid="conversation-view"] :dir(rtl) .cursor-edit *,
+[role="article"] .cursor-edit,
+[role="article"] .cursor-edit *,
+.part.auxiliarybar .cursor-edit,
+.part.auxiliarybar .cursor-edit *,
+.cursor-edit,
+.cursor-edit *,
+.cursor-edit.text-secondary-foreground,
+.cursor-edit.text-secondary-foreground * {
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  unicode-bidi: isolate !important;
+  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
 }
 
-.monaco-tree-indent-guides .monaco-list-row .indent-guide {
-  border-right-color: rgba(16, 185, 129, 0.25) !important;
-}
-.monaco-tree-indent-guides .monaco-list-row:hover .indent-guide.active {
-  border-right-color: #10b981 !important;
-}
-
-/* 8.1 Eliminate Duplicate Outer Scrollbars in Sidebar */
-div.flex-1.min-h-0.overflow-y-auto:has([data-testid="conversation-list-sidebar"]),
-[data-testid="sidebar-split"] div:has(> * > [data-testid="conversation-list-sidebar"]),
-[data-testid="sidebar-split"] div:has(> [data-testid="conversation-list-sidebar"]) {
-  overflow: hidden !important;
-  overflow-y: hidden !important;
-  scrollbar-width: none !important;
-}
-div.flex-1.min-h-0.overflow-y-auto:has([data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
-[data-testid="sidebar-split"] div:has(> * > [data-testid="conversation-list-sidebar"])::-webkit-scrollbar,
-[data-testid="sidebar-split"] div:has(> [data-testid="conversation-list-sidebar"])::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-}
-
-/* Ensure Main Conversation Page & Autoscroll Viewport Can Always Scroll */
-[data-testid="autoscroll-viewport"],
-[data-testid="conversation-view"],
-main div.overflow-y-auto,
-div.overflow-y-auto.isolate {
-  overflow-y: auto !important;
-  scrollbar-width: thin !important;
+/* Icon Font Immunity Shield (Codicon & Google Symbols) */
+[data-testid="conversation-view"] .codicon,
+[data-testid="conversation-view"] [class*="codicon-"],
+[data-testid="conversation-view"] :dir(rtl) .codicon,
+[data-testid="conversation-view"] :dir(rtl) [class*="codicon-"],
+[role="article"] .codicon,
+[role="article"] [class*="codicon-"],
+[role="article"] :dir(rtl) .codicon,
+[role="article"] :dir(rtl) [class*="codicon-"],
+.part.auxiliarybar .codicon,
+.part.auxiliarybar [class*="codicon-"],
+.part.auxiliarybar :dir(rtl) .codicon,
+.part.auxiliarybar :dir(rtl) [class*="codicon-"],
+.prose .codicon,
+.prose [class*="codicon-"],
+.prose :dir(rtl) .codicon,
+.prose :dir(rtl) [class*="codicon-"],
+.codicon,
+[class*="codicon-"] {
+  font-family: codicon !important;
+  direction: ltr !important;
+  text-align: left !important;
 }
 
-/* 8.2 Single Sleek 4px Dark-Glass Webkit Scrollbar for Sidebar */
-[data-testid="conversation-list-sidebar"] {
-  scrollbar-width: none !important; /* Disables native Windows grey scrollbar */
-}
-[data-testid="conversation-list-sidebar"]::-webkit-scrollbar {
-  display: block !important;
-  width: 4px !important;
-}
-[data-testid="conversation-list-sidebar"]::-webkit-scrollbar-track {
-  background: transparent !important;
-}
-[data-testid="conversation-list-sidebar"]::-webkit-scrollbar-thumb {
-  background: rgba(147, 233, 190, 0.3) !important;
-  border-radius: 4px !important;
-}
-[data-testid="conversation-list-sidebar"]::-webkit-scrollbar-thumb:hover {
-  background: rgba(147, 233, 190, 0.6) !important;
-}
-
-/* 8.3 Top Navigation Action Hero ("New Conversation") */
-[data-testid="new-conversation-button"],
-a.agy-button[href="/"] {
-  background: linear-gradient(135deg, rgba(147, 233, 190, 0.15) 0%, rgba(147, 233, 190, 0.04) 100%) !important;
-  border: 1px solid rgba(147, 233, 190, 0.28) !important;
-  border-radius: 9px !important;
-  color: #93e9be !important;
-  font-weight: 600 !important;
-  font-size: 0.86rem !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  backdrop-filter: blur(8px) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
-}
-
-[data-testid="new-conversation-button"]:hover,
-a.agy-button[href="/"]:hover {
-  background: linear-gradient(135deg, rgba(147, 233, 190, 0.25) 0%, rgba(147, 233, 190, 0.09) 100%) !important;
-  border-color: rgba(147, 233, 190, 0.55) !important;
-  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.35) !important;
-  transform: translateY(-0.5px) !important;
-  color: #bbf7d0 !important;
-}
-
-[data-testid="new-conversation-button"] svg,
-a.agy-button[href="/"] svg {
-  color: #93e9be !important;
-}
-
-/* Secondary Navigation Buttons (Automations, Customizations) */
-[data-testid="automations-button"],
-[data-testid="sidebar-navigation-items"] a[href="/customizations"] {
-  border-radius: 8px !important;
-  transition: all 0.18s ease !important;
-  font-size: 0.85rem !important;
-  color: #94a3b8 !important;
-}
-
-[data-testid="automations-button"]:hover,
-[data-testid="sidebar-navigation-items"] a[href="/customizations"]:hover {
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: #e2e8f0 !important;
-  transform: translateX(1px) !important;
-}
-
-/* 8.4 Section Headers (Pinned Conversations, Projects) */
-[data-testid="conversation-list-sidebar"] [class*="section-header"],
-[data-testid="conversation-list-sidebar"] [data-testid*="section-header"] {
-  margin-top: 14px !important;
-  margin-bottom: 4px !important;
-  padding-left: 6px !important;
-  padding-right: 6px !important;
-  height: 28px !important;
-  background: transparent !important;
-  border: none !important;
-}
-
-[data-testid="conversation-list-sidebar"] [class*="section-header"] h2,
-[data-testid="conversation-list-sidebar"] h2 {
-  font-size: 0.72rem !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.085em !important;
-  color: rgba(147, 233, 190, 0.75) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Vazirmatn', sans-serif !important;
-  opacity: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-[data-testid="conversation-list-sidebar"] [class*="section-header"]:hover h2 {
-  color: #93e9be !important;
-  transition: color 0.15s ease !important;
-}
-
-[data-testid="conversation-list-sidebar"] [class*="section-header"] svg {
-  color: rgba(147, 233, 190, 0.6) !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease !important;
-}
-
-[data-testid="conversation-list-sidebar"] [class*="section-header"]:hover svg {
-  color: #93e9be !important;
-}
-
-/* 8.5 Dynamic Chromatic Project Folders & Tree Guide Lines */
-button[data-testid="project-header"],
-button[data-project-card="true"] {
-  background: var(--proj-bg, linear-gradient(135deg, rgba(147, 233, 190, 0.08) 0%, rgba(147, 233, 190, 0.02) 100%)) !important;
-  border: 1px solid var(--proj-color, rgba(147, 233, 190, 0.18)) !important;
-  border-radius: 8px !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  padding-left: 8px !important;
-  margin-bottom: 2px !important;
-}
-
-button[data-testid="project-header"]:hover,
-button[data-project-card="true"]:hover {
-  background: var(--proj-bg, linear-gradient(135deg, rgba(147, 233, 190, 0.18) 0%, rgba(147, 233, 190, 0.05) 100%)) !important;
-  border-color: var(--proj-color, rgba(147, 233, 190, 0.6)) !important;
-  box-shadow: none !important;
-  transform: translateY(-0.5px) !important;
-}
-
-button[data-testid="project-header"] span.truncate,
-button[data-project-card="true"] span.truncate {
-  color: var(--proj-color, #93e9be) !important;
-  font-weight: 600 !important;
-  font-size: 0.88rem !important;
-  letter-spacing: 0.01em !important;
-}
-
-button[data-testid="project-header"]:hover span.truncate,
-button[data-project-card="true"]:hover span.truncate {
-  color: #fff !important;
-}
-
-button[data-testid="project-header"] svg,
-button[data-project-card="true"] svg {
-  color: var(--proj-color, #93e9be) !important;
-  filter: drop-shadow(0 0 4px var(--proj-glow, rgba(147, 233, 190, 0.35))) !important;
-}
-
-/* 8.6 General Conversation Rows */
-.agy-sidebar-row {
-  border-radius: 8px !important;
-  margin-bottom: 2px !important;
-  padding-top: 6px !important;
-  padding-bottom: 6px !important;
-  padding-right: 10px !important;
-  padding-left: 10px !important;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  border: 1px solid transparent !important;
-  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-  font-size: 0.88rem !important;
-  color: #cbd5e1 !important;
-}
-
-/* Hover on Inactive Row: Faint, delicate highlight (2.5x lighter than active, zero visual clash!) */
-.agy-sidebar-row:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover {
-  background: color-mix(in srgb, var(--proj-color, #93e9be) 4.5%, transparent) !important;
-  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 15%, transparent) !important;
-  box-shadow: none !important;
-  color: #f1f5f9 !important;
-  transform: translateX(1px) !important;
-}
-
-/* Active / Selected Conversation Row: Confident, solid highlight with glow */
-.agy-sidebar-row:has(a[aria-current="page"]),
-.agy-sidebar-row.bg-sidebar-muted,
-.agy-sidebar-row.bg-sidebar-secondary,
-.agy-sidebar-row[data-active="true"] {
-  background: var(--proj-bg, rgba(255, 255, 255, 0.12)) !important;
-  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 42%, transparent) !important;
-  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.18)) !important;
-}
-
-.agy-sidebar-row:has(a[aria-current="page"]) span,
-.agy-sidebar-row.bg-sidebar-muted span,
-.agy-sidebar-row.bg-sidebar-secondary span,
-.agy-sidebar-row[data-active="true"] span {
-  color: var(--proj-color, #93e9be) !important;
-  font-weight: 600 !important;
-}
-
-.agy-sidebar-row:has(a[aria-current="page"]) svg,
-.agy-sidebar-row.bg-sidebar-muted svg,
-.agy-sidebar-row.bg-sidebar-secondary svg,
-.agy-sidebar-row[data-active="true"] svg {
-  color: var(--proj-color, #93e9be) !important;
-}
-
-/* 8.7 Project Child Conversations (Indented Forward & Hierarchy Tree Guide Line) */
-.agy-sidebar-row.agy-sidebar-row[class*="pl-"] {
-  margin-left: 28px !important;
-  width: calc(100% - 32px) !important;
-  padding-left: 10px !important;
-  position: relative !important;
-  border-radius: 8px !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  border: 1px solid transparent !important;
-}
-
-/* Dotted / Dashed Elegant Vertical Trunk */
-.agy-sidebar-row[class*="pl-"]::before {
-  content: '' !important;
-  position: absolute !important;
-  left: -15px !important;
-  top: -2px !important;
-  bottom: -2px !important;
-  width: 1.5px !important;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--proj-color, #93e9be) 0px,
-    var(--proj-color, #93e9be) 3px,
-    transparent 3px,
-    transparent 7px
-  ) !important;
-  background-size: 1.5px 7px !important;
-  opacity: 0.65 !important;
-  transition: all 0.2s ease !important;
-  z-index: 2 !important;
-}
-
-/* Subtle Horizontal Branch Connector into Card (-|) */
-.agy-sidebar-row[class*="pl-"]::after {
-  content: '' !important;
-  position: absolute !important;
-  left: -15px !important;
-  top: 50% !important;
-  width: 14px !important;
-  height: 1.5px !important;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--proj-color, #93e9be) 0px,
-    var(--proj-color, #93e9be) 3px,
-    transparent 3px,
-    transparent 6px
-  ) !important;
-  opacity: 0.75 !important;
-  border-radius: 1px !important;
-  transition: all 0.2s ease !important;
-  z-index: 2 !important;
-}
-
-/* Hover State on Inactive Child Conversation: Delicate, faint highlight (Zero clashing with active!) */
-.agy-sidebar-row.agy-sidebar-row[class*="pl-"]:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover {
-  transform: translateX(1px) !important;
-  background: color-mix(in srgb, var(--proj-color, #93e9be) 4.5%, transparent) !important;
-  border-color: color-mix(in srgb, var(--proj-color, #93e9be) 18%, transparent) !important;
-  box-shadow: none !important;
-}
-
-.agy-sidebar-row[class*="pl-"]:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover::before {
-  opacity: 0.8 !important;
-  filter: drop-shadow(0 0 2px var(--proj-glow, rgba(147, 233, 190, 0.3))) !important;
-}
-
-.agy-sidebar-row[class*="pl-"]:not(.bg-sidebar-secondary):not(.bg-sidebar-muted):not([data-active="true"]):not(:has(a[aria-current="page"])):hover::after {
-  opacity: 0.8 !important;
-  filter: drop-shadow(0 0 2px var(--proj-glow, rgba(147, 233, 190, 0.3))) !important;
-}
-
-/* Active / Selected State: Pure Project Palette (Prominent, High-Contrast 12% Background) */
-.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"]),
-.agy-sidebar-row[class*="pl-"].bg-sidebar-muted,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary,
-.agy-sidebar-row[class*="pl-"][data-active="true"] {
-  background: var(--proj-bg, rgba(255, 255, 255, 0.12)) !important;
-  border: 1px solid color-mix(in srgb, var(--proj-color, #93e9be) 45%, transparent) !important;
-  box-shadow: 0 2px 10px -2px var(--proj-glow, rgba(255, 255, 255, 0.20)) !important;
-}
-
-.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::before,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::before,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::before,
-.agy-sidebar-row[class*="pl-"][data-active="true"]::before {
-  opacity: 0.9 !important;
-}
-
-.agy-sidebar-row[class*="pl-"]:has(a[aria-current="page"])::after,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-secondary::after,
-.agy-sidebar-row[class*="pl-"].bg-sidebar-muted::after,
-.agy-sidebar-row[class*="pl-"][data-active="true"]::after {
-  opacity: 1 !important;
-}
-
-/* 8.9 Recent Project Pulse Strip */
-#agy-project-pulse-bar {
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  padding: 14px 10px 12px 10px !important;
-  overflow-x: auto !important;
-  scrollbar-width: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-  margin-bottom: 6px !important;
-}
-#agy-project-pulse-bar::-webkit-scrollbar {
-  display: none !important;
-}
-.agy-pulse-badge {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 3px 8px !important;
-  border-radius: 9999px !important;
-  font-size: 0.68rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.05em !important;
-  cursor: pointer !important;
-  flex-shrink: 0 !important;
-  outline: none !important;
-  user-select: none !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-.agy-pulse-badge:hover {
-  transform: scale(1.08) !important;
-  filter: brightness(1.25) !important;
-  z-index: 5 !important;
-}
-.agy-pulse-gem {
-  width: 15px !important;
-  height: 15px !important;
-  border-radius: 50% !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
-  cursor: pointer !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease !important;
-  position: relative !important;
-  flex-shrink: 0 !important;
-  outline: none !important;
-}
-.agy-pulse-gem:hover {
-  transform: scale(1.3) !important;
-  border-color: #fff !important;
-  z-index: 5 !important;
-}
-
-/* 8.8 Pinned Conversations Luxury VIP Card Treatment */
-[data-pinned="true"],
-[data-testid="conversation-row-sidebar"][data-pinned="true"] {
-  background: linear-gradient(135deg, rgba(147, 233, 190, 0.05) 0%, rgba(147, 233, 190, 0.01) 100%) !important;
-  border: 1px solid rgba(147, 233, 190, 0.18) !important;
-  border-left: 3px solid rgba(147, 233, 190, 0.65) !important;
-  border-inline-start: 3px solid rgba(147, 233, 190, 0.65) !important;
-  border-radius: 9px !important;
-  margin-bottom: 5px !important;
-  padding: 7px 10px !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-[data-pinned="true"]:hover,
-[data-testid="conversation-row-sidebar"][data-pinned="true"]:hover {
-  background: linear-gradient(135deg, rgba(147, 233, 190, 0.12) 0%, rgba(147, 233, 190, 0.03) 100%) !important;
-  border-color: rgba(147, 233, 190, 0.38) !important;
-  border-left-color: #93e9be !important;
-  border-inline-start-color: #93e9be !important;
-  box-shadow: 0 0 14px -2px rgba(147, 233, 190, 0.25), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
-  transform: translateX(2px) !important;
-}
-
-/* Active Pinned Item */
-[data-pinned="true"]:has(a[aria-current="page"]),
-[data-pinned="true"].bg-sidebar-muted,
-[data-pinned="true"][data-selected="true"] {
-  background: linear-gradient(90deg, rgba(147, 233, 190, 0.20) 0%, rgba(147, 233, 190, 0.05) 100%) !important;
-  border-color: rgba(147, 233, 190, 0.48) !important;
-  border-left: 3.5px solid #93e9be !important;
-  border-inline-start: 3.5px solid #93e9be !important;
-  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.30) !important;
-}
-
-/* Pinned Title Typography */
-[data-pinned="true"] span.truncate {
-  font-weight: 600 !important;
-  color: #f1f5f9 !important;
-  letter-spacing: -0.01em !important;
-}
-
-[data-pinned="true"]:hover span.truncate {
-  color: #bbf7d0 !important;
-}
-
-[data-pinned="true"]:has(a[aria-current="page"]) span.truncate {
-  color: #93e9be !important;
-  font-weight: 700 !important;
-}
-
-/* Project Subtext Pill Micro-Badge */
-[data-pinned="true"] span.text-xs.select-none:has(svg),
-[data-pinned="true"] span:has(> svg):has(> span) {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 4px !important;
-  margin-top: 4px !important;
-  padding: 1.5px 7px !important;
-  border-radius: 6px !important;
-  background: rgba(147, 233, 190, 0.09) !important;
-  border: 1px solid rgba(147, 233, 190, 0.22) !important;
-  color: #a7f3d0 !important;
-  font-size: 0.72rem !important;
-  font-weight: 500 !important;
-  width: fit-content !important;
-  transition: all 0.15s ease !important;
-}
-
-[data-pinned="true"] span.text-xs.select-none:has(svg) svg,
-[data-pinned="true"] span:has(> svg):has(> span) svg {
-  color: #93e9be !important;
-  width: 12px !important;
-  height: 12px !important;
-  filter: drop-shadow(0 0 3px rgba(147, 233, 190, 0.3)) !important;
-}
-
-[data-pinned="true"]:hover span.text-xs.select-none:has(svg),
-[data-pinned="true"]:hover span:has(> svg):has(> span) {
-  background: rgba(147, 233, 190, 0.16) !important;
-  border-color: rgba(147, 233, 190, 0.40) !important;
-  color: #bbf7d0 !important;
+[data-testid="conversation-view"] .google-symbols,
+[data-testid="conversation-view"] :dir(rtl) .google-symbols,
+[role="article"] .google-symbols,
+[role="article"] :dir(rtl) .google-symbols,
+.part.auxiliarybar .google-symbols,
+.part.auxiliarybar :dir(rtl) .google-symbols,
+.prose .google-symbols,
+.prose :dir(rtl) .google-symbols,
+.google-symbols {
+  font-family: "Google Symbols" !important;
+  direction: ltr !important;
+  text-align: left !important;
 }
 
 /* RTL-PATCH-END */
-/* [/Antigravity-Shield-RTL-Vazirmatn] */
 "#;
 
 #[tauri::command]
@@ -2534,15 +2227,73 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                     .join("vs")
                     .join("workbench")
                     .join("workbench.desktop.main.js.orig");
-                if wb_orig.exists() && wb_js_path.exists() {
-                    let _ = fs::copy(&wb_orig, &wb_js_path);
-                    applied_count += 1;
-                    if let Some(app_dir) = out_dir.parent() {
-                        update_product_checksum(
-                            app_dir,
-                            "vs/workbench/workbench.desktop.main.js",
-                            &wb_js_path,
-                        );
+                if wb_js_path.exists() {
+                    if !wb_orig.exists() {
+                        let _ = fs::copy(&wb_js_path, &wb_orig);
+                    }
+                    let src_path = if wb_orig.exists() { &wb_orig } else { &wb_js_path };
+                    if let Ok(mut wb_content) = fs::read_to_string(src_path) {
+                        let wb_replacements = [
+                            (
+                                "oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{...t,className:ht(t.className)",
+                                "oDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(\"p\",{dir:\"auto\",...t,className:ht(t.className)",
+                            ),
+                            (
+                                "aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{...t,animate:e,claimStaggerDelays:i})}",
+                                "aDd=t=>{let{animate:e,claimStaggerDelays:i}=$ne();return v(KTd,{dir:\"auto\",...t,animate:e,claimStaggerDelays:i})}",
+                            ),
+                            (
+                                "_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{...i,className:ht(i.className)",
+                                "_3e=t=>{let e=i=>{let{animate:n,claimStaggerDelays:r}=$ne();return v(t,{dir:\"auto\",...i,className:ht(i.className)",
+                            ),
+                            (
+                                "return v(\"div\",{className:ht(\"leading-relaxed\",\"select-text\",\"text-sm\",\"flex flex-col\",\"[&_strong]:font-semibold\",\"[&_b]:font-semibold\",",
+                                "return v(\"div\",{dir:\"auto\",className:ht(\"leading-relaxed\",\"select-text\",\"text-sm\",\"flex flex-col\",\"[&_strong]:font-semibold\",\"[&_b]:font-semibold\",",
+                            ),
+                            (
+                                "wNd=`\ndiv:has(> table),\ntable th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\n`",
+                                "wNd=`\ndiv:has(> table),\ntable th,\ntable td {\n  border-style: solid;\n  border-color: rgba(128, 128, 128, 0.2);\n}\np, li, dd, dt, h1, h2, h3, h4, h5, h6, blockquote, span, div {\n  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;\n}\np[dir=\"auto\"], div[dir=\"auto\"], span[dir=\"auto\"], li[dir=\"auto\"] {\n  unicode-bidi: plaintext !important;\n}\np:dir(rtl), li:dir(rtl), h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl), blockquote:dir(rtl), [dir=\"rtl\"], :dir(rtl) {\n  text-align: right !important;\n  direction: rtl !important;\n}\nul, ol {\n  padding-left: 0 !important;\n  margin-left: 0 !important;\n}\nul:dir(rtl), ol:dir(rtl), ul:has(> li:dir(rtl)), ol:has(> li:dir(rtl)) {\n  padding-right: 28px !important;\n  direction: rtl !important;\n  text-align: right !important;\n}\n`",
+                            ),
+                            (
+                                "function PHd({step:t}){let{renderers:e}=Ur(),i=e.markdown,n=(t.step.case===\"plannerResponse\"?t.step.value:null)?.response;if(!n)return null;let r=t.status===Kr.RUNNING||t.status===Kr.GENERATING,s=Pm(t.metadata,null);return v(\"div\",{className:\"px-2 py-1\"",
+                                "function PHd({step:t}){let{renderers:e}=Ur(),i=e.markdown,n=(t.step.case===\"plannerResponse\"?t.step.value:null)?.response;if(!n)return null;let r=t.status===Kr.RUNNING||t.status===Kr.GENERATING,s=Pm(t.metadata,null);return v(\"div\",{dir:\"auto\",className:\"px-2 py-1\"",
+                            ),
+                            (
+                                "v(\"div\",{role:\"article\",\"aria-label\":\"Agent response\",\"data-quotable\":\"true\",children:",
+                                "v(\"div\",{dir:\"auto\",role:\"article\",\"aria-label\":\"Agent response\",\"data-quotable\":\"true\",children:",
+                            ),
+                            (
+                                "LPd=({items:t})=>{let{chatParams:{artifactsDir:e},trajectorySummariesProvider:i,stepHandler:n,isBrowserPaneAvailable:r,openUrlInBrowserPane:s}=Ur(),o=Kt().get(\"browserAuxPane\");return v(\"div\",{\"data-quotable\":\"true\",className:\"whitespace-pre-wrap text-sm\"",
+                                "LPd=({items:t})=>{let{chatParams:{artifactsDir:e},trajectorySummariesProvider:i,stepHandler:n,isBrowserPaneAvailable:r,openUrlInBrowserPane:s}=Ur(),o=Kt().get(\"browserAuxPane\");return v(\"div\",{dir:\"auto\",\"data-quotable\":\"true\",className:\"whitespace-pre-wrap text-sm\"",
+                            ),
+                            (
+                                "style:a?sWe.container:void 0,\"data-testid\":\"conversation-view\"",
+                                "dir:\"auto\",style:a?sWe.container:void 0,\"data-testid\":\"conversation-view\"",
+                            ),
+                            (
+                                "children:v(\"div\",{ref:se,\"data-testid\":\"user-message-bubble\"",
+                                "children:v(\"div\",{ref:se,dir:\"auto\",\"data-testid\":\"user-message-bubble\"",
+                            ),
+                        ];
+
+                        let mut replaced_any = false;
+                        for (target, replacement) in &wb_replacements {
+                            if wb_content.contains(target) {
+                                wb_content = wb_content.replacen(target, replacement, 1);
+                                replaced_any = true;
+                            }
+                        }
+                        if replaced_any {
+                            let _ = fs::write(&wb_js_path, &wb_content);
+                            applied_count += 1;
+                            if let Some(app_dir) = out_dir.parent() {
+                                update_product_checksum(
+                                    app_dir,
+                                    "vs/workbench/workbench.desktop.main.js",
+                                    &wb_js_path,
+                                );
+                            }
+                        }
                     }
                 }
 
@@ -2551,55 +2302,150 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
 // [Antigravity-Shield-IDE-BiDi-Sentinel]
 (()=>{
   const isPersian = (s) => /[\u0600-\u06FF]/.test(s);
-  function patchBiDi(root = document) {
-    if (!root || !root.querySelectorAll) return;
-    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-input-step"], [role="article"], .leading-relaxed, .whitespace-pre-wrap, [data-testid="conversation-view"] p, [data-testid="conversation-view"] li, .part.auxiliarybar p, [data-aux-pane-open] p, [data-aux-pane-focus-scope="true"] p');
-    for (let i = 0; i < targets.length; i++) {
-      const el = targets[i];
-      if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('.monaco-editor')) continue;
-      const txt = el.textContent || '';
-      if (isPersian(txt)) {
-        if (el.getAttribute('dir') !== 'rtl') el.setAttribute('dir', 'rtl');
-        if (el.style.direction !== 'rtl') el.style.setProperty('direction', 'rtl', 'important');
-        if (el.style.fontFamily !== "'Vazirmatn'") el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
-        if (el.style.textAlign !== 'right') el.style.setProperty('text-align', 'right', 'important');
-        if (el.tagName === 'BLOCKQUOTE') {
-          el.style.setProperty('border-left', 'none', 'important');
-          el.style.setProperty('border-right', '4px solid var(--border, #93e9be)', 'important');
+
+  function applyBiDiToElement(el) {
+    if (!el || el.nodeType !== 1) return;
+
+    // 1. Guard against global document and shell nodes
+    if (el === document.body || el === document.documentElement || el.tagName === 'BODY' || el.tagName === 'HTML') return;
+    if (el.classList.contains('monaco-workbench')) return;
+
+    // 2. Guard against sidebar, editor, and terminal panels
+    if (el.closest('.part.sidebar') || el.closest('.sidebar')) return;
+    if (el.closest('.part.editor') || el.closest('.editor') || el.closest('.monaco-editor')) return;
+
+    // 3. Guard against chat container / viewport / layout wrappers (Container Scope Inversion Guard)
+    if (
+      el.classList.contains('auxiliarybar') ||
+      el.getAttribute('data-testid') === 'conversation-view' ||
+      el.getAttribute('data-testid') === 'autoscroll-viewport' ||
+      el.getAttribute('data-testid') === 'chat-message' ||
+      el.getAttribute('role') === 'article' ||
+      el.hasAttribute('data-aux-pane-open') ||
+      el.hasAttribute('data-aux-pane-focus-scope') ||
+      el.classList.contains('rendered-markdown') ||
+      el.classList.contains('prose') ||
+      el.classList.contains('markdown-body')
+    ) {
+      return;
+    }
+
+    // 4. Guard against code blocks, preformatted text, thinking traces, and icon fonts
+    if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre') || el.closest('code')) return;
+    if (el.classList.contains('cursor-edit') || el.closest('.cursor-edit')) return;
+    if (
+      el.classList.contains('codicon') ||
+      el.classList.contains('google-symbols') ||
+      (typeof el.className === 'string' && el.className.includes('codicon-'))
+    ) {
+      return;
+    }
+
+    const txt = el.textContent || '';
+    if (isPersian(txt)) {
+      if (el.getAttribute('dir') !== 'rtl') el.setAttribute('dir', 'rtl');
+      if (el.style.direction !== 'rtl') el.style.setProperty('direction', 'rtl', 'important');
+      if (el.style.fontFamily !== "'Vazirmatn'") el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
+      if (el.style.textAlign !== 'right') el.style.setProperty('text-align', 'right', 'important');
+
+      if (el.tagName === 'LI') {
+        el.style.setProperty('padding-left', '0', 'important');
+        el.style.setProperty('margin-left', '0', 'important');
+        const parentList = el.closest('ul, ol');
+        if (parentList) {
+          if (parentList.getAttribute('dir') !== 'rtl') parentList.setAttribute('dir', 'rtl');
+          parentList.style.setProperty('direction', 'rtl', 'important');
+          parentList.style.setProperty('text-align', 'right', 'important');
+          parentList.style.setProperty('padding-left', '0', 'important');
+          parentList.style.setProperty('margin-left', '0', 'important');
+          if (parentList.tagName === 'UL') {
+            parentList.style.setProperty('padding-right', '28px', 'important');
+          } else if (parentList.tagName === 'OL') {
+            parentList.style.setProperty('padding-right', '32px', 'important');
+          }
         }
+      } else if (/^H[1-6]$/.test(el.tagName)) {
+        el.style.setProperty('padding-left', '0', 'important');
+        el.style.setProperty('padding-right', '0', 'important');
+        el.style.setProperty('margin-left', '0', 'important');
+      } else if (el.tagName === 'BLOCKQUOTE') {
+        el.style.setProperty('border-left', 'none', 'important');
+        el.style.setProperty('border-right', '4px solid var(--border, #93e9be)', 'important');
       }
     }
   }
+
+  function patchBiDi(root = document) {
+    if (!root) return;
+    // CRITICAL: NEVER call applyBiDiToElement(root) directly to prevent container scope inversion
+    if (!root.querySelectorAll) return;
+
+    const targets = root.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-input-step"], [role="article"] > p, [role="article"] > li');
+    for (let i = 0; i < targets.length; i++) {
+      applyBiDiToElement(targets[i]);
+    }
+
+    const iframes = root.querySelectorAll('iframe, webview');
+    for (let i = 0; i < iframes.length; i++) {
+      try {
+        const doc = iframes[i].contentDocument || iframes[i].contentWindow?.document;
+        if (doc) patchBiDi(doc);
+      } catch(e) {}
+    }
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => patchBiDi());
   } else {
     patchBiDi();
   }
+
   const obs = new MutationObserver((mutations) => {
     for (let i = 0; i < mutations.length; i++) {
       const m = mutations[i];
       if (m.type === 'childList') {
         for (let j = 0; j < m.addedNodes.length; j++) {
           const n = m.addedNodes[j];
-          if (n.nodeType === 1) patchBiDi(n);
+          if (n.nodeType === 1) {
+            if (n.matches && n.matches('p, li, h1, h2, h3, h4, h5, h6, blockquote, th, td, [data-testid="user-message-bubble"], [data-testid="user-input-step"]')) {
+              applyBiDiToElement(n);
+            }
+            patchBiDi(n);
+          }
         }
       } else if (m.type === 'characterData') {
         const p = m.target.parentElement;
-        if (p) patchBiDi(p);
+        if (p) {
+          const block = p.closest('p, li, h1, h2, h3, h4, h5, h6, blockquote, [data-testid="user-message-bubble"], [data-testid="user-input-step"]') || p;
+          applyBiDiToElement(block);
+        }
       }
     }
   });
   obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
 
+  let pollCount = 0;
+  const poller = setInterval(() => {
+    patchBiDi();
+    pollCount++;
+    if (pollCount > 30) {
+      clearInterval(poller);
+      setInterval(() => patchBiDi(), 1500);
+    }
+  }, 300);
+
   document.addEventListener('input', (e) => {
     const el = e.target;
     if (!el) return;
+    // Guard against editor, sidebar, or terminal input fields
+    if (el.closest('.part.sidebar') || el.closest('.sidebar') || el.closest('.part.editor') || el.closest('.editor') || el.closest('.monaco-editor')) return;
     if (el.isContentEditable || el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
       const val = el.value || el.textContent || '';
       if (isPersian(val)) {
         el.setAttribute('dir', 'rtl');
         el.style.setProperty('direction', 'rtl', 'important');
         el.style.setProperty('text-align', 'right', 'important');
+        el.style.setProperty('font-family', "'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif", 'important');
         el.style.setProperty('unicode-bidi', 'isolate', 'important');
       } else if (val.trim().length > 0) {
         el.setAttribute('dir', 'ltr');
@@ -2766,6 +2612,17 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         "vs/workbench/workbench.desktop.main.css",
                         css_path,
                     );
+                }
+
+                // Clear Electron V8 code cache so changes take effect immediately
+                if let Some(config_dir) = dirs::config_dir() {
+                    let roaming_ide = config_dir.join("Antigravity IDE");
+                    for sub in &["Cache", "Code Cache/js", "CachedData"] {
+                        let cdir = roaming_ide.join(sub.replace('/', std::path::MAIN_SEPARATOR_STR));
+                        if cdir.exists() {
+                            let _ = fs::remove_dir_all(&cdir);
+                        }
+                    }
                 }
             }
         }
