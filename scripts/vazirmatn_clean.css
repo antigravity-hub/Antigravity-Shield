@@ -141,7 +141,7 @@ div.break-words ul:has(> li:dir(rtl)) > li {
   color: #f1f5f9 !important;
   direction: rtl !important;
   text-align: right !important;
-  text-align-last: right !important;
+  text-align-last: start !important;
 }
 
 /* Vertical Raindrop Animated Spine on Parent */
@@ -512,7 +512,7 @@ ul ul ul > li::after,
   color: #f1f5f9 !important;
   direction: rtl !important;
   text-align: right !important;
-  text-align-last: right !important;
+  text-align-last: start !important;
 }
 
 /* Custom Styled Number Badge on the RIGHT - In Markdown ONLY */
@@ -708,7 +708,7 @@ ul[dir="rtl"],
 ol[dir="rtl"] {
   direction: rtl !important;
   text-align: right !important;
-  text-align-last: right !important;
+  text-align-last: start !important;
 }
 
 [role="article"] li:dir(rtl) p,
@@ -724,7 +724,7 @@ div.break-words li:dir(rtl) p,
 [data-aux-pane-open] li:dir(rtl) p {
   direction: rtl !important;
   text-align: right !important;
-  text-align-last: right !important;
+  text-align-last: start !important;
 }
 
 /* Persian Paragraphs & Lists: Force Direction RTL, Right-Align Last Line */
@@ -743,7 +743,7 @@ div.break-words p:dir(rtl),
 [data-aux-pane-open] p:dir(rtl) {
   direction: rtl !important;
   text-align: right !important;
-  text-align-last: right !important;
+  text-align-last: start !important;
   unicode-bidi: isolate !important;
   line-height: 2 !important;
 }
@@ -1661,7 +1661,7 @@ div.break-words :dir(rtl),
 div.leading-relaxed :dir(rtl) {
   direction: rtl !important;
   text-align: right !important;
-  text-align-last: right !important;
+  text-align-last: start !important;
   font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
 }
 
@@ -1866,4 +1866,70 @@ div.break-words p:dir(rtl), div.break-words p[dir="rtl"],
   align-self: flex-start !important;
   direction: ltr !important;
   text-align: left !important;
+}
+
+
+/* ==========================================================================
+   Full Align (Strict Dual-Margin Justification) for Persian Text
+   ========================================================================== */
+p:dir(rtl), [dir="rtl"] p, p[dir="rtl"],
+li:dir(rtl), [dir="rtl"] li, li[dir="rtl"],
+.rendered-markdown p, .rendered-markdown li,
+.prose p, .prose li,
+[role="article"] p, [role="article"] li,
+div.break-words p, div.break-words li,
+[data-testid="conversation-view"] p, [data-testid="conversation-view"] li {
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+  line-height: 2.1 !important;
+}
+
+/* ==========================================================================
+   User Prompt Bubble: Dynamic Floating Geometry & Docking
+   ========================================================================== */
+[data-testid="user-message-bubble"],
+[data-testid="user-input-step"],
+[aria-label="User message"],
+.agy-user-bubble,
+.agy-user-bubble-frame,
+.relative.p-px.rounded-xl.bg-card-border {
+  width: fit-content !important;
+  max-width: 85% !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+
+/* RTL: Anchor strictly to the RIGHT */
+[data-testid="user-message-bubble"]:dir(rtl),
+[data-testid="user-message-bubble"][dir="rtl"],
+[data-testid="user-input-step"]:dir(rtl),
+[data-testid="user-input-step"][dir="rtl"],
+[aria-label="User message"]:dir(rtl),
+[aria-label="User message"][dir="rtl"],
+.agy-user-bubble:dir(rtl),
+.agy-user-bubble[dir="rtl"],
+.agy-user-bubble-frame:dir(rtl),
+.agy-user-bubble-frame[dir="rtl"] {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  align-self: flex-end !important;
+  direction: rtl !important;
+}
+
+/* LTR: Anchor strictly to the LEFT */
+[data-testid="user-message-bubble"]:dir(ltr),
+[data-testid="user-message-bubble"][dir="ltr"],
+[data-testid="user-input-step"]:dir(ltr),
+[data-testid="user-input-step"][dir="ltr"],
+[aria-label="User message"]:dir(ltr),
+[aria-label="User message"][dir="ltr"],
+.agy-user-bubble:dir(ltr),
+.agy-user-bubble[dir="ltr"],
+.agy-user-bubble-frame:dir(ltr),
+.agy-user-bubble-frame[dir="ltr"] {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  align-self: flex-start !important;
+  direction: ltr !important;
 }

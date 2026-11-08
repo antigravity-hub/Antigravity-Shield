@@ -1,6 +1,7 @@
 // Antigravity Shield — AI Proxy & Fleet Management Engine
 // Repository: https://github.com/antigravity-hub/Antigravity-Shield
 
+use serde::{Deserialize, Serialize};
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
@@ -121,6 +122,41 @@ mod win_graceful {
             }
         }
         false
+    }
+}
+
+#[cfg(target_os = "windows")]
+pub mod win_mem {
+    use std::ffi::c_void;
+    type HANDLE = *mut c_void;
+    type BOOL = i32;
+    type DWORD = u32;
+
+    const PROCESS_QUERY_INFORMATION: DWORD = 0x0400;
+    const PROCESS_SET_QUOTA: DWORD = 0x0100;
+
+    extern "system" {
+        fn OpenProcess(dwDesiredAccess: DWORD, bInheritHandle: BOOL, dwProcessId: DWORD) -> HANDLE;
+        fn CloseHandle(hObject: HANDLE) -> BOOL;
+        fn SetProcessWorkingSetSize(
+            hProcess: HANDLE,
+            dwMinimumWorkingSetSize: usize,
+            dwMaximumWorkingSetSize: usize,
+        ) -> BOOL;
+    }
+
+    /// Trims the process working set to zero (paging out idle memory to standby list)
+    pub fn trim_process_working_set(pid: u32) -> bool {
+        unsafe {
+            let handle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_SET_QUOTA, 0, pid);
+            if handle.is_null() {
+                return false;
+            }
+            // Passing (usize::MAX, usize::MAX) tells the Windows memory manager to strip working set to bare minimum
+            let res = SetProcessWorkingSetSize(handle, usize::MAX, usize::MAX);
+            CloseHandle(handle);
+            res != 0
+        }
     }
 }
 
@@ -1605,4 +1641,260 @@ pub fn get_antigravity_cli_executable_path() -> Option<std::path::PathBuf> {
     }
 
     None
+}
+
+// ---------------------------------------------------------------------------
+// Antigravity Memory & Working Set Optimization Engine
+// ---------------------------------------------------------------------------
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProcessMemoryDetail {
+    pub pid: u32,
+    pub name: String,
+    pub process_type: String,
+    pub memory_before_mb: f64,
+    pub memory_after_mb: f64,
+    pub freed_mb: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AntigravityMemorySummary {
+    pub total_processes: usize,
+    pub total_memory_mb: f64,
+    pub ide_memory_mb: f64,
+    pub cli_memory_mb: f64,
+    pub sidecar_memory_mb: f64,
+    pub other_memory_mb: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AntigravityMemoryPurgeResult {
+    pub success: bool,
+    pub total_processes_trimmed: usize,
+    pub zombie_processes_killed: usize,
+    pub memory_before_mb: f64,
+    pub memory_after_mb: f64,
+    pub memory_freed_mb: f64,
+    pub details: Vec<ProcessMemoryDetail>,
+    pub message: String,
+}
+
+fn classify_antigravity_process(name_lower: &str, cmd_lower: &str) -> &'static str {
+    if cmd_lower.contains("sidecar_sdk")
+        || cmd_lower.contains("device-hub")
+        || cmd_lower.contains("compose-preview")
+    {
+        "Sidecar Plugin"
+    } else if name_lower.contains("agy") || cmd_lower.contains("agy.exe") || cmd_lower.contains("--hub") {
+        "AGY CLI Hub"
+    } else if cmd_lower.contains("--type=renderer") {
+        "IDE Renderer"
+    } else if cmd_lower.contains("--type=gpu-process") {
+        "GPU Process"
+    } else if cmd_lower.contains("extensionhost") {
+        "Extension Host"
+    } else if cmd_lower.contains("--type=utility") {
+        "Utility Service"
+    } else if name_lower.contains("antigravity ide") || cmd_lower.contains("antigravity ide") {
+        "Antigravity IDE"
+    } else if name_lower.contains("antigravity") || cmd_lower.contains("antigravity") {
+        "Antigravity Core"
+    } else {
+        "Background Task"
+    }
+}
+
+/// Retrieve current live memory footprint of all Antigravity processes
+pub fn get_antigravity_memory_summary() -> AntigravityMemorySummary {
+    let mut system = System::new();
+    system.refresh_processes(sysinfo::ProcessesToUpdate::All);
+    let current_pid = std::process::id();
+
+    let mut total_processes = 0;
+    let mut total_memory_bytes = 0u64;
+    let mut ide_memory_bytes = 0u64;
+    let mut cli_memory_bytes = 0u64;
+    let mut sidecar_memory_bytes = 0u64;
+    let mut other_memory_bytes = 0u64;
+
+    for (pid, process) in system.processes() {
+        let pid_u32 = pid.as_u32();
+        if pid_u32 == current_pid {
+            continue;
+        }
+
+        let name = process.name().to_string_lossy();
+        let name_lower = name.to_lowercase();
+        let cmd_lower = process
+            .cmd()
+            .iter()
+            .map(|s| s.to_string_lossy().to_lowercase())
+            .collect::<Vec<_>>()
+            .join(" ");
+
+        let is_target = name_lower.contains("antigravity")
+            || name_lower.contains("agy")
+            || cmd_lower.contains("antigravity")
+            || cmd_lower.contains("agy.exe")
+            || cmd_lower.contains("sidecar_sdk");
+
+        if !is_target {
+            continue;
+        }
+
+        total_processes += 1;
+        let mem = process.memory();
+        total_memory_bytes += mem;
+
+        let p_type = classify_antigravity_process(&name_lower, &cmd_lower);
+        match p_type {
+            "Sidecar Plugin" => sidecar_memory_bytes += mem,
+            "AGY CLI Hub" => cli_memory_bytes += mem,
+            "IDE Renderer" | "Antigravity IDE" | "Extension Host" => ide_memory_bytes += mem,
+            _ => other_memory_bytes += mem,
+        }
+    }
+
+    AntigravityMemorySummary {
+        total_processes,
+        total_memory_mb: ((total_memory_bytes as f64) / (1024.0 * 1024.0) * 10.0).round() / 10.0,
+        ide_memory_mb: ((ide_memory_bytes as f64) / (1024.0 * 1024.0) * 10.0).round() / 10.0,
+        cli_memory_mb: ((cli_memory_bytes as f64) / (1024.0 * 1024.0) * 10.0).round() / 10.0,
+        sidecar_memory_mb: ((sidecar_memory_bytes as f64) / (1024.0 * 1024.0) * 10.0).round() / 10.0,
+        other_memory_mb: ((other_memory_bytes as f64) / (1024.0 * 1024.0) * 10.0).round() / 10.0,
+    }
+}
+
+/// Trims physical working set for all Antigravity processes & reaps orphaned zombie sidecars
+pub fn purge_antigravity_memory() -> AntigravityMemoryPurgeResult {
+    let mut system = System::new();
+    system.refresh_processes(sysinfo::ProcessesToUpdate::All);
+    let current_pid = std::process::id();
+
+    let mut target_pids: Vec<(u32, String, String, u64)> = Vec::new();
+    let mut zombie_pids: Vec<u32> = Vec::new();
+
+    for (pid, process) in system.processes() {
+        let pid_u32 = pid.as_u32();
+        if pid_u32 == current_pid {
+            continue;
+        }
+
+        let name = process.name().to_string_lossy().to_string();
+        let name_lower = name.to_lowercase();
+        let cmd_lower = process
+            .cmd()
+            .iter()
+            .map(|s| s.to_string_lossy().to_lowercase())
+            .collect::<Vec<_>>()
+            .join(" ");
+
+        let is_target = name_lower.contains("antigravity")
+            || name_lower.contains("agy")
+            || cmd_lower.contains("antigravity")
+            || cmd_lower.contains("agy.exe")
+            || cmd_lower.contains("sidecar_sdk");
+
+        if !is_target {
+            continue;
+        }
+
+        let p_type = classify_antigravity_process(&name_lower, &cmd_lower).to_string();
+
+        // Detect orphaned zombie sidecar: sidecar whose parent process no longer exists
+        if p_type == "Sidecar Plugin" {
+            if let Some(parent) = process.parent() {
+                if system.process(parent).is_none() {
+                    zombie_pids.push(pid_u32);
+                }
+            }
+        }
+
+        target_pids.push((pid_u32, name, p_type, process.memory()));
+    }
+
+    if target_pids.is_empty() {
+        return AntigravityMemoryPurgeResult {
+            success: true,
+            total_processes_trimmed: 0,
+            zombie_processes_killed: 0,
+            memory_before_mb: 0.0,
+            memory_after_mb: 0.0,
+            memory_freed_mb: 0.0,
+            details: Vec::new(),
+            message: "No Antigravity processes currently active to trim.".to_string(),
+        };
+    }
+
+    let memory_before_bytes: u64 = target_pids.iter().map(|(_, _, _, m)| *m).sum();
+    let mut zombie_killed_count = 0;
+
+    // Reap zombie sidecars
+    for zpid in &zombie_pids {
+        if let Some(proc) = system.process(sysinfo::Pid::from_u32(*zpid)) {
+            let _ = proc.kill();
+            zombie_killed_count += 1;
+        }
+    }
+
+    let mut trimmed_count = 0;
+
+    #[cfg(target_os = "windows")]
+    {
+        for (pid, _, _, _) in &target_pids {
+            if win_mem::trim_process_working_set(*pid) {
+                trimmed_count += 1;
+            }
+        }
+    }
+
+    // Refresh system processes to accurately measure memory after trimming
+    let mut refreshed_system = System::new();
+    refreshed_system.refresh_processes(sysinfo::ProcessesToUpdate::All);
+
+    let mut details = Vec::new();
+    let mut memory_after_bytes: u64 = 0;
+
+    for (pid, name, p_type, before_mem) in target_pids {
+        let after_mem = refreshed_system
+            .process(sysinfo::Pid::from_u32(pid))
+            .map(|p| p.memory())
+            .unwrap_or(0);
+        memory_after_bytes += after_mem;
+
+        let before_mb = (before_mem as f64) / (1024.0 * 1024.0);
+        let after_mb = (after_mem as f64) / (1024.0 * 1024.0);
+        let freed_mb = (before_mb - after_mb).max(0.0);
+
+        details.push(ProcessMemoryDetail {
+            pid,
+            name,
+            process_type: p_type,
+            memory_before_mb: (before_mb * 10.0).round() / 10.0,
+            memory_after_mb: (after_mb * 10.0).round() / 10.0,
+            freed_mb: (freed_mb * 10.0).round() / 10.0,
+        });
+    }
+
+    let mem_before_mb = (memory_before_bytes as f64) / (1024.0 * 1024.0);
+    let mem_after_mb = (memory_after_bytes as f64) / (1024.0 * 1024.0);
+    let freed_mb = (mem_before_mb - mem_after_mb).max(0.0);
+
+    let message = format!(
+        "Successfully optimized {} processes. Freed {:.1} MB of RAM ({} zombies reaped).",
+        trimmed_count,
+        freed_mb,
+        zombie_killed_count
+    );
+
+    AntigravityMemoryPurgeResult {
+        success: true,
+        total_processes_trimmed: trimmed_count,
+        zombie_processes_killed: zombie_killed_count,
+        memory_before_mb: (mem_before_mb * 10.0).round() / 10.0,
+        memory_after_mb: (mem_after_mb * 10.0).round() / 10.0,
+        memory_freed_mb: (freed_mb * 10.0).round() / 10.0,
+        details,
+        message,
+    }
 }

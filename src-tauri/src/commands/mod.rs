@@ -1681,4 +1681,20 @@ pub async fn auto_discover_gcp_project_id(access_token: String) -> Result<String
     Err("No active GCP Vertex AI Project ID found for this account".to_string())
 }
 
+/// Get live memory summary of Antigravity processes (IDE, CLI, sidecars)
+#[tauri::command]
+pub async fn get_antigravity_memory_summary() -> Result<crate::modules::process::AntigravityMemorySummary, String> {
+    tokio::task::spawn_blocking(crate::modules::process::get_antigravity_memory_summary)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Purge inactive RAM and reap orphaned zombies across Antigravity processes
+#[tauri::command]
+pub async fn purge_antigravity_memory() -> Result<crate::modules::process::AntigravityMemoryPurgeResult, String> {
+    tokio::task::spawn_blocking(crate::modules::process::purge_antigravity_memory)
+        .await
+        .map_err(|e| e.to_string())
+}
+
 

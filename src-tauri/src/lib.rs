@@ -728,6 +728,8 @@ pub fn run() {
             commands::detect_installed_ides,
             commands::install_toolkit_to_ide,
             commands::record_toolkit_heartbeat,
+            commands::get_antigravity_memory_summary,
+            commands::purge_antigravity_memory,
             // Overlay notification HUD commands
             commands::show_overlay_notification,
             commands::hide_overlay_notification,
