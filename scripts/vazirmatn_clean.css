@@ -140,7 +140,8 @@ div.break-words ul:has(> li:dir(rtl)) > li {
   line-height: 1.85 !important;
   color: #f1f5f9 !important;
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
   text-align-last: start !important;
 }
 
@@ -511,7 +512,8 @@ ul ul ul > li::after,
   line-height: 2 !important;
   color: #f1f5f9 !important;
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
   text-align-last: start !important;
 }
 
@@ -707,7 +709,8 @@ div.break-words ol:has(> li:dir(rtl)),
 ul[dir="rtl"],
 ol[dir="rtl"] {
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
   text-align-last: start !important;
 }
 
@@ -742,7 +745,8 @@ div.break-words p:dir(rtl),
 .part.auxiliarybar p:dir(rtl),
 [data-aux-pane-open] p:dir(rtl) {
   direction: rtl !important;
-  text-align: right !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
   text-align-last: start !important;
   unicode-bidi: isolate !important;
   line-height: 2 !important;
@@ -1888,21 +1892,36 @@ div.break-words p, div.break-words li,
 /* ==========================================================================
    User Prompt Bubble: Dynamic Floating Geometry & Docking
    ========================================================================== */
+
+/* Inner Bubble always fills 100% of its outer border frame - No margin offsets! */
 [data-testid="user-message-bubble"],
-[data-testid="user-input-step"],
-[aria-label="User message"],
-.agy-user-bubble,
+[data-testid="user-input-step"] > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  box-sizing: border-box !important;
+}
+
+/* Outer Border Card: The single cohesive bubble frame (Width: fit-content) */
+.relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]),
+div:has(> [data-testid="user-message-bubble"]),
 .agy-user-bubble-frame,
-.relative.p-px.rounded-xl.bg-card-border {
+.agy-user-bubble,
+[aria-label="User message"] {
   width: fit-content !important;
   max-width: 85% !important;
   display: block !important;
   box-sizing: border-box !important;
 }
 
-/* RTL: Anchor strictly to the RIGHT */
-[data-testid="user-message-bubble"]:dir(rtl),
-[data-testid="user-message-bubble"][dir="rtl"],
+/* RTL: Outer Card Docks Flush to the RIGHT with 0 margin-right */
+.relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]:dir(rtl)),
+.relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"][dir="rtl"]),
+.relative.p-px.rounded-xl.bg-card-border:has([dir="rtl"]),
+div:has(> [data-testid="user-message-bubble"]:dir(rtl)),
+div:has(> [data-testid="user-message-bubble"][dir="rtl"]),
+div:has(> [dir="rtl"] > [data-testid="user-message-bubble"]),
 [data-testid="user-input-step"]:dir(rtl),
 [data-testid="user-input-step"][dir="rtl"],
 [aria-label="User message"]:dir(rtl),
@@ -1912,14 +1931,18 @@ div.break-words p, div.break-words li,
 .agy-user-bubble-frame:dir(rtl),
 .agy-user-bubble-frame[dir="rtl"] {
   margin-left: auto !important;
-  margin-right: 0 !important;
+  margin-right: 0px !important;
   align-self: flex-end !important;
   direction: rtl !important;
 }
 
-/* LTR: Anchor strictly to the LEFT */
-[data-testid="user-message-bubble"]:dir(ltr),
-[data-testid="user-message-bubble"][dir="ltr"],
+/* LTR: Outer Card Docks Flush to the LEFT */
+.relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"]:dir(ltr)),
+.relative.p-px.rounded-xl.bg-card-border:has([data-testid="user-message-bubble"][dir="ltr"]),
+.relative.p-px.rounded-xl.bg-card-border:has([dir="ltr"]),
+div:has(> [data-testid="user-message-bubble"]:dir(ltr)),
+div:has(> [data-testid="user-message-bubble"][dir="ltr"]),
+div:has(> [dir="ltr"] > [data-testid="user-message-bubble"]),
 [data-testid="user-input-step"]:dir(ltr),
 [data-testid="user-input-step"][dir="ltr"],
 [aria-label="User message"]:dir(ltr),
@@ -1928,12 +1951,34 @@ div.break-words p, div.break-words li,
 .agy-user-bubble[dir="ltr"],
 .agy-user-bubble-frame:dir(ltr),
 .agy-user-bubble-frame[dir="ltr"] {
-  margin-left: 0 !important;
+  margin-left: 0px !important;
   margin-right: auto !important;
   align-self: flex-start !important;
   direction: ltr !important;
 }
 
+/* Outer Row Container (div.w-full holding the bubble) flex-aligns to the edge */
+div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"]:dir(rtl)),
+div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"][dir="rtl"]),
+div.w-full:has([data-testid="user-message-bubble"]:dir(rtl)),
+div.w-full:has([data-testid="user-message-bubble"][dir="rtl"]) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+}
+
+div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"]:dir(ltr)),
+div:has(> .relative.p-px.rounded-xl.bg-card-border > [data-testid="user-message-bubble"][dir="ltr"]),
+div.w-full:has([data-testid="user-message-bubble"]:dir(ltr)),
+div.w-full:has([data-testid="user-message-bubble"][dir="ltr"]) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+}
 
 /* ==========================================================================
    Chat Composer & Toolbar Layout Shield (Model Selector LEFT, Send Button RIGHT)
