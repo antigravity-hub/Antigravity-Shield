@@ -97,6 +97,11 @@ pub fn check_antigravity_proxy_status() -> AntigravityProxyStatus {
 
 /// اعمال تنظیمات پروکسی در تمام settings.json های شناسایی‌شده
 pub fn apply_proxy_to_settings(proxy_url: &str) -> Result<usize, String> {
+    apply_dual_target_proxy(proxy_url, None)
+}
+
+/// اعمال پروکسی دوقلو: پورت مجزا برای IDE (مانند 8766) و Platform (مانند 8765)
+pub fn apply_dual_target_proxy(platform_proxy: &str, ide_proxy: Option<&str>) -> Result<usize, String> {
     let paths = get_antigravity_settings_paths();
     let mut modified_count = 0;
 
@@ -106,6 +111,13 @@ pub fn apply_proxy_to_settings(proxy_url: &str) -> Result<usize, String> {
                 let _ = fs::create_dir_all(parent);
             }
         }
+
+        let path_str = path.to_string_lossy().to_string();
+        let target_url = if path_str.contains("Antigravity IDE") || path_str.contains("Code") {
+            ide_proxy.unwrap_or(platform_proxy)
+        } else {
+            platform_proxy
+        };
 
         let mut json_obj = if path.exists() {
             match fs::read_to_string(&path) {
@@ -118,13 +130,13 @@ pub fn apply_proxy_to_settings(proxy_url: &str) -> Result<usize, String> {
         };
 
         if let Some(map) = json_obj.as_object_mut() {
-            map.insert("http.proxy".to_string(), serde_json::Value::String(proxy_url.to_string()));
+            map.insert("http.proxy".to_string(), serde_json::Value::String(target_url.to_string()));
             map.insert("http.proxySupport".to_string(), serde_json::Value::String("override".to_string()));
             map.insert("http.proxyStrictSSL".to_string(), serde_json::Value::Bool(false));
 
             if let Ok(serialized) = serde_json::to_string_pretty(&json_obj) {
                 if fs::write(&path, serialized).is_ok() {
-                    info!("[ProxyPatcher] Applied proxy {} to {:?}", proxy_url, path);
+                    info!("[ProxyPatcher] Applied isolated proxy {} to {:?}", target_url, path);
                     modified_count += 1;
                 }
             }
@@ -138,7 +150,6 @@ pub fn apply_proxy_to_settings(proxy_url: &str) -> Result<usize, String> {
     }
 }
 
-/// پاکسازی و حذف پروکسی از تمام settings.json ها
 pub fn remove_proxy_from_settings() -> Result<usize, String> {
     let paths = get_antigravity_settings_paths();
     let mut cleared_count = 0;

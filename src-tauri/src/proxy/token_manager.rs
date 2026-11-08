@@ -249,6 +249,11 @@ pub struct QuarantineRecord {
     pub is_validation: bool,
 }
 
+
+tokio::task_local! {
+    pub static CURRENT_TARGET_ENV: String;
+}
+
 pub struct TokenManager {
     tokens: Arc<DashMap<String, ProxyToken>>, // account_id -> ProxyToken
     current_index: Arc<AtomicUsize>,
@@ -259,6 +264,8 @@ pub struct TokenManager {
     sticky_config: Arc<tokio::sync::RwLock<StickySessionConfig>>, // 新增：Routing & scheduling configuration
     session_accounts: Arc<DashMap<String, String>>, // 新增：Session to account mapping (SessionID -> AccountID)
     preferred_account_id: Arc<tokio::sync::RwLock<Option<String>>>, // [FIX #820] 优先使用的accountID（固定account模式）
+    pub preferred_ide_account_id: Arc<tokio::sync::RwLock<Option<String>>>, // [Dual Ingress] Dedicated IDE active account
+    pub preferred_platform_account_id: Arc<tokio::sync::RwLock<Option<String>>>, // [Dual Ingress] Dedicated Platform active account
     health_scores: Arc<DashMap<String, f32>>,                       // account_id -> health_score
     circuit_breaker_config: Arc<tokio::sync::RwLock<crate::models::CircuitBreakerConfig>>, // [NEW] 熔断config缓存
 
@@ -293,6 +300,8 @@ impl Clone for TokenManager {
             sticky_config: Arc::clone(&self.sticky_config),
             session_accounts: Arc::clone(&self.session_accounts),
             preferred_account_id: Arc::clone(&self.preferred_account_id),
+            preferred_ide_account_id: Arc::clone(&self.preferred_ide_account_id),
+            preferred_platform_account_id: Arc::clone(&self.preferred_platform_account_id),
             health_scores: Arc::clone(&self.health_scores),
             circuit_breaker_config: Arc::clone(&self.circuit_breaker_config),
             refresh_locks: Arc::clone(&self.refresh_locks),
@@ -324,6 +333,8 @@ impl TokenManager {
             sticky_config: Arc::new(tokio::sync::RwLock::new(StickySessionConfig::default())),
             session_accounts: Arc::new(DashMap::new()),
             preferred_account_id: Arc::new(tokio::sync::RwLock::new(None)), // [FIX #820]
+            preferred_ide_account_id: Arc::new(tokio::sync::RwLock::new(None)),
+            preferred_platform_account_id: Arc::new(tokio::sync::RwLock::new(None)),
             health_scores: Arc::new(DashMap::new()),
             circuit_breaker_config: Arc::new(tokio::sync::RwLock::new(
                 crate::models::CircuitBreakerConfig::default(),
@@ -2060,15 +2071,25 @@ impl TokenManager {
         // 【新增 / Issue #3348】checkquota保护Whether enabled（优先从内存缓存读取，避免热路径读盘）
         let quota_protection_enabled = self.is_quota_protection_enabled();
 
-        // ===== [FIX #820] 固定account模式与配额预警智能自动切换 (Persistent Sticky Lock & Preemptive Auto-Switch) =====
-        let mut preferred_id = self.preferred_account_id.read().await.clone();
+        // ===== [FIX #820 & Dual Ingress] 目标隔离型固定账号模式与配额预警调度 =====
+        let detected_target = CURRENT_TARGET_ENV.try_with(|t| t.clone()).ok();
+        let mut preferred_id = match detected_target.as_deref() {
+            Some("ide") => self.preferred_ide_account_id.read().await.clone(),
+            Some("platform") => self.preferred_platform_account_id.read().await.clone(),
+            _ => self.preferred_account_id.read().await.clone(),
+        };
 
-        // 如果未显式配置 preferred_account_id，自动同步 Shield IDE/Platform 的当前激活账号
+        // 如果未显式配置 preferred_id，根据目标环境自动同步 Shield IDE/Platform 的当前激活账号
         if preferred_id.is_none() {
             if let Ok(targets) = crate::modules::account::get_active_target_accounts() {
-                if let Some(target_acc_id) = targets.ide.or(targets.platform).or(targets.agy) {
-                    if tokens_snapshot.iter().any(|t| t.account_id == target_acc_id) {
-                        preferred_id = Some(target_acc_id);
+                let target_acc_id = match detected_target.as_deref() {
+                    Some("ide") => targets.ide.or(targets.platform),
+                    Some("platform") => targets.platform.or(targets.ide),
+                    _ => targets.ide.or(targets.platform).or(targets.agy),
+                };
+                if let Some(acc_id) = target_acc_id {
+                    if tokens_snapshot.iter().any(|t| t.account_id == acc_id) {
+                        preferred_id = Some(acc_id);
                     }
                 }
             }
@@ -2138,10 +2159,20 @@ impl TokenManager {
                                 preferred_token.min_quota_pct.or(preferred_token.remaining_quota)
                             );
 
-                            // 锁定 preferred_account_id 确保后续请求持续命中同一账号
-                            {
-                                let mut preferred = self.preferred_account_id.write().await;
-                                *preferred = Some(preferred_token.account_id.clone());
+                            // 锁定 preferred_account_id 确保后续请求持续命中同一账号（按目标环境隔离）
+                            match detected_target.as_deref() {
+                                Some("ide") => {
+                                    let mut preferred = self.preferred_ide_account_id.write().await;
+                                    *preferred = Some(preferred_token.account_id.clone());
+                                }
+                                Some("platform") => {
+                                    let mut preferred = self.preferred_platform_account_id.write().await;
+                                    *preferred = Some(preferred_token.account_id.clone());
+                                }
+                                _ => {
+                                    let mut preferred = self.preferred_account_id.write().await;
+                                    *preferred = Some(preferred_token.account_id.clone());
+                                }
                             }
 
                             // 直接使用优先account，跳过轮询逻辑
@@ -2432,10 +2463,20 @@ impl TokenManager {
                         need_update_last_used =
                             Some((selected.account_id.clone(), std::time::Instant::now()));
 
-                        // [PINNING] 锁定 preferred_account_id 保证无 session_id 客户端（如 GameGuidance）零跳变
-                        {
-                            let mut pref = self.preferred_account_id.write().await;
-                            *pref = Some(selected.account_id.clone());
+                        // [PINNING] 锁定 preferred_account_id 保证无 session_id 客户端零跳变（按目标环境隔离）
+                        match detected_target.as_deref() {
+                            Some("ide") => {
+                                let mut pref = self.preferred_ide_account_id.write().await;
+                                *pref = Some(selected.account_id.clone());
+                            }
+                            Some("platform") => {
+                                let mut pref = self.preferred_platform_account_id.write().await;
+                                *pref = Some(selected.account_id.clone());
+                            }
+                            _ => {
+                                let mut pref = self.preferred_account_id.write().await;
+                                *pref = Some(selected.account_id.clone());
+                            }
                         }
 
                         // If 是会话首次分配且需要粘性，在此建立绑定
@@ -3796,6 +3837,23 @@ impl TokenManager {
 
     /// Set优先使用的accountID（固定account模式）
     /// 传入 Some(account_id) enabled固定account模式，传入 None 恢复轮询模式
+    pub async fn set_preferred_account_for_target(&self, account_id: Option<String>, target: Option<&str>) {
+        match target {
+            Some("ide") => {
+                let mut pref = self.preferred_ide_account_id.write().await;
+                *pref = account_id.clone();
+            }
+            Some("platform") => {
+                let mut pref = self.preferred_platform_account_id.write().await;
+                *pref = account_id.clone();
+            }
+            _ => {
+                let mut pref = self.preferred_account_id.write().await;
+                *pref = account_id.clone();
+            }
+        }
+    }
+
     pub async fn set_preferred_account(&self, account_id: Option<String>) {
         let mut preferred = self.preferred_account_id.write().await;
         if let Some(ref id) = account_id {

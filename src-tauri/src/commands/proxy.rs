@@ -885,7 +885,10 @@ pub async fn apply_antigravity_proxy(
     sync_shield_upstream: Option<bool>,
     state: State<'_, ProxyServiceState>,
 ) -> Result<String, String> {
-    let count = crate::modules::antigravity_network_patcher::apply_proxy_to_settings(&url)?;
+    let count = crate::modules::antigravity_network_patcher::apply_dual_target_proxy(
+        "http://127.0.0.1:8765",
+        Some("http://127.0.0.1:8766"),
+    )?;
     
     // در صورت تمایل کاربر، پروکسی را به عنوان upstream_proxy شیلد نیز تنظیم و ذخیره می‌کنیم
     if sync_shield_upstream.unwrap_or(true) {

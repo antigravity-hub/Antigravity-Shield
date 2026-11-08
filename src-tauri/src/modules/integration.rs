@@ -189,18 +189,26 @@ impl SystemIntegration for DesktopIntegration {
         // ====================================================================
         let target_platform = Some("platform");
 
-        // 1. Close running platform process if active (IDE processes remain completely untouched)
+        let is_proxy_active = crate::modules::antigravity_network_patcher::check_antigravity_proxy_status().is_applied;
+
+        // 1. Close running platform process if active (only if proxy is NOT active; with proxy, hot-swap is 100% non-disruptive)
         let was_running = process::is_antigravity_running(target_platform);
-        if was_running {
+        if was_running && !is_proxy_active {
             crate::modules::logger::log_info(
-                "[Desktop] Antigravity Platform is currently running. Closing before account injection..."
+                "[Desktop] Antigravity Platform is currently running without proxy. Closing before account injection..."
             );
             process::close_antigravity(20, target_platform)?;
+        } else if was_running && is_proxy_active {
+            crate::modules::logger::log_info(
+                "[Desktop] Antigravity Platform proxy is active. Executing zero-kill non-disruptive hot-swap..."
+            );
         }
 
         // 2. Token Injection for Platform
-        // 2.1 Write to system keychain/keyring (gemini:antigravity - shared across IDE and Platform)
-        write_to_system_keyring(account)?;
+        // 2.1 Write to system keychain/keyring (only when proxy is not isolating targets to avoid stomping IDE account)
+        if !is_proxy_active {
+            write_to_system_keyring(account)?;
+        }
 
         // 2.2 Write storage profile for platform
         if let Ok(storage_path) = device::get_storage_path(target_platform) {
@@ -236,12 +244,16 @@ impl SystemIntegration for DesktopIntegration {
         // 2.4 Update app_storage.json for platform
         let _ = db::update_app_storage_email(&account.email, target_platform);
 
-        // 3. Restart Platform only if it was running before
-        if was_running {
+        // 3. Restart Platform only if it was running before and closed (non-proxy mode)
+        if was_running && !is_proxy_active {
             crate::modules::logger::log_info(
                 "[Desktop] Antigravity Platform was running before switch. Restarting now..."
             );
             process::start_antigravity(target_platform)?;
+        } else if was_running && is_proxy_active {
+            crate::modules::logger::log_info(
+                "[Desktop] Antigravity Platform proxy is active. Non-disruptive hot-swap completed (zero kill, zero restart)."
+            );
         } else {
             crate::modules::logger::log_info(
                 "[Desktop] Antigravity Platform was not running. Skipping auto-start."
@@ -249,7 +261,7 @@ impl SystemIntegration for DesktopIntegration {
         }
 
         // 4. Notification & Tray
-        let notif_body = if was_running {
+        let notif_body = if was_running && !is_proxy_active {
             format!("⚡ Switched to {} (Restarted)", account.email)
         } else {
             format!("⚡ Switched to {}", account.email)

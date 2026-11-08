@@ -428,6 +428,37 @@ pub struct AxumServer {
     pub only_raw_quota_models: Arc<tokio::sync::RwLock<bool>>,
 }
 
+
+async fn target_platform_middleware(
+    req: axum::extract::Request,
+    next: axum::middleware::Next,
+) -> axum::response::Response {
+    let target = req
+        .headers()
+        .get("x-antigravity-target")
+        .and_then(|v| v.to_str().ok())
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| "platform".to_string());
+    crate::proxy::token_manager::CURRENT_TARGET_ENV
+        .scope(target, async move { next.run(req).await })
+        .await
+}
+
+async fn target_ide_middleware(
+    req: axum::extract::Request,
+    next: axum::middleware::Next,
+) -> axum::response::Response {
+    let target = req
+        .headers()
+        .get("x-antigravity-target")
+        .and_then(|v| v.to_str().ok())
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| "ide".to_string());
+    crate::proxy::token_manager::CURRENT_TARGET_ENV
+        .scope(target, async move { next.run(req).await })
+        .await
+}
+
 impl AxumServer {
     pub async fn update_only_raw_quota_models(&self, only_raw: bool) {
         let mut r = self.only_raw_quota_models.write().await;
@@ -1075,24 +1106,60 @@ impl AxumServer {
 
         tracing::info!("反代service器启动在 http://{}", addr);
 
-        // Also bind a local loopback bridge for Antigravity Toolkit IDE extensions
+        // [Dual-Port Ingress Architecture]
+        // Port 8765 is dedicated to Antigravity Platform.
+        // Port 8766 is dedicated to Antigravity IDE.
         let mut companion_port: Option<u16> = None;
-        if actual_port != 8765 {
-            let app_8765 = app.clone();
-            for bp in [8765, 8766, 8767] {
-                if bp == actual_port {
-                    continue;
-                }
-                if let Ok(l) = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", bp)).await {
-                    companion_port = Some(bp);
-                    tracing::info!("Antigravity Toolkit loopback bridge listening on http://127.0.0.1:{}", bp);
-                    tokio::spawn(async move {
-                        let _ = axum::serve(l, app_8765).await;
-                    });
-                    break;
-                }
+        let platform_target_port: u16 = 8765;
+        let ide_target_port: u16 = 8766;
+
+        if actual_port == platform_target_port {
+            // Main listener is on 8765 (Platform). Bind 8766 for IDE.
+            let app_ide = app.clone().layer(axum::middleware::from_fn(target_ide_middleware));
+            if let Ok(l) = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", ide_target_port)).await {
+                companion_port = Some(ide_target_port);
+                tracing::info!("🔒 [Dual-Port Ingress] Dedicated IDE proxy listening on http://127.0.0.1:{}", ide_target_port);
+                tokio::spawn(async move {
+                    let _ = axum::serve(l, app_ide).await;
+                });
+            } else {
+                tracing::warn!("🔒 [Dual-Port Ingress] Port 8766 is busy, IDE proxy could not bind 8766 directly.");
+            }
+        } else if actual_port == ide_target_port {
+            // Main listener is on 8766 (IDE). Bind 8765 for Platform.
+            let app_platform = app.clone().layer(axum::middleware::from_fn(target_platform_middleware));
+            if let Ok(l) = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", platform_target_port)).await {
+                companion_port = Some(platform_target_port);
+                tracing::info!("🔒 [Dual-Port Ingress] Dedicated Platform proxy listening on http://127.0.0.1:{}", platform_target_port);
+                tokio::spawn(async move {
+                    let _ = axum::serve(l, app_platform).await;
+                });
+            }
+        } else {
+            // Main listener is on another port (e.g. 8045). Bind both 8765 and 8766 if available.
+            let app_platform = app.clone().layer(axum::middleware::from_fn(target_platform_middleware));
+            if let Ok(l) = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", platform_target_port)).await {
+                companion_port = Some(platform_target_port);
+                tracing::info!("🔒 [Dual-Port Ingress] Platform proxy listening on http://127.0.0.1:{}", platform_target_port);
+                tokio::spawn(async move {
+                    let _ = axum::serve(l, app_platform).await;
+                });
+            }
+            let app_ide = app.clone().layer(axum::middleware::from_fn(target_ide_middleware));
+            if let Ok(l) = tokio::net::TcpListener::bind(format!("127.0.0.1:{}", ide_target_port)).await {
+                tracing::info!("🔒 [Dual-Port Ingress] IDE proxy listening on http://127.0.0.1:{}", ide_target_port);
+                tokio::spawn(async move {
+                    let _ = axum::serve(l, app_ide).await;
+                });
             }
         }
+
+        // Layer the main app according to actual_port
+        let app = if actual_port == ide_target_port {
+            app.layer(axum::middleware::from_fn(target_ide_middleware))
+        } else {
+            app.layer(axum::middleware::from_fn(target_platform_middleware))
+        };
 
         // 自动持久化 bridge_info.json 供 IDE 插件/外部客户端自动发现活动端口
         write_bridge_info(actual_port, companion_port);
