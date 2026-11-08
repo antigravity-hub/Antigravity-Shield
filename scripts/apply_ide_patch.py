@@ -271,6 +271,8 @@ for cp in css_targets:
     content = content + f"/* [Antigravity-Shield-RTL-Vazirmatn] */\n{VAZIRMATN_RTL_CSS}\n/* [/Antigravity-Shield-RTL-Vazirmatn] */\n"
     with open(cp, 'w', encoding='utf-8') as f:
         f.write(content)
+        f.flush()
+        os.fsync(f.fileno())
     print(f"Patched CSS: {cp}")
 
 # 5. Patch JS Sentinel files
@@ -290,6 +292,8 @@ for jp in js_targets:
     content = content + f"{SENTINEL_CODE}\n"
     with open(jp, 'w', encoding='utf-8') as f:
         f.write(content)
+        f.flush()
+        os.fsync(f.fileno())
     print(f"Patched Sentinel in: {jp}")
 
 # 6. Patch HTML Style Block
@@ -318,6 +322,8 @@ for hp in html_targets:
     content = content.replace('</head>', f'{STYLE_BLOCK}\n</head>')
     with open(hp, 'w', encoding='utf-8') as f:
         f.write(content)
+        f.flush()
+        os.fsync(f.fileno())
     print(f"Patched HTML: {hp}")
 
 # 7. Update product.json checksums
@@ -350,6 +356,8 @@ for rel, path in all_patched:
 pj["checksums"] = checksums
 with open(product_json_path, 'w', encoding='utf-8') as f:
     json.dump(pj, f, indent=2)
+    f.flush()
+    os.fsync(f.fileno())
 
 # 8. Clear Electron V8 code cache so changes take effect immediately
 roaming_ide = os.path.expandvars(r"%APPDATA%\Antigravity IDE")
