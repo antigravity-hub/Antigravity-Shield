@@ -679,27 +679,16 @@ ul ul ul > li::after,
 }
 
 /* ==========================================================================
-   Numbered lists (OL): Persian Counter Anchored on the RIGHT
+   Numbered lists (OL): Persian Counter Anchored on the RIGHT (Markdown Content ONLY)
    ========================================================================== */
-ol:dir(rtl), [dir="rtl"] ol, ol[dir="rtl"],
-ol:has(> li:dir(rtl)), ol:has(> li[dir="rtl"]), ol:has(> li[dir="auto"]:dir(rtl)),
-[role="article"] ol:has(> li:dir(rtl)),
-[role="article"] ol,
-[data-testid="conversation-view"] ol:has(> li:dir(rtl)),
-[data-testid="conversation-view"] ol:dir(rtl),
-[data-testid="conversation-view"] ol[dir="rtl"],
-.jetski-custom-editor-pane ol:has(> li:dir(rtl)),
-.jetski-custom-editor-pane ol:dir(rtl),
-.jetski-custom-editor-pane ol[dir="rtl"],
-[data-aux-pane-open] ol:has(> li:dir(rtl)),
-[data-aux-pane-open] ol:dir(rtl),
-[data-aux-pane-open] ol[dir="rtl"],
-.part.auxiliarybar ol:has(> li:dir(rtl)),
-.part.auxiliarybar ol:dir(rtl),
-.part.auxiliarybar ol[dir="rtl"],
-div.break-words ol:has(> li:dir(rtl)),
-div.break-words ol:dir(rtl),
-div.break-words ol[dir="rtl"] {
+.rendered-markdown ol:dir(rtl),
+.rendered-markdown [dir="rtl"] ol,
+.rendered-markdown ol[dir="rtl"],
+.rendered-markdown ol:has(> li:dir(rtl)),
+.prose ol:dir(rtl),
+.prose [dir="rtl"] ol,
+.prose ol[dir="rtl"],
+.prose ol:has(> li:dir(rtl)) {
   counter-reset: agy-counter !important;
   list-style: none !important;
   margin: 0.8rem 0 !important;
@@ -712,19 +701,14 @@ div.break-words ol[dir="rtl"] {
   text-align: right !important;
 }
 
-ol:dir(rtl) > li, [dir="rtl"] ol > li, ol[dir="rtl"] > li,
-ol:has(> li:dir(rtl)) > li:dir(rtl), ol:has(> li:dir(rtl)) > li[dir="rtl"],
-[role="article"] ol > li,
-[data-testid="conversation-view"] ol > li:dir(rtl),
-[data-testid="conversation-view"] ol > li[dir="rtl"],
-[data-testid="conversation-view"] ol:has(> li:dir(rtl)) > li,
-.jetski-custom-editor-pane ol > li:dir(rtl),
-.jetski-custom-editor-pane ol:has(> li:dir(rtl)) > li,
-.part.auxiliarybar ol > li:dir(rtl),
-.part.auxiliarybar ol:has(> li:dir(rtl)) > li,
-div.break-words ol > li:dir(rtl),
-div.break-words ol > li[dir="rtl"],
-div.break-words ol:has(> li:dir(rtl)) > li {
+.rendered-markdown ol:dir(rtl) > li,
+.rendered-markdown [dir="rtl"] ol > li,
+.rendered-markdown ol[dir="rtl"] > li,
+.rendered-markdown ol:has(> li:dir(rtl)) > li,
+.prose ol:dir(rtl) > li,
+.prose [dir="rtl"] ol > li,
+.prose ol[dir="rtl"] > li,
+.prose ol:has(> li:dir(rtl)) > li {
   counter-increment: agy-counter !important;
   list-style: none !important;
   position: relative !important;
@@ -739,20 +723,15 @@ div.break-words ol:has(> li:dir(rtl)) > li {
   text-align-last: right !important;
 }
 
-/* Custom Styled Number Badge on the RIGHT - Always attached to the text */
-ol:dir(rtl) > li::before, [dir="rtl"] ol > li::before, ol[dir="rtl"] > li::before,
-ol:has(> li:dir(rtl)) > li:dir(rtl)::before, ol:has(> li:dir(rtl)) > li[dir="rtl"]::before,
-[role="article"] ol > li::before,
-[data-testid="conversation-view"] ol > li:dir(rtl)::before,
-[data-testid="conversation-view"] ol > li[dir="rtl"]::before,
-[data-testid="conversation-view"] ol:has(> li:dir(rtl)) > li::before,
-.jetski-custom-editor-pane ol > li:dir(rtl)::before,
-.jetski-custom-editor-pane ol:has(> li:dir(rtl)) > li::before,
-.part.auxiliarybar ol > li:dir(rtl)::before,
-.part.auxiliarybar ol:has(> li:dir(rtl)) > li::before,
-div.break-words ol > li:dir(rtl)::before,
-div.break-words ol > li[dir="rtl"]::before,
-div.break-words ol:has(> li:dir(rtl)) > li::before {
+/* Custom Styled Number Badge on the RIGHT - In Markdown ONLY */
+.rendered-markdown ol:dir(rtl) > li::before,
+.rendered-markdown [dir="rtl"] ol > li::before,
+.rendered-markdown ol[dir="rtl"] > li::before,
+.rendered-markdown ol:has(> li:dir(rtl)) > li::before,
+.prose ol:dir(rtl) > li::before,
+.prose [dir="rtl"] ol > li::before,
+.prose ol[dir="rtl"] > li::before,
+.prose ol:has(> li:dir(rtl)) > li::before {
   content: counter(agy-counter) "." !important;
   position: absolute !important;
   right: -24px !important;
@@ -766,6 +745,36 @@ div.break-words ol:has(> li:dir(rtl)) > li::before {
   width: 22px !important;
   text-align: left !important;
   direction: ltr !important;
+}
+
+/* Strict Immunity for Outer Conversation Turn Containers (Kill phantom 1 2 3... on left) */
+[data-testid="conversation-view"] > ol,
+[data-testid="conversation-view"] > ol > li,
+[data-testid="conversation-view"] > div > ol,
+[data-testid="conversation-view"] > div > ol > li,
+[role="article"] > ol,
+[role="article"] > ol > li,
+ol[role="log"],
+ol[role="log"] > li,
+ol.conversation-turns,
+ol.conversation-turns > li {
+  list-style: none !important;
+  counter-reset: none !important;
+  counter-increment: none !important;
+}
+
+[data-testid="conversation-view"] > ol > li::before,
+[data-testid="conversation-view"] > ol > li::after,
+[data-testid="conversation-view"] > div > ol > li::before,
+[data-testid="conversation-view"] > div > ol > li::after,
+[role="article"] > ol > li::before,
+[role="article"] > ol > li::after,
+ol[role="log"] > li::before,
+ol[role="log"] > li::after,
+ol.conversation-turns > li::before,
+ol.conversation-turns > li::after {
+  content: none !important;
+  display: none !important;
 }
 
 ol:dir(rtl) > li::after, [dir="rtl"] ol > li::after, ol[dir="rtl"] > li::after,
@@ -2612,6 +2621,29 @@ pub async fn patch_antigravity_rtl() -> Result<String, String> {
                         "vs/workbench/workbench.desktop.main.css",
                         css_path,
                     );
+
+                // Patch agy extension for the chat webview iframe (Cross-Origin Iframe BiDi & Vazirmatn Proxy)
+                if let Some(app_dir) = out_dir.parent() {
+                    let agy_vscode_dir = app_dir.join("extensions").join("agy").join("vscode");
+                    if agy_vscode_dir.exists() {
+                        let agy_ext_js = agy_vscode_dir.join("extension.js");
+                        if agy_ext_js.exists() {
+                            if let Ok(mut ext_content) = fs::read_to_string(&agy_ext_js) {
+                                let target_anchor = "a.search=m.toString();return a.toString()}setupFontChangeListener";
+                                let hook_anchor = "a.search=m.toString();try{return require(\"./rtl-proxy.js\").wrap(a.toString())}catch(e){return a.toString()}}setupFontChangeListener";
+                                if ext_content.contains(target_anchor) {
+                                    let ext_bak = format!("{}.orig", agy_ext_js.to_string_lossy());
+                                    if !Path::new(&ext_bak).exists() {
+                                        let _ = fs::copy(&agy_ext_js, &ext_bak);
+                                    }
+                                    ext_content = ext_content.replace(target_anchor, hook_anchor);
+                                    let _ = fs::write(&agy_ext_js, &ext_content);
+                                    applied_count += 1;
+                                }
+                            }
+                        }
+                    }
+                }
                 }
 
                 // Clear Electron V8 code cache so changes take effect immediately
