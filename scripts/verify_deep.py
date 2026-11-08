@@ -297,6 +297,46 @@ if not os.environ.get("ANTIGRAVITY_IDEMPOTENCY_CHECK_ACTIVE"):
 else:
     print("[INFO] Sub-invocation detected; skipping nested idempotency check.")
 
+# --- PHASE 10: Chat Webview Iframe Proxy & Typography Invariant ---
+print("\n--- PHASE 10: Chat Webview Iframe Proxy & Typography Invariant ---")
+agy_vscode_dir = os.path.join(app_dir, "extensions", "agy", "vscode")
+agy_ext_js = os.path.join(agy_vscode_dir, "extension.js")
+agy_proxy_js = os.path.join(agy_vscode_dir, "rtl-proxy.js")
+agy_font_file = os.path.join(agy_vscode_dir, "Vazirmatn-Variable.woff2")
+
+if not os.path.exists(agy_ext_js):
+    print(f"[FAIL] Missing agy extension.js: {agy_ext_js}")
+    failures += 1
+else:
+    with open(agy_ext_js, 'r', encoding='utf-8') as f:
+        ext_c = f.read()
+    if 'require("./rtl-proxy.js").wrap(a.toString())' in ext_c:
+        print("[PASS] agy extension.js has active rtl-proxy hook.")
+    else:
+        print("[FAIL] agy extension.js missing rtl-proxy hook!")
+        failures += 1
+
+if not os.path.exists(agy_proxy_js):
+    print(f"[FAIL] Missing rtl-proxy.js: {agy_proxy_js}")
+    failures += 1
+else:
+    with open(agy_proxy_js, 'r', encoding='utf-8') as f:
+        proxy_c = f.read()
+    has_inject = 'id="antigravity-shield-chat-rtl"' in proxy_c
+    has_font_route = '/__agy_rtl/vazirmatn.woff2' in proxy_c
+    has_bidi = "root.setAttribute('dir', 'auto')" in proxy_c
+    if has_inject and has_font_route and has_bidi:
+        print(f"[PASS] rtl-proxy.js contains full injection engine ({len(proxy_c):,} bytes).")
+    else:
+        print("[FAIL] rtl-proxy.js missing required injection rules!")
+        failures += 1
+
+if not os.path.exists(agy_font_file) or os.path.getsize(agy_font_file) < 100000:
+    print(f"[FAIL] Missing or invalid Vazirmatn font: {agy_font_file}")
+    failures += 1
+else:
+    print(f"[PASS] Vazirmatn-Variable.woff2 present ({os.path.getsize(agy_font_file):,} bytes).")
+
 print("\n=================================================================")
 if failures == 0:
     print("   ALL VERIFICATION PHASES PASSED! (0 FAILURES)")

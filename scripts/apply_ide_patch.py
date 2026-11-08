@@ -326,6 +326,34 @@ for hp in html_targets:
         os.fsync(f.fileno())
     print(f"Patched HTML: {hp}")
 
+# 6b. Patch agy extension for the chat iframe (Cross-Origin Iframe BiDi & Vazirmatn Proxy)
+agy_vscode_dir = os.path.join(APP_DIR, "extensions", "agy", "vscode")
+agy_ext_js = os.path.join(agy_vscode_dir, "extension.js")
+agy_proxy_js = os.path.join(agy_vscode_dir, "rtl-proxy.js")
+agy_font_file = os.path.join(agy_vscode_dir, "Vazirmatn-Variable.woff2")
+
+if os.path.exists(agy_ext_js):
+    with open(agy_ext_js, 'r', encoding='utf-8') as f:
+        ext_content = f.read()
+    
+    target_anchor = 'a.search=m.toString();return a.toString()}setupFontChangeListener'
+    hook_anchor = 'a.search=m.toString();try{return require("./rtl-proxy.js").wrap(a.toString())}catch(e){return a.toString()}}setupFontChangeListener'
+    
+    if target_anchor in ext_content:
+        ext_bak = agy_ext_js + ".orig"
+        if not os.path.exists(ext_bak):
+            shutil.copyfile(agy_ext_js, ext_bak)
+        ext_content = ext_content.replace(target_anchor, hook_anchor)
+        with open(agy_ext_js, 'w', encoding='utf-8') as f:
+            f.write(ext_content)
+            f.flush()
+            os.fsync(f.fileno())
+        print(f"Patched agy extension: {agy_ext_js}")
+    elif "rtl-proxy.js" in ext_content:
+        print(f"Agy extension already patched: {agy_ext_js}")
+    else:
+        print(f"Warning: agy extension anchor not found in {agy_ext_js}")
+
 # 7. Update product.json checksums
 product_json_path = os.path.join(APP_DIR, "product.json")
 with open(product_json_path, 'r', encoding='utf-8') as f:
