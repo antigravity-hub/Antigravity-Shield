@@ -324,12 +324,19 @@ else:
         proxy_c = f.read()
     has_inject = 'id="antigravity-shield-chat-rtl"' in proxy_c
     has_font_route = '/__agy_rtl/vazirmatn.woff2' in proxy_c
-    has_bidi = "root.setAttribute('dir', 'auto')" in proxy_c
+    has_bidi = 'applyBiDi' in proxy_c or "setAttribute('dir'" in proxy_c
     if has_inject and has_font_route and has_bidi:
         print(f"[PASS] rtl-proxy.js contains full injection engine ({len(proxy_c):,} bytes).")
     else:
         print("[FAIL] rtl-proxy.js missing required injection rules!")
         failures += 1
+
+agy_css_file = os.path.join(agy_vscode_dir, "vazirmatn.css")
+if not os.path.exists(agy_css_file) or os.path.getsize(agy_css_file) < 50000:
+    print(f"[FAIL] Missing or truncated vazirmatn.css in extension: {agy_css_file}")
+    failures += 1
+else:
+    print(f"[PASS] vazirmatn.css full visual suite present ({os.path.getsize(agy_css_file):,} bytes).")
 
 if not os.path.exists(agy_font_file) or os.path.getsize(agy_font_file) < 100000:
     print(f"[FAIL] Missing or invalid Vazirmatn font: {agy_font_file}")

@@ -331,6 +331,13 @@ agy_vscode_dir = os.path.join(APP_DIR, "extensions", "agy", "vscode")
 agy_ext_js = os.path.join(agy_vscode_dir, "extension.js")
 agy_proxy_js = os.path.join(agy_vscode_dir, "rtl-proxy.js")
 agy_font_file = os.path.join(agy_vscode_dir, "Vazirmatn-Variable.woff2")
+agy_css_file = os.path.join(agy_vscode_dir, "vazirmatn.css")
+
+# Ensure clean CSS (all visual styles without base64 font bloat) is copied to agy vscode dir
+clean_css_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vazirmatn_clean.css")
+if os.path.exists(clean_css_path) and os.path.exists(agy_vscode_dir):
+    shutil.copyfile(clean_css_path, ag_css_dst := os.path.join(agy_vscode_dir, "vazirmatn.css"))
+    print(f"Synchronized full visual CSS: {ag_css_dst} ({os.path.getsize(ag_css_dst):,} bytes)")
 
 if os.path.exists(agy_ext_js):
     with open(agy_ext_js, 'r', encoding='utf-8') as f:

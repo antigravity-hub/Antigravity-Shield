@@ -1,0 +1,1812 @@
+@font-face {
+  font-family: 'Vazirmatn';
+  src: local('Vazirmatn'), local('Vazirmatn-Regular'), local('Vazir'),
+       url('/__agy_rtl/vazirmatn.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F;
+}
+
+/* [Antigravity-Emerald-Raindrop-Cascade-And-Bidi-List-Shield] - Live Neon Pulse & Ergonomic Tree */
+
+@keyframes agyRaindropFlow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 36px;
+  }
+}
+
+@keyframes agyEmeraldPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
+    transform: scale(1.15);
+  }
+}
+
+@keyframes agyPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7), 0 0 12px rgba(16, 185, 129, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.95), 0 0 20px rgba(52, 211, 153, 0.6);
+    transform: scale(1.15);
+  }
+}
+
+@keyframes agyCyanPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(6, 182, 212, 0.7), 0 0 12px rgba(56, 189, 248, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.95), 0 0 18px rgba(56, 189, 248, 0.7);
+    transform: scale(1.18);
+  }
+}
+
+/* Kill default browser markers completely so they NEVER jump to the left */
+ul, ol, [role="article"] ul, [role="article"] ol,
+.rendered-markdown ul, .rendered-markdown ol,
+.animate-markdown ul, .animate-markdown ol,
+[data-testid="conversation-view"] ul, [data-testid="conversation-view"] ol,
+.jetski-custom-editor-pane ul, .jetski-custom-editor-pane ol,
+[data-aux-pane-open] ul, [data-aux-pane-open] ol,
+.part.auxiliarybar ul, .part.auxiliarybar ol,
+div.break-words ul, div.break-words ol {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+ul > li::marker, ol > li::marker,
+[role="article"] ul > li::marker, [role="article"] ol > li::marker,
+.rendered-markdown ul > li::marker, .rendered-markdown ol > li::marker,
+.animate-markdown ul > li::marker, .animate-markdown ol > li::marker,
+[data-testid="conversation-view"] ul > li::marker, [data-testid="conversation-view"] ol > li::marker,
+.jetski-custom-editor-pane ul > li::marker, .jetski-custom-editor-pane ol > li::marker,
+[data-aux-pane-open] ul > li::marker, [data-aux-pane-open] ol > li::marker,
+.part.auxiliarybar ul > li::marker, .part.auxiliarybar ol > li::marker,
+div.break-words ul > li::marker, div.break-words ol > li::marker {
+  display: none !important;
+  content: "" !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+/* Persian Unordered List Container (Top-level) */
+ul:dir(rtl), [dir="rtl"] ul, ul[dir="rtl"],
+ul:has(> li:dir(rtl)), ul:has(> li[dir="rtl"]), ul:has(> li[dir="auto"]:dir(rtl)),
+[role="article"] ul:has(> li:dir(rtl)),
+[role="article"] ul,
+.rendered-markdown ul:dir(rtl),
+.rendered-markdown ul[dir="rtl"],
+.animate-markdown ul:dir(rtl),
+.animate-markdown ul[dir="rtl"],
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ul:dir(rtl),
+[data-testid="conversation-view"] ul[dir="rtl"],
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ul:dir(rtl),
+.jetski-custom-editor-pane ul[dir="rtl"],
+[data-aux-pane-open] ul:has(> li:dir(rtl)),
+[data-aux-pane-open] ul:dir(rtl),
+[data-aux-pane-open] ul[dir="rtl"],
+.part.auxiliarybar ul:has(> li:dir(rtl)),
+.part.auxiliarybar ul:dir(rtl),
+.part.auxiliarybar ul[dir="rtl"],
+div.break-words ul:has(> li:dir(rtl)),
+div.break-words ul:dir(rtl),
+div.break-words ul[dir="rtl"] {
+  list-style: none !important;
+  margin: 0.75rem 0 !important;
+  padding: 0 !important;
+  padding-right: 28px !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  position: relative !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Layer 1 List Item */
+ul:dir(rtl) > li, [dir="rtl"] ul > li, ul[dir="rtl"] > li,
+ul:has(> li:dir(rtl)) > li:dir(rtl), ul:has(> li:dir(rtl)) > li[dir="rtl"],
+[role="article"] ul > li,
+.rendered-markdown ul > li,
+.animate-markdown ul > li,
+[data-testid="conversation-view"] ul > li:dir(rtl),
+[data-testid="conversation-view"] ul > li[dir="rtl"],
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)) > li,
+.jetski-custom-editor-pane ul > li:dir(rtl),
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)) > li,
+.part.auxiliarybar ul > li:dir(rtl),
+.part.auxiliarybar ul:has(> li:dir(rtl)) > li,
+div.break-words ul > li:dir(rtl),
+div.break-words ul > li[dir="rtl"],
+div.break-words ul:has(> li:dir(rtl)) > li {
+  list-style: none !important;
+  position: relative !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  margin-bottom: 14px !important;
+  line-height: 1.85 !important;
+  color: #f1f5f9 !important;
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+}
+
+/* Vertical Raindrop Animated Spine on Parent */
+ul:dir(rtl) > li::before, [dir="rtl"] ul > li::before, ul[dir="rtl"] > li::before,
+ul:has(> li:dir(rtl)) > li:dir(rtl)::before, ul:has(> li:dir(rtl)) > li[dir="rtl"]::before,
+[role="article"] ul > li::before,
+.rendered-markdown ul > li::before,
+.animate-markdown ul > li::before,
+[data-testid="conversation-view"] ul > li:dir(rtl)::before,
+[data-testid="conversation-view"] ul > li[dir="rtl"]::before,
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)) > li::before,
+.jetski-custom-editor-pane ul > li:dir(rtl)::before,
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)) > li::before,
+.part.auxiliarybar ul > li:dir(rtl)::before,
+.part.auxiliarybar ul:has(> li:dir(rtl)) > li::before,
+div.break-words ul > li:dir(rtl)::before,
+div.break-words ul > li[dir="rtl"]::before,
+div.break-words ul:has(> li:dir(rtl)) > li::before {
+  content: "" !important;
+  position: absolute !important;
+  right: -20px !important;
+  top: 14px !important;
+  bottom: -14px !important;
+  width: 2px !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(16, 185, 129, 0.9) 0px,
+    rgba(52, 211, 153, 0.4) 6px,
+    transparent 10px,
+    transparent 14px,
+    rgba(16, 185, 129, 0.95) 20px,
+    rgba(56, 189, 248, 0.8) 26px,
+    transparent 30px
+  ) !important;
+  background-size: 2px 36px !important;
+  animation: agyRaindropFlow 1.6s linear infinite !important;
+  border-radius: 2px !important;
+  opacity: 0.85 !important;
+  z-index: 1 !important;
+  display: block !important;
+}
+
+/* Last item in Layer 1 stops spine at the bullet ONLY if it has no nested sublist */
+ul:dir(rtl) > li:last-child:not(:has(ul))::before,
+[dir="rtl"] ul > li:last-child:not(:has(ul))::before,
+ul[dir="rtl"] > li:last-child:not(:has(ul))::before,
+[role="article"] ul > li:last-child:not(:has(ul))::before,
+.rendered-markdown ul > li:last-child:not(:has(ul))::before,
+.animate-markdown ul > li:last-child:not(:has(ul))::before,
+[data-testid="conversation-view"] ul > li:last-child:not(:has(ul))::before,
+.jetski-custom-editor-pane ul > li:last-child:not(:has(ul))::before,
+.part.auxiliarybar ul > li:last-child:not(:has(ul))::before,
+div.break-words ul > li:last-child:not(:has(ul))::before {
+  bottom: 8px !important;
+}
+
+/* Layer 1 Glowing Emerald Node (The Bullet Droplet) */
+ul:dir(rtl) > li::after, [dir="rtl"] ul > li::after, ul[dir="rtl"] > li::after,
+ul:has(> li:dir(rtl)) > li:dir(rtl)::after, ul:has(> li:dir(rtl)) > li[dir="rtl"]::after,
+[role="article"] ul > li::after,
+.rendered-markdown ul > li::after,
+.animate-markdown ul > li::after,
+[data-testid="conversation-view"] ul > li:dir(rtl)::after,
+[data-testid="conversation-view"] ul > li[dir="rtl"]::after,
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)) > li::after,
+.jetski-custom-editor-pane ul > li:dir(rtl)::after,
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)) > li::after,
+.part.auxiliarybar ul > li:dir(rtl)::after,
+.part.auxiliarybar ul:has(> li:dir(rtl)) > li::after,
+div.break-words ul > li:dir(rtl)::after,
+div.break-words ul > li[dir="rtl"]::after,
+div.break-words ul:has(> li:dir(rtl)) > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -25px !important;
+  top: 7px !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7) !important;
+  animation: agyEmeraldPulseGlow 2.5s ease-in-out infinite !important;
+  z-index: 3 !important;
+  display: block !important;
+}
+  right: -25px !important;
+  top: 7px !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 35%, #a7f3d0 0%, #10b981 55%, #065f46 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7) !important;
+  animation: agyEmeraldPulseGlow 2.5s ease-in-out infinite !important;
+  z-index: 3 !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   Layer 2: Nested Sub-Lists (اتصال بدون درز شاخه خمیده با ستون فقرات والد)
+   ========================================================================== */
+ul ul,
+[role="article"] ul ul,
+.rendered-markdown ul ul,
+.rendered-markdown ul[dir="rtl"] ul,
+.rendered-markdown [dir="rtl"] ul ul,
+.rendered-markdown ul ul:dir(rtl),
+.rendered-markdown ul:dir(rtl) ul,
+.rendered-markdown ul:dir(rtl) ul:dir(rtl),
+.animate-markdown ul ul,
+.animate-markdown ul[dir="rtl"] ul,
+.animate-markdown [dir="rtl"] ul ul,
+.animate-markdown ul ul:dir(rtl),
+.animate-markdown ul:dir(rtl) ul,
+.animate-markdown ul:dir(rtl) ul:dir(rtl),
+[role="article"] ul[dir="rtl"] ul,
+[role="article"] [dir="rtl"] ul ul,
+[role="article"] ul ul:dir(rtl),
+[role="article"] ul:dir(rtl) ul,
+[role="article"] ul:dir(rtl) ul:dir(rtl),
+[dir="rtl"] ul ul,
+ul[dir="rtl"] ul,
+ul:dir(rtl) ul,
+ul:dir(rtl) ul:dir(rtl),
+[data-testid="conversation-view"] ul ul,
+[data-testid="conversation-view"] ul ul:dir(rtl),
+[data-testid="conversation-view"] ul[dir="rtl"] ul,
+.jetski-custom-editor-pane ul ul,
+[data-aux-pane-open] ul ul,
+.part.auxiliarybar ul ul,
+div.break-words ul ul,
+div.break-words ul ul:dir(rtl),
+div.break-words ul[dir="rtl"] ul,
+ul:dir(rtl) > li > ul, [dir="rtl"] ul > li > ul, ul[dir="rtl"] > li > ul {
+  position: relative !important;
+  margin: 6px 0 8px 0 !important;
+  margin-right: 0 !important;
+  margin-inline-start: 0 !important;
+  margin-left: 0 !important;
+  margin-inline-end: 0 !important;
+  padding: 0 !important;
+  padding-right: 0 !important;
+  padding-inline-start: 0 !important;
+  padding-left: 0 !important;
+  padding-inline-end: 0 !important;
+  border: none !important;
+  list-style: none !important;
+}
+
+ul ul > li,
+[role="article"] ul ul > li,
+.rendered-markdown ul ul > li,
+.rendered-markdown ul[dir="rtl"] ul > li,
+.rendered-markdown [dir="rtl"] ul ul > li,
+.rendered-markdown ul ul:dir(rtl) > li,
+.animate-markdown ul ul > li,
+.animate-markdown ul[dir="rtl"] ul > li,
+.animate-markdown [dir="rtl"] ul ul > li,
+.animate-markdown ul ul:dir(rtl) > li,
+[role="article"] ul[dir="rtl"] ul > li,
+[role="article"] [dir="rtl"] ul ul > li,
+[role="article"] ul ul:dir(rtl) > li,
+[dir="rtl"] ul ul > li,
+ul[dir="rtl"] ul > li,
+ul:dir(rtl) ul > li,
+ul:dir(rtl) ul:dir(rtl) > li,
+[data-testid="conversation-view"] ul ul > li,
+[data-testid="conversation-view"] ul ul > li:dir(rtl),
+.jetski-custom-editor-pane ul ul > li,
+[data-aux-pane-open] ul ul > li,
+.part.auxiliarybar ul ul > li,
+div.break-words ul ul > li,
+div.break-words ul ul > li:dir(rtl),
+ul:dir(rtl) > li > ul > li, [dir="rtl"] ul > li > ul > li {
+  position: relative !important;
+  padding-right: 14px !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  margin-bottom: 7px !important;
+  color: #cbd5e1 !important;
+  font-size: 0.93em !important;
+  line-height: 1.75 !important;
+  list-style: none !important;
+}
+
+/* Level 2 Sub-list Elbow Box: REMOVED COMPLETELY (Zero awkward floating boxes!) */
+ul ul > li::before,
+[role="article"] ul ul > li::before,
+.rendered-markdown ul ul > li::before,
+.rendered-markdown ul[dir="rtl"] ul > li::before,
+.rendered-markdown [dir="rtl"] ul ul > li::before,
+.rendered-markdown ul ul:dir(rtl) > li::before,
+.animate-markdown ul ul > li::before,
+.animate-markdown ul[dir="rtl"] ul > li::before,
+.animate-markdown [dir="rtl"] ul ul > li::before,
+.animate-markdown ul ul:dir(rtl) > li::before,
+[role="article"] ul[dir="rtl"] ul > li::before,
+[role="article"] [dir="rtl"] ul ul > li::before,
+[role="article"] ul ul:dir(rtl) > li::before,
+[dir="rtl"] ul ul > li::before,
+ul[dir="rtl"] ul > li::before,
+ul:dir(rtl) ul > li::before,
+ul:dir(rtl) ul:dir(rtl) > li::before,
+[data-testid="conversation-view"] ul ul > li::before,
+[data-testid="conversation-view"] ul ul > li:dir(rtl)::before,
+.jetski-custom-editor-pane ul ul > li::before,
+[data-aux-pane-open] ul ul > li::before,
+.part.auxiliarybar ul ul > li::before,
+div.break-words ul ul > li::before,
+div.break-words ul ul > li:dir(rtl)::before,
+ul:dir(rtl) > li > ul > li::before,
+ul ul > li:last-child::before,
+.rendered-markdown ul ul > li:last-child::before,
+[data-testid="conversation-view"] ul ul > li:last-child::before,
+div.break-words ul ul > li:last-child::before {
+  display: none !important;
+  content: none !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Sleek Minimal Glowing Cyan Bullet Node (Tightly positioned 8-9px from text) */
+ul ul > li::after,
+[role="article"] ul ul > li::after,
+.rendered-markdown ul ul > li::after,
+.rendered-markdown ul[dir="rtl"] ul > li::after,
+.rendered-markdown [dir="rtl"] ul ul > li::after,
+.rendered-markdown ul ul:dir(rtl) > li::after,
+.animate-markdown ul ul > li::after,
+.animate-markdown ul[dir="rtl"] ul > li::after,
+.animate-markdown [dir="rtl"] ul ul > li::after,
+.animate-markdown ul ul:dir(rtl) > li::after,
+[role="article"] ul[dir="rtl"] ul > li::after,
+[role="article"] [dir="rtl"] ul ul > li::after,
+[role="article"] ul ul:dir(rtl) > li::after,
+[dir="rtl"] ul ul > li::after,
+ul[dir="rtl"] ul > li::after,
+ul:dir(rtl) ul > li::after,
+ul:dir(rtl) ul:dir(rtl) > li::after,
+[data-testid="conversation-view"] ul ul > li::after,
+[data-testid="conversation-view"] ul ul > li:dir(rtl)::after,
+.jetski-custom-editor-pane ul ul > li::after,
+[data-aux-pane-open] ul ul > li::after,
+.part.auxiliarybar ul ul > li::after,
+div.break-words ul ul > li::after,
+div.break-words ul ul > li:dir(rtl)::after,
+ul:dir(rtl) > li > ul > li::after,
+ul ul > li:last-child::after,
+.rendered-markdown ul ul > li:last-child::after,
+[data-testid="conversation-view"] ul ul > li:last-child::after,
+div.break-words ul ul > li:last-child::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 0px !important;
+  top: 10px !important;
+  bottom: auto !important;
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: #06b6d4 !important;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.75), 0 0 10px rgba(56, 189, 248, 0.45) !important;
+  border: none !important;
+  animation: none !important;
+  z-index: 3 !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   Layer 3: Multi-level Nested Sub-Lists (Level 3+)
+   ========================================================================== */
+ul ul ul,
+[role="article"] ul ul ul,
+.rendered-markdown ul ul ul,
+.animate-markdown ul ul ul {
+  position: relative !important;
+  margin: 4px 0 6px 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  padding-right: 0 !important;
+  border: none !important;
+  list-style: none !important;
+}
+
+ul ul ul > li,
+[role="article"] ul ul ul > li,
+.rendered-markdown ul ul ul > li,
+.animate-markdown ul ul ul > li {
+  position: relative !important;
+  padding-right: 12px !important;
+  padding-left: 0 !important;
+  margin-bottom: 6px !important;
+  color: #94a3b8 !important;
+  font-size: 0.9em !important;
+  line-height: 1.7 !important;
+  list-style: none !important;
+}
+
+ul ul ul > li::before,
+[role="article"] ul ul ul > li::before,
+.rendered-markdown ul ul ul > li::before,
+.animate-markdown ul ul ul > li::before {
+  display: none !important;
+  content: none !important;
+  border: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+ul ul ul > li::after,
+[role="article"] ul ul ul > li::after,
+.rendered-markdown ul ul ul > li::after,
+.animate-markdown ul ul ul > li::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 0px !important;
+  top: 10px !important;
+  width: 4px !important;
+  height: 4px !important;
+  border-radius: 50% !important;
+  background: #94a3b8 !important;
+  box-shadow: 0 0 4px rgba(148, 163, 184, 0.5) !important;
+  border: none !important;
+  display: block !important;
+}
+
+/* ==========================================================================
+   Numbered lists (OL): Persian Counter Anchored on the RIGHT
+   ========================================================================== */
+ol:dir(rtl), [dir="rtl"] ol, ol[dir="rtl"],
+ol:has(> li:dir(rtl)), ol:has(> li[dir="rtl"]), ol:has(> li[dir="auto"]:dir(rtl)),
+[role="article"] ol:has(> li:dir(rtl)),
+[role="article"] ol,
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ol:dir(rtl),
+[data-testid="conversation-view"] ol[dir="rtl"],
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ol:dir(rtl),
+.jetski-custom-editor-pane ol[dir="rtl"],
+[data-aux-pane-open] ol:has(> li:dir(rtl)),
+[data-aux-pane-open] ol:dir(rtl),
+[data-aux-pane-open] ol[dir="rtl"],
+.part.auxiliarybar ol:has(> li:dir(rtl)),
+.part.auxiliarybar ol:dir(rtl),
+.part.auxiliarybar ol[dir="rtl"],
+div.break-words ol:has(> li:dir(rtl)),
+div.break-words ol:dir(rtl),
+div.break-words ol[dir="rtl"] {
+  counter-reset: agy-counter !important;
+  list-style: none !important;
+  margin: 0.8rem 0 !important;
+  padding: 0 !important;
+  padding-right: 32px !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  position: relative !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+ol:dir(rtl) > li, [dir="rtl"] ol > li, ol[dir="rtl"] > li,
+ol:has(> li:dir(rtl)) > li:dir(rtl), ol:has(> li:dir(rtl)) > li[dir="rtl"],
+[role="article"] ol > li,
+[data-testid="conversation-view"] ol > li:dir(rtl),
+[data-testid="conversation-view"] ol > li[dir="rtl"],
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)) > li,
+.jetski-custom-editor-pane ol > li:dir(rtl),
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)) > li,
+.part.auxiliarybar ol > li:dir(rtl),
+.part.auxiliarybar ol:has(> li:dir(rtl)) > li,
+div.break-words ol > li:dir(rtl),
+div.break-words ol > li[dir="rtl"],
+div.break-words ol:has(> li:dir(rtl)) > li {
+  counter-increment: agy-counter !important;
+  list-style: none !important;
+  position: relative !important;
+  padding-right: 18px !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  margin-bottom: 12px !important;
+  line-height: 2 !important;
+  color: #f1f5f9 !important;
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+}
+
+/* Custom Styled Number Badge on the RIGHT - Always attached to the text */
+ol:dir(rtl) > li::before, [dir="rtl"] ol > li::before, ol[dir="rtl"] > li::before,
+ol:has(> li:dir(rtl)) > li:dir(rtl)::before, ol:has(> li:dir(rtl)) > li[dir="rtl"]::before,
+[role="article"] ol > li::before,
+[data-testid="conversation-view"] ol > li:dir(rtl)::before,
+[data-testid="conversation-view"] ol > li[dir="rtl"]::before,
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)) > li::before,
+.jetski-custom-editor-pane ol > li:dir(rtl)::before,
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)) > li::before,
+.part.auxiliarybar ol > li:dir(rtl)::before,
+.part.auxiliarybar ol:has(> li:dir(rtl)) > li::before,
+div.break-words ol > li:dir(rtl)::before,
+div.break-words ol > li[dir="rtl"]::before,
+div.break-words ol:has(> li:dir(rtl)) > li::before {
+  content: counter(agy-counter) "." !important;
+  position: absolute !important;
+  right: -24px !important;
+  top: 0px !important;
+  color: #34d399 !important;
+  font-weight: 800 !important;
+  font-size: 1.1em !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.4) !important;
+  display: inline-block !important;
+  width: 22px !important;
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+ol:dir(rtl) > li::after, [dir="rtl"] ol > li::after, ol[dir="rtl"] > li::after,
+[role="article"] ol > li::after,
+[data-testid="conversation-view"] ol > li::after,
+div.break-words ol > li::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Universal Vazirmatn Font Enforcement on Monaco Workbench & Whole App */
+.monaco-workbench,
+.monaco-workbench.windows,
+.monaco-workbench.mac,
+.monaco-workbench.linux,
+.font-sans,
+[class*="font-sans"],
+body,
+html,
+#root {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* RTL-PATCH-START */
+
+@font-face {
+  font-family: 'Vazirmatn';
+  src: local('Vazirmatn'), local('Vazirmatn-Regular'), local('Vazir'),
+       url('/__agy_rtl/vazirmatn.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+200C-200F;
+}
+
+:root {
+  --default-font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  --font-sans: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  --font-display: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+body, html, #root {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* ==========================================================================
+   1. Dynamic BiDi (RTL/LTR Auto-Detection) & Full Justification
+   ========================================================================== */
+
+/* User Input Bubble & Sent Prompt Turns: Auto-detect English (LTR) vs Persian (RTL) */
+[data-testid="user-input-step"],
+[data-testid="user-input-step"] *,
+[class*="group/user-input-step"],
+[class*="group/user-input-step"] *,
+.interactive-item-container.interactive-request,
+.interactive-item-container.interactive-request * {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[data-testid="user-input-step"] .whitespace-pre-wrap,
+[data-testid="user-input-step"] [class*="whitespace-pre-wrap"],
+.interactive-item-container.interactive-request .value,
+.interactive-request .value {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  line-height: 1.85 !important;
+}
+
+/* Markdown Body & Paragraphs: Full Justification (Full Align) with BiDi Auto-Detection */
+.rendered-markdown,
+.chat-widget .rendered-markdown,
+.interactive-session .rendered-markdown,
+.antigravity-agent-side-panel,
+.antigravity-agent-manager,
+.animate-markdown,
+[role="article"] {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[role="article"] p,
+[role="article"] li,
+[role="article"] dd,
+[role="article"] dt,
+.rendered-markdown p,
+.rendered-markdown li,
+.rendered-markdown dd,
+.rendered-markdown dt,
+.chat-widget .rendered-markdown p,
+.chat-widget .rendered-markdown li,
+.antigravity-agent-side-panel p,
+.antigravity-agent-side-panel li,
+.antigravity-agent-manager p,
+.antigravity-agent-manager li,
+.animate-markdown p,
+.animate-markdown li {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: auto !important;
+  line-height: 2.1 !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Persian Paragraphs & Lists: Force Direction RTL, Right-Align Last Line */
+[role="article"] li:dir(rtl),
+.rendered-markdown li:dir(rtl),
+.chat-widget .rendered-markdown li:dir(rtl),
+.antigravity-agent-side-panel li:dir(rtl),
+.antigravity-agent-manager li:dir(rtl),
+.animate-markdown li:dir(rtl),
+[role="article"] [dir="rtl"] li,
+.rendered-markdown [dir="rtl"] li,
+li:dir(rtl),
+li[dir="rtl"],
+li[dir="auto"]:dir(rtl),
+[data-testid="conversation-view"] li:dir(rtl),
+[data-testid="conversation-view"] li[dir="rtl"],
+div.break-words li:dir(rtl),
+div.break-words li[dir="rtl"],
+.jetski-custom-editor-pane li:dir(rtl),
+.part.auxiliarybar li:dir(rtl),
+[data-aux-pane-open] li:dir(rtl),
+[role="article"] ul:has(> li:dir(rtl)),
+[role="article"] ol:has(> li:dir(rtl)),
+.rendered-markdown ul:has(> li:dir(rtl)),
+.rendered-markdown ol:has(> li:dir(rtl)),
+.animate-markdown ul:has(> li:dir(rtl)),
+.animate-markdown ol:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ul:has(> li:dir(rtl)),
+[data-testid="conversation-view"] ol:has(> li:dir(rtl)),
+div.break-words ul:has(> li:dir(rtl)),
+div.break-words ol:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ul:has(> li:dir(rtl)),
+.jetski-custom-editor-pane ol:has(> li:dir(rtl)),
+.part.auxiliarybar ul:has(> li:dir(rtl)),
+.part.auxiliarybar ol:has(> li:dir(rtl)),
+ul[dir="rtl"],
+ol[dir="rtl"] {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+}
+
+[role="article"] li:dir(rtl) p,
+.rendered-markdown li:dir(rtl) p,
+.chat-widget .rendered-markdown li:dir(rtl),
+.antigravity-agent-side-panel li:dir(rtl) p,
+.antigravity-agent-manager li:dir(rtl) p,
+.animate-markdown li:dir(rtl) p,
+[data-testid="conversation-view"] li:dir(rtl) p,
+div.break-words li:dir(rtl) p,
+.jetski-custom-editor-pane li:dir(rtl) p,
+.part.auxiliarybar li:dir(rtl) p,
+[data-aux-pane-open] li:dir(rtl) p {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+}
+
+/* Persian Paragraphs & Lists: Force Direction RTL, Right-Align Last Line */
+[role="article"] p:dir(rtl),
+.rendered-markdown p:dir(rtl),
+.chat-widget .rendered-markdown p:dir(rtl),
+[role="article"] [dir="rtl"] p,
+.rendered-markdown [dir="rtl"] p,
+p:dir(rtl),
+p[dir="rtl"],
+p[dir="auto"]:dir(rtl),
+[data-testid="conversation-view"] p:dir(rtl),
+div.break-words p:dir(rtl),
+.jetski-custom-editor-pane p:dir(rtl),
+.part.auxiliarybar p:dir(rtl),
+[data-aux-pane-open] p:dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+  unicode-bidi: isolate !important;
+  line-height: 2 !important;
+}
+
+/* Isolate embedded English/code in RTL without breaking Persian word order */
+[dir="rtl"] :is(code, pre, .monaco-editor, [dir="ltr"]) {
+  unicode-bidi: isolate !important;
+  direction: ltr !important;
+}
+
+/* ==========================================================================
+   2. Headings: Seafoam Green (#93e9be) Palette with Gradient Background
+   ========================================================================== */
+[role="article"] h1,
+[role="article"] h2,
+[role="article"] h3,
+[role="article"] h4,
+[role="article"] h5,
+[role="article"] h6,
+.rendered-markdown h1,
+.rendered-markdown h2,
+.rendered-markdown h3,
+.rendered-markdown h4,
+.rendered-markdown h5,
+.rendered-markdown h6,
+.chat-widget .rendered-markdown h1,
+.chat-widget .rendered-markdown h2,
+.chat-widget .rendered-markdown h3,
+.chat-widget .rendered-markdown h4,
+.chat-widget .rendered-markdown h5,
+.chat-widget .rendered-markdown h6,
+.antigravity-agent-side-panel h1,
+.antigravity-agent-side-panel h2,
+.antigravity-agent-side-panel h3,
+.antigravity-agent-side-panel h4,
+.antigravity-agent-side-panel h5,
+.antigravity-agent-side-panel h6,
+.antigravity-agent-manager h1,
+.antigravity-agent-manager h2,
+.antigravity-agent-manager h3,
+.antigravity-agent-manager h4,
+.antigravity-agent-manager h5,
+.antigravity-agent-manager h6,
+.animate-markdown h1,
+.animate-markdown h2,
+.animate-markdown h3,
+.animate-markdown h4,
+.animate-markdown h5,
+.animate-markdown h6,
+[data-testid="conversation-view"] h1,
+[data-testid="conversation-view"] h2,
+[data-testid="conversation-view"] h3,
+[data-testid="conversation-view"] h4,
+[data-testid="conversation-view"] h5,
+[data-testid="conversation-view"] h6,
+div.break-words h1,
+div.break-words h2,
+div.break-words h3,
+div.break-words h4,
+div.break-words h5,
+div.break-words h6,
+.jetski-custom-editor-pane h1,
+.jetski-custom-editor-pane h2,
+.jetski-custom-editor-pane h3,
+.jetski-custom-editor-pane h4,
+.jetski-custom-editor-pane h5,
+.jetski-custom-editor-pane h6,
+.part.auxiliarybar h1,
+.part.auxiliarybar h2,
+.part.auxiliarybar h3,
+.part.auxiliarybar h4,
+.part.auxiliarybar h5,
+.part.auxiliarybar h6,
+[data-aux-pane-open] h1,
+[data-aux-pane-open] h2,
+[data-aux-pane-open] h3,
+[data-aux-pane-open] h4,
+[data-aux-pane-open] h5,
+[data-aux-pane-open] h6 {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  font-weight: 700 !important;
+  unicode-bidi: plaintext !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+  letter-spacing: -0.01em !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  padding: 6px 0 !important;
+  line-height: 1.5 !important;
+}
+
+/* Clean Heading Typography with Natural BiDi Alignment */
+[role="article"] h1, [role="article"] h2, [role="article"] h3,
+[role="article"] h4, [role="article"] h5, [role="article"] h6,
+.rendered-markdown h1, .rendered-markdown h2, .rendered-markdown h3,
+.rendered-markdown h4, .rendered-markdown h5, .rendered-markdown h6,
+.chat-widget .rendered-markdown h1, .chat-widget .rendered-markdown h2,
+.antigravity-agent-side-panel h1, .antigravity-agent-manager h1,
+.animate-markdown h1, .animate-markdown h2,
+[data-testid="conversation-view"] h1, [data-testid="conversation-view"] h2, [data-testid="conversation-view"] h3,
+[data-testid="conversation-view"] h4, [data-testid="conversation-view"] h5, [data-testid="conversation-view"] h6,
+div.break-words h1, div.break-words h2, div.break-words h3,
+div.break-words h4, div.break-words h5, div.break-words h6,
+.jetski-custom-editor-pane h1, .jetski-custom-editor-pane h2, .jetski-custom-editor-pane h3,
+.jetski-custom-editor-pane h4, .jetski-custom-editor-pane h5, .jetski-custom-editor-pane h6,
+.part.auxiliarybar h1, .part.auxiliarybar h2, .part.auxiliarybar h3,
+.part.auxiliarybar h4, .part.auxiliarybar h5, .part.auxiliarybar h6,
+[data-aux-pane-open] h1, [data-aux-pane-open] h2, [data-aux-pane-open] h3,
+[data-aux-pane-open] h4, [data-aux-pane-open] h5, [data-aux-pane-open] h6 {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+}
+
+/* Persian Headings: Strictly right-align & reset left padding (Universal IDE & Platform) */
+h1:dir(rtl), h2:dir(rtl), h3:dir(rtl), h4:dir(rtl), h5:dir(rtl), h6:dir(rtl),
+h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"], h5[dir="rtl"], h6[dir="rtl"],
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6,
+[role="article"] h1:dir(rtl), [role="article"] h2:dir(rtl), [role="article"] h3:dir(rtl),
+[role="article"] h4:dir(rtl), [role="article"] h5:dir(rtl), [role="article"] h6:dir(rtl),
+[role="article"] [dir="rtl"] h1, [role="article"] [dir="rtl"] h2, [role="article"] [dir="rtl"] h3,
+[role="article"] [dir="rtl"] h4, [role="article"] [dir="rtl"] h5, [role="article"] [dir="rtl"] h6,
+[role="article"] h1[dir="rtl"], [role="article"] h2[dir="rtl"], [role="article"] h3[dir="rtl"],
+[role="article"] h4[dir="rtl"], [role="article"] h5[dir="rtl"], [role="article"] h6[dir="rtl"],
+.rendered-markdown h1:dir(rtl), .rendered-markdown h2:dir(rtl), .rendered-markdown h3:dir(rtl),
+.rendered-markdown h4:dir(rtl), .rendered-markdown h5:dir(rtl), .rendered-markdown h6:dir(rtl),
+.rendered-markdown [dir="rtl"] h1, .rendered-markdown [dir="rtl"] h2, .rendered-markdown [dir="rtl"] h3,
+[data-testid="conversation-view"] h1:dir(rtl), [data-testid="conversation-view"] h2:dir(rtl), [data-testid="conversation-view"] h3:dir(rtl),
+[data-testid="conversation-view"] h4:dir(rtl), [data-testid="conversation-view"] h5:dir(rtl), [data-testid="conversation-view"] h6:dir(rtl),
+[data-testid="conversation-view"] h1[dir="rtl"], [data-testid="conversation-view"] h2[dir="rtl"], [data-testid="conversation-view"] h3[dir="rtl"],
+[data-testid="conversation-view"] h4[dir="rtl"], [data-testid="conversation-view"] h5[dir="rtl"], [data-testid="conversation-view"] h6[dir="rtl"],
+div.break-words h1:dir(rtl), div.break-words h2:dir(rtl), div.break-words h3:dir(rtl),
+div.break-words h4:dir(rtl), div.break-words h5:dir(rtl), div.break-words h6:dir(rtl),
+div.break-words h1[dir="rtl"], div.break-words h2[dir="rtl"], div.break-words h3[dir="rtl"],
+div.break-words h4[dir="rtl"], div.break-words h5[dir="rtl"], div.break-words h6[dir="rtl"],
+.jetski-custom-editor-pane h1:dir(rtl), .jetski-custom-editor-pane h2:dir(rtl), .jetski-custom-editor-pane h3:dir(rtl),
+.jetski-custom-editor-pane h4:dir(rtl), .jetski-custom-editor-pane h5:dir(rtl), .jetski-custom-editor-pane h6:dir(rtl),
+.part.auxiliarybar h1:dir(rtl), .part.auxiliarybar h2:dir(rtl), .part.auxiliarybar h3:dir(rtl),
+.part.auxiliarybar h4:dir(rtl), .part.auxiliarybar h5:dir(rtl), .part.auxiliarybar h6:dir(rtl),
+[data-aux-pane-open] h1:dir(rtl), [data-aux-pane-open] h2:dir(rtl), [data-aux-pane-open] h3:dir(rtl),
+[data-aux-pane-open] h4:dir(rtl), [data-aux-pane-open] h5:dir(rtl), [data-aux-pane-open] h6:dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.rendered-markdown h1,
+.chat-widget .rendered-markdown h1,
+.antigravity-agent-side-panel h1,
+.antigravity-agent-manager h1,
+.animate-markdown h1,
+[data-testid="conversation-view"] h1,
+div.break-words h1,
+.jetski-custom-editor-pane h1,
+.part.auxiliarybar h1,
+[data-aux-pane-open] h1 {
+  font-size: 1.45rem !important;
+  color: #93e9be !important;
+  border-bottom: 1px solid rgba(147, 233, 190, 0.3) !important;
+  padding-bottom: 0.4rem !important;
+}
+
+.rendered-markdown h2,
+.chat-widget .rendered-markdown h2,
+.antigravity-agent-side-panel h2,
+.antigravity-agent-manager h2,
+.animate-markdown h2,
+[data-testid="conversation-view"] h2,
+div.break-words h2,
+.jetski-custom-editor-pane h2,
+.part.auxiliarybar h2,
+[data-aux-pane-open] h2 {
+  font-size: 1.25rem !important;
+  color: #93e9be !important;
+}
+
+.rendered-markdown h3,
+.chat-widget .rendered-markdown h3,
+.antigravity-agent-side-panel h3,
+.antigravity-agent-manager h3,
+.animate-markdown h3,
+[data-testid="conversation-view"] h3,
+div.break-words h3,
+.jetski-custom-editor-pane h3,
+.part.auxiliarybar h3,
+[data-aux-pane-open] h3 {
+  font-size: 1.12rem !important;
+  color: #a7f3d0 !important;
+}
+
+.rendered-markdown h4,
+.rendered-markdown h5,
+.rendered-markdown h6,
+.chat-widget .rendered-markdown h4,
+.chat-widget .rendered-markdown h5,
+.chat-widget .rendered-markdown h6,
+.antigravity-agent-side-panel h4,
+.antigravity-agent-side-panel h5,
+.antigravity-agent-side-panel h6,
+.antigravity-agent-manager h4,
+.antigravity-agent-manager h5,
+.antigravity-agent-manager h6,
+.animate-markdown h4,
+.animate-markdown h5,
+.animate-markdown h6,
+[data-testid="conversation-view"] h4,
+[data-testid="conversation-view"] h5,
+[data-testid="conversation-view"] h6,
+div.break-words h4,
+div.break-words h5,
+div.break-words h6,
+.jetski-custom-editor-pane h4,
+.jetski-custom-editor-pane h5,
+.jetski-custom-editor-pane h6,
+.part.auxiliarybar h4,
+.part.auxiliarybar h5,
+.part.auxiliarybar h6,
+[data-aux-pane-open] h4,
+[data-aux-pane-open] h5,
+[data-aux-pane-open] h6 {
+  font-size: 1rem !important;
+  color: #bbf7d0 !important;
+}
+
+/* ==========================================================================
+   3. Highlighted List Titles, Numbered Points & Typography
+   ========================================================================== */
+.rendered-markdown li,
+.chat-widget .rendered-markdown li,
+.antigravity-agent-side-panel li,
+.antigravity-agent-manager li,
+.animate-markdown li,
+[data-testid="conversation-view"] li,
+div.break-words li,
+.jetski-custom-editor-pane li,
+.part.auxiliarybar li,
+[data-aux-pane-open] li {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+}
+
+/* Highlight list titles/numbered points: e.g. "۱. نقطه دقیق سوییچ" */
+.rendered-markdown li > strong:first-child,
+.rendered-markdown li > p:first-child > strong:first-child,
+.chat-widget .rendered-markdown li > strong:first-child,
+.chat-widget .rendered-markdown li > p:first-child > strong:first-child,
+.antigravity-agent-side-panel li > strong:first-child,
+.antigravity-agent-side-panel li > p:first-child > strong:first-child,
+[data-testid="conversation-view"] li > strong:first-child,
+[data-testid="conversation-view"] li > p:first-child > strong:first-child,
+div.break-words li > strong:first-child,
+div.break-words li > p:first-child > strong:first-child,
+.jetski-custom-editor-pane li > strong:first-child,
+.jetski-custom-editor-pane li > p:first-child > strong:first-child,
+.part.auxiliarybar li > strong:first-child,
+.part.auxiliarybar li > p:first-child > strong:first-child,
+[data-aux-pane-open] li > strong:first-child,
+[data-aux-pane-open] li > p:first-child > strong:first-child {
+  color: #93e9be !important;
+  font-weight: 700 !important;
+}
+
+/* General strong emphasis: harmonized soft seafoam tint */
+.rendered-markdown strong,
+.chat-widget .rendered-markdown strong,
+[data-testid="conversation-view"] strong,
+div.break-words strong,
+.jetski-custom-editor-pane strong,
+.part.auxiliarybar strong,
+[data-aux-pane-open] strong {
+  color: #c6f6d5 !important;
+  font-weight: 700 !important;
+}
+
+.rendered-markdown li:dir(ltr),
+.chat-widget .rendered-markdown li:dir(ltr),
+[dir="ltr"] .rendered-markdown li {
+  padding-left: 0.25rem !important;
+  padding-right: 0 !important;
+}
+
+.rendered-markdown ul:dir(ltr),
+.rendered-markdown ol:dir(ltr),
+.chat-widget .rendered-markdown ul:dir(ltr),
+.chat-widget .rendered-markdown ol:dir(ltr),
+[dir="ltr"] .rendered-markdown ul,
+[dir="ltr"] .rendered-markdown ol {
+  padding-left: 1.75rem !important;
+  padding-right: 0 !important;
+}
+
+/* ==========================================================================
+   4. Blockquotes & GitHub Alerts (TIP, NOTE, IMPORTANT, WARNING, CAUTION)
+   ========================================================================== */
+.markdown-alert,
+[role="article"] .markdown-alert,
+.rendered-markdown blockquote,
+.rendered-markdown .markdown-alert,
+.chat-widget .rendered-markdown blockquote,
+.antigravity-agent-side-panel blockquote,
+.antigravity-agent-manager blockquote,
+.animate-markdown blockquote {
+  border: none !important;
+  border-inline-start: 4px solid #93e9be !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  margin: 16px 0 !important;
+  background: rgba(147, 233, 190, 0.08) !important;
+  backdrop-filter: blur(8px) !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+}
+
+.markdown-alert.markdown-alert-tip,
+[role="article"] .markdown-alert.markdown-alert-tip,
+.rendered-markdown .markdown-alert.markdown-alert-tip {
+  border-inline-start-color: #93e9be !important;
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.14) 0%, rgba(147, 233, 190, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-tip .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: #93e9be !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.markdown-alert.markdown-alert-note,
+[role="article"] .markdown-alert.markdown-alert-note,
+.rendered-markdown .markdown-alert.markdown-alert-note {
+  border-inline-start-color: #38bdf8 !important;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(56, 189, 248, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-note .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: #38bdf8 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.markdown-alert.markdown-alert-important,
+[role="article"] .markdown-alert.markdown-alert-important,
+.rendered-markdown .markdown-alert.markdown-alert-important {
+  border-inline-start-color: #a78bfa !important;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.14) 0%, rgba(167, 139, 250, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-important .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: #c4b5fd !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.markdown-alert.markdown-alert-warning,
+[role="article"] .markdown-alert.markdown-alert-warning,
+.rendered-markdown .markdown-alert.markdown-alert-warning {
+  border-inline-start-color: #f59e0b !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-warning .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: #fbbf24 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.markdown-alert.markdown-alert-caution,
+[role="article"] .markdown-alert.markdown-alert-caution,
+.rendered-markdown .markdown-alert.markdown-alert-caution {
+  border-inline-start-color: #ef4444 !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.14) 0%, rgba(239, 68, 68, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-caution .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: #f87171 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+/* ==========================================================================
+   4.1 User Message Bubble & Auto-BiDi Direction (Always Right-Aligned)
+   ========================================================================== */
+[data-testid="user-input-step"],
+[aria-label="User message"],
+.interactive-request {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* User Message Bubble: In IDE preserve native layout; In Platform style .agy-user-bubble */
+[data-testid="user-message-bubble"] {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.agy-user-bubble-frame {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+}
+
+.agy-user-bubble {
+  border: 1px solid rgba(147, 233, 190, 0.35) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 0 12px -2px rgba(147, 233, 190, 0.20), 0 3px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  background: #16161a !important;
+}
+
+.agy-user-bubble-frame:hover {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.agy-user-bubble:hover {
+  border-color: rgba(147, 233, 190, 0.55) !important;
+  box-shadow: 0 0 16px -2px rgba(147, 233, 190, 0.30), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-testid="user-input-step"] .whitespace-pre-wrap,
+[aria-label="User message"] .whitespace-pre-wrap,
+.interactive-request .value .rendered-markdown {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+  line-height: 1.85 !important;
+}
+
+/* ==========================================================================
+   5. Inputs & Textareas BiDi
+   ========================================================================== */
+textarea, input[type="text"], input:not([type]), [contenteditable="true"] {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+  unicode-bidi: plaintext !important;
+}
+
+textarea:dir(rtl), input:dir(rtl), [contenteditable="true"]:dir(rtl),
+textarea[dir="rtl"], input[dir="rtl"], [contenteditable="true"][dir="rtl"] {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+textarea:dir(ltr), input:dir(ltr), [contenteditable="true"]:dir(ltr),
+textarea[dir="ltr"], input[dir="ltr"], [contenteditable="true"][dir="ltr"] {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* ==========================================================================
+   6. Seafoam Green Luxury Markdown Tables (#93e9be)
+   ========================================================================== */
+.rendered-markdown table,
+.chat-widget .rendered-markdown table,
+.antigravity-agent-side-panel table,
+.antigravity-agent-manager table,
+.animate-markdown table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(147, 233, 190, 0.3) !important;
+  margin: 1.25rem 0 !important;
+  width: 100% !important;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.rendered-markdown th,
+.chat-widget .rendered-markdown th,
+.antigravity-agent-side-panel th,
+.antigravity-agent-manager th,
+.animate-markdown th {
+  background: linear-gradient(180deg, rgba(147, 233, 190, 0.22) 0%, rgba(147, 233, 190, 0.10) 100%) !important;
+  color: #93e9be !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  padding: 10px 14px !important;
+  border-bottom: 2px solid rgba(147, 233, 190, 0.35) !important;
+  border-inline-end: 1px solid rgba(147, 233, 190, 0.12) !important;
+  text-align: start !important;
+}
+
+.rendered-markdown th:last-child {
+  border-inline-end: none !important;
+}
+
+.rendered-markdown td,
+.chat-widget .rendered-markdown td,
+.antigravity-agent-side-panel td,
+.antigravity-agent-manager td,
+.animate-markdown td {
+  padding: 8px 14px !important;
+  border-bottom: 1px solid rgba(147, 233, 190, 0.12) !important;
+  border-inline-end: 1px solid rgba(147, 233, 190, 0.08) !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+  font-size: 0.92rem !important;
+  line-height: 1.75 !important;
+  color: #e2e8f0 !important;
+  text-align: start !important;
+  vertical-align: middle !important;
+}
+
+.rendered-markdown td:last-child {
+  border-inline-end: none !important;
+}
+
+.rendered-markdown tbody tr:nth-child(even) {
+  background: rgba(147, 233, 190, 0.03) !important;
+}
+
+.rendered-markdown tbody tr:hover {
+  background: rgba(147, 233, 190, 0.1) !important;
+  transition: background 0.18s ease-in-out !important;
+}
+
+.rendered-markdown tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.rendered-markdown td:first-child {
+  font-weight: 700 !important;
+  color: #93e9be !important;
+}
+
+/* ==========================================================================
+   7. Code blocks & Monospace Isolation
+   ========================================================================== */
+pre, pre code, pre *, .monaco-editor, .monaco-editor *, .view-line, .view-lines, kbd, samp {
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace !important;
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate !important;
+}
+
+:not(pre) > code {
+  font-family: 'Cascadia Code', 'Fira Code', 'Vazirmatn', Consolas, monospace !important;
+  background: rgba(147, 233, 190, 0.12) !important;
+  border: 1px solid rgba(147, 233, 190, 0.25) !important;
+  color: #93e9be !important;
+  padding: 1px 6px !important;
+  border-radius: 4px !important;
+  font-size: 0.9em !important;
+  unicode-bidi: plaintext !important;
+}
+
+:not(pre) > code[dir="rtl"],
+:not(pre) > code:dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+  font-family: 'Vazirmatn', 'Cascadia Code', monospace !important;
+}
+
+
+/* ==========================================================================
+   8. UI/UX Pro Max - High-End Luxury Sidebar Architecture (Platform & IDE)
+   ========================================================================== */
+
+/* 8.0 Cyber Emerald Sidebar Palette & Contrast Upgrade (Platform & IDE) */
+:root, [data-theme], body, .monaco-workbench {
+  --sidebar: #090e13 !important;
+  --sidebar-foreground: #f1f5f9 !important;
+  --sidebar-primary: #10b981 !important;
+  --sidebar-primary-foreground: #ffffff !important;
+  --sidebar-accent: rgba(16, 185, 129, 0.14) !important;
+  --sidebar-accent-foreground: #6ee7b7 !important;
+  --sidebar-border: rgba(16, 185, 129, 0.22) !important;
+  --sidebar-ring: #10b981 !important;
+  --sidebar-muted: rgba(16, 185, 129, 0.10) !important;
+
+  /* VS Code / Monaco Workbench Native Sidebar Tokens */
+  --vscode-sideBar-background: #080d12 !important;
+  --vscode-sideBar-foreground: #cbd5e1 !important;
+  --vscode-sideBar-border: rgba(16, 185, 129, 0.22) !important;
+  --vscode-sideBarTitle-foreground: #34d399 !important;
+  --vscode-sideBarSectionHeader-background: #0c141c !important;
+  --vscode-sideBarSectionHeader-foreground: #a7f3d0 !important;
+  --vscode-sideBarSectionHeader-border: rgba(16, 185, 129, 0.18) !important;
+  --vscode-activityBar-background: #060a0e !important;
+  --vscode-activityBar-foreground: #10b981 !important;
+  --vscode-activityBar-inactiveForeground: rgba(148, 163, 184, 0.5) !important;
+  --vscode-activityBar-activeBorder: #10b981 !important;
+  --vscode-activityBarBadge-background: #10b981 !important;
+  --vscode-activityBarBadge-foreground: #ffffff !important;
+  --vscode-list-activeSelectionBackground: rgba(16, 185, 129, 0.18) !important;
+  --vscode-list-activeSelectionForeground: #f1f5f9 !important;
+  --vscode-list-inactiveSelectionBackground: rgba(16, 185, 129, 0.10) !important;
+  --vscode-list-inactiveSelectionForeground: #e2e8f0 !important;
+  --vscode-list-hoverBackground: rgba(16, 185, 129, 0.08) !important;
+  --vscode-list-hoverForeground: #ffffff !important;
+  --vscode-list-highlightForeground: #34d399 !important;
+  --vscode-tree-indentGuidesStroke: rgba(16, 185, 129, 0.22) !important;
+
+  /* VS Code Auxiliary Bar (Secondary Sidebar / Chat Panel) Cyber Emerald Tokens */
+  --vscode-auxiliaryBar-background: #080d12 !important;
+  --vscode-auxiliaryBar-foreground: #cbd5e1 !important;
+  --vscode-auxiliaryBar-border: rgba(16, 185, 129, 0.22) !important;
+  --vscode-auxiliaryBarTitle-background: #080d12 !important;
+  --vscode-auxiliaryBarTitle-foreground: #34d399 !important;
+  --vscode-auxiliaryBarSectionHeader-background: #0c141c !important;
+  --vscode-auxiliaryBarSectionHeader-foreground: #a7f3d0 !important;
+  --vscode-auxiliaryBarSectionHeader-border: rgba(16, 185, 129, 0.18) !important;
+
+  /* VS Code Chat & Agent Widget Tokens */
+  --vscode-chat-requestBackground: #0f1c24 !important;
+  --vscode-chat-requestBorder: rgba(16, 185, 129, 0.35) !important;
+  --vscode-chat-avatarBackground: #10b981 !important;
+  --vscode-chat-avatarForeground: #ffffff !important;
+  --vscode-chat-slashCommandBackground: rgba(16, 185, 129, 0.16) !important;
+  --vscode-chat-slashCommandForeground: #6ee7b7 !important;
+  --vscode-interactive-activeCodeBorder: #10b981 !important;
+  --vscode-interactive-inactiveCodeBorder: rgba(16, 185, 129, 0.20) !important;
+
+  /* VS Code Panel Tokens */
+  --vscode-panel-background: #080d12 !important;
+  --vscode-panel-border: rgba(16, 185, 129, 0.22) !important;
+  --vscode-panelTitle-activeForeground: #34d399 !important;
+  --vscode-panelTitle-activeBorder: #10b981 !important;
+  --vscode-panelTitle-inactiveForeground: rgba(148, 163, 184, 0.6) !important;
+}
+
+.bg-sidebar {
+  background-color: #090e13 !important;
+  border-color: rgba(16, 185, 129, 0.20) !important;
+}
+
+.bg-sidebar-muted {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #a7f3d0 !important;
+}
+
+.bg-sidebar-secondary {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+/* IDE Sidebar, Auxiliary Bar & File Tree Cyber Emerald Contrast Enhancement */
+.part.sidebar,
+.part.activitybar,
+.part.auxiliarybar,
+.part.auxiliarybar.basepanel,
+.composite.title,
+.monaco-workbench .part.sidebar,
+.monaco-workbench .part.activitybar,
+.monaco-workbench .part.auxiliarybar,
+.monaco-workbench .part.auxiliarybar > .title,
+.monaco-workbench .part.auxiliarybar > .content,
+.monaco-workbench .part.auxiliarybar .pane-body,
+.monaco-workbench .part.auxiliarybar .split-view-view,
+.monaco-workbench .part.auxiliarybar .pane-header,
+.monaco-workbench .part.auxiliarybar .pane-composite-part {
+  background-color: #080d12 !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(16, 185, 129, 0.22) !important;
+}
+
+.monaco-workbench .part.sidebar .monaco-list,
+.monaco-workbench .part.auxiliarybar .monaco-list,
+.monaco-workbench .part.auxiliarybar .monaco-list-rows {
+  background-color: #080d12 !important;
+  color: #cbd5e1 !important;
+}
+
+.monaco-workbench .part.sidebar .monaco-list-row,
+.monaco-workbench .part.auxiliarybar .monaco-list-row {
+  color: #cbd5e1 !important;
+}
+
+.part.sidebar .title-label h2,
+.part.sidebar .title-actions,
+.part.auxiliarybar .title-label,
+.part.auxiliarybar .title-label h2,
+.part.auxiliarybar .title-actions,
+.part.auxiliarybar .composite-bar-container,
+.part.auxiliarybar .title-actions .action-label,
+.explorer-viewlet .title {
+  color: #34d399 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+}
+
+.part.auxiliarybar .monaco-action-bar .action-item .action-label {
+  color: #a7f3d0 !important;
+}
+
+/* Antigravity Aux Pane, Agent & Conversation View Containers (Right Side Panel) */
+[data-aux-pane-open],
+[data-aux-pane-open] > div,
+[data-aux-pane-focus-scope="true"],
+div:has(> [data-aux-pane-open]),
+div:has(> [data-aux-pane-focus-scope="true"]),
+[data-testid="conversation-view"],
+.jetski-custom-editor-pane,
+.antigravity-onboarding,
+div:has(> [data-testid="conversation-view"]) {
+  background-color: #080d12 !important;
+  color: #cbd5e1 !important;
+  --background: #080d12 !important;
+  --content: #080d12 !important;
+  --card: #0c141c !important;
+  --card-border: rgba(16, 185, 129, 0.22) !important;
+  --secondary: #0c141c !important;
+  --secondary-foreground: #a7f3d0 !important;
+  --muted: rgba(16, 185, 129, 0.08) !important;
+  --muted-foreground: #94a3b8 !important;
+  --border: rgba(16, 185, 129, 0.20) !important;
+  --primary: #10b981 !important;
+  --primary-foreground: #ffffff !important;
+  --placeholder: rgba(148, 163, 184, 0.5) !important;
+}
+
+/* Aux Pane Tab Bar & Buttons */
+button[data-tab-id] {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+button[data-tab-id].bg-secondary,
+button[data-tab-id][class*="bg-secondary"] {
+  background-color: #0c141c !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15) !important;
+}
+button[data-tab-id]:hover:not([class*="bg-secondary"]) {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  color: #f1f5f9 !important;
+}
+
+/* Aux Pane Sash Divider */
+[data-testid="aux-pane-sash"] {
+  background-color: rgba(16, 185, 129, 0.22) !important;
+}
+[data-testid="aux-pane-sash"]:hover {
+  background-color: #10b981 !important;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5) !important;
+}
+
+/* Aux Pane Tab Header & Dividers */
+.group\/file-row,
+[data-aux-pane-focus-scope="true"] .border-border,
+[data-aux-pane-open] .border-border {
+  border-color: rgba(16, 185, 129, 0.20) !important;
+}
+
+/* User Message Bubble in Agent Chat */
+[data-testid="user-message-bubble"],
+.relative.p-px.rounded-xl.bg-card-border > div {
+  background-color: #0f1c24 !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 0 14px -2px rgba(16, 185, 129, 0.18) !important;
+  color: #f1f5f9 !important;
+}
+
+.bg-card-border {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Agent Bottom Chat Input Card & Border */
+[data-testid="conversation-view"] .border-border,
+[data-testid="conversation-view"] .bg-card,
+[data-testid="conversation-view"] [data-testid="user-input-step"],
+[data-testid="conversation-view"] div[data-testid="user-input-step"] {
+  border-color: rgba(16, 185, 129, 0.22) !important;
+}
+
+[data-testid="conversation-view"] textarea,
+[data-testid="conversation-view"] input,
+[data-testid="conversation-view"] [contenteditable="true"] {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* Agent Trajectory / Steps / Tool Badges */
+[data-testid="conversation-view"] [data-testid*="step"],
+[data-testid="conversation-view"] .group\/user-input-step {
+  color: #cbd5e1 !important;
+}
+
+/* ==========================================================================
+   Comprehensive Vazirmatn Typography for Right Auxiliary Bar, Aux Pane, & Chat Panel
+   ========================================================================== */
+.part.auxiliarybar,
+.part.auxiliarybar *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-aux-pane-open],
+[data-aux-pane-open] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-aux-pane-focus-scope="true"],
+[data-aux-pane-focus-scope="true"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-testid="conversation-view"],
+[data-testid="conversation-view"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-testid="chat-message"],
+[data-testid="chat-message"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-testid="user-message-bubble"],
+[data-testid="user-message-bubble"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-testid="user-input-step"],
+[data-testid="user-input-step"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[data-testid="user-message-content"],
+[data-testid="user-message-content"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+[role="article"],
+[role="article"] *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+div.break-words,
+div.break-words *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+div.leading-relaxed,
+div.leading-relaxed *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+.rendered-markdown,
+.rendered-markdown *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+.prose,
+.prose *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit),
+.markdown-body,
+.markdown-body *:not(pre):not(code):not(.monaco-editor):not(.codicon):not(.google-symbols):not([class*="codicon-"]):not(.cursor-edit) {
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* BiDi Auto-Alignment & Text Normalization for Chat Pane */
+[data-testid="conversation-view"],
+[data-testid="chat-message"],
+[data-testid="user-input-step"],
+[data-testid="user-message-bubble"],
+[data-testid="user-message-content"],
+[role="article"],
+.leading-relaxed,
+.rendered-markdown,
+.prose,
+.markdown-body,
+div[data-lexical-editor="true"],
+#antigravity\.agentSidePanelInputBox [contenteditable="true"],
+textarea[data-testid="ask-question-writein"] {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  line-height: 1.7 !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* Double Scrollbar Elimination in Conversation View */
+[data-testid="conversation-view"] .chat-message,
+[data-testid="conversation-view"] [class*="prose"],
+[data-testid="conversation-view"] [role="article"],
+[data-testid="conversation-view"] .leading-relaxed {
+  overflow-y: visible !important;
+  overflow-x: visible !important;
+  max-height: none !important;
+  scrollbar-width: none !important;
+}
+
+[data-testid="autoscroll-viewport"] {
+  overflow-y: auto !important;
+}
+
+[data-testid="conversation-view"] .chat-message::-webkit-scrollbar,
+[data-testid="conversation-view"] [class*="prose"]::-webkit-scrollbar,
+[data-testid="conversation-view"] [role="article"]::-webkit-scrollbar,
+[data-testid="conversation-view"] .leading-relaxed::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ==========================================================================
+   RTL & BiDi Auto-Alignment for Chat Bubbles, Markdown and Prompts
+   ========================================================================== */
+/* Persian / RTL text inside Conversation View, Chat, Bubbles, Markdown */
+[data-testid="conversation-view"] [dir="auto"]:dir(rtl),
+[data-testid="conversation-view"] [dir="rtl"],
+[data-testid="conversation-view"] :dir(rtl),
+[data-testid="conversation-view"] p:dir(rtl),
+[data-testid="conversation-view"] p[dir="rtl"],
+[data-testid="conversation-view"] li:dir(rtl),
+[data-testid="conversation-view"] li[dir="rtl"],
+[data-testid="conversation-view"] h1:dir(rtl),
+[data-testid="conversation-view"] h2:dir(rtl),
+[data-testid="conversation-view"] h3:dir(rtl),
+[data-testid="conversation-view"] h4:dir(rtl),
+[data-testid="conversation-view"] h5:dir(rtl),
+[data-testid="conversation-view"] h6:dir(rtl),
+[data-testid="conversation-view"] blockquote:dir(rtl),
+[data-testid="conversation-view"] div[role="article"]:dir(rtl),
+[data-testid="conversation-view"] div.break-words:dir(rtl),
+[data-testid="user-message-bubble"]:dir(rtl),
+[data-testid="user-message-bubble"]:dir(rtl) *,
+[data-testid="user-input-step"]:dir(rtl),
+[data-testid="user-input-step"]:dir(rtl) *,
+.part.auxiliarybar [dir="rtl"],
+.part.auxiliarybar :dir(rtl),
+[data-aux-pane-open] [dir="rtl"],
+[data-aux-pane-open] :dir(rtl),
+[data-aux-pane-focus-scope="true"] [dir="rtl"],
+[data-aux-pane-focus-scope="true"] :dir(rtl),
+[role="article"]:dir(rtl),
+[role="article"] [dir="auto"]:dir(rtl),
+div.break-words [dir="auto"]:dir(rtl),
+div.break-words :dir(rtl),
+div.leading-relaxed :dir(rtl) {
+  direction: rtl !important;
+  text-align: right !important;
+  text-align-last: right !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* BiDi Neutral Text with Auto Direction inside Conversation View */
+[data-testid="conversation-view"] [dir="auto"],
+[data-testid="conversation-view"] p,
+[data-testid="conversation-view"] li,
+[data-testid="conversation-view"] div[role="article"],
+[data-testid="conversation-view"] .rendered-markdown,
+[data-testid="conversation-view"] .whitespace-pre-wrap,
+[role="article"] p,
+.rendered-markdown p,
+[data-testid="user-message-bubble"][dir="auto"],
+[data-testid="user-input-step"][dir="auto"],
+[role="article"] [dir="auto"],
+div.break-words[dir="auto"],
+div.leading-relaxed[dir="auto"] {
+  unicode-bidi: plaintext !important;
+  text-align: start !important;
+  text-align-last: start !important;
+  font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+/* ==========================================================================
+   High-Specificity LTR Isolation & Monospace Protection (POST-RTL SHIELD)
+   ========================================================================== */
+[data-testid="conversation-view"] pre,
+[data-testid="conversation-view"] code,
+[data-testid="conversation-view"] pre *,
+[data-testid="conversation-view"] code *,
+[data-testid="conversation-view"] pre code,
+[data-testid="conversation-view"] :dir(rtl) pre,
+[data-testid="conversation-view"] :dir(rtl) code,
+[data-testid="conversation-view"] :dir(rtl) pre *,
+[data-testid="conversation-view"] :dir(rtl) code *,
+[role="article"] pre,
+[role="article"] code,
+[role="article"] pre *,
+[role="article"] code *,
+[role="article"] :dir(rtl) pre,
+[role="article"] :dir(rtl) code,
+[role="article"] :dir(rtl) pre *,
+[role="article"] :dir(rtl) code *,
+.part.auxiliarybar pre,
+.part.auxiliarybar code,
+.part.auxiliarybar pre *,
+.part.auxiliarybar code *,
+.part.auxiliarybar :dir(rtl) pre,
+.part.auxiliarybar :dir(rtl) code,
+.prose pre,
+.prose code,
+.prose pre *,
+.prose code *,
+.prose :dir(rtl) pre,
+.prose :dir(rtl) code,
+.markdown-body pre,
+.markdown-body code,
+.markdown-body pre *,
+.markdown-body code *,
+div.leading-relaxed pre,
+div.leading-relaxed code,
+div.leading-relaxed :dir(rtl) pre,
+div.leading-relaxed :dir(rtl) code,
+div.break-words pre,
+div.break-words code,
+pre,
+code,
+pre *,
+code * {
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  unicode-bidi: isolate !important;
+  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
+}
+
+/* Monaco Editor Container & Line Level LTR Isolation */
+[data-testid="conversation-view"] .monaco-editor,
+[data-testid="conversation-view"] .monaco-editor *,
+[data-testid="conversation-view"] :dir(rtl) .monaco-editor,
+[data-testid="conversation-view"] :dir(rtl) .monaco-editor *,
+[role="article"] .monaco-editor,
+[role="article"] .monaco-editor *,
+.part.auxiliarybar .monaco-editor,
+.part.auxiliarybar .monaco-editor *,
+.monaco-editor,
+.monaco-editor *,
+.view-line,
+.view-lines {
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  unicode-bidi: isolate !important;
+  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
+}
+
+/* Thinking / Reasoning Trace Block Strict LTR Shield */
+[data-testid="conversation-view"] .cursor-edit,
+[data-testid="conversation-view"] .cursor-edit *,
+[data-testid="conversation-view"] .cursor-edit.text-secondary-foreground,
+[data-testid="conversation-view"] .cursor-edit.text-secondary-foreground *,
+[data-testid="conversation-view"] :dir(rtl) .cursor-edit,
+[data-testid="conversation-view"] :dir(rtl) .cursor-edit *,
+[role="article"] .cursor-edit,
+[role="article"] .cursor-edit *,
+.part.auxiliarybar .cursor-edit,
+.part.auxiliarybar .cursor-edit *,
+.cursor-edit,
+.cursor-edit *,
+.cursor-edit.text-secondary-foreground,
+.cursor-edit.text-secondary-foreground * {
+  direction: ltr !important;
+  text-align: left !important;
+  text-align-last: left !important;
+  unicode-bidi: isolate !important;
+  font-family: var(--monaco-monospace-font, 'Cascadia Code', Consolas, 'Courier New', monospace) !important;
+}
+
+/* Icon Font Immunity Shield (Codicon & Google Symbols) */
+[data-testid="conversation-view"] .codicon,
+[data-testid="conversation-view"] [class*="codicon-"],
+[data-testid="conversation-view"] :dir(rtl) .codicon,
+[data-testid="conversation-view"] :dir(rtl) [class*="codicon-"],
+[role="article"] .codicon,
+[role="article"] [class*="codicon-"],
+[role="article"] :dir(rtl) .codicon,
+[role="article"] :dir(rtl) [class*="codicon-"],
+.part.auxiliarybar .codicon,
+.part.auxiliarybar [class*="codicon-"],
+.part.auxiliarybar :dir(rtl) .codicon,
+.part.auxiliarybar :dir(rtl) [class*="codicon-"],
+.prose .codicon,
+.prose [class*="codicon-"],
+.prose :dir(rtl) .codicon,
+.prose :dir(rtl) [class*="codicon-"],
+.codicon,
+[class*="codicon-"] {
+  font-family: codicon !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+[data-testid="conversation-view"] .google-symbols,
+[data-testid="conversation-view"] :dir(rtl) .google-symbols,
+[role="article"] .google-symbols,
+[role="article"] :dir(rtl) .google-symbols,
+.part.auxiliarybar .google-symbols,
+.part.auxiliarybar :dir(rtl) .google-symbols,
+.prose .google-symbols,
+.prose :dir(rtl) .google-symbols,
+.google-symbols {
+  font-family: "Google Symbols" !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* RTL-PATCH-END */
