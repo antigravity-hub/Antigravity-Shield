@@ -47,6 +47,158 @@ def fix_css_content(css: str) -> str:
         flags=re.DOTALL
     )
 
+    # 1.5 Fix Blockquotes & GitHub Alerts: eliminate double-container glitch and Chromium backdrop seam
+    alert_pattern = re.compile(
+        r'/\* =+\s*4\. Blockquotes & GitHub Alerts.*?(?=/\* =+\s*5\. Inputs & Textareas)',
+        re.DOTALL
+    )
+    new_alerts = """/* ==========================================================================
+   4. Blockquotes & GitHub Alerts (TIP, NOTE, IMPORTANT, WARNING, CAUTION)
+   ========================================================================== */
+
+/* Immunity against nested wrapper artifacts (Eliminate double-border glitch line) */
+blockquote:has(.markdown-alert),
+.rendered-markdown blockquote:has(.markdown-alert),
+[role="article"] blockquote:has(.markdown-alert),
+.chat-widget .rendered-markdown blockquote:has(.markdown-alert),
+blockquote:has(> .markdown-alert),
+.markdown-alert blockquote {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Standalone Clean Blockquotes */
+.rendered-markdown blockquote:not(:has(.markdown-alert)),
+[role="article"] blockquote:not(:has(.markdown-alert)),
+.chat-widget .rendered-markdown blockquote:not(:has(.markdown-alert)),
+.antigravity-agent-side-panel blockquote:not(:has(.markdown-alert)),
+.antigravity-agent-manager blockquote:not(:has(.markdown-alert)),
+.animate-markdown blockquote:not(:has(.markdown-alert)) {
+  border: none !important;
+  border-inline-start: 4px solid #93e9be !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  margin: 16px 0 !important;
+  background: rgba(147, 233, 190, 0.08) !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+}
+
+/* Clean Single-Container Markdown Alerts */
+.markdown-alert,
+[role="article"] .markdown-alert,
+.rendered-markdown .markdown-alert,
+.chat-widget .rendered-markdown .markdown-alert,
+.antigravity-agent-side-panel .markdown-alert,
+.antigravity-agent-manager .markdown-alert,
+.animate-markdown .markdown-alert {
+  border: 1px solid rgba(147, 233, 190, 0.22) !important;
+  border-inline-start: 4px solid #93e9be !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  margin: 16px 0 !important;
+  box-sizing: border-box !important;
+  unicode-bidi: plaintext !important;
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  text-align-last: start !important;
+}
+
+.markdown-alert.markdown-alert-tip,
+[role="article"] .markdown-alert.markdown-alert-tip,
+.rendered-markdown .markdown-alert.markdown-alert-tip {
+  border-inline-start-color: #93e9be !important;
+  border-color: rgba(147, 233, 190, 0.28) !important;
+  background: linear-gradient(135deg, rgba(147, 233, 190, 0.12) 0%, rgba(147, 233, 190, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-tip .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: #93e9be !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.markdown-alert.markdown-alert-note,
+[role="article"] .markdown-alert.markdown-alert-note,
+.rendered-markdown .markdown-alert.markdown-alert-note {
+  border-inline-start-color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.28) !important;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-note .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: #38bdf8 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.markdown-alert.markdown-alert-important,
+[role="article"] .markdown-alert.markdown-alert-important,
+.rendered-markdown .markdown-alert.markdown-alert-important {
+  border-inline-start-color: #a78bfa !important;
+  border-color: rgba(167, 139, 250, 0.28) !important;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.12) 0%, rgba(167, 139, 250, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-important .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: #c4b5fd !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.markdown-alert.markdown-alert-warning,
+[role="article"] .markdown-alert.markdown-alert-warning,
+.rendered-markdown .markdown-alert.markdown-alert-warning {
+  border-inline-start-color: #f59e0b !important;
+  border-color: rgba(245, 158, 11, 0.28) !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-warning .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: #fbbf24 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+.markdown-alert.markdown-alert-caution,
+[role="article"] .markdown-alert.markdown-alert-caution,
+.rendered-markdown .markdown-alert.markdown-alert-caution {
+  border-inline-start-color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.28) !important;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.04) 100%) !important;
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title,
+[role="article"] .markdown-alert.markdown-alert-caution .markdown-alert-title,
+.rendered-markdown .markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: #f87171 !important;
+  font-weight: 700 !important;
+  margin-bottom: 6px !important;
+}
+
+"""
+    if alert_pattern.search(css):
+        css = alert_pattern.sub(new_alerts, css)
+
+
     # 2. Refine the User Message Bubble & Outer Card Wrapper Section
     # Find the section at the bottom
     docking_pattern = re.compile(
@@ -308,6 +460,13 @@ const SCRIPT_INJECT = `
         el.style.setProperty('border-bottom', '1px solid rgba(147, 233, 190, 0.3)', 'important');
         el.style.setProperty('padding-bottom', '0.4rem', 'important');
       } else if (el.tagName === 'BLOCKQUOTE') {
+        if (el.querySelector('.markdown-alert') || el.closest('.markdown-alert')) {
+          el.style.setProperty('border', 'none', 'important');
+          el.style.setProperty('padding', '0px', 'important');
+          el.style.setProperty('margin', '0px', 'important');
+          el.style.setProperty('background', 'transparent', 'important');
+          return;
+        }
         el.style.setProperty('border-left', 'none', 'important');
         el.style.setProperty('border-right', '4px solid #93e9be', 'important');
       }
@@ -453,14 +612,17 @@ def update_patch_rs(full_css: str, proxy_js: str):
     with open(PATCH_RS, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Update VAZIRMATN_RTL_CSS
-    css_escaped = full_css.replace("\\", "\\\\").replace('"', '\\"')
-    content = re.sub(
-        r'pub const VAZIRMATN_RTL_CSS: &str = ".*?";',
-        f'pub const VAZIRMATN_RTL_CSS: &str = "{css_escaped}";',
-        content,
-        flags=re.DOTALL
-    )
+    pattern = re.compile(r'pub const VAZIRMATN_RTL_CSS: &str = r#".*?"#;', re.DOTALL)
+    if pattern.search(content):
+        content = pattern.sub(f'pub const VAZIRMATN_RTL_CSS: &str = r#"\n{full_css}\n"#;', content)
+    else:
+        css_escaped = full_css.replace("\\", "\\\\").replace('"', '\\"')
+        content = re.sub(
+            r'pub const VAZIRMATN_RTL_CSS: &str = ".*?";',
+            f'pub const VAZIRMATN_RTL_CSS: &str = "{css_escaped}";',
+            content,
+            flags=re.DOTALL
+        )
 
     with open(PATCH_RS, "w", encoding="utf-8") as f:
         f.write(content)
@@ -496,3 +658,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
