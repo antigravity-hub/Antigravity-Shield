@@ -5,6 +5,7 @@ use crate::models::Account;
 use crate::modules::{db, device, process, version};
 use std::fs;
 use std::process::Command;
+use std::time::Duration;
 
 pub trait SystemIntegration: Send + Sync {
     /// 当Switch account时执行的系统层操作（如杀进程、写入文件、注入data库）
@@ -46,6 +47,8 @@ impl SystemIntegration for DesktopIntegration {
                     let _ = device::write_profile(&storage_path, profile);
                 }
             }
+
+            refresh_ide_daemons();
 
             let is_running = process::is_process_running_by_name("agy");
             let msg = if is_running {
@@ -149,13 +152,16 @@ impl SystemIntegration for DesktopIntegration {
                 ));
             }
 
-            // E. Sync token to system credential store/keyring
+            // E. Sync token to system credential store/keyring (gemini:antigravity)
             if let Err(e) = write_to_system_keyring(account) {
                 crate::modules::logger::log_warn(&format!(
                     "[Desktop] IDE keyring sync warning: {}",
                     e
                 ));
             }
+
+            // E.1 Refresh agy.exe language server daemons via RPC so credentials in RAM are immediately reloaded
+            refresh_ide_daemons();
 
             // F. Touch heartbeat so IDE scanner immediately reports new active email
             crate::modules::ide_scanner::touch_heartbeat(Some("Antigravity IDE"), Some(&account.email));
@@ -193,7 +199,7 @@ impl SystemIntegration for DesktopIntegration {
         }
 
         // 2. Token Injection for Platform
-        // 2.1 Write to system keychain/keyring (gemini:antigravity - exclusive to Platform)
+        // 2.1 Write to system keychain/keyring (gemini:antigravity - shared across IDE and Platform)
         write_to_system_keyring(account)?;
 
         // 2.2 Write storage profile for platform
@@ -655,6 +661,125 @@ pub(crate) fn write_to_file_credentials(account: &crate::models::Account) -> Res
     ));
 
     Ok(())
+}
+
+/// Helper: Send /Restart RPC to active agy.exe language server daemons
+/// or safely terminate/restart stale daemons to ensure credentials are not cached in RAM.
+pub(crate) fn refresh_ide_daemons() {
+    let home = match dirs::home_dir() {
+        Some(h) => h,
+        None => return,
+    };
+    let daemon_dir = home.join(".gemini").join("antigravity").join("daemon");
+    if !daemon_dir.exists() {
+        return;
+    }
+
+    let entries = match std::fs::read_dir(&daemon_dir) {
+        Ok(e) => e,
+        Err(_) => return,
+    };
+
+    #[derive(serde::Deserialize)]
+    struct HubDiscovery {
+        pid: Option<u32>,
+        #[serde(rename = "httpPort")]
+        http_port: Option<u16>,
+        #[serde(rename = "csrfToken")]
+        csrf_token: Option<String>,
+    }
+
+    let mut system = sysinfo::System::new();
+    system.refresh_processes(sysinfo::ProcessesToUpdate::All);
+
+    let client = reqwest::blocking::Client::builder()
+        .timeout(Duration::from_millis(2000))
+        .build()
+        .ok();
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_file() {
+            let filename = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+            if filename.starts_with("hub_") && filename.ends_with(".json") {
+                let content = match std::fs::read_to_string(&path) {
+                    Ok(c) => c,
+                    Err(_) => continue,
+                };
+
+                let hub_data: HubDiscovery = match serde_json::from_str(&content) {
+                    Ok(d) => d,
+                    Err(_) => continue,
+                };
+
+                if let Some(pid_val) = hub_data.pid {
+                    let pid_sys = sysinfo::Pid::from_u32(pid_val);
+                    if let Some(proc) = system.process(pid_sys) {
+                        let proc_name = proc.name().to_string_lossy().to_lowercase();
+                        let is_agy = proc_name.contains("agy") || proc_name.contains("language_server");
+
+                        if is_agy {
+                            let mut rpc_success = false;
+                            if let (Some(ref cli), Some(port), Some(ref token)) = (&client, hub_data.http_port, &hub_data.csrf_token) {
+                                let connect_url = format!("http://127.0.0.1:{}/exa.language_server_pb.LanguageServerService/Restart", port);
+                                let restart_url = format!("http://127.0.0.1:{}/Restart", port);
+
+                                crate::modules::logger::log_info(&format!(
+                                    "[Desktop] Sending /Restart RPC to agy.exe hub (PID: {}, Port: {})",
+                                    pid_val, port
+                                ));
+
+                                // Try Connect-RPC / LanguageServerService/Restart first
+                                if let Ok(resp) = cli.post(&connect_url)
+                                    .header("Content-Type", "application/json")
+                                    .header("x-codeium-csrf-token", token)
+                                    .body("{}")
+                                    .send()
+                                {
+                                    if resp.status().is_success() {
+                                        rpc_success = true;
+                                        crate::modules::logger::log_info(&format!(
+                                            "[Desktop] agy.exe (PID: {}) gracefully acknowledged LanguageServerService/Restart",
+                                            pid_val
+                                        ));
+                                    }
+                                }
+
+                                if !rpc_success {
+                                    if let Ok(resp) = cli.post(&restart_url)
+                                        .header("Content-Type", "application/json")
+                                        .header("x-codeium-csrf-token", token)
+                                        .body("{}")
+                                        .send()
+                                    {
+                                        if resp.status().is_success() {
+                                            rpc_success = true;
+                                            crate::modules::logger::log_info(&format!(
+                                                "[Desktop] agy.exe (PID: {}) acknowledged /Restart RPC",
+                                                pid_val
+                                            ));
+                                        }
+                                    }
+                                }
+                            }
+
+                            // If RPC didn't succeed, fallback to safe termination so stale tokens don't remain in RAM
+                            if !rpc_success {
+                                crate::modules::logger::log_warn(&format!(
+                                    "[Desktop] RPC signal unavailable for agy.exe (PID: {}). Safely restarting daemon...",
+                                    pid_val
+                                ));
+                                let _ = proc.kill();
+                            }
+                        }
+                    } else {
+                        // Stale discovery file from dead process: clean it up
+                        let _ = std::fs::remove_file(&path);
+                    }
+                }
+            }
+        }
+    }
 }
 
 /// 辅助方法：从宿主操作系统的 Keychain/Credentials Manager 读取 Token

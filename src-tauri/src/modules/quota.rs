@@ -144,7 +144,7 @@ struct Tier {
 }
 
 /// Get shared HTTP Client (15s timeout) for pure info fetching (No JA3)
-async fn create_standard_client(account_id: Option<&str>) -> rquest::Client {
+pub(crate) async fn create_standard_client(account_id: Option<&str>) -> rquest::Client {
     if let Some(pool) = crate::proxy::proxy_pool::get_global_proxy_pool() {
         pool.get_effective_standard_client(account_id, 15).await
     } else {

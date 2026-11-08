@@ -95,7 +95,7 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         .replace('$', "\\$");
 
     let js = format!(
-        r#"
+        r##"
 (() => {{
     const PALETTE = [
         {{"name": "Emerald", "color": "#10b981", "glow": "rgba(16, 185, 129, 0.55)", "bg": "rgba(16, 185, 129, 0.12)", "border": "rgba(16, 185, 129, 0.40)"}},
@@ -506,7 +506,7 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
 
     return 'PLATFORM_CDP_BRIDGE_ACTIVE';
 }})()
-"#,
+"##,
         escaped_css, escaped_css
     );
 

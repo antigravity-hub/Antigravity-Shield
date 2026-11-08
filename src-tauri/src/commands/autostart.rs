@@ -67,7 +67,7 @@ pub fn fix_windows_autostart_quotes() {
                     if let Some(exe_idx) = val.to_lowercase().find(".exe") {
                         let exe_path = &val[..exe_idx + 4];
                         let args = &val[exe_idx + 4..];
-                        let quoted = format!(""{}"{}", exe_path, args);
+                        let quoted = format!("\"{}\"{}", exe_path, args);
                         let _ = key.set_value(app_name, &quoted);
                     }
                 }

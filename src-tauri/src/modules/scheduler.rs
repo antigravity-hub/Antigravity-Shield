@@ -648,6 +648,7 @@ pub async fn maintain_active_cli_session() {
                     }
 
                     let _ = crate::modules::integration::write_to_file_credentials(&account);
+                    crate::modules::integration::refresh_ide_daemons();
 
                     logger::log_info(&format!(
                         "[Scheduler] Proactive CLI token refresh succeeded for {}. Keyring and credentials updated.",

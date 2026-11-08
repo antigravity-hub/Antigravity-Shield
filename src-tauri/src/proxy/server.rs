@@ -3070,15 +3070,16 @@ async fn admin_toolkit_sync_active(
 
     let _ = crate::modules::account::set_current_account_id_with_target(&resolved_id, target_ide);
 
-    // Synchronize device profile without touching system keyring (system keyring is exclusive to Platform)
+    // Synchronize system keyring (gemini:antigravity) and device profile across IDE and Platform
     if let Ok(account) = crate::modules::account::load_account(&resolved_id) {
-        if target_ide != Some("ide") {
-            if let Err(e) = crate::modules::integration::write_to_system_keyring(&account) {
-                logger::log_warn(&format!(
-                    "[Toolkit API] Warning: Failed to sync system keyring on switch: {}",
-                    e
-                ));
-            }
+        if let Err(e) = crate::modules::integration::write_to_system_keyring(&account) {
+            logger::log_warn(&format!(
+                "[Toolkit API] Warning: Failed to sync system keyring on switch: {}",
+                e
+            ));
+        }
+        if target_ide == Some("ide") {
+            crate::modules::integration::refresh_ide_daemons();
         }
         if let Ok(storage_path) = crate::modules::device::get_storage_path(target_ide) {
             if let Some(ref profile) = account.device_profile {

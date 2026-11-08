@@ -962,7 +962,7 @@ impl TokenManager {
             let q_data: Option<crate::models::QuotaData> = serde_json::from_value(q_val.clone()).ok();
             if let Some(q) = q_data {
                 (
-                    Some(q.get_minimum_remaining_percentage()),
+                    Some(q.get_min_remaining_percentage()),
                     q.has_weekly_limit_hit() || q.is_gemini_exhausted(),
                     q.is_forbidden,
                 )
