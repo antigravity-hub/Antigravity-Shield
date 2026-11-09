@@ -83,14 +83,15 @@ impl SystemIntegration for DesktopIntegration {
             }
         };
         let is_ide = resolved_target == "ide";
+        let is_proxy_active = crate::modules::antigravity_network_patcher::check_antigravity_proxy_status().is_applied;
 
         // ====================================================================
         // TARGET 1: ANTIGRAVITY IDE (Non-disruptive hot-swap, ZERO kill, ZERO restart)
         // ====================================================================
         if is_ide {
             crate::modules::logger::log_info(&format!(
-                "[Desktop] Executing non-disruptive hot-swap for IDE target: {}",
-                account.email
+                "[Desktop] Executing non-disruptive hot-swap for IDE target: {} (proxy_active={})",
+                account.email, is_proxy_active
             ));
 
             // A. Deliver switch command to IDE Toolkit extension (if connected)
@@ -108,60 +109,76 @@ impl SystemIntegration for DesktopIntegration {
                 ));
             }
 
-            // B. Sync device profile for IDE (if storage path exists)
-            if let Ok(storage_path) = device::get_storage_path(Some("ide")) {
-                if let Some(ref profile) = account.device_profile {
-                    let _ = device::write_profile(&storage_path, profile);
-                }
-            }
-
-            // C. Dynamically inject token into IDE SQLite database (state.vscdb)
-            if let Ok(db_path) = db::get_db_path(Some("ide")) {
-                if db_path.exists() {
-                    let backup_path = db_path.with_extension("vscdb.backup");
-                    let _ = fs::copy(&db_path, &backup_path);
-
-                    let _ = db::inject_token(
-                        &db_path,
-                        &account.token.access_token,
-                        &account.token.refresh_token,
-                        account.token.expiry_timestamp,
-                        &account.email,
-                        account.token.is_gcp_tos,
-                        account.token.project_id.as_deref(),
-                        account.token.id_token.as_deref(),
-                        account.token.oauth_client_key.as_deref(),
-                        Some("ide"),
-                    );
+            if !is_proxy_active {
+                // B. Sync device profile for IDE (if storage path exists)
+                if let Ok(storage_path) = device::get_storage_path(Some("ide")) {
                     if let Some(ref profile) = account.device_profile {
-                        let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                        let _ = device::write_profile(&storage_path, profile);
                     }
-                    crate::modules::logger::log_info(&format!(
-                        "[Desktop] Token dynamically injected into IDE database: {:?}",
-                        db_path
+                }
+
+                // C. Dynamically inject token into IDE SQLite database (state.vscdb)
+                if let Ok(db_path) = db::get_db_path(Some("ide")) {
+                    if db_path.exists() {
+                        let backup_path = db_path.with_extension("vscdb.backup");
+                        let _ = fs::copy(&db_path, &backup_path);
+
+                        let _ = db::inject_token(
+                            &db_path,
+                            &account.token.access_token,
+                            &account.token.refresh_token,
+                            account.token.expiry_timestamp,
+                            &account.email,
+                            account.token.is_gcp_tos,
+                            account.token.project_id.as_deref(),
+                            account.token.id_token.as_deref(),
+                            account.token.oauth_client_key.as_deref(),
+                            Some("ide"),
+                        );
+                        if let Some(ref profile) = account.device_profile {
+                            let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                        }
+                        crate::modules::logger::log_info(&format!(
+                            "[Desktop] Token dynamically injected into IDE database: {:?}",
+                            db_path
+                        ));
+                    }
+                }
+
+                // D. Sync file-based credentials to ~/.gemini/ (oauth_creds.json & google_accounts.json)
+                if let Err(e) = write_to_file_credentials(account) {
+                    crate::modules::logger::log_warn(&format!(
+                        "[Desktop] IDE file credential sync warning: {}",
+                        e
                     ));
                 }
-            }
 
-            // D. Sync file-based credentials to ~/.gemini/ (oauth_creds.json & google_accounts.json)
-            // for Antigravity IDE agent, AI chat, and settings UI parity
-            if let Err(e) = write_to_file_credentials(account) {
-                crate::modules::logger::log_warn(&format!(
-                    "[Desktop] IDE file credential sync warning: {}",
-                    e
-                ));
-            }
+                // E. Sync token to system credential store/keyring (gemini:antigravity)
+                if let Err(e) = write_to_system_keyring(account) {
+                    crate::modules::logger::log_warn(&format!(
+                        "[Desktop] IDE keyring sync warning: {}",
+                        e
+                    ));
+                }
 
-            // E. Sync token to system credential store/keyring (gemini:antigravity)
-            if let Err(e) = write_to_system_keyring(account) {
-                crate::modules::logger::log_warn(&format!(
-                    "[Desktop] IDE keyring sync warning: {}",
-                    e
-                ));
-            }
+                // E.1 Refresh agy.exe language server daemons via RPC so credentials in RAM are immediately reloaded
+                refresh_ide_daemons();
 
-            // E.1 Refresh agy.exe language server daemons via RPC so credentials in RAM are immediately reloaded
-            refresh_ide_daemons();
+                // If Antigravity IDE is not currently running, launch it (legacy mode only)
+                if !process::is_antigravity_running(Some("ide")) {
+                    crate::modules::logger::log_info("[Desktop] Antigravity IDE is not running. Launching IDE...");
+                    if let Err(e) = process::start_antigravity(Some("ide")) {
+                        crate::modules::logger::log_warn(&format!(
+                            "[Desktop] Auto-launching Antigravity IDE failed: {}",
+                            e
+                        ));
+                    }
+                }
+            } else {
+                crate::modules::logger::log_info(
+                    "[Desktop] Antigravity IDE proxy is active. Dual-Target isolation engaged: zero DB write, zero keyring write, zero process launch."
+                );
+            }
 
             // F. Touch heartbeat so IDE scanner immediately reports new active email
             crate::modules::ide_scanner::touch_heartbeat(Some("Antigravity IDE"), Some(&account.email));
@@ -170,17 +187,6 @@ impl SystemIntegration for DesktopIntegration {
             self.show_notification("Antigravity IDE", &format!("⚡ Switched to {}", account.email));
             self.update_tray();
 
-            // [FIX Issue #13] If Antigravity IDE is not currently running, launch it so user doesn't have to open it manually
-            if !process::is_antigravity_running(Some("ide")) {
-                crate::modules::logger::log_info("[Desktop] Antigravity IDE is not running. Launching IDE...");
-                if let Err(e) = process::start_antigravity(Some("ide")) {
-                    crate::modules::logger::log_warn(&format!(
-                        "[Desktop] Auto-launching Antigravity IDE failed: {}",
-                        e
-                    ));
-                }
-            }
-
             return Ok(());
         }
 
@@ -188,8 +194,6 @@ impl SystemIntegration for DesktopIntegration {
         // TARGET 2: ANTIGRAVITY PLATFORM (Isolated process lifecycle)
         // ====================================================================
         let target_platform = Some("platform");
-
-        let is_proxy_active = crate::modules::antigravity_network_patcher::check_antigravity_proxy_status().is_applied;
 
         // 1. Close running platform process if active (only if proxy is NOT active; with proxy, hot-swap is 100% non-disruptive)
         let was_running = process::is_antigravity_running(target_platform);
@@ -204,45 +208,49 @@ impl SystemIntegration for DesktopIntegration {
             );
         }
 
-        // 2. Token Injection for Platform
-        // 2.1 Write to system keychain/keyring (only when proxy is not isolating targets to avoid stomping IDE account)
+        // 2. Token Injection for Platform (Only if proxy is NOT active)
         if !is_proxy_active {
+            // 2.1 Write to system keychain/keyring
             write_to_system_keyring(account)?;
-        }
 
-        // 2.2 Write storage profile for platform
-        if let Ok(storage_path) = device::get_storage_path(target_platform) {
-            if let Some(ref profile) = account.device_profile {
-                let _ = device::write_profile(&storage_path, profile);
-            }
-        }
-
-        // 2.3 Update SQLite database for platform if state.vscdb exists
-        if let Ok(db_path) = db::get_db_path(target_platform) {
-            if db_path.exists() {
-                let backup_path = db_path.with_extension("vscdb.backup");
-                let _ = fs::copy(&db_path, &backup_path);
-
-                let _ = db::inject_token(
-                    &db_path,
-                    &account.token.access_token,
-                    &account.token.refresh_token,
-                    account.token.expiry_timestamp,
-                    &account.email,
-                    account.token.is_gcp_tos,
-                    account.token.project_id.as_deref(),
-                    account.token.id_token.as_deref(),
-                    account.token.oauth_client_key.as_deref(),
-                    target_platform,
-                );
+            // 2.2 Write storage profile for platform
+            if let Ok(storage_path) = device::get_storage_path(target_platform) {
                 if let Some(ref profile) = account.device_profile {
-                    let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                    let _ = device::write_profile(&storage_path, profile);
                 }
             }
-        }
 
-        // 2.4 Update app_storage.json for platform
-        let _ = db::update_app_storage_email(&account.email, target_platform);
+            // 2.3 Update SQLite database for platform if state.vscdb exists
+            if let Ok(db_path) = db::get_db_path(target_platform) {
+                if db_path.exists() {
+                    let backup_path = db_path.with_extension("vscdb.backup");
+                    let _ = fs::copy(&db_path, &backup_path);
+
+                    let _ = db::inject_token(
+                        &db_path,
+                        &account.token.access_token,
+                        &account.token.refresh_token,
+                        account.token.expiry_timestamp,
+                        &account.email,
+                        account.token.is_gcp_tos,
+                        account.token.project_id.as_deref(),
+                        account.token.id_token.as_deref(),
+                        account.token.oauth_client_key.as_deref(),
+                        target_platform,
+                    );
+                    if let Some(ref profile) = account.device_profile {
+                        let _ = db::write_service_machine_id(&db_path, &profile.mac_machine_id);
+                    }
+                }
+            }
+
+            // 2.4 Update app_storage.json for platform
+            let _ = db::update_app_storage_email(&account.email, target_platform);
+        } else {
+            crate::modules::logger::log_info(
+                "[Desktop] Antigravity Platform proxy is active. Dual-Target isolation engaged: zero DB write, zero keyring write, zero process restart."
+            );
+        }
 
         // 3. Restart Platform only if it was running before and closed (non-proxy mode)
         if was_running && !is_proxy_active {

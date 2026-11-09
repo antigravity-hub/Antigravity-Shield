@@ -173,6 +173,17 @@ pub async fn switch_account(
         .switch_account(&account_id, target_ide.as_deref())
         .await?;
 
+    // [Dual Ingress] Set target-specific preferred account in Proxy TokenManager in-memory
+    {
+        let instance_lock = proxy_state.instance.read().await;
+        if let Some(instance) = instance_lock.as_ref() {
+            instance
+                .token_manager
+                .set_preferred_account_for_target(Some(account_id.clone()), target_ide.as_deref())
+                .await;
+        }
+    }
+
     // Sync system tray
     crate::modules::tray::update_tray_menus(&app);
 
