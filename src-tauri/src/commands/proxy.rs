@@ -211,11 +211,8 @@ pub async fn internal_start_proxy_service(
     // [FIX] Ensure the server is logically running
     axum_server.set_running(true).await;
 
-    // [Dual Ingress Auto-Patch] Automatically route Antigravity Platform & IDE through isolated proxy ports
-    let _ = crate::modules::antigravity_network_patcher::apply_dual_target_proxy(
-        "http://127.0.0.1:8765",
-        Some("http://127.0.0.1:8766"),
-    );
+    // [Safe Clean] Ensure Antigravity IDE and Platform settings.json are clean of any fatal http.proxy hijacking
+    let _ = crate::modules::antigravity_network_patcher::remove_proxy_from_settings();
 
     *instance_lock = Some(instance);
 

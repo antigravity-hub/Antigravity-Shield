@@ -441,7 +441,13 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                 const convId = match[1];
                 const pal = convMap[convId];
                 if (pal) {
-                    const row = a.closest('.agy-sidebar-row') || a.parentElement;
+                    a.setAttribute('data-project-container', 'true');
+                    if (a.style.getPropertyValue('--proj-color') !== pal.color) {
+                        a.style.setProperty('--proj-color', pal.color);
+                        a.style.setProperty('--proj-bg', pal.bg);
+                        a.style.setProperty('--proj-glow', pal.glow);
+                    }
+                    const row = a.closest('.agy-sidebar-row') || a.closest('li') || a.parentElement;
                     if (row) {
                         row.setAttribute('data-project-container', 'true');
                         if (row.style.getPropertyValue('--proj-color') !== pal.color) {
