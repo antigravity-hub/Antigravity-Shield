@@ -211,6 +211,12 @@ pub async fn internal_start_proxy_service(
     // [FIX] Ensure the server is logically running
     axum_server.set_running(true).await;
 
+    // [Dual Ingress Auto-Patch] Automatically route Antigravity Platform & IDE through isolated proxy ports
+    let _ = crate::modules::antigravity_network_patcher::apply_dual_target_proxy(
+        "http://127.0.0.1:8765",
+        Some("http://127.0.0.1:8766"),
+    );
+
     *instance_lock = Some(instance);
 
     // Success启动后，guard 在这里结束并reset starting 是 OK 的
@@ -316,7 +322,8 @@ pub async fn stop_proxy_service(state: State<'_, ProxyServiceState>) -> Result<(
     if let Some(instance) = instance_lock.take() {
         instance.token_manager.abort_background_tasks().await;
         instance.axum_server.set_running(false).await;
-        // 已移除 instance.axum_server.stop() 调用，防止杀死 Admin Server
+        // [Dual Ingress Auto-Cleanup] Automatically remove proxy settings when proxy service stops
+        let _ = crate::modules::antigravity_network_patcher::remove_proxy_from_settings();
     }
 
     Ok(())

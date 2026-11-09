@@ -175,14 +175,39 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
     }}
 
     function applyStyles() {{
+        try {{
         let style = document.getElementById('antigravity-shield-platform-rtl');
         if (!style) {{
             style = document.createElement('style');
             style.id = 'antigravity-shield-platform-rtl';
             document.head.appendChild(style);
         }}
-        if (style.textContent !== `{}`) {{
-            style.textContent = `{}`;
+        const projectHoverCss = `
+            [data-project-container] a:hover,
+            [data-project-container] button:hover,
+            [data-project-container] div[role="button"]:hover,
+            [data-project-container] li:hover,
+            [style*="--proj-color"] a:hover,
+            [style*="--proj-color"] button:hover,
+            [style*="--proj-color"] div[role="button"]:hover {
+                background: var(--proj-bg, rgba(255,255,255,0.06)) !important;
+                color: var(--proj-color) !important;
+            }
+            [data-project-container] a[aria-current="page"],
+            [data-project-container] [aria-selected="true"],
+            [data-project-container] .active,
+            [style*="--proj-color"] a[aria-current="page"],
+            [style*="--proj-color"] [aria-selected="true"],
+            [style*="--proj-color"] [class*="bg-accent"],
+            [style*="--proj-color"] [class*="bg-primary"],
+            [style*="--proj-color"] [class*="bg-sidebar-accent"] {
+                background: var(--proj-bg, rgba(255,255,255,0.12)) !important;
+                color: var(--proj-color) !important;
+                box-shadow: inset 3px 0 0 var(--proj-color) !important;
+            }
+        `;
+        if (style.textContent !== `{}` + projectHoverCss) {{
+            style.textContent = `{}` + projectHoverCss;
         }}
 
         const isPersian = (text) => /[\\u0600-\\u06FF]/.test(text);
@@ -282,14 +307,14 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                         box-shadow: 0 0 8px ${{pal.glow}} !important;
                         color: ${{pal.color}} !important;
                         border-radius: 9999px !important;
-                        padding: 3px 8px !important;
-                        height: 24px !important;
+                        padding: 2px 7px !important;
+                        height: 20px !important;
                         display: inline-flex !important;
                         align-items: center !important;
                         justify-content: center !important;
                         font-family: inherit !important;
-                        font-size: 0.68rem !important;
-                        font-weight: 800 !important;
+                        font-size: 0.65rem !important;
+                        font-weight: 500 !important;
                         letter-spacing: 0.05em !important;
                         cursor: pointer !important;
                         flex-shrink: 0 !important;
@@ -368,7 +393,7 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                     const titleSpan = header.querySelector('span.truncate') || header.querySelector('span');
                     if (titleSpan && titleSpan.style.color !== pal.color) {{
                         titleSpan.style.setProperty('color', pal.color, 'important');
-                        titleSpan.style.setProperty('font-weight', '700', 'important');
+                        titleSpan.style.setProperty('font-weight', '500', 'important');
                     }}
 
                     const iconSvg = header.querySelector('svg');
@@ -376,91 +401,37 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
                         iconSvg.style.setProperty('color', pal.color, 'important');
                         iconSvg.style.setProperty('filter', `drop-shadow(0 0 5px ${{pal.glow}})`, 'important');
                     }}
-                }} else if (currPal && (c.querySelector('.agy-sidebar-row[class*="pl-"]') || c.classList.contains('pb-[1px]'))) {{
-                    if (c.style.getPropertyValue('--proj-color') !== currPal.color) {{
-                        c.style.setProperty('--proj-color', currPal.color);
-                        c.style.setProperty('--proj-glow', currPal.glow);
-                        c.style.setProperty('--proj-bg', currPal.bg);
-                    }}
-                    const row = c.querySelector('.agy-sidebar-row[class*="pl-"]');
-                    if (row && row.style.getPropertyValue('--proj-color') !== currPal.color) {{
+                }} else if (currPal) {{
+                    c.setAttribute('data-project-container', 'true');
+                    c.style.setProperty('--proj-color', currPal.color);
+                    c.style.setProperty('--proj-glow', currPal.glow);
+                    c.style.setProperty('--proj-bg', currPal.bg);
+
+                    c.querySelectorAll('a, button, div[role="button"], li').forEach(row => {{
                         row.style.setProperty('--proj-color', currPal.color);
-                        row.style.setProperty('--proj-glow', currPal.glow);
                         row.style.setProperty('--proj-bg', currPal.bg);
-                    }}
-                }} else if (!c.querySelector('.agy-sidebar-row[class*="pl-"]')) {{
+                        row.style.setProperty('--proj-glow', currPal.glow);
+
+                        const isSelected = row.getAttribute('aria-selected') === 'true' 
+                            || row.getAttribute('aria-current') === 'page'
+                            || row.classList.contains('active')
+                            || row.classList.contains('bg-accent')
+                            || row.classList.contains('bg-sidebar-accent');
+                            
+                        if (isSelected) {{
+                            row.style.setProperty('background', currPal.bg, 'important');
+                            row.style.setProperty('color', currPal.color, 'important');
+                            row.style.setProperty('box-shadow', `inset 3px 0 0 ${{currPal.color}}`, 'important');
+                        }}
+                    }});
+                }} else {{
                     currPal = null;
                 }}
             }});
         }}
-
-        // 2. Sent user bubbles and assistant articles
-        document.querySelectorAll('[role="article"]').forEach(art => {{
-            const isUser = art.getAttribute('aria-label') === 'User message';
-            if (isUser) {{
-                art.removeAttribute('dir');
-                art.style.direction = 'ltr';
-                art.style.textAlign = 'right';
-                const frame = art.querySelector('.agy-user-bubble-frame');
-                if (frame) {{
-                    frame.style.setProperty('border', 'none', 'important');
-                    frame.style.setProperty('box-shadow', 'none', 'important');
-                    frame.style.setProperty('background', 'transparent', 'important');
-                    frame.style.setProperty('padding', '0', 'important');
-                    frame.style.setProperty('width', 'fit-content', 'important');
-                    frame.style.setProperty('max-width', '100%', 'important');
-                    frame.style.setProperty('margin-left', 'auto', 'important');
-                }}
-                const bubble = art.querySelector('.agy-user-bubble');
-                if (bubble) {{
-                    bubble.style.setProperty('width', 'fit-content', 'important');
-                    bubble.style.setProperty('max-width', '100%', 'important');
-                }}
-                const textEl = art.querySelector('.whitespace-pre-wrap') || art;
-                if (isPersian(textEl.textContent || '')) {{
-                    textEl.setAttribute('dir', 'rtl');
-                    textEl.style.direction = 'rtl';
-                }} else {{
-                    textEl.setAttribute('dir', 'ltr');
-                    textEl.style.direction = 'ltr';
-                }}
-                textEl.style.textAlign = 'justify';
-                textEl.style.textJustify = 'inter-word';
-                textEl.style.textAlignLast = 'start';
-            }} else {{
-                art.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, ol, ul, blockquote').forEach(el => {{
-                    if (el.tagName === 'CODE' || el.tagName === 'PRE' || el.closest('pre')) return;
-                    const txt = (el.textContent || '').trim();
-                    if (isPersian(txt)) {{
-                        el.setAttribute('dir', 'rtl');
-                        el.style.direction = 'rtl';
-                        if (el.tagName.startsWith('H')) {{
-                            el.style.textAlign = 'right';
-                            el.style.paddingLeft = '0px';
-                            el.style.marginLeft = '0px';
-                        }} else if (el.tagName === 'UL' || el.tagName === 'OL') {{
-                            el.style.setProperty('padding-left', '0px', 'important');
-                            el.style.setProperty('padding-inline-end', '0px', 'important');
-                            el.style.setProperty('margin-left', '0px', 'important');
-                            el.style.setProperty('padding-right', '1.75rem', 'important');
-                            el.style.setProperty('padding-inline-start', '1.75rem', 'important');
-                        }}
-                    }} else if (txt.length > 0) {{
-                        el.setAttribute('dir', 'ltr');
-                        el.style.direction = 'ltr';
-                    }}
-                    if (el.tagName === 'P' || el.tagName === 'LI') {{
-                        el.style.textAlign = 'justify';
-                        el.style.textJustify = 'inter-word';
-                        el.style.textAlignLast = 'start';
-                        if (isPersian(txt)) {{
-                            el.style.paddingLeft = '0px';
-                            el.style.marginLeft = '0px';
-                        }}
-                    }}
-                }});
-            }}
-        }});
+        }} catch (err) {{
+            // Suppress error so React never crashes
+        }}
     }}
 
     applyStyles();
@@ -502,7 +473,11 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
             applyStyles();
         }}, 350);
     }});
-    window.__shield_platform_observer.observe(document.body, {{ childList: true, subtree: true }});
+        const targetNode = document.querySelector('[data-testid="conversation-list-sidebar"]') || 
+                       document.querySelector('aside') || 
+                       document.querySelector('nav') || 
+                       document.body;
+    window.__shield_platform_observer.observe(targetNode, {{ childList: true, subtree: true }});
 
     return 'PLATFORM_CDP_BRIDGE_ACTIVE';
 }})()
