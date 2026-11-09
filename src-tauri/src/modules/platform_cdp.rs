@@ -189,10 +189,10 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
             [data-project-container] li:hover,
             [style*="--proj-color"] a:hover,
             [style*="--proj-color"] button:hover,
-            [style*="--proj-color"] div[role="button"]:hover {
+            [style*="--proj-color"] div[role="button"]:hover {{
                 background: var(--proj-bg, rgba(255,255,255,0.06)) !important;
                 color: var(--proj-color) !important;
-            }
+            }}
             [data-project-container] a[aria-current="page"],
             [data-project-container] [aria-selected="true"],
             [data-project-container] .active,
@@ -200,11 +200,11 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
             [style*="--proj-color"] [aria-selected="true"],
             [style*="--proj-color"] [class*="bg-accent"],
             [style*="--proj-color"] [class*="bg-primary"],
-            [style*="--proj-color"] [class*="bg-sidebar-accent"] {
+            [style*="--proj-color"] [class*="bg-sidebar-accent"] {{
                 background: var(--proj-bg, rgba(255,255,255,0.12)) !important;
                 color: var(--proj-color) !important;
                 box-shadow: inset 3px 0 0 var(--proj-color) !important;
-            }
+            }}
         `;
         if (style.textContent !== `{}` + projectHoverCss) {{
             style.textContent = `{}` + projectHoverCss;
