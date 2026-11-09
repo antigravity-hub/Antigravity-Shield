@@ -88,37 +88,15 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         return Err("WebSocket handshake failed".into());
     }
 
-    let raw_css = crate::commands::patch::VAZIRMATN_RTL_CSS;
-    let escaped_css = raw_css
-        .replace('\\', "\\\\")
-        .replace('`', "\\`")
-        .replace('$', "\\$");
-
-    let js_template = r##"
+    let js = r#"
 (() => {
     try {
-        let style = document.getElementById('antigravity-shield-platform-rtl');
-        if (!style) {
-            style = document.createElement('style');
-            style.id = 'antigravity-shield-platform-rtl';
-            document.head.appendChild(style);
+        // Platform is a modern Tailwind React application that natively supports RTL.
+        // Purge any legacy injected styles, alien DOM nodes, or observers that cause black-screen crashes.
+        const style = document.getElementById('antigravity-shield-platform-rtl');
+        if (style) {
+            try { style.remove(); } catch(e) {}
         }
-        const customCss = `
-            /* Native pure CSS bidirectional text - zero JS DOM mutation */
-            :not(pre) > code {
-                unicode-bidi: plaintext !important;
-            }
-            textarea, input[type="text"], input:not([type]), [contenteditable="true"] {
-                unicode-bidi: plaintext !important;
-                text-align: start !important;
-            }
-        `;
-        const fullCss = `__VAZIRMATN_CSS_PLACEHOLDER__` + customCss;
-        if (style.textContent !== fullCss) {
-            style.textContent = fullCss;
-        }
-
-        // Clean up any legacy alien DOM nodes or observers that collide with React reconciliation
         if (window.__shield_platform_observer) {
             try { window.__shield_platform_observer.disconnect(); } catch(e) {}
             window.__shield_platform_observer = null;
@@ -129,11 +107,9 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
         }
     } catch (err) {}
 
-    return 'PLATFORM_CDP_BRIDGE_ACTIVE';
+    return 'PLATFORM_CLEAN';
 })()
-"##;
-
-    let js = js_template.replace("__VAZIRMATN_CSS_PLACEHOLDER__", &escaped_css);
+"#;
 
     let payload = serde_json::to_vec(&serde_json::json!({
         "id": 1,
@@ -173,16 +149,12 @@ async fn send_cdp_evaluate(port: u16, path: &str) -> Result<(), String> {
 }
 
 /// Continuous low-overhead watcher that ensures Antigravity Platform stays patched
+/// Autonomous cleaner that purges any legacy alien DOM/CSS nodes from Antigravity Platform
 pub fn start_platform_cdp_watcher() {
     tauri::async_runtime::spawn(async move {
         tokio::time::sleep(Duration::from_secs(4)).await;
-
-        let mut interval = tokio::time::interval(Duration::from_secs(10));
-        loop {
-            interval.tick().await;
-            if is_platform_active() {
-                let _ = inject_platform_rtl().await;
-            }
+        if is_platform_active() {
+            let _ = inject_platform_rtl().await;
         }
     });
 }
